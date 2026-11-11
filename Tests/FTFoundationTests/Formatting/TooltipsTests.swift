@@ -50,25 +50,24 @@ struct TooltipsTests {
         #expect(Tooltips.format("Home", shortcut: nil) == "Home")
     }
 
-    @Test func namesToolbarButtonsAsTheMenusNameTheirCommands() {
-        var tooltips: [String: String] = [:]
-        for item in ToolbarItems.definitions where item.kind == .button {
-            tooltips[item.id.rawValue] = Tooltips.toolbarItemTooltip(itemID: item.id)
+    @Test func namesToolbarButtonsAsTheMenusNameTheirCommands() throws {
+        let expected: [String: String] = [
+            "back": "Back (⌘[)", "forward": "Forward (⌘])", "up": "Enclosing Folder (⌘↑)",
+            "refresh": "Refresh (⌘R)", "goToFolder": "Go To (⌘K)", "newTab": "New Tab (⌘T)",
+            "openSelection": "Open (⌘O)", "quickLook": "Quick Look (Space)",
+            "editSelection": "Edit in Text Editor (⇧⌘E)", "moveSelection": "Move To (⇧⌘M)",
+            "renameSelection": "Rename (↩)", "duplicateSelection": "Duplicate (⌘D)",
+            "newFolder": "New Folder (⇧⌘N)", "trashSelection": "Move to Trash (⌘⌫)", "copySelection": "Copy (⌘C)",
+            "cutSelection": "Cut (⌘X)", "pasteSelection": "Paste (⌘V)", "openInTerminal": "Open in Terminal (⌥⌘T)",
+            // No key until one is chosen in Settings.
+            "showInFinder": "Show in Finder", "revealInFolder": "Reveal in Folder",
+            "calculateSize": "Calculate Size", "copyPath": "Copy Path (⌥⌘C)", "settings": "Settings (⌘,)",
+            "help": "File Trail Help (?)",
+        ]
+        for (name, tooltip) in expected {
+            let id = try #require(ToolbarItemID(rawValue: name))
+            #expect(Tooltips.toolbarItemTooltip(itemID: id) == tooltip, "\(name)")
         }
-        #expect(
-            tooltips == [
-                "back": "Back (⌘[)", "forward": "Forward (⌘])", "up": "Enclosing Folder (⌘↑)",
-                "refresh": "Refresh (⌘R)", "goToFolder": "Go To (⌘K)", "newTab": "New Tab (⌘T)",
-                "openSelection": "Open (⌘O)", "quickLook": "Quick Look (Space)",
-                "editSelection": "Edit in Text Editor (⇧⌘E)", "moveSelection": "Move To (⇧⌘M)",
-                "renameSelection": "Rename (↩)", "duplicateSelection": "Duplicate (⌘D)",
-                "newFolder": "New Folder (⇧⌘N)", "trashSelection": "Move to Trash (⌘⌫)", "copySelection": "Copy (⌘C)",
-                "cutSelection": "Cut (⌘X)", "pasteSelection": "Paste (⌘V)", "openInTerminal": "Open in Terminal (⌥⌘T)",
-                // No key until one is chosen in Settings.
-                "showInFinder": "Show in Finder", "revealInFolder": "Reveal in Folder",
-                "calculateSize": "Calculate Size", "copyPath": "Copy Path (⌥⌘C)", "settings": "Settings (⌘,)",
-                "help": "File Trail Help (?)",
-            ])
     }
 
     // The commands Help's shortcut list documents; a tooltip must not promise a key for any other command.

@@ -120,7 +120,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// The items a saved order draws, with room for them all: a space that divides nothing isn't one of them.
     /// The saved order keeps it.
     private static func row(_ items: [ToolbarItemID]) -> [ToolbarItemID] {
-        TopToolbarLayout.select(TopToolbarLayout.slots(items), optionalCount: items.count).map(\.id)
+        ToolbarItems.withoutIdleSeparators(items)
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {

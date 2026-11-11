@@ -886,7 +886,7 @@ Read decision 4 at the top first, and get the answer to [Q7].
   highlight cases in `search-sort.json`.
 - This only changes which characters are painted in a result name, never which files are found.
 
-### [ ] 5.3. The toolbar layout engine the system toolbar replaced (about 200 lines, 270 of tests, 1 golden)
+### [x] 5.3. The toolbar layout engine the system toolbar replaced (about 200 lines, 270 of tests, 1 golden)
 
 - Delete `Sources/FTFoundation/Layout/TopToolbarRow.swift` (87 lines). In `TopToolbarLayout.swift` delete
   `ToolbarCapsuleEdges`, `notOnACapsule`, `capsules`, `capsuleOverhang`, `rowMinWidth`, `overflowRoom`,
@@ -2150,3 +2150,7 @@ anything that differed from the plan, and anything found on the way that is not 
   marks no "ß". Goldens edited by hand as the item says: 13 cases of `name-highlight.json` (`^.`, `^.{2}`, `[🎉]`,
   `🎉+`: an emoji is one character; `x{`, `\k`, `\8`, `(?=a)*b`: no longer taken; `\p{L}` is a letter class; `ſ`
   and `k` fold as Unicode does) and 3 of `search-sort.json` (`c++`, `C++`, `(?i)app`, which JavaScript refused).
+- 2026-11-11. 5.3: the toolbar keeps one rule of the old layout, `ToolbarItems.withoutIdleSeparators`. Also gone:
+  `ToolbarItemKind` (and `kind:` in the 37 definitions; the tooltip test that picked the buttons by kind names them),
+  the toolbar tokens `itemGap`, `edgedItemInset`, `capsulePadding`, `overflowButtonWidth`; `toolbar-sanitize.json`
+  lost its `ops` inputs and `edited` outputs, the sanitize cases unchanged.

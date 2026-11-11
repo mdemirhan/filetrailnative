@@ -4,7 +4,6 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
     public var id: ToolbarItemID
     public var label: String
     public var icon: ToolbarIconName
-    public var kind: ToolbarItemKind
     public var commandType: RendererCommand?
     /// Always in the toolbar: it can be moved there, but not taken off.
     public var topRequired: Bool
@@ -15,14 +14,13 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
     public var allowDuplicates: Bool
 
     init(
-        id: ToolbarItemID, label: String, icon: ToolbarIconName, kind: ToolbarItemKind,
-        commandType: RendererCommand? = nil, topRequired: Bool = false, shortcutCommand: ShortcutCommandID? = nil,
-        tooltipLabel: String? = nil, allowDuplicates: Bool = false
+        id: ToolbarItemID, label: String, icon: ToolbarIconName, commandType: RendererCommand? = nil,
+        topRequired: Bool = false, shortcutCommand: ShortcutCommandID? = nil, tooltipLabel: String? = nil,
+        allowDuplicates: Bool = false
     ) {
         self.id = id
         self.label = label
         self.icon = icon
-        self.kind = kind
         self.commandType = commandType
         self.topRequired = topRequired
         self.shortcutCommand = shortcutCommand
@@ -39,10 +37,6 @@ public enum ToolbarItems {
 
     private static let definitionByID: [ToolbarItemID: ToolbarItemDefinition] = Dictionary(
         uniqueKeysWithValues: definitions.map { ($0.id, $0) })
-
-    public static func isToolbarItemID(_ value: String) -> Bool {
-        ToolbarItemID(rawValue: value) != nil
-    }
 
     public static func definition(_ id: ToolbarItemID) -> ToolbarItemDefinition {
         definitionByID[id] ?? definitions[0]
@@ -84,31 +78,15 @@ public enum ToolbarItems {
         paletteOrder.filter { definition($0).allowDuplicates || !items.contains($0) }
     }
 
-    /// An item clicked in the palette goes at the far right.
-    public static func addTopItem(_ items: [ToolbarItemID], _ id: ToolbarItemID) -> [ToolbarItemID] {
-        insertTopItem(items, id, at: items.count)
-    }
-
-    /// An item dropped into the toolbar, at `index` (clamped to the ends).
-    public static func insertTopItem(_ items: [ToolbarItemID], _ id: ToolbarItemID, at index: Int) -> [ToolbarItemID] {
-        let position = max(0, min(index, items.count))
-        return Array(items[..<position]) + [id] + Array(items[position...])
-    }
-
-    /// The item at `from` taken out and put back at `to`, an index in the order without it.
-    public static func moveTopItem(_ items: [ToolbarItemID], from: Int, to: Int) -> [ToolbarItemID] {
-        guard items.indices.contains(from) else { return items }
-        let id = items[from]
-        var rest = items
-        rest.remove(at: from)
-        return insertTopItem(rest, id, at: to)
-    }
-
-    /// The item at `index` taken off the toolbar, unless it is one that always stays.
-    public static func removeTopItem(_ items: [ToolbarItemID], at index: Int) -> [ToolbarItemID] {
-        guard items.indices.contains(index), !isRequiredTopItem(items[index]) else { return items }
-        var rest = items
-        rest.remove(at: index)
-        return rest
+    /// The items a saved order draws: a space with nothing on one side of it, or right after another, divides
+    /// nothing and isn't drawn. The saved order keeps it.
+    public static func withoutIdleSeparators(_ items: [ToolbarItemID]) -> [ToolbarItemID] {
+        var result: [ToolbarItemID] = []
+        for id in items {
+            if id == .topSeparator, result.isEmpty || result.last == .topSeparator { continue }
+            result.append(id)
+        }
+        if result.last == .topSeparator { result.removeLast() }
+        return result
     }
 }

@@ -19,8 +19,7 @@
           "search",
           "viewOptions",
           "infoPanel"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -64,27 +63,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "folderTree",
-          "topSeparator",
-          "back",
-          "forward",
-          "title",
-          "clipboard",
-          "view",
-          "sort",
-          "search",
-          "viewOptions",
-          "infoPanel"
         ]
       }
     },
     {
       "name": "1: empty list",
       "input": {
-        "value": [],
-        "ops": []
+        "value": []
       },
       "output": {
         "sanitized": [
@@ -127,20 +112,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "2: not a list",
       "input": {
-        "value": "back",
-        "ops": []
+        "value": "back"
       },
       "output": {
         "sanitized": [
@@ -183,20 +161,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "3: null",
       "input": {
-        "value": null,
-        "ops": []
+        "value": null
       },
       "output": {
         "sanitized": [
@@ -239,12 +210,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -253,8 +218,7 @@
       "input": {
         "value": {
           "back": true
-        },
-        "ops": []
+        }
       },
       "output": {
         "sanitized": [
@@ -297,12 +261,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -313,8 +271,7 @@
           "topSeparator",
           "topSeparator",
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -360,15 +317,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -382,8 +330,7 @@
           "back",
           "title",
           "title"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -426,14 +373,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "back",
-          "forward",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -445,8 +384,7 @@
           "clipboard",
           "search",
           "viewOptions"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -489,12 +427,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -506,8 +438,7 @@
           "back",
           "BACK",
           "back "
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -550,13 +481,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "back",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -601,8 +525,7 @@
           "theme",
           "settings",
           "help"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -646,45 +569,6 @@
         ],
         "palette": [
           "topSeparator"
-        ],
-        "edited": [
-          "back",
-          "forward",
-          "up",
-          "refresh",
-          "topSeparator",
-          "view",
-          "sort",
-          "title",
-          "clipboard",
-          "viewOptions",
-          "search",
-          "goToFolder",
-          "foldersFirst",
-          "hidden",
-          "folderTree",
-          "infoPanel",
-          "infoRow",
-          "newTab",
-          "openSelection",
-          "quickLook",
-          "editSelection",
-          "moveSelection",
-          "renameSelection",
-          "duplicateSelection",
-          "newFolder",
-          "trashSelection",
-          "copySelection",
-          "cutSelection",
-          "pasteSelection",
-          "openInTerminal",
-          "showInFinder",
-          "revealInFolder",
-          "calculateSize",
-          "copyPath",
-          "theme",
-          "settings",
-          "help"
         ]
       }
     },
@@ -766,8 +650,7 @@
           "theme",
           "settings",
           "help"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -812,46 +695,6 @@
         ],
         "palette": [
           "topSeparator"
-        ],
-        "edited": [
-          "back",
-          "forward",
-          "up",
-          "refresh",
-          "topSeparator",
-          "view",
-          "sort",
-          "title",
-          "clipboard",
-          "viewOptions",
-          "search",
-          "goToFolder",
-          "foldersFirst",
-          "hidden",
-          "folderTree",
-          "infoPanel",
-          "infoRow",
-          "newTab",
-          "openSelection",
-          "quickLook",
-          "editSelection",
-          "moveSelection",
-          "renameSelection",
-          "duplicateSelection",
-          "newFolder",
-          "trashSelection",
-          "copySelection",
-          "cutSelection",
-          "pasteSelection",
-          "openInTerminal",
-          "showInFinder",
-          "revealInFolder",
-          "calculateSize",
-          "copyPath",
-          "theme",
-          "settings",
-          "help",
-          "topSeparator"
         ]
       }
     },
@@ -864,8 +707,7 @@
           "forward",
           "topSeparator",
           "up"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -910,17 +752,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "back",
-          "topSeparator",
-          "forward",
-          "topSeparator",
-          "up",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -939,53 +770,6 @@
           "search",
           "viewOptions",
           "infoPanel"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "up"
-          },
-          {
-            "op": "insert",
-            "item": "topSeparator",
-            "index": 2
-          },
-          {
-            "op": "move",
-            "from": 0,
-            "to": 5
-          },
-          {
-            "op": "remove",
-            "index": 1
-          },
-          {
-            "op": "remove",
-            "index": 3
-          },
-          {
-            "op": "insert",
-            "item": "settings",
-            "index": -4
-          },
-          {
-            "op": "insert",
-            "item": "help",
-            "index": 400
-          },
-          {
-            "op": "move",
-            "from": 99,
-            "to": 0
-          },
-          {
-            "op": "remove",
-            "index": 99
-          },
-          {
-            "op": "remove",
-            "index": -1
-          }
         ]
       },
       "output": {
@@ -1029,22 +813,6 @@
           "copyPath",
           "theme",
           "settings",
-          "help"
-        ],
-        "edited": [
-          "settings",
-          "topSeparator",
-          "back",
-          "forward",
-          "title",
-          "folderTree",
-          "clipboard",
-          "view",
-          "sort",
-          "search",
-          "viewOptions",
-          "infoPanel",
-          "up",
           "help"
         ]
       }
@@ -1083,16 +851,6 @@
           "search",
           "moveSelection",
           "title"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "topSeparator"
-          },
-          {
-            "op": "remove",
-            "index": 8
-          }
         ]
       },
       "output": {
@@ -1137,29 +895,6 @@
           "trashSelection",
           "theme",
           "help"
-        ],
-        "edited": [
-          "sort",
-          "revealInFolder",
-          "showInFinder",
-          "moveSelection",
-          "copyPath",
-          "view",
-          "settings",
-          "infoPanel",
-          "back",
-          "duplicateSelection",
-          "editSelection",
-          "up",
-          "openInTerminal",
-          "calculateSize",
-          "title",
-          "foldersFirst",
-          "topSeparator",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "topSeparator"
         ]
       }
     },
@@ -1168,24 +903,6 @@
       "input": {
         "value": [
           []
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "quickLook"
-          },
-          {
-            "op": "remove",
-            "index": -1
-          },
-          {
-            "op": "add",
-            "item": "theme"
-          },
-          {
-            "op": "remove",
-            "index": 3
-          }
         ]
       },
       "output": {
@@ -1229,14 +946,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "quickLook",
-          "theme"
         ]
       }
     },
@@ -1301,8 +1010,7 @@
             []
           ],
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -1353,38 +1061,6 @@
           "duplicateSelection",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "refresh",
-          "newTab",
-          "clipboard",
-          "view",
-          "showInFinder",
-          "editSelection",
-          "topSeparator",
-          "help",
-          "goToFolder",
-          "search",
-          "topSeparator",
-          "folderTree",
-          "renameSelection",
-          "topSeparator",
-          "trashSelection",
-          "topSeparator",
-          "viewOptions",
-          "copyPath",
-          "infoPanel",
-          "revealInFolder",
-          "sort",
-          "foldersFirst",
-          "openInTerminal",
-          "back",
-          "topSeparator",
-          "topSeparator",
-          "newFolder",
-          "topSeparator",
-          "topSeparator",
-          "title"
         ]
       }
     },
@@ -1433,8 +1109,7 @@
           "openSelection",
           "back",
           "pasteSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -1481,30 +1156,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "view",
-          "clipboard",
-          "topSeparator",
-          "topSeparator",
-          "cutSelection",
-          "title",
-          "calculateSize",
-          "moveSelection",
-          "topSeparator",
-          "newTab",
-          "infoPanel",
-          "newFolder",
-          "showInFinder",
-          "search",
-          "duplicateSelection",
-          "openSelection",
-          "hidden",
-          "settings",
-          "topSeparator",
-          "back",
-          "pasteSelection",
-          "viewOptions"
         ]
       }
     },
@@ -1551,21 +1202,6 @@
           [
             []
           ]
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 22,
-            "to": 24
-          },
-          {
-            "op": "add",
-            "item": "back"
-          },
-          {
-            "op": "add",
-            "item": "newFolder"
-          }
         ]
       },
       "output": {
@@ -1613,32 +1249,6 @@
           "showInFinder",
           "copyPath",
           "theme"
-        ],
-        "edited": [
-          "settings",
-          "moveSelection",
-          "topSeparator",
-          "quickLook",
-          "foldersFirst",
-          "viewOptions",
-          "search",
-          "help",
-          "refresh",
-          "cutSelection",
-          "topSeparator",
-          "openSelection",
-          "pasteSelection",
-          "infoPanel",
-          "trashSelection",
-          "forward",
-          "topSeparator",
-          "calculateSize",
-          "title",
-          "topSeparator",
-          "up",
-          "clipboard",
-          "back",
-          "newFolder"
         ]
       }
     },
@@ -1677,30 +1287,6 @@
           "topSeparator",
           "newFolder",
           "copyPath"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "quickLook"
-          },
-          {
-            "op": "move",
-            "from": -1,
-            "to": 7
-          },
-          {
-            "op": "add",
-            "item": "calculateSize"
-          },
-          {
-            "op": "move",
-            "from": 13,
-            "to": 29
-          },
-          {
-            "op": "remove",
-            "index": 34
-          }
         ]
       },
       "output": {
@@ -1748,35 +1334,6 @@
           "renameSelection",
           "openInTerminal",
           "showInFinder"
-        ],
-        "edited": [
-          "back",
-          "infoRow",
-          "hidden",
-          "help",
-          "topSeparator",
-          "settings",
-          "theme",
-          "forward",
-          "copySelection",
-          "search",
-          "title",
-          "trashSelection",
-          "topSeparator",
-          "view",
-          "duplicateSelection",
-          "cutSelection",
-          "up",
-          "infoPanel",
-          "moveSelection",
-          "topSeparator",
-          "topSeparator",
-          "newFolder",
-          "copyPath",
-          "clipboard",
-          "quickLook",
-          "calculateSize",
-          "viewOptions"
         ]
       }
     },
@@ -1820,12 +1377,6 @@
             3
           ],
           "pasteSelection"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "infoRow"
-          }
         ]
       },
       "output": {
@@ -1872,34 +1423,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "folderTree",
-          "pasteSelection",
-          "calculateSize",
-          "openSelection",
-          "hidden",
-          "view",
-          "showInFinder",
-          "copyPath",
-          "foldersFirst",
-          "renameSelection",
-          "newTab",
-          "topSeparator",
-          "title",
-          "refresh",
-          "topSeparator",
-          "editSelection",
-          "cutSelection",
-          "trashSelection",
-          "topSeparator",
-          "forward",
-          "up",
-          "infoRow",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "infoRow"
         ]
       }
     },
@@ -1924,27 +1447,6 @@
           "moveSelection",
           "hidden",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "copySelection",
-            "index": 15
-          },
-          {
-            "op": "insert",
-            "item": "folderTree",
-            "index": 11
-          },
-          {
-            "op": "remove",
-            "index": 8
-          },
-          {
-            "op": "move",
-            "from": 11,
-            "to": 12
-          }
         ]
       },
       "output": {
@@ -1990,26 +1492,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "foldersFirst",
-          "settings",
-          "back",
-          "view",
-          "goToFolder",
-          "up",
-          "topSeparator",
-          "editSelection",
-          "viewOptions",
-          "cutSelection",
-          "moveSelection",
-          "hidden",
-          "folderTree",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "copySelection",
-          "search"
         ]
       }
     },
@@ -2070,8 +1552,7 @@
           "topSeparator",
           true,
           "hidden"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -2120,38 +1601,6 @@
           "trashSelection",
           "showInFinder",
           "help"
-        ],
-        "edited": [
-          "settings",
-          "topSeparator",
-          "duplicateSelection",
-          "topSeparator",
-          "renameSelection",
-          "forward",
-          "folderTree",
-          "revealInFolder",
-          "hidden",
-          "calculateSize",
-          "infoPanel",
-          "pasteSelection",
-          "sort",
-          "quickLook",
-          "topSeparator",
-          "infoRow",
-          "refresh",
-          "moveSelection",
-          "theme",
-          "openInTerminal",
-          "topSeparator",
-          "back",
-          "copyPath",
-          "copySelection",
-          "topSeparator",
-          "viewOptions",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -2182,8 +1631,7 @@
           {
             "back": true
           }
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -2227,25 +1675,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "forward",
-          "trashSelection",
-          "moveSelection",
-          "renameSelection",
-          "showInFinder",
-          "pasteSelection",
-          "copySelection",
-          "up",
-          "openSelection",
-          "infoPanel",
-          "foldersFirst",
-          "clipboard",
-          "topSeparator",
-          "openInTerminal",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -2278,12 +1707,6 @@
           "refresh",
           "help",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 14
-          }
         ]
       },
       "output": {
@@ -2330,23 +1753,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "infoPanel",
-          "help",
-          "newTab",
-          "topSeparator",
-          "topSeparator",
-          "revealInFolder",
-          "folderTree",
-          "goToFolder",
-          "duplicateSelection",
-          "clipboard",
-          "refresh",
-          "topSeparator",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -2400,8 +1806,7 @@
           "launchMissiles",
           "topSeparator",
           "newFolder"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -2447,36 +1852,6 @@
           "showInFinder",
           "theme",
           "help"
-        ],
-        "edited": [
-          "infoPanel",
-          "topSeparator",
-          "foldersFirst",
-          "topSeparator",
-          "quickLook",
-          "openInTerminal",
-          "clipboard",
-          "duplicateSelection",
-          "newTab",
-          "copyPath",
-          "up",
-          "settings",
-          "pasteSelection",
-          "editSelection",
-          "sort",
-          "moveSelection",
-          "refresh",
-          "back",
-          "renameSelection",
-          "forward",
-          "calculateSize",
-          "hidden",
-          "revealInFolder",
-          "topSeparator",
-          "newFolder",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -2515,8 +1890,7 @@
           "renameSelection",
           "back",
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -2562,30 +1936,6 @@
           "showInFinder",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "openSelection",
-          "newFolder",
-          "newTab",
-          "renameSelection",
-          "view",
-          "pasteSelection",
-          "topSeparator",
-          "foldersFirst",
-          "help",
-          "clipboard",
-          "moveSelection",
-          "topSeparator",
-          "revealInFolder",
-          "editSelection",
-          "quickLook",
-          "goToFolder",
-          "theme",
-          "back",
-          "topSeparator",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -2600,13 +1950,6 @@
           "up",
           "quickLook",
           "back"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 2,
-            "to": 6
-          }
         ]
       },
       "output": {
@@ -2651,19 +1994,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "forward",
-          "topSeparator",
-          "renameSelection",
-          "up",
-          "quickLook",
-          "back",
-          "view",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -2687,23 +2017,6 @@
           [
             []
           ]
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 15,
-            "to": 4
-          },
-          {
-            "op": "insert",
-            "item": "search",
-            "index": 17
-          },
-          {
-            "op": "insert",
-            "item": "help",
-            "index": 10
-          }
         ]
       },
       "output": {
@@ -2749,22 +2062,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "back",
-          "renameSelection",
-          "pasteSelection",
-          "clipboard",
-          "topSeparator",
-          "forward",
-          "topSeparator",
-          "calculateSize",
-          "newTab",
-          "help",
-          "search",
-          "viewOptions",
-          "search"
         ]
       }
     },
@@ -2819,8 +2116,7 @@
           ],
           "infoPanel",
           "sort"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -2868,35 +2164,6 @@
           "trashSelection",
           "showInFinder",
           "theme"
-        ],
-        "edited": [
-          "openSelection",
-          "infoPanel",
-          "duplicateSelection",
-          "view",
-          "newFolder",
-          "foldersFirst",
-          "topSeparator",
-          "calculateSize",
-          "refresh",
-          "openInTerminal",
-          "topSeparator",
-          "copySelection",
-          "folderTree",
-          "topSeparator",
-          "copyPath",
-          "topSeparator",
-          "viewOptions",
-          "infoRow",
-          "help",
-          "goToFolder",
-          "topSeparator",
-          "back",
-          "settings",
-          "sort",
-          "title",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -2944,22 +2211,6 @@
           "clipboard",
           "clipboard",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "help"
-          },
-          {
-            "op": "insert",
-            "item": "folderTree",
-            "index": 36
-          },
-          {
-            "op": "move",
-            "from": 5,
-            "to": 32
-          }
         ]
       },
       "output": {
@@ -3009,33 +2260,6 @@
           "showInFinder",
           "copyPath",
           "theme"
-        ],
-        "edited": [
-          "calculateSize",
-          "up",
-          "viewOptions",
-          "topSeparator",
-          "view",
-          "back",
-          "infoPanel",
-          "revealInFolder",
-          "title",
-          "topSeparator",
-          "topSeparator",
-          "help",
-          "goToFolder",
-          "foldersFirst",
-          "topSeparator",
-          "newTab",
-          "search",
-          "topSeparator",
-          "settings",
-          "forward",
-          "clipboard",
-          "topSeparator",
-          "help",
-          "folderTree",
-          "renameSelection"
         ]
       }
     },
@@ -3080,26 +2304,6 @@
             " back"
           ],
           "showInFinder"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "up",
-            "index": 13
-          },
-          {
-            "op": "add",
-            "item": "goToFolder"
-          },
-          {
-            "op": "move",
-            "from": 21,
-            "to": 28
-          },
-          {
-            "op": "add",
-            "item": "moveSelection"
-          }
         ]
       },
       "output": {
@@ -3145,25 +2349,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "search",
-          "newTab",
-          "viewOptions",
-          "newFolder",
-          "topSeparator",
-          "sort",
-          "infoRow",
-          "help",
-          "quickLook",
-          "topSeparator",
-          "up",
-          "showInFinder",
-          "title",
-          "up",
-          "clipboard",
-          "goToFolder",
-          "moveSelection"
         ]
       }
     },
@@ -3216,8 +2401,7 @@
           "moveSelection",
           "copySelection",
           "newTab"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -3261,30 +2445,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "search",
-          "refresh",
-          "pasteSelection",
-          "viewOptions",
-          "quickLook",
-          "infoRow",
-          "back",
-          "duplicateSelection",
-          "showInFinder",
-          "cutSelection",
-          "copyPath",
-          "hidden",
-          "folderTree",
-          "newFolder",
-          "topSeparator",
-          "foldersFirst",
-          "trashSelection",
-          "moveSelection",
-          "copySelection",
-          "newTab",
-          "title",
-          "clipboard"
         ]
       }
     },
@@ -3293,8 +2453,7 @@
       "input": {
         "value": [
           "back "
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -3337,12 +2496,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -3403,8 +2556,7 @@
           "theme",
           "back",
           "calculateSize"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -3450,34 +2602,6 @@
           "newFolder",
           "trashSelection",
           "copyPath"
-        ],
-        "edited": [
-          "view",
-          "openInTerminal",
-          "pasteSelection",
-          "settings",
-          "help",
-          "infoPanel",
-          "topSeparator",
-          "up",
-          "openSelection",
-          "infoRow",
-          "showInFinder",
-          "hidden",
-          "search",
-          "quickLook",
-          "goToFolder",
-          "topSeparator",
-          "topSeparator",
-          "copySelection",
-          "moveSelection",
-          "calculateSize",
-          "title",
-          "cutSelection",
-          "theme",
-          "back",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -3503,17 +2627,6 @@
           "sort",
           "openInTerminal",
           "viewOptions"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 10
-          },
-          {
-            "op": "insert",
-            "item": "clipboard",
-            "index": 12
-          }
         ]
       },
       "output": {
@@ -3558,23 +2671,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "showInFinder",
-          "trashSelection",
-          "forward",
-          "up",
-          "theme",
-          "openSelection",
-          "calculateSize",
-          "sort",
-          "openInTerminal",
-          "viewOptions",
-          "title",
-          "clipboard",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -3617,27 +2713,6 @@
           "calculateSize",
           "trashSelection",
           "trashSelection"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "trashSelection",
-            "index": 22
-          },
-          {
-            "op": "add",
-            "item": "viewOptions"
-          },
-          {
-            "op": "move",
-            "from": 16,
-            "to": 1
-          },
-          {
-            "op": "move",
-            "from": 18,
-            "to": 11
-          }
         ]
       },
       "output": {
@@ -3683,28 +2758,6 @@
           "showInFinder",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "viewOptions",
-          "calculateSize",
-          "openSelection",
-          "foldersFirst",
-          "topSeparator",
-          "infoPanel",
-          "copyPath",
-          "folderTree",
-          "newFolder",
-          "search",
-          "openInTerminal",
-          "trashSelection",
-          "topSeparator",
-          "back",
-          "pasteSelection",
-          "trashSelection",
-          "help",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -3740,26 +2793,6 @@
           "forward",
           "newFolder",
           "calculateSize"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "newTab"
-          },
-          {
-            "op": "add",
-            "item": "goToFolder"
-          },
-          {
-            "op": "move",
-            "from": 3,
-            "to": 5
-          },
-          {
-            "op": "insert",
-            "item": "forward",
-            "index": 1
-          }
         ]
       },
       "output": {
@@ -3807,30 +2840,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "search",
-          "forward",
-          "moveSelection",
-          "title",
-          "trashSelection",
-          "viewOptions",
-          "up",
-          "duplicateSelection",
-          "topSeparator",
-          "infoRow",
-          "topSeparator",
-          "copySelection",
-          "topSeparator",
-          "foldersFirst",
-          "showInFinder",
-          "topSeparator",
-          "forward",
-          "newFolder",
-          "calculateSize",
-          "clipboard",
-          "newTab",
-          "goToFolder"
         ]
       }
     },
@@ -3887,8 +2896,7 @@
           "refresh",
           1,
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -3935,33 +2943,6 @@
           "newFolder",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "trashSelection",
-          "folderTree",
-          "title",
-          "duplicateSelection",
-          "openSelection",
-          "renameSelection",
-          "search",
-          "forward",
-          "hidden",
-          "newTab",
-          "openInTerminal",
-          "refresh",
-          "theme",
-          "view",
-          "revealInFolder",
-          "showInFinder",
-          "back",
-          "help",
-          "topSeparator",
-          "topSeparator",
-          "infoRow",
-          "topSeparator",
-          "topSeparator",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -3993,27 +2974,6 @@
           "launchMissiles",
           "up",
           "foldersFirst"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "goToFolder",
-            "index": -2
-          },
-          {
-            "op": "insert",
-            "item": "renameSelection",
-            "index": 16
-          },
-          {
-            "op": "add",
-            "item": "topSeparator"
-          },
-          {
-            "op": "move",
-            "from": 18,
-            "to": 16
-          }
         ]
       },
       "output": {
@@ -4060,27 +3020,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "goToFolder",
-          "quickLook",
-          "cutSelection",
-          "infoRow",
-          "openInTerminal",
-          "topSeparator",
-          "clipboard",
-          "hidden",
-          "topSeparator",
-          "up",
-          "forward",
-          "calculateSize",
-          "topSeparator",
-          "foldersFirst",
-          "title",
-          "search",
-          "topSeparator",
-          "renameSelection",
-          "viewOptions"
         ]
       }
     },
@@ -4091,27 +3030,6 @@
           "newFolder",
           1,
           "newFolder"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "showInFinder",
-            "index": 4
-          },
-          {
-            "op": "add",
-            "item": "clipboard"
-          },
-          {
-            "op": "insert",
-            "item": "viewOptions",
-            "index": 3
-          },
-          {
-            "op": "insert",
-            "item": "topSeparator",
-            "index": 1
-          }
         ]
       },
       "output": {
@@ -4155,17 +3073,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "newFolder",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "viewOptions",
-          "search",
-          "showInFinder",
-          "viewOptions",
-          "clipboard"
         ]
       }
     },
@@ -4206,17 +3113,6 @@
           "clipboard",
           "title",
           "newTab"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "hidden",
-            "index": 20
-          },
-          {
-            "op": "remove",
-            "index": 14
-          }
         ]
       },
       "output": {
@@ -4261,24 +3157,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "foldersFirst",
-          "back",
-          "copySelection",
-          "title",
-          "forward",
-          "editSelection",
-          "clipboard",
-          "search",
-          "view",
-          "topSeparator",
-          "moveSelection",
-          "hidden",
-          "openSelection",
-          "theme",
-          "viewOptions",
-          "hidden"
         ]
       }
     },
@@ -4308,8 +3186,7 @@
           "topSeparator",
           "title",
           1.5
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -4356,26 +3233,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "revealInFolder",
-          "back",
-          "goToFolder",
-          "topSeparator",
-          "title",
-          "foldersFirst",
-          "openInTerminal",
-          "infoPanel",
-          "topSeparator",
-          "newFolder",
-          "view",
-          "infoRow",
-          "settings",
-          "topSeparator",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -4385,8 +3242,7 @@
         "value": [
           "quickLook",
           "infoRow"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -4429,22 +3285,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "quickLook",
-          "infoRow",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "43: random 43",
       "input": {
-        "value": "launchMissiles",
-        "ops": []
+        "value": "launchMissiles"
       },
       "output": {
         "sanitized": [
@@ -4487,12 +3334,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -4531,17 +3372,6 @@
           "pasteSelection",
           "topSeparator",
           "moveSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 28,
-            "to": 26
-          },
-          {
-            "op": "remove",
-            "index": 1
-          }
         ]
       },
       "output": {
@@ -4595,33 +3425,6 @@
           "openInTerminal",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "search",
-          "newFolder",
-          "copyPath",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "pasteSelection",
-          "topSeparator",
-          "topSeparator",
-          "trashSelection",
-          "cutSelection",
-          "showInFinder",
-          "goToFolder",
-          "topSeparator",
-          "infoRow",
-          "moveSelection",
-          "topSeparator",
-          "foldersFirst",
-          "help",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -4631,17 +3434,6 @@
         "value": [
           {
             "id": "back"
-          }
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "help",
-            "index": -2
-          },
-          {
-            "op": "remove",
-            "index": 1
           }
         ]
       },
@@ -4686,13 +3478,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "help",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -4746,17 +3531,6 @@
           "cutSelection",
           "infoPanel",
           "sort"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 42
-          },
-          {
-            "op": "move",
-            "from": 40,
-            "to": 42
-          }
         ]
       },
       "output": {
@@ -4804,37 +3578,6 @@
           "duplicateSelection",
           "trashSelection",
           "openInTerminal"
-        ],
-        "edited": [
-          "copyPath",
-          "newFolder",
-          "back",
-          "hidden",
-          "settings",
-          "showInFinder",
-          "revealInFolder",
-          "cutSelection",
-          "topSeparator",
-          "up",
-          "clipboard",
-          "folderTree",
-          "openSelection",
-          "infoPanel",
-          "theme",
-          "goToFolder",
-          "newTab",
-          "help",
-          "quickLook",
-          "topSeparator",
-          "view",
-          "topSeparator",
-          "topSeparator",
-          "foldersFirst",
-          "editSelection",
-          "sort",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -4850,21 +3593,6 @@
           "topSeparator",
           1.5,
           "copyPath"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "moveSelection"
-          },
-          {
-            "op": "insert",
-            "item": "revealInFolder",
-            "index": 5
-          },
-          {
-            "op": "add",
-            "item": "renameSelection"
-          }
         ]
       },
       "output": {
@@ -4910,19 +3638,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "moveSelection",
-          "viewOptions",
-          "clipboard",
-          "copyPath",
-          "topSeparator",
-          "revealInFolder",
-          "topSeparator",
-          "title",
-          "search",
-          "moveSelection",
-          "renameSelection"
         ]
       }
     },
@@ -4975,27 +3690,6 @@
           [],
           "topSeparator",
           1
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "help",
-            "index": 2
-          },
-          {
-            "op": "insert",
-            "item": "back",
-            "index": 27
-          },
-          {
-            "op": "add",
-            "item": "pasteSelection"
-          },
-          {
-            "op": "move",
-            "from": 2,
-            "to": 22
-          }
         ]
       },
       "output": {
@@ -5042,34 +3736,6 @@
           "openInTerminal",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "revealInFolder",
-          "quickLook",
-          "help",
-          "refresh",
-          "up",
-          "pasteSelection",
-          "title",
-          "duplicateSelection",
-          "showInFinder",
-          "infoRow",
-          "topSeparator",
-          "calculateSize",
-          "renameSelection",
-          "theme",
-          "topSeparator",
-          "moveSelection",
-          "infoPanel",
-          "goToFolder",
-          "back",
-          "topSeparator",
-          "clipboard",
-          "search",
-          "help",
-          "viewOptions",
-          "back",
-          "pasteSelection"
         ]
       }
     },
@@ -5115,8 +3781,7 @@
           "title",
           "cutSelection",
           "cutSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -5163,30 +3828,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "view",
-          "viewOptions",
-          "title",
-          "forward",
-          "pasteSelection",
-          "cutSelection",
-          "renameSelection",
-          "trashSelection",
-          "copySelection",
-          "topSeparator",
-          "calculateSize",
-          "back",
-          "editSelection",
-          "topSeparator",
-          "folderTree",
-          "newFolder",
-          "topSeparator",
-          "topSeparator",
-          "help",
-          "showInFinder",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -5200,35 +3841,6 @@
           "revealInFolder",
           "revealInFolder",
           "cutSelection"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "calculateSize"
-          },
-          {
-            "op": "remove",
-            "index": 9
-          },
-          {
-            "op": "remove",
-            "index": 6
-          },
-          {
-            "op": "move",
-            "from": 2,
-            "to": 5
-          },
-          {
-            "op": "insert",
-            "item": "up",
-            "index": 1
-          },
-          {
-            "op": "insert",
-            "item": "openSelection",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -5273,19 +3885,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "up",
-          "foldersFirst",
-          "cutSelection",
-          "openSelection",
-          "title",
-          "clipboard",
-          "revealInFolder",
-          "search",
-          "viewOptions",
-          "calculateSize"
         ]
       }
     },
@@ -5336,8 +3935,7 @@
           "showInFinder",
           "quickLook",
           "search"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -5381,30 +3979,6 @@
           "duplicateSelection",
           "trashSelection",
           "theme"
-        ],
-        "edited": [
-          "moveSelection",
-          "settings",
-          "viewOptions",
-          "newFolder",
-          "infoRow",
-          "up",
-          "foldersFirst",
-          "quickLook",
-          "showInFinder",
-          "openInTerminal",
-          "search",
-          "goToFolder",
-          "folderTree",
-          "cutSelection",
-          "help",
-          "editSelection",
-          "renameSelection",
-          "sort",
-          "copyPath",
-          "topSeparator",
-          "title",
-          "clipboard"
         ]
       }
     },
@@ -5413,18 +3987,6 @@
       "input": {
         "value": [
           "title"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "openSelection",
-            "index": 4
-          },
-          {
-            "op": "move",
-            "from": 3,
-            "to": -1
-          }
         ]
       },
       "output": {
@@ -5468,13 +4030,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "viewOptions",
-          "title",
-          "clipboard",
-          "search",
-          "openSelection"
         ]
       }
     },
@@ -5504,8 +4059,7 @@
           "topSeparator",
           1,
           "cutSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -5552,23 +4106,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "back",
-          "settings",
-          "trashSelection",
-          "forward",
-          "pasteSelection",
-          "topSeparator",
-          "up",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "cutSelection",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -5612,8 +4149,7 @@
             "back": true
           },
           "copyPath"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -5662,35 +4198,6 @@
           "showInFinder",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "help",
-          "revealInFolder",
-          "folderTree",
-          "cutSelection",
-          "topSeparator",
-          "topSeparator",
-          "trashSelection",
-          "newFolder",
-          "pasteSelection",
-          "calculateSize",
-          "forward",
-          "refresh",
-          "editSelection",
-          "topSeparator",
-          "openSelection",
-          "title",
-          "topSeparator",
-          "sort",
-          "duplicateSelection",
-          "openInTerminal",
-          "topSeparator",
-          "back",
-          "topSeparator",
-          "copyPath",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -5703,33 +4210,6 @@
           "clipboard",
           "revealInFolder",
           "folderTree"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "sort"
-          },
-          {
-            "op": "insert",
-            "item": "back",
-            "index": 2
-          },
-          {
-            "op": "add",
-            "item": "sort"
-          },
-          {
-            "op": "remove",
-            "index": 2
-          },
-          {
-            "op": "remove",
-            "index": 2
-          },
-          {
-            "op": "remove",
-            "index": 6
-          }
         ]
       },
       "output": {
@@ -5773,18 +4253,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "theme",
-          "infoPanel",
-          "clipboard",
-          "revealInFolder",
-          "folderTree",
-          "title",
-          "search",
-          "viewOptions",
-          "sort",
-          "sort"
         ]
       }
     },
@@ -5820,8 +4288,7 @@
           "sort",
           "title",
           "search"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -5867,24 +4334,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "clipboard",
-          "topSeparator",
-          "infoRow",
-          "topSeparator",
-          "revealInFolder",
-          "refresh",
-          "goToFolder",
-          "hidden",
-          "copySelection",
-          "topSeparator",
-          "folderTree",
-          "settings",
-          "sort",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -5933,35 +4382,6 @@
           "editSelection",
           "copySelection",
           "quickLook"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 0
-          },
-          {
-            "op": "add",
-            "item": "up"
-          },
-          {
-            "op": "insert",
-            "item": "newFolder",
-            "index": 29
-          },
-          {
-            "op": "insert",
-            "item": "topSeparator",
-            "index": 17
-          },
-          {
-            "op": "insert",
-            "item": "newFolder",
-            "index": 24
-          },
-          {
-            "op": "remove",
-            "index": 39
-          }
         ]
       },
       "output": {
@@ -6008,37 +4428,6 @@
           "moveSelection",
           "trashSelection",
           "settings"
-        ],
-        "edited": [
-          "help",
-          "title",
-          "openInTerminal",
-          "view",
-          "newTab",
-          "theme",
-          "topSeparator",
-          "folderTree",
-          "clipboard",
-          "topSeparator",
-          "editSelection",
-          "duplicateSelection",
-          "copyPath",
-          "forward",
-          "renameSelection",
-          "copySelection",
-          "back",
-          "topSeparator",
-          "goToFolder",
-          "newFolder",
-          "topSeparator",
-          "infoRow",
-          "quickLook",
-          "showInFinder",
-          "newFolder",
-          "search",
-          "viewOptions",
-          "up",
-          "newFolder"
         ]
       }
     },
@@ -6085,8 +4474,7 @@
           "calculateSize",
           "revealInFolder",
           "clipboard"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -6131,23 +4519,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "openSelection",
-          "settings",
-          "renameSelection",
-          "moveSelection",
-          "foldersFirst",
-          "topSeparator",
-          "back",
-          "up",
-          "calculateSize",
-          "clipboard",
-          "topSeparator",
-          "title",
-          "revealInFolder",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -6159,8 +4530,7 @@
             " back"
           ],
           "forward"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -6203,13 +4573,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "forward",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -6253,22 +4616,6 @@
           "topSeparator",
           "revealInFolder",
           "refresh"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 21,
-            "to": 14
-          },
-          {
-            "op": "remove",
-            "index": 6
-          },
-          {
-            "op": "insert",
-            "item": "clipboard",
-            "index": 2
-          }
         ]
       },
       "output": {
@@ -6314,27 +4661,6 @@
           "showInFinder",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "topSeparator",
-          "back",
-          "clipboard",
-          "hidden",
-          "search",
-          "up",
-          "theme",
-          "forward",
-          "help",
-          "foldersFirst",
-          "goToFolder",
-          "newFolder",
-          "quickLook",
-          "topSeparator",
-          "revealInFolder",
-          "refresh",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -6375,13 +4701,6 @@
           "quickLook",
           "trashSelection",
           "quickLook"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "showInFinder",
-            "index": 21
-          }
         ]
       },
       "output": {
@@ -6427,29 +4746,6 @@
           "showInFinder",
           "theme",
           "help"
-        ],
-        "edited": [
-          "infoRow",
-          "trashSelection",
-          "up",
-          "openInTerminal",
-          "folderTree",
-          "view",
-          "foldersFirst",
-          "clipboard",
-          "cutSelection",
-          "refresh",
-          "settings",
-          "copyPath",
-          "hidden",
-          "viewOptions",
-          "pasteSelection",
-          "topSeparator",
-          "topSeparator",
-          "quickLook",
-          "title",
-          "search",
-          "showInFinder"
         ]
       }
     },
@@ -6496,8 +4792,7 @@
             2,
             3
           ]
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -6544,32 +4839,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "revealInFolder",
-          "openSelection",
-          "folderTree",
-          "copySelection",
-          "topSeparator",
-          "duplicateSelection",
-          "topSeparator",
-          "settings",
-          "sort",
-          "forward",
-          "trashSelection",
-          "viewOptions",
-          "cutSelection",
-          "refresh",
-          "showInFinder",
-          "editSelection",
-          "topSeparator",
-          "pasteSelection",
-          "topSeparator",
-          "goToFolder",
-          "newTab",
-          "title",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -6608,34 +4877,6 @@
           "topSeparator",
           "topSeparator",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 4
-          },
-          {
-            "op": "remove",
-            "index": 13
-          },
-          {
-            "op": "move",
-            "from": 11,
-            "to": 10
-          },
-          {
-            "op": "remove",
-            "index": 24
-          },
-          {
-            "op": "insert",
-            "item": "editSelection",
-            "index": 5
-          },
-          {
-            "op": "remove",
-            "index": 12
-          }
         ]
       },
       "output": {
@@ -6684,25 +4925,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "renameSelection",
-          "editSelection",
-          "topSeparator",
-          "search",
-          "duplicateSelection",
-          "editSelection",
-          "back",
-          "topSeparator",
-          "newFolder",
-          "forward",
-          "hidden",
-          "foldersFirst",
-          "clipboard",
-          "title",
-          "topSeparator",
-          "topSeparator",
-          "viewOptions"
         ]
       }
     },
@@ -6757,8 +4979,7 @@
           "calculateSize",
           "topSeparator",
           "copyPath"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -6806,33 +5027,6 @@
           "trashSelection",
           "theme",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "editSelection",
-          "newTab",
-          "search",
-          "openInTerminal",
-          "hidden",
-          "goToFolder",
-          "topSeparator",
-          "quickLook",
-          "showInFinder",
-          "moveSelection",
-          "copySelection",
-          "cutSelection",
-          "up",
-          "topSeparator",
-          "openSelection",
-          "copyPath",
-          "title",
-          "topSeparator",
-          "settings",
-          "newFolder",
-          "clipboard",
-          "calculateSize",
-          "topSeparator",
-          "viewOptions"
         ]
       }
     },
@@ -6844,8 +5038,7 @@
           "trashSelection",
           -1,
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -6889,14 +5082,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "trashSelection",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -6925,13 +5110,6 @@
           "search",
           "hidden",
           "calculateSize"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 9,
-            "to": 3
-          }
         ]
       },
       "output": {
@@ -6976,25 +5154,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "theme",
-          "pasteSelection",
-          "newFolder",
-          "up",
-          "back",
-          "search",
-          "view",
-          "quickLook",
-          "topSeparator",
-          "refresh",
-          "showInFinder",
-          "trashSelection",
-          "hidden",
-          "calculateSize",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -7016,8 +5175,7 @@
           ],
           "copyPath",
           "up"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -7060,20 +5218,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "back",
-          "clipboard",
-          "pasteSelection",
-          "newTab",
-          "sort",
-          "title",
-          "refresh",
-          "infoRow",
-          "copyPath",
-          "up",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -7094,8 +5238,7 @@
             3
           ],
           "quickLook"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -7138,20 +5281,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "copySelection",
-          "pasteSelection",
-          "cutSelection",
-          "moveSelection",
-          "infoRow",
-          "showInFinder",
-          "foldersFirst",
-          "quickLook",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -7201,8 +5330,7 @@
             " back"
           ],
           "clipboard"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -7247,31 +5375,6 @@
           "showInFinder",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "moveSelection",
-          "infoPanel",
-          "topSeparator",
-          "calculateSize",
-          "forward",
-          "renameSelection",
-          "search",
-          "editSelection",
-          "help",
-          "theme",
-          "sort",
-          "goToFolder",
-          "view",
-          "openSelection",
-          "back",
-          "newFolder",
-          "pasteSelection",
-          "infoRow",
-          "topSeparator",
-          "revealInFolder",
-          "clipboard",
-          "title",
-          "viewOptions"
         ]
       }
     },
@@ -7302,8 +5405,7 @@
           "editSelection",
           "up",
           "calculateSize"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -7349,28 +5451,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "showInFinder",
-          "pasteSelection",
-          "cutSelection",
-          "hidden",
-          "revealInFolder",
-          "topSeparator",
-          "calculateSize",
-          "copySelection",
-          "view",
-          "trashSelection",
-          "folderTree",
-          "topSeparator",
-          "openSelection",
-          "search",
-          "topSeparator",
-          "editSelection",
-          "up",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -7385,8 +5465,7 @@
           "launchMissiles",
           "topSeparator",
           "showInFinder"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -7430,14 +5509,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "search",
-          "topSeparator",
-          "showInFinder",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -7457,17 +5528,6 @@
           "moveSelection",
           "copySelection",
           "newFolder"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 3
-          },
-          {
-            "op": "insert",
-            "item": "foldersFirst",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -7512,28 +5572,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "quickLook",
-          "pasteSelection",
-          "infoRow",
-          "topSeparator",
-          "foldersFirst",
-          "clipboard",
-          "moveSelection",
-          "copySelection",
-          "newFolder",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "73: random 73",
       "input": {
-        "value": 1,
-        "ops": []
+        "value": 1
       },
       "output": {
         "sanitized": [
@@ -7576,12 +5621,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -7618,12 +5657,6 @@
             "back": true
           },
           "revealInFolder"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 10
-          }
         ]
       },
       "output": {
@@ -7668,25 +5701,6 @@
           "showInFinder",
           "settings",
           "help"
-        ],
-        "edited": [
-          "moveSelection",
-          "back",
-          "openSelection",
-          "topSeparator",
-          "theme",
-          "quickLook",
-          "infoPanel",
-          "infoRow",
-          "openInTerminal",
-          "copyPath",
-          "copySelection",
-          "clipboard",
-          "goToFolder",
-          "revealInFolder",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -7741,8 +5755,7 @@
           "settings",
           "infoRow",
           "pasteSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -7787,31 +5800,6 @@
           "trashSelection",
           "showInFinder",
           "copyPath"
-        ],
-        "edited": [
-          "clipboard",
-          "pasteSelection",
-          "help",
-          "up",
-          "infoPanel",
-          "editSelection",
-          "view",
-          "refresh",
-          "newTab",
-          "newFolder",
-          "forward",
-          "title",
-          "openInTerminal",
-          "calculateSize",
-          "topSeparator",
-          "topSeparator",
-          "hidden",
-          "theme",
-          "openSelection",
-          "settings",
-          "infoRow",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -7834,26 +5822,6 @@
           "topSeparator",
           "copyPath",
           "trashSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 7,
-            "to": 0
-          },
-          {
-            "op": "add",
-            "item": "openSelection"
-          },
-          {
-            "op": "remove",
-            "index": 4
-          },
-          {
-            "op": "insert",
-            "item": "infoRow",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -7902,26 +5870,6 @@
           "showInFinder",
           "settings",
           "help"
-        ],
-        "edited": [
-          "theme",
-          "back",
-          "trashSelection",
-          "topSeparator",
-          "infoRow",
-          "topSeparator",
-          "view",
-          "cutSelection",
-          "forward",
-          "calculateSize",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "openSelection"
         ]
       }
     },
@@ -7954,37 +5902,6 @@
           ],
           "topSeparator",
           "search"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "infoPanel",
-            "index": 17
-          },
-          {
-            "op": "insert",
-            "item": "renameSelection",
-            "index": 3
-          },
-          {
-            "op": "move",
-            "from": 8,
-            "to": 15
-          },
-          {
-            "op": "insert",
-            "item": "topSeparator",
-            "index": -1
-          },
-          {
-            "op": "remove",
-            "index": 14
-          },
-          {
-            "op": "insert",
-            "item": "showInFinder",
-            "index": 22
-          }
         ]
       },
       "output": {
@@ -8031,29 +5948,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "view",
-          "topSeparator",
-          "trashSelection",
-          "renameSelection",
-          "refresh",
-          "foldersFirst",
-          "topSeparator",
-          "revealInFolder",
-          "quickLook",
-          "renameSelection",
-          "openInTerminal",
-          "duplicateSelection",
-          "topSeparator",
-          "search",
-          "title",
-          "moveSelection",
-          "clipboard",
-          "viewOptions",
-          "infoPanel",
-          "showInFinder"
         ]
       }
     },
@@ -8113,8 +6007,7 @@
           "openInTerminal",
           "viewOptions",
           "infoRow"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -8160,49 +6053,13 @@
           "trashSelection",
           "showInFinder",
           "copyPath"
-        ],
-        "edited": [
-          "topSeparator",
-          "help",
-          "theme",
-          "topSeparator",
-          "calculateSize",
-          "duplicateSelection",
-          "sort",
-          "refresh",
-          "infoRow",
-          "cutSelection",
-          "view",
-          "topSeparator",
-          "newFolder",
-          "pasteSelection",
-          "settings",
-          "editSelection",
-          "newTab",
-          "revealInFolder",
-          "viewOptions",
-          "openInTerminal",
-          "title",
-          "clipboard",
-          "search"
         ]
       }
     },
     {
       "name": "79: random 79",
       "input": {
-        "value": "topSeparator",
-        "ops": [
-          {
-            "op": "move",
-            "from": -1,
-            "to": 3
-          },
-          {
-            "op": "add",
-            "item": "topSeparator"
-          }
-        ]
+        "value": "topSeparator"
       },
       "output": {
         "sanitized": [
@@ -8245,13 +6102,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "topSeparator"
         ]
       }
     },
@@ -8292,21 +6142,6 @@
           -1,
           "search",
           "showInFinder"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "revealInFolder",
-            "index": 19
-          },
-          {
-            "op": "remove",
-            "index": -1
-          },
-          {
-            "op": "remove",
-            "index": 2
-          }
         ]
       },
       "output": {
@@ -8356,31 +6191,6 @@
           "openInTerminal",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "newFolder",
-          "back",
-          "moveSelection",
-          "clipboard",
-          "cutSelection",
-          "topSeparator",
-          "settings",
-          "quickLook",
-          "infoPanel",
-          "topSeparator",
-          "theme",
-          "newTab",
-          "hidden",
-          "topSeparator",
-          "topSeparator",
-          "title",
-          "calculateSize",
-          "topSeparator",
-          "revealInFolder",
-          "topSeparator",
-          "search",
-          "showInFinder",
-          "viewOptions"
         ]
       }
     },
@@ -8420,8 +6230,7 @@
           "theme",
           "foldersFirst",
           "title"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -8467,32 +6276,6 @@
           "duplicateSelection",
           "trashSelection",
           "settings"
-        ],
-        "edited": [
-          "folderTree",
-          "theme",
-          "hidden",
-          "renameSelection",
-          "topSeparator",
-          "copyPath",
-          "infoRow",
-          "revealInFolder",
-          "help",
-          "moveSelection",
-          "copySelection",
-          "newTab",
-          "sort",
-          "topSeparator",
-          "openInTerminal",
-          "back",
-          "topSeparator",
-          "newFolder",
-          "showInFinder",
-          "foldersFirst",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -8503,35 +6286,6 @@
           "topSeparator",
           "copySelection",
           {}
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "title",
-            "index": 4
-          },
-          {
-            "op": "move",
-            "from": 1,
-            "to": 3
-          },
-          {
-            "op": "remove",
-            "index": 0
-          },
-          {
-            "op": "add",
-            "item": "editSelection"
-          },
-          {
-            "op": "remove",
-            "index": 4
-          },
-          {
-            "op": "insert",
-            "item": "foldersFirst",
-            "index": 1
-          }
         ]
       },
       "output": {
@@ -8576,16 +6330,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "foldersFirst",
-          "clipboard",
-          "copySelection",
-          "title",
-          "search",
-          "viewOptions",
-          "editSelection"
         ]
       }
     },
@@ -8600,35 +6344,6 @@
           [
             "BACK"
           ]
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "refresh"
-          },
-          {
-            "op": "insert",
-            "item": "foldersFirst",
-            "index": 3
-          },
-          {
-            "op": "add",
-            "item": "clipboard"
-          },
-          {
-            "op": "move",
-            "from": 2,
-            "to": 8
-          },
-          {
-            "op": "insert",
-            "item": "revealInFolder",
-            "index": 6
-          },
-          {
-            "op": "add",
-            "item": "hidden"
-          }
         ]
       },
       "output": {
@@ -8672,19 +6387,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "revealInFolder",
-          "theme",
-          "foldersFirst",
-          "title",
-          "clipboard",
-          "search",
-          "revealInFolder",
-          "refresh",
-          "clipboard",
-          "viewOptions",
-          "hidden"
         ]
       }
     },
@@ -8693,8 +6395,7 @@
       "input": {
         "value": [
           "trashSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -8737,13 +6438,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "trashSelection",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -8752,34 +6446,6 @@
       "input": {
         "value": [
           null
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 1
-          },
-          {
-            "op": "remove",
-            "index": 0
-          },
-          {
-            "op": "add",
-            "item": "showInFinder"
-          },
-          {
-            "op": "move",
-            "from": 4,
-            "to": 2
-          },
-          {
-            "op": "insert",
-            "item": "editSelection",
-            "index": -1
-          },
-          {
-            "op": "add",
-            "item": "calculateSize"
-          }
         ]
       },
       "output": {
@@ -8823,15 +6489,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "editSelection",
-          "title",
-          "clipboard",
-          "showInFinder",
-          "search",
-          "viewOptions",
-          "calculateSize"
         ]
       }
     },
@@ -8860,8 +6517,7 @@
             3
           ],
           []
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -8906,23 +6562,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "goToFolder",
-          "topSeparator",
-          "topSeparator",
-          "duplicateSelection",
-          "cutSelection",
-          "search",
-          "folderTree",
-          "copySelection",
-          "moveSelection",
-          "hidden",
-          "newFolder",
-          "calculateSize",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -8949,8 +6588,7 @@
           "cutSelection",
           "topSeparator",
           "calculateSize"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -8995,21 +6633,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "newTab",
-          "trashSelection",
-          "sort",
-          "title",
-          "showInFinder",
-          "pasteSelection",
-          "topSeparator",
-          "cutSelection",
-          "topSeparator",
-          "calculateSize",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -9026,18 +6649,6 @@
           {},
           {},
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 6,
-            "to": 0
-          },
-          {
-            "op": "insert",
-            "item": "sort",
-            "index": 9
-          }
         ]
       },
       "output": {
@@ -9083,17 +6694,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "search",
-          "back",
-          "help",
-          "topSeparator",
-          "title",
-          "topSeparator",
-          "clipboard",
-          "viewOptions",
-          "sort"
         ]
       }
     },
@@ -9158,17 +6758,6 @@
           "newTab",
           "cutSelection",
           "search"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "infoRow"
-          },
-          {
-            "op": "insert",
-            "item": "up",
-            "index": 36
-          }
         ]
       },
       "output": {
@@ -9218,39 +6807,6 @@
           "moveSelection",
           "openInTerminal",
           "showInFinder"
-        ],
-        "edited": [
-          "copySelection",
-          "quickLook",
-          "newTab",
-          "theme",
-          "topSeparator",
-          "topSeparator",
-          "help",
-          "topSeparator",
-          "search",
-          "title",
-          "view",
-          "newFolder",
-          "copyPath",
-          "duplicateSelection",
-          "topSeparator",
-          "infoPanel",
-          "topSeparator",
-          "settings",
-          "revealInFolder",
-          "forward",
-          "trashSelection",
-          "calculateSize",
-          "refresh",
-          "topSeparator",
-          "infoRow",
-          "openSelection",
-          "cutSelection",
-          "clipboard",
-          "viewOptions",
-          "infoRow",
-          "up"
         ]
       }
     },
@@ -9301,8 +6857,7 @@
           0,
           "view",
           "editSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -9349,36 +6904,6 @@
           "duplicateSelection",
           "trashSelection",
           "openInTerminal"
-        ],
-        "edited": [
-          "forward",
-          "openSelection",
-          "title",
-          "sort",
-          "folderTree",
-          "back",
-          "copyPath",
-          "topSeparator",
-          "help",
-          "theme",
-          "quickLook",
-          "view",
-          "goToFolder",
-          "up",
-          "infoRow",
-          "foldersFirst",
-          "settings",
-          "topSeparator",
-          "revealInFolder",
-          "newFolder",
-          "showInFinder",
-          "clipboard",
-          "topSeparator",
-          "renameSelection",
-          "topSeparator",
-          "editSelection",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -9428,29 +6953,6 @@
           "calculateSize",
           "pasteSelection",
           "cutSelection"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "infoPanel"
-          },
-          {
-            "op": "remove",
-            "index": 22
-          },
-          {
-            "op": "add",
-            "item": "copyPath"
-          },
-          {
-            "op": "move",
-            "from": 27,
-            "to": 6
-          },
-          {
-            "op": "remove",
-            "index": 11
-          }
         ]
       },
       "output": {
@@ -9500,36 +7002,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "search",
-          "showInFinder",
-          "duplicateSelection",
-          "topSeparator",
-          "refresh",
-          "infoPanel",
-          "hidden",
-          "up",
-          "folderTree",
-          "trashSelection",
-          "newTab",
-          "editSelection",
-          "theme",
-          "moveSelection",
-          "topSeparator",
-          "topSeparator",
-          "renameSelection",
-          "topSeparator",
-          "view",
-          "topSeparator",
-          "infoRow",
-          "pasteSelection",
-          "cutSelection",
-          "title",
-          "clipboard",
-          "viewOptions",
-          "copyPath"
         ]
       }
     },
@@ -9584,23 +7056,6 @@
           ],
           "duplicateSelection",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 1,
-            "to": 22
-          },
-          {
-            "op": "move",
-            "from": 2,
-            "to": 37
-          },
-          {
-            "op": "move",
-            "from": 13,
-            "to": 0
-          }
         ]
       },
       "output": {
@@ -9650,33 +7105,6 @@
           "openInTerminal",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "clipboard",
-          "goToFolder",
-          "viewOptions",
-          "quickLook",
-          "hidden",
-          "topSeparator",
-          "search",
-          "view",
-          "copySelection",
-          "cutSelection",
-          "topSeparator",
-          "sort",
-          "settings",
-          "theme",
-          "topSeparator",
-          "topSeparator",
-          "showInFinder",
-          "newFolder",
-          "back",
-          "topSeparator",
-          "infoPanel",
-          "newTab",
-          "duplicateSelection",
-          "topSeparator",
-          "title"
         ]
       }
     },
@@ -9732,8 +7160,7 @@
           "topSeparator",
           "topSeparator",
           "foldersFirst"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -9784,37 +7211,6 @@
           "openInTerminal",
           "showInFinder",
           "theme"
-        ],
-        "edited": [
-          "up",
-          "revealInFolder",
-          "topSeparator",
-          "settings",
-          "clipboard",
-          "topSeparator",
-          "back",
-          "topSeparator",
-          "calculateSize",
-          "viewOptions",
-          "foldersFirst",
-          "sort",
-          "newFolder",
-          "renameSelection",
-          "topSeparator",
-          "topSeparator",
-          "copyPath",
-          "duplicateSelection",
-          "forward",
-          "topSeparator",
-          "help",
-          "pasteSelection",
-          "quickLook",
-          "newTab",
-          "search",
-          "infoPanel",
-          "topSeparator",
-          "topSeparator",
-          "title"
         ]
       }
     },
@@ -9865,8 +7261,7 @@
           "moveSelection",
           "openInTerminal",
           "editSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -9913,30 +7308,6 @@
           "trashSelection",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "topSeparator",
-          "view",
-          "quickLook",
-          "topSeparator",
-          "sort",
-          "revealInFolder",
-          "theme",
-          "search",
-          "clipboard",
-          "hidden",
-          "title",
-          "up",
-          "moveSelection",
-          "folderTree",
-          "topSeparator",
-          "help",
-          "topSeparator",
-          "showInFinder",
-          "newFolder",
-          "openInTerminal",
-          "editSelection",
-          "viewOptions"
         ]
       }
     },
@@ -9976,22 +7347,6 @@
           "pasteSelection",
           {
             "back": true
-          }
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 26
-          },
-          {
-            "op": "move",
-            "from": 17,
-            "to": 19
-          },
-          {
-            "op": "move",
-            "from": 18,
-            "to": 4
           }
         ]
       },
@@ -10038,28 +7393,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "newTab",
-          "view",
-          "copySelection",
-          "search",
-          "back",
-          "renameSelection",
-          "infoPanel",
-          "quickLook",
-          "pasteSelection",
-          "foldersFirst",
-          "topSeparator",
-          "viewOptions",
-          "moveSelection",
-          "infoRow",
-          "sort",
-          "copyPath",
-          "hidden",
-          "clipboard",
-          "title"
         ]
       }
     },
@@ -10091,8 +7424,7 @@
           [
             "back "
           ]
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -10136,25 +7468,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "back",
-          "showInFinder",
-          "topSeparator",
-          "goToFolder",
-          "clipboard",
-          "quickLook",
-          "trashSelection",
-          "search",
-          "moveSelection",
-          "pasteSelection",
-          "duplicateSelection",
-          "up",
-          "hidden",
-          "copyPath",
-          "calculateSize",
-          "title",
-          "viewOptions"
         ]
       }
     },
@@ -10165,8 +7478,7 @@
           "topSeparator",
           "search",
           "pasteSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -10210,14 +7522,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "search",
-          "pasteSelection",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -10238,13 +7542,6 @@
           [
             "title"
           ]
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "showInFinder",
-            "index": 12
-          }
         ]
       },
       "output": {
@@ -10288,18 +7585,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "forward",
-          "goToFolder",
-          "up",
-          "renameSelection",
-          "copyPath",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "showInFinder"
         ]
       }
     },
@@ -10353,8 +7638,7 @@
           "duplicateSelection",
           "forward",
           1
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -10400,34 +7684,6 @@
           "moveSelection",
           "theme",
           "help"
-        ],
-        "edited": [
-          "infoPanel",
-          "newTab",
-          "trashSelection",
-          "calculateSize",
-          "topSeparator",
-          "topSeparator",
-          "foldersFirst",
-          "hidden",
-          "back",
-          "goToFolder",
-          "showInFinder",
-          "copyPath",
-          "newFolder",
-          "openInTerminal",
-          "renameSelection",
-          "topSeparator",
-          "editSelection",
-          "clipboard",
-          "settings",
-          "openSelection",
-          "folderTree",
-          "duplicateSelection",
-          "forward",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -10473,8 +7729,7 @@
           "infoPanel",
           "calculateSize",
           "launchMissiles"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -10523,32 +7778,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "copySelection",
-          "forward",
-          "title",
-          "theme",
-          "openSelection",
-          "topSeparator",
-          "revealInFolder",
-          "topSeparator",
-          "goToFolder",
-          "hidden",
-          "foldersFirst",
-          "duplicateSelection",
-          "topSeparator",
-          "newTab",
-          "back",
-          "topSeparator",
-          "topSeparator",
-          "openInTerminal",
-          "infoPanel",
-          "calculateSize",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -10568,36 +7797,6 @@
           "topSeparator",
           1,
           "newTab"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 3,
-            "to": 4
-          },
-          {
-            "op": "move",
-            "from": 4,
-            "to": 2
-          },
-          {
-            "op": "remove",
-            "index": 14
-          },
-          {
-            "op": "move",
-            "from": 2,
-            "to": 1
-          },
-          {
-            "op": "insert",
-            "item": "search",
-            "index": 7
-          },
-          {
-            "op": "remove",
-            "index": 10
-          }
         ]
       },
       "output": {
@@ -10645,22 +7844,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "folderTree",
-          "topSeparator",
-          "editSelection",
-          "clipboard",
-          "topSeparator",
-          "showInFinder",
-          "search",
-          "newFolder",
-          "foldersFirst",
-          "newTab",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -10707,8 +7890,7 @@
           "cutSelection",
           "newFolder",
           true
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -10762,36 +7944,6 @@
           "showInFinder",
           "copyPath",
           "theme"
-        ],
-        "edited": [
-          "topSeparator",
-          "quickLook",
-          "refresh",
-          "topSeparator",
-          "cutSelection",
-          "newFolder",
-          "title",
-          "openInTerminal",
-          "topSeparator",
-          "forward",
-          "topSeparator",
-          "infoPanel",
-          "foldersFirst",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "pasteSelection",
-          "topSeparator",
-          "settings",
-          "hidden",
-          "topSeparator",
-          "revealInFolder",
-          "help",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -10848,22 +8000,6 @@
           "settings",
           "hidden",
           "title"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 20
-          },
-          {
-            "op": "move",
-            "from": 37,
-            "to": 35
-          },
-          {
-            "op": "insert",
-            "item": "infoRow",
-            "index": 11
-          }
         ]
       },
       "output": {
@@ -10910,33 +8046,6 @@
           "duplicateSelection",
           "trashSelection",
           "showInFinder"
-        ],
-        "edited": [
-          "copySelection",
-          "settings",
-          "renameSelection",
-          "title",
-          "foldersFirst",
-          "pasteSelection",
-          "topSeparator",
-          "refresh",
-          "search",
-          "help",
-          "folderTree",
-          "infoRow",
-          "theme",
-          "viewOptions",
-          "openInTerminal",
-          "copyPath",
-          "view",
-          "calculateSize",
-          "newFolder",
-          "back",
-          "editSelection",
-          "infoRow",
-          "topSeparator",
-          "hidden",
-          "clipboard"
         ]
       }
     },
@@ -10966,29 +8075,6 @@
           1.5,
           "up",
           "copyPath"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 18
-          },
-          {
-            "op": "remove",
-            "index": 4
-          },
-          {
-            "op": "remove",
-            "index": 10
-          },
-          {
-            "op": "add",
-            "item": "moveSelection"
-          },
-          {
-            "op": "move",
-            "from": 7,
-            "to": 0
-          }
         ]
       },
       "output": {
@@ -11037,27 +8123,6 @@
           "trashSelection",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "topSeparator",
-          "forward",
-          "showInFinder",
-          "topSeparator",
-          "topSeparator",
-          "copyPath",
-          "title",
-          "newFolder",
-          "openInTerminal",
-          "topSeparator",
-          "help",
-          "infoPanel",
-          "topSeparator",
-          "infoRow",
-          "up",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "moveSelection"
         ]
       }
     },
@@ -11096,26 +8161,6 @@
           "topSeparator",
           "revealInFolder",
           1
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 24,
-            "to": 8
-          },
-          {
-            "op": "remove",
-            "index": 7
-          },
-          {
-            "op": "remove",
-            "index": 4
-          },
-          {
-            "op": "move",
-            "from": 3,
-            "to": 15
-          }
         ]
       },
       "output": {
@@ -11163,23 +8208,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "infoPanel",
-          "title",
-          "sort",
-          "topSeparator",
-          "topSeparator",
-          "renameSelection",
-          "quickLook",
-          "back",
-          "topSeparator",
-          "view",
-          "topSeparator",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "moveSelection"
         ]
       }
     },
@@ -11205,27 +8233,6 @@
           "clipboard",
           "copySelection",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "clipboard",
-            "index": 4
-          },
-          {
-            "op": "remove",
-            "index": 0
-          },
-          {
-            "op": "insert",
-            "item": "calculateSize",
-            "index": 5
-          },
-          {
-            "op": "move",
-            "from": 13,
-            "to": 7
-          }
         ]
       },
       "output": {
@@ -11275,27 +8282,6 @@
           "showInFinder",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "clipboard",
-          "search",
-          "calculateSize",
-          "newTab",
-          "theme",
-          "topSeparator",
-          "topSeparator",
-          "cutSelection",
-          "revealInFolder",
-          "duplicateSelection",
-          "settings",
-          "clipboard",
-          "copySelection",
-          "topSeparator",
-          "title",
-          "viewOptions"
         ]
       }
     },
@@ -11322,13 +8308,6 @@
           "copySelection",
           -1,
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 14,
-            "to": 3
-          }
         ]
       },
       "output": {
@@ -11373,21 +8352,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "quickLook",
-          "foldersFirst",
-          "moveSelection",
-          "cutSelection",
-          "copySelection",
-          "revealInFolder",
-          "back",
-          "newFolder",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -11411,8 +8375,7 @@
           "title",
           "foldersFirst",
           "editSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -11456,23 +8419,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "newTab",
-          "openInTerminal",
-          "openSelection",
-          "back",
-          "infoRow",
-          "moveSelection",
-          "pasteSelection",
-          "showInFinder",
-          "topSeparator",
-          "title",
-          "foldersFirst",
-          "editSelection",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -11481,35 +8427,6 @@
       "input": {
         "value": [
           " back"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 4,
-            "to": 0
-          },
-          {
-            "op": "add",
-            "item": "openInTerminal"
-          },
-          {
-            "op": "move",
-            "from": -1,
-            "to": -1
-          },
-          {
-            "op": "remove",
-            "index": -1
-          },
-          {
-            "op": "remove",
-            "index": 4
-          },
-          {
-            "op": "move",
-            "from": 0,
-            "to": -1
-          }
         ]
       },
       "output": {
@@ -11553,31 +8470,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "110: random 110",
       "input": {
-        "value": "title",
-        "ops": [
-          {
-            "op": "move",
-            "from": -1,
-            "to": 3
-          },
-          {
-            "op": "insert",
-            "item": "openSelection",
-            "index": -2
-          }
-        ]
+        "value": "title"
       },
       "output": {
         "sanitized": [
@@ -11620,13 +8519,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "openSelection",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -11658,26 +8550,6 @@
           "quickLook",
           "infoRow",
           "pasteSelection"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "help"
-          },
-          {
-            "op": "insert",
-            "item": "sort",
-            "index": 18
-          },
-          {
-            "op": "insert",
-            "item": "editSelection",
-            "index": 0
-          },
-          {
-            "op": "remove",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -11724,31 +8596,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "editSelection",
-          "back",
-          "topSeparator",
-          "topSeparator",
-          "hidden",
-          "help",
-          "copySelection",
-          "topSeparator",
-          "sort",
-          "calculateSize",
-          "trashSelection",
-          "renameSelection",
-          "showInFinder",
-          "up",
-          "quickLook",
-          "infoRow",
-          "pasteSelection",
-          "title",
-          "sort",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "help"
         ]
       }
     },
@@ -11762,16 +8609,6 @@
           ],
           "hidden",
           "renameSelection"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "theme"
-          },
-          {
-            "op": "remove",
-            "index": 3
-          }
         ]
       },
       "output": {
@@ -11815,16 +8652,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "infoRow",
-          "hidden",
-          "renameSelection",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "theme"
         ]
       }
     },
@@ -11836,8 +8663,7 @@
           "infoPanel",
           "openInTerminal",
           false
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -11880,14 +8706,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "infoPanel",
-          "openInTerminal",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -11898,13 +8716,6 @@
           "cutSelection",
           "quickLook",
           "pasteSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 1,
-            "to": 3
-          }
         ]
       },
       "output": {
@@ -11948,15 +8759,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "cutSelection",
-          "pasteSelection",
-          "title",
-          "quickLook",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -11999,8 +8801,7 @@
           "viewOptions",
           "theme",
           "infoPanel"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -12047,43 +8848,13 @@
           "newFolder",
           "trashSelection",
           "copyPath"
-        ],
-        "edited": [
-          "clipboard",
-          "topSeparator",
-          "showInFinder",
-          "cutSelection",
-          "openInTerminal",
-          "calculateSize",
-          "title",
-          "topSeparator",
-          "topSeparator",
-          "help",
-          "pasteSelection",
-          "newTab",
-          "forward",
-          "settings",
-          "duplicateSelection",
-          "editSelection",
-          "topSeparator",
-          "openSelection",
-          "viewOptions",
-          "theme",
-          "infoPanel",
-          "search"
         ]
       }
     },
     {
       "name": "116: random 116",
       "input": {
-        "value": true,
-        "ops": [
-          {
-            "op": "add",
-            "item": "settings"
-          }
-        ]
+        "value": true
       },
       "output": {
         "sanitized": [
@@ -12126,13 +8897,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "settings"
         ]
       }
     },
@@ -12198,8 +8962,7 @@
             " back"
           ],
           "cutSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -12250,40 +9013,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "hidden",
-          "up",
-          "newFolder",
-          "back",
-          "view",
-          "topSeparator",
-          "renameSelection",
-          "revealInFolder",
-          "infoPanel",
-          "infoRow",
-          "topSeparator",
-          "duplicateSelection",
-          "cutSelection",
-          "openInTerminal",
-          "newTab",
-          "trashSelection",
-          "calculateSize",
-          "pasteSelection",
-          "copyPath",
-          "topSeparator",
-          "refresh",
-          "copySelection",
-          "topSeparator",
-          "topSeparator",
-          "clipboard",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "editSelection",
-          "title",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -12336,8 +9065,7 @@
           "theme",
           "forward",
           "goToFolder"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -12386,32 +9114,6 @@
           "showInFinder",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "up",
-          "folderTree",
-          "topSeparator",
-          "moveSelection",
-          "openSelection",
-          "trashSelection",
-          "foldersFirst",
-          "topSeparator",
-          "topSeparator",
-          "forward",
-          "revealInFolder",
-          "title",
-          "goToFolder",
-          "editSelection",
-          "topSeparator",
-          "topSeparator",
-          "settings",
-          "topSeparator",
-          "infoRow",
-          "openInTerminal",
-          "theme",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -12464,36 +9166,6 @@
           "showInFinder",
           "view",
           "moveSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 38,
-            "to": 30
-          },
-          {
-            "op": "move",
-            "from": 41,
-            "to": 41
-          },
-          {
-            "op": "remove",
-            "index": 29
-          },
-          {
-            "op": "move",
-            "from": 27,
-            "to": 5
-          },
-          {
-            "op": "insert",
-            "item": "showInFinder",
-            "index": 4
-          },
-          {
-            "op": "remove",
-            "index": 6
-          }
         ]
       },
       "output": {
@@ -12544,34 +9216,6 @@
           "openInTerminal",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "newFolder",
-          "infoPanel",
-          "help",
-          "openSelection",
-          "showInFinder",
-          "trashSelection",
-          "foldersFirst",
-          "copyPath",
-          "topSeparator",
-          "search",
-          "quickLook",
-          "up",
-          "topSeparator",
-          "back",
-          "cutSelection",
-          "clipboard",
-          "topSeparator",
-          "topSeparator",
-          "infoRow",
-          "topSeparator",
-          "topSeparator",
-          "showInFinder",
-          "view",
-          "moveSelection",
-          "title",
-          "viewOptions"
         ]
       }
     },
@@ -12608,37 +9252,6 @@
           true,
           "help",
           "openInTerminal"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 7
-          },
-          {
-            "op": "move",
-            "from": 5,
-            "to": 8
-          },
-          {
-            "op": "move",
-            "from": 10,
-            "to": 20
-          },
-          {
-            "op": "move",
-            "from": 17,
-            "to": 19
-          },
-          {
-            "op": "insert",
-            "item": "openInTerminal",
-            "index": 24
-          },
-          {
-            "op": "insert",
-            "item": "newTab",
-            "index": 16
-          }
         ]
       },
       "output": {
@@ -12682,24 +9295,6 @@
           "duplicateSelection",
           "copyPath",
           "theme"
-        ],
-        "edited": [
-          "pasteSelection",
-          "sort",
-          "cutSelection",
-          "trashSelection",
-          "openInTerminal",
-          "calculateSize",
-          "settings",
-          "showInFinder",
-          "renameSelection",
-          "clipboard",
-          "title",
-          "search",
-          "viewOptions",
-          "help",
-          "openInTerminal",
-          "newTab"
         ]
       }
     },
@@ -12708,17 +9303,6 @@
       "input": {
         "value": [
           "calculateSize"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "clipboard",
-            "index": 2
-          },
-          {
-            "op": "remove",
-            "index": 1
-          }
         ]
       },
       "output": {
@@ -12762,14 +9346,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "calculateSize",
-          "title",
-          "clipboard",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -12812,17 +9388,6 @@
             "back "
           ],
           "viewOptions"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "search"
-          },
-          {
-            "op": "move",
-            "from": 12,
-            "to": 8
-          }
         ]
       },
       "output": {
@@ -12870,30 +9435,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "revealInFolder",
-          "search",
-          "copySelection",
-          "newFolder",
-          "topSeparator",
-          "cutSelection",
-          "back",
-          "refresh",
-          "renameSelection",
-          "topSeparator",
-          "infoPanel",
-          "settings",
-          "clipboard",
-          "topSeparator",
-          "topSeparator",
-          "newTab",
-          "moveSelection",
-          "openSelection",
-          "forward",
-          "viewOptions",
-          "title",
-          "search"
         ]
       }
     },
@@ -12941,8 +9482,7 @@
           "openInTerminal",
           "copySelection",
           "clipboard"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -12989,29 +9529,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "sort",
-          "showInFinder",
-          "view",
-          "goToFolder",
-          "hidden",
-          "settings",
-          "topSeparator",
-          "duplicateSelection",
-          "topSeparator",
-          "infoRow",
-          "openSelection",
-          "topSeparator",
-          "refresh",
-          "viewOptions",
-          "editSelection",
-          "topSeparator",
-          "openInTerminal",
-          "copySelection",
-          "clipboard",
-          "title",
-          "search"
         ]
       }
     },
@@ -13020,33 +9537,6 @@
       "input": {
         "value": [
           "folderTree"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "duplicateSelection"
-          },
-          {
-            "op": "move",
-            "from": 0,
-            "to": 1
-          },
-          {
-            "op": "add",
-            "item": "theme"
-          },
-          {
-            "op": "add",
-            "item": "renameSelection"
-          },
-          {
-            "op": "remove",
-            "index": 1
-          },
-          {
-            "op": "remove",
-            "index": 2
-          }
         ]
       },
       "output": {
@@ -13090,15 +9580,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "duplicateSelection",
-          "theme",
-          "renameSelection"
         ]
       }
     },
@@ -13142,17 +9623,6 @@
           "moveSelection",
           "trashSelection",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "editSelection"
-          },
-          {
-            "op": "insert",
-            "item": "newFolder",
-            "index": 21
-          }
         ]
       },
       "output": {
@@ -13199,30 +9669,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "openSelection",
-          "search",
-          "title",
-          "openInTerminal",
-          "forward",
-          "editSelection",
-          "settings",
-          "topSeparator",
-          "infoRow",
-          "copySelection",
-          "folderTree",
-          "viewOptions",
-          "newTab",
-          "cutSelection",
-          "topSeparator",
-          "infoPanel",
-          "moveSelection",
-          "trashSelection",
-          "topSeparator",
-          "clipboard",
-          "editSelection",
-          "newFolder"
         ]
       }
     },
@@ -13233,12 +9679,6 @@
           "openSelection",
           "copyPath",
           "quickLook"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "newTab"
-          }
         ]
       },
       "output": {
@@ -13282,16 +9722,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "openSelection",
-          "copyPath",
-          "quickLook",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "newTab"
         ]
       }
     },
@@ -13333,8 +9763,7 @@
           "settings",
           "theme",
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -13378,26 +9807,6 @@
           "openInTerminal",
           "showInFinder",
           "help"
-        ],
-        "edited": [
-          "folderTree",
-          "revealInFolder",
-          "sort",
-          "theme",
-          "hidden",
-          "duplicateSelection",
-          "foldersFirst",
-          "copyPath",
-          "settings",
-          "back",
-          "search",
-          "trashSelection",
-          "refresh",
-          "calculateSize",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -13416,8 +9825,7 @@
           ],
           "quickLook",
           "trashSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -13462,19 +9870,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "forward",
-          "topSeparator",
-          "title",
-          "revealInFolder",
-          "topSeparator",
-          "showInFinder",
-          "quickLook",
-          "trashSelection",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -13527,12 +9922,6 @@
           "openInTerminal",
           "topSeparator",
           ""
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 21
-          }
         ]
       },
       "output": {
@@ -13583,36 +9972,6 @@
           "trashSelection",
           "showInFinder",
           "theme"
-        ],
-        "edited": [
-          "sort",
-          "copyPath",
-          "calculateSize",
-          "view",
-          "foldersFirst",
-          "hidden",
-          "settings",
-          "topSeparator",
-          "folderTree",
-          "topSeparator",
-          "topSeparator",
-          "moveSelection",
-          "help",
-          "infoRow",
-          "up",
-          "topSeparator",
-          "editSelection",
-          "duplicateSelection",
-          "newFolder",
-          "goToFolder",
-          "refresh",
-          "topSeparator",
-          "openInTerminal",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -13621,22 +9980,6 @@
       "input": {
         "value": [
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 2,
-            "to": 0
-          },
-          {
-            "op": "move",
-            "from": 1,
-            "to": 0
-          },
-          {
-            "op": "add",
-            "item": "infoPanel"
-          }
         ]
       },
       "output": {
@@ -13681,22 +10024,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "clipboard",
-          "title",
-          "search",
-          "viewOptions",
-          "infoPanel"
         ]
       }
     },
     {
       "name": "131: random 131",
       "input": {
-        "value": 1,
-        "ops": []
+        "value": 1
       },
       "output": {
         "sanitized": [
@@ -13739,12 +10073,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -13787,8 +10115,7 @@
           "moveSelection",
           "newFolder",
           "refresh"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -13835,31 +10162,6 @@
           "trashSelection",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "pasteSelection",
-          "title",
-          "hidden",
-          "showInFinder",
-          "quickLook",
-          "openInTerminal",
-          "help",
-          "topSeparator",
-          "revealInFolder",
-          "goToFolder",
-          "search",
-          "up",
-          "topSeparator",
-          "clipboard",
-          "view",
-          "theme",
-          "sort",
-          "topSeparator",
-          "topSeparator",
-          "moveSelection",
-          "newFolder",
-          "refresh",
-          "viewOptions"
         ]
       }
     },
@@ -13870,18 +10172,6 @@
           "revealInFolder",
           "topSeparator",
           "launchMissiles"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": -1,
-            "to": 0
-          },
-          {
-            "op": "move",
-            "from": 2,
-            "to": -1
-          }
         ]
       },
       "output": {
@@ -13926,14 +10216,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "revealInFolder",
-          "topSeparator",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -13963,8 +10245,7 @@
           "settings",
           "sort",
           "goToFolder"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -14007,26 +10288,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "search",
-          "copySelection",
-          "back",
-          "newTab",
-          "title",
-          "pasteSelection",
-          "openSelection",
-          "duplicateSelection",
-          "openInTerminal",
-          "trashSelection",
-          "view",
-          "revealInFolder",
-          "up",
-          "settings",
-          "sort",
-          "goToFolder",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -14091,8 +10352,7 @@
           "copySelection",
           "newFolder",
           "back"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -14136,30 +10396,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "up",
-          "openSelection",
-          "revealInFolder",
-          "copySelection",
-          "clipboard",
-          "copyPath",
-          "newFolder",
-          "moveSelection",
-          "quickLook",
-          "cutSelection",
-          "renameSelection",
-          "infoPanel",
-          "sort",
-          "calculateSize",
-          "showInFinder",
-          "goToFolder",
-          "topSeparator",
-          "duplicateSelection",
-          "back",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -14196,8 +10432,7 @@
           "pasteSelection",
           "title",
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -14241,42 +10476,13 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "title",
-          "search",
-          "newFolder",
-          "quickLook",
-          "sort",
-          "trashSelection",
-          "openInTerminal",
-          "settings",
-          "forward",
-          "foldersFirst",
-          "showInFinder",
-          "back",
-          "pasteSelection",
-          "topSeparator",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "137: random 137",
       "input": {
-        "value": "launchMissiles",
-        "ops": [
-          {
-            "op": "insert",
-            "item": "newTab",
-            "index": -2
-          },
-          {
-            "op": "add",
-            "item": "back"
-          }
-        ]
+        "value": "launchMissiles"
       },
       "output": {
         "sanitized": [
@@ -14319,14 +10525,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "newTab",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "back"
         ]
       }
     },
@@ -14377,25 +10575,6 @@
           "sort",
           "topSeparator",
           -1
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "up"
-          },
-          {
-            "op": "insert",
-            "item": "revealInFolder",
-            "index": 17
-          },
-          {
-            "op": "remove",
-            "index": 15
-          },
-          {
-            "op": "add",
-            "item": "editSelection"
-          }
         ]
       },
       "output": {
@@ -14441,32 +10620,6 @@
           "openInTerminal",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "hidden",
-          "title",
-          "pasteSelection",
-          "revealInFolder",
-          "refresh",
-          "settings",
-          "foldersFirst",
-          "trashSelection",
-          "openSelection",
-          "topSeparator",
-          "clipboard",
-          "viewOptions",
-          "goToFolder",
-          "back",
-          "theme",
-          "view",
-          "revealInFolder",
-          "renameSelection",
-          "showInFinder",
-          "sort",
-          "topSeparator",
-          "search",
-          "up",
-          "editSelection"
         ]
       }
     },
@@ -14483,29 +10636,6 @@
           "title",
           "copyPath",
           "hidden"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "editSelection"
-          },
-          {
-            "op": "remove",
-            "index": 1
-          },
-          {
-            "op": "remove",
-            "index": 10
-          },
-          {
-            "op": "insert",
-            "item": "showInFinder",
-            "index": 12
-          },
-          {
-            "op": "add",
-            "item": "copySelection"
-          }
         ]
       },
       "output": {
@@ -14550,20 +10680,6 @@
           "showInFinder",
           "theme",
           "help"
-        ],
-        "edited": [
-          "revealInFolder",
-          "calculateSize",
-          "topSeparator",
-          "title",
-          "copyPath",
-          "hidden",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "editSelection",
-          "showInFinder",
-          "copySelection"
         ]
       }
     },
@@ -14576,25 +10692,6 @@
           "topSeparator",
           "infoPanel",
           false
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "settings"
-          },
-          {
-            "op": "remove",
-            "index": 7
-          },
-          {
-            "op": "add",
-            "item": "search"
-          },
-          {
-            "op": "insert",
-            "item": "calculateSize",
-            "index": 2
-          }
         ]
       },
       "output": {
@@ -14640,19 +10737,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "newTab",
-          "calculateSize",
-          "topSeparator",
-          "infoPanel",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "settings",
-          "search"
         ]
       }
     },
@@ -14667,13 +10751,6 @@
               "id": "back"
             }
           ]
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 1,
-            "to": 4
-          }
         ]
       },
       "output": {
@@ -14718,14 +10795,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "hidden",
-          "viewOptions"
         ]
       }
     },
@@ -14761,13 +10830,6 @@
           },
           "newTab",
           "sort"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "newTab",
-            "index": 11
-          }
         ]
       },
       "output": {
@@ -14813,28 +10875,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "renameSelection",
-          "infoPanel",
-          "title",
-          "up",
-          "pasteSelection",
-          "moveSelection",
-          "topSeparator",
-          "trashSelection",
-          "help",
-          "foldersFirst",
-          "infoRow",
-          "newTab",
-          "hidden",
-          "openInTerminal",
-          "topSeparator",
-          "newTab",
-          "sort",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -14897,8 +10937,7 @@
           "help",
           [],
           "calculateSize"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -14950,36 +10989,6 @@
           "showInFinder",
           "copyPath",
           "theme"
-        ],
-        "edited": [
-          "duplicateSelection",
-          "up",
-          "topSeparator",
-          "viewOptions",
-          "topSeparator",
-          "folderTree",
-          "trashSelection",
-          "topSeparator",
-          "topSeparator",
-          "settings",
-          "topSeparator",
-          "quickLook",
-          "refresh",
-          "search",
-          "back",
-          "openInTerminal",
-          "editSelection",
-          "topSeparator",
-          "moveSelection",
-          "foldersFirst",
-          "topSeparator",
-          "cutSelection",
-          "calculateSize",
-          "topSeparator",
-          "topSeparator",
-          "help",
-          "title",
-          "clipboard"
         ]
       }
     },
@@ -14991,25 +11000,6 @@
           "openSelection",
           "topSeparator",
           "duplicateSelection"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "infoPanel"
-          },
-          {
-            "op": "insert",
-            "item": "copySelection",
-            "index": 7
-          },
-          {
-            "op": "remove",
-            "index": 3
-          },
-          {
-            "op": "remove",
-            "index": 3
-          }
         ]
       },
       "output": {
@@ -15054,17 +11044,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "infoPanel",
-          "openSelection",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "copySelection",
-          "viewOptions",
-          "infoPanel"
         ]
       }
     },
@@ -15113,21 +11092,6 @@
           "newFolder",
           "viewOptions",
           "calculateSize"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 35
-          },
-          {
-            "op": "insert",
-            "item": "foldersFirst",
-            "index": 13
-          },
-          {
-            "op": "remove",
-            "index": 22
-          }
         ]
       },
       "output": {
@@ -15175,29 +11139,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "topSeparator",
-          "sort",
-          "revealInFolder",
-          "newFolder",
-          "viewOptions",
-          "goToFolder",
-          "calculateSize",
-          "newTab",
-          "topSeparator",
-          "clipboard",
-          "openSelection",
-          "moveSelection",
-          "foldersFirst",
-          "refresh",
-          "hidden",
-          "pasteSelection",
-          "infoRow",
-          "title",
-          "topSeparator",
-          "search"
         ]
       }
     },
@@ -15252,8 +11193,7 @@
             []
           ],
           {}
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -15300,35 +11240,6 @@
           "duplicateSelection",
           "theme",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "calculateSize",
-          "title",
-          "topSeparator",
-          "goToFolder",
-          "folderTree",
-          "settings",
-          "topSeparator",
-          "back",
-          "revealInFolder",
-          "foldersFirst",
-          "cutSelection",
-          "quickLook",
-          "openInTerminal",
-          "topSeparator",
-          "copyPath",
-          "view",
-          "openSelection",
-          "refresh",
-          "showInFinder",
-          "renameSelection",
-          "trashSelection",
-          "newTab",
-          "newFolder",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -15337,8 +11248,7 @@
       "input": {
         "value": {
           "back": true
-        },
-        "ops": []
+        }
       },
       "output": {
         "sanitized": [
@@ -15381,12 +11291,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -15397,8 +11301,7 @@
           1,
           2,
           3
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -15441,12 +11344,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -15500,28 +11397,6 @@
           "back",
           "theme",
           "clipboard"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": -1,
-            "to": 24
-          },
-          {
-            "op": "insert",
-            "item": "newFolder",
-            "index": -1
-          },
-          {
-            "op": "move",
-            "from": 19,
-            "to": 16
-          },
-          {
-            "op": "insert",
-            "item": "refresh",
-            "index": -2
-          }
         ]
       },
       "output": {
@@ -15571,39 +11446,6 @@
           "newFolder",
           "trashSelection",
           "copyPath"
-        ],
-        "edited": [
-          "refresh",
-          "newFolder",
-          "showInFinder",
-          "forward",
-          "infoPanel",
-          "hidden",
-          "search",
-          "topSeparator",
-          "openInTerminal",
-          "settings",
-          "editSelection",
-          "infoRow",
-          "clipboard",
-          "folderTree",
-          "help",
-          "renameSelection",
-          "copySelection",
-          "topSeparator",
-          "revealInFolder",
-          "topSeparator",
-          "calculateSize",
-          "topSeparator",
-          "sort",
-          "topSeparator",
-          "up",
-          "openSelection",
-          "back",
-          "topSeparator",
-          "theme",
-          "title",
-          "viewOptions"
         ]
       }
     },
@@ -15612,35 +11454,6 @@
       "input": {
         "value": [
           "BACK"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 4,
-            "to": 4
-          },
-          {
-            "op": "move",
-            "from": 3,
-            "to": 3
-          },
-          {
-            "op": "remove",
-            "index": 3
-          },
-          {
-            "op": "add",
-            "item": "openSelection"
-          },
-          {
-            "op": "insert",
-            "item": "goToFolder",
-            "index": -1
-          },
-          {
-            "op": "remove",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -15684,14 +11497,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "goToFolder",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "openSelection"
         ]
       }
     },
@@ -15703,13 +11508,6 @@
           "settings",
           "renameSelection",
           "infoPanel"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "back",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -15753,17 +11551,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "up",
-          "settings",
-          "renameSelection",
-          "infoPanel",
-          "back",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -15782,8 +11569,7 @@
           "refresh",
           "topSeparator",
           "back"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -15827,18 +11613,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "infoRow",
-          "up",
-          "title",
-          "help",
-          "refresh",
-          "topSeparator",
-          "back",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -15899,32 +11673,6 @@
           [
             "back "
           ]
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "moveSelection",
-            "index": 3
-          },
-          {
-            "op": "insert",
-            "item": "goToFolder",
-            "index": 27
-          },
-          {
-            "op": "move",
-            "from": 41,
-            "to": 9
-          },
-          {
-            "op": "remove",
-            "index": 17
-          },
-          {
-            "op": "move",
-            "from": 26,
-            "to": 29
-          }
         ]
       },
       "output": {
@@ -15977,35 +11725,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "editSelection",
-          "topSeparator",
-          "topSeparator",
-          "moveSelection",
-          "cutSelection",
-          "quickLook",
-          "infoRow",
-          "search",
-          "hidden",
-          "newTab",
-          "topSeparator",
-          "folderTree",
-          "moveSelection",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "goToFolder",
-          "up",
-          "topSeparator",
-          "sort",
-          "settings",
-          "back",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "viewOptions",
-          "goToFolder"
         ]
       }
     },
@@ -16053,32 +11772,6 @@
           "duplicateSelection",
           "foldersFirst",
           "copySelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 4,
-            "to": 36
-          },
-          {
-            "op": "insert",
-            "item": "editSelection",
-            "index": 10
-          },
-          {
-            "op": "move",
-            "from": 14,
-            "to": 36
-          },
-          {
-            "op": "remove",
-            "index": 18
-          },
-          {
-            "op": "insert",
-            "item": "newTab",
-            "index": 10
-          }
         ]
       },
       "output": {
@@ -16123,31 +11816,6 @@
           "trashSelection",
           "showInFinder",
           "help"
-        ],
-        "edited": [
-          "theme",
-          "openInTerminal",
-          "topSeparator",
-          "back",
-          "refresh",
-          "forward",
-          "copySelection",
-          "settings",
-          "clipboard",
-          "infoRow",
-          "newTab",
-          "editSelection",
-          "editSelection",
-          "pasteSelection",
-          "folderTree",
-          "quickLook",
-          "up",
-          "duplicateSelection",
-          "search",
-          "foldersFirst",
-          "viewOptions",
-          "title",
-          "copyPath"
         ]
       }
     },
@@ -16160,8 +11828,7 @@
           "moveSelection",
           "newTab",
           "up"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -16204,17 +11871,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "back",
-          "newFolder",
-          "moveSelection",
-          "newTab",
-          "up",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -16223,31 +11879,6 @@
       "input": {
         "value": [
           " back"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "openSelection",
-            "index": 2
-          },
-          {
-            "op": "remove",
-            "index": 3
-          },
-          {
-            "op": "move",
-            "from": -1,
-            "to": 1
-          },
-          {
-            "op": "move",
-            "from": 0,
-            "to": 1
-          },
-          {
-            "op": "remove",
-            "index": 1
-          }
         ]
       },
       "output": {
@@ -16291,32 +11922,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "clipboard",
-          "title",
-          "openSelection",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "157: random 157",
       "input": {
-        "value": "title",
-        "ops": [
-          {
-            "op": "move",
-            "from": 0,
-            "to": 2
-          },
-          {
-            "op": "move",
-            "from": 2,
-            "to": 0
-          }
-        ]
+        "value": "title"
       },
       "output": {
         "sanitized": [
@@ -16359,12 +11971,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -16393,8 +11999,7 @@
             null
           ],
           "quickLook"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -16439,21 +12044,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "openInTerminal",
-          "topSeparator",
-          "newTab",
-          "title",
-          "editSelection",
-          "help",
-          "topSeparator",
-          "refresh",
-          "trashSelection",
-          "quickLook",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -16464,16 +12054,6 @@
           1,
           2,
           3
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "showInFinder"
-          },
-          {
-            "op": "add",
-            "item": "topSeparator"
-          }
         ]
       },
       "output": {
@@ -16517,14 +12097,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "showInFinder",
-          "topSeparator"
         ]
       }
     },
@@ -16566,8 +12138,7 @@
           "folderTree",
           "copySelection",
           "editSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -16613,33 +12184,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "infoPanel",
-          "infoRow",
-          "renameSelection",
-          "trashSelection",
-          "clipboard",
-          "theme",
-          "cutSelection",
-          "viewOptions",
-          "editSelection",
-          "duplicateSelection",
-          "newFolder",
-          "topSeparator",
-          "back",
-          "sort",
-          "topSeparator",
-          "openSelection",
-          "forward",
-          "openInTerminal",
-          "topSeparator",
-          "hidden",
-          "foldersFirst",
-          "folderTree",
-          "copySelection",
-          "search"
         ]
       }
     },
@@ -16671,33 +12215,6 @@
           "topSeparator",
           "trashSelection",
           "copySelection"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 3
-          },
-          {
-            "op": "add",
-            "item": "calculateSize"
-          },
-          {
-            "op": "add",
-            "item": "refresh"
-          },
-          {
-            "op": "insert",
-            "item": "showInFinder",
-            "index": 12
-          },
-          {
-            "op": "remove",
-            "index": 8
-          },
-          {
-            "op": "add",
-            "item": "editSelection"
-          }
         ]
       },
       "output": {
@@ -16747,30 +12264,6 @@
           "showInFinder",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "copyPath",
-          "cutSelection",
-          "topSeparator",
-          "hidden",
-          "goToFolder",
-          "topSeparator",
-          "viewOptions",
-          "forward",
-          "topSeparator",
-          "folderTree",
-          "topSeparator",
-          "showInFinder",
-          "openInTerminal",
-          "topSeparator",
-          "trashSelection",
-          "copySelection",
-          "title",
-          "clipboard",
-          "search",
-          "calculateSize",
-          "refresh",
-          "editSelection"
         ]
       }
     },
@@ -16831,8 +12324,7 @@
             " back"
           ],
           "hidden"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -16877,31 +12369,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "forward",
-          "trashSelection",
-          "calculateSize",
-          "newTab",
-          "quickLook",
-          "viewOptions",
-          "duplicateSelection",
-          "showInFinder",
-          "back",
-          "clipboard",
-          "renameSelection",
-          "copySelection",
-          "revealInFolder",
-          "goToFolder",
-          "topSeparator",
-          "hidden",
-          "sort",
-          "newFolder",
-          "title",
-          "help",
-          "refresh",
-          "search",
-          "topSeparator"
         ]
       }
     },
@@ -16934,8 +12401,7 @@
           "title",
           "back",
           "help"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -16980,36 +12446,13 @@
           "openInTerminal",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "newTab",
-          "theme",
-          "infoPanel",
-          "moveSelection",
-          "infoRow",
-          "foldersFirst",
-          "editSelection",
-          "topSeparator",
-          "showInFinder",
-          "sort",
-          "openSelection",
-          "topSeparator",
-          "calculateSize",
-          "back",
-          "refresh",
-          "title",
-          "help",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "164: random 164",
       "input": {
-        "value": 0,
-        "ops": []
+        "value": 0
       },
       "output": {
         "sanitized": [
@@ -17052,12 +12495,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -17071,8 +12508,7 @@
           "help",
           "refresh",
           "moveSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -17115,15 +12551,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "help",
-          "refresh",
-          "moveSelection",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -17140,21 +12567,6 @@
           "theme",
           "editSelection",
           "editSelection"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 5
-          },
-          {
-            "op": "insert",
-            "item": "title",
-            "index": -2
-          },
-          {
-            "op": "remove",
-            "index": 5
-          }
         ]
       },
       "output": {
@@ -17198,16 +12610,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "title",
-          "editSelection",
-          "duplicateSelection",
-          "theme",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -17232,8 +12634,7 @@
           "refresh",
           "sort",
           "goToFolder"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -17277,29 +12678,13 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "goToFolder",
-          "infoPanel",
-          "openSelection",
-          "folderTree",
-          "topSeparator",
-          "theme",
-          "revealInFolder",
-          "refresh",
-          "sort",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
     {
       "name": "168: random 168",
       "input": {
-        "value": [],
-        "ops": []
+        "value": []
       },
       "output": {
         "sanitized": [
@@ -17342,12 +12727,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -17378,8 +12757,7 @@
           "viewOptions",
           "topSeparator",
           "newTab"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -17427,23 +12805,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "refresh",
-          "topSeparator",
-          "topSeparator",
-          "renameSelection",
-          "openSelection",
-          "newFolder",
-          "viewOptions",
-          "showInFinder",
-          "topSeparator",
-          "topSeparator",
-          "newTab",
-          "title",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -17452,8 +12813,7 @@
       "input": {
         "value": [
           "help"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -17496,13 +12856,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "help",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -17548,17 +12901,6 @@
           "title",
           "trashSelection",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 27
-          },
-          {
-            "op": "insert",
-            "item": "moveSelection",
-            "index": 34
-          }
         ]
       },
       "output": {
@@ -17606,34 +12948,6 @@
           "duplicateSelection",
           "showInFinder",
           "theme"
-        ],
-        "edited": [
-          "forward",
-          "infoRow",
-          "title",
-          "folderTree",
-          "calculateSize",
-          "help",
-          "sort",
-          "newFolder",
-          "cutSelection",
-          "back",
-          "openInTerminal",
-          "trashSelection",
-          "moveSelection",
-          "search",
-          "clipboard",
-          "goToFolder",
-          "settings",
-          "revealInFolder",
-          "copyPath",
-          "topSeparator",
-          "editSelection",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "viewOptions",
-          "moveSelection"
         ]
       }
     },
@@ -17646,18 +12960,6 @@
           "quickLook",
           "viewOptions",
           "theme"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "infoPanel",
-            "index": 8
-          },
-          {
-            "op": "move",
-            "from": 0,
-            "to": 3
-          }
         ]
       },
       "output": {
@@ -17701,17 +13003,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "view",
-          "quickLook",
-          "viewOptions",
-          "editSelection",
-          "theme",
-          "title",
-          "clipboard",
-          "search",
-          "infoPanel"
         ]
       }
     },
@@ -17776,12 +13067,6 @@
           "clipboard",
           "foldersFirst",
           "renameSelection"
-        ],
-        "ops": [
-          {
-            "op": "add",
-            "item": "renameSelection"
-          }
         ]
       },
       "output": {
@@ -17830,72 +13115,13 @@
           "trashSelection",
           "showInFinder",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "quickLook",
-          "settings",
-          "cutSelection",
-          "topSeparator",
-          "theme",
-          "goToFolder",
-          "view",
-          "sort",
-          "openInTerminal",
-          "copySelection",
-          "hidden",
-          "renameSelection",
-          "back",
-          "search",
-          "topSeparator",
-          "folderTree",
-          "refresh",
-          "topSeparator",
-          "topSeparator",
-          "infoRow",
-          "copyPath",
-          "moveSelection",
-          "editSelection",
-          "forward",
-          "clipboard",
-          "foldersFirst",
-          "title",
-          "viewOptions",
-          "renameSelection"
         ]
       }
     },
     {
       "name": "174: random 174",
       "input": {
-        "value": "back",
-        "ops": [
-          {
-            "op": "insert",
-            "item": "back",
-            "index": 1
-          },
-          {
-            "op": "insert",
-            "item": "trashSelection",
-            "index": -1
-          },
-          {
-            "op": "insert",
-            "item": "title",
-            "index": 2
-          },
-          {
-            "op": "insert",
-            "item": "newFolder",
-            "index": -2
-          },
-          {
-            "op": "move",
-            "from": 3,
-            "to": 2
-          }
-        ]
+        "value": "back"
       },
       "output": {
         "sanitized": [
@@ -17938,16 +13164,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "newFolder",
-          "trashSelection",
-          "title",
-          "title",
-          "back",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -17958,31 +13174,6 @@
           {
             "id": "back"
           }
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "infoPanel",
-            "index": 1
-          },
-          {
-            "op": "insert",
-            "item": "quickLook",
-            "index": -2
-          },
-          {
-            "op": "insert",
-            "item": "duplicateSelection",
-            "index": 3
-          },
-          {
-            "op": "add",
-            "item": "showInFinder"
-          },
-          {
-            "op": "remove",
-            "index": 2
-          }
         ]
       },
       "output": {
@@ -18026,15 +13217,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "quickLook",
-          "title",
-          "duplicateSelection",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "showInFinder"
         ]
       }
     },
@@ -18063,13 +13245,6 @@
           "topSeparator",
           0,
           "duplicateSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 21,
-            "to": 2
-          }
         ]
       },
       "output": {
@@ -18117,26 +13292,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "infoRow",
-          "topSeparator",
-          "openSelection",
-          "quickLook",
-          "foldersFirst",
-          "clipboard",
-          "search",
-          "hidden",
-          "title",
-          "theme",
-          "newTab",
-          "topSeparator",
-          "duplicateSelection",
-          "topSeparator",
-          "copySelection",
-          "folderTree",
-          "topSeparator",
-          "viewOptions"
         ]
       }
     },
@@ -18185,35 +13340,6 @@
           "sort",
           "search",
           "forward"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 13,
-            "to": 23
-          },
-          {
-            "op": "add",
-            "item": "newFolder"
-          },
-          {
-            "op": "insert",
-            "item": "theme",
-            "index": 22
-          },
-          {
-            "op": "insert",
-            "item": "cutSelection",
-            "index": 5
-          },
-          {
-            "op": "add",
-            "item": "title"
-          },
-          {
-            "op": "add",
-            "item": "settings"
-          }
         ]
       },
       "output": {
@@ -18265,37 +13391,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "view",
-          "settings",
-          "topSeparator",
-          "folderTree",
-          "refresh",
-          "cutSelection",
-          "openSelection",
-          "editSelection",
-          "topSeparator",
-          "cutSelection",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "foldersFirst",
-          "renameSelection",
-          "topSeparator",
-          "newFolder",
-          "sort",
-          "search",
-          "forward",
-          "title",
-          "clipboard",
-          "theme",
-          "viewOptions",
-          "topSeparator",
-          "newFolder",
-          "title",
-          "settings"
         ]
       }
     },
@@ -18315,25 +13410,6 @@
           "topSeparator",
           "pasteSelection",
           "topSeparator"
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 1
-          },
-          {
-            "op": "insert",
-            "item": "goToFolder",
-            "index": -1
-          },
-          {
-            "op": "remove",
-            "index": 13
-          },
-          {
-            "op": "add",
-            "item": "folderTree"
-          }
         ]
       },
       "output": {
@@ -18380,21 +13456,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "goToFolder",
-          "pasteSelection",
-          "infoRow",
-          "help",
-          "foldersFirst",
-          "topSeparator",
-          "topSeparator",
-          "topSeparator",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "folderTree"
         ]
       }
     },
@@ -18435,36 +13496,6 @@
           "topSeparator",
           "search",
           "clipboard"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "newTab",
-            "index": 32
-          },
-          {
-            "op": "remove",
-            "index": 19
-          },
-          {
-            "op": "move",
-            "from": 10,
-            "to": 29
-          },
-          {
-            "op": "remove",
-            "index": 25
-          },
-          {
-            "op": "insert",
-            "item": "forward",
-            "index": 23
-          },
-          {
-            "op": "insert",
-            "item": "viewOptions",
-            "index": 8
-          }
         ]
       },
       "output": {
@@ -18511,31 +13542,6 @@
           "showInFinder",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "renameSelection",
-          "cutSelection",
-          "pasteSelection",
-          "view",
-          "hidden",
-          "copySelection",
-          "theme",
-          "viewOptions",
-          "viewOptions",
-          "openInTerminal",
-          "calculateSize",
-          "clipboard",
-          "folderTree",
-          "foldersFirst",
-          "back",
-          "infoRow",
-          "search",
-          "topSeparator",
-          "help",
-          "title",
-          "newTab",
-          "topSeparator",
-          "forward"
         ]
       }
     },
@@ -18585,27 +13591,6 @@
           "pasteSelection",
           "viewOptions",
           "folderTree"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 30,
-            "to": 1
-          },
-          {
-            "op": "remove",
-            "index": 24
-          },
-          {
-            "op": "move",
-            "from": 4,
-            "to": 37
-          },
-          {
-            "op": "move",
-            "from": -1,
-            "to": 4
-          }
         ]
       },
       "output": {
@@ -18654,34 +13639,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "openInTerminal",
-          "goToFolder",
-          "topSeparator",
-          "copySelection",
-          "sort",
-          "showInFinder",
-          "clipboard",
-          "renameSelection",
-          "view",
-          "topSeparator",
-          "newFolder",
-          "newTab",
-          "settings",
-          "openSelection",
-          "refresh",
-          "folderTree",
-          "cutSelection",
-          "forward",
-          "up",
-          "topSeparator",
-          "calculateSize",
-          "topSeparator",
-          "title",
-          "viewOptions",
-          "search",
-          "topSeparator"
         ]
       }
     },
@@ -18714,36 +13671,6 @@
           "theme",
           "settings",
           "duplicateSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 5,
-            "to": 23
-          },
-          {
-            "op": "remove",
-            "index": 12
-          },
-          {
-            "op": "move",
-            "from": 11,
-            "to": 0
-          },
-          {
-            "op": "move",
-            "from": 12,
-            "to": 18
-          },
-          {
-            "op": "insert",
-            "item": "folderTree",
-            "index": 5
-          },
-          {
-            "op": "add",
-            "item": "quickLook"
-          }
         ]
       },
       "output": {
@@ -18790,27 +13717,6 @@
           "showInFinder",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "quickLook",
-          "topSeparator",
-          "pasteSelection",
-          "duplicateSelection",
-          "folderTree",
-          "copySelection",
-          "revealInFolder",
-          "infoPanel",
-          "foldersFirst",
-          "topSeparator",
-          "title",
-          "infoRow",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "openInTerminal",
-          "settings",
-          "quickLook"
         ]
       }
     },
@@ -18854,8 +13760,7 @@
           "moveSelection",
           0,
           false
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -18900,28 +13805,6 @@
           "openInTerminal",
           "showInFinder",
           "theme"
-        ],
-        "edited": [
-          "copyPath",
-          "trashSelection",
-          "copySelection",
-          "infoRow",
-          "hidden",
-          "help",
-          "revealInFolder",
-          "settings",
-          "topSeparator",
-          "editSelection",
-          "back",
-          "newTab",
-          "title",
-          "refresh",
-          "topSeparator",
-          "moveSelection",
-          "newFolder",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -18956,8 +13839,7 @@
           "duplicateSelection",
           "pasteSelection",
           "renameSelection"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -19003,28 +13885,6 @@
           "showInFinder",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "refresh",
-          "pasteSelection",
-          "topSeparator",
-          "viewOptions",
-          "copySelection",
-          "topSeparator",
-          "infoRow",
-          "duplicateSelection",
-          "topSeparator",
-          "newFolder",
-          "settings",
-          "theme",
-          "openInTerminal",
-          "editSelection",
-          "forward",
-          "back",
-          "search",
-          "renameSelection",
-          "title",
-          "clipboard"
         ]
       }
     },
@@ -19042,8 +13902,7 @@
           "newFolder",
           "openInTerminal",
           "viewOptions"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -19086,16 +13945,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "clipboard",
-          "copyPath",
-          "sort",
-          "newFolder",
-          "openInTerminal",
-          "viewOptions",
-          "title",
-          "search"
         ]
       }
     },
@@ -19152,30 +14001,6 @@
           "clipboard",
           "view",
           "cutSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 14,
-            "to": 8
-          },
-          {
-            "op": "remove",
-            "index": 48
-          },
-          {
-            "op": "add",
-            "item": "editSelection"
-          },
-          {
-            "op": "insert",
-            "item": "clipboard",
-            "index": 0
-          },
-          {
-            "op": "remove",
-            "index": 10
-          }
         ]
       },
       "output": {
@@ -19224,38 +14049,6 @@
           "showInFinder",
           "copyPath",
           "theme"
-        ],
-        "edited": [
-          "clipboard",
-          "up",
-          "topSeparator",
-          "infoPanel",
-          "forward",
-          "view",
-          "infoRow",
-          "settings",
-          "trashSelection",
-          "pasteSelection",
-          "sort",
-          "moveSelection",
-          "topSeparator",
-          "copySelection",
-          "editSelection",
-          "openInTerminal",
-          "newTab",
-          "quickLook",
-          "topSeparator",
-          "hidden",
-          "search",
-          "clipboard",
-          "refresh",
-          "help",
-          "topSeparator",
-          "goToFolder",
-          "cutSelection",
-          "title",
-          "viewOptions",
-          "editSelection"
         ]
       }
     },
@@ -19271,27 +14064,6 @@
           [
             "back"
           ]
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 7,
-            "to": 4
-          },
-          {
-            "op": "move",
-            "from": 3,
-            "to": 2
-          },
-          {
-            "op": "insert",
-            "item": "copyPath",
-            "index": 5
-          },
-          {
-            "op": "add",
-            "item": "topSeparator"
-          }
         ]
       },
       "output": {
@@ -19336,16 +14108,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "view",
-          "clipboard",
-          "title",
-          "search",
-          "copyPath",
-          "viewOptions",
-          "topSeparator"
         ]
       }
     },
@@ -19386,8 +14148,7 @@
           "title",
           [],
           1.5
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -19433,26 +14194,6 @@
           "showInFinder",
           "copyPath",
           "help"
-        ],
-        "edited": [
-          "theme",
-          "copySelection",
-          "topSeparator",
-          "topSeparator",
-          "infoPanel",
-          "topSeparator",
-          "settings",
-          "refresh",
-          "newFolder",
-          "openInTerminal",
-          "sort",
-          "duplicateSelection",
-          "view",
-          "goToFolder",
-          "search",
-          "title",
-          "clipboard",
-          "viewOptions"
         ]
       }
     },
@@ -19461,31 +14202,6 @@
       "input": {
         "value": [
           "editSelection"
-        ],
-        "ops": [
-          {
-            "op": "move",
-            "from": 1,
-            "to": -1
-          },
-          {
-            "op": "add",
-            "item": "sort"
-          },
-          {
-            "op": "move",
-            "from": 4,
-            "to": 4
-          },
-          {
-            "op": "remove",
-            "index": -1
-          },
-          {
-            "op": "insert",
-            "item": "topSeparator",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -19529,50 +14245,13 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "editSelection",
-          "clipboard",
-          "search",
-          "topSeparator",
-          "viewOptions",
-          "sort"
         ]
       }
     },
     {
       "name": "189: random 189",
       "input": {
-        "value": "back",
-        "ops": [
-          {
-            "op": "remove",
-            "index": 0
-          },
-          {
-            "op": "move",
-            "from": -1,
-            "to": 2
-          },
-          {
-            "op": "remove",
-            "index": 0
-          },
-          {
-            "op": "add",
-            "item": "editSelection"
-          },
-          {
-            "op": "move",
-            "from": -1,
-            "to": 2
-          },
-          {
-            "op": "remove",
-            "index": 3
-          }
-        ]
+        "value": "back"
       },
       "output": {
         "sanitized": [
@@ -19615,13 +14294,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions",
-          "editSelection"
         ]
       }
     },
@@ -19633,35 +14305,6 @@
           "topSeparator",
           "pasteSelection",
           "forward"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "openInTerminal",
-            "index": 6
-          },
-          {
-            "op": "insert",
-            "item": "duplicateSelection",
-            "index": 3
-          },
-          {
-            "op": "remove",
-            "index": 2
-          },
-          {
-            "op": "remove",
-            "index": 6
-          },
-          {
-            "op": "insert",
-            "item": "search",
-            "index": 6
-          },
-          {
-            "op": "remove",
-            "index": 6
-          }
         ]
       },
       "output": {
@@ -19706,17 +14349,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "calculateSize",
-          "topSeparator",
-          "duplicateSelection",
-          "forward",
-          "title",
-          "clipboard",
-          "search",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -19758,8 +14390,7 @@
           "topSeparator",
           "moveSelection",
           "theme"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -19805,27 +14436,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "sort",
-          "title",
-          "infoPanel",
-          "topSeparator",
-          "folderTree",
-          "trashSelection",
-          "viewOptions",
-          "hidden",
-          "pasteSelection",
-          "quickLook",
-          "calculateSize",
-          "back",
-          "up",
-          "topSeparator",
-          "moveSelection",
-          "theme",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -19844,13 +14454,6 @@
           "topSeparator",
           "back",
           "cutSelection"
-        ],
-        "ops": [
-          {
-            "op": "insert",
-            "item": "trashSelection",
-            "index": 4
-          }
         ]
       },
       "output": {
@@ -19898,22 +14501,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "topSeparator",
-          "renameSelection",
-          "duplicateSelection",
-          "topSeparator",
-          "trashSelection",
-          "topSeparator",
-          "folderTree",
-          "topSeparator",
-          "back",
-          "cutSelection",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -19931,27 +14518,6 @@
           "theme",
           "renameSelection",
           false
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 8
-          },
-          {
-            "op": "move",
-            "from": 9,
-            "to": 2
-          },
-          {
-            "op": "move",
-            "from": 6,
-            "to": 13
-          },
-          {
-            "op": "insert",
-            "item": "title",
-            "index": -1
-          }
         ]
       },
       "output": {
@@ -19996,21 +14562,6 @@
           "showInFinder",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "title",
-          "trashSelection",
-          "help",
-          "clipboard",
-          "cutSelection",
-          "openSelection",
-          "folderTree",
-          "theme",
-          "renameSelection",
-          "title",
-          "search",
-          "viewOptions",
-          "topSeparator"
         ]
       }
     },
@@ -20067,8 +14618,7 @@
             "BACK"
           ],
           "topSeparator"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -20117,30 +14667,6 @@
           "copyPath",
           "settings",
           "help"
-        ],
-        "edited": [
-          "title",
-          "infoPanel",
-          "clipboard",
-          "showInFinder",
-          "topSeparator",
-          "topSeparator",
-          "renameSelection",
-          "quickLook",
-          "topSeparator",
-          "foldersFirst",
-          "infoRow",
-          "openInTerminal",
-          "topSeparator",
-          "topSeparator",
-          "newFolder",
-          "back",
-          "theme",
-          "calculateSize",
-          "openSelection",
-          "topSeparator",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -20150,8 +14676,7 @@
         "value": [
           "renameSelection",
           "help"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -20194,14 +14719,6 @@
           "copyPath",
           "theme",
           "settings"
-        ],
-        "edited": [
-          "renameSelection",
-          "help",
-          "title",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     },
@@ -20257,8 +14774,7 @@
               "id": "back"
             }
           ]
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -20303,34 +14819,6 @@
           "showInFinder",
           "copyPath",
           "settings"
-        ],
-        "edited": [
-          "openSelection",
-          "refresh",
-          "revealInFolder",
-          "copySelection",
-          "newTab",
-          "clipboard",
-          "openInTerminal",
-          "trashSelection",
-          "cutSelection",
-          "quickLook",
-          "topSeparator",
-          "sort",
-          "help",
-          "pasteSelection",
-          "back",
-          "topSeparator",
-          "folderTree",
-          "infoRow",
-          "infoPanel",
-          "newFolder",
-          "view",
-          "search",
-          "theme",
-          "calculateSize",
-          "title",
-          "viewOptions"
         ]
       }
     },
@@ -20362,8 +14850,7 @@
           "viewOptions",
           "title",
           "settings"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -20409,27 +14896,6 @@
           "copyPath",
           "theme",
           "help"
-        ],
-        "edited": [
-          "copySelection",
-          "renameSelection",
-          "refresh",
-          "moveSelection",
-          "topSeparator",
-          "forward",
-          "cutSelection",
-          "duplicateSelection",
-          "settings",
-          "topSeparator",
-          "infoPanel",
-          "sort",
-          "back",
-          "revealInFolder",
-          "topSeparator",
-          "viewOptions",
-          "title",
-          "clipboard",
-          "search"
         ]
       }
     },
@@ -20454,26 +14920,6 @@
           "showInFinder",
           "topSeparator",
           1
-        ],
-        "ops": [
-          {
-            "op": "remove",
-            "index": 17
-          },
-          {
-            "op": "move",
-            "from": 9,
-            "to": 14
-          },
-          {
-            "op": "add",
-            "item": "trashSelection"
-          },
-          {
-            "op": "insert",
-            "item": "settings",
-            "index": 11
-          }
         ]
       },
       "output": {
@@ -20518,24 +14964,6 @@
           "theme",
           "settings",
           "help"
-        ],
-        "edited": [
-          "search",
-          "pasteSelection",
-          "infoRow",
-          "forward",
-          "moveSelection",
-          "trashSelection",
-          "foldersFirst",
-          "revealInFolder",
-          "renameSelection",
-          "topSeparator",
-          "title",
-          "settings",
-          "clipboard",
-          "viewOptions",
-          "showInFinder",
-          "trashSelection"
         ]
       }
     },
@@ -20585,8 +15013,7 @@
           ],
           "newTab",
           "help"
-        ],
-        "ops": []
+        ]
       },
       "output": {
         "sanitized": [
@@ -20631,27 +15058,6 @@
           "openInTerminal",
           "copyPath",
           "theme"
-        ],
-        "edited": [
-          "topSeparator",
-          "back",
-          "duplicateSelection",
-          "trashSelection",
-          "editSelection",
-          "newTab",
-          "title",
-          "calculateSize",
-          "moveSelection",
-          "pasteSelection",
-          "refresh",
-          "showInFinder",
-          "topSeparator",
-          "up",
-          "settings",
-          "help",
-          "clipboard",
-          "search",
-          "viewOptions"
         ]
       }
     }

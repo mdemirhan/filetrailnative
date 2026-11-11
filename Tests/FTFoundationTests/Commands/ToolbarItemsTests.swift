@@ -43,29 +43,14 @@ struct ToolbarItemsTests {
             ]) == ["topSeparator", "back", "topSeparator", "title", "clipboard", "search", "viewOptions"])
     }
 
-    @Test func addsAClickedItemAtTheFarRight() {
-        #expect(ToolbarItems.addTopItem(Self.defaults, .copyPath) == Self.defaults + [.copyPath])
-    }
-
-    @Test func insertsMovesAndRemovesItemsByTheirPlaceInTheOrder() {
-        let items = Self.defaults
+    // A space with nothing to divide isn't drawn: at either end, or right after another.
+    @Test func dropsSeparatorsLeftWithNothingToDivide() {
         #expect(
-            ToolbarItems.insertTopItem(items, .refresh, at: 3)
-                == Array(items[..<3]) + [.refresh] + Array(items[3...]))
-        // Out of range lands at the nearer end.
-        #expect(ToolbarItems.insertTopItem(items, .refresh, at: -3).first == .refresh)
-        #expect(ToolbarItems.insertTopItem(items, .refresh, at: 99).last == .refresh)
-        // Back moved after Sort: the index counts the items without Back.
-        #expect(
-            ToolbarItems.moveTopItem(items, from: 2, to: 7) == [
-                .folderTree, .topSeparator, .forward, .title, .clipboard, .view, .sort, .back, .search, .viewOptions,
-                .infoPanel,
-            ])
-        let sortIndex = items.firstIndex(of: .sort) ?? 0
-        #expect(!ToolbarItems.removeTopItem(items, at: sortIndex).contains(.sort))
-        // The four that always stay are not taken off.
-        let searchIndex = items.firstIndex(of: .search) ?? 0
-        #expect(ToolbarItems.removeTopItem(items, at: searchIndex) == items)
+            ToolbarItems.withoutIdleSeparators([
+                .topSeparator, .back, .topSeparator, .topSeparator, .title, .view, .topSeparator, .sort, .search,
+                .topSeparator,
+            ]) == [.back, .topSeparator, .title, .view, .topSeparator, .sort, .search])
+        #expect(ToolbarItems.withoutIdleSeparators([.topSeparator]) == [])
     }
 
     @Test func offersEveryItemThatCanBeTakenOffSoEachCanBePutBack() {

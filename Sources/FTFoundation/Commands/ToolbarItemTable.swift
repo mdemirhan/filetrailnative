@@ -50,10 +50,6 @@ public enum ToolbarIconName: String, CaseIterable, Sendable, Hashable {
     case calculateSize
 }
 
-public enum ToolbarItemKind: String, Sendable, Hashable {
-    case button, toggle, menu, composite, separator
-}
-
 /// The items of the toolbar over the file list; the raw value is what is saved in the toolbar's order.
 public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case back
@@ -98,95 +94,95 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
 extension ToolbarItems {
     /// Every toolbar item, in the table's order.
     public static let definitions: [ToolbarItemDefinition] = [
-        ToolbarItemDefinition(id: .back, label: "Back", icon: .back, kind: .button, shortcutCommand: .goBack),
+        ToolbarItemDefinition(id: .back, label: "Back", icon: .back, shortcutCommand: .goBack),
         ToolbarItemDefinition(
-            id: .forward, label: "Forward", icon: .forward, kind: .button, shortcutCommand: .goForward),
+            id: .forward, label: "Forward", icon: .forward, shortcutCommand: .goForward),
         ToolbarItemDefinition(
-            id: .up, label: "Enclosing Folder", icon: .up, kind: .button, shortcutCommand: .goEnclosingFolder),
+            id: .up, label: "Enclosing Folder", icon: .up, shortcutCommand: .goEnclosingFolder),
         ToolbarItemDefinition(
-            id: .refresh, label: "Refresh", icon: .refresh, kind: .button, commandType: .refreshOrApplySearchSort,
+            id: .refresh, label: "Refresh", icon: .refresh, commandType: .refreshOrApplySearchSort,
             shortcutCommand: .refreshOrApplySearchSort),
         ToolbarItemDefinition(
-            id: .topSeparator, label: "Space", icon: .separatorVertical, kind: .separator, allowDuplicates: true),
-        ToolbarItemDefinition(id: .view, label: "View Mode", icon: .list, kind: .composite),
-        ToolbarItemDefinition(id: .sort, label: "Sort", icon: .sort, kind: .composite),
-        ToolbarItemDefinition(id: .title, label: "Title", icon: .title, kind: .composite, topRequired: true),
-        ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, kind: .menu, topRequired: true),
-        ToolbarItemDefinition(id: .viewOptions, label: "View Options", icon: .more, kind: .menu, topRequired: true),
-        ToolbarItemDefinition(id: .search, label: "Search", icon: .search, kind: .composite, topRequired: true),
+            id: .topSeparator, label: "Space", icon: .separatorVertical, allowDuplicates: true),
+        ToolbarItemDefinition(id: .view, label: "View Mode", icon: .list),
+        ToolbarItemDefinition(id: .sort, label: "Sort", icon: .sort),
+        ToolbarItemDefinition(id: .title, label: "Title", icon: .title, topRequired: true),
+        ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, topRequired: true),
+        ToolbarItemDefinition(id: .viewOptions, label: "View Options", icon: .more, topRequired: true),
+        ToolbarItemDefinition(id: .search, label: "Search", icon: .search, topRequired: true),
         ToolbarItemDefinition(
-            id: .goToFolder, label: "Go To", icon: .location, kind: .button, commandType: .openLocationSheet,
+            id: .goToFolder, label: "Go To", icon: .location, commandType: .openLocationSheet,
             shortcutCommand: .openLocationSheet),
         ToolbarItemDefinition(
-            id: .foldersFirst, label: "Folders First", icon: .foldersFirst, kind: .toggle,
+            id: .foldersFirst, label: "Folders First", icon: .foldersFirst,
             shortcutCommand: .toggleFoldersFirst),
         ToolbarItemDefinition(
-            id: .hidden, label: "Hidden Files", icon: .hidden, kind: .toggle, shortcutCommand: .toggleHiddenFiles),
+            id: .hidden, label: "Hidden Files", icon: .hidden, shortcutCommand: .toggleHiddenFiles),
         ToolbarItemDefinition(
-            id: .folderTree, label: "Folder Tree", icon: .sidebar, kind: .toggle, commandType: .toggleFolderTree,
+            id: .folderTree, label: "Folder Tree", icon: .sidebar, commandType: .toggleFolderTree,
             shortcutCommand: .toggleFolderTree),
         ToolbarItemDefinition(
-            id: .infoPanel, label: "Info Panel", icon: .drawer, kind: .toggle, commandType: .toggleInfoPanel,
+            id: .infoPanel, label: "Info Panel", icon: .drawer, commandType: .toggleInfoPanel,
             shortcutCommand: .toggleInfoPanel),
         ToolbarItemDefinition(
-            id: .infoRow, label: "Info Row", icon: .infoRow, kind: .toggle, commandType: .toggleInfoRow,
+            id: .infoRow, label: "Info Row", icon: .infoRow, commandType: .toggleInfoRow,
             shortcutCommand: .toggleInfoRow),
         ToolbarItemDefinition(
-            id: .newTab, label: "New Tab", icon: .newTab, kind: .button, commandType: .newTab, shortcutCommand: .newTab),
+            id: .newTab, label: "New Tab", icon: .newTab, commandType: .newTab, shortcutCommand: .newTab),
         ToolbarItemDefinition(
-            id: .openSelection, label: "Open", icon: .open, kind: .button, commandType: .openSelection,
+            id: .openSelection, label: "Open", icon: .open, commandType: .openSelection,
             shortcutCommand: .openSelection),
         ToolbarItemDefinition(
-            id: .quickLook, label: "Quick Look", icon: .quickLook, kind: .button, commandType: .quickLookSelection,
+            id: .quickLook, label: "Quick Look", icon: .quickLook, commandType: .quickLookSelection,
             shortcutCommand: .quickLookSelection),
         ToolbarItemDefinition(
-            id: .editSelection, label: "Edit", icon: .edit, kind: .button, commandType: .editSelection,
+            id: .editSelection, label: "Edit", icon: .edit, commandType: .editSelection,
             shortcutCommand: .editSelection, tooltipLabel: "Edit in Text Editor"),
         ToolbarItemDefinition(
-            id: .moveSelection, label: "Move To", icon: .move, kind: .button, commandType: .moveSelection,
+            id: .moveSelection, label: "Move To", icon: .move, commandType: .moveSelection,
             shortcutCommand: .moveSelection),
         ToolbarItemDefinition(
-            id: .renameSelection, label: "Rename", icon: .rename, kind: .button, commandType: .renameSelection,
+            id: .renameSelection, label: "Rename", icon: .rename, commandType: .renameSelection,
             shortcutCommand: .renameSelection),
         ToolbarItemDefinition(
-            id: .duplicateSelection, label: "Duplicate", icon: .duplicate, kind: .button,
+            id: .duplicateSelection, label: "Duplicate", icon: .duplicate,
             commandType: .duplicateSelection, shortcutCommand: .duplicateSelection),
         ToolbarItemDefinition(
-            id: .newFolder, label: "New Folder", icon: .newFolder, kind: .button, commandType: .newFolder,
+            id: .newFolder, label: "New Folder", icon: .newFolder, commandType: .newFolder,
             shortcutCommand: .newFolder),
         ToolbarItemDefinition(
-            id: .trashSelection, label: "Move to Trash", icon: .trash, kind: .button, commandType: .trashSelection,
+            id: .trashSelection, label: "Move to Trash", icon: .trash, commandType: .trashSelection,
             shortcutCommand: .trashSelection),
         ToolbarItemDefinition(
-            id: .copySelection, label: "Copy", icon: .copy, kind: .button, commandType: .copySelection,
+            id: .copySelection, label: "Copy", icon: .copy, commandType: .copySelection,
             shortcutCommand: .copy),
         ToolbarItemDefinition(
-            id: .cutSelection, label: "Cut", icon: .cut, kind: .button, commandType: .cutSelection,
+            id: .cutSelection, label: "Cut", icon: .cut, commandType: .cutSelection,
             shortcutCommand: .cut),
         ToolbarItemDefinition(
-            id: .pasteSelection, label: "Paste", icon: .paste, kind: .button, commandType: .pasteSelection,
+            id: .pasteSelection, label: "Paste", icon: .paste, commandType: .pasteSelection,
             shortcutCommand: .paste),
         ToolbarItemDefinition(
-            id: .openInTerminal, label: "Open in Terminal", icon: .terminal, kind: .button,
+            id: .openInTerminal, label: "Open in Terminal", icon: .terminal,
             commandType: .openInTerminal, shortcutCommand: .openInTerminal),
         ToolbarItemDefinition(
-            id: .showInFinder, label: "Show in Finder", icon: .showInFinder, kind: .button, commandType: .showInFinder,
+            id: .showInFinder, label: "Show in Finder", icon: .showInFinder, commandType: .showInFinder,
             shortcutCommand: .showInFinder),
         ToolbarItemDefinition(
-            id: .revealInFolder, label: "Reveal in Folder", icon: .revealInFolder, kind: .button,
+            id: .revealInFolder, label: "Reveal in Folder", icon: .revealInFolder,
             commandType: .revealInFolder, shortcutCommand: .revealInFolder),
         ToolbarItemDefinition(
-            id: .calculateSize, label: "Calculate Size", icon: .calculateSize, kind: .button,
+            id: .calculateSize, label: "Calculate Size", icon: .calculateSize,
             commandType: .calculateSize, shortcutCommand: .calculateSize),
         ToolbarItemDefinition(
-            id: .copyPath, label: "Copy Path", icon: .copyPath, kind: .button, commandType: .copyPath,
+            id: .copyPath, label: "Copy Path", icon: .copyPath, commandType: .copyPath,
             shortcutCommand: .copyPath),
-        ToolbarItemDefinition(id: .theme, label: "Theme", icon: .theme, kind: .menu),
+        ToolbarItemDefinition(id: .theme, label: "Theme", icon: .theme),
         ToolbarItemDefinition(
-            id: .settings, label: "Settings", icon: .settings, kind: .button, commandType: .openSettings,
+            id: .settings, label: "Settings", icon: .settings, commandType: .openSettings,
             shortcutCommand: .settings),
         ToolbarItemDefinition(
-            id: .help, label: "Help", icon: .help, kind: .button, commandType: .openHelp, shortcutCommand: .openHelp,
+            id: .help, label: "Help", icon: .help, commandType: .openHelp, shortcutCommand: .openHelp,
             tooltipLabel: "File Trail Help"),
     ]
 
