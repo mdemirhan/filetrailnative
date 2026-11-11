@@ -140,30 +140,14 @@ struct ListingSortGoldenTests {
         return "counts \(expected.entries.count)/\(actual.entries.count) \(expected.tree.count)/\(actual.tree.count)"
     }
 
-    /// Without ICU names are compared by `CollationTable`: the names it covers (ASCII and the accented
-    /// letters, but not Cyrillic, CJK or emoji) come out in the order the golden gives them.
-    @Test("listing-sort golden, names by the collation table")
-    func sortsCoveredNamesAsTheGoldenFileSaysWithoutICU() throws {
-        let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "listing-sort")
-        var compared = 0
-        var failures: [String] = []
-        for testCase in cases where testCase.input.sortBy == "name" && testCase.input.sortDirection == "asc" {
-            let input = testCase.input
-            guard !input.foldersFirst else { continue }
-            let files = input.items.filter { $0.type == "file" }
-            var keys = NameKeys(mode: .table)
-            let visible = files.filter { input.includeHidden || !$0.name.hasPrefix(".") }
-            for item in visible { keys.append(item.name) }
-            let covered = Set(keys.names.enumerated().filter { keys.hasKey[$0.offset] }.map(\.element))
-            let actual = keys.sortedPositions().map { keys.names[$0] }.filter { covered.contains($0) }
-            let expected = testCase.output.entries.filter { $0.kind == "file" }.map(\.name).filter {
-                covered.contains($0)
-            }
-            compared += 1
-            if actual != expected { failures.append(testCase.name) }
-        }
-        #expect(compared >= 5)
-        #expect(failures.isEmpty, "differ: \(failures.prefix(5).joined(separator: ", "))")
+    // Without the system's collator names are compared as text: numbers by value, case and accents ignored.
+    @Test func comparesNamesAsTextWithoutTheSystemsCollator() {
+        var keys = NameKeys(icu: nil)
+        for name in ["file10.txt", "File2.txt", "élan", "Apple", "file1.txt", "Zebra", "apple"] { keys.append(name) }
+        #expect(keys.hasKey.allSatisfy { !$0 })
+        #expect(
+            keys.sortedPositions().map { keys.names[$0] }
+                == ["Apple", "apple", "élan", "file1.txt", "File2.txt", "file10.txt", "Zebra"])
     }
 
     @Test("Tests/Golden/listing-sort.json")

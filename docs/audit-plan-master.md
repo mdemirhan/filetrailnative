@@ -848,7 +848,7 @@ Leave the read-only test seams wherever a test uses one as its only way to obser
 `jobCount`, `recordedCount`, `cachedCount`, `activeCount`, `queuedCount`, `watchedPaths`, `rowViewsShown`,
 `sectionViews`, `cachedEntry`, `isTurning` and the like).
 
-### [ ] 5.1. The collation table fallback (about 800 lines)
+### [x] 5.1. The collation table fallback (about 800 lines)
 
 [Q6]
 
@@ -2135,3 +2135,11 @@ anything that differed from the plan, and anything found on the way that is not 
   as 26.0 while the app is built with 27.0. Raising the target made `posix_spawn_file_actions_addchdir_np` deprecated;
   fd is now started with `posix_spawn_file_actions_addchdir`. Found, not fixed: the notification's icon cuts its sign
   out in `contextMenuBg`, the opaque card's colour, which glass no longer has.
+- 2026-11-11. The owner, Phase 5: Q6 yes, delete the collation table (asked first when ICU could fail to load: only if
+  macOS dropped `libicucore` or renamed its unversioned `ucol_*` exports, all at once for every user); Q7 no, the
+  highlight moves to `NSRegularExpression`; Q9 none of the three is used by hand, `tools/acknowledgements` included
+  (the licences the app shows are `Resources/Acknowledgements`, kept by hand); Q10 yes, strip the golden metadata.
+  Q8 not asked yet: nothing in Phase 5 needs it.
+- 2026-11-11. 5.1: without the system's collator, names are compared as text by Foundation (`NameKeys(icu: nil)`
+  is the test seam, with a test of its own in place of the table's golden test). `Collation.weight(of:)`, read only
+  by the table's keys, went too.

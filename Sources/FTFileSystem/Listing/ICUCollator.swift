@@ -2,8 +2,8 @@
 import Foundation
 
 /// ICU's root collator with numeric ordering and primary strength. The system's ICU (libicucore) is looked up by
-/// name, as its headers are not in the SDK; where it is missing, names are compared with `CollationTable` and
-/// Foundation instead.
+/// name, as its headers are not in the SDK; where it is missing, names are compared as text by Foundation instead
+/// (`Collation.compareNumericBase`).
 struct ICUCollator: @unchecked Sendable {
     private typealias Open = @convention(c) (UnsafePointer<CChar>?, UnsafeMutablePointer<Int32>) -> OpaquePointer?
     private typealias SetAttribute = @convention(c) (OpaquePointer?, Int32, Int32, UnsafeMutablePointer<Int32>) -> Void

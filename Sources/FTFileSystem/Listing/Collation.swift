@@ -33,37 +33,13 @@ enum Collation {
         return foldedCompare(left.text, right.text, numeric: false, strength: .variant)
     }
 
-    /// The text-only form of `compareNumericBase`, for names of which one is not ASCII.
-    public static func compareNumericBase(_ left: String, _ right: String) -> Int {
-        foldedCompare(foldingKnown(left), foldingKnown(right), numeric: true, strength: .base)
-    }
-
-    /// The text with the characters `CollationTable` knows replaced by the ASCII ones they compare as, so
-    /// that what Foundation compares differs from the root collation only in the characters it
-    /// doesn't know (other scripts, emoji).
-    static func foldingKnown(_ text: String) -> String {
-        guard text.unicodeScalars.contains(where: { $0.value >= 0x80 }) else { return text }
-        var folded = String.UnicodeScalarView()
-        for scalar in text.unicodeScalars {
-            if scalar.value < 0x80 {
-                folded.append(scalar)
-            } else if CollationTable.ignorable.contains(scalar.value) {
-                continue
-            } else if let replacement = CollationTable.replacements[scalar.value] {
-                replacement.withUTF8Buffer { letters in
-                    for letter in letters { folded.append(Unicode.Scalar(letter)) }
-                }
-            } else {
-                folded.append(scalar)
-            }
-        }
-        return String(folded)
+    /// Names compared as text, when the system's collator can't be used: numbers by value, case and accents
+    /// ignored.
+    static func compareNumericBase(_ left: String, _ right: String) -> Int {
+        foldedCompare(left, right, numeric: true, strength: .base)
     }
 
     // MARK: ASCII
-
-    @inline(__always)
-    static func weight(of byte: UInt8) -> UInt8 { weights[Int(byte)] }
 
     /// The primary weight of each ASCII character in the root collation (ICU), 0 for those it ignores
     /// (control characters). Letters share a weight with their capitals.
