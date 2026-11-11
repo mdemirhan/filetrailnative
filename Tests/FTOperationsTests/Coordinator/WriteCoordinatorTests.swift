@@ -152,14 +152,14 @@ import Testing
     @Test func rejectsAPasteThatArrivesWhileARenameIsStillBeingPrepared() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
-        try await Coordinators.analyze(coordinator, window)
+        let report = try await Coordinators.analyze(coordinator, window)
         let gate = TestGate()
         let preparing = Task { try await coordinator.prepareWithReservedSlot({ await gate.wait() }, then: { _, _ in }) }
         _ = try await Coordinators.waitFor { gate.waiting ? true : nil }
 
         #expect(throws: WriteCoordinatorError.busy) {
             try coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: "analysis-1", policy: Coordinators.skipMerge), window: window)
+                CopyPasteStart(report: report, policy: Coordinators.skipMerge), window: window)
         }
 
         gate.open()
@@ -171,11 +171,11 @@ import Testing
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
-        try await Coordinators.analyze(coordinator, window)
+        let report = try await Coordinators.analyze(coordinator, window)
         let policy = CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)
         try coordinator.startCopyPaste(
             CopyPasteStart(
-                analysisId: "analysis-1", policy: policy,
+                report: report, policy: policy,
                 overrides: [CopyPasteNodeOverride(nodeId: "item-2", action: .overwrite)]), window: window)
         coordinator.resolveConflict(
             "copy-op-1", conflictId: "runtime-item-1-destination", resolution: .skip, applyToRemaining: true,
@@ -183,11 +183,10 @@ import Testing
 
         let start = try #require(service.calls.startCopyPaste.first)
         #expect(
-            start.0
-                == CopyPasteExecutionRequest(
-                    analysisId: "analysis-1", policy: policy,
+            start
+                == StartedPaste(
+                    report: report, policy: policy,
                     overrides: [CopyPasteNodeOverride(nodeId: "item-2", action: .overwrite)]))
-        #expect(start.1 == [])
         let answer = try #require(service.calls.resolveRuntimeConflict.first)
         #expect(answer.0 == "copy-op-1" && answer.1 == "runtime-item-1-destination" && answer.2 == .skip && answer.3)
         await coordinator.shutDown(maxWaitMs: 0)
@@ -206,9 +205,8 @@ import Testing
         #expect(coordinator.watchCount(window) == 0)
 
         let other = TestWindow()
-        try await Coordinators.analyze(coordinator, other)
-        try coordinator.startCopyPaste(
-            CopyPasteStart(analysisId: "analysis-1", policy: Coordinators.skipMerge), window: other)
+        let report = try await Coordinators.analyze(coordinator, other)
+        try coordinator.startCopyPaste(CopyPasteStart(report: report, policy: Coordinators.skipMerge), window: other)
         #expect(!service.calls.cancelOperation.contains("copy-op-2"))
         coordinator.windowClosed(other)
         #expect(service.calls.cancelOperation.contains("copy-op-2"))
@@ -255,12 +253,11 @@ import Testing
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
-        try await Coordinators.analyze(coordinator, window)
+        let report = try await Coordinators.analyze(coordinator, window)
         // Closed while the start request was on its way.
         window.isClosed = true
 
-        try coordinator.startCopyPaste(
-            CopyPasteStart(analysisId: "analysis-1", policy: Coordinators.skipMerge), window: window)
+        try coordinator.startCopyPaste(CopyPasteStart(report: report, policy: Coordinators.skipMerge), window: window)
 
         #expect(service.calls.cancelOperation == ["copy-op-1"])
         await coordinator.shutDown(maxWaitMs: 0)
@@ -280,7 +277,8 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    @Test func sendsTheWindowATrimmedAnalysisReportKeepsItsOwnWholeAndCopiesEverything() async throws {
+    // The review sheet reads only part of it (what is inside a new folder isn't shown); the paste runs from all of it.
+    @Test func handsTheWindowTheWholeReportItsPasteRunsFromAndCopiesEverything() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-trim") { root in
             let source = root.appending("source").path
             let destination = root.appending("destination").path
@@ -300,37 +298,26 @@ import Testing
             let service = WriteService(WriteServiceDependencies(fileSystem: NativeWriteFileSystem()))
             let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
             let window = TestWindow()
-            let handle = try await coordinator.startAnalysis(
+            let report = try await coordinator.analyze(
                 CopyPasteAnalysisRequest(
                     mode: .copy, sourcePaths: [source + "/album", source + "/shared"],
-                    destinationDirectoryPath: destination), window: window)
-            let update = try await Coordinators.waitFor {
-                (try? coordinator.analysisUpdate(handle.analysisId, window: window)).flatMap { $0.done ? $0 : nil }
-            }
+                    destinationDirectoryPath: destination), window: window, signal: StopSignal())
             func names(_ nodes: [CopyPasteAnalysisNode]) -> [String] {
                 nodes.map { NodePath.basename($0.sourcePath) }.sorted()
             }
-            let sent = try #require(update.report)
 
-            // The window gets: nothing inside the new folder; the clashing folder's items, and nothing inside the new
-            // folder within it.
-            #expect(sent.nodes[0].conflictClass == nil)
-            #expect(sent.nodes[0].children.isEmpty)
-            #expect(sent.nodes[0].totalNodeCount == 6)
-            #expect(sent.nodes[1].conflictClass == .directoryConflict)
-            #expect(names(sent.nodes[1].children) == ["clash.txt", "deep", "new.txt"])
-            #expect(sent.nodes[1].children.first { $0.sourcePath.hasSuffix("deep") }?.children.isEmpty == true)
-            let kept = try #require(try service.getCopyPasteAnalysisUpdate(handle.analysisId).report)
-            #expect(sent.summary == kept.summary)
-
-            // The write service's own report, which the copy runs from, is untouched.
-            #expect(names(kept.nodes[0].children) == ["one.jpg", "raw", "two.jpg"])
-            #expect(kept.nodes[1].children.first { $0.sourcePath.hasSuffix("deep") }?.children.count == 2)
+            // The window gets everything: inside the new folder, and inside the new folder within the clashing one.
+            #expect(report.nodes[0].conflictClass == nil)
+            #expect(names(report.nodes[0].children) == ["one.jpg", "raw", "two.jpg"])
+            #expect(report.nodes[0].totalNodeCount == 6)
+            #expect(report.nodes[1].conflictClass == .directoryConflict)
+            #expect(names(report.nodes[1].children) == ["clash.txt", "deep", "new.txt"])
+            #expect(report.nodes[1].children.first { $0.sourcePath.hasSuffix("deep") }?.children.count == 2)
 
             let started = try coordinator.startCopyPaste(
                 CopyPasteStart(
-                    analysisId: handle.analysisId,
-                    policy: CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)), window: window)
+                    report: report, policy: CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)),
+                window: window)
             let terminal = try await Coordinators.end(of: started.operationId, in: window)
 
             #expect(terminal.status == .completed)

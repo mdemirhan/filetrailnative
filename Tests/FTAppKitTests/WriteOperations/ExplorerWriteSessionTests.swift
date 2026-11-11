@@ -21,19 +21,19 @@ private final class StubWriteService: CoordinatorWriteService, @unchecked Sendab
         return {}
     }
 
-    func startCopyPasteAnalysis(_ request: CopyPasteAnalysisRequest, keep: Set<String>) throws
-        -> CopyPasteAnalysisStartHandle
-    {
-        CopyPasteAnalysisStartHandle(analysisId: "analysis-1", status: .queued)
+    /// A report with nothing in the way.
+    func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws -> CopyPasteAnalysisReport {
+        CopyPasteAnalysisReport(
+            analysisId: "analysis-1", mode: request.mode, sourcePaths: request.sourcePaths,
+            destinationDirectoryPath: request.destinationDirectoryPath, nodes: [], issues: [], warnings: [],
+            summary: CopyPasteAnalysisSummary(
+                topLevelItemCount: 0, totalNodeCount: 0, totalBytes: 0, fileConflictCount: 0,
+                directoryConflictCount: 0, mismatchConflictCount: 0, blockedCount: 0))
     }
 
-    func getCopyPasteAnalysisUpdate(_ analysisId: String) throws -> CopyPasteAnalysisUpdate {
-        CopyPasteAnalysisUpdate(analysisId: analysisId, status: .complete, done: true, report: nil, error: nil)
-    }
-
-    func cancelCopyPasteAnalysis(_ analysisId: String) -> Bool { true }
-
-    func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String>) throws -> CopyPasteOperationHandle {
+    func startCopyPaste(
+        report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]?
+    ) throws -> CopyPasteOperationHandle {
         sequence += 1
         return CopyPasteOperationHandle(operationId: "copy-op-\(sequence)", status: .queued)
     }
@@ -115,11 +115,11 @@ private struct Fixture {
         let otherHost = FakeHost()
         otherHosts.hosts.append(otherHost)
         let other = ExplorerWriteSession(coordinator: coordinator, host: otherHost, clipboard: nil)
-        _ = try await coordinator.startAnalysis(
+        let report = try await coordinator.analyze(
             CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/Users/demo/a.txt"], destinationDirectoryPath: "/x"),
-            window: other)
+            window: other, signal: StopSignal())
         let handle = try coordinator.startCopyPaste(
-            CopyPasteStart(analysisId: "analysis-1", policy: WindowWriteActions.safePolicy), window: other)
+            CopyPasteStart(report: report, policy: WindowWriteActions.safePolicy), window: other)
         service.emit(pasteEvent(handle.operationId, .running))
         return (other, handle.operationId)
     }
@@ -344,15 +344,14 @@ private let arrived = WriteOperationItem(
         for meanwhile in Meanwhile.allCases {
             let fixture = Fixture()
             fixture.host.selectedPaths = ["/Users/demo/Folder/keep.txt"]
-            _ = try await fixture.coordinator.startAnalysis(
+            let report = try await fixture.coordinator.analyze(
                 CopyPasteAnalysisRequest(
                     mode: .copy, sourcePaths: ["/Users/demo/elsewhere.txt"],
-                    destinationDirectoryPath: "/Users/demo/Folder"), window: fixture.session)
+                    destinationDirectoryPath: "/Users/demo/Folder"), window: fixture.session, signal: StopSignal())
             fixture.session.applyCard(
                 WriteOperationCardState(action: .paste, stage: .starting, targetPath: "/Users/demo/Folder"))
             let handle = try fixture.coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: "analysis-1", policy: WindowWriteActions.safePolicy),
-                window: fixture.session)
+                CopyPasteStart(report: report, policy: WindowWriteActions.safePolicy), window: fixture.session)
             fixture.session.adoptWriteOperation(handle.operationId)
             switch meanwhile {
             case .nothing: break
@@ -389,17 +388,16 @@ private let arrived = WriteOperationItem(
         for switchesTab in [true, false] {
             let fixture = Fixture()
             let started = Task {
-                try await fixture.coordinator.startAnalysis(
+                try await fixture.coordinator.analyze(
                     CopyPasteAnalysisRequest(
                         mode: .copy, sourcePaths: ["/Users/demo/source.txt"],
-                        destinationDirectoryPath: "/Users/demo/Folder"), window: fixture.session)
+                        destinationDirectoryPath: "/Users/demo/Folder"), window: fixture.session, signal: StopSignal())
             }
-            _ = try await started.value
+            let report = try await started.value
             fixture.session.applyCard(
                 WriteOperationCardState(action: .paste, stage: .starting, targetPath: "/Users/demo/Folder"))
             let handle = try fixture.coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: "analysis-1", policy: WindowWriteActions.safePolicy),
-                window: fixture.session)
+                CopyPasteStart(report: report, policy: WindowWriteActions.safePolicy), window: fixture.session)
             fixture.session.adoptWriteOperation(handle.operationId)
             if switchesTab { fixture.host.activeTabID = 2 }
             #expect(fixture.session.card != nil)

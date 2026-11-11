@@ -1,6 +1,6 @@
-// The app's one write slot, the write service's events as the windows hear them, the copy analyses and pastes, and
-// quitting. The windows are in WriteCoordinatorWindows.swift, the progress throttle in WriteCoordinatorProgress.swift,
-// the local operations' entry point in WriteCoordinatorLocal.swift.
+// The app's one write slot, the write service's events as the windows hear them, the reviews of pastes and the pastes,
+// and quitting. The windows are in WriteCoordinatorWindows.swift, the progress throttle in
+// WriteCoordinatorProgress.swift, the local operations' entry point in WriteCoordinatorLocal.swift.
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -62,10 +62,8 @@ public final class WriteCoordinator {
     var copyPasteModes: [String: CopyPasteMode] = [:]
     var localStops: [String: StopSignal] = [:]
     var localActions: [String: WriteOperationAction] = [:]
-    // The window that started each copy analysis: only it may read, cancel, or start it. Each window has at most
-    // one, its newest, kept until it pastes from it or goes away.
-    var analysisOwners: [String: any WriteOperationWindow] = [:]
-    var watchedAnalyses: Set<String> = []
+    // The review of a paste running now, if any: only one runs at a time.
+    var runningReview: RunningReview?
     var throttles: [String: ProgressThrottle] = [:]
     // Callers waiting for the write slot to be free (see `idleOrTimedOut`).
     var idleWaiters: [@MainActor () -> Void] = []
@@ -83,6 +81,12 @@ public final class WriteCoordinator {
     /// What runs a batch rename on the disk (see BatchRenameOperation.swift).
     var batchRenameRunner: BatchRenameRunner = WriteCoordinator.runBatchRename
     private var unsubscribe: (@Sendable () -> Void)?
+
+    /// A review and the window it is for, which stops it by closing.
+    struct RunningReview {
+        var window: any WriteOperationWindow
+        var signal: StopSignal
+    }
 
     struct PendingAdoption {
         weak var window: (any WriteOperationWindow)?
@@ -335,13 +339,15 @@ public final class WriteCoordinator {
         }
     }
 
-    // MARK: Copy analyses
+    // MARK: Reviewing a paste
 
-    /// `copyPaste:analyzeStart`: starts reviewing a paste for `window`. The window's earlier analysis goes: only
-    /// the newest can be pasted from.
-    public func startAnalysis(_ request: CopyPasteAnalysisRequest, window: any WriteOperationWindow) async throws
-        -> CopyPasteAnalysisStartHandle
-    {
+    /// Reviews a paste for `window`: what it would copy, and what is already in its way. Refused while a write runs
+    /// or another review does, in any window; `started` runs once it is under way. Stopping `signal` (Cancel), the
+    /// window closing or the app quitting ends it at once with `StopError`.
+    public func analyze(
+        _ request: CopyPasteAnalysisRequest, window: any WriteOperationWindow, signal: StopSignal,
+        started: () -> Void = {}
+    ) async throws -> CopyPasteAnalysisReport {
         try WriteGuards.assertNotIntoTrash(request.destinationDirectoryPath, verb: "pasted into", homePath: homePath)
         if request.mode == .cut {
             try WriteGuards.assertNotProtectedPath(request.sourcePaths, homePath: homePath)
@@ -349,40 +355,29 @@ public final class WriteCoordinator {
             try await assertNotSystemLocation(request.sourcePaths, verb: "moved")
         }
         try ensureNoWriteOperationInFlight()
-        let handle = try writeService.startCopyPasteAnalysis(request, keep: analysesOfOtherWindows(window))
-        for (analysisId, owner) in analysisOwners where owner === window {
-            forgetAnalysis(analysisId)
+        // A stopped review no longer counts, though it may not have returned yet.
+        if let review = runningReview, !review.signal.isStopped {
+            throw WriteCoordinatorError.reviewing
         }
-        watchAnalysisOwner(handle.analysisId, window)
-        return handle
+        runningReview = RunningReview(window: window, signal: signal)
+        defer {
+            if runningReview?.signal === signal { runningReview = nil }
+        }
+        // Closed while the request was on its way: nobody can answer the review.
+        if window.isClosed { signal.stop() }
+        started()
+        return try await writeService.analyze(request, signal: signal)
     }
 
-    /// `copyPaste:analyzeGetUpdate`: the analysis as the window is sent it, its report trimmed.
-    public func analysisUpdate(_ analysisId: String, window: any WriteOperationWindow) throws
-        -> CopyPasteAnalysisUpdate
-    {
-        try assertAnalysisOwner(analysisId, window)
-        var update = try writeService.getCopyPasteAnalysisUpdate(analysisId)
-        update.report = update.report.map(WriteGuards.trimAnalysisReportForWindow)
-        return update
-    }
-
-    /// `copyPaste:analyzeCancel`; false for an analysis another window started.
-    @discardableResult
-    public func cancelAnalysis(_ analysisId: String, window: any WriteOperationWindow) -> Bool {
-        analysisOwners[analysisId] === window ? writeService.cancelCopyPasteAnalysis(analysisId) : false
-    }
-
-    /// `copyPaste:start`: pastes from an analysis `window` started.
+    /// Pastes from the report of a review `window` ran.
     @discardableResult
     public func startCopyPaste(_ start: CopyPasteStart, window: any WriteOperationWindow) throws
         -> CopyPasteOperationHandle
     {
         try ensureNoWriteOperationInFlight()
-        try assertAnalysisOwner(start.analysisId, window)
-        // The write service can finish an operation before startCopyPaste returns (an analysis that is no longer
-        // usable fails at once). Its end is caught here, so the write slot isn't claimed for an operation that is
-        // already over. The slot is held meanwhile, so a write alone can't start in between.
+        // The write service can finish an operation before startCopyPaste returns. Its end is caught here, so the write
+        // slot isn't claimed for an operation that is already over. The slot is held meanwhile, so a write alone can't
+        // start in between.
         options.caches.writeStarting()
         try claimSlot(.reserved)
         eventsBeforeStart = [:]
@@ -390,9 +385,7 @@ public final class WriteCoordinator {
         let early: CopyPasteProgressEvent?
         do {
             handle = try writeService.startCopyPaste(
-                CopyPasteExecutionRequest(
-                    analysisId: start.analysisId, policy: start.policy, overrides: start.overrides),
-                keep: analysesOfOtherWindows(window))
+                report: start.report, policy: start.policy, overrides: start.overrides)
             early = eventsBeforeStart?[handle.operationId]
             eventsBeforeStart = nil
         } catch {
@@ -402,8 +395,6 @@ public final class WriteCoordinator {
             options.caches.writeEnded()
             throw error
         }
-        // The paste has it now; the window going away stops the paste instead.
-        forgetAnalysis(start.analysisId)
         if let early, early.status.isTerminal {
             freeWriteSlot(.reserved)
             // The window learns the operation id from this reply, so its end is sent just after it.
@@ -546,9 +537,8 @@ public final class WriteCoordinator {
         senders.removeAll()
         copyPasteRequests.removeAll()
         copyPasteModes.removeAll()
-        for analysisId in Array(analysisOwners.keys) {
-            forgetAnalysis(analysisId)
-        }
+        runningReview?.signal.stop()
+        runningReview = nil
         localStops.removeAll()
         localActions.removeAll()
         itemsWithoutTrash.removeAll()

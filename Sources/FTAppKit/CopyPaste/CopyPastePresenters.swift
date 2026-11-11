@@ -39,8 +39,8 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         }
     }
 
-    /// True once the operation is under way; false when it didn't start (busy, an
-    /// expired analysis, a refusal, which is told), so the review can let the person try again.
+    /// True once the operation is under way; false when it didn't start (busy, or a refusal, which is told), so the
+    /// review can let the person try again.
     func start(
         _ report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride],
         action: WriteOperationAction, clearsCutClipboard: String?, actions: WindowWriteActions

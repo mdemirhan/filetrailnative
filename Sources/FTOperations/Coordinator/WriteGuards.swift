@@ -69,20 +69,4 @@ public enum WriteGuards {
         guard let dev = stats.dev, let ino = fileIdOf(stats.ino) else { return nil }
         return "\(dev):\(ino)"
     }
-
-    /// `trimAnalysisReportForWindow`: the report of an analysis has a record for every file and folder to be copied.
-    /// The window draws the review from it, and looks inside an item only when it is a folder that exists on both
-    /// sides; what is inside an item that is new at the destination is left out of what the window is sent. This is
-    /// a trimmed copy: the write service copies from its own report, which stays whole.
-    public static func trimAnalysisReportForWindow(_ report: CopyPasteAnalysisReport) -> CopyPasteAnalysisReport {
-        var trimmed = report
-        trimmed.nodes = report.nodes.map(trimAnalysisNodeForWindow)
-        return trimmed
-    }
-
-    private static func trimAnalysisNodeForWindow(_ node: CopyPasteAnalysisNode) -> CopyPasteAnalysisNode {
-        var trimmed = node
-        trimmed.children = node.conflictClass == .directoryConflict ? node.children.map(trimAnalysisNodeForWindow) : []
-        return trimmed
-    }
 }

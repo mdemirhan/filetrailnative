@@ -1,5 +1,5 @@
-// Its dependencies, its state, its one write slot and its listeners. Analysis jobs are in WriteServiceAnalysis.swift,
-// the paste in WriteServicePaste.swift, its questions and Stop in WriteServiceRuntime.swift.
+// Its dependencies, its state, its one write slot, its listeners and the review of a paste. The paste is in
+// WriteServicePaste.swift, its questions and Stop in WriteServiceRuntime.swift.
 import FTFoundation
 import Foundation
 import os
@@ -15,7 +15,7 @@ public struct WriteServiceDependencies: Sendable {
     /// Ids "analysis-1", "analysis-2", … when not given.
     public var createAnalysisId: (@Sendable () -> String)?
     public var thresholds: CopyPasteThresholds
-    /// Runs a paste once its analysis is ready; `executeCopyPasteFromAnalysis` when not given (see
+    /// Runs a paste from its reviewed report; `executeCopyPasteFromAnalysis` when not given (see
     /// WriteServicePaste.swift).
     public var executeCopyPaste: CopyPasteExecutor?
 
@@ -35,19 +35,10 @@ public struct WriteServiceDependencies: Sendable {
     }
 }
 
-/// The copy engine's own coordinator: analysis jobs, one at a time, and the paste that runs from one, one write at
-/// a time. Callable from any thread; the disk is read off the calling thread.
+/// The copy engine's own coordinator: the review of a paste, and the paste that runs from its report, one write at a
+/// time. Callable from any thread; the disk is read off the calling thread.
 public final class WriteService: Sendable {
     typealias Listener = @Sendable (CopyPasteProgressEvent) -> Void
-
-    struct AnalysisJob {
-        var analysisId: String
-        var request: CopyPasteAnalysisRequest
-        var signal: StopSignal
-        var status: CopyPasteAnalysisJobStatus
-        var report: CopyPasteAnalysisReport?
-        var error: String?
-    }
 
     /// A question the paste waits on, and where its answer goes.
     struct PendingResolution {
@@ -59,7 +50,6 @@ public final class WriteService: Sendable {
         var listeners: [(token: Int, listener: Listener)] = []
         var nextListenerToken = 0
         var signals: [String: StopSignal] = [:]
-        var analysisJobs: [String: AnalysisJob] = [:]
         var pendingResolutions: [String: PendingResolution] = [:]
         /// Answers given "for the rest of this operation", by operation, then by the kind of conflict they
         /// answered (`runtimeConflictScope`).
@@ -148,27 +138,52 @@ public final class WriteService: Sendable {
             }
         }
     }
+}
 
-    static func unknownAnalysis(_ analysisId: String) -> OperationError {
-        OperationError("Unknown copy/paste analysis job: \(analysisId)")
+extension WriteService {
+    /// Reviews a paste: each item, and what is already in its way at the destination. The disk is read on a thread of
+    /// its own, with room for deep folders. Stopping `signal` ends the call at once with `StopError`, even while a read
+    /// that doesn't answer holds that thread; the review itself stops at its next look at the disk.
+    public func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws
+        -> CopyPasteAnalysisReport
+    {
+        let request = normalizeCopyPasteAnalysisRequest(request)
+        let analysisId = state.withLock { nextAnalysisId(&$0) }
+        let fileSystem = fileSystem
+        let thresholds = thresholds
+        return try await withCheckedThrowingContinuation { continuation in
+            let answer = ReviewAnswer(continuation)
+            guard let stopToken = signal.onStop({ answer.give(.failure(StopError())) }) else {
+                answer.give(.failure(StopError()))
+                return
+            }
+            Self.runWithRoomForDepth(name: "FileTrail paste review") {
+                let outcome = Result {
+                    try buildCopyPasteAnalysisReport(
+                        analysisId: analysisId, request: request, fileSystem: fileSystem, thresholds: thresholds,
+                        signal: signal)
+                }
+                signal.removeHandler(stopToken)
+                // A review stopped once it had read everything still counts as stopped.
+                answer.give(signal.isStopped ? .failure(StopError()) : outcome)
+            }
+        }
     }
 }
 
-extension WriteService.State {
-    var hasActiveAnalysisJob: Bool {
-        analysisJobs.values.contains { $0.status == .queued || $0.status == .analyzing }
+/// The answer of a review: the first of its report and its stop is given, the other dropped.
+private final class ReviewAnswer: Sendable {
+    private let waiting: OSAllocatedUnfairLock<CheckedContinuation<CopyPasteAnalysisReport, any Error>?>
+
+    init(_ continuation: CheckedContinuation<CopyPasteAnalysisReport, any Error>) {
+        waiting = OSAllocatedUnfairLock(initialState: continuation)
     }
 
-    /// Drops the analyses that have ended, but not `retainAnalysisId`, nor a finished one in `keep` (one that was
-    /// cancelled or failed can't be pasted from, so it goes).
-    mutating func pruneTerminalAnalysisJobs(keep: Set<String>, retaining retainAnalysisId: String? = nil) {
-        for (analysisId, job) in analysisJobs {
-            if analysisId == retainAnalysisId || (keep.contains(analysisId) && job.status == .complete) {
-                continue
-            }
-            if job.status == .complete || job.status == .cancelled || job.status == .error {
-                analysisJobs[analysisId] = nil
-            }
+    func give(_ outcome: Result<CopyPasteAnalysisReport, any Error>) {
+        let continuation = waiting.withLock { waiting in
+            defer { waiting = nil }
+            return waiting
         }
+        continuation?.resume(with: outcome)
     }
 }

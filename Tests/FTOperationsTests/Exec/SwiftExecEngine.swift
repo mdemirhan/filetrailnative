@@ -40,22 +40,18 @@ struct SwiftExecEngine: ExecEngine {
 
         // The review.
         let mode = try Self.mode(scenario.paste.mode)
-        let analysisId = try service.startCopyPasteAnalysis(
-            CopyPasteAnalysisRequest(
-                mode: mode, sourcePaths: scenario.paste.sources.map(places.resolve),
-                destinationDirectoryPath: places.resolve(scenario.paste.destination))
-        ).analysisId
-        var update = try service.getCopyPasteAnalysisUpdate(analysisId)
-        while !update.done {
-            try await Task.sleep(for: .milliseconds(1))
-            update = try service.getCopyPasteAnalysisUpdate(analysisId)
-        }
-        if update.status != .complete || update.report == nil {
-            log.append(
-                .object(["kind": .string("error"), "message": .string(update.error ?? "analysis \(update.status)")]))
+        let report: CopyPasteAnalysisReport
+        do {
+            report = try await service.analyze(
+                CopyPasteAnalysisRequest(
+                    mode: mode, sourcePaths: scenario.paste.sources.map(places.resolve),
+                    destinationDirectoryPath: places.resolve(scenario.paste.destination)),
+                signal: StopSignal())
+        } catch {
+            log.append(.object(["kind": .string("error"), "message": .string(errorMessage(error))]))
             return try outcome(before, log, places)
         }
-        if let report = update.report, !report.issues.isEmpty {
+        if !report.issues.isEmpty {
             log.append(.object(["kind": .string("issues"), "issues": .array(report.issues.map(EngineJSON.issue))]))
             return try outcome(before, log, places)
         }
@@ -114,14 +110,13 @@ struct SwiftExecEngine: ExecEngine {
             scenario.undo == nil
             ? nil : await SwiftUndoRun.make(service, fileSystem, places, hasTrash: scenario.trash != false)
         _ = try service.startCopyPaste(
-            CopyPasteExecutionRequest(
-                analysisId: analysisId,
-                policy: CopyPastePolicy(
-                    file: try Self.choice(scenario.policy.file), directory: try Self.choice(scenario.policy.directory),
-                    mismatch: try Self.choice(scenario.policy.mismatch)),
-                overrides: try (scenario.overrides ?? []).map {
-                    CopyPasteNodeOverride(nodeId: $0.nodeId, action: try Self.choice($0.action))
-                }))
+            report: report,
+            policy: CopyPastePolicy(
+                file: try Self.choice(scenario.policy.file), directory: try Self.choice(scenario.policy.directory),
+                mismatch: try Self.choice(scenario.policy.mismatch)),
+            overrides: try (scenario.overrides ?? []).map {
+                CopyPasteNodeOverride(nodeId: $0.nodeId, action: try Self.choice($0.action))
+            })
         for await _ in finished.stream {}
         // Anything the service does after its last event (it lets the operation go) is done by now.
         try await Task.sleep(for: .milliseconds(10))

@@ -68,7 +68,7 @@ struct LargeTreeAnalysisTests {
     @Test func reviewsAFolderOfMoreThan125000ItemsReadingEachOnlyAFewTimes() async throws {
         let fileCount = LargeFolder.fileCount
         let reviewed = try await LargeFolder.reviewed.value
-        #expect(reviewed.status == .complete, Comment(rawValue: reviewed.error ?? ""))
+        #expect(reviewed.report != nil, Comment(rawValue: reviewed.error ?? ""))
         let report = reviewed.report
 
         #expect(report?.summary.totalNodeCount == fileCount + 2)
@@ -105,15 +105,12 @@ struct LargeTreeAnalysisTests {
                     }
                     resolvedDepth.withLock { [levels] in $0 = levels }
                 }))
-        let analysisId = try service.startCopyPasteAnalysis(
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/d"], destinationDirectoryPath: "/target")
-        ).analysisId
-        _ = await waitFor(timeout: .seconds(60)) { try service.getCopyPasteAnalysisUpdate(analysisId).done }
-        let update = try service.getCopyPasteAnalysisUpdate(analysisId)
-        #expect(update.status == .complete, Comment(rawValue: update.error ?? ""))
-        #expect(update.report?.summary.totalNodeCount == depth)
+        let report = try await service.analyze(
+            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/d"], destinationDirectoryPath: "/target"),
+            signal: StopSignal())
+        #expect(report.summary.totalNodeCount == depth)
 
-        _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: analysisId, policy: .defaultCopyPaste))
+        _ = try service.startCopyPaste(report: report, policy: .defaultCopyPaste)
 
         #expect(await waitFor { resolvedDepth.withLock { $0 } != nil })
         #expect(resolvedDepth.withLock { $0 } == depth)

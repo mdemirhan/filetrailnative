@@ -45,16 +45,12 @@ private func servicePaste(
                 applyToRemaining: given.applyToRemaining)
         }
     }
-    let analysisId = try service.startCopyPasteAnalysis(
-        CopyPasteAnalysisRequest(mode: .copy, sourcePaths: sources, destinationDirectoryPath: destination)
-    ).analysisId
-    #expect(await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done })
-    let report = try service.getCopyPasteAnalysisUpdate(analysisId).report
+    let report = try await service.analyze(
+        CopyPasteAnalysisRequest(mode: .copy, sourcePaths: sources, destinationDirectoryPath: destination),
+        signal: StopSignal())
     afterAnalysis?()
-    let operationId = try service.startCopyPaste(
-        CopyPasteExecutionRequest(
-            analysisId: analysisId, policy: policy, overrides: report.flatMap { report in overrides?(report) })
-    ).operationId
+    let operationId = try service.startCopyPaste(report: report, policy: policy, overrides: overrides?(report))
+        .operationId
     func result() -> CopyPasteOperationResult? {
         record.events.first { $0.operationId == operationId && $0.result != nil }?.result
     }
@@ -188,7 +184,7 @@ struct WriteServiceReplaceTests {
         #expect(fileSystem.readNode("/target/D/d.txt")?.size == 2)
     }
 
-    @Test func startsExecutionFromAnExistingAnalysisIdAndResolvesRuntimeConflicts() async throws {
+    @Test func startsExecutionFromAReviewsReportAndResolvesRuntimeConflicts() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
         ])
@@ -204,15 +200,14 @@ struct WriteServiceReplaceTests {
             }
         }
 
-        _ = try service.startCopyPasteAnalysis(
+        let report = try await service.analyze(
             CopyPasteAnalysisRequest(
-                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
-        #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"),
+            signal: StopSignal())
 
         fileSystem.addFile("/target/file.txt", .file(size: 99))
         let handle = try service.startCopyPaste(
-            CopyPasteExecutionRequest(
-                analysisId: "analysis-1", policy: CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)))
+            report: report, policy: CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip))
         #expect(handle == CopyPasteOperationHandle(operationId: "copy-op-1", status: .queued))
 
         #expect(

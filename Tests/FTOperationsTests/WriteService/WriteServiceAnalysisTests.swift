@@ -1,22 +1,10 @@
 import FTFoundation
 import Foundation
 import Testing
-import os
 
 @testable import FTOperations
 
-/// Ids "analysis-1", "analysis-2", … from a counter of the test's own.
-private func countingIds() -> @Sendable () -> String {
-    let index = OSAllocatedUnfairLock(initialState: 0)
-    return {
-        index.withLock { value in
-            value += 1
-            return "analysis-\(value)"
-        }
-    }
-}
-
-/// Holds whoever waits on it until opened: a read that takes its time, or a paste that hasn't finished.
+/// Holds whoever waits on it until opened: a read that takes its time.
 private final class Gate: Sendable {
     private let semaphore = DispatchSemaphore(value: 0)
 
@@ -34,19 +22,6 @@ private func request(_ sources: [String], into destination: String, mode: CopyPa
     -> CopyPasteAnalysisRequest
 {
     CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination)
-}
-
-private func status(_ service: WriteService, _ analysisId: String) -> CopyPasteAnalysisJobStatus? {
-    try? service.getCopyPasteAnalysisUpdate(analysisId).status
-}
-
-private func message(_ body: () throws -> Void) -> String? {
-    do {
-        try body()
-        return nil
-    } catch {
-        return errorMessage(error)
-    }
 }
 
 struct WriteServiceAnalysisTests {
@@ -70,40 +45,44 @@ struct WriteServiceAnalysisTests {
         return fileSystem
     }
 
-    @Test func runsAndReportsACopyPasteAnalysisJobToCompletion() async throws {
+    @Test func reviewsAPasteAndAnswersWithItsReport() async throws {
         let service = WriteService(.init(fileSystem: Self.fileToCopy(), createAnalysisId: { "analysis-1" }))
 
-        let handle = try service.startCopyPasteAnalysis(request(["/source/file.txt"], into: "/target"))
-        #expect(handle == CopyPasteAnalysisStartHandle(analysisId: "analysis-1", status: .queued))
+        let report = try await service.analyze(request(["/source/file.txt"], into: "/target"), signal: StopSignal())
 
-        #expect(await waitFor { status(service, "analysis-1") == .complete })
-        let update = try service.getCopyPasteAnalysisUpdate("analysis-1")
-        #expect(update.done)
-        #expect(update.report?.destinationDirectoryPath == "/target")
+        #expect(report.analysisId == "analysis-1")
+        #expect(report.destinationDirectoryPath == "/target")
+        #expect(report.nodes.map(\.sourcePath) == ["/source/file.txt"])
     }
 
-    @Test func cancelsInFlightAnalysisJobs() async throws {
-        // Held reading the folder until it is cancelled, so the cancel finds it running.
+    // Stopped while a read holds it, the review ends at once: the read is still held.
+    @Test func endsAReviewAtOnceWhenItIsStopped() async throws {
         let reading = Gate()
-        let cancelled = Gate()
-        let fileSystem = Self.slowFolder(reading: reading, held: cancelled)
-        let service = WriteService(.init(fileSystem: fileSystem, createAnalysisId: { "analysis-1" }))
+        let held = Gate()
+        defer { held.open() }
+        let service = WriteService(.init(fileSystem: Self.slowFolder(reading: reading, held: held)))
+        let signal = StopSignal()
 
-        _ = try service.startCopyPasteAnalysis(request(["/source/folder"], into: "/target"))
+        let review = Task { try await service.analyze(request(["/source/folder"], into: "/target"), signal: signal) }
         reading.wait()
-        #expect(service.cancelCopyPasteAnalysis("analysis-1"))
-        // The review itself is told to stop, not only marked as cancelled.
-        #expect(service.state.withLock { $0.analysisJobs["analysis-1"]?.signal.isStopped } == true)
-        cancelled.open()
+        signal.stop()
 
-        #expect(
-            await waitFor {
-                let update = try service.getCopyPasteAnalysisUpdate("analysis-1")
-                return update.status == .cancelled && update.done
-            })
+        await #expect(throws: StopError.self) { try await review.value }
     }
 
-    @Test func reportsAnalysisErrorsAndRejectsExecutionForUnknownAnalysisIds() async throws {
+    @Test func endsAReviewStoppedBeforeItBeganWithoutReading() async throws {
+        let fileSystem = Self.fileToCopy()
+        let service = WriteService(.init(fileSystem: fileSystem))
+        let signal = StopSignal()
+        signal.stop()
+
+        await #expect(throws: StopError.self) {
+            try await service.analyze(request(["/source/file.txt"], into: "/target"), signal: signal)
+        }
+        #expect(fileSystem.lstatCount == 0)
+    }
+
+    @Test func saysWhyAReviewFailed() async throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 1)), ("/target", .directory()),
             ("/target/file.txt", .file(size: 1)),
@@ -116,117 +95,24 @@ struct WriteServiceAnalysisTests {
             }
             return try base.stat(path)
         }
-        let service = WriteService(.init(fileSystem: fileSystem, createAnalysisId: { "analysis-1" }))
+        let service = WriteService(.init(fileSystem: fileSystem))
 
-        _ = try service.startCopyPasteAnalysis(request(["/source/file.txt"], into: "/target"))
-
-        #expect(await waitFor { status(service, "analysis-1") == .error })
-        let update = try service.getCopyPasteAnalysisUpdate("analysis-1")
-        #expect(update.done)
-        #expect(update.error == "Couldn't find a free name for \u{201C}file.txt\u{201D}.")
-        #expect(
-            message {
-                _ = try service.startCopyPaste(
-                    CopyPasteExecutionRequest(analysisId: "missing-analysis", policy: .defaultCopyPaste))
-            } == "Unknown copy/paste analysis job: missing-analysis")
-    }
-
-    @Test func rejectsStartingASecondAnalysisWhileAnotherAnalysisIsStillRunning() throws {
-        // The first review is held in its first read until the second has been refused.
-        let reading = Gate()
-        let held = Gate()
-        defer { held.open() }
-        let service = WriteService(
-            .init(fileSystem: Self.slowFolder(reading: reading, held: held), createAnalysisId: countingIds()))
-
-        _ = try service.startCopyPasteAnalysis(request(["/source/folder"], into: "/target"))
-        reading.wait()
-
-        #expect(
-            message { _ = try service.startCopyPasteAnalysis(request(["/source/folder"], into: "/target")) }
-                == WriteServiceMessages.analysisBusy)
-        service.cancelCopyPasteAnalysis("analysis-1")
-    }
-
-    // The window whose start was refused still has its review open.
-    @Test func dropsNoFinishedAnalysisWhenANewOneIsRefused() async throws {
-        let fileSystem = MockAnalysisFileSystem([
-            ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/file.txt", .file(size: 5)),
-            ("/target", .directory()),
-        ])
-        let service = WriteService(.init(fileSystem: fileSystem, createAnalysisId: countingIds()))
-        let analysis = request(["/source/folder"], into: "/target")
-        _ = try service.startCopyPasteAnalysis(analysis)
-        #expect(await waitFor { status(service, "analysis-1") == .complete })
-        // Another window's analysis takes its time.
-        let gate = Gate()
-        fileSystem.readdirImpl = { _ in
-            gate.wait()
-            return []
+        let failure = await #expect(throws: (any Error).self) {
+            try await service.analyze(request(["/source/file.txt"], into: "/target"), signal: StopSignal())
         }
-        _ = try service.startCopyPasteAnalysis(analysis, keep: ["analysis-1"])
 
-        #expect(
-            message { _ = try service.startCopyPasteAnalysis(analysis, keep: ["analysis-2"]) }
-                == WriteServiceMessages.analysisBusy)
-        #expect(status(service, "analysis-1") == .complete)
-        service.cancelCopyPasteAnalysis("analysis-2")
-        gate.open()
+        #expect(failure.map(errorMessage) == "Couldn't find a free name for \u{201C}file.txt\u{201D}.")
     }
 
-    @Test func rejectsStartingAnalysisWhileAWriteOperationIsActive() async throws {
-        let pasting = Gate()
-        let service = WriteService(
-            .init(
-                fileSystem: Self.fileToCopy(), createOperationId: { "copy-op-1" }, createAnalysisId: { "analysis-1" },
-                executeCopyPaste: { _ in pasting.wait() }))
-        _ = try service.startCopyPasteAnalysis(request(["/source/file.txt"], into: "/target"))
-        #expect(await waitFor { status(service, "analysis-1") == .complete })
-        _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: "analysis-1", policy: .defaultCopyPaste))
-
-        #expect(
-            message { _ = try service.startCopyPasteAnalysis(request(["/source/file.txt"], into: "/target")) }
-                == WriteServiceMessages.writeOperationBusy)
-        pasting.open()
-    }
-
-    @Test func prunesTerminalAnalysisJobsWhenANewAnalysisStarts() async throws {
-        let service = WriteService(.init(fileSystem: Self.fileToCopy(), createAnalysisId: countingIds()))
-        _ = try service.startCopyPasteAnalysis(request(["/source/file.txt"], into: "/target"))
-        #expect(await waitFor { status(service, "analysis-1") == .complete })
-
-        _ = try service.startCopyPasteAnalysis(request(["/source/file.txt"], into: "/target"))
-
-        #expect(
-            message { _ = try service.getCopyPasteAnalysisUpdate("analysis-1") }
-                == "Unknown copy/paste analysis job: analysis-1")
-    }
-
-    // Another window's review is still open, and can still be pasted from.
-    @Test func keepsTheFinishedAnalysesItIsAskedToKeepButNotCancelledOnes() async throws {
-        let service = WriteService(.init(fileSystem: Self.fileToCopy(), createAnalysisId: countingIds()))
+    // Each review's report has an id of its own, which its paste's events carry.
+    @Test func givesEachReportAnIdOfItsOwn() async throws {
+        let service = WriteService(.init(fileSystem: Self.fileToCopy()))
         let analysis = request(["/source/file.txt"], into: "/target")
-        func finished(_ analysisId: String) async -> Bool {
-            await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done }
-        }
 
-        _ = try service.startCopyPasteAnalysis(analysis)
-        #expect(await finished("analysis-1"))
-        _ = try service.startCopyPasteAnalysis(analysis, keep: ["analysis-1"])
-        #expect(await finished("analysis-2"))
-        service.cancelCopyPasteAnalysis("analysis-2")
-        _ = try service.startCopyPasteAnalysis(analysis, keep: ["analysis-1", "analysis-2"])
-        #expect(await finished("analysis-3"))
+        let first = try await service.analyze(analysis, signal: StopSignal())
+        let second = try await service.analyze(analysis, signal: StopSignal())
 
-        #expect(status(service, "analysis-1") == .complete)
-        #expect(
-            message { _ = try service.getCopyPasteAnalysisUpdate("analysis-2") }
-                == "Unknown copy/paste analysis job: analysis-2")
-
-        // Pasting from one keeps the others it is asked to keep, too.
-        _ = try service.startCopyPaste(
-            CopyPasteExecutionRequest(analysisId: "analysis-3", policy: .defaultCopyPaste), keep: ["analysis-1"])
-        #expect(status(service, "analysis-1") == .complete)
+        #expect([first.analysisId, second.analysisId] == ["analysis-1", "analysis-2"])
     }
 }
 
@@ -267,27 +153,11 @@ private struct PathSetFileSystem: ReadOnlyWriteFileSystem {
 }
 
 struct WriteServiceReviewTests {
-    /// The finished analysis of a paste.
+    /// The finished review of a paste.
     private func analyze(_ service: WriteService, _ analysis: CopyPasteAnalysisRequest) async throws
         -> CopyPasteAnalysisReport
     {
-        let analysisId = try service.startCopyPasteAnalysis(analysis).analysisId
-        #expect(await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done })
-        let update = try service.getCopyPasteAnalysisUpdate(analysisId)
-        return try #require(update.report, Comment(rawValue: "The analysis failed: \(update.error ?? "")"))
-    }
-
-    @Test func staysUsableAfterBeingAskedToStartAnUnknownAnalysis() throws {
-        let service = WriteService(.init(fileSystem: NativeWriteFileSystem()))
-        #expect(
-            message {
-                _ = try service.startCopyPaste(
-                    CopyPasteExecutionRequest(
-                        analysisId: "missing-analysis",
-                        policy: CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)))
-            } == "Unknown copy/paste analysis job: missing-analysis")
-        // The failed start must not leave the write slot claimed.
-        #expect(message { _ = try service.startCopyPasteAnalysis(request(["/tmp/a"], into: "/tmp")) } == nil)
+        try await service.analyze(analysis, signal: StopSignal())
     }
 
     @Test func plansSameDirectoryCopyPasteAsDuplicateNamingInsteadOfAConflict() async throws {

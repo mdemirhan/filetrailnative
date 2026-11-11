@@ -13,16 +13,18 @@ private struct Refused: LocalizedError {
     var errorDescription: String?
 }
 
-/// A write service that answers the analysis as the test says, and whose progress the test sends.
+/// A write service that answers the review as the test says, and whose progress the test sends.
 private final class ScriptedPasteService: CoordinatorWriteService, @unchecked Sendable {
     enum Analysis {
-        case refused(String)
-        case finishedWith(status: CopyPasteAnalysisJobStatus, error: String?)
+        /// The review fails, saying so (or saying nothing).
+        case failed(String?)
         case report(CopyPasteAnalysisReport)
     }
 
     var analysis: Analysis
     var analyses = 0
+    /// What each paste was started from.
+    var pastedFrom: [CopyPasteAnalysisReport] = []
     /// Why the start is refused, if it is.
     var startRefusal: String?
     private var subscribers: [@Sendable (CopyPasteProgressEvent) -> Void] = []
@@ -40,34 +42,22 @@ private final class ScriptedPasteService: CoordinatorWriteService, @unchecked Se
         return {}
     }
 
-    func startCopyPasteAnalysis(_ request: CopyPasteAnalysisRequest, keep: Set<String>) throws
-        -> CopyPasteAnalysisStartHandle
-    {
+    func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws -> CopyPasteAnalysisReport {
         analyses += 1
-        if case .refused(let message) = analysis {
-            throw Refused(errorDescription: message)
-        }
-        return CopyPasteAnalysisStartHandle(analysisId: "analysis-\(analyses)", status: .queued)
-    }
-
-    func getCopyPasteAnalysisUpdate(_ analysisId: String) throws -> CopyPasteAnalysisUpdate {
         switch analysis {
-        case .refused(let message):
-            throw Refused(errorDescription: message)
-        case .finishedWith(let status, let error):
-            return CopyPasteAnalysisUpdate(
-                analysisId: analysisId, status: status, done: true, report: nil, error: error)
+        case .failed(let message):
+            throw Refused(errorDescription: message ?? "")
         case .report(var report):
-            report.analysisId = analysisId
-            return CopyPasteAnalysisUpdate(
-                analysisId: analysisId, status: .complete, done: true, report: report, error: nil)
+            report.analysisId = "analysis-\(analyses)"
+            return report
         }
     }
 
-    func cancelCopyPasteAnalysis(_ analysisId: String) -> Bool { true }
-
-    func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String>) throws -> CopyPasteOperationHandle {
+    func startCopyPaste(
+        report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]?
+    ) throws -> CopyPasteOperationHandle {
         if let startRefusal { throw Refused(errorDescription: startRefusal) }
+        pastedFrom.append(report)
         return CopyPasteOperationHandle(operationId: "copy-op-\(analyses)", status: .queued)
     }
 
@@ -104,7 +94,7 @@ private final class PasteFixture {
     let clipboard = SharedClipboard()
     let session: ExplorerWriteSession
     let actions: WindowWriteActions
-    private let coordinator: WriteCoordinator
+    let coordinator: WriteCoordinator
     private let shownBox = Shown()
 
     private final class Shown {
@@ -176,7 +166,7 @@ private func report(
     private static let couldntPaste = "Couldn\u{2019}t Paste"
     private static let couldntCheck = "File Trail couldn\u{2019}t check the items to paste. Nothing was changed."
 
-    // The analysis refused, failed with its message or without one
+    // The review failed with its message or without one
     // or found what can't be pasted: "Couldn't Paste", nothing started, the clipboard kept, and the next paste analyzes
     // again.
     // A paste refused as it starts says so once, in the words every busy notice has.
@@ -191,10 +181,32 @@ private func report(
             #expect(fixture.shown.map(\.message) == [shown])
             #expect(!fixture.session.isWriteLocked)
         }
-        // And one the analysis refuses because a write without a card has the slot.
-        let fixture = PasteFixture(.refused(busy))
+        // And one the review is refused for because a write without a card has the slot.
+        let fixture = PasteFixture(.report(report()))
+        let coordinator = fixture.coordinator
+        let writing = DispatchSemaphore(value: 0)
+        DispatchQueue.global().async {
+            _ = coordinator.runWriteAlone { writing.wait() }
+        }
+        #expect(await waitUntil { coordinator.slotHolder != nil })
         _ = await fixture.actions.pasteFromClipboard(into: PasteFixture.destination)
+        writing.signal()
+        #expect(await waitUntil { coordinator.slotHolder == nil })
         #expect(fixture.shown.map(\.message) == [WriteDialogs.busyMessage])
+        #expect(fixture.service.analyses == 0)
+    }
+
+    // The paste runs from the very report its review gave the window.
+    @Test func aPasteRunsFromTheReportItsReviewGave() async throws {
+        let fixture = PasteFixture(.report(report()))
+        let outcome = await fixture.actions.pasteFromClipboard(into: PasteFixture.destination)
+        guard case .queued = outcome else {
+            Issue.record("not started: \(outcome)")
+            return
+        }
+        var reviewed = report()
+        reviewed.analysisId = "analysis-1"
+        #expect(fixture.service.pastedFrom == [reviewed])
     }
 
     // A write's end says what it took out of its folder.
@@ -229,10 +241,10 @@ private func report(
             code: .destinationNotDirectory, message: "Destination must be an existing folder.", sourcePath: nil,
             destinationPath: PasteFixture.destination)
         let cases: [(ScriptedPasteService.Analysis, String)] = [
-            (.refused(refused), refused),
-            (.finishedWith(status: .error, error: "  It broke.  "), "It broke."),
-            (.finishedWith(status: .error, error: nil), Self.couldntCheck),
-            (.finishedWith(status: .error, error: "   "), Self.couldntCheck),
+            (.failed(refused), refused),
+            (.failed("  It broke.  "), "It broke."),
+            (.failed(nil), Self.couldntCheck),
+            (.failed("   "), Self.couldntCheck),
             (.report(report(issues: [blocked])), "\u{201C}Folder\u{201D} isn't a folder."),
         ]
         for (analysis, message) in cases {
@@ -500,7 +512,7 @@ extension ExplorerWindowlessTests {
             tab.go(to: trash)
             #expect(await waitUntil { tab.content.entries.map(\.name) == ["old.txt"] })
             let coordinator = WriteCoordinator(
-                writeService: ScriptedPasteService(.finishedWith(status: .error, error: nil)),
+                writeService: ScriptedPasteService(.failed(nil)),
                 fileSystem: NativeWriteFileSystem(),
                 options: WriteCoordinatorOptions(homePath: window.folder.path))
             let session = ExplorerWriteSession(coordinator: coordinator, host: group, clipboard: nil)

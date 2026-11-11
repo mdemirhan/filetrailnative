@@ -22,19 +22,14 @@ private final class IdleWriteService: CoordinatorWriteService, @unchecked Sendab
         return {}
     }
 
-    func startCopyPasteAnalysis(_ request: CopyPasteAnalysisRequest, keep: Set<String>) throws
-        -> CopyPasteAnalysisStartHandle
-    {
-        CopyPasteAnalysisStartHandle(analysisId: "analysis-1", status: .queued)
+    /// Ends without a report.
+    func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws -> CopyPasteAnalysisReport {
+        throw OperationError("")
     }
 
-    func getCopyPasteAnalysisUpdate(_ analysisId: String) throws -> CopyPasteAnalysisUpdate {
-        CopyPasteAnalysisUpdate(analysisId: analysisId, status: .complete, done: true, report: nil, error: nil)
-    }
-
-    func cancelCopyPasteAnalysis(_ analysisId: String) -> Bool { true }
-
-    func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String>) throws -> CopyPasteOperationHandle {
+    func startCopyPaste(
+        report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]?
+    ) throws -> CopyPasteOperationHandle {
         CopyPasteOperationHandle(operationId: "copy-op-1", status: .queued)
     }
 

@@ -1,5 +1,5 @@
-// Operations and copy analyses with several windows open. Each belongs to the window that started it, and is handed on
-// or cancelled when that window goes away. A stand-in local operation runs through the rename's entry point. The
+// Operations and reviews of pastes with several windows open. An operation belongs to the window that started it, and
+// is handed on or cancelled when that window goes away; a review is stopped. A stand-in local operation runs through the rename's entry point. The
 // no-Trash delete cases are in Tests/FTOperationsTests/LocalOperations/LocalOperationsCoordinatorTests.swift.
 import Darwin
 import FTFileSystem
@@ -262,23 +262,46 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // MARK: copy analyses and their windows
+    // MARK: reviews of pastes and their windows
 
-    @Test func cancelsAnAnalysisWhenItsWindowCloses() async throws {
+    @Test func stopsAReviewWhenItsWindowCloses() async throws {
         let service = StubWriteService()
+        service.holdsReviews = true
         let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
-        try await Coordinators.analyze(coordinator, window)
+        let signal = StopSignal()
+        let review = Task { try await Coordinators.analyze(coordinator, window, signal: signal) }
+        _ = try await Coordinators.waitFor { service.calls.analyze.isEmpty ? nil : true }
+        #expect(coordinator.watchCount(window) == 1)
 
         window.isClosed = true
         coordinator.windowClosed(window)
 
-        #expect(service.calls.cancelCopyPasteAnalysis == ["analysis-1"])
+        #expect(signal.isStopped)
         #expect(coordinator.watchCount(window) == 0)
+        await #expect(throws: StopError.self) { try await review.value }
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    @Test func letsAnotherWindowSetUpACopyOnceTheWindowOfAStuckAnalysisCloses() async throws {
+    @Test func stopsAReviewWhenTheAppQuits() async throws {
+        let service = StubWriteService()
+        service.holdsReviews = true
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
+        let window = TestWindow()
+        let signal = StopSignal()
+        let review = Task { try await Coordinators.analyze(coordinator, window, signal: signal) }
+        _ = try await Coordinators.waitFor { service.calls.analyze.isEmpty ? nil : true }
+
+        await coordinator.shutDown(maxWaitMs: 0)
+
+        #expect(signal.isStopped)
+        await #expect(throws: StopError.self) { try await review.value }
+        await #expect(throws: WriteCoordinatorError.quitting) { try await Coordinators.analyze(coordinator, window) }
+    }
+
+    // Only one review runs at a time, in any window. Closing the window of one held by a disk that doesn't answer
+    // ends it at once, and lets another window set up a copy.
+    @Test func letsAnotherWindowSetUpACopyOnceTheWindowOfAStuckReviewCloses() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-windows") { root in
             let release = DispatchSemaphore(value: 0)
             defer { release.signal() }
@@ -288,42 +311,69 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             let first = TestWindow()
             let second = TestWindow()
             let source = root.appending("a.txt").path
-            try await Coordinators.analyze(coordinator, first, sources: [source], destination: root.path)
-            let busy = await #expect(throws: OperationError.self) {
+            let firstReview = Task {
+                try await Coordinators.analyze(coordinator, first, sources: [source], destination: root.path)
+            }
+            _ = try await Coordinators.waitFor { coordinator.watchCount(first) == 1 ? true : nil }
+            let busy = await #expect(throws: WriteCoordinatorError.self) {
                 try await Coordinators.analyze(coordinator, second, sources: [source], destination: root.path)
             }
             #expect(busy?.message == WriteServiceMessages.analysisBusy)
 
             coordinator.windowClosed(first)
 
-            #expect(
-                try await Coordinators.analyze(coordinator, second, sources: [source], destination: root.path).status
-                    == .queued)
+            await #expect(throws: StopError.self) { try await firstReview.value }
+            let secondReview = Task {
+                try await Coordinators.analyze(coordinator, second, sources: [source], destination: root.path)
+            }
+            _ = try await Coordinators.waitFor { coordinator.watchCount(second) == 1 ? true : nil }
+            coordinator.windowClosed(second)
+            await #expect(throws: StopError.self) { try await secondReview.value }
             await coordinator.shutDown(maxWaitMs: 0)
         }
     }
 
-    @Test func doesntListenToAWindowForAnAnalysisItReplacedOrPastedFrom() async throws {
+    // No review starts while a write runs, from any window: a paste, or a write still being checked.
+    @Test func refusesAReviewWhileAWriteRuns() async throws {
         let service = StubWriteService()
-        service.analysisIds = ["analysis-1", "analysis-2"]
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
+        let pasting = TestWindow()
+        try await Coordinators.startPaste(coordinator, pasting)
+
+        for window in [pasting, TestWindow()] {
+            await #expect(throws: WriteCoordinatorError.busy) { try await Coordinators.analyze(coordinator, window) }
+        }
+        service.emit(Coordinators.event(.completed))
+        _ = try await Coordinators.waitFor { coordinator.activeOperation == nil ? true : nil }
+        let gate = TestGate()
+        let checking = Task { try await coordinator.prepareWithReservedSlot({ await gate.wait() }, then: { _, _ in }) }
+        _ = try await Coordinators.waitFor { gate.waiting ? true : nil }
+
+        await #expect(throws: WriteCoordinatorError.busy) { try await Coordinators.analyze(coordinator, TestWindow()) }
+        #expect(service.calls.analyze.count == 1)
+        gate.open()
+        try await checking.value
+        try await Coordinators.analyze(coordinator, TestWindow())
+        await coordinator.shutDown(maxWaitMs: 0)
+    }
+
+    // A review that ended leaves nothing listening for its window; the paste from its report listens for itself.
+    @Test func listensToAWindowOnlyWhileItsReviewOrItsPasteRuns() async throws {
+        let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
 
-        try await Coordinators.analyze(coordinator, window)
-        try await Coordinators.analyze(coordinator, window)
-        #expect(coordinator.watchCount(window) == 1)
+        let report = try await Coordinators.analyze(coordinator, window)
+        #expect(coordinator.watchCount(window) == 0)
 
-        // The paste listens for itself.
-        try coordinator.startCopyPaste(
-            CopyPasteStart(analysisId: "analysis-2", policy: Coordinators.skipMerge), window: window)
+        try coordinator.startCopyPaste(CopyPasteStart(report: report, policy: Coordinators.skipMerge), window: window)
         #expect(coordinator.watchCount(window) == 1)
-        #expect(!coordinator.cancelAnalysis("analysis-2", window: window))
         service.emit(Coordinators.event(.cancelled))
         #expect(coordinator.watchCount(window) == 0)
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    @Test func keepsAWindowsFinishedAnalysisWhenAnotherWindowSetsUpACopy() async throws {
+    @Test func keepsAWindowsFinishedReviewWhenAnotherWindowSetsUpACopy() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-windows") { root in
             let manager = FileManager.default
             for folder in ["src", "one", "two"] {
@@ -336,33 +386,24 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
                 fileSystem: TestLocalFileSystem.stub())
             let first = TestWindow()
             let second = TestWindow()
-            @MainActor func analyzed(_ window: TestWindow, _ analysisId: String) async throws -> CopyPasteAnalysisUpdate
+            @MainActor func paste(_ window: TestWindow, _ report: CopyPasteAnalysisReport) throws
+                -> CopyPasteOperationHandle
             {
-                try await Coordinators.waitFor {
-                    (try? coordinator.analysisUpdate(analysisId, window: window)).flatMap { $0.done ? $0 : nil }
-                }
-            }
-            @MainActor func paste(_ window: TestWindow, _ analysisId: String) throws -> CopyPasteOperationHandle {
                 try coordinator.startCopyPaste(
-                    CopyPasteStart(analysisId: analysisId, policy: Coordinators.skipMerge), window: window)
+                    CopyPasteStart(report: report, policy: Coordinators.skipMerge), window: window)
             }
-            let firstAnalysis = try await Coordinators.analyze(
-                coordinator, first, sources: [source], destination: root.appending("one").path
-            ).analysisId
-            _ = try await analyzed(first, firstAnalysis)
+            let firstReport = try await Coordinators.analyze(
+                coordinator, first, sources: [source], destination: root.appending("one").path)
 
             // The second window sets up its copy, and pastes, while the first one's review is open.
-            let secondAnalysis = try await Coordinators.analyze(
-                coordinator, second, sources: [source], destination: root.appending("two").path
-            ).analysisId
-            _ = try await analyzed(second, secondAnalysis)
-            let secondPaste = try paste(second, secondAnalysis)
+            let secondReport = try await Coordinators.analyze(
+                coordinator, second, sources: [source], destination: root.appending("two").path)
+            let secondPaste = try paste(second, secondReport)
             #expect(try await Coordinators.end(of: secondPaste.operationId, in: second).status == .completed)
             _ = try await Coordinators.waitFor { coordinator.activeOperation == nil ? true : nil }
 
             // The first window's review can still be pasted from.
-            #expect(try await analyzed(first, firstAnalysis).status == .complete)
-            let firstPaste = try paste(first, firstAnalysis)
+            let firstPaste = try paste(first, firstReport)
             #expect(try await Coordinators.end(of: firstPaste.operationId, in: first).status == .completed)
             #expect(try String(contentsOfFile: root.appending("one/a.txt").path, encoding: .utf8) == "a")
             #expect(try String(contentsOfFile: root.appending("two/a.txt").path, encoding: .utf8) == "a")
@@ -439,12 +480,12 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             options: WriteCoordinatorOptions(
                 caches: WriteCaches(writeStarting: { starting += 1 }, writeEnded: { ended += 1 })))
         let window = TestWindow()
-        try await Coordinators.analyze(coordinator, window)
+        let report = try await Coordinators.analyze(coordinator, window)
         service.startCopyPasteImpl = { _ in throw OperationError("The analysis broke.") }
 
         let refused = #expect(throws: OperationError.self) {
             try coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: "analysis-1", policy: Coordinators.skipMerge), window: window)
+                CopyPasteStart(report: report, policy: Coordinators.skipMerge), window: window)
         }
         #expect(refused?.message == "The analysis broke.")
 

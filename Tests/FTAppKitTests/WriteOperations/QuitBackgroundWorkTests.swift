@@ -10,14 +10,12 @@ import Testing
 /// A write service with nothing to run.
 private final class IdleWriteService: CoordinatorWriteService, @unchecked Sendable {
     func subscribe(_ listener: @escaping @Sendable (CopyPasteProgressEvent) -> Void) -> @Sendable () -> Void { {} }
-    func startCopyPasteAnalysis(_ request: CopyPasteAnalysisRequest, keep: Set<String>) throws
-        -> CopyPasteAnalysisStartHandle
-    { throw OperationError("idle") }
-    func getCopyPasteAnalysisUpdate(_ analysisId: String) throws -> CopyPasteAnalysisUpdate {
+    func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws -> CopyPasteAnalysisReport {
         throw OperationError("idle")
     }
-    func cancelCopyPasteAnalysis(_ analysisId: String) -> Bool { false }
-    func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String>) throws -> CopyPasteOperationHandle {
+    func startCopyPaste(
+        report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]?
+    ) throws -> CopyPasteOperationHandle {
         throw OperationError("idle")
     }
     func resolveRuntimeConflict(

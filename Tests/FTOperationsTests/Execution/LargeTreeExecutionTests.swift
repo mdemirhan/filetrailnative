@@ -148,9 +148,8 @@ enum LargeFolder {
 
     struct Reviewed: Sendable {
         let fileSystem: LargeFolderFileSystem
-        /// The review of copying "/source/project" into "/target"; nil when it didn't complete.
+        /// The review of copying "/source/project" into "/target"; nil when it failed, with why.
         let report: CopyPasteAnalysisReport?
-        let status: CopyPasteAnalysisJobStatus
         let error: String?
         /// How many times the review looked at a file, at most.
         let mostReadsOfAFile: Int
@@ -159,13 +158,18 @@ enum LargeFolder {
     static let reviewed = Task<Reviewed, any Error> {
         let fileSystem = LargeFolderFileSystem(fileCount: fileCount, fileName: fileName)
         let service = WriteService(.init(fileSystem: fileSystem))
-        let analysisId = try service.startCopyPasteAnalysis(
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target")
-        ).analysisId
-        _ = await waitFor(timeout: .seconds(120)) { try service.getCopyPasteAnalysisUpdate(analysisId).done }
-        let update = try service.getCopyPasteAnalysisUpdate(analysisId)
+        var report: CopyPasteAnalysisReport?
+        var error: String?
+        do {
+            report = try await service.analyze(
+                CopyPasteAnalysisRequest(
+                    mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target"),
+                signal: StopSignal())
+        } catch let failure {
+            error = errorMessage(failure)
+        }
         return Reviewed(
-            fileSystem: fileSystem, report: update.report, status: update.status, error: update.error,
+            fileSystem: fileSystem, report: report, error: error,
             mostReadsOfAFile: fileSystem.mostReads(under: "/source/project/files"))
     }
 }

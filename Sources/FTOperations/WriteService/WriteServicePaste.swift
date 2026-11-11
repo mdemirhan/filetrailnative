@@ -3,7 +3,7 @@
 import FTFoundation
 import Foundation
 
-/// A paste to run from its finished analysis, with the review's choices resolved.
+/// A paste to run from its review's report, with the review's choices resolved.
 public struct CopyPasteExecution: Sendable {
     public var operationId: String
     public var analysisId: String
@@ -39,39 +39,35 @@ let engineCopyPasteExecutor: CopyPasteExecutor = { execution in
 }
 
 extension WriteService {
-    /// Starts pasting from a finished analysis, keeping the finished analyses in `keep` (and this one) when it
-    /// drops the others. Refused while another write runs, or for an analysis it doesn't know.
-    public func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String> = []) throws
-        -> CopyPasteOperationHandle
-    {
-        let (operationId, mode, signal) = try state.withLock { state in
+    /// Starts pasting from the report of a finished review, with the review's choices. Refused while another write
+    /// runs.
+    public func startCopyPaste(
+        report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]? = nil
+    ) throws -> CopyPasteOperationHandle {
+        let (operationId, signal) = try state.withLock { state in
             if state.activeOperationId != nil {
                 throw OperationError(WriteServiceMessages.writeOperationBusy)
-            }
-            state.pruneTerminalAnalysisJobs(keep: keep, retaining: start.analysisId)
-            // Validate before claiming the busy slot so a bad request can't leave it held.
-            guard let job = state.analysisJobs[start.analysisId] else {
-                throw Self.unknownAnalysis(start.analysisId)
             }
             let operationId = nextOperationId(&state)
             let signal = StopSignal()
             state.signals[operationId] = signal
             state.activeOperationId = operationId
-            return (operationId, job.request.mode, signal)
+            return (operationId, signal)
         }
         emit(
             CopyPasteProgressEvent(
-                operationId: operationId, analysisId: start.analysisId, mode: mode, status: .queued,
+                operationId: operationId, analysisId: report.analysisId, mode: report.mode, status: .queued,
                 completedItemCount: 0, totalItemCount: 0, completedByteCount: 0, totalBytes: nil,
                 currentSourcePath: nil, currentDestinationPath: nil, runtimeConflict: nil, result: nil))
         Task.detached { [self] in
-            await executeActiveOperation(operationId, start, signal)
+            await executeActiveOperation(operationId, report, policy, overrides, signal)
         }
         return CopyPasteOperationHandle(operationId: operationId, status: .queued)
     }
 
     private func executeActiveOperation(
-        _ operationId: String, _ request: CopyPasteExecutionRequest, _ signal: StopSignal
+        _ operationId: String, _ report: CopyPasteAnalysisReport, _ policy: CopyPastePolicy,
+        _ overrides: [CopyPasteNodeOverride]?, _ signal: StopSignal
     )
         async
     {
@@ -80,28 +76,21 @@ extension WriteService {
                 state.pendingResolutions[operationId] = nil
                 state.standingResolutions[operationId] = nil
                 state.signals[operationId] = nil
-                state.analysisJobs[request.analysisId] = nil
                 if state.activeOperationId == operationId {
                     state.activeOperationId = nil
                 }
             }
         }
         do {
-            guard let job = state.withLock({ $0.analysisJobs[request.analysisId] }) else {
-                throw Self.unknownAnalysis(request.analysisId)
-            }
-            guard job.status == .complete, let report = job.report else {
-                throw OperationError("Copy/paste analysis is not ready.")
-            }
             let fileSystem = fileSystem
             let resolvedNodes = try await Self.withRoomForDepth(name: "FileTrail paste plan") {
                 try resolveAnalysisWithPolicy(
-                    report: report, policy: request.policy, overrides: request.overrides ?? [], fileSystem: fileSystem)
+                    report: report, policy: policy, overrides: overrides ?? [], fileSystem: fileSystem)
             }
             try await executeCopyPaste(
                 CopyPasteExecution(
-                    operationId: operationId, analysisId: request.analysisId, report: report, policy: request.policy,
-                    overrides: request.overrides, resolvedNodes: resolvedNodes, signal: signal,
+                    operationId: operationId, analysisId: report.analysisId, report: report, policy: policy,
+                    overrides: overrides, resolvedNodes: resolvedNodes, signal: signal,
                     emit: { [weak self] in self?.emit($0) }, fileSystem: fileSystem, writeJournal: writeJournal,
                     now: now,
                     requestResolution: { [weak self] conflict in
@@ -109,20 +98,17 @@ extension WriteService {
                     },
                     autoResolve: { [weak self] conflict in self?.standingAnswer(operationId, conflict) }))
         } catch {
-            emit(failureEvent(operationId, request, error: error, cancelled: isAbortError(error) || signal.isStopped))
+            emit(failureEvent(operationId, report, error: error, cancelled: isAbortError(error) || signal.isStopped))
         }
     }
 
     /// The event a paste that threw ends with: "cancelled" once stopped, else "failed" with every item failed.
     private func failureEvent(
-        _ operationId: String, _ request: CopyPasteExecutionRequest, error: any Error, cancelled: Bool
+        _ operationId: String, _ report: CopyPasteAnalysisReport, error: any Error, cancelled: Bool
     ) -> CopyPasteProgressEvent {
-        let job = state.withLock { $0.analysisJobs[request.analysisId] }
-        let report = job?.report
         let message = errorMessage(error)
-        let mode = report?.mode ?? job?.request.mode ?? .copy
         var result: CopyPasteOperationResult?
-        if !cancelled, let report {
+        if !cancelled {
             result = CopyPasteOperationResult(
                 operationId: operationId, mode: report.mode, status: .failed,
                 destinationDirectoryPath: report.destinationDirectoryPath, startedAt: now(), finishedAt: now(),
@@ -138,10 +124,10 @@ extension WriteService {
                 error: message)
         }
         return CopyPasteProgressEvent(
-            operationId: operationId, analysisId: request.analysisId, mode: mode,
+            operationId: operationId, analysisId: report.analysisId, mode: report.mode,
             status: cancelled ? .cancelled : .failed, completedItemCount: 0,
-            totalItemCount: report?.summary.totalNodeCount ?? 0, completedByteCount: 0,
-            totalBytes: report?.summary.totalBytes, currentSourcePath: nil, currentDestinationPath: nil,
+            totalItemCount: report.summary.totalNodeCount, completedByteCount: 0,
+            totalBytes: report.summary.totalBytes, currentSourcePath: nil, currentDestinationPath: nil,
             runtimeConflict: nil, result: result)
     }
 }

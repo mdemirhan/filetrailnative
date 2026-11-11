@@ -126,15 +126,14 @@ private final class Events: Sendable {
     }
 }
 
-/// Analyzes a paste, then starts it with the default policy, as the window does.
+/// Reviews a paste, then starts it with the default policy, as the window does.
 private func startPaste(_ service: WriteService, _ mode: CopyPasteMode, _ sources: [String], into destination: String)
     async throws -> CopyPasteOperationHandle
 {
-    let analysisId = try service.startCopyPasteAnalysis(
-        CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination)
-    ).analysisId
-    #expect(await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done })
-    return try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: analysisId, policy: .defaultCopyPaste))
+    let report = try await service.analyze(
+        CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
+        signal: StopSignal())
+    return try service.startCopyPaste(report: report, policy: .defaultCopyPaste)
 }
 
 /// A service on the disk itself, its events collected.

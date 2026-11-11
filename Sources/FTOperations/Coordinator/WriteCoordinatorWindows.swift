@@ -1,5 +1,5 @@
-// Each operation and analysis belongs to the window that started it, and is handed on or cancelled when that window
-// closes
+// Each operation belongs to the window that started it, and is handed on or cancelled when that window closes; a
+// review is stopped
 import FTFoundation
 import Foundation
 
@@ -7,23 +7,22 @@ extension WriteCoordinator {
     // MARK: A window closing
 
     /// A window closed: an operation it started goes on in the window `successorOf` names, or is cancelled when
-    /// there is none; an analysis it started is cancelled, as nobody can answer its review.
+    /// there is none; a review it runs is stopped, as nobody can answer it.
     public func windowClosed(_ window: any WriteOperationWindow) {
         for operationId in watchedOperations.sorted() where senders[operationId] === window {
             handOverOrCancel(operationId, from: window)
         }
-        for analysisId in watchedAnalyses.sorted() where analysisOwners[analysisId] === window {
-            forgetAnalysis(analysisId)
-            _ = writeService.cancelCopyPasteAnalysis(analysisId)
+        if let review = runningReview, review.window === window {
+            review.signal.stop()
         }
         // The window that was asked about deleting what had no Trash is gone.
         forgetItemsWithoutTrash(of: window)
     }
 
-    /// How many of the window's operations and analyses listen for it to close.
+    /// How many of the window's operations and reviews listen for it to close.
     public func watchCount(_ window: any WriteOperationWindow) -> Int {
-        watchedOperations.filter { senders[$0] === window }.count
-            + watchedAnalyses.filter { analysisOwners[$0] === window }.count
+        let reviewing = runningReview.map { $0.window === window && !$0.signal.isStopped } ?? false
+        return watchedOperations.filter { senders[$0] === window }.count + (reviewing ? 1 : 0)
     }
 
     // MARK: Operations and their windows
@@ -111,37 +110,5 @@ extension WriteCoordinator {
     /// `broadcast`: the other windows hear the update, without the result's items they don't need.
     func broadcast(_ payload: WriteOperationEvent, owner: any WriteOperationWindow) {
         options.broadcastProgress?(payload.forOtherWindows, owner)
-    }
-
-    // MARK: Analyses and their windows
-
-    /// `watchAnalysisOwner`: an analysis whose window closed is cancelled: nobody can answer its review, and one
-    /// still running would keep every other window from setting up a copy.
-    func watchAnalysisOwner(_ analysisId: String, _ owner: any WriteOperationWindow) {
-        analysisOwners[analysisId] = owner
-        if owner.isClosed {
-            forgetAnalysis(analysisId)
-            _ = writeService.cancelCopyPasteAnalysis(analysisId)
-            return
-        }
-        watchedAnalyses.insert(analysisId)
-    }
-
-    func forgetAnalysis(_ analysisId: String) {
-        watchedAnalyses.remove(analysisId)
-        analysisOwners[analysisId] = nil
-    }
-
-    /// `analysesOfOtherWindows`: their reviews may still be open, so the write service keeps them when it drops
-    /// finished ones.
-    func analysesOfOtherWindows(_ sender: any WriteOperationWindow) -> Set<String> {
-        Set(analysisOwners.filter { $0.value !== sender }.keys)
-    }
-
-    /// `assertAnalysisOwner`: an analysis is read, cancelled, and started only by the window that asked for it.
-    func assertAnalysisOwner(_ analysisId: String, _ requester: any WriteOperationWindow) throws {
-        guard let owner = analysisOwners[analysisId], owner === requester else {
-            throw WriteCoordinatorError.analysisOfAnotherWindow
-        }
     }
 }

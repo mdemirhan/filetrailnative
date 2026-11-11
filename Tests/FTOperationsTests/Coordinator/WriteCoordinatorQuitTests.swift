@@ -120,21 +120,19 @@ import Testing
         try await withTemporaryDirectory(prefix: "filetrail-early-end") { root in
             try Data("a".utf8).write(to: root.appending("a.txt"))
             try FileManager.default.createDirectory(at: root.appending("target"), withIntermediateDirectories: false)
-            let service = WriteService(WriteServiceDependencies(fileSystem: NativeWriteFileSystem()))
+            // A paste that fails as soon as it runs.
+            let service = WriteService(
+                WriteServiceDependencies(
+                    fileSystem: NativeWriteFileSystem(),
+                    executeCopyPaste: { _ in throw OperationError("The disk went away.") }))
             let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
             let window = TestWindow()
-            let handle = try await Coordinators.analyze(
+            let report = try await Coordinators.analyze(
                 coordinator, window, sources: [root.appending("a.txt").path], destination: root.appending("target").path
             )
-            _ = try await Coordinators.waitFor {
-                (try? coordinator.analysisUpdate(handle.analysisId, window: window)).flatMap { $0.done ? $0 : nil }
-            }
-            // The review was dismissed after the analysis finished, then pasted from anyway: the write service fails
-            // such a paste.
-            coordinator.cancelAnalysis(handle.analysisId, window: window)
 
             let started = try coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: handle.analysisId, policy: Coordinators.skipMerge), window: window)
+                CopyPasteStart(report: report, policy: Coordinators.skipMerge), window: window)
 
             // The window still hears how it ended, after it has the operation's id.
             #expect(try await Coordinators.end(of: started.operationId, in: window).status == .failed)
@@ -163,29 +161,6 @@ import Testing
         #expect(coordinator.activeOperation == nil)
 
         #expect(try await Coordinators.end(of: "copy-op-1", in: window).status == .cancelled)
-        await coordinator.shutDown(maxWaitMs: 0)
-    }
-
-    @Test func onlyLetsTheWindowThatStartedAnAnalysisReadCancelOrPasteFromIt() async throws {
-        let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
-        let owner = TestWindow()
-        let otherWindow = TestWindow()
-        try await Coordinators.analyze(coordinator, owner)
-
-        #expect(throws: WriteCoordinatorError.analysisOfAnotherWindow) {
-            try coordinator.analysisUpdate("analysis-1", window: otherWindow)
-        }
-        #expect(!coordinator.cancelAnalysis("analysis-1", window: otherWindow))
-        #expect(throws: WriteCoordinatorError.analysisOfAnotherWindow) {
-            try coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: "analysis-1", policy: Coordinators.skipMerge), window: otherWindow)
-        }
-        #expect(service.calls.getCopyPasteAnalysisUpdate.isEmpty)
-        #expect(service.calls.cancelCopyPasteAnalysis.isEmpty)
-        #expect(service.calls.startCopyPaste.isEmpty)
-
-        #expect(coordinator.cancelAnalysis("analysis-1", window: owner))
         await coordinator.shutDown(maxWaitMs: 0)
     }
 

@@ -66,17 +66,12 @@ private func runServicePaste(
             DispatchQueue.global().async(execute: respond)
         }
     }
-    let analysisId = try service.startCopyPasteAnalysis(
-        CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination)
-    ).analysisId
-    #expect(await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done })
-    let report = try service.getCopyPasteAnalysisUpdate(analysisId).report
+    let report = try await service.analyze(
+        CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
+        signal: StopSignal())
     afterAnalysis?()
-    let operationId = try service.startCopyPaste(
-        CopyPasteExecutionRequest(
-            analysisId: analysisId, policy: policy, overrides: report.flatMap { report in overrides?(report) })
-    )
-    .operationId
+    let operationId = try service.startCopyPaste(report: report, policy: policy, overrides: overrides?(report))
+        .operationId
     func result() -> CopyPasteOperationResult? {
         log.events.first { $0.operationId == operationId && $0.result != nil }?.result
     }
@@ -223,12 +218,11 @@ struct WriteServiceRuntimeTests {
         }
         let log = ServiceLog()
         _ = service.subscribe { log.record($0) }
-        let analysisId = try service.startCopyPasteAnalysis(
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/a.txt"], destinationDirectoryPath: "/target")
-        ).analysisId
-        #expect(await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done })
+        let report = try await service.analyze(
+            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/a.txt"], destinationDirectoryPath: "/target"),
+            signal: StopSignal())
         try fileSystem.rm("/source/a.txt", recursive: false, force: false)
-        _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: analysisId, policy: keepBoth))
+        _ = try service.startCopyPaste(report: report, policy: keepBoth)
         #expect(await waitFor { log.events.contains { $0.result != nil } })
 
         #expect(refused.withLock { $0 } == [false, false, true])
@@ -279,18 +273,17 @@ struct WriteServiceRuntimeCoordinationTests {
                     }
                 }
             }
-            let analysisId = try service.startCopyPasteAnalysis(
+            let report = try await service.analyze(
                 CopyPasteAnalysisRequest(
                     mode: .copy, sourcePaths: ["a.txt", "b.txt", "c.txt"].map { source + "/" + $0 },
-                    destinationDirectoryPath: target)
-            ).analysisId
-            #expect(await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done })
+                    destinationDirectoryPath: target),
+                signal: StopSignal())
             // All three names get taken after review, before the paste starts.
             for name in ["a.txt", "b.txt", "c.txt"] {
                 try Disk.write(target + "/" + name, "someone else's \(name)")
             }
 
-            _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: analysisId, policy: addMissing))
+            _ = try service.startCopyPaste(report: report, policy: addMissing)
 
             #expect(await waitFor { log.events.last?.result != nil })
             #expect(log.events.filter { $0.status == .awaitingResolution }.count == 1)
@@ -303,9 +296,7 @@ struct WriteServiceRuntimeCoordinationTests {
         let service = WriteService(.init(fileSystem: MockWriteServiceFileSystem()))
 
         #expect(!service.resolveRuntimeConflict("missing-op", conflictId: "missing-conflict", action: .skip))
-        #expect(!service.cancelCopyPasteAnalysis("missing-analysis"))
         #expect(!service.cancelOperation("missing-op"))
-        #expect(throws: (any Error).self) { try service.getCopyPasteAnalysisUpdate("missing-analysis") }
     }
 
     // Stop pressed just as the paste finds something in the way: after it last looked whether it was stopped, and
@@ -325,10 +316,10 @@ struct WriteServiceRuntimeCoordinationTests {
                 pasting.withLock { $0 = true }
             }
         }
-        _ = try service.startCopyPasteAnalysis(
+        let report = try await service.analyze(
             CopyPasteAnalysisRequest(
-                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
-        #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"),
+            signal: StopSignal())
         fileSystem.addFile("/target/file.txt", .file(size: 99))
         // The paste's look at what is now in the way, on the paste's own thread: Stop is pressed right then.
         fileSystem.lstatImpl = { path in
@@ -338,7 +329,7 @@ struct WriteServiceRuntimeCoordinationTests {
             return try fileSystem.lstatDirectly(path)
         }
 
-        _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: "analysis-1", policy: .defaultCopyPaste))
+        _ = try service.startCopyPaste(report: report, policy: .defaultCopyPaste)
         // A paste left waiting on its question is let go however the test ends: a second Stop finds the question.
         defer { service.cancelOperation("copy-op-1") }
 
@@ -362,13 +353,13 @@ struct WriteServiceRuntimeCoordinationTests {
                 DispatchQueue.global().async { service.cancelOperation(event.operationId) }
             }
         }
-        _ = try service.startCopyPasteAnalysis(
+        let report = try await service.analyze(
             CopyPasteAnalysisRequest(
-                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
-        #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"),
+            signal: StopSignal())
         fileSystem.addFile("/target/file.txt", .file(size: 99))
 
-        _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: "analysis-1", policy: .defaultCopyPaste))
+        _ = try service.startCopyPaste(report: report, policy: .defaultCopyPaste)
 
         #expect(await waitFor { log.events.contains { $0.status == .cancelled } })
     }
@@ -387,11 +378,11 @@ struct WriteServiceRuntimeCoordinationTests {
         let log = ServiceLog()
         _ = service.subscribe { log.record($0) }
 
-        _ = try service.startCopyPasteAnalysis(
+        let report = try await service.analyze(
             CopyPasteAnalysisRequest(
-                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
-        #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
-        _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: "analysis-1", policy: .defaultCopyPaste))
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"),
+            signal: StopSignal())
+        _ = try service.startCopyPaste(report: report, policy: .defaultCopyPaste)
 
         #expect(await waitFor { log.events.contains { $0.status == .completed } })
     }

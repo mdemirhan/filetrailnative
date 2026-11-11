@@ -6,11 +6,12 @@ import Foundation
 /// What the coordinator asks of the copy engine's write service; `WriteService` is it, tests stand in for it.
 public protocol CoordinatorWriteService: AnyObject, Sendable {
     func subscribe(_ listener: @escaping @Sendable (CopyPasteProgressEvent) -> Void) -> @Sendable () -> Void
-    func startCopyPasteAnalysis(_ request: CopyPasteAnalysisRequest, keep: Set<String>) throws
-        -> CopyPasteAnalysisStartHandle
-    func getCopyPasteAnalysisUpdate(_ analysisId: String) throws -> CopyPasteAnalysisUpdate
-    func cancelCopyPasteAnalysis(_ analysisId: String) -> Bool
-    func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String>) throws -> CopyPasteOperationHandle
+    /// Reviews a paste; stopping `signal` ends it at once with `StopError`.
+    func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws -> CopyPasteAnalysisReport
+    /// Starts pasting from a review's report.
+    func startCopyPaste(
+        report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]?
+    ) throws -> CopyPasteOperationHandle
     func resolveRuntimeConflict(
         _ operationId: String, conflictId: String, action: CopyPasteChoice, applyToRemaining: Bool
     ) -> Bool
@@ -99,9 +100,10 @@ public struct FinishedWrite: Equatable, Sendable {
     }
 }
 
-/// A request to paste from an analysis (`copyPaste:start`).
+/// A request to paste from the report of a review.
 public struct CopyPasteStart: Equatable, Sendable {
-    public var analysisId: String
+    /// What the review found, which the paste runs from: the report the window was shown.
+    public var report: CopyPasteAnalysisReport
     public var action: WriteOperationAction
     public var policy: CopyPastePolicy
     public var overrides: [CopyPasteNodeOverride]?
@@ -110,10 +112,10 @@ public struct CopyPasteStart: Equatable, Sendable {
     public var clearsCutClipboard: String?
 
     public init(
-        analysisId: String, action: WriteOperationAction = .paste, policy: CopyPastePolicy,
+        report: CopyPasteAnalysisReport, action: WriteOperationAction = .paste, policy: CopyPastePolicy,
         overrides: [CopyPasteNodeOverride]? = nil, clearsCutClipboard: String? = nil
     ) {
-        self.analysisId = analysisId
+        self.report = report
         self.action = action
         self.policy = policy
         self.overrides = overrides
@@ -146,8 +148,8 @@ public struct WriteCoordinatorError: Error, Equatable, Sendable, CustomStringCon
     /// `ensureNoWriteOperationInFlight`.
     public static let busy = WriteCoordinatorError(WriteServiceMessages.writeOperationBusy)
     public static let quitting = WriteCoordinatorError("File Trail is quitting.")
-    /// `assertAnalysisOwner`.
-    public static let analysisOfAnotherWindow = WriteCoordinatorError("This copy was set up in another window.")
+    /// One paste is reviewed at a time.
+    public static let reviewing = WriteCoordinatorError(WriteServiceMessages.analysisBusy)
 }
 
 /// Folder listings and sizes read before an operation finished may show the old contents. The app passes its

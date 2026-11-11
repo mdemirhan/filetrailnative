@@ -204,13 +204,13 @@ import Testing
         }
 
         let error = await #expect(throws: WriteCoordinatorError.self) {
-            try await coordinator.startAnalysis(request(.cut), window: TestWindow())
+            try await coordinator.analyze(request(.cut), window: TestWindow(), signal: StopSignal())
         }
         #expect(error?.message.hasSuffix("can't be moved.") == true)
-        #expect(service.calls.startCopyPasteAnalysis.isEmpty)
+        #expect(service.calls.analyze.isEmpty)
         #expect(
-            try await coordinator.startAnalysis(request(.copy), window: TestWindow())
-                == CopyPasteAnalysisStartHandle(analysisId: "analysis-1", status: .queued))
+            try await coordinator.analyze(request(.copy), window: TestWindow(), signal: StopSignal()).analysisId
+                == "analysis-1")
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
@@ -233,12 +233,12 @@ import Testing
             try await coordinator.deleteImmediately(paths: ["/Users/someone"], window: window)
         }
         await #expect(throws: WriteCoordinatorError("“Pictures” can't be moved.")) {
-            try await coordinator.startAnalysis(
+            try await coordinator.analyze(
                 CopyPasteAnalysisRequest(
                     mode: .cut, sourcePaths: ["/Users/someone/Pictures"], destinationDirectoryPath: "/Volumes/Backup"),
-                window: window)
+                window: window, signal: StopSignal())
         }
-        #expect(service.calls.startCopyPasteAnalysis.isEmpty)
+        #expect(service.calls.analyze.isEmpty)
         #expect(fileSystem.calls.trash.isEmpty)
         await coordinator.shutDown(maxWaitMs: 0)
     }
@@ -280,17 +280,17 @@ import Testing
 
         for destination in ["/Users/demo/.Trash", "/Users/demo/.Trash/Old", "/Volumes/USB/.Trashes/501"] {
             await #expect(throws: WriteCoordinatorError("Nothing can be pasted into the Trash."), "\(destination)") {
-                try await coordinator.startAnalysis(
+                try await coordinator.analyze(
                     CopyPasteAnalysisRequest(
                         mode: .cut, sourcePaths: ["/Users/demo/a.txt"], destinationDirectoryPath: destination),
-                    window: TestWindow())
+                    window: TestWindow(), signal: StopSignal())
             }
             await #expect(throws: WriteCoordinatorError("Nothing can be made in the Trash."), "\(destination)") {
                 try await coordinator.createFolder(
                     parentDirectoryPath: destination, folderName: "New Folder", window: TestWindow())
             }
         }
-        #expect(service.calls.startCopyPasteAnalysis.isEmpty)
+        #expect(service.calls.analyze.isEmpty)
         await coordinator.shutDown(maxWaitMs: 0)
     }
 

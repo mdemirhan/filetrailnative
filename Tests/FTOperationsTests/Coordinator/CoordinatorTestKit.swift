@@ -6,25 +6,32 @@ import os
 
 @testable import FTOperations
 
+/// A paste as the write service was asked to start it.
+struct StartedPaste: Equatable {
+    var report: CopyPasteAnalysisReport
+    var policy: CopyPastePolicy
+    var overrides: [CopyPasteNodeOverride]?
+}
+
 /// A write service stub that hands out sequential operation ids and lets the test
 /// emit progress events the way the real service does. Every call is recorded.
 final class StubWriteService: CoordinatorWriteService, @unchecked Sendable {
     struct Calls {
-        var startCopyPaste: [(CopyPasteExecutionRequest, Set<String>)] = []
+        var startCopyPaste: [StartedPaste] = []
         var resolveRuntimeConflict: [(String, String, CopyPasteChoice, Bool)] = []
         var cancelOperation: [String] = []
-        var startCopyPasteAnalysis: [CopyPasteAnalysisRequest] = []
-        var cancelCopyPasteAnalysis: [String] = []
-        var getCopyPasteAnalysisUpdate: [String] = []
+        var analyze: [CopyPasteAnalysisRequest] = []
     }
 
     private(set) var calls = Calls()
     private var subscribers: [@Sendable (CopyPasteProgressEvent) -> Void] = []
     private var sequence = 0
-    /// The analysis ids handed out, in order; "analysis-1" once they run out.
+    /// The ids of the reports handed out, in order; "analysis-1" once they run out.
     var analysisIds: [String] = []
     var resolveAnswer = true
-    var startCopyPasteImpl: ((CopyPasteExecutionRequest) throws -> CopyPasteOperationHandle)?
+    /// Reviews run until they are stopped, as on a disk that doesn't answer.
+    var holdsReviews = false
+    var startCopyPasteImpl: ((StartedPaste) throws -> CopyPasteOperationHandle)?
 
     func emit(_ event: CopyPasteProgressEvent) {
         for subscriber in subscribers { subscriber(event) }
@@ -35,26 +42,24 @@ final class StubWriteService: CoordinatorWriteService, @unchecked Sendable {
         return {}
     }
 
-    func startCopyPasteAnalysis(_ request: CopyPasteAnalysisRequest, keep: Set<String>) throws
-        -> CopyPasteAnalysisStartHandle
-    {
-        calls.startCopyPasteAnalysis.append(request)
+    /// A report with nothing in the way, at once unless reviews are held; stopped, it ends so.
+    func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws -> CopyPasteAnalysisReport {
+        calls.analyze.append(request)
         let analysisId = analysisIds.isEmpty ? "analysis-1" : analysisIds.removeFirst()
-        return CopyPasteAnalysisStartHandle(analysisId: analysisId, status: .queued)
+        if holdsReviews {
+            await withCheckedContinuation { stopped in
+                if signal.onStop({ stopped.resume() }) == nil { stopped.resume() }
+            }
+        }
+        try signal.throwIfStopped()
+        return Coordinators.report(analysisId, request)
     }
 
-    func getCopyPasteAnalysisUpdate(_ analysisId: String) throws -> CopyPasteAnalysisUpdate {
-        calls.getCopyPasteAnalysisUpdate.append(analysisId)
-        return CopyPasteAnalysisUpdate(analysisId: analysisId, status: .complete, done: true, report: nil, error: nil)
-    }
-
-    func cancelCopyPasteAnalysis(_ analysisId: String) -> Bool {
-        calls.cancelCopyPasteAnalysis.append(analysisId)
-        return true
-    }
-
-    func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String>) throws -> CopyPasteOperationHandle {
-        calls.startCopyPaste.append((start, keep))
+    func startCopyPaste(
+        report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]?
+    ) throws -> CopyPasteOperationHandle {
+        let start = StartedPaste(report: report, policy: policy, overrides: overrides)
+        calls.startCopyPaste.append(start)
         if let startCopyPasteImpl { return try startCopyPasteImpl(start) }
         sequence += 1
         return CopyPasteOperationHandle(operationId: "copy-op-\(sequence)", status: .queued)
@@ -160,28 +165,38 @@ final class LogRecorder {
 enum Coordinators {
     static let skipMerge = CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)
 
-    /// `analyze`.
+    /// The review of a paste of `sources` into `destination` for `window`, through the coordinator.
     @MainActor
     @discardableResult
     static func analyze(
         _ coordinator: WriteCoordinator, _ window: TestWindow, sources: [String] = ["/Users/demo/a.txt"],
-        destination: String = "/Users/demo/b", mode: CopyPasteMode = .copy
-    ) async throws -> CopyPasteAnalysisStartHandle {
-        try await coordinator.startAnalysis(
+        destination: String = "/Users/demo/b", mode: CopyPasteMode = .copy, signal: StopSignal = StopSignal()
+    ) async throws -> CopyPasteAnalysisReport {
+        try await coordinator.analyze(
             CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
-            window: window)
+            window: window, signal: signal)
     }
 
-    /// `startPaste`: pastes from an analysis the same window started, as the app does.
+    /// `startPaste`: reviews a paste and pastes from its report in the same window, as the app does.
     @MainActor
     @discardableResult
     static func startPaste(
         _ coordinator: WriteCoordinator, _ window: TestWindow, clearsCutClipboard: String? = nil
     ) async throws -> CopyPasteOperationHandle {
-        try await analyze(coordinator, window)
+        let report = try await analyze(coordinator, window)
         return try coordinator.startCopyPaste(
-            CopyPasteStart(analysisId: "analysis-1", policy: skipMerge, clearsCutClipboard: clearsCutClipboard),
+            CopyPasteStart(report: report, policy: skipMerge, clearsCutClipboard: clearsCutClipboard),
             window: window)
+    }
+
+    /// A review's report with nothing in the way: no items, issues or conflicts.
+    static func report(_ analysisId: String, _ request: CopyPasteAnalysisRequest) -> CopyPasteAnalysisReport {
+        CopyPasteAnalysisReport(
+            analysisId: analysisId, mode: request.mode, sourcePaths: request.sourcePaths,
+            destinationDirectoryPath: request.destinationDirectoryPath, nodes: [], issues: [], warnings: [],
+            summary: CopyPasteAnalysisSummary(
+                topLevelItemCount: 0, totalNodeCount: 0, totalBytes: 0, fileConflictCount: 0,
+                directoryConflictCount: 0, mismatchConflictCount: 0, blockedCount: 0))
     }
 
     static func fingerprint() -> NodeFingerprint {

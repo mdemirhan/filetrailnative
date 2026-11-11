@@ -403,10 +403,9 @@ struct UndoRecordingCoordinatorTests {
             let service = StubWriteService()
             let (coordinator, finished, window) = setUp(
                 root, trashDir, writeService: service, diskHasTrash: diskHasTrash)
-            try await Coordinators.analyze(coordinator, window, destination: "/Volumes/Share")
+            let report = try await Coordinators.analyze(coordinator, window, destination: "/Volumes/Share")
             try coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: "analysis-1", action: .copyTo, policy: Coordinators.skipMerge),
-                window: window)
+                CopyPasteStart(report: report, action: .copyTo, policy: Coordinators.skipMerge), window: window)
             service.emit(
                 Coordinators.event(
                     .completed, completedItemCount: 1,
@@ -485,16 +484,12 @@ struct UndoRecordingCoordinatorTests {
             _ = try await end(
                 coordinator.rename(sourcePath: "\(root)/a.txt", destinationName: "b.txt", window: window), window)
             let generation = history.generation
-            let started = try await coordinator.startAnalysis(
+            let report = try await coordinator.analyze(
                 CopyPasteAnalysisRequest(
                     mode: .copy, sourcePaths: ["\(root)/src/Folder"], destinationDirectoryPath: "\(root)/dst"),
-                window: window)
-            while try !coordinator.analysisUpdate(started.analysisId, window: window).done {
-                try await Task.sleep(nanoseconds: 1_000_000)
-            }
+                window: window, signal: StopSignal())
             let handle = try coordinator.startCopyPaste(
-                CopyPasteStart(analysisId: started.analysisId, action: .paste, policy: Coordinators.skipMerge),
-                window: window)
+                CopyPasteStart(report: report, action: .paste, policy: Coordinators.skipMerge), window: window)
             #expect(try await Coordinators.end(of: handle.operationId, in: window).status == .partial)
             #expect(history.generation == generation)
             #expect(history.menu() == UndoMenuLabels(undo: "Rename", redo: nil, cantUndo: false))

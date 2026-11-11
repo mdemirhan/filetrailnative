@@ -9,7 +9,7 @@ import FTOperations
 enum CopyLikeOutcome: Equatable, Sendable {
     /// It runs, as this operation.
     case queued(operationId: String)
-    /// The analysis found clashes: the review sheet decides, then `startCopyPaste`.
+    /// The review found clashes: the review sheet decides, then `startCopyPaste`.
     case review(CopyPasteAnalysisReport)
     /// Something stood in the way; nothing was changed.
     case blocked(message: String)
@@ -20,7 +20,6 @@ enum CopyLikeOutcome: Equatable, Sendable {
 /// One tab's file operations, through its explorer window's side (`ExplorerWriteSession`). One method per action.
 @MainActor
 final class WindowWriteActions {
-    static let analysisPollIntervalMs: UInt64 = 120
     /// Pressing the primary button without changing anything never loses data.
     static let safePolicy = CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
 
@@ -107,59 +106,69 @@ final class WindowWriteActions {
         session.applyCard(
             WriteOperationCardState(
                 action: action, stage: .analyzing, targetPath: destination, currentSourcePath: sources.first))
+        // Cancel in "Preparing to Paste…" stops the review itself.
+        let signal = StopSignal()
         var preparing: PreparingDialog?
+        let outcome: Result<CopyPasteAnalysisReport, any Error>
         do {
-            let handle = try await coordinator.startAnalysis(
-                CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
-                window: session)
-            if moveFromSearchResults { session.noteMoveFromSearchResults(analysisId: handle.analysisId) }
-            // "Preparing to Paste…" if this takes a while, with Cancel, which stops the analysis itself.
-            let dialog = PreparingDialog(
-                timers: preparingTimers,
-                present: { [presentPreparing, weak self] in presentPreparing(action, self?.window, $0) },
-                onCancel: { [coordinator, session] in
-                    _ = coordinator.cancelAnalysis(handle.analysisId, window: session)
+            outcome = .success(
+                try await coordinator.analyze(
+                    CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
+                    window: session, signal: signal
+                ) {
+                    // "Preparing to Paste…" if this takes a while.
+                    preparing = PreparingDialog(
+                        timers: preparingTimers,
+                        present: { [presentPreparing, weak self] in presentPreparing(action, self?.window, $0) },
+                        onCancel: { signal.stop() })
                 })
-            preparing = dialog
-            var update = try coordinator.analysisUpdate(handle.analysisId, window: session)
-            while !update.done {
-                try await Task.sleep(nanoseconds: Self.analysisPollIntervalMs * 1_000_000)
-                update = try coordinator.analysisUpdate(handle.analysisId, window: session)
-            }
-            let cancelled = await dialog.finish()
-            if cancelled || update.status == .cancelled {
-                session.applyCard(nil)
-                return .cancelled
-            }
-            guard update.status == .complete, let report = update.report else {
-                session.applyCard(nil)
-                let trimmed = update.error?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                let message = trimmed.isEmpty ? Self.preparationFailure(action) : trimmed
-                if reportsRefusals { dialogs.showRefusal(.operation(action), message: message, in: window) }
-                return .error(message: message)
-            }
-            if !report.issues.isEmpty {
-                return await leaveOut(
-                    report, mode: mode, sources: sources, destination: destination, action: action,
-                    clearsCutClipboard: clearsCutClipboard, initiator: initiator, onSourcesMissing: onSourcesMissing,
-                    reportsRefusals: reportsRefusals, defaultPolicy: defaultPolicy,
-                    moveFromSearchResults: moveFromSearchResults)
-            }
-            if Self.hasConflicts(report) {
-                session.applyCard(nil)
-                return .review(report)
-            }
-            return await startCopyPaste(
-                report, policy: defaultPolicy, action: action, clearsCutClipboard: clearsCutClipboard,
-                reportsRefusals: reportsRefusals)
         } catch {
+            guard preparing != nil else {
+                // Refused before it began.
+                session.applyCard(nil)
+                return reportsRefusals ? refused(.operation(action), error) : refusal(error)
+            }
+            outcome = .failure(error)
+        }
+        // Stopped by Cancel, by the window closing or by quitting: the dialog goes at once, and nothing follows.
+        if signal.isStopped {
             preparing?.dismiss()
             session.applyCard(nil)
-            return reportsRefusals ? refused(.operation(action), error) : refusal(error)
+            return .cancelled
         }
+        if await preparing?.finish() == true {
+            session.applyCard(nil)
+            return .cancelled
+        }
+        let report: CopyPasteAnalysisReport
+        switch outcome {
+        case .success(let reviewed):
+            report = reviewed
+        case .failure(let error):
+            session.applyCard(nil)
+            let trimmed = errorMessage(error).trimmingCharacters(in: .whitespacesAndNewlines)
+            let message = trimmed.isEmpty ? Self.preparationFailure(action) : trimmed
+            if reportsRefusals { dialogs.showRefusal(.operation(action), message: message, in: window) }
+            return .error(message: message)
+        }
+        if moveFromSearchResults { session.noteMoveFromSearchResults(analysisId: report.analysisId) }
+        if !report.issues.isEmpty {
+            return await leaveOut(
+                report, mode: mode, sources: sources, destination: destination, action: action,
+                clearsCutClipboard: clearsCutClipboard, initiator: initiator, onSourcesMissing: onSourcesMissing,
+                reportsRefusals: reportsRefusals, defaultPolicy: defaultPolicy,
+                moveFromSearchResults: moveFromSearchResults)
+        }
+        if Self.hasConflicts(report) {
+            session.applyCard(nil)
+            return .review(report)
+        }
+        return await startCopyPaste(
+            report, policy: defaultPolicy, action: action, clearsCutClipboard: clearsCutClipboard,
+            reportsRefusals: reportsRefusals)
     }
 
-    /// Starts a paste from a finished analysis, with the review's choices.
+    /// Starts a paste from the report of a finished review, with the review's choices.
     func startCopyPaste(
         _ report: CopyPasteAnalysisReport, policy: CopyPastePolicy, action: WriteOperationAction,
         overrides: [CopyPasteNodeOverride] = [], clearsCutClipboard: String? = nil, reportsRefusals: Bool = true
@@ -175,7 +184,7 @@ final class WindowWriteActions {
             let handle = try await session.early.whileStarting {
                 try coordinator.startCopyPaste(
                     CopyPasteStart(
-                        analysisId: report.analysisId, action: action, policy: policy,
+                        report: report, action: action, policy: policy,
                         overrides: overrides.isEmpty ? nil : overrides, clearsCutClipboard: clears),
                     window: session)
             }

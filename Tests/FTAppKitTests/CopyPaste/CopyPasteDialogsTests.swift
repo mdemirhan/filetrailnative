@@ -216,7 +216,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The start is guarded: a second press while starting doesn't start again, and a start that failed (here,
-        // an analysis that has gone) lets the button work again, the sheet still up, the failure told.
+        // while another write holds the slot) lets the button work again, the sheet still up, the failure told.
         @Test func theStartIsGuardedAndWorksAgainWhenItFailed() async throws {
             let window = try await WritingWindow.open()
             try write(window, "a.txt")
@@ -235,13 +235,18 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { sheet.window == nil })
             _ = await waitUntil { !actions.session.isWriteLocked }
             #expect(window.recorder.shown.isEmpty)
-            // The analysis was used: a review of it fails to start, says why, and its button works again.
+            // Another write holds the slot: a review fails to start, says why, and its button works again.
+            let coordinator = actions.session.coordinator
+            let writing = DispatchSemaphore(value: 0)
+            DispatchQueue.global().async { _ = coordinator.runWriteAlone { writing.wait() } }
+            #expect(await waitUntil { coordinator.runWriteAlone({ true }) == nil })
             reviews.review(
                 report, action: .paste, policy: CopyPasteReview.safePolicy, clearsCutClipboard: nil, actions: actions)
             let again = try #require(await reviewSheet(window))
             again.primaryButton.perform()
             #expect(again.starting)
             #expect(await waitUntil { !again.starting })
+            writing.signal()
             #expect(again.primaryButton.isEnabled)
             #expect(again.window != nil)
             #expect(window.tab.window?.firstResponder === again.primaryButton)

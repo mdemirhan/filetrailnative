@@ -27,10 +27,6 @@ public enum CopyPastePlanWarningCode: String, Codable, Sendable {
     case cutRequiresDelete = "cut_requires_delete"
 }
 
-public enum CopyPasteAnalysisJobStatus: String, Codable, Sendable {
-    case queued, analyzing, complete, cancelled, error
-}
-
 public enum CopyPasteAnalysisNodeDisposition: String, Codable, Sendable {
     case new, conflict, blocked
 }
@@ -55,18 +51,6 @@ public struct CopyPasteNodeOverride: Codable, Equatable, Sendable {
     public init(nodeId: String, action: CopyPasteChoice) {
         self.nodeId = nodeId
         self.action = action
-    }
-}
-
-public struct CopyPasteExecutionRequest: Codable, Equatable, Sendable {
-    public var analysisId: String
-    public var policy: CopyPastePolicy
-    public var overrides: [CopyPasteNodeOverride]?
-
-    public init(analysisId: String, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride]? = nil) {
-        self.analysisId = analysisId
-        self.policy = policy
-        self.overrides = overrides
     }
 }
 
@@ -216,20 +200,6 @@ public struct CopyPasteAnalysisReport: Codable, Equatable, Sendable {
         self.summary = summary
         self.destinationCaseSensitive = destinationCaseSensitive
     }
-}
-
-public struct CopyPasteAnalysisStartHandle: Codable, Equatable, Sendable {
-    public var analysisId: String
-    /// `.queued` or `.analyzing`.
-    public var status: CopyPasteAnalysisJobStatus
-}
-
-public struct CopyPasteAnalysisUpdate: Codable, Equatable, Sendable {
-    public var analysisId: String
-    public var status: CopyPasteAnalysisJobStatus
-    public var done: Bool
-    public var report: CopyPasteAnalysisReport?
-    public var error: String?
 }
 
 public struct CopyPasteRuntimeConflict: Codable, Equatable, Sendable {
