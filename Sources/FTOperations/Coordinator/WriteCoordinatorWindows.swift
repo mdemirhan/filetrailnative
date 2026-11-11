@@ -59,15 +59,11 @@ extension WriteCoordinator {
         let clearsCutClipboard = copyPasteRequests[operationId]?.clearsCutClipboard
         pendingAdoptions[ObjectIdentifier(successor)] = PendingAdoption(
             window: successor, operationId: operationId, clearsCutClipboard: clearsCutClipboard, end: nil)
-        do {
-            try successor.receive(
-                .adopted(
-                    WriteOperationAdoption(
-                        operationId: operationId, event: latestProgress[operationId],
-                        clearsCutClipboard: clearsCutClipboard)))
-        } catch {
-            // The window went away mid-send; its own close hands the operation on again.
-        }
+        successor.receive(
+            .adopted(
+                WriteOperationAdoption(
+                    operationId: operationId, event: latestProgress[operationId],
+                    clearsCutClipboard: clearsCutClipboard)))
     }
 
     func detachSender(_ operationId: String) {
@@ -97,8 +93,7 @@ extension WriteCoordinator {
             clearsCutClipboard: pending.clearsCutClipboard)
     }
 
-    /// `sendProgress`: a window can go away between the check and the send; losing a progress update for a window
-    /// that's gone is fine, letting the throw skip the operation's cleanup is not.
+    /// `sendProgress`: a window that has closed isn't sent the update; every other window still hears it.
     func sendProgress(_ sender: any WriteOperationWindow, _ payload: WriteOperationEvent) {
         let operationId = payload.operationId
         if !payload.status.isTerminal, senders[operationId] != nil {
@@ -110,11 +105,7 @@ extension WriteCoordinator {
         }
         broadcast(payload, owner: sender)
         if sender.isClosed { return }
-        do {
-            try sender.receive(.progress(payload))
-        } catch {
-            // The window went away mid-send; there is no one left to tell.
-        }
+        sender.receive(.progress(payload))
     }
 
     /// `broadcast`: the other windows miss this update when telling them fails; the operation, and its own window,

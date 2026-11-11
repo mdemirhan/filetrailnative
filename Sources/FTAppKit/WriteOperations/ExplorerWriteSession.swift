@@ -125,7 +125,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
 
     // MARK: What the coordinator sends
 
-    func receive(_ message: WriteOperationMessage) throws {
+    func receive(_ message: WriteOperationMessage) {
         switch message {
         case .progress(let event):
             handleProgress(event)

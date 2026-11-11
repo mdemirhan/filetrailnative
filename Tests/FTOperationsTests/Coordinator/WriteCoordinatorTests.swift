@@ -234,27 +234,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    @Test func freesTheWriteSlotWhenALocalOperationsWindowThrowsOnSend() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
-        // A window torn down mid-operation: it doesn't say it is closed yet, but sending to it already throws.
-        let window = TestWindow()
-        let gate = TestGate()
-        try Coordinators.heldLocalOperation(coordinator, window, gate: gate)
-        _ = try await Coordinators.waitFor { gate.waiting ? true : nil }
-        window.throwsOnSend = true
-
-        gate.open()
-        _ = try await Coordinators.waitFor { coordinator.watchCount(window) == 0 ? true : nil }
-        _ = try await Coordinators.waitFor { coordinator.activeOperation == nil ? true : nil }
-
-        let next = TestGate()
-        #expect(
-            try Coordinators.heldLocalOperation(coordinator, TestWindow(), gate: next, action: .newFolder)
-                .operationId == "write-op-2")
-        next.open()
-        await coordinator.shutDown(maxWaitMs: 0)
-    }
-
     @Test func skipsSendingToAClosedWindowAndStillFreesTheSlotForWriteServiceOperations() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
@@ -262,7 +241,6 @@ import Testing
         try await Coordinators.startPaste(coordinator, window)
 
         window.isClosed = true
-        window.throwsOnSend = true
         coordinator.windowClosed(window)
         #expect(service.calls.cancelOperation == ["copy-op-1"])
         service.emit(Coordinators.event(.cancelled))
@@ -270,20 +248,6 @@ import Testing
         #expect(window.messages.isEmpty)
         #expect(coordinator.watchCount(window) == 0)
         try await Coordinators.analyze(coordinator, TestWindow())
-        await coordinator.shutDown(maxWaitMs: 0)
-    }
-
-    @Test func freesTheSlotEvenWhenSendingAWriteServiceTerminalEventThrows() async throws {
-        let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
-        let window = TestWindow()
-        try await Coordinators.startPaste(coordinator, window)
-        window.throwsOnSend = true
-
-        service.emit(Coordinators.event(.completed))
-
-        #expect(coordinator.watchCount(window) == 0)
-        try await Coordinators.startPaste(coordinator, TestWindow())
         await coordinator.shutDown(maxWaitMs: 0)
     }
 

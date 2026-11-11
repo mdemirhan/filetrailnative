@@ -34,7 +34,7 @@ private struct CountingFolders: ExplorerFileSystem {
 
 private final class AnotherWindow: WriteOperationWindow {
     var isClosed = false
-    func receive(_ message: WriteOperationMessage) throws {}
+    func receive(_ message: WriteOperationMessage) {}
 }
 
 extension ExplorerWindowlessTests {

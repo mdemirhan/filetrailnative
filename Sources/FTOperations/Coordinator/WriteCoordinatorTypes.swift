@@ -36,8 +36,8 @@ extension WriteService: CoordinatorWriteService {
 public protocol WriteOperationWindow: AnyObject {
     /// `isDestroyed()`: closed, or on its way out.
     var isClosed: Bool { get }
-    /// Sends it a message. A window that is going away may throw; the coordinator goes on.
-    func receive(_ message: WriteOperationMessage) throws
+    /// Sends it a message.
+    func receive(_ message: WriteOperationMessage)
 }
 
 /// What the coordinator sends a window.

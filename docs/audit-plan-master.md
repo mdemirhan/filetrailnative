@@ -2317,3 +2317,14 @@ anything that differed from the plan, and anything found on the way that is not 
   line of `UndoFuzzTests` changed from `base.trash?(path) ?? nil` to `base.trash(path)`, the same thing as its base
   has a Trash; the second half of a test whose subject was a disk without chmod went with that branch. 971
   FTOperationsTests passed after each step.
+- 2026-11-11. 6.7, done in a worktree of its own and brought over, but for the `recordUndo`/`caches.forget`
+  closures. Gone: `WriteOperationEvent.checked()`, its check and error types, and `deliverableProgressEvent`, which
+  answered an open question "skip" unasked when a check failed (this also settles the negative device number); the
+  do/catch around `receive`, which no production window throws from. Tests: the "question that can't be sent" case
+  and the two "window throws on send" cases went with their subjects; `skipsSendingToAClosedWindow…` lost its
+  throwing window and now sees any send. Not done, a stop: the two closures can't throw in the app, but four tests the
+  item doesn't name throw from them to test the do/catch the item removes
+  (`endsAPasteAndFreesTheSlotWhenForgettingWhatItChangedGoesWrong`,
+  `sendsTheEndOfALocalOperationWhenForgettingWhatItChangedGoesWrong`,
+  `freesTheWriteSlotEvenWhenKeepingTheHistoryFails`, `doesntReportAFinishedRenameAsFailedWhenReportingItGoesWrong`):
+  asked of the owner. Found: `WriteCoordinatorOptions.broadcastProgress` is `throws` too and can't throw in the app.

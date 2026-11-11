@@ -174,7 +174,7 @@ private final class Fixture {
     @MainActor
     final class OtherWindow: WriteOperationWindow {
         var isClosed = false
-        func receive(_ message: WriteOperationMessage) throws {}
+        func receive(_ message: WriteOperationMessage) {}
     }
 
     @MainActor

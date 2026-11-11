@@ -77,12 +77,10 @@ final class StubWriteService: CoordinatorWriteService, @unchecked Sendable {
 @MainActor
 final class TestWindow: WriteOperationWindow {
     var isClosed = false
-    var throwsOnSend = false
     var onReceive: ((WriteOperationMessage) -> Void)?
     private(set) var messages: [WriteOperationMessage] = []
 
-    func receive(_ message: WriteOperationMessage) throws {
-        if throwsOnSend { throw OperationError("Object has been destroyed") }
+    func receive(_ message: WriteOperationMessage) {
         messages.append(message)
         onReceive?(message)
     }

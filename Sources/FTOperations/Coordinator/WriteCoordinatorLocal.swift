@@ -99,8 +99,8 @@ extension WriteCoordinator {
     ) {
         let operationId = event.operationId
         let sender = senders[operationId]
-        // Release the operation before telling the window, so a failed send can't leave the write slot held and a
-        // window reacting to the final event can start the next write.
+        // Release the operation before telling the window, so a window reacting to the final event can start the
+        // next write.
         if event.status.isTerminal {
             let removedPaths = Set(removedItems.map { Array($0.path.utf8) })
             forgetCachedResponses(

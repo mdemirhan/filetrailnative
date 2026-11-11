@@ -281,7 +281,7 @@ private let arrived = WriteOperationItem(
         var ended = otherWindowsCopy(.partial, items: [arrived, failed])
         ended.action = .paste
 
-        try fixture.session.receive(
+        fixture.session.receive(
             .adopted(
                 WriteOperationAdoption(
                     operationId: "other-op", event: ended, clearsCutClipboard: "2026-10-08T10:00:00.000Z")))
@@ -303,14 +303,14 @@ private let arrived = WriteOperationItem(
             ])
         ended.action = .paste
 
-        try fixture.session.receive(.adopted(WriteOperationAdoption(operationId: "other-op", event: running)))
+        fixture.session.receive(.adopted(WriteOperationAdoption(operationId: "other-op", event: running)))
         #expect(fixture.session.card?.stage == .running)
         // Told again (asked after the message): taken once.
-        try fixture.session.receive(.adopted(WriteOperationAdoption(operationId: "other-op", event: ended)))
+        fixture.session.receive(.adopted(WriteOperationAdoption(operationId: "other-op", event: ended)))
         #expect(!fixture.events.contains { if case .ended = $0 { true } else { false } })
 
         // Its end comes as any other progress does, and is shown once.
-        try fixture.session.receive(.progress(ended))
+        fixture.session.receive(.progress(ended))
         #expect(fixture.events.filter { if case .ended = $0 { true } else { false } }.count == 1)
     }
 
@@ -321,12 +321,12 @@ private let arrived = WriteOperationItem(
         var running = otherWindowsCopy(.running)
         running.action = .paste
 
-        try fixture.session.receive(.adopted(WriteOperationAdoption(operationId: "other-op", event: running)))
+        fixture.session.receive(.adopted(WriteOperationAdoption(operationId: "other-op", event: running)))
         #expect(fixture.session.foreign == nil)
         #expect(fixture.session.card?.stage == .running)
 
         // The copy arrives in the folder on screen.
-        try fixture.session.receive(.progress(otherWindowsCopy(.completed, items: [arrived])))
+        fixture.session.receive(.progress(otherWindowsCopy(.completed, items: [arrived])))
 
         #expect(fixture.session.card == nil)
         // What it would have selected belonged to the window that started it.
