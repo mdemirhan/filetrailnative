@@ -64,17 +64,6 @@ public func resolveSingleNodeWithAction(
     return try resolver.resolveNode(node, reservedPaths: reserved, explicitAction: ResolvedCopyPasteAction(action))
 }
 
-/// `resolveSingleNodeWithAction` with no names reserved yet.
-public func resolveSingleNodeWithAction(
-    node: CopyPasteAnalysisNode, action: CopyPasteChoice, policy: CopyPastePolicy?,
-    overrides: [CopyPasteNodeOverride] = [], fileSystem: some AnalysisFileSystem, caseSensitive: Bool = false
-) throws -> ResolvedCopyPasteNode {
-    var reservedPaths = Set<NameKeys.Exact>()
-    return try resolveSingleNodeWithAction(
-        node: node, action: action, policy: policy, overrides: overrides, fileSystem: fileSystem,
-        caseSensitive: caseSensitive, reservedPaths: &reservedPaths)
-}
-
 /// The keys of every destination a resolved paste will write to.
 public func collectDestinationPathKeys(
     _ nodes: [ResolvedCopyPasteNode], caseSensitive: Bool, into keys: inout Set<NameKeys.Exact>

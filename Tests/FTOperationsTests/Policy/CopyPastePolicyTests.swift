@@ -31,6 +31,17 @@ func makeReport(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport {
             mismatchConflictCount: nodes.filter { $0.conflictClass == .typeMismatch }.count, blockedCount: 0))
 }
 
+/// `resolveSingleNodeWithAction` with no names reserved yet.
+func resolveSingleNodeWithAction(
+    node: CopyPasteAnalysisNode, action: CopyPasteChoice, policy: CopyPastePolicy?,
+    overrides: [CopyPasteNodeOverride] = [], fileSystem: some AnalysisFileSystem, caseSensitive: Bool = false
+) throws -> ResolvedCopyPasteNode {
+    var reservedPaths = Set<NameKeys.Exact>()
+    return try FTOperations.resolveSingleNodeWithAction(
+        node: node, action: action, policy: policy, overrides: overrides, fileSystem: fileSystem,
+        caseSensitive: caseSensitive, reservedPaths: &reservedPaths)
+}
+
 struct CopyPastePolicyTests {
     @Test func resolvesFileConflictsWithOverwriteSkipAndKeepBothActions() throws {
         let fileSystem = MockAnalysisFileSystem([

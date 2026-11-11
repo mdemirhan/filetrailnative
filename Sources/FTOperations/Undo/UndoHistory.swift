@@ -162,9 +162,6 @@ public final class UndoHistory {
         return { [weak self] in self?.listeners[token] = nil }
     }
 
-    /// The lists, oldest first, for tests.
-    var entries: (undo: [UndoEntry], redo: [UndoEntry]) { (undoList, redoList) }
-
     // MARK: Labels
 
     /// `labelOf`: "Rename", "Move of “a.txt”", "Copy of 3 Items"…: what the Edit menu puts after "Undo". A paste is

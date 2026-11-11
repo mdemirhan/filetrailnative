@@ -33,19 +33,6 @@ public struct RecoveryLogger: Sendable {
         self.info = info
         self.error = error
     }
-
-    /// The app's own log.
-    public static let system: RecoveryLogger = {
-        let log = Logger(subsystem: "app.filetrail", category: "recovery")
-        return RecoveryLogger(
-            info: { message, details in
-                let said = details.sorted { $0.key < $1.key }.map { "\($0.key)=\($0.value)" }.joined(separator: " ")
-                log.info("\(message, privacy: .public) \(said, privacy: .private)")
-            },
-            error: { message, error in
-                log.error("\(message, privacy: .public): \(error, privacy: .private)")
-            })
-    }()
 }
 
 /// What a recovery that put things in place, back, or took them away forgets: folder listings and sizes read
