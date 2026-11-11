@@ -109,8 +109,8 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         }
     }
 
-    /// WINDOW_BOUNDS_SAVE_DELAY_MS: how long the place and size of a window that moves wait before they are recorded.
-    public static var boundsSaveDelayMilliseconds: Double { Double(WindowBoundsRecorder.saveDelayMilliseconds) }
+    /// How long the place and size of a window that moves wait before they are recorded: a drag is one record.
+    public static var boundsSaveDelayMilliseconds: Double { 160 }
     /// STARTUP_SHOW_TIMEOUT_MS: how long startup waits for a window's first folder before showing the windows anyway.
     public static var startupShowTimeoutMilliseconds: Double { 5_000 }
 
