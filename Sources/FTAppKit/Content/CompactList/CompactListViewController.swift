@@ -52,6 +52,8 @@ final class CompactListViewController: ItemGridPane {
 
     private func nameWidth(_ name: String) -> Double {
         if let known = nameWidths[name] { return known }
+        // Names of folders left behind are let go once there are many more than this folder has.
+        if nameWidths.count >= max(2 * entries.count, 10_000) { nameWidths.removeAll(keepingCapacity: true) }
         let width = Double((name as NSString).size(withAttributes: [.font: nameFont]).width)
         nameWidths[name] = width
         return width
