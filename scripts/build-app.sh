@@ -73,11 +73,10 @@ fi
 minimum="$(/usr/libexec/PlistBuddy -c "Print :LSMinimumSystemVersion" "$app/Contents/Info.plist")"
 vtool -set-build-version macos "$minimum" "$(xcrun --show-sdk-version)" -replace \
     -output "$app/Contents/MacOS/FileTrail" "$app/Contents/MacOS/FileTrail" 2>>"$log"
-# The bundled fd (search): the helper is signed first, then the app seals it.
-mkdir -p "$app/Contents/Helpers" "$app/Contents/Resources/fd"
+# The bundled fd (search): the helper is signed first, then the app seals it. Its licences are shown from
+# Resources/Acknowledgements/fd.txt.
+mkdir -p "$app/Contents/Helpers"
 cp Resources/fd/darwin-arm64/fd "$app/Contents/Helpers/fd"
-cp Resources/fd/manifest.json "$app/Contents/Resources/fd/manifest.json"
-cp -R Resources/fd/licenses "$app/Contents/Resources/fd/licenses"
 codesign --force --sign - --options runtime "$app/Contents/Helpers/fd" >/dev/null 2>&1
 codesign --force --sign - "$app" >/dev/null 2>&1
 

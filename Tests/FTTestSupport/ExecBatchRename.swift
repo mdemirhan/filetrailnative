@@ -104,11 +104,6 @@ public enum ExecBatchRenameHarness {
         try Golden.load(suite: suite, in: filePath)
     }
 
-    /// Whether the case's disk images exist here (tools/fixtures/disk-images.sh).
-    public static func isRunnable(_ testCase: Case) -> Bool {
-        (testCase.input.volumes ?? [:]).values.allSatisfy(ExecDiskImages.isAvailable)
-    }
-
     /// Runs one case through `engine` in fresh folders. Nil when the normalized outcome matches the recording; else
     /// its first differences, one per line.
     public static func check(_ testCase: Case, with engine: Engine, limit: Int = 10) async throws -> [String]? {

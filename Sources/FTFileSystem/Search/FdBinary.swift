@@ -3,7 +3,8 @@ import Foundation
 /// The `fd` that ships with the app: Resources/fd in the repository, copied by scripts/build-app.sh into
 /// Contents/Helpers/ and signed with the app.
 public enum FdBinary {
-    /// Resources/fd/manifest.json.
+    /// The fd checked in at Resources/fd. Its binary's SHA-256 is
+    /// cf3bde435da174f41cf9589a2efeaf03804df7c250fc15e8b8a1e9bfc66ebc9a (`binarySHA256`, which a test checks).
     public struct Manifest: Equatable, Sendable {
         public var tool: String
         public var version: String
@@ -13,6 +14,8 @@ public enum FdBinary {
 
     public static let manifest = Manifest(
         tool: "fd", version: "10.5.0", relativeBinaryPath: "darwin-arm64/fd")
+    /// The SHA-256 of `Resources/fd/darwin-arm64/fd`.
+    public static let binarySHA256 = "cf3bde435da174f41cf9589a2efeaf03804df7c250fc15e8b8a1e9bfc66ebc9a"
 
     public struct NotFound: Error, Equatable, CustomStringConvertible {
         public var description: String

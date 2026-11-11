@@ -122,3 +122,8 @@ struct FixtureGoldenTests {
         #expect(failures.isEmpty, "\(failures.count) cases differ: \(failures.prefix(3).joined(separator: " | "))")
     }
 }
+
+extension JSONValue {
+    fileprivate static func optional(_ value: String?) -> JSONValue { value.map(JSONValue.string) ?? .null }
+    fileprivate static func optional(_ value: Int64?) -> JSONValue { value.map { .int(Int($0)) } ?? .null }
+}

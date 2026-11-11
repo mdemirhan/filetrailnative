@@ -1,3 +1,4 @@
+import CryptoKit
 import FTTestSupport
 import Foundation
 import Testing
@@ -32,16 +33,14 @@ import Testing
         }
     }
 
-    @Test func theManifestInTheRepositoryIsTheOneCompiledIn() throws {
+    // The fd checked in is the one the app was told about: its bytes hash to the SHA-256 compiled in.
+    @Test func theCheckedInBinaryIsTheOneCompiledIn() throws {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
             .deletingLastPathComponent()
-            .appendingPathComponent("Resources/fd/manifest.json")
-        let json = try #require(try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
-        let arm64 = try #require(((json["macos"] as? [String: Any])?["arm64"]) as? [String: Any])
-        #expect(json["tool"] as? String == FdBinary.manifest.tool)
-        #expect(json["version"] as? String == FdBinary.manifest.version)
-        #expect((arm64["relativeBinaryPath"] as? String)?.hasSuffix(FdBinary.manifest.relativeBinaryPath) == true)
+            .appendingPathComponent("Resources/fd").appendingPathComponent(FdBinary.manifest.relativeBinaryPath)
+        let digest = SHA256.hash(data: try Data(contentsOf: url))
+        #expect(digest.map { String(format: "%02x", $0) }.joined() == FdBinary.binarySHA256)
     }
 
     @Test(.enabled(if: FdBinary.currentArchitecture == "arm64"))

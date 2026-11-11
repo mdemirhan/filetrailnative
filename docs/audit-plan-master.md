@@ -1146,7 +1146,7 @@ Also, from the second audit:
 - `WindowTabsRequests`, `PreferenceChangeReceiver` and the `log` hooks go in 6.1; `SearchSession.elapsedMilliseconds`
   goes in 6.12.
 
-### [ ] 5.10. Tooling with no caller
+### [x] 5.10. Tooling with no caller
 
 - Delete `scripts/hands-on-setup.sh` (no reference anywhere).
 - Delete `tools/fixtures/disk-images.sh`; its own header says the tests clone none of its images. Remove
@@ -2204,3 +2204,9 @@ anything that differed from the plan, and anything found on the way that is not 
   the Open button is always split (the flag that could unsplit it was always true), so three tests wait for it to
   show instead; `askDotName` went with the stand-in rename. The two tests that reached that rename give the tab a
   `renameItem` that refuses, as the file operations do.
+- 2026-11-11. 5.10, done but for `--snapshot`, kept: it draws a window into a PNG without screen-recording permission,
+  which the owner's before-and-after screenshots of controls in Phase 9 can use. `FILETRAIL_TIMING` went (the
+  owner uses none of the three); `NavigationTiming` stays for `--bench`. The `runnable` filter went after checking
+  that every format the exec recordings use (apfs, apfs-cs, exfat, fat32, hfs) is one the tests make. fd's licences
+  stay reachable in the app through `Resources/Acknowledgements/fd.txt` (MIT and Apache both); the checked-in
+  binary's SHA-256 is `FdBinary.binarySHA256`, with a test. The FixtureGolden tests use the shared `JSONValue`.

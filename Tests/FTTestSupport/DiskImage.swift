@@ -35,7 +35,7 @@ public enum DiskImage {
         /// A 40 MB FAT32 disk, about the smallest that is still FAT32, for tests that fill it.
         case fat32Small
 
-        /// The format's name in `tools/fixtures/disk-images.sh` and the scenarios.
+        /// The format's name in the recorded scenarios.
         var imageName: String {
             switch self {
             case .apfsCaseSensitive: "apfs-cs"

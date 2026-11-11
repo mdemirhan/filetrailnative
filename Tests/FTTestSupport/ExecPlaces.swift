@@ -175,7 +175,7 @@ public struct ExecPlaces: Sendable {
     }
 }
 
-/// Fresh disk images of the parity scenarios' formats (those of tools/fixtures/disk-images.sh), each
+/// Fresh disk images of the formats the recorded scenarios use, each
 /// attached once per process and detached when it exits. Each has a volume name of its own, as
 /// DiskImage's do: other test processes attach images of the same formats at the same time.
 public enum ExecDiskImages {
@@ -189,11 +189,6 @@ public enum ExecDiskImages {
 
     /// The prefix of the folder that holds a process's images (`ft-parity-disks-pid<pid>-<uuid>`).
     static let folderPrefix = "ft-parity-disks"
-
-    /// Whether `format` is one an image can be made of.
-    public static func isAvailable(_ format: String) -> Bool {
-        kind(of: format) != nil
-    }
 
     private static func kind(of format: String) -> DiskImage.Kind? {
         DiskImage.Kind.allCases.first { $0.imageName == format }

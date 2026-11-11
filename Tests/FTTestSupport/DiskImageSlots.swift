@@ -53,8 +53,7 @@ public enum DiskImageSlots {
         close(descriptor)
     }
 
-    /// Where the slots' locks are (beside the blank images earlier versions cloned, so a test process of an earlier
-    /// version takes the first slot's lock).
+    /// Where the slots' locks are, in the dev cache (made on first use).
     public static var lockDirectory: URL {
         let base =
             ProcessInfo.processInfo.environment["FILETRAIL_DEV_CACHE"].map { URL(fileURLWithPath: $0) }

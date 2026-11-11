@@ -206,7 +206,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    static let logsTimings = ProcessInfo.processInfo.environment["FILETRAIL_TIMING"] != nil
     /// The default size of an explorer window, and the smallest it can be.
     static let defaultContentSize = NSSize(width: 1200, height: 760)
     static let minimumSize = NSSize(width: 760, height: 480)
@@ -1243,15 +1242,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let timing = NavigationTiming(
             folder: shown, itemCount: entries.count, read: read.duration, load: readAt - started,
             display: clock.now - readAt)
-        if Self.logsTimings {
-            FileHandle.standardError.write(
-                Data(
-                    String(
-                        format: "navigate %@ (%d items): load %.1f ms, display %.1f ms\n",
-                        shown.path, timing.itemCount, timing.load.milliseconds,
-                        timing.display.milliseconds
-                    ).utf8))
-        }
         return .opened(timing)
     }
 

@@ -8,21 +8,17 @@ import Foundation
 import Testing
 
 struct ExecGoldenTests {
-    /// Cases whose disk images exist here (tools/fixtures/disk-images.sh).
-    private func runnable(_ cases: [ExecHarness.Case]) -> [ExecHarness.Case] {
-        cases.filter { ($0.input.volumes ?? [:]).values.allSatisfy(ExecDiskImages.isAvailable) }
-    }
 
     /// The suites the Swift engine runs: every execution suite, stops and crashes included.
     static let engineSuites = ExecHarness.executionSuites
 
-    /// The Swift paste engine against its recordings, case by case; the disk-image cases where the images exist.
+    /// The Swift paste engine against its recordings, case by case.
     @Test(arguments: engineSuites)
     func executionMatchesItsRecording(suite: String) async throws {
         let cases = try ExecHarness.cases(suite: suite)
         #expect(!cases.isEmpty)
         let engine = SwiftExecEngine()
-        for testCase in runnable(cases) {
+        for testCase in cases {
             let lines = try await ExecHarness.check(testCase, with: engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
         }
@@ -45,7 +41,7 @@ struct ExecGoldenTests {
         let cases = try ExecHarness.cases(suite: suite)
         #expect(!cases.isEmpty)
         let engine = SwiftAnalysisEngine()
-        for testCase in runnable(cases) {
+        for testCase in cases {
             let lines = try await ExecHarness.checkAnalysis(testCase, with: engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
         }
@@ -242,7 +238,7 @@ struct ExecGoldenTests {
     @Test func batchRenameMatchesItsRecording() async throws {
         let cases = try ExecBatchRenameHarness.cases()
         #expect(cases.count >= 60)
-        for testCase in cases where ExecBatchRenameHarness.isRunnable(testCase) {
+        for testCase in cases {
             let lines = try await ExecBatchRenameHarness.check(testCase, with: SwiftBatchRenameRun.engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
         }
