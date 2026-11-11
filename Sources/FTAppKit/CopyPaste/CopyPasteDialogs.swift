@@ -69,13 +69,17 @@ extension ReviewReport {
 }
 
 extension ReviewNode {
+    /// The item as the review reads it. The review looks inside an item only when it is a folder that exists on both
+    /// sides, so what is inside an item new at the destination is left out: a report has a record for every file and
+    /// folder to be copied, and the paste runs from the report itself, whole.
     init(_ node: CopyPasteAnalysisNode) {
         self.init(
             id: node.id, sourcePath: node.sourcePath, destinationPath: node.destinationPath,
             sourceKind: ReviewNodeKind(node.sourceKind), destinationKind: ReviewNodeKind(node.destinationKind),
             conflictClass: node.conflictClass, sourceFingerprint: ReviewFingerprint(node.sourceFingerprint),
             destinationFingerprint: ReviewFingerprint(node.destinationFingerprint),
-            children: node.children.map(ReviewNode.init), totalNodeCount: node.totalNodeCount,
+            children: node.conflictClass == .directoryConflict ? node.children.map(ReviewNode.init) : [],
+            totalNodeCount: node.totalNodeCount,
             conflictNodeCount: node.conflictNodeCount, destinationTotalNodeCount: node.destinationTotalNodeCount,
             keepBothDestinationPath: node.keepBothDestinationPath,
             destinationOnly: node.destinationOnly.map {

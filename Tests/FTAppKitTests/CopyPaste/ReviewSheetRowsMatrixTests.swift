@@ -69,6 +69,51 @@ private func report(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport
     }
 }
 
+/// What of a report the review reads.
+@Suite struct ReviewReportTests {
+    private func item(
+        _ path: String, _ conflictClass: ConflictClass? = nil, folder: Bool = false,
+        _ children: [CopyPasteAnalysisNode] = []
+    ) -> CopyPasteAnalysisNode {
+        let kind: CopyPasteNodeKind = folder ? .directory : .file
+        let there = conflictClass != nil
+        return CopyPasteAnalysisNode(
+            id: path, sourcePath: "/src/\(path)", destinationPath: "/dest/\(path)", sourceKind: kind,
+            destinationKind: there ? kind : .missing, disposition: there ? .conflict : .new,
+            conflictClass: conflictClass, sourceFingerprint: NodeFingerprint(exists: true, kind: kind),
+            destinationFingerprint: there
+                ? NodeFingerprint(exists: true, kind: kind) : NodeFingerprint(exists: false, kind: .missing),
+            children: children, totalNodeCount: 1 + children.reduce(0) { $0 + $1.totalNodeCount },
+            conflictNodeCount: there ? 1 : 0)
+    }
+
+    // It looks inside a folder only when the folder exists on both sides: nothing inside a new folder, the items of
+    // a clashing folder, and nothing inside a new folder within it. The counts stay those of the whole report.
+    @Test func readsInsideOnlyTheFoldersOnBothSides() {
+        let album = item(
+            "album", folder: true,
+            [item("album/one.jpg"), item("album/raw", folder: true, [item("album/raw/one.dng")])])
+        let shared = item(
+            "shared", .directoryConflict, folder: true,
+            [
+                item("shared/clash.txt", .fileConflict), item("shared/deep", folder: true, [item("shared/deep/a.txt")]),
+                item("shared/new.txt"),
+            ])
+        var whole = report([album, shared])
+        whole.summary.totalNodeCount = album.totalNodeCount + shared.totalNodeCount
+
+        let review = ReviewReport(whole)
+
+        #expect(review.nodes.map(\.id) == ["album", "shared"])
+        #expect(review.nodes[0].children.isEmpty)
+        #expect(review.nodes[0].totalNodeCount == 4)
+        #expect(review.nodes[1].children.map(\.id) == ["shared/clash.txt", "shared/deep", "shared/new.txt"])
+        #expect(review.nodes[1].children[1].children.isEmpty)
+        #expect(review.nodes[1].children[1].totalNodeCount == 2)
+        #expect(review.summary.totalNodeCount == 9)
+    }
+}
+
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ReviewSheetRowsMatrixTests {
