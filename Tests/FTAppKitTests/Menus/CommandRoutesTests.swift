@@ -24,9 +24,7 @@ extension ExplorerWindowlessTests {
                 index = MenuItemIndex(built, router: router)
                 let window = tab.window
                 sync = ApplicationMenuSync(
-                    .init(
-                        windows: harness.windows, focusedWindow: { window }, menu: { [unowned self] in index },
-                        build: {}))
+                    .init(windows: harness.windows, focusedWindow: { window }, menu: { [unowned self] in index }))
                 router.focusedWindow = { window }
                 router.beforeValidating = { [unowned self] in sync.readWindowState() }
                 router.explorerFor = { [unowned self] in sync.explorerFor($0) }

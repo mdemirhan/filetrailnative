@@ -211,11 +211,11 @@ import Testing
     }
 
     @Test func hasTheFilesAndATextFieldsUndoAndRedoOfWhichOneShowsAtATime() {
-        let (built, _) = build(.init(undoLabels: (undo: "Undo Move of “a.txt”", redo: "Redo")))
+        let (built, _) = build()
         let edit = submenu(built.menu, "Edit")
         let undoItems = edit.items.filter { $0.title.hasPrefix("Undo") }
 
-        #expect(undoItems.map(\.title) == ["Undo Move of “a.txt”", "Undo"])
+        #expect(undoItems.map { $0.identifier?.rawValue } == ["undo", "undo:text"])
         #expect(undoItems.map(\.isHidden) == [false, true])
         #expect(undoItems.map(accelerator) == ["Command+Z", "Command+Z"])
         #expect(edit.items.filter { $0.title == "Redo" }.map(accelerator) == ["Command+Shift+Z", "Command+Shift+Z"])

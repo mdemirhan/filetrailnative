@@ -13,7 +13,6 @@ import Testing
         var sync: ApplicationMenuSync!
         var index: MenuItemIndex?
         var focused: NSWindow?
-        var builds = 0
         /// The work queued for the end of the current task, run by `afterTask()`.
         var queued: [@MainActor () -> Void] = []
 
@@ -22,15 +21,14 @@ import Testing
             sync = ApplicationMenuSync(
                 .init(
                     windows: list, focusedWindow: { [unowned self] in focused }, menu: { [unowned self] in index },
-                    build: { [unowned self] in
-                        builds += 1
-                        index = Self.index(router)
-                        sync.menuBuilt()
-                    }, afterCurrentTask: { [unowned self] work in queued.append(work) }))
-            if built {
-                index = Self.index(router)
-                sync.menuBuilt()
-            }
+                    afterCurrentTask: { [unowned self] work in queued.append(work) }))
+            if built { build() }
+        }
+
+        /// Builds the menu, as the host does at launch and when the shortcuts or the text editor change.
+        func build() {
+            index = Self.index(router)
+            sync.menuBuilt()
         }
 
         static func index(_ router: MenuCommandRouter) -> MenuItemIndex {
@@ -142,7 +140,7 @@ import Testing
         a.isOnScreen = false
         b.isOnScreen = false
         f.focused = nil
-        f.sync.refresh()
+        f.sync.sync()
 
         // ⌘⌫ or ⌘W would act on a window that can't be seen.
         #expect(f.sync.explorerFor(nil) == nil)
@@ -155,7 +153,7 @@ import Testing
 
         // One comes back on screen, and the menu acts on it again.
         b.isOnScreen = true
-        f.sync.refresh()
+        f.sync.sync()
         #expect(f.sync.explorerFor(nil)?.handle === b)
         #expect(f.item("trashSelection").isEnabled)
     }
@@ -169,46 +167,51 @@ import Testing
         #expect(!f.item("trashSelection").isEnabled)
 
         f.focused = nil
-        f.sync.refresh()
+        f.sync.sync()
 
         #expect(f.item("trashSelection").isEnabled)
         #expect(!f.item("undo").isHidden)
     }
 
-    @Test func buildsTheMenuAgainOnlyWhenUndoOrRedoShouldSaySomethingElse() {
+    // The same items, renamed: the menu is not built again.
+    @Test func namesWhatUndoAndRedoWouldDoOnTheItemsTheMenuHas() {
         let f = Fixture()
         f.focused = f.open(1).window
+        let undo = f.item("undo")
+        let redo = f.item("redo")
 
-        f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”"))
+        f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”", redo: "Rename"))
         f.afterTask()
-        #expect(f.builds == 1)
-        #expect(f.sync.undoLabels().undo == "Undo Move of “a.txt”")
-        f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”"))
+        #expect(f.item("undo") === undo && f.item("redo") === redo)
+        #expect(undo.title == "Undo Move of “a.txt”")
+        #expect(redo.title == "Redo Rename")
+        f.sync.setUndoHistory(UndoHistoryMenu(cantUndo: true))
         f.afterTask()
-        #expect(f.builds == 1)
+        #expect(undo.title == "Can’t Undo")
+        #expect(redo.title == "Redo")
+        #expect(f.item("undo") === undo)
     }
 
-    @Test func buildsTheMenuAfterTheTaskThatChangedTheHistoryOnceForAllItsChanges() {
+    @Test func namesUndoAfterTheTaskThatChangedTheHistoryOnceForAllItsChanges() {
         let f = Fixture()
         f.focused = f.open(1).window
         var order: [String] = []
 
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”"))
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Rename"))
-        order.append("window told, \(f.builds) builds")
+        order.append("window told, \(f.item("undo").title)")
         f.afterTask()
-        order.append("\(f.builds) builds")
+        order.append(f.item("undo").title)
 
-        #expect(order == ["window told, 0 builds", "1 builds"])
-        #expect(f.sync.undoLabels().undo == "Undo Rename")
+        #expect(order == ["window told, Undo", "Undo Rename"])
     }
 
-    @Test func switchesToATextFieldsOwnUndoWithoutBuildingTheMenuAgain() {
+    @Test func switchesToATextFieldsOwnUndoOnTheItemsTheMenuHas() {
         let f = Fixture()
         f.focused = f.open(1).window
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”", redo: "Rename"))
         f.afterTask()
-        let built = f.builds
+        let items = ["undo", "undo:text", "redo", "redo:text"].map { f.item($0) }
 
         f.sync.setWindowState(windowID: 1, ApplicationMenuState(textEditing: true))
         #expect(f.item("undo").isHidden)
@@ -218,7 +221,7 @@ import Testing
         #expect(!f.item("undo").isHidden)
         #expect(f.item("undo:text").isHidden)
 
-        #expect(f.builds == built)
+        #expect(["undo", "undo:text", "redo", "redo:text"].map { f.item($0) } == items)
     }
 
     @Test func usesTheTextFieldsOwnUndoWhileSettingsHasTheKeyboardAndNoExplorerWindowIsOpen() {
@@ -241,7 +244,7 @@ import Testing
         f.focused = a.window
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”"))
         f.afterTask()
-        #expect(f.builds == 1)
+        #expect(f.item("undo").title == "Undo Move of “a.txt”")
 
         f.list.remove(a)
         f.focused = nil
@@ -266,13 +269,16 @@ import Testing
         #expect(f.item("moveTabToNewWindow").isEnabled)
     }
 
+    // What the history said before the menu was built is what it shows once built.
     @Test func doesNothingBeforeTheMenuIsBuilt() {
         let f = Fixture(built: false)
+        f.focused = f.open(1).window
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Rename"))
         f.afterTask()
         f.sync.sync()
-        #expect(f.builds == 0)
-        #expect(f.sync.undoLabels().undo == "Undo Rename")
+        #expect(f.index == nil)
+        f.build()
+        #expect(f.item("undo").title == "Undo Rename")
     }
 
     // Each mark is set from what the window says: the view and the order it has on, the others off.

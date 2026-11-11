@@ -2,7 +2,8 @@ import AppKit
 import FTFoundation
 
 /// The menu bar of the app: builds it from the command table and the shortcuts chosen in Settings, keeps it in step
-/// with the explorer window it acts on, and builds it again when Undo or Redo, the shortcuts or the text editor change.
+/// with the explorer window it acts on and with what Undo and Redo would do, and builds it again when the shortcuts or
+/// the text editor change.
 @MainActor
 public final class MainMenu {
     let router = MenuCommandRouter()
@@ -18,9 +19,7 @@ public final class MainMenu {
     /// `focusedWindow` is the window that has the keyboard; a test whose windows are never shown names its own.
     init(windows: any ExplorerWindowListing, focusedWindow: @escaping () -> NSWindow? = { NSApp.keyWindow }) {
         sync = ApplicationMenuSync(
-            .init(
-                windows: windows, focusedWindow: focusedWindow, menu: { [weak self] in self?.index },
-                build: { [weak self] in self?.build() }))
+            .init(windows: windows, focusedWindow: focusedWindow, menu: { [weak self] in self?.index }))
         router.focusedWindow = focusedWindow
         router.explorerFor = { [weak sync] window in sync?.explorerFor(window) }
         router.isTextEditing = { [weak sync] target in sync?.state(of: target).textEditing ?? false }
@@ -49,8 +48,7 @@ public final class MainMenu {
     func build() {
         let result = ApplicationMenuBuilder.build(
             target: router,
-            options: ApplicationMenuOptions(
-                shortcuts: shortcuts(), textEditorName: textEditorName(), undoLabels: sync.undoLabels()))
+            options: ApplicationMenuOptions(shortcuts: shortcuts(), textEditorName: textEditorName()))
         built = result
         index = MenuItemIndex(result, router: router)
         // The enabled flags belong to the old items; the new ones start on.
@@ -72,9 +70,9 @@ public final class MainMenu {
                 MainActor.assumeIsolated {
                     if later {
                         // The focus has moved on once this notification's turn is over.
-                        DispatchQueue.main.async { MainActor.assumeIsolated { self?.sync.refresh() } }
+                        DispatchQueue.main.async { MainActor.assumeIsolated { self?.sync.sync() } }
                     } else {
-                        self?.sync.refresh()
+                        self?.sync.sync()
                     }
                 }
             }

@@ -174,14 +174,16 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    @Test func undoesAndRedoesTheTypingOfAnotherFocusedWindowNeverTheFiles() {
-        let (built, router, log) = make(options: .init(undoLabels: (undo: "Undo Move of “a.txt”", redo: "Redo")))
+    @Test func undoesAndRedoesTheTypingOfAnotherFocusedWindowNeverTheFiles() throws {
+        let (built, router, log) = make()
         let explorer = FakeExplorerWindow(id: 1)
         let settings = makeOffscreenWindow()
         routeTo(router, explorer, focused: false)
         router.focusedWindow = { settings }
         let edit = submenu(built.menu, "Edit")
-        let undo = item(edit, "Undo Move of “a.txt”")
+        // The files' Undo, as it shows after a move.
+        let undo = try #require(built.itemsByID["undo"])
+        undo.title = "Undo Move of “a.txt”"
 
         #expect(accelerator(undo) == "Command+Z")
         #expect(accelerator(item(edit, "Redo")) == "Command+Shift+Z")

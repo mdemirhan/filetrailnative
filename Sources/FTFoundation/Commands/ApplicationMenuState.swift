@@ -55,18 +55,22 @@ public struct ApplicationMenuState: Equatable, Sendable {
     }
 }
 
-/// What one menu item should show (`ApplicationMenuItemState`); a field left nil is left as it is.
+/// What one menu item should show; a field left nil is left as it is.
 public struct ApplicationMenuItemState: Equatable, Sendable {
     public var id: String
     public var enabled: Bool?
     public var checked: Bool?
     public var visible: Bool?
+    public var title: String?
 
-    public init(id: String, enabled: Bool? = nil, checked: Bool? = nil, visible: Bool? = nil) {
+    public init(
+        id: String, enabled: Bool? = nil, checked: Bool? = nil, visible: Bool? = nil, title: String? = nil
+    ) {
         self.id = id
         self.enabled = enabled
         self.checked = checked
         self.visible = visible
+        self.title = title
     }
 }
 
@@ -130,15 +134,18 @@ public enum ApplicationMenu {
         public var otherWindowFocused: Bool?
         /// Whether there is a file operation to undo and to redo (nil: there is).
         public var undoAvailable: (undo: Bool, redo: Bool)?
+        /// What the files' Undo and Redo say (`undoLabels`; nil: plain "Undo" and "Redo").
+        public var undoLabels: (undo: String, redo: String)?
 
         public init(
             explorerFocused: Bool, explorerWindowCount: Int? = nil, otherWindowFocused: Bool? = nil,
-            undoAvailable: (undo: Bool, redo: Bool)? = nil
+            undoAvailable: (undo: Bool, redo: Bool)? = nil, undoLabels: (undo: String, redo: String)? = nil
         ) {
             self.explorerFocused = explorerFocused
             self.explorerWindowCount = explorerWindowCount
             self.otherWindowFocused = otherWindowFocused
             self.undoAvailable = undoAvailable
+            self.undoLabels = undoLabels
         }
 
         public static func == (left: WindowFacts, right: WindowFacts) -> Bool {
@@ -146,6 +153,7 @@ public enum ApplicationMenu {
                 && left.otherWindowFocused == right.otherWindowFocused
                 && left.undoAvailable?.undo == right.undoAvailable?.undo
                 && left.undoAvailable?.redo == right.undoAvailable?.redo
+                && left.undoLabels?.undo == right.undoLabels?.undo && left.undoLabels?.redo == right.undoLabels?.redo
         }
     }
 
@@ -198,6 +206,8 @@ public enum ApplicationMenu {
         let textUndo = state.textEditing || !window.explorerFocused
         for index in items.indices where items[index].id == "undo" || items[index].id == "redo" {
             items[index].visible = !textUndo
+            items[index].title =
+                items[index].id == "undo" ? window.undoLabels?.undo ?? "Undo" : window.undoLabels?.redo ?? "Redo"
         }
         let textUndoEnabled = window.explorerFocused || window.otherWindowFocused != false
         items.append(contentsOf: [
@@ -222,6 +232,7 @@ public enum ApplicationMenu {
         var isEnabled: Bool { get set }
         var isVisible: Bool { get set }
         var isChecked: Bool { get set }
+        var title: String { get set }
     }
 
     /// Sets what changed on the items the menu has, and skips the others.
@@ -236,6 +247,9 @@ public enum ApplicationMenu {
             }
             if let checked = state.checked, control.isChecked != checked {
                 control.isChecked = checked
+            }
+            if let title = state.title, control.title != title {
+                control.title = title
             }
         }
     }

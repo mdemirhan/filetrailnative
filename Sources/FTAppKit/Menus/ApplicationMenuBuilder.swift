@@ -7,8 +7,6 @@ struct ApplicationMenuOptions {
     var shortcuts: ShortcutBindings = ShortcutCommands.defaultBindings
     /// The text editor chosen in Settings → Files, which File names.
     var textEditorName: String?
-    /// What Undo and Redo say ("Undo Move of “a.txt”").
-    var undoLabels: (undo: String, redo: String)?
 }
 
 /// The menu bar and where its parts are.
@@ -97,12 +95,10 @@ enum ApplicationMenuBuilder {
         context.addSubmenu(to: main, title: "Edit") { menu in
             // The files' Undo and Redo are commands, not the standard actions: the window decides whether a text
             // field or the files are undone. Each has a text field's own beside it, and one of the two shows at a
-            // time; the hidden one's key does nothing.
-            let undoLabel = options.undoLabels?.undo ?? "Undo"
-            let redoLabel = options.undoLabels?.redo ?? "Redo"
-            menu.addItem(context.command(.undo, undoLabel, fixed: .undo))
+            // time; the hidden one's key does nothing. The files' say what they would do once the menu is synced.
+            menu.addItem(context.command(.undo, "Undo", fixed: .undo))
             menu.addItem(context.command(.undo, "Undo", id: ApplicationMenu.textUndoItemID, fixed: .undo, hidden: true))
-            menu.addItem(context.command(.redo, redoLabel, fixed: .redo))
+            menu.addItem(context.command(.redo, "Redo", fixed: .redo))
             menu.addItem(context.command(.redo, "Redo", id: ApplicationMenu.textRedoItemID, fixed: .redo, hidden: true))
             menu.addItem(.separator())
             menu.addItem(context.command(.editCut, "Cut", fixed: .cut))

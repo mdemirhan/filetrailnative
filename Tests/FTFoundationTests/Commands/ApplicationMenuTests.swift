@@ -125,6 +125,14 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("undo", locked, window).enabled == false)
     }
 
+    @Test func givesTheFilesUndoAndRedoItemsWhatTheyWouldDoAsTitles() {
+        let window = Window(explorerFocused: true, undoLabels: (undo: "Undo Move of “a.txt”", redo: "Redo Rename"))
+        #expect(Self.stateOf("undo", Self.initial, window).title == "Undo Move of “a.txt”")
+        #expect(Self.stateOf("redo", Self.initial, window).title == "Redo Rename")
+        #expect(Self.stateOf("undo", Self.initial).title == "Undo")
+        #expect(Self.stateOf("redo", Self.initial).title == "Redo")
+    }
+
     // The menu items themselves (their accelerators and what they send) are tested elsewhere; this is the state half.
     @Test func showsATextFieldsOwnUndoAndRedoInPlaceOfTheFilesWhileOneIsEdited() {
         var typing = Self.initial
@@ -163,6 +171,7 @@ struct ApplicationMenuTests {
         var isEnabled = true
         var isVisible = true
         var isChecked = false
+        var title = ""
 
         init(checked: Bool = false) {
             isChecked = checked
@@ -178,7 +187,10 @@ struct ApplicationMenuTests {
                 ApplicationMenuItemState(id: "renameSelection", enabled: false),
                 ApplicationMenuItemState(id: "toggleHiddenFiles", enabled: true, checked: true),
                 ApplicationMenuItemState(id: "copySelection", enabled: false),
+                ApplicationMenuItemState(id: "renameSelection", title: "Rename"),
             ], item: { items[$0] })
+        #expect(rename.title == "Rename")
+        #expect(hidden.title.isEmpty)
         #expect(!rename.isEnabled)
         #expect(rename.isVisible)
         #expect(!rename.isChecked)

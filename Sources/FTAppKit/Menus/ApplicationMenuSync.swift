@@ -82,6 +82,11 @@ final class MenuItemIndex {
             get { MainActor.assumeIsolated { item.state == .on } }
             set { MainActor.assumeIsolated { item.state = newValue ? .on : .off } }
         }
+
+        var title: String {
+            get { MainActor.assumeIsolated { item.title } }
+            set { MainActor.assumeIsolated { item.title = newValue } }
+        }
     }
 }
 
@@ -96,8 +101,6 @@ final class ApplicationMenuSync {
         var focusedWindow: () -> NSWindow?
         /// The menu as it is now, or none before it has been built.
         var menu: () -> MenuItemIndex?
-        /// Builds the menu again (its labels can't be changed in place), with `undoLabels`.
-        var build: () -> Void
         /// Runs `work` once the task that asked for it is done.
         var afterCurrentTask: (@escaping @MainActor () -> Void) -> Void = { work in
             DispatchQueue.main.async { MainActor.assumeIsolated { work() } }
@@ -109,8 +112,6 @@ final class ApplicationMenuSync {
     private var states: [Int: ApplicationMenuState] = [:]
     /// What the history says Undo and Redo would do.
     private var undoHistory = UndoHistoryMenu()
-    /// The words the menu was last built with.
-    private var builtUndoLabels = ""
     /// Whether the menu is to be brought up to date with the history once the task that changed it is done.
     private var undoRefreshQueued = false
     private var historyObserver: (any NSObjectProtocol)?
@@ -136,11 +137,11 @@ final class ApplicationMenuSync {
             return
         }
         states[windowID] = state
-        refresh()
+        sync()
     }
 
     /// The menu is about to be used: what the window it acts on can do now, whatever has changed without saying so
-    /// (a dialog, a sheet). Only what is on and off changes: a menu being opened can't be built again.
+    /// (a dialog, a sheet).
     func readWindowState() {
         let focused = dependencies.focusedWindow()
         guard let entry = focused.flatMap({ dependencies.windows.handle(for: $0) }) ?? dependencies.windows.front,
@@ -161,36 +162,23 @@ final class ApplicationMenuSync {
         for windowID in Array(states.keys) where dependencies.windows.handle(windowID: windowID) == nil {
             states[windowID] = nil
         }
-        refresh()
+        sync()
     }
 
-    /// The history changes as an operation ends, just before its window is told: the menu, which can take a while to
-    /// build, is brought up to date after that, once for all the changes made in the meantime.
+    /// The history changes as an operation ends, just before its window is told: the menu is brought up to date after
+    /// that, once for all the changes made in the meantime.
     func setUndoHistory(_ history: UndoHistoryMenu) {
         undoHistory = history
         guard !undoRefreshQueued else { return }
         undoRefreshQueued = true
         dependencies.afterCurrentTask { [weak self] in
             self?.undoRefreshQueued = false
-            self?.refresh()
+            self?.sync()
         }
-    }
-
-    /// What the files' Undo and Redo say, for the menu being built. While a text field has the keyboard the menu shows
-    /// its own Undo and Redo instead, so these words don't change.
-    func undoLabels() -> (undo: String, redo: String) {
-        ApplicationMenu.undoLabels(
-            undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo, textEditing: false)
-    }
-
-    private func undoLabelKey() -> String {
-        let labels = undoLabels()
-        return "\(labels.undo)\u{0}\(labels.redo)"
     }
 
     /// Called once the host has built and set the menu.
     func menuBuilt() {
-        builtUndoLabels = undoLabelKey()
         sync()
     }
 
@@ -206,25 +194,17 @@ final class ApplicationMenuSync {
         return ExplorerCommandTarget(handle: front, focused: focusedWindow == nil)
     }
 
-    /// A menu item's label can't be changed in place: the menu is built again when Undo or Redo should say something
-    /// else. Otherwise only what is on and off changes.
-    func refresh() {
-        guard dependencies.menu() != nil else { return }
-        if undoLabelKey() != builtUndoLabels {
-            dependencies.build()
-            return
-        }
-        sync()
-    }
-
-    /// Dims, checks and shows the menu's items for the state the explorer window the menu acts on last reported.
+    /// Dims, checks, shows and names the menu's items for the state the explorer window the menu acts on last reported,
+    /// and for what Undo and Redo would do.
     func sync() {
         guard let menu = dependencies.menu() else { return }
         let current = currentExplorer()
         let facts = ApplicationMenu.WindowFacts(
             explorerFocused: current.explorerFocused, explorerWindowCount: dependencies.windows.count,
             otherWindowFocused: current.otherWindowFocused,
-            undoAvailable: (undo: undoHistory.undo != nil, redo: undoHistory.redo != nil))
+            undoAvailable: (undo: undoHistory.undo != nil, redo: undoHistory.redo != nil),
+            undoLabels: ApplicationMenu.undoLabels(
+                undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo, textEditing: false))
         ApplicationMenu.apply(ApplicationMenu.itemStates(current.state, window: facts)) { menu.control($0) }
     }
 
