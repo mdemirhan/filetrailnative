@@ -33,7 +33,7 @@ public struct ExecPlaces: Sendable {
     /// Makes the folders for `scenario`, attaching the disk images it names.
     public static func make(for scenario: ExecScenario) throws -> ExecPlaces {
         let base = URL(fileURLWithPath: NSTemporaryDirectory()).resolvingSymlinksInPath()
-        let work = base.appendingPathComponent("ft-parity-\(UUID().uuidString)").path
+        let work = base.appendingPathComponent("ft-exec-\(UUID().uuidString)").path
         for folder in ["tree", "trash", "journal"] {
             try FileManager.default.createDirectory(atPath: work + "/" + folder, withIntermediateDirectories: true)
         }
@@ -187,8 +187,8 @@ public enum ExecDiskImages {
 
     private static let state = State()
 
-    /// The prefix of the folder that holds a process's images (`ft-parity-disks-pid<pid>-<uuid>`).
-    static let folderPrefix = "ft-parity-disks"
+    /// The prefix of the folder that holds a process's images (`ft-exec-disks-pid<pid>-<uuid>`).
+    static let folderPrefix = "ft-exec-disks"
 
     private static func kind(of format: String) -> DiskImage.Kind? {
         DiskImage.Kind.allCases.first { $0.imageName == format }
