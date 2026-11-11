@@ -81,28 +81,26 @@ final class BatchRenameInspectBox {
 /// The saved settings and presets, and what the model saves.
 @MainActor
 final class BatchRenameSavedRecord {
-    var settings: JSONNode?
-    var presets: JSONNode?
+    var settings = BatchRenameSettings.defaults
+    var presets: [BatchRenamePreset] = []
     var fails = false
-    private(set) var patches: [[String: JSONNode]] = []
+    private(set) var saves: [BatchRenameSheetModel.Saving] = []
 
     func read() throws -> BatchRenameSheetModel.Saved {
         if fails { throw OperationError("no preferences") }
         return .init(settings: settings, presets: presets)
     }
 
-    func save(_ patch: [String: JSONNode]) { patches.append(patch) }
+    func save(_ saving: BatchRenameSheetModel.Saving) { saves.append(saving) }
 
     /// The settings saved last.
     var savedSettings: BatchRenameSettings? {
-        patches.last { $0["batchRenameSettings"] != nil }.map {
-            BatchRename.sanitizeSettings($0["batchRenameSettings"])
-        }
+        saves.lazy.compactMap { if case .settings(let settings) = $0 { settings } else { nil } }.last
     }
 
     /// The presets saved last.
     var savedPresets: [BatchRenamePreset]? {
-        patches.last { $0["batchRenamePresets"] != nil }.map { BatchRename.sanitizePresets($0["batchRenamePresets"]) }
+        saves.lazy.compactMap { if case .presets(let presets) = $0 { presets } else { nil } }.last
     }
 }
 
@@ -159,8 +157,8 @@ final class BatchRenameSheetFixture {
         box.cannotRename = cannotRename
         var settings = BatchRenameSettings.defaults
         initial(&settings)
-        saved.settings = BatchRenamePresetList.node(of: settings)
-        saved.presets = BatchRenamePresetList.node(of: presets)
+        saved.settings = settings
+        saved.presets = presets
         model = makeBatchRenameModel(box, saved)
         model.open(targets, now: AppClock.parse(Self.now) ?? Date())
         sheet = BatchRenameSheetView(model: model)

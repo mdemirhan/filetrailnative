@@ -27,16 +27,22 @@ final class BatchRenameSheetModel {
     }
 
     /// What was saved: the settings and presets as the preferences hold them.
-    struct Saved {
-        var settings: JSONNode?
-        var presets: JSONNode?
+    struct Saved: Equatable {
+        var settings: BatchRenameSettings
+        var presets: [BatchRenamePreset]
+    }
+
+    /// What the sheet keeps with the app's preferences.
+    enum Saving: Equatable {
+        case settings(BatchRenameSettings)
+        case presets([BatchRenamePreset])
     }
 
     typealias Inspector = @Sendable (BatchRenameInspectRequest) async throws -> BatchRenameInspection
 
     private let inspector: Inspector
     private let readSaved: @MainActor () throws -> Saved
-    private let save: @MainActor ([String: JSONNode]) -> Void
+    private let save: @MainActor (Saving) -> Void
     private let log: @MainActor (String) -> Void
 
     private(set) var sheet: Sheet? { didSet { changed() } }
@@ -49,7 +55,7 @@ final class BatchRenameSheetModel {
 
     init(
         inspector: @escaping Inspector, readSaved: @escaping @MainActor () throws -> Saved,
-        save: @escaping @MainActor ([String: JSONNode]) -> Void, log: @escaping @MainActor (String) -> Void = { _ in }
+        save: @escaping @MainActor (Saving) -> Void, log: @escaping @MainActor (String) -> Void = { _ in }
     ) {
         self.inspector = inspector
         self.readSaved = readSaved
@@ -76,8 +82,8 @@ final class BatchRenameSheetModel {
         var loaded = BatchRenameSettings.defaults
         do {
             let saved = try readSaved()
-            loaded = BatchRename.sanitizeSettings(saved.settings)
-            presets = BatchRename.sanitizePresets(saved.presets)
+            loaded = saved.settings
+            presets = saved.presets
         } catch {
             log("batch rename settings could not be read: \(error)")
         }
@@ -143,7 +149,7 @@ final class BatchRenameSheetModel {
     }
 
     private func saveSettings(_ next: BatchRenameSettings) {
-        save(["batchRenameSettings": BatchRenamePresetList.node(of: next)])
+        save(.settings(next))
     }
 
     // MARK: Presets
@@ -160,7 +166,7 @@ final class BatchRenameSheetModel {
 
     private func savePresets(_ next: [BatchRenamePreset]) {
         presets = next
-        save(["batchRenamePresets": BatchRenamePresetList.node(of: next)])
+        save(.presets(next))
     }
 
     // MARK: The plan

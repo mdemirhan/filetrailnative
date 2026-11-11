@@ -59,8 +59,8 @@ struct AppStateReaderTests {
         #expect(defaults.returnKeyAction == .rename)
         #expect(defaults.shortcutOverrides == [:])
         #expect(defaults.openWithApplications == [])
-        #expect(defaults.batchRenameSettings == BatchRenameSanitizers.defaultSettings)
-        #expect(defaults.batchRenamePresets == .array([]))
+        #expect(defaults.node(.batchRenameSettings) == SavedSettingsTests.defaultSettings)
+        #expect(defaults.node(.batchRenamePresets) == .array([]))
         // A file that is not an object holds nothing, so the defaults stand.
         #expect(Self.read("[]") == AppState())
         #expect(Self.read("") == AppState())

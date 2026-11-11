@@ -28,8 +28,8 @@ extension ExplorerWindowlessTests {
             box.folderNames = ["IMG_1.jpg", "IMG_2.jpg"]
             box.takenAt = "2026-05-14T18:02:11"
             let saved = BatchRenameSavedRecord()
-            saved.settings = settings.map(BatchRenamePresetList.node(of:))
-            saved.presets = presets.map(BatchRenamePresetList.node(of:))
+            saved.settings = settings ?? .defaults
+            saved.presets = presets ?? []
             return (makeBatchRenameModel(box, saved), box, saved)
         }
 
@@ -116,7 +116,7 @@ extension ExplorerWindowlessTests {
             #expect(model.presets.count == 1)
             model.deletePreset("photos")
             #expect(model.presets.isEmpty)
-            #expect(saved.patches.last == ["batchRenamePresets": .array([])])
+            #expect(saved.saves.last == .presets([]))
         }
 
         @Test func saysWhenTheItemsCouldntBeCheckedAndRenamesNothing() async throws {

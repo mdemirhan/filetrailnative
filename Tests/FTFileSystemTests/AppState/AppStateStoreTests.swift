@@ -541,7 +541,7 @@ struct AppStateStoreTests {
 
     static func garbageSettings(_ rng: inout SeededGenerator) -> JSONNode {
         if rng.chance(0.1) { return garbage(&rng) }
-        guard let defaults = BatchRenameSanitizers.defaultSettings.object else { return .null }
+        guard let defaults = (try? JSONNode.of(BatchRenameSettings.defaults))?.object else { return .null }
         var record: [String: JSONNode] = [:]
         for (key, value) in defaults where !rng.chance(0.2) {
             record[key] = rng.chance(0.3) ? value : garbage(&rng)

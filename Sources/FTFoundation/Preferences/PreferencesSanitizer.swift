@@ -1,39 +1,5 @@
 import Foundation
 
-/// How the Rename sheet's saved settings and presets are checked: by the batch-rename package (`standard`).
-public struct BatchRenameSanitizers: Sendable {
-    public var settings: @Sendable (JSONNode?) -> JSONNode
-    public var presets: @Sendable (JSONNode?) -> JSONNode
-
-    public init(
-        settings: @escaping @Sendable (JSONNode?) -> JSONNode, presets: @escaping @Sendable (JSONNode?) -> JSONNode
-    ) {
-        self.settings = settings
-        self.presets = presets
-    }
-
-    /// DEFAULT_BATCH_RENAME_SETTINGS.
-    public static let defaultSettings: JSONNode = .object([
-        "mode": .string("replace"), "find": .string(""), "replaceWith": .string(""), "matchCase": .bool(false),
-        "useRegex": .bool(false), "addText": .string(""), "addWhere": .string("after"),
-        "nameFormat": .string("index"), "formatWhere": .string("after"), "customName": .string("File"),
-        "keepNames": .bool(false), "startAt": .number(1), "step": .number(1), "digits": .number(5),
-        "separator": .string(" "), "dateSource": .string("created"), "dateFormat": .string("ymd"),
-        "dateSeparator": .string("-"), "customDatePattern": .string("YYYY-MM-DD at HH.mm"),
-        "caseStyle": .string("lower"), "applyTo": .string("name"), "onConflict": .string("number"),
-    ])
-
-    /// The batch-rename package's checks.
-    public static let standard = BatchRenameSanitizers(
-        settings: { value in BatchRename.node(of: BatchRename.sanitizeSettings(value)) },
-        presets: { value in
-            .array(
-                BatchRename.sanitizePresets(value).map { preset in
-                    .object(["name": .string(preset.name), "settings": BatchRename.node(of: preset.settings)])
-                })
-        })
-}
-
 /// Checks everything a saved state holds: a value that is missing or invalid takes its default.
 public enum PreferencesSanitizer {
     // MARK: Small checks
@@ -195,9 +161,7 @@ public enum PreferencesSanitizer {
 
     /// Every saved value is checked; one that is missing or invalid takes its default from
     /// `defaults` (what a new install starts with, or the preferences a change is applied to).
-    public static func sanitize(
-        _ value: JSONNode?, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .standard
-    ) -> AppPreferences {
+    public static func sanitize(_ value: JSONNode?, defaults: AppPreferences) -> AppPreferences {
         guard let record = value?.object else { return defaults }
         let global = AppPreferences.defaults()
         return AppPreferences(
@@ -266,8 +230,8 @@ public enum PreferencesSanitizer {
             favoritesExpanded: bool(record, "favoritesExpanded", defaults.favoritesExpanded),
             locationsExpanded: bool(record, "locationsExpanded", defaults.locationsExpanded),
             favoritesInitialized: bool(record, "favoritesInitialized", defaults.favoritesInitialized),
-            batchRenameSettings: batchRename.settings(record["batchRenameSettings"]),
-            batchRenamePresets: batchRename.presets(record["batchRenamePresets"]))
+            batchRenameSettings: BatchRename.sanitizeSettings(record["batchRenameSettings"]),
+            batchRenamePresets: BatchRename.sanitizePresets(record["batchRenamePresets"]))
     }
 
     /// A whole number, zero or more; anything else is zero. A number past what a count can be stops at the largest.

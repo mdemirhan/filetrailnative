@@ -64,17 +64,13 @@ public enum AppStateReader {
     /// `readState` once the file is parsed: loading is best-effort, corrupt state never blocks startup. The result is
     /// empty for anything that is not an object; a file that is not JSON is the caller's to treat the same way
     /// (`read(data:)` throws for it).
-    public static func read(
-        _ parsed: JSONNode, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .standard
-    ) -> AppState {
+    public static func read(_ parsed: JSONNode, defaults: AppPreferences) -> AppState {
         guard let file = parsed.object else { return AppState() }
-        let preferences = PreferencesSanitizer.sanitize(
-            file["preferences"], defaults: defaults, batchRename: batchRename)
+        let preferences = PreferencesSanitizer.sanitize(file["preferences"], defaults: defaults)
         let lastClosedWindow = sanitizeWindows(
-            JSONNode.array([file["lastClosedWindow"] ?? .null]), preferences: preferences, batchRename: batchRename
-        )?.first
+            JSONNode.array([file["lastClosedWindow"] ?? .null]), preferences: preferences)?.first
         let windows: [StoredExplorerWindow]
-        if let saved = sanitizeWindows(file["windows"], preferences: preferences, batchRename: batchRename) {
+        if let saved = sanitizeWindows(file["windows"], preferences: preferences) {
             windows = saved
         } else if lastClosedWindow != nil {
             // A file with a window closed last was saved with several windows, and has lost its list of them: one
@@ -92,18 +88,14 @@ public enum AppStateReader {
     }
 
     /// `readState` for the file's bytes: throws when they are not JSON.
-    public static func read(
-        data: Data, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .standard
-    ) throws -> AppState {
-        read(try JSONNode.parse(data), defaults: defaults, batchRename: batchRename)
+    public static func read(data: Data, defaults: AppPreferences) throws -> AppState {
+        read(try JSONNode.parse(data), defaults: defaults)
     }
 
     /// The saved windows, or nil when the file has no list of them (it was saved before there
     /// could be several). A window that doesn't make sense is dropped; one whose session is missing a value takes the
     /// app's.
-    static func sanitizeWindows(
-        _ value: JSONNode?, preferences: AppPreferences, batchRename: BatchRenameSanitizers
-    ) -> [StoredExplorerWindow]? {
+    static func sanitizeWindows(_ value: JSONNode?, preferences: AppPreferences) -> [StoredExplorerWindow]? {
         guard let candidates = value?.array else { return nil }
         var windows: [StoredExplorerWindow] = []
         for candidate in candidates {
@@ -112,7 +104,7 @@ public enum AppStateReader {
             else { continue }
             let saved = record["session"]?.object ?? [:]
             let merged = PreferencesSanitizer.apply(
-                WindowSessionKeys.pick(saved), to: preferences, defaults: preferences, batchRename: batchRename)
+                WindowSessionKeys.pick(saved), to: preferences, defaults: preferences)
             var session = merged.windowSession
             session.activeTabIndex = session.frontTabIndex
             windows.append(StoredExplorerWindow(id: id, bounds: windowState(record["bounds"]), session: session))
@@ -150,13 +142,12 @@ extension PreferencesSanitizer {
     /// A change applied to preferences: `patch` over `current`, sanitized. A patch value that is not valid for its key
     /// gives the key's default from `defaults`.
     public static func apply(
-        _ patch: [String: JSONNode], to current: AppPreferences, defaults: AppPreferences,
-        batchRename: BatchRenameSanitizers = .standard
+        _ patch: [String: JSONNode], to current: AppPreferences, defaults: AppPreferences
     ) -> AppPreferences {
         var record = (try? JSONNode.of(current))?.object ?? [:]
         for (key, value) in patch {
             record[key] = value
         }
-        return sanitize(.object(record), defaults: defaults, batchRename: batchRename)
+        return sanitize(.object(record), defaults: defaults)
     }
 }

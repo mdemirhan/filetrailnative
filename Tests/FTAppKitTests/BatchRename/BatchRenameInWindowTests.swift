@@ -168,7 +168,7 @@ extension ExplorerWindowlessTests {
                 ])
             #expect(tab.batchRenameSheet == nil)
             // What was typed is kept for next time.
-            #expect(BatchRename.sanitizeSettings(tab.preferences.batchRenameSettings).addText == "-old")
+            #expect(tab.preferences.batchRenameSettings.addText == "-old")
             // Once done, the items are listed under their new names.
             #expect(
                 await waitUntil {
@@ -493,9 +493,9 @@ extension ExplorerWindowlessTests {
                 filePath: opened.harness.folder.appending("app-state.json").path, defaultTheme: .light,
                 timer: HeldStateTimer())
             let preferences = reread.preferences()
-            #expect(BatchRename.sanitizeSettings(preferences.batchRenameSettings).addText == "-old")
-            #expect(BatchRename.sanitizeSettings(preferences.batchRenameSettings).mode == .add)
-            #expect(BatchRename.sanitizePresets(preferences.batchRenamePresets).map(\.name) == ["Old"])
+            #expect(preferences.batchRenameSettings.addText == "-old")
+            #expect(preferences.batchRenameSettings.mode == .add)
+            #expect(preferences.batchRenamePresets.map(\.name) == ["Old"])
             await close(opened)
         }
 

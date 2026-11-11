@@ -17,10 +17,10 @@ public final class AppStateStore: @unchecked Sendable {
 
     /// The keys that only follow where the user is: the view mode, the sort orders and the other settings of a tab belong
     /// to the tab on screen, so they change whenever another tab comes to the front.
-    static let navigationKeys: Set<String> = [
-        "lastVisitedPath", "lastVisitedFavoritePath", "treeRootPath", "openTabs", "activeTabIndex", "viewMode",
-        "searchViewMode", "sortBy", "sortDirection", "searchResultsSortBy", "searchResultsSortDirection",
-        "includeHidden", "foldersFirst", "favoritesExpanded", "locationsExpanded",
+    static let navigationKeys: Set<PreferenceKey> = [
+        .lastVisitedPath, .lastVisitedFavoritePath, .treeRootPath, .openTabs, .activeTabIndex, .viewMode,
+        .searchViewMode, .sortBy, .sortDirection, .searchResultsSortBy, .searchResultsSortDirection, .includeHidden,
+        .foldersFirst, .favoritesExpanded, .locationsExpanded,
     ]
 
     private enum StoreFile: Hashable { case state, visits }
@@ -69,21 +69,19 @@ public final class AppStateStore: @unchecked Sendable {
         locked { currentPreferences }
     }
 
+    /// Changes the app's preferences and returns them: `change` sets fields as on `AppPreferences`
+    /// (`store.update { $0.theme = .dark }`), and each field it sets is checked as when the file is read. A field
+    /// given the value it had is no change and writes nothing.
+    @discardableResult
+    public func update(_ change: (inout EditedPreferences) -> Void) -> AppPreferences {
+        locked { updateApp(change) }
+    }
+
     /// `updatePreferences`: applies a change (a patch of preference keys, each checked as when a file is read) and
     /// returns the preferences now. A key whose value is the same is no change and writes nothing.
     @discardableResult
     public func updatePreferences(_ patch: [String: JSONNode]) -> AppPreferences {
         locked { update(patch) }
-    }
-
-    /// `updatePreferences` for a change written as code: the keys that differ afterwards are the patch.
-    @discardableResult
-    public func updatePreferences(_ change: (inout AppPreferences) -> Void) -> AppPreferences {
-        locked {
-            var changed = currentPreferences
-            change(&changed)
-            return update(Self.difference(from: currentPreferences, to: changed))
-        }
     }
 
     // MARK: Visited folders
@@ -132,6 +130,36 @@ public final class AppStateStore: @unchecked Sendable {
         }
     }
 
+    /// A change made in the window `windowID`, to the preferences as it sees them. The session keys it sets are the
+    /// window's own; every key it sets also becomes the app's latest value, even one the window already had. For a
+    /// window not known, the change is the app's alone.
+    @discardableResult
+    public func updateWindow(_ windowID: String, _ change: (inout EditedPreferences) -> Void) -> AppPreferences {
+        locked {
+            guard let window = windows.first(where: { Self.sameID($0.id, windowID) }) else { return updateApp(change) }
+            let app = currentPreferences
+            let seen = window.session.applied(to: app)
+            let (next, written) = edit(seen, change)
+            var preferences = app
+            for key in written {
+                preferences.take(key, from: next)
+            }
+            state.preferences = preferences
+            let session = next.windowSession
+            let windowKeys = next.keys(differingFrom: seen).filter(\.isWindowSessionKey)
+            if !windowKeys.isEmpty {
+                replaceWindow(StoredExplorerWindow(id: window.id, bounds: window.bounds, session: session))
+            }
+            // The app's copy of a session key is only the last window's value: a window sending its own again, after
+            // another window sent a different one, is no new choice.
+            let appKeys = preferences.keys(differingFrom: app)
+            saveChanges(
+                windowKeys + appKeys.filter { !$0.isWindowSessionKey },
+                following: appKeys.filter(\.isWindowSessionKey))
+            return session.applied(to: preferences)
+        }
+    }
+
     /// A change made in the window `windowID`. Its session keys are the window's own; every key also becomes the app's
     /// latest value. For a window not known, the change is the app's alone.
     @discardableResult
@@ -143,24 +171,26 @@ public final class AppStateStore: @unchecked Sendable {
             let session = PreferencesSanitizer.apply(
                 WindowSessionKeys.pick(patch), to: current, defaults: current
             ).windowSession
-            let before = Self.sessionNode(window.session)
-            let after = Self.sessionNode(session)
-            let windowKeys = WindowSessionKeys.all.filter { before[$0] != after[$0] }
+            let windowKeys = session.applied(to: current).keys(differingFrom: current)
             if !windowKeys.isEmpty {
                 replaceWindow(StoredExplorerWindow(id: window.id, bounds: window.bounds, session: session))
             }
-            // The app's copy of a session key is only the last window's value: a window sending its own again, after
-            // another window sent a different one, is no new choice.
             let (sessionKeys, sharedKeys) = (
-                appKeys.filter(WindowSessionKeys.isSessionKey), appKeys.filter { !WindowSessionKeys.isSessionKey($0) }
+                appKeys.filter(\.isWindowSessionKey), appKeys.filter { !$0.isWindowSessionKey }
             )
             saveChanges(windowKeys + sharedKeys, following: sessionKeys)
             return session.applied(to: preferences)
         }
     }
 
+    /// A window's session as a new window would start it: the app's latest values, changed by `change` and checked as
+    /// when the file is read.
+    public func createWindowSession(_ change: (inout WindowSession) -> Void = { _ in }) -> WindowSession {
+        locked { newWindowSession(change) }
+    }
+
     /// A window's session as a new window would start it: the app's latest values, with `overrides` on top.
-    public func createWindowSession(overrides: [String: JSONNode] = [:]) -> WindowSession {
+    public func createWindowSession(overrides: [String: JSONNode]) -> WindowSession {
         locked { newWindowSession(overrides) }
     }
 
@@ -168,7 +198,7 @@ public final class AppStateStore: @unchecked Sendable {
     /// `AppStateReader.windowsLimit`: that is for reading a damaged file.
     public func addExplorerWindow(id: String, bounds: StoredWindowState, session: WindowSession? = nil) {
         locked {
-            let session = newWindowSession(session.map(Self.sessionNode) ?? [:])
+            let session = newWindowSession { if let session { $0 = session } }
             let added = StoredExplorerWindow(
                 id: id, bounds: AppStateReader.windowState(try? JSONNode.of(bounds)), session: session)
             setWindows([added] + windows.filter { !Self.sameID($0.id, id) })
@@ -253,6 +283,24 @@ public final class AppStateStore: @unchecked Sendable {
         left.utf16.elementsEqual(right.utf16)
     }
 
+    private func updateApp(_ change: (inout EditedPreferences) -> Void) -> AppPreferences {
+        let current = currentPreferences
+        let next = edit(current, change).preferences
+        state.preferences = next
+        saveChanges(next.keys(differingFrom: current))
+        return next
+    }
+
+    // `preferences` changed by `change`, each field it set checked as when the file is read; and the keys it set.
+    private func edit(_ preferences: AppPreferences, _ change: (inout EditedPreferences) -> Void)
+        -> (preferences: AppPreferences, written: [PreferenceKey])
+    {
+        var edited = EditedPreferences(preferences)
+        change(&edited)
+        let checked = PreferencesSanitizer.sanitize(edited.written, of: edited.preferences, defaults: defaults)
+        return (checked, edited.written)
+    }
+
     private func update(_ patch: [String: JSONNode]) -> AppPreferences {
         let (next, changedKeys) = apply(patch)
         saveChanges(changedKeys)
@@ -260,17 +308,15 @@ public final class AppStateStore: @unchecked Sendable {
     }
 
     // Takes the patch into the app's preferences; saving it is the caller's.
-    private func apply(_ patch: [String: JSONNode]) -> (preferences: AppPreferences, changedKeys: [String]) {
+    private func apply(_ patch: [String: JSONNode]) -> (preferences: AppPreferences, changedKeys: [PreferenceKey]) {
         let current = currentPreferences
         let next = PreferencesSanitizer.apply(patch, to: current, defaults: defaults)
-        let before = (try? JSONNode.of(current))?.object ?? [:]
-        let after = (try? JSONNode.of(next))?.object ?? [:]
         state.preferences = next
-        return (next, after.keys.filter { before[$0] != after[$0] })
+        return (next, next.keys(differingFrom: current))
     }
 
     // Saves the state file, soon when `keys` hold a deliberate change. `following` changed too, but never hurries it.
-    private func saveChanges(_ keys: [String], following: [String] = []) {
+    private func saveChanges(_ keys: [PreferenceKey], following: [PreferenceKey] = []) {
         guard !keys.isEmpty || !following.isEmpty else { return }
         markUnsaved(.state)
         if keys.contains(where: { !Self.navigationKeys.contains($0) }) {
@@ -280,18 +326,16 @@ public final class AppStateStore: @unchecked Sendable {
         }
     }
 
-    private static func difference(from old: AppPreferences, to new: AppPreferences) -> [String: JSONNode] {
-        let before = (try? JSONNode.of(old))?.object ?? [:]
-        let after = (try? JSONNode.of(new))?.object ?? [:]
-        return after.filter { before[$0.key] != $0.value }
-    }
-
-    private static func sessionNode(_ session: WindowSession) -> [String: JSONNode] {
-        (try? JSONNode.of(session))?.object ?? [:]
-    }
-
     private func newWindowSession(_ overrides: [String: JSONNode]) -> WindowSession {
         PreferencesSanitizer.apply(overrides, to: currentPreferences, defaults: defaults).windowSession
+    }
+
+    private func newWindowSession(_ change: (inout WindowSession) -> Void) -> WindowSession {
+        let app = currentPreferences
+        var session = app.windowSession
+        change(&session)
+        return PreferencesSanitizer.sanitize(WindowSession.keys, of: session.applied(to: app), defaults: defaults)
+            .windowSession
     }
 
     private func replaceWindow(_ window: StoredExplorerWindow) {

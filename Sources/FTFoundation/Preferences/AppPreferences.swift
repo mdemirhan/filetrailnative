@@ -63,10 +63,9 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     /// The sidebar's Locations (the disks), shown or folded.
     public var locationsExpanded: Bool
     public var favoritesInitialized: Bool
-    /// The Rename sheet for several items: its settings as last used, and the ones saved by name. Held as JSON until
-    /// the batch-rename package's sanitizers are wired in (see `BatchRenameSanitizers`).
-    public var batchRenameSettings: JSONNode
-    public var batchRenamePresets: JSONNode
+    /// The Rename sheet for several items: its settings as last used, and the ones saved by name.
+    public var batchRenameSettings: BatchRenameSettings
+    public var batchRenamePresets: [BatchRenamePreset]
 
     /// DEFAULT_APP_PREFERENCES, with the theme a new install starts with.
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
@@ -87,7 +86,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             restoreSessionOnStartup: true, openTabs: [], activeTabIndex: 0, treeRootPath: nil, lastVisitedPath: nil,
             lastVisitedFavoritePath: nil, favorites: [], favoritesPlacement: .integrated, favoritesExpanded: true,
             locationsExpanded: true, favoritesInitialized: false,
-            batchRenameSettings: BatchRenameSanitizers.defaultSettings, batchRenamePresets: .array([]))
+            batchRenameSettings: .defaults, batchRenamePresets: [])
     }
 }
 
@@ -103,6 +102,18 @@ public enum WindowSessionKeys {
     private static let set = Set(all)
 
     public static func isSessionKey(_ key: String) -> Bool { set.contains(key) }
+}
+
+extension WindowSession {
+    /// The keys each window keeps of its own, in the order the file writes them.
+    public static let keys: [PreferenceKey] = [
+        .openTabs, .activeTabIndex, .treeRootPath, .lastVisitedPath, .lastVisitedFavoritePath, .viewMode,
+        .searchViewMode, .sortBy, .sortDirection, .searchResultsSortBy, .searchResultsSortDirection, .includeHidden,
+        .foldersFirst, .favoritesExpanded, .locationsExpanded, .folderTreeOpen, .propertiesOpen, .detailRowOpen,
+        .treeWidth, .inspectorWidth, .detailColumnWidths, .searchColumnWidths,
+    ]
+
+    static let keySet = Set(keys)
 }
 
 /// What belongs to one explorer window rather than to the app: its tabs and where they are, how its front tab shows its

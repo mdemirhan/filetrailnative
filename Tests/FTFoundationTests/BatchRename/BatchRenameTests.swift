@@ -503,12 +503,32 @@ struct SavedSettingsTests {
         #expect(BatchRename.sanitizePresets(.array(many)).count == BatchRename.maxPresets)
     }
 
+    /// The settings a new install starts with, as the state file holds them.
+    static let defaultSettings: JSONNode = .object([
+        "mode": .string("replace"), "find": .string(""), "replaceWith": .string(""), "matchCase": .bool(false),
+        "useRegex": .bool(false), "addText": .string(""), "addWhere": .string("after"),
+        "nameFormat": .string("index"), "formatWhere": .string("after"), "customName": .string("File"),
+        "keepNames": .bool(false), "startAt": .number(1), "step": .number(1), "digits": .number(5),
+        "separator": .string(" "), "dateSource": .string("created"), "dateFormat": .string("ymd"),
+        "dateSeparator": .string("-"), "customDatePattern": .string("YYYY-MM-DD at HH.mm"),
+        "caseStyle": .string("lower"), "applyTo": .string("name"), "onConflict": .string("number"),
+    ])
+
+    /// The settings and presets read from `record`, as the state writes them back.
+    static func written(_ record: [String: JSONNode]) -> (settings: JSONNode, presets: JSONNode) {
+        let read = PreferencesSanitizer.sanitize(.object(record), defaults: .defaults())
+        return (read.node(.batchRenameSettings), read.node(.batchRenamePresets))
+    }
+
     @Test func theStandardSanitizersWriteWhatTheStateHolds() throws {
-        #expect(BatchRenameSanitizers.standard.settings(nil) == BatchRenameSanitizers.defaultSettings)
-        #expect(BatchRenameSanitizers.standard.settings(.string("x")) == BatchRenameSanitizers.defaultSettings)
-        #expect(BatchRenameSanitizers.standard.presets(.object([:])) == .array([]))
-        let kept = BatchRenameSanitizers.standard.presets(
-            .array([.object(["name": .string("A"), "settings": .object(["digits": .string("auto")])])]))
+        #expect(Self.written([:]).settings == Self.defaultSettings)
+        #expect(Self.written(["batchRenameSettings": .string("x")]).settings == Self.defaultSettings)
+        #expect(Self.written(["batchRenamePresets": .object([:])]).presets == .array([]))
+        let kept = Self.written([
+            "batchRenamePresets": .array([
+                .object(["name": .string("A"), "settings": .object(["digits": .string("auto")])])
+            ])
+        ]).presets
         let preset = try #require(kept.array?.first?.object)
         #expect(preset["name"] == .string("A"))
         #expect(preset["settings"]?["digits"] == .string("auto"))
