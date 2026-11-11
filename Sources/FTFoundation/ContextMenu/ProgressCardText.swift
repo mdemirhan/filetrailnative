@@ -98,16 +98,11 @@ public struct ProgressCardText: Equatable, Sendable {
         }
     }
 
-    /// `pluralize(count, "item")`.
-    static func items(_ count: Int) -> String {
-        "\(ContextMenuRules.groupedCount(count)) item\(count == 1 ? "" : "s")"
-    }
-
     public init(_ state: WriteOperationCardState, currentPath: String) {
         title = Self.title(state.action)
         percent = Self.percent(state)
-        metaStart =
-            "\(ContextMenuRules.groupedCount(state.completedItemCount)) of \(Self.items(max(state.totalItemCount, 0)))"
+        let total = ReviewCount.pluralize(max(state.totalItemCount, 0), "item")
+        metaStart = "\(ContextMenuRules.groupedCount(state.completedItemCount)) of \(total)"
         metaEnd = Self.byteLabel(state)
         detailLabel = state.action == .newFolder ? "Destination" : "Current item"
         let path = state.currentSourcePath ?? state.targetPath ?? currentPath

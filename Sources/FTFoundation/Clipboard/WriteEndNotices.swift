@@ -204,17 +204,12 @@ public enum WriteEndNotices {
         var sentences: [String] = []
         if write.completedItemCount > 0 {
             let verb = write.action == .moveTo ? "Moved" : "Copied"
-            sentences.append("\(verb) \(countLabel(write.completedItemCount, "item")).")
+            sentences.append("\(verb) \(ReviewCount.pluralize(write.completedItemCount, "item")).")
         }
         if write.skippedItemCount > 0 {
             let exists = write.skippedItemCount == 1 ? "exists" : "exist"
-            sentences.append("Skipped \(countLabel(write.skippedItemCount, "item")) that already \(exists).")
+            sentences.append("Skipped \(ReviewCount.pluralize(write.skippedItemCount, "item")) that already \(exists).")
         }
         return sentences.isEmpty ? nil : sentences.joined(separator: " ")
-    }
-
-    /// `toLocaleString()` grouping.
-    private static func countLabel(_ count: Int, _ noun: String) -> String {
-        "\(ContextMenuRules.groupedCount(count)) \(noun)\(count == 1 ? "" : "s")"
     }
 }

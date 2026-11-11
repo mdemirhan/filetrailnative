@@ -56,13 +56,15 @@ public enum WriteResultNoticeText {
         var lines: [String] = []
         if result.totalItemCount > 1 {
             let done = ContextMenuRules.groupedCount(result.completedItemCount)
-            lines.append("\(done) of \(ProgressCardText.items(result.totalItemCount)) done")
-            if result.failedItemCount > 0 { lines.append("\(ProgressCardText.items(result.failedItemCount)) failed") }
+            lines.append("\(done) of \(ReviewCount.pluralize(result.totalItemCount, "item")) done")
+            if result.failedItemCount > 0 {
+                lines.append("\(ReviewCount.pluralize(result.failedItemCount, "item")) failed")
+            }
             if result.skippedItemCount > 0 {
-                lines.append("\(ProgressCardText.items(result.skippedItemCount)) skipped")
+                lines.append("\(ReviewCount.pluralize(result.skippedItemCount, "item")) skipped")
             }
             if result.cancelledItemCount > 0 {
-                lines.append("\(ProgressCardText.items(result.cancelledItemCount)) not done")
+                lines.append("\(ReviewCount.pluralize(result.cancelledItemCount, "item")) not done")
             }
         }
         let message = message(result)
