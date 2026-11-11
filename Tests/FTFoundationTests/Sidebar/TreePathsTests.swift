@@ -84,11 +84,4 @@ struct TreePathsTests {
                 "Alpha", "Zed", "Zz.app",
             ])
     }
-
-    @Test func namesTheVolumeAPathIsOn() {
-        #expect(TreePaths.volumeRootPath("/Volumes/Backup/Photos") == "/Volumes/Backup")
-        #expect(TreePaths.volumeRootPath("/Volumes/") == "/")
-        #expect(TreePaths.volumeRootPath("/VolumesX/y") == "/")
-        #expect(TreePaths.volumeRootPath("/Users/x/Volumes/y") == "/")
-    }
 }

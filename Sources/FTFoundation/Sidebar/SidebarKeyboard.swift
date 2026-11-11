@@ -154,7 +154,7 @@ public enum SidebarKeyboard {
 
     /// `isVolumeRootPath`.
     static func isVolumeRoot(_ path: String) -> Bool {
-        JSString.equals(TreePaths.volumeRootPath(path), path)
+        JSString.equals(VolumePaths.volumeRootPath(path), path)
     }
 
     // MARK: Type to select

@@ -58,7 +58,7 @@ public enum SearchBarText {
     /// The folder on screen, Home, the disk it is on when that is another disk, and
     /// Macintosh HD, without repeats (the first of two with the same path wins).
     public static func scopeOptions(currentPath: String, homePath: String) -> [SearchScopeOption] {
-        let volume = TreePaths.volumeRootPath(currentPath)
+        let volume = VolumePaths.volumeRootPath(currentPath)
         var candidates: [(String, String)] = [
             (currentPath, "\u{201C}\(TabText.folderDisplayName(currentPath))\u{201D}"), (homePath, "Home"),
         ]

@@ -104,7 +104,7 @@ public enum PathBarModel {
         if !homeTrash.isEmpty, path == homeTrash || path.hasPrefix(homeTrash + "/") {
             return inTrash(start: homeTrash, rest: path.dropFirst(homeTrash.count), trashPath: homeTrash)
         }
-        let root = TreePaths.volumeRootPath(path)
+        let root = VolumePaths.volumeRootPath(path)
         let rest = path.dropFirst(root == "/" ? 0 : root.count)
         var result = [PathbarSegment(label: label(root), path: root)]
         var current = root == "/" ? "" : root

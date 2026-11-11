@@ -1,10 +1,11 @@
 import Foundation
 
-/// Which disk a path is on, told from the path alone so a drag can show its cursor at once. macOS mounts
-/// every other volume at /Volumes/<name>; everything else is on the startup disk.
+/// Which disk a path is on, told from the path alone, without asking the disk. macOS mounts every other volume
+/// at /Volumes/<name>; everything else is on the startup disk.
 public enum VolumePaths {
     private static let prefix = "/Volumes/"
 
+    /// `/Volumes/<name>` for a path on another disk, otherwise `/`.
     public static func volumeRootPath(_ path: String) -> String {
         // /^\/Volumes\/([^/]+)/
         guard path.hasPrefix(prefix) else { return "/" }

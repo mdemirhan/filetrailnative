@@ -16,20 +16,12 @@ public enum TreePaths {
         return JSString.equals(path, rootPath) || path.utf8.starts(with: (rootPath + "/").utf8)
     }
 
-    /// `/Volumes/<name>` for a path on another disk, otherwise `/`.
-    public static func volumeRootPath(_ path: String) -> String {
-        let prefix = "/Volumes/"
-        guard path.hasPrefix(prefix) else { return "/" }
-        let name = path.dropFirst(prefix.count).prefix { $0 != "/" }
-        return name.isEmpty ? "/" : prefix + name
-    }
-
     /// Whether the folder tree rooted at `rootPath` holds `path`. Rooted at Macintosh HD it
     /// holds the startup disk's own folders only: another disk, though mounted inside it at /Volumes, is shown from
     /// its own top.
     public static func isWithinTreeRoot(_ path: String, _ rootPath: String) -> Bool {
         if JSString.equals(rootPath, "/") {
-            return JSString.equals(volumeRootPath(path), "/")
+            return JSString.equals(VolumePaths.volumeRootPath(path), "/")
         }
         return isWithinRoot(path, rootPath)
     }
@@ -38,7 +30,7 @@ public enum TreePaths {
     /// Home for what is in Home, the disk for what is on another disk, otherwise Macintosh HD.
     public static func resolveRootPath(for path: String, homePath: String) -> String {
         if !homePath.isEmpty, isWithinRoot(path, homePath) { return homePath }
-        return volumeRootPath(path)
+        return VolumePaths.volumeRootPath(path)
     }
 
     // MARK: Paths in the tree

@@ -51,14 +51,6 @@ import Testing
         #expect(key("/Volumes", name: "Volumes", kind: .directory) == "kind:directory")
     }
 
-    @Test func volumeRoots() {
-        #expect(IconCacheKey.volumeRootPath(of: "/Volumes/Backup/a/b") == "/Volumes/Backup")
-        #expect(IconCacheKey.volumeRootPath(of: "/Volumes/") == "/")
-        #expect(IconCacheKey.volumeRootPath(of: "/Users/me") == "/")
-        #expect(IconCacheKey.isVolumeRootPath("/"))
-        #expect(!IconCacheKey.isVolumeRootPath("/Volumes/Backup/a"))
-    }
-
     @Test func requestsForGenericKeysAreDrawnFromSamples() {
         let folder = IconRequest(entry: IconEntry(path: "/a/Plain", name: "Plain", kind: .directory))
         #expect(folder.generic == .folder)

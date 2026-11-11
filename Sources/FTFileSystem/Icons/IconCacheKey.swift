@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// The kinds of listing entry an icon is asked for.
@@ -119,7 +120,7 @@ public enum IconCacheKey {
                 : entry.name
             // A disk's top folder is drawn as the disk: a drive, a disk image, a network share.
             let isEmpty = entry.isEmptyFolder
-            if entry.hasCustomIcon || isVolumeRootPath(entry.path) || specialFolderNames.contains(name) {
+            if entry.hasCustomIcon || VolumePaths.isVolumeRootPath(entry.path) || specialFolderNames.contains(name) {
                 return isEmpty ? "path:\(entry.path):empty" : "path:\(entry.path)"
             }
             return entry.tagColor.map { tintedFolderKey($0, isEmpty: isEmpty) }
@@ -147,18 +148,5 @@ public enum IconCacheKey {
     /// The sample kind to draw a shared key from; nil for keys that go with one path.
     public static func genericKind(forKey key: String) -> GenericIconKind? {
         GenericIconKind.allCases.first { $0.cacheKey == key }
-    }
-
-    /// The root of a volume: the startup disk ("/") or a disk mounted at /Volumes/<name>.
-    public static func isVolumeRootPath(_ path: String) -> Bool {
-        volumeRootPath(of: path) == path
-    }
-
-    /// Which disk a path is on, told from the path alone: /Volumes/<name>, or the startup disk.
-    public static func volumeRootPath(of path: String) -> String {
-        let prefix = "/Volumes/"
-        guard path.hasPrefix(prefix) else { return "/" }
-        let name = path.dropFirst(prefix.count).prefix { $0 != "/" }
-        return name.isEmpty ? "/" : prefix + name
     }
 }
