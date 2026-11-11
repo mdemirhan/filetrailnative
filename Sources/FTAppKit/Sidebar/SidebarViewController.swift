@@ -167,9 +167,10 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         let activity = WindowActivity(
             hasFocus: { [weak window] in alwaysActive || window?.isKeyWindow == true }, window: window)
         // Whether a selection is in the accent is in the row's state, so the rows are worked out again, not just redrawn.
-        activity.onChange = { [weak self] _ in
+        // The disks are read again when the window comes to the front, not when it goes to the back.
+        activity.onChange = { [weak self] active in
             self?.refresh()
-            SidebarVolumes.shared.refresh()
+            if active { SidebarVolumes.shared.refresh() }
         }
         self.activity = activity
         // On a window the view has its real appearance: the rows and the "Folders" heading are drawn with it.

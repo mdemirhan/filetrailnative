@@ -1510,19 +1510,19 @@ change in this phase; read `ResponseCache` first and keep its de-duplication of 
 Found by both audits. `isEmpty` also lists `~/.Trash` in full: stop at the first name found, and use the resolved
 home Trash as `TrashFolders` does.
 
-### [ ] 7.4. The Info panel does nothing when closed, and nothing proportional to the folder per selection change
+### [x] 7.4. The Info panel does nothing when closed, and nothing proportional to the folder per selection change
 
 `Sources/FTAppKit/InfoPanel/InfoController.swift:284-303, 317-334, 139-142, 449-457`: `selectionDetails()` builds a
 set of the whole listing, `entry(at:)` scans `content.listed` linearly several times per update. Use the content
 pane's `rowsByPath`, and return early when neither the panel nor the row is shown.
 
-### [ ] 7.5. The toolbar's state refresh builds the command context once
+### [x] 7.5. The toolbar's state refresh builds the command context once
 
 `Sources/FTAppKit/Toolbar/ExplorerToolbar.swift:225`: each item's `canPerform` (`MainWindowController.swift:2407`)
 builds a whole context, twice per command button (`ToolbarMenus.swift:248`), plus a `NumberFormatter` per item
 (`ToolbarItemViews.swift:207`).
 
-### [ ] 7.6. Sidebar row heights are looked up in constant time
+### [x] 7.6. Sidebar row heights are looked up in constant time
 
 `Sources/FTAppKit/Sidebar/SidebarListView.swift:519-523` uses `firstIndex(where:)` per row on every reload. Also
 `SidebarViewController.swift:291-310, 375-382` builds the tree presentation twice per refresh.
@@ -1549,7 +1549,7 @@ looked at three times before and once after, though `copyfile` runs exclusive.
 at execution. Take extra care: do not remove a check that guards a destination someone else could have created. If
 unsure about one, leave it.
 
-### [ ] 7.10. Smaller ones, do if cheap
+### [x] 7.10. Smaller ones, do if cheap
 
 - `Sources/FTAppKit/Content/CompactList/CompactListViewController.swift:14`: `nameWidths` is unbounded.
 - `Content/Icons/IconViewController.swift:82` and `CompactListViewController.swift:120`: `marqueeHits` maps every
@@ -2457,3 +2457,26 @@ anything that differed from the plan, and anything found on the way that is not 
   `isDirectoryOnDisk` is one stat at launch for a folder named on the command line, whose window waits for that
   folder's read anyway. Not changed. `isDirectoryIfThere`, a stat per item opened from another app on the main
   thread: now off it, in order; items opened at launch are taken just after `applicationDidFinishLaunching` returns.
+- 2026-11-11. 7.4: `entry(at:)` scanned the listing only for a target that is not selected (the folder itself, Show
+  Info), once per update, not several times. With both views closed one thing is still done: the selected files'
+  details are asked for, as the status text's selection size sums them. Per update with 10,000 files: closed
+  3.39 ms to 0.003 ms; panel open with two selected 3.24 to 0.077 ms. With the panel open on one item a selection
+  change still costs about 3 ms, the same at 400 entries; not the folder's size, not looked into.
+- 2026-11-11. 7.5: the `NumberFormatter` was one per refresh, made for the clipboard button only, not one per item;
+  kept once anyway. Default toolbar with everything selected in 10,000 files: 15.3 ms to 5.5 ms per refresh. Found,
+  not fixed: `CommandAvailability.canRun` indexes the selected entries again for each command it is asked about, which
+  is most of what is left and also costs the menu bar and key checks; the toolbar works out tooltips and the
+  shortcut table once per item (about 0.2 ms a refresh).
+- 2026-11-11. 7.6: 2,015 tree rows, `refresh()` with nothing changed 112 to 81 ms in a debug build, of which one
+  presentation is about 32 ms. Found, not fixed: `SidebarModel.keyContext` builds the presentation once per key
+  press.
+- 2026-11-11. 7.10, done: the alert's reasons stop at the third (20,000 different failures, 2.4 s to 2 µs);
+  drag-to-select keeps the paths; the Compact List's name widths are bounded; Settings holds app icons; one theme
+  cache for the Info views, path bar and sidebar; the mount table is read when a window comes to the front only.
+  Skipped after measuring: `setSelection`'s second sync is one early-returning pass over the selection, and the
+  reveal check returns at once for the same ask; a running search's new `ContentSearchContext` recomputes only the
+  rows on screen, about 0.12 ms for 50; `saveSession` now runs once per navigation, not several times (counted),
+  though one save with 25 tabs costs about 0.86 ms in a debug build, 0.59 ms of it turning the tabs into JSON for
+  the sanitizer (`JSONNode.of` encodes and parses again); the end of a paste's `usleep(50)` loop and the progress
+  hop to the main queue (about 1 µs an event) belong to the two write slots kept in step, which "Left out on
+  purpose" keeps.
