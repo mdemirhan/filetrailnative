@@ -69,18 +69,6 @@ struct SizeTextTests {
         #expect(PermissionText.ownerAccess(symbolic: "") == "No access")
     }
 
-    @Test func splitsPathSegmentsIncludingRoot() {
-        #expect(
-            PathText.segments("/Users/demo/Documents") == [
-                PathSegment(label: "/", path: "/"),
-                PathSegment(label: "Users", path: "/Users"),
-                PathSegment(label: "demo", path: "/Users/demo"),
-                PathSegment(label: "Documents", path: "/Users/demo/Documents"),
-            ])
-        #expect(PathText.segments("/") == [PathSegment(label: "/", path: "/")])
-        #expect(PathText.segments("") == [PathSegment(label: "/", path: "/")])
-    }
-
     @Test func preservesTheExtensionSeparatelyForDisplayTruncation() {
         #expect(
             DisplayName.split("long filename.txt", extension: "txt")
@@ -90,76 +78,6 @@ struct SizeTextTests {
         #expect(DisplayName.split(".txt", extension: "txt") == DisplayNameParts(stem: ".txt", extensionSuffix: ""))
         #expect(DisplayName.split("name", extension: "txt") == DisplayNameParts(stem: "name", extensionSuffix: ""))
         #expect(DisplayName.split("name.txt", extension: "") == DisplayNameParts(stem: "name.txt", extensionSuffix: ""))
-    }
-
-    @Test func durationInMilliseconds() {
-        #expect(SizeText.relativeDuration(milliseconds: 500) == "500 ms")
-        // File timestamps carry sub-millisecond precision.
-        #expect(SizeText.relativeDuration(milliseconds: 9.737548828125) == "10 ms")
-    }
-
-    @Test func durationInSeconds() {
-        #expect(SizeText.relativeDuration(milliseconds: 2000) == "2 seconds")
-        #expect(SizeText.relativeDuration(milliseconds: 1000) == "1 second")
-        // Sub-millisecond precision must not round up to "1000 ms".
-        #expect(SizeText.relativeDuration(milliseconds: 999.6) == "1 second")
-        #expect(SizeText.relativeDuration(milliseconds: 999.4) == "999 ms")
-    }
-
-    @Test func durationInMinutes() {
-        #expect(SizeText.relativeDuration(milliseconds: 90000) == "1 min")
-        #expect(SizeText.relativeDuration(milliseconds: 45 * 60 * 1000) == "45 min")
-    }
-
-    @Test func durationInHours() {
-        #expect(SizeText.relativeDuration(milliseconds: 3_600_000) == "1 hour")
-        #expect(SizeText.relativeDuration(milliseconds: 5 * 3_600_000) == "5 hours")
-    }
-
-    @Test func durationInDays() {
-        #expect(SizeText.relativeDuration(milliseconds: 86_400_000) == "1 day")
-        #expect(SizeText.relativeDuration(milliseconds: 7 * 86_400_000) == "7 days")
-    }
-
-    @Test func durationInMonths() {
-        #expect(SizeText.relativeDuration(milliseconds: 30 * 86_400_000) == "1 month")
-    }
-
-    @Test func durationInYears() {
-        #expect(SizeText.relativeDuration(milliseconds: 365 * 86_400_000) == "1 year")
-        #expect(SizeText.relativeDuration(milliseconds: 730 * 86_400_000) == "2 years")
-    }
-
-    @Test func durationOfNegativeValues() {
-        #expect(SizeText.relativeDuration(milliseconds: -5000) == "5 seconds")
-    }
-
-    @Test func hintSizes() {
-        #expect(SizeText.hint(nil) == nil)
-        #expect(SizeText.hint(0) == "0 B")
-        #expect(SizeText.hint(512) == "512 B")
-        #expect(SizeText.hint(1000) == "1.0 KB")
-        #expect(SizeText.hint(1_000_000) == "1.0 MB")
-    }
-
-    @Test func sizeComparisonWithoutADelta() {
-        #expect(SizeText.comparison(src: nil, dest: 1024) == nil)
-        #expect(SizeText.comparison(src: 1024, dest: nil) == nil)
-        #expect(SizeText.comparison(src: nil, dest: nil) == nil)
-        #expect(SizeText.comparison(src: 999, dest: 1000) == SizeComparison(src: "999 B", dest: "1.0 KB", delta: nil))
-        #expect(SizeText.comparison(src: 1000, dest: 1000) == SizeComparison(src: "1.0 KB", dest: "1.0 KB", delta: nil))
-        #expect(SizeText.comparison(src: 0, dest: 0) == SizeComparison(src: "0 B", dest: "0 B", delta: nil))
-    }
-
-    @Test func sizeComparisonWithADelta() {
-        // 1010000 and 1011000 both format to "1.0 MB".
-        let larger = SizeText.comparison(src: 1_011_000, dest: 1_010_000)
-        #expect(larger?.src == "1.0 MB")
-        #expect(larger?.dest == "1.0 MB")
-        #expect(larger?.delta?.hasPrefix("+") == true)
-        let smaller = SizeText.comparison(src: 1_010_000, dest: 1_011_000)
-        #expect(smaller?.delta?.hasPrefix("-") == true)
-        #expect(larger?.delta == "+1.0 KB")
     }
 
     @Test func folderSizeDetailSaysTheSizeOnDisk() {

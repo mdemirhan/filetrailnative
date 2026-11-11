@@ -44,12 +44,6 @@ struct InternalDragAndDropTests {
                 == nil)
     }
 
-    @Test func recognizesRealDirectoryEntriesOnly() {
-        #expect(DragRules.isRealDirectory(kind: .directory, isSymlink: false))
-        #expect(!DragRules.isRealDirectory(kind: .symlinkDirectory, isSymlink: true))
-        #expect(!DragRules.isRealDirectory(kind: .file, isSymlink: false))
-    }
-
     @Test func rejectsDroppingSearchResultsOntoContentRows() {
         #expect(
             validate(
@@ -105,7 +99,9 @@ struct InternalDragAndDropTests {
     private func resolve(_ sources: [String], _ target: String, option: Bool = false, command: Bool = false)
         -> DropOperation
     {
-        DragRules.operation(sourcePaths: sources, targetPath: target, option: option, command: command)
+        DragRules.operation(
+            DragFacts(sources.map { DragItem(path: $0, kind: .file) }), targetPath: target, option: option,
+            command: command)
     }
 
     @Test func movesToAFolderOnTheSameVolumeAndCopiesToAnotherVolume() {
@@ -172,27 +168,32 @@ struct InternalDragAndDropTests {
         var ids: [String: Int64?] = ["/Users/demo": 1, "/Volumes/X": 2, "/net/share": 7]
         ids["/Unreadable"] = .some(nil)
         #expect(
-            DragRules.onSameDisk(sourceFolderPaths: ["/Users/demo"], targetPath: "/Users/demo/Folder", diskIds: ids)
+            DragRules.onSameDisk(
+                sourceFolderPaths: ["/Users/demo"], targetPath: "/Users/demo/Folder", diskId: { ids[$0] })
                 == nil)
         ids["/Users/demo/Folder"] = 1
         #expect(
-            DragRules.onSameDisk(sourceFolderPaths: ["/Users/demo"], targetPath: "/Users/demo/Folder", diskIds: ids)
+            DragRules.onSameDisk(
+                sourceFolderPaths: ["/Users/demo"], targetPath: "/Users/demo/Folder", diskId: { ids[$0] })
                 == true)
         #expect(
             DragRules.onSameDisk(
-                sourceFolderPaths: ["/Users/demo", "/Volumes/X"], targetPath: "/Users/demo/Folder", diskIds: ids)
+                sourceFolderPaths: ["/Users/demo", "/Volumes/X"], targetPath: "/Users/demo/Folder", diskId: { ids[$0] })
                 == false)
         #expect(
-            DragRules.onSameDisk(sourceFolderPaths: ["/Users/demo"], targetPath: "/net/share", diskIds: ids) == false)
+            DragRules.onSameDisk(sourceFolderPaths: ["/Users/demo"], targetPath: "/net/share", diskId: { ids[$0] })
+                == false)
         #expect(
-            DragRules.onSameDisk(sourceFolderPaths: ["/Unreadable"], targetPath: "/Users/demo/Folder", diskIds: ids)
+            DragRules.onSameDisk(
+                sourceFolderPaths: ["/Unreadable"], targetPath: "/Users/demo/Folder", diskId: { ids[$0] })
                 == nil)
     }
 
     @Test func goesByTheDisksOnceTheyHaveAnsweredAndByThePathsUntilThen() {
         func drop(_ target: String, _ same: Bool? = nil) -> DropOperation {
             DragRules.operation(
-                sourcePaths: ["/Users/demo/a.txt"], targetPath: target, option: false, command: false, onSameDisk: same)
+                DragFacts([DragItem(path: "/Users/demo/a.txt", kind: .file)]), targetPath: target, option: false,
+                command: false, onSameDisk: same)
         }
         #expect(drop("/net/share") == .move)
         #expect(drop("/net/share", false) == .copy)
@@ -200,8 +201,8 @@ struct InternalDragAndDropTests {
         #expect(drop("/Volumes/Macintosh HD/Users/demo", true) == .move)
         #expect(
             DragRules.operation(
-                sourcePaths: ["/Users/demo/a.txt"], targetPath: "/net/share", option: false, command: true,
-                onSameDisk: false) == .move)
+                DragFacts([DragItem(path: "/Users/demo/a.txt", kind: .file)]), targetPath: "/net/share", option: false,
+                command: true, onSameDisk: false) == .move)
     }
 
     // MARK: A drag of many items

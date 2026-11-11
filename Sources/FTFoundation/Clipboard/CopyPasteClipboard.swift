@@ -236,16 +236,6 @@ public enum ClipboardRules {
         return remapPaths(dropPaths(clipboard, removed), moves, left: left)
     }
 
-    /// What a paste asks to analyze.
-    public static func pasteRequest(_ clipboard: CopyPasteClipboard, destination: String) -> PasteRequest? {
-        guard case .ready(let mode, let paths, _, _) = clipboard else { return nil }
-        return PasteRequest(mode: mode, sourcePaths: paths, destinationDirectoryPath: destination, action: "paste")
-    }
-
-    public static func clearedAfterSuccessfulPaste(_ clipboard: CopyPasteClipboard) -> CopyPasteClipboard {
-        .empty
-    }
-
     // MARK: Paths
 
     /// `path` itself or the deepest folder holding it that `matches`, looked up along its own path.
@@ -294,12 +284,4 @@ public enum ClipboardRules {
         let units = Array(path.utf16)
         return destination + JSString.string(units[source.utf16.count...])
     }
-}
-
-/// The analysis a paste asks for.
-public struct PasteRequest: Equatable, Sendable {
-    public var mode: ClipboardMode
-    public var sourcePaths: [String]
-    public var destinationDirectoryPath: String
-    public var action: String
 }

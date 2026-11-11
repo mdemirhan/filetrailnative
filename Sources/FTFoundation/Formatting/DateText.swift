@@ -127,10 +127,6 @@ public final class DateText: @unchecked Sendable {
         exact.string(from: date)
     }
 
-    public func shortDateTime(_ date: Date) -> String {
-        short.string(from: date)
-    }
-
     // `new Date(text)` for the ISO 8601 forms the metadata uses: a date alone is UTC, a time without
     // a zone is local.
     private static func parse(_ text: String) -> Date? {

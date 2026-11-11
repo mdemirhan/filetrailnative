@@ -14,40 +14,6 @@ struct DirectoryListingDiffTests {
         Item(path: path, name: String(path.split(separator: "/").last ?? ""), isHidden: hidden)
     }
 
-    @Test func tellsAFolderThatIsGoneFromOneThatCantBeRead() {
-        let gone = DirectoryListingDiff.isFolderGone(message:)
-        #expect(gone("ENOENT: no such file or directory, stat '/Users/demo/Old'"))
-        #expect(gone("ENOTDIR: not a directory, stat '/Users/demo/a.txt/b'"))
-        // Replaced by a file of the same name.
-        #expect(gone("Path is not a directory: /Users/demo/Old"))
-        #expect(!gone("EPERM: operation not permitted, scandir '/Users/demo/.Trash'"))
-        #expect(!gone("EACCES: permission denied, scandir '/Users/demo/Locked'"))
-    }
-
-    @Test func looksForWhyAFolderCouldntBeReadInTheReasonNotInItsPath() {
-        for path in [
-            "/Users/demo/ENOENT", "/Users/demo/ENOTDIR logs", "/Users/demo/no such file or directory",
-            "/Users/demo/Not a Directory",
-        ] {
-            #expect(!DirectoryListingDiff.isFolderGone(message: "EACCES: permission denied, scandir '\(path)'"))
-            #expect(!DirectoryListingDiff.isFolderGone(message: "EPERM: operation not permitted, scandir '\(path)'"))
-            #expect(DirectoryListingDiff.isFolderGone(message: "ENOENT: no such file or directory, stat '\(path)'"))
-        }
-    }
-
-    @Test func tellsWhetherAFolderReadAgainListsTheSameItemsTheSameWay() {
-        let file = item("/a/one.txt")
-        let listing = [file, item("/a/B")]
-        #expect(DirectoryListingDiff.sameEntries(listing, listing.map { $0 }))
-        #expect(!DirectoryListingDiff.sameEntries(listing, listing.reversed()))
-        #expect(!DirectoryListingDiff.sameEntries(listing, [file]))
-        #expect(!DirectoryListingDiff.sameEntries([file], [item("/a/one.txt", hidden: true)]))
-        // A detail only one of them has (a size, when sorted by size).
-        var sized = file
-        sized.sizeBytes = 5
-        #expect(!DirectoryListingDiff.sameEntries([file], [sized]))
-    }
-
     @Test func keepsTheItemsOfAFolderReadAgainThatAreStillAsTheyWere() {
         let one = item("/a/one.txt")
         let two = item("/a/two.txt")
@@ -75,14 +41,5 @@ struct DirectoryListingDiffTests {
     private final class Details {
         let size: Int
         init(size: Int) { self.size = size }
-    }
-
-    @Test func tellsWhetherTwoSetsOfItemDetailsAreTheVerySame() {
-        let details = Details(size: 5)
-        #expect(DirectoryListingDiff.sameDetailsByPath(["/a/one.txt": details], ["/a/one.txt": details]))
-        // Read again: the same values, but not the details on screen.
-        #expect(!DirectoryListingDiff.sameDetailsByPath(["/a/one.txt": details], ["/a/one.txt": Details(size: 5)]))
-        #expect(!DirectoryListingDiff.sameDetailsByPath(["/a/one.txt": details], [:]))
-        #expect(!DirectoryListingDiff.sameDetailsByPath(["/a/one.txt": details], ["/a/two.txt": details]))
     }
 }

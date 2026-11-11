@@ -38,19 +38,4 @@ public enum SettingsTab: String, CaseIterable, Sendable, Hashable {
             "M5 6.5h14A2.5 2.5 0 0 1 21.5 9v6a2.5 2.5 0 0 1-2.5 2.5H5A2.5 2.5 0 0 1 2.5 15V9A2.5 2.5 0 0 1 5 6.5zM6.5 10.5h.01M10 10.5h.01M13.5 10.5h.01M17 10.5h.01M8 14h8"
         }
     }
-
-    /// The tab named after "#settings/" in a Settings window's address, or nil. The window keeps its tab in
-    /// memory, but the address form is kept so a tab can still be named by an address.
-    public static func read(fromURL url: String) -> SettingsTab? {
-        guard let hash = url.firstIndex(of: "#") else { return nil }
-        let fragment = url[hash...]
-        let prefix = "#settings/"
-        guard fragment.hasPrefix(prefix) else { return nil }
-        let name = fragment.dropFirst(prefix.count)
-        guard !name.isEmpty, name.unicodeScalars.allSatisfy({ ("a"..."z").contains($0) }) else { return nil }
-        return SettingsTab(rawValue: String(name))
-    }
-
-    /// The address a window on this tab has (`#settings/<tab>`).
-    public var urlFragment: String { "#settings/\(rawValue)" }
 }

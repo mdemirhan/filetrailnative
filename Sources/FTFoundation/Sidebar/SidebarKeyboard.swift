@@ -55,8 +55,6 @@ public enum SidebarKeyboard {
         case up, down, left, right, home, end
     }
 
-    public static let typeaheadResetMilliseconds = 1000
-
     public static func decide(_ key: SidebarKeyboard.Key, _ context: SidebarKeyContext) -> SidebarKeyAction {
         if context.favoritesListActive {
             return decideInFavorites(key, context)

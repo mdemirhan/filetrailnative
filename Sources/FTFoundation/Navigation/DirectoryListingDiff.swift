@@ -1,18 +1,6 @@
 import Foundation
 
 public enum DirectoryListingDiff {
-    /// Whether reading a folder failed because it is no longer there (removed, renamed or
-    /// replaced by a file), not because it can't be read. Only the start of the message counts: the path it ends with
-    /// may have any of these words in it.
-    public static func isFolderGone(message: String) -> Bool {
-        message.hasPrefix("ENOENT:") || message.hasPrefix("ENOTDIR:") || message.hasPrefix("Path is not a directory: ")
-    }
-
-    /// Whether two listings show the same items the same way, each with the same details in
-    /// the same order.
-    public static func sameEntries<T: Equatable>(_ left: [T], _ right: [T]) -> Bool {
-        left == right
-    }
 
     /// What `keepUnchanged` decided.
     public struct Kept<T: Equatable>: Equatable {
@@ -44,17 +32,5 @@ public enum DirectoryListingDiff {
             if let before = shownByPath[key], before == entry { kept.insert(key) } else { changed.append(key) }
         }
         return Kept(entries: next, isUnchanged: false, keptPaths: kept, changedPaths: changed)
-    }
-
-    /// `sameDetailsByPath` for details that have an identity: the very same objects for the same items, not equal
-    /// copies of them.
-    public static func sameDetailsByPath<V: AnyObject>(_ left: [String: V], _ right: [String: V]) -> Bool {
-        if left.count != right.count { return false }
-        return left.allSatisfy { path, details in right[path] === details }
-    }
-
-    /// `sameDetailsByPath` for details that are values: equal ones for the same items.
-    public static func sameDetailsByPath<V: Equatable>(_ left: [String: V], _ right: [String: V]) -> Bool {
-        left == right
     }
 }

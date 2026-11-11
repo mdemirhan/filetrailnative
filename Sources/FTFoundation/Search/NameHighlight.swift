@@ -9,8 +9,6 @@ public struct HighlightRange: Equatable, Sendable, Codable {
         self.start = start
         self.end = end
     }
-
-    public var nsRange: NSRange { NSRange(location: start, length: end - start) }
 }
 
 /// What a search matched in names, marked in every view while search results are shown.

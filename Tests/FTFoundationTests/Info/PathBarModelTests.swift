@@ -141,13 +141,6 @@ struct PathBarModelTests {
         #expect(PathbarFolderMenuModel.hiddenLabel(5) == "5 more folders")
     }
 
-    @Test func aLetterJumpsToTheNextFolderStartingWithItAndWraps() {
-        let folders = ["alpha", "beta", "Alps", "gamma"].map { PathbarFolder(path: "/\($0)", name: $0) }
-        #expect(PathbarFolderMenuModel.jump(letter: "a", from: 0, in: folders) == 2)
-        #expect(PathbarFolderMenuModel.jump(letter: "a", from: 2, in: folders) == 0)
-        #expect(PathbarFolderMenuModel.jump(letter: "z", from: 0, in: folders) == nil)
-    }
-
     // MARK: Path editor
 
     @Test func arrowsPreviewSuggestionsWithWrap() {

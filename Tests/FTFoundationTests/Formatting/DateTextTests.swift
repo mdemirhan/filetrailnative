@@ -14,7 +14,6 @@ struct DateTextTests {
     struct Output: Codable, Equatable, Sendable {
         let relative: String
         let exact: String
-        let short: String
         let withinLastHour: Bool
     }
 
@@ -103,11 +102,6 @@ struct DateTextTests {
         #expect(text.exactDateTime(Self.local(2026, 10, 1, 14, 44, 7)) == "Thursday, October 1, 2026 at 2:44:07 PM")
     }
 
-    @Test func formatsAShortDateTime() {
-        #expect(!text.shortDateTime(Date(epochMilliseconds: 1_709_913_600_000)).isEmpty)
-        #expect(text.shortDateTime(Self.local(2026, 10, 5, 0, 5, 3)) == "Oct 5, 00:05:03")
-    }
-
     @Test func relativeDatesMatchTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "relative-dates")
         #expect(cases.count >= 500)
@@ -120,7 +114,6 @@ struct DateTextTests {
             return Output(
                 relative: text.relative(date, now: now),
                 exact: text.exactDateTime(date),
-                short: text.shortDateTime(date),
                 withinLastHour: text.isWithinLastHour(date, now: now))
         }
     }

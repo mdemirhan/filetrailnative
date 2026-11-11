@@ -505,7 +505,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         replaceField.text = settings.replaceWith
         let plan = model.plan
         let findError =
-            settings.mode == .replace ? plan?.settingsError.map(BatchRenameSheetText.describeSettingsError) : nil
+            settings.mode == .replace ? plan?.settingsError : nil
         findField.isInvalid = findError != nil
         findField.field.setAccessibilityHelp(findError)
         findMessage.content = { theme in

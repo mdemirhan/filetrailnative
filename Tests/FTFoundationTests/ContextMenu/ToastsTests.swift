@@ -45,11 +45,6 @@ struct ToastsTests {
     // The delays before something shows
     @Test func theDelaysBeforeSomethingShowsHaveTheirSetValues() {
         #expect(ShowDelays.progressCardMs == 500)
-        #expect(ShowDelays.loadingFolderMs == 400)
-        #expect(ShowDelays.loadingTreeMs == 400)
-        #expect(ShowDelays.pathBarMenuMs == 300)
-        #expect(ShowDelays.spinnerMs == 300)
-        #expect(ShowDelays.searchStopMs == 400)
     }
 }
 

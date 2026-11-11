@@ -30,11 +30,6 @@ public enum AlertButtons {
     /// Three or more buttons are stacked, each as wide as the panel; two split the width.
     public static func isStacked(count: Int) -> Bool { count >= 3 }
 
-    /// The button Return presses: the one drawn as the default (rightmost in a row, the top one when stacked).
-    public static func defaultIndex<Answer>(_ buttons: [AlertButtonSpec<Answer>]) -> Int? {
-        buttons.firstIndex { $0.variant == .default }
-    }
-
     /// A copy or paste confirmation (and the Undo question, whose go-ahead is never red): the primary action and
     /// Cancel. A confirmation that can't be undone, or a question best answered no, makes Cancel the default, so a
     /// stray Return can't confirm it. The default is always the button on the right.

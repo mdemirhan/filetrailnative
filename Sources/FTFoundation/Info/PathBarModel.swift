@@ -20,7 +20,6 @@ public enum InfoMetrics {
     public static let collapseAfter = 4
     public static let folderMenuMinWidth = 200.0
     public static let folderMenuMaxWidth = 360.0
-    public static let folderMenuMaxHeight = 440.0
     public static let folderMenuLimit = 300
     public static let folderMenuLoadingDelay = 0.3
     public static let folderMenuGap = 6.0
@@ -259,14 +258,6 @@ public enum PathbarFolderMenuModel {
     }
 
     public static func hiddenLabel(_ count: Int) -> String { "\(count) more \(count == 1 ? "folder" : "folders")" }
-
-    /// The row a letter jumps to: the next folder starting with it after `current`, wrapping to the first.
-    public static func jump(letter: String, from current: Int, in folders: [PathbarFolder]) -> Int? {
-        let key = letter.lowercased()
-        func starts(_ folder: PathbarFolder) -> Bool { folder.name.lowercased().hasPrefix(key) }
-        if let after = folders.indices.first(where: { $0 > current && starts(folders[$0]) }) { return after }
-        return folders.firstIndex(where: starts)
-    }
 }
 
 /// The path editor's draft and suggestions.

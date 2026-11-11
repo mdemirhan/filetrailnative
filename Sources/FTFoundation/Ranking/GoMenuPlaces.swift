@@ -32,11 +32,6 @@ public enum GoMenuPlaceCommand: String, CaseIterable, Sendable {
         }
     }
 
-    /// Whether the command with this id goes to a place.
-    public static func isPlaceCommand(_ command: String) -> Bool {
-        GoMenuPlaceCommand(rawValue: command) != nil
-    }
-
     /// Nil until the home folder is known, for the places in it.
     public func place(homePath: String) -> GoMenuPlace? {
         switch self {

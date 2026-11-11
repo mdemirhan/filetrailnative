@@ -69,10 +69,8 @@ struct DragOperationsGoldenTests {
                 same = DragRules.onSameDisk(sourceFolderPaths: folders, targetPath: target) { ids[NameKeys.Exact($0)] }
             }
             let operation = DragRules.operation(
-                sourcePaths: items.map(\.path), targetPath: target, option: input.altKey, command: input.metaKey,
-                onSameDisk: same)
-            let allowed = DragRules.allowedBySource(
-                operation, offersMove: DragRules.offersMove(effectAllowed: input.effectAllowed))
+                DragFacts(items), targetPath: target, option: input.altKey, command: input.metaKey, onSameDisk: same)
+            let allowed = DragRules.allowedBySource(operation, offersMove: Self.offersMove(input.effectAllowed))
             let session =
                 items.first.map {
                     DragSession(
@@ -88,5 +86,11 @@ struct DragOperationsGoldenTests {
                 folderPaths: folders, onSameDisk: same, operation: operation.rawValue, allowed: allowed.rawValue,
                 refusal: refusal?.rawValue)
         }
+    }
+
+    /// Whether a page's drag (`effectAllowed`) offers a move, as the recordings say it: nil (not said) does.
+    static func offersMove(_ effectAllowed: String?) -> Bool {
+        guard let effectAllowed else { return true }
+        return ["move", "copyMove", "linkMove", "all", "uninitialized"].contains(effectAllowed)
     }
 }

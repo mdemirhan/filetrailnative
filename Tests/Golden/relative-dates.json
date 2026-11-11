@@ -14,7 +14,6 @@
       "output": {
         "relative": "Oct 1, 2026, 4:45 PM",
         "exact": "Thursday, October 1, 2026 at 4:45:00 PM",
-        "short": "Oct 1, 16:45:00",
         "withinLastHour": false
       }
     },
@@ -28,7 +27,6 @@
       "output": {
         "relative": "Oct 1, 2026, 2:46 PM",
         "exact": "Thursday, October 1, 2026 at 2:46:00 PM",
-        "short": "Oct 1, 14:46:00",
         "withinLastHour": false
       }
     },
@@ -42,7 +40,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:46:00 PM",
-        "short": "Oct 1, 14:46:00",
         "withinLastHour": true
       }
     },
@@ -56,7 +53,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:45:59 PM",
-        "short": "Oct 1, 14:45:59",
         "withinLastHour": true
       }
     },
@@ -70,7 +66,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:45:00 PM",
-        "short": "Oct 1, 14:45:00",
         "withinLastHour": true
       }
     },
@@ -84,7 +79,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:59 PM",
-        "short": "Oct 1, 14:44:59",
         "withinLastHour": true
       }
     },
@@ -98,7 +92,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:40 PM",
-        "short": "Oct 1, 14:44:40",
         "withinLastHour": true
       }
     },
@@ -112,7 +105,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:00 PM",
-        "short": "Oct 1, 14:44:00",
         "withinLastHour": true
       }
     },
@@ -126,7 +118,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, October 1, 2026 at 2:44:00 PM",
-        "short": "Oct 1, 14:44:00",
         "withinLastHour": true
       }
     },
@@ -140,7 +131,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, October 1, 2026 at 2:43:59 PM",
-        "short": "Oct 1, 14:43:59",
         "withinLastHour": true
       }
     },
@@ -154,7 +144,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Thursday, October 1, 2026 at 2:43:00 PM",
-        "short": "Oct 1, 14:43:00",
         "withinLastHour": true
       }
     },
@@ -168,7 +157,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Thursday, October 1, 2026 at 1:45:01 PM",
-        "short": "Oct 1, 13:45:01",
         "withinLastHour": true
       }
     },
@@ -182,7 +170,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Thursday, October 1, 2026 at 1:45:00 PM",
-        "short": "Oct 1, 13:45:00",
         "withinLastHour": true
       }
     },
@@ -196,7 +183,6 @@
       "output": {
         "relative": "Today, 1:45 PM",
         "exact": "Thursday, October 1, 2026 at 1:45:00 PM",
-        "short": "Oct 1, 13:45:00",
         "withinLastHour": false
       }
     },
@@ -210,7 +196,6 @@
       "output": {
         "relative": "Today, 1:44 PM",
         "exact": "Thursday, October 1, 2026 at 1:44:59 PM",
-        "short": "Oct 1, 13:44:59",
         "withinLastHour": false
       }
     },
@@ -224,7 +209,6 @@
       "output": {
         "relative": "Today, 11:45 AM",
         "exact": "Thursday, October 1, 2026 at 11:45:00 AM",
-        "short": "Oct 1, 11:45:00",
         "withinLastHour": false
       }
     },
@@ -238,7 +222,6 @@
       "output": {
         "relative": "Yesterday, 2:46 PM",
         "exact": "Wednesday, September 30, 2026 at 2:46:00 PM",
-        "short": "Sep 30, 14:46:00",
         "withinLastHour": false
       }
     },
@@ -252,7 +235,6 @@
       "output": {
         "relative": "Yesterday, 11:59 PM",
         "exact": "Wednesday, September 30, 2026 at 11:59:59 PM",
-        "short": "Sep 30, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -266,7 +248,6 @@
       "output": {
         "relative": "Today, 12:00 AM",
         "exact": "Thursday, October 1, 2026 at 12:00:00 AM",
-        "short": "Oct 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -280,7 +261,6 @@
       "output": {
         "relative": "Today, 12:00 PM",
         "exact": "Thursday, October 1, 2026 at 12:00:00 PM",
-        "short": "Oct 1, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -294,7 +274,6 @@
       "output": {
         "relative": "Tue, 11:59 PM",
         "exact": "Tuesday, September 29, 2026 at 11:59:59 PM",
-        "short": "Sep 29, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -308,7 +287,6 @@
       "output": {
         "relative": "Yesterday, 12:00 AM",
         "exact": "Wednesday, September 30, 2026 at 12:00:00 AM",
-        "short": "Sep 30, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -322,7 +300,6 @@
       "output": {
         "relative": "Yesterday, 12:00 PM",
         "exact": "Wednesday, September 30, 2026 at 12:00:00 PM",
-        "short": "Sep 30, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -336,7 +313,6 @@
       "output": {
         "relative": "Mon, 11:59 PM",
         "exact": "Monday, September 28, 2026 at 11:59:59 PM",
-        "short": "Sep 28, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -350,7 +326,6 @@
       "output": {
         "relative": "Tue, 12:00 AM",
         "exact": "Tuesday, September 29, 2026 at 12:00:00 AM",
-        "short": "Sep 29, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -364,7 +339,6 @@
       "output": {
         "relative": "Tue, 12:00 PM",
         "exact": "Tuesday, September 29, 2026 at 12:00:00 PM",
-        "short": "Sep 29, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -378,7 +352,6 @@
       "output": {
         "relative": "Sun, 11:59 PM",
         "exact": "Sunday, September 27, 2026 at 11:59:59 PM",
-        "short": "Sep 27, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -392,7 +365,6 @@
       "output": {
         "relative": "Mon, 12:00 AM",
         "exact": "Monday, September 28, 2026 at 12:00:00 AM",
-        "short": "Sep 28, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -406,7 +378,6 @@
       "output": {
         "relative": "Mon, 12:00 PM",
         "exact": "Monday, September 28, 2026 at 12:00:00 PM",
-        "short": "Sep 28, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -420,7 +391,6 @@
       "output": {
         "relative": "Sat, 11:59 PM",
         "exact": "Saturday, September 26, 2026 at 11:59:59 PM",
-        "short": "Sep 26, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -434,7 +404,6 @@
       "output": {
         "relative": "Sun, 12:00 AM",
         "exact": "Sunday, September 27, 2026 at 12:00:00 AM",
-        "short": "Sep 27, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -448,7 +417,6 @@
       "output": {
         "relative": "Sun, 12:00 PM",
         "exact": "Sunday, September 27, 2026 at 12:00:00 PM",
-        "short": "Sep 27, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -462,7 +430,6 @@
       "output": {
         "relative": "Fri, 11:59 PM",
         "exact": "Friday, September 25, 2026 at 11:59:59 PM",
-        "short": "Sep 25, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -476,7 +443,6 @@
       "output": {
         "relative": "Sat, 12:00 AM",
         "exact": "Saturday, September 26, 2026 at 12:00:00 AM",
-        "short": "Sep 26, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -490,7 +456,6 @@
       "output": {
         "relative": "Sat, 12:00 PM",
         "exact": "Saturday, September 26, 2026 at 12:00:00 PM",
-        "short": "Sep 26, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -504,7 +469,6 @@
       "output": {
         "relative": "Sep 24, 11:59 PM",
         "exact": "Thursday, September 24, 2026 at 11:59:59 PM",
-        "short": "Sep 24, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -518,7 +482,6 @@
       "output": {
         "relative": "Fri, 12:00 AM",
         "exact": "Friday, September 25, 2026 at 12:00:00 AM",
-        "short": "Sep 25, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -532,7 +495,6 @@
       "output": {
         "relative": "Fri, 12:00 PM",
         "exact": "Friday, September 25, 2026 at 12:00:00 PM",
-        "short": "Sep 25, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -546,7 +508,6 @@
       "output": {
         "relative": "Sep 23, 11:59 PM",
         "exact": "Wednesday, September 23, 2026 at 11:59:59 PM",
-        "short": "Sep 23, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -560,7 +521,6 @@
       "output": {
         "relative": "Sep 24, 12:00 AM",
         "exact": "Thursday, September 24, 2026 at 12:00:00 AM",
-        "short": "Sep 24, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -574,7 +534,6 @@
       "output": {
         "relative": "Sep 24, 12:00 PM",
         "exact": "Thursday, September 24, 2026 at 12:00:00 PM",
-        "short": "Sep 24, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -588,7 +547,6 @@
       "output": {
         "relative": "Sep 22, 11:59 PM",
         "exact": "Tuesday, September 22, 2026 at 11:59:59 PM",
-        "short": "Sep 22, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -602,7 +560,6 @@
       "output": {
         "relative": "Sep 23, 12:00 AM",
         "exact": "Wednesday, September 23, 2026 at 12:00:00 AM",
-        "short": "Sep 23, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -616,7 +573,6 @@
       "output": {
         "relative": "Sep 23, 12:00 PM",
         "exact": "Wednesday, September 23, 2026 at 12:00:00 PM",
-        "short": "Sep 23, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -630,7 +586,6 @@
       "output": {
         "relative": "Sep 21, 11:59 PM",
         "exact": "Monday, September 21, 2026 at 11:59:59 PM",
-        "short": "Sep 21, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -644,7 +599,6 @@
       "output": {
         "relative": "Sep 22, 12:00 AM",
         "exact": "Tuesday, September 22, 2026 at 12:00:00 AM",
-        "short": "Sep 22, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -658,7 +612,6 @@
       "output": {
         "relative": "Sep 22, 12:00 PM",
         "exact": "Tuesday, September 22, 2026 at 12:00:00 PM",
-        "short": "Sep 22, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -672,7 +625,6 @@
       "output": {
         "relative": "Dec 31, 2025",
         "exact": "Wednesday, December 31, 2025 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -686,7 +638,6 @@
       "output": {
         "relative": "Jan 1, 12:00 AM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -700,7 +651,6 @@
       "output": {
         "relative": "Oct 13, 2026, 4:38 PM",
         "exact": "Tuesday, October 13, 2026 at 4:38:20 PM",
-        "short": "Oct 13, 16:38:20",
         "withinLastHour": false
       }
     },
@@ -714,7 +664,6 @@
       "output": {
         "relative": "Oct 13, 2026, 2:39 PM",
         "exact": "Tuesday, October 13, 2026 at 2:39:20 PM",
-        "short": "Oct 13, 14:39:20",
         "withinLastHour": false
       }
     },
@@ -728,7 +677,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:39:20 PM",
-        "short": "Oct 13, 14:39:20",
         "withinLastHour": true
       }
     },
@@ -742,7 +690,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:39:20 PM",
-        "short": "Oct 13, 14:39:20",
         "withinLastHour": true
       }
     },
@@ -756,7 +703,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:38:20 PM",
-        "short": "Oct 13, 14:38:20",
         "withinLastHour": true
       }
     },
@@ -770,7 +716,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:38:20 PM",
-        "short": "Oct 13, 14:38:20",
         "withinLastHour": true
       }
     },
@@ -784,7 +729,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:38:00 PM",
-        "short": "Oct 13, 14:38:00",
         "withinLastHour": true
       }
     },
@@ -798,7 +742,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:37:20 PM",
-        "short": "Oct 13, 14:37:20",
         "withinLastHour": true
       }
     },
@@ -812,7 +755,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:37:20 PM",
-        "short": "Oct 13, 14:37:20",
         "withinLastHour": true
       }
     },
@@ -826,7 +768,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:37:20 PM",
-        "short": "Oct 13, 14:37:20",
         "withinLastHour": true
       }
     },
@@ -840,7 +781,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:36:20 PM",
-        "short": "Oct 13, 14:36:20",
         "withinLastHour": true
       }
     },
@@ -854,7 +794,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Tuesday, October 13, 2026 at 1:38:21 PM",
-        "short": "Oct 13, 13:38:21",
         "withinLastHour": true
       }
     },
@@ -868,7 +807,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Tuesday, October 13, 2026 at 1:38:20 PM",
-        "short": "Oct 13, 13:38:20",
         "withinLastHour": true
       }
     },
@@ -882,7 +820,6 @@
       "output": {
         "relative": "Today, 1:38 PM",
         "exact": "Tuesday, October 13, 2026 at 1:38:20 PM",
-        "short": "Oct 13, 13:38:20",
         "withinLastHour": false
       }
     },
@@ -896,7 +833,6 @@
       "output": {
         "relative": "Today, 1:38 PM",
         "exact": "Tuesday, October 13, 2026 at 1:38:20 PM",
-        "short": "Oct 13, 13:38:20",
         "withinLastHour": false
       }
     },
@@ -910,7 +846,6 @@
       "output": {
         "relative": "Today, 11:38 AM",
         "exact": "Tuesday, October 13, 2026 at 11:38:20 AM",
-        "short": "Oct 13, 11:38:20",
         "withinLastHour": false
       }
     },
@@ -924,7 +859,6 @@
       "output": {
         "relative": "Yesterday, 2:39 PM",
         "exact": "Monday, October 12, 2026 at 2:39:20 PM",
-        "short": "Oct 12, 14:39:20",
         "withinLastHour": false
       }
     },
@@ -938,7 +872,6 @@
       "output": {
         "relative": "Yesterday, 11:59 PM",
         "exact": "Monday, October 12, 2026 at 11:59:59 PM",
-        "short": "Oct 12, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -952,7 +885,6 @@
       "output": {
         "relative": "Today, 12:00 AM",
         "exact": "Tuesday, October 13, 2026 at 12:00:00 AM",
-        "short": "Oct 13, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -966,7 +898,6 @@
       "output": {
         "relative": "Today, 12:00 PM",
         "exact": "Tuesday, October 13, 2026 at 12:00:00 PM",
-        "short": "Oct 13, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -980,7 +911,6 @@
       "output": {
         "relative": "Sun, 11:59 PM",
         "exact": "Sunday, October 11, 2026 at 11:59:59 PM",
-        "short": "Oct 11, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -994,7 +924,6 @@
       "output": {
         "relative": "Yesterday, 12:00 AM",
         "exact": "Monday, October 12, 2026 at 12:00:00 AM",
-        "short": "Oct 12, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1008,7 +937,6 @@
       "output": {
         "relative": "Yesterday, 12:00 PM",
         "exact": "Monday, October 12, 2026 at 12:00:00 PM",
-        "short": "Oct 12, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1022,7 +950,6 @@
       "output": {
         "relative": "Sat, 11:59 PM",
         "exact": "Saturday, October 10, 2026 at 11:59:59 PM",
-        "short": "Oct 10, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1036,7 +963,6 @@
       "output": {
         "relative": "Sun, 12:00 AM",
         "exact": "Sunday, October 11, 2026 at 12:00:00 AM",
-        "short": "Oct 11, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1050,7 +976,6 @@
       "output": {
         "relative": "Sun, 12:00 PM",
         "exact": "Sunday, October 11, 2026 at 12:00:00 PM",
-        "short": "Oct 11, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1064,7 +989,6 @@
       "output": {
         "relative": "Fri, 11:59 PM",
         "exact": "Friday, October 9, 2026 at 11:59:59 PM",
-        "short": "Oct 9, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1078,7 +1002,6 @@
       "output": {
         "relative": "Sat, 12:00 AM",
         "exact": "Saturday, October 10, 2026 at 12:00:00 AM",
-        "short": "Oct 10, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1092,7 +1015,6 @@
       "output": {
         "relative": "Sat, 12:00 PM",
         "exact": "Saturday, October 10, 2026 at 12:00:00 PM",
-        "short": "Oct 10, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1106,7 +1028,6 @@
       "output": {
         "relative": "Thu, 11:59 PM",
         "exact": "Thursday, October 8, 2026 at 11:59:59 PM",
-        "short": "Oct 8, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1120,7 +1041,6 @@
       "output": {
         "relative": "Fri, 12:00 AM",
         "exact": "Friday, October 9, 2026 at 12:00:00 AM",
-        "short": "Oct 9, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1134,7 +1054,6 @@
       "output": {
         "relative": "Fri, 12:00 PM",
         "exact": "Friday, October 9, 2026 at 12:00:00 PM",
-        "short": "Oct 9, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1148,7 +1067,6 @@
       "output": {
         "relative": "Wed, 11:59 PM",
         "exact": "Wednesday, October 7, 2026 at 11:59:59 PM",
-        "short": "Oct 7, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1162,7 +1080,6 @@
       "output": {
         "relative": "Thu, 12:00 AM",
         "exact": "Thursday, October 8, 2026 at 12:00:00 AM",
-        "short": "Oct 8, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1176,7 +1093,6 @@
       "output": {
         "relative": "Thu, 12:00 PM",
         "exact": "Thursday, October 8, 2026 at 12:00:00 PM",
-        "short": "Oct 8, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1190,7 +1106,6 @@
       "output": {
         "relative": "Oct 6, 11:59 PM",
         "exact": "Tuesday, October 6, 2026 at 11:59:59 PM",
-        "short": "Oct 6, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1204,7 +1119,6 @@
       "output": {
         "relative": "Wed, 12:00 AM",
         "exact": "Wednesday, October 7, 2026 at 12:00:00 AM",
-        "short": "Oct 7, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1218,7 +1132,6 @@
       "output": {
         "relative": "Wed, 12:00 PM",
         "exact": "Wednesday, October 7, 2026 at 12:00:00 PM",
-        "short": "Oct 7, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1232,7 +1145,6 @@
       "output": {
         "relative": "Oct 5, 11:59 PM",
         "exact": "Monday, October 5, 2026 at 11:59:59 PM",
-        "short": "Oct 5, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1246,7 +1158,6 @@
       "output": {
         "relative": "Oct 6, 12:00 AM",
         "exact": "Tuesday, October 6, 2026 at 12:00:00 AM",
-        "short": "Oct 6, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1260,7 +1171,6 @@
       "output": {
         "relative": "Oct 6, 12:00 PM",
         "exact": "Tuesday, October 6, 2026 at 12:00:00 PM",
-        "short": "Oct 6, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1274,7 +1184,6 @@
       "output": {
         "relative": "Oct 4, 11:59 PM",
         "exact": "Sunday, October 4, 2026 at 11:59:59 PM",
-        "short": "Oct 4, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1288,7 +1197,6 @@
       "output": {
         "relative": "Oct 5, 12:00 AM",
         "exact": "Monday, October 5, 2026 at 12:00:00 AM",
-        "short": "Oct 5, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1302,7 +1210,6 @@
       "output": {
         "relative": "Oct 5, 12:00 PM",
         "exact": "Monday, October 5, 2026 at 12:00:00 PM",
-        "short": "Oct 5, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1316,7 +1223,6 @@
       "output": {
         "relative": "Oct 3, 11:59 PM",
         "exact": "Saturday, October 3, 2026 at 11:59:59 PM",
-        "short": "Oct 3, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1330,7 +1236,6 @@
       "output": {
         "relative": "Oct 4, 12:00 AM",
         "exact": "Sunday, October 4, 2026 at 12:00:00 AM",
-        "short": "Oct 4, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1344,7 +1249,6 @@
       "output": {
         "relative": "Oct 4, 12:00 PM",
         "exact": "Sunday, October 4, 2026 at 12:00:00 PM",
-        "short": "Oct 4, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1358,7 +1262,6 @@
       "output": {
         "relative": "Dec 31, 2025",
         "exact": "Wednesday, December 31, 2025 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1372,7 +1275,6 @@
       "output": {
         "relative": "Jan 1, 12:00 AM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1386,7 +1288,6 @@
       "output": {
         "relative": "Mar 9, 2026, 3:30 AM",
         "exact": "Monday, March 9, 2026 at 3:30:00 AM",
-        "short": "Mar 9, 03:30:00",
         "withinLastHour": false
       }
     },
@@ -1400,7 +1301,6 @@
       "output": {
         "relative": "Mar 9, 2026, 1:31 AM",
         "exact": "Monday, March 9, 2026 at 1:31:00 AM",
-        "short": "Mar 9, 01:31:00",
         "withinLastHour": false
       }
     },
@@ -1414,7 +1314,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:31:00 AM",
-        "short": "Mar 9, 01:31:00",
         "withinLastHour": true
       }
     },
@@ -1428,7 +1327,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:30:59 AM",
-        "short": "Mar 9, 01:30:59",
         "withinLastHour": true
       }
     },
@@ -1442,7 +1340,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:30:00 AM",
-        "short": "Mar 9, 01:30:00",
         "withinLastHour": true
       }
     },
@@ -1456,7 +1353,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:29:59 AM",
-        "short": "Mar 9, 01:29:59",
         "withinLastHour": true
       }
     },
@@ -1470,7 +1366,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:29:40 AM",
-        "short": "Mar 9, 01:29:40",
         "withinLastHour": true
       }
     },
@@ -1484,7 +1379,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:29:00 AM",
-        "short": "Mar 9, 01:29:00",
         "withinLastHour": true
       }
     },
@@ -1498,7 +1392,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Monday, March 9, 2026 at 1:29:00 AM",
-        "short": "Mar 9, 01:29:00",
         "withinLastHour": true
       }
     },
@@ -1512,7 +1405,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Monday, March 9, 2026 at 1:28:59 AM",
-        "short": "Mar 9, 01:28:59",
         "withinLastHour": true
       }
     },
@@ -1526,7 +1418,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Monday, March 9, 2026 at 1:28:00 AM",
-        "short": "Mar 9, 01:28:00",
         "withinLastHour": true
       }
     },
@@ -1540,7 +1431,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Monday, March 9, 2026 at 12:30:01 AM",
-        "short": "Mar 9, 00:30:01",
         "withinLastHour": true
       }
     },
@@ -1554,7 +1444,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Monday, March 9, 2026 at 12:30:00 AM",
-        "short": "Mar 9, 00:30:00",
         "withinLastHour": true
       }
     },
@@ -1568,7 +1457,6 @@
       "output": {
         "relative": "Today, 12:30 AM",
         "exact": "Monday, March 9, 2026 at 12:30:00 AM",
-        "short": "Mar 9, 00:30:00",
         "withinLastHour": false
       }
     },
@@ -1582,7 +1470,6 @@
       "output": {
         "relative": "Today, 12:29 AM",
         "exact": "Monday, March 9, 2026 at 12:29:59 AM",
-        "short": "Mar 9, 00:29:59",
         "withinLastHour": false
       }
     },
@@ -1596,7 +1483,6 @@
       "output": {
         "relative": "Yesterday, 10:30 PM",
         "exact": "Sunday, March 8, 2026 at 10:30:00 PM",
-        "short": "Mar 8, 22:30:00",
         "withinLastHour": false
       }
     },
@@ -1610,7 +1496,6 @@
       "output": {
         "relative": "Yesterday, 12:31 AM",
         "exact": "Sunday, March 8, 2026 at 12:31:00 AM",
-        "short": "Mar 8, 00:31:00",
         "withinLastHour": false
       }
     },
@@ -1624,7 +1509,6 @@
       "output": {
         "relative": "Yesterday, 11:59 PM",
         "exact": "Sunday, March 8, 2026 at 11:59:59 PM",
-        "short": "Mar 8, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1638,7 +1522,6 @@
       "output": {
         "relative": "Today, 12:00 AM",
         "exact": "Monday, March 9, 2026 at 12:00:00 AM",
-        "short": "Mar 9, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1652,7 +1535,6 @@
       "output": {
         "relative": "Mar 9, 2026, 12:00 PM",
         "exact": "Monday, March 9, 2026 at 12:00:00 PM",
-        "short": "Mar 9, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1666,7 +1548,6 @@
       "output": {
         "relative": "Sat, 11:59 PM",
         "exact": "Saturday, March 7, 2026 at 11:59:59 PM",
-        "short": "Mar 7, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1680,7 +1561,6 @@
       "output": {
         "relative": "Yesterday, 12:00 AM",
         "exact": "Sunday, March 8, 2026 at 12:00:00 AM",
-        "short": "Mar 8, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1694,7 +1574,6 @@
       "output": {
         "relative": "Yesterday, 1:00 PM",
         "exact": "Sunday, March 8, 2026 at 1:00:00 PM",
-        "short": "Mar 8, 13:00:00",
         "withinLastHour": false
       }
     },
@@ -1708,7 +1587,6 @@
       "output": {
         "relative": "Fri, 11:59 PM",
         "exact": "Friday, March 6, 2026 at 11:59:59 PM",
-        "short": "Mar 6, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1722,7 +1600,6 @@
       "output": {
         "relative": "Sat, 12:00 AM",
         "exact": "Saturday, March 7, 2026 at 12:00:00 AM",
-        "short": "Mar 7, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1736,7 +1613,6 @@
       "output": {
         "relative": "Sat, 12:00 PM",
         "exact": "Saturday, March 7, 2026 at 12:00:00 PM",
-        "short": "Mar 7, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1750,7 +1626,6 @@
       "output": {
         "relative": "Thu, 11:59 PM",
         "exact": "Thursday, March 5, 2026 at 11:59:59 PM",
-        "short": "Mar 5, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1764,7 +1639,6 @@
       "output": {
         "relative": "Fri, 12:00 AM",
         "exact": "Friday, March 6, 2026 at 12:00:00 AM",
-        "short": "Mar 6, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1778,7 +1652,6 @@
       "output": {
         "relative": "Fri, 12:00 PM",
         "exact": "Friday, March 6, 2026 at 12:00:00 PM",
-        "short": "Mar 6, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1792,7 +1665,6 @@
       "output": {
         "relative": "Wed, 11:59 PM",
         "exact": "Wednesday, March 4, 2026 at 11:59:59 PM",
-        "short": "Mar 4, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1806,7 +1678,6 @@
       "output": {
         "relative": "Thu, 12:00 AM",
         "exact": "Thursday, March 5, 2026 at 12:00:00 AM",
-        "short": "Mar 5, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1820,7 +1691,6 @@
       "output": {
         "relative": "Thu, 12:00 PM",
         "exact": "Thursday, March 5, 2026 at 12:00:00 PM",
-        "short": "Mar 5, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1834,7 +1704,6 @@
       "output": {
         "relative": "Tue, 11:59 PM",
         "exact": "Tuesday, March 3, 2026 at 11:59:59 PM",
-        "short": "Mar 3, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1848,7 +1717,6 @@
       "output": {
         "relative": "Wed, 12:00 AM",
         "exact": "Wednesday, March 4, 2026 at 12:00:00 AM",
-        "short": "Mar 4, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1862,7 +1730,6 @@
       "output": {
         "relative": "Wed, 12:00 PM",
         "exact": "Wednesday, March 4, 2026 at 12:00:00 PM",
-        "short": "Mar 4, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1876,7 +1743,6 @@
       "output": {
         "relative": "Mar 2, 11:59 PM",
         "exact": "Monday, March 2, 2026 at 11:59:59 PM",
-        "short": "Mar 2, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1890,7 +1756,6 @@
       "output": {
         "relative": "Tue, 12:00 AM",
         "exact": "Tuesday, March 3, 2026 at 12:00:00 AM",
-        "short": "Mar 3, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1904,7 +1769,6 @@
       "output": {
         "relative": "Tue, 12:00 PM",
         "exact": "Tuesday, March 3, 2026 at 12:00:00 PM",
-        "short": "Mar 3, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1918,7 +1782,6 @@
       "output": {
         "relative": "Mar 1, 11:59 PM",
         "exact": "Sunday, March 1, 2026 at 11:59:59 PM",
-        "short": "Mar 1, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1932,7 +1795,6 @@
       "output": {
         "relative": "Mar 2, 12:00 AM",
         "exact": "Monday, March 2, 2026 at 12:00:00 AM",
-        "short": "Mar 2, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1946,7 +1808,6 @@
       "output": {
         "relative": "Mar 2, 12:00 PM",
         "exact": "Monday, March 2, 2026 at 12:00:00 PM",
-        "short": "Mar 2, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -1960,7 +1821,6 @@
       "output": {
         "relative": "Feb 28, 11:59 PM",
         "exact": "Saturday, February 28, 2026 at 11:59:59 PM",
-        "short": "Feb 28, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -1974,7 +1834,6 @@
       "output": {
         "relative": "Mar 1, 12:00 AM",
         "exact": "Sunday, March 1, 2026 at 12:00:00 AM",
-        "short": "Mar 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -1988,7 +1847,6 @@
       "output": {
         "relative": "Mar 1, 12:00 PM",
         "exact": "Sunday, March 1, 2026 at 12:00:00 PM",
-        "short": "Mar 1, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2002,7 +1860,6 @@
       "output": {
         "relative": "Feb 27, 11:59 PM",
         "exact": "Friday, February 27, 2026 at 11:59:59 PM",
-        "short": "Feb 27, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2016,7 +1873,6 @@
       "output": {
         "relative": "Feb 28, 12:00 AM",
         "exact": "Saturday, February 28, 2026 at 12:00:00 AM",
-        "short": "Feb 28, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2030,7 +1886,6 @@
       "output": {
         "relative": "Feb 28, 12:00 PM",
         "exact": "Saturday, February 28, 2026 at 12:00:00 PM",
-        "short": "Feb 28, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2044,7 +1899,6 @@
       "output": {
         "relative": "Dec 31, 2025",
         "exact": "Wednesday, December 31, 2025 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2058,7 +1912,6 @@
       "output": {
         "relative": "Jan 1, 12:00 AM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2072,7 +1925,6 @@
       "output": {
         "relative": "Mar 8, 2026, 5:30 AM",
         "exact": "Sunday, March 8, 2026 at 5:30:00 AM",
-        "short": "Mar 8, 05:30:00",
         "withinLastHour": false
       }
     },
@@ -2086,7 +1938,6 @@
       "output": {
         "relative": "Mar 8, 2026, 3:31 AM",
         "exact": "Sunday, March 8, 2026 at 3:31:00 AM",
-        "short": "Mar 8, 03:31:00",
         "withinLastHour": false
       }
     },
@@ -2100,7 +1951,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:31:00 AM",
-        "short": "Mar 8, 03:31:00",
         "withinLastHour": true
       }
     },
@@ -2114,7 +1964,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:30:59 AM",
-        "short": "Mar 8, 03:30:59",
         "withinLastHour": true
       }
     },
@@ -2128,7 +1977,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:30:00 AM",
-        "short": "Mar 8, 03:30:00",
         "withinLastHour": true
       }
     },
@@ -2142,7 +1990,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:59 AM",
-        "short": "Mar 8, 03:29:59",
         "withinLastHour": true
       }
     },
@@ -2156,7 +2003,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:40 AM",
-        "short": "Mar 8, 03:29:40",
         "withinLastHour": true
       }
     },
@@ -2170,7 +2016,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:00 AM",
-        "short": "Mar 8, 03:29:00",
         "withinLastHour": true
       }
     },
@@ -2184,7 +2029,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Sunday, March 8, 2026 at 3:29:00 AM",
-        "short": "Mar 8, 03:29:00",
         "withinLastHour": true
       }
     },
@@ -2198,7 +2042,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Sunday, March 8, 2026 at 3:28:59 AM",
-        "short": "Mar 8, 03:28:59",
         "withinLastHour": true
       }
     },
@@ -2212,7 +2055,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Sunday, March 8, 2026 at 3:28:00 AM",
-        "short": "Mar 8, 03:28:00",
         "withinLastHour": true
       }
     },
@@ -2226,7 +2068,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Sunday, March 8, 2026 at 1:30:01 AM",
-        "short": "Mar 8, 01:30:01",
         "withinLastHour": true
       }
     },
@@ -2240,7 +2081,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Sunday, March 8, 2026 at 1:30:00 AM",
-        "short": "Mar 8, 01:30:00",
         "withinLastHour": true
       }
     },
@@ -2254,7 +2094,6 @@
       "output": {
         "relative": "Today, 1:30 AM",
         "exact": "Sunday, March 8, 2026 at 1:30:00 AM",
-        "short": "Mar 8, 01:30:00",
         "withinLastHour": false
       }
     },
@@ -2268,7 +2107,6 @@
       "output": {
         "relative": "Today, 1:29 AM",
         "exact": "Sunday, March 8, 2026 at 1:29:59 AM",
-        "short": "Mar 8, 01:29:59",
         "withinLastHour": false
       }
     },
@@ -2282,7 +2120,6 @@
       "output": {
         "relative": "Yesterday, 11:30 PM",
         "exact": "Saturday, March 7, 2026 at 11:30:00 PM",
-        "short": "Mar 7, 23:30:00",
         "withinLastHour": false
       }
     },
@@ -2296,7 +2133,6 @@
       "output": {
         "relative": "Yesterday, 2:31 AM",
         "exact": "Saturday, March 7, 2026 at 2:31:00 AM",
-        "short": "Mar 7, 02:31:00",
         "withinLastHour": false
       }
     },
@@ -2310,7 +2146,6 @@
       "output": {
         "relative": "Yesterday, 11:59 PM",
         "exact": "Saturday, March 7, 2026 at 11:59:59 PM",
-        "short": "Mar 7, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2324,7 +2159,6 @@
       "output": {
         "relative": "Today, 12:00 AM",
         "exact": "Sunday, March 8, 2026 at 12:00:00 AM",
-        "short": "Mar 8, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2338,7 +2172,6 @@
       "output": {
         "relative": "Mar 8, 2026, 1:00 PM",
         "exact": "Sunday, March 8, 2026 at 1:00:00 PM",
-        "short": "Mar 8, 13:00:00",
         "withinLastHour": false
       }
     },
@@ -2352,7 +2185,6 @@
       "output": {
         "relative": "Fri, 11:59 PM",
         "exact": "Friday, March 6, 2026 at 11:59:59 PM",
-        "short": "Mar 6, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2366,7 +2198,6 @@
       "output": {
         "relative": "Yesterday, 12:00 AM",
         "exact": "Saturday, March 7, 2026 at 12:00:00 AM",
-        "short": "Mar 7, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2380,7 +2211,6 @@
       "output": {
         "relative": "Yesterday, 12:00 PM",
         "exact": "Saturday, March 7, 2026 at 12:00:00 PM",
-        "short": "Mar 7, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2394,7 +2224,6 @@
       "output": {
         "relative": "Thu, 11:59 PM",
         "exact": "Thursday, March 5, 2026 at 11:59:59 PM",
-        "short": "Mar 5, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2408,7 +2237,6 @@
       "output": {
         "relative": "Fri, 12:00 AM",
         "exact": "Friday, March 6, 2026 at 12:00:00 AM",
-        "short": "Mar 6, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2422,7 +2250,6 @@
       "output": {
         "relative": "Fri, 12:00 PM",
         "exact": "Friday, March 6, 2026 at 12:00:00 PM",
-        "short": "Mar 6, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2436,7 +2263,6 @@
       "output": {
         "relative": "Wed, 11:59 PM",
         "exact": "Wednesday, March 4, 2026 at 11:59:59 PM",
-        "short": "Mar 4, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2450,7 +2276,6 @@
       "output": {
         "relative": "Thu, 12:00 AM",
         "exact": "Thursday, March 5, 2026 at 12:00:00 AM",
-        "short": "Mar 5, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2464,7 +2289,6 @@
       "output": {
         "relative": "Thu, 12:00 PM",
         "exact": "Thursday, March 5, 2026 at 12:00:00 PM",
-        "short": "Mar 5, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2478,7 +2302,6 @@
       "output": {
         "relative": "Tue, 11:59 PM",
         "exact": "Tuesday, March 3, 2026 at 11:59:59 PM",
-        "short": "Mar 3, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2492,7 +2315,6 @@
       "output": {
         "relative": "Wed, 12:00 AM",
         "exact": "Wednesday, March 4, 2026 at 12:00:00 AM",
-        "short": "Mar 4, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2506,7 +2328,6 @@
       "output": {
         "relative": "Wed, 12:00 PM",
         "exact": "Wednesday, March 4, 2026 at 12:00:00 PM",
-        "short": "Mar 4, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2520,7 +2341,6 @@
       "output": {
         "relative": "Mon, 11:59 PM",
         "exact": "Monday, March 2, 2026 at 11:59:59 PM",
-        "short": "Mar 2, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2534,7 +2354,6 @@
       "output": {
         "relative": "Tue, 12:00 AM",
         "exact": "Tuesday, March 3, 2026 at 12:00:00 AM",
-        "short": "Mar 3, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2548,7 +2367,6 @@
       "output": {
         "relative": "Tue, 12:00 PM",
         "exact": "Tuesday, March 3, 2026 at 12:00:00 PM",
-        "short": "Mar 3, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2562,7 +2380,6 @@
       "output": {
         "relative": "Mar 1, 11:59 PM",
         "exact": "Sunday, March 1, 2026 at 11:59:59 PM",
-        "short": "Mar 1, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2576,7 +2393,6 @@
       "output": {
         "relative": "Mon, 12:00 AM",
         "exact": "Monday, March 2, 2026 at 12:00:00 AM",
-        "short": "Mar 2, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2590,7 +2406,6 @@
       "output": {
         "relative": "Mon, 12:00 PM",
         "exact": "Monday, March 2, 2026 at 12:00:00 PM",
-        "short": "Mar 2, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2604,7 +2419,6 @@
       "output": {
         "relative": "Feb 28, 11:59 PM",
         "exact": "Saturday, February 28, 2026 at 11:59:59 PM",
-        "short": "Feb 28, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2618,7 +2432,6 @@
       "output": {
         "relative": "Mar 1, 12:00 AM",
         "exact": "Sunday, March 1, 2026 at 12:00:00 AM",
-        "short": "Mar 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2632,7 +2445,6 @@
       "output": {
         "relative": "Mar 1, 12:00 PM",
         "exact": "Sunday, March 1, 2026 at 12:00:00 PM",
-        "short": "Mar 1, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2646,7 +2458,6 @@
       "output": {
         "relative": "Feb 27, 11:59 PM",
         "exact": "Friday, February 27, 2026 at 11:59:59 PM",
-        "short": "Feb 27, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2660,7 +2471,6 @@
       "output": {
         "relative": "Feb 28, 12:00 AM",
         "exact": "Saturday, February 28, 2026 at 12:00:00 AM",
-        "short": "Feb 28, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2674,7 +2484,6 @@
       "output": {
         "relative": "Feb 28, 12:00 PM",
         "exact": "Saturday, February 28, 2026 at 12:00:00 PM",
-        "short": "Feb 28, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2688,7 +2497,6 @@
       "output": {
         "relative": "Feb 26, 11:59 PM",
         "exact": "Thursday, February 26, 2026 at 11:59:59 PM",
-        "short": "Feb 26, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2702,7 +2510,6 @@
       "output": {
         "relative": "Feb 27, 12:00 AM",
         "exact": "Friday, February 27, 2026 at 12:00:00 AM",
-        "short": "Feb 27, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2716,7 +2523,6 @@
       "output": {
         "relative": "Feb 27, 12:00 PM",
         "exact": "Friday, February 27, 2026 at 12:00:00 PM",
-        "short": "Feb 27, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2730,7 +2536,6 @@
       "output": {
         "relative": "Dec 31, 2025",
         "exact": "Wednesday, December 31, 2025 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -2744,7 +2549,6 @@
       "output": {
         "relative": "Jan 1, 12:00 AM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -2758,7 +2562,6 @@
       "output": {
         "relative": "Nov 2, 2026, 12:00 PM",
         "exact": "Monday, November 2, 2026 at 12:00:00 PM",
-        "short": "Nov 2, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -2772,7 +2575,6 @@
       "output": {
         "relative": "Nov 2, 2026, 10:01 AM",
         "exact": "Monday, November 2, 2026 at 10:01:00 AM",
-        "short": "Nov 2, 10:01:00",
         "withinLastHour": false
       }
     },
@@ -2786,7 +2588,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 10:01:00 AM",
-        "short": "Nov 2, 10:01:00",
         "withinLastHour": true
       }
     },
@@ -2800,7 +2601,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 10:00:59 AM",
-        "short": "Nov 2, 10:00:59",
         "withinLastHour": true
       }
     },
@@ -2814,7 +2614,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 10:00:00 AM",
-        "short": "Nov 2, 10:00:00",
         "withinLastHour": true
       }
     },
@@ -2828,7 +2627,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 9:59:59 AM",
-        "short": "Nov 2, 09:59:59",
         "withinLastHour": true
       }
     },
@@ -2842,7 +2640,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 9:59:40 AM",
-        "short": "Nov 2, 09:59:40",
         "withinLastHour": true
       }
     },
@@ -2856,7 +2653,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 9:59:00 AM",
-        "short": "Nov 2, 09:59:00",
         "withinLastHour": true
       }
     },
@@ -2870,7 +2666,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Monday, November 2, 2026 at 9:59:00 AM",
-        "short": "Nov 2, 09:59:00",
         "withinLastHour": true
       }
     },
@@ -2884,7 +2679,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Monday, November 2, 2026 at 9:58:59 AM",
-        "short": "Nov 2, 09:58:59",
         "withinLastHour": true
       }
     },
@@ -2898,7 +2692,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Monday, November 2, 2026 at 9:58:00 AM",
-        "short": "Nov 2, 09:58:00",
         "withinLastHour": true
       }
     },
@@ -2912,7 +2705,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Monday, November 2, 2026 at 9:00:01 AM",
-        "short": "Nov 2, 09:00:01",
         "withinLastHour": true
       }
     },
@@ -2926,7 +2718,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Monday, November 2, 2026 at 9:00:00 AM",
-        "short": "Nov 2, 09:00:00",
         "withinLastHour": true
       }
     },
@@ -2940,7 +2731,6 @@
       "output": {
         "relative": "Today, 9:00 AM",
         "exact": "Monday, November 2, 2026 at 9:00:00 AM",
-        "short": "Nov 2, 09:00:00",
         "withinLastHour": false
       }
     },
@@ -2954,7 +2744,6 @@
       "output": {
         "relative": "Today, 8:59 AM",
         "exact": "Monday, November 2, 2026 at 8:59:59 AM",
-        "short": "Nov 2, 08:59:59",
         "withinLastHour": false
       }
     },
@@ -2968,7 +2757,6 @@
       "output": {
         "relative": "Today, 7:00 AM",
         "exact": "Monday, November 2, 2026 at 7:00:00 AM",
-        "short": "Nov 2, 07:00:00",
         "withinLastHour": false
       }
     },
@@ -2982,7 +2770,6 @@
       "output": {
         "relative": "Yesterday, 10:01 AM",
         "exact": "Sunday, November 1, 2026 at 10:01:00 AM",
-        "short": "Nov 1, 10:01:00",
         "withinLastHour": false
       }
     },
@@ -2996,7 +2783,6 @@
       "output": {
         "relative": "Yesterday, 11:59 PM",
         "exact": "Sunday, November 1, 2026 at 11:59:59 PM",
-        "short": "Nov 1, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3010,7 +2796,6 @@
       "output": {
         "relative": "Today, 12:00 AM",
         "exact": "Monday, November 2, 2026 at 12:00:00 AM",
-        "short": "Nov 2, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3024,7 +2809,6 @@
       "output": {
         "relative": "Sat, 11:59 PM",
         "exact": "Saturday, October 31, 2026 at 11:59:59 PM",
-        "short": "Oct 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3038,7 +2822,6 @@
       "output": {
         "relative": "Yesterday, 12:00 AM",
         "exact": "Sunday, November 1, 2026 at 12:00:00 AM",
-        "short": "Nov 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3052,7 +2835,6 @@
       "output": {
         "relative": "Yesterday, 11:00 AM",
         "exact": "Sunday, November 1, 2026 at 11:00:00 AM",
-        "short": "Nov 1, 11:00:00",
         "withinLastHour": false
       }
     },
@@ -3066,7 +2848,6 @@
       "output": {
         "relative": "Fri, 11:59 PM",
         "exact": "Friday, October 30, 2026 at 11:59:59 PM",
-        "short": "Oct 30, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3080,7 +2861,6 @@
       "output": {
         "relative": "Sat, 12:00 AM",
         "exact": "Saturday, October 31, 2026 at 12:00:00 AM",
-        "short": "Oct 31, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3094,7 +2874,6 @@
       "output": {
         "relative": "Sat, 12:00 PM",
         "exact": "Saturday, October 31, 2026 at 12:00:00 PM",
-        "short": "Oct 31, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3108,7 +2887,6 @@
       "output": {
         "relative": "Thu, 11:59 PM",
         "exact": "Thursday, October 29, 2026 at 11:59:59 PM",
-        "short": "Oct 29, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3122,7 +2900,6 @@
       "output": {
         "relative": "Fri, 12:00 AM",
         "exact": "Friday, October 30, 2026 at 12:00:00 AM",
-        "short": "Oct 30, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3136,7 +2913,6 @@
       "output": {
         "relative": "Fri, 12:00 PM",
         "exact": "Friday, October 30, 2026 at 12:00:00 PM",
-        "short": "Oct 30, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3150,7 +2926,6 @@
       "output": {
         "relative": "Wed, 11:59 PM",
         "exact": "Wednesday, October 28, 2026 at 11:59:59 PM",
-        "short": "Oct 28, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3164,7 +2939,6 @@
       "output": {
         "relative": "Thu, 12:00 AM",
         "exact": "Thursday, October 29, 2026 at 12:00:00 AM",
-        "short": "Oct 29, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3178,7 +2952,6 @@
       "output": {
         "relative": "Thu, 12:00 PM",
         "exact": "Thursday, October 29, 2026 at 12:00:00 PM",
-        "short": "Oct 29, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3192,7 +2965,6 @@
       "output": {
         "relative": "Tue, 11:59 PM",
         "exact": "Tuesday, October 27, 2026 at 11:59:59 PM",
-        "short": "Oct 27, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3206,7 +2978,6 @@
       "output": {
         "relative": "Wed, 12:00 AM",
         "exact": "Wednesday, October 28, 2026 at 12:00:00 AM",
-        "short": "Oct 28, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3220,7 +2991,6 @@
       "output": {
         "relative": "Wed, 12:00 PM",
         "exact": "Wednesday, October 28, 2026 at 12:00:00 PM",
-        "short": "Oct 28, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3234,7 +3004,6 @@
       "output": {
         "relative": "Oct 26, 11:59 PM",
         "exact": "Monday, October 26, 2026 at 11:59:59 PM",
-        "short": "Oct 26, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3248,7 +3017,6 @@
       "output": {
         "relative": "Tue, 12:00 AM",
         "exact": "Tuesday, October 27, 2026 at 12:00:00 AM",
-        "short": "Oct 27, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3262,7 +3030,6 @@
       "output": {
         "relative": "Tue, 12:00 PM",
         "exact": "Tuesday, October 27, 2026 at 12:00:00 PM",
-        "short": "Oct 27, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3276,7 +3043,6 @@
       "output": {
         "relative": "Oct 25, 11:59 PM",
         "exact": "Sunday, October 25, 2026 at 11:59:59 PM",
-        "short": "Oct 25, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3290,7 +3056,6 @@
       "output": {
         "relative": "Oct 26, 12:00 AM",
         "exact": "Monday, October 26, 2026 at 12:00:00 AM",
-        "short": "Oct 26, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3304,7 +3069,6 @@
       "output": {
         "relative": "Oct 26, 12:00 PM",
         "exact": "Monday, October 26, 2026 at 12:00:00 PM",
-        "short": "Oct 26, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3318,7 +3082,6 @@
       "output": {
         "relative": "Oct 24, 11:59 PM",
         "exact": "Saturday, October 24, 2026 at 11:59:59 PM",
-        "short": "Oct 24, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3332,7 +3095,6 @@
       "output": {
         "relative": "Oct 25, 12:00 AM",
         "exact": "Sunday, October 25, 2026 at 12:00:00 AM",
-        "short": "Oct 25, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3346,7 +3108,6 @@
       "output": {
         "relative": "Oct 25, 12:00 PM",
         "exact": "Sunday, October 25, 2026 at 12:00:00 PM",
-        "short": "Oct 25, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3360,7 +3121,6 @@
       "output": {
         "relative": "Oct 23, 11:59 PM",
         "exact": "Friday, October 23, 2026 at 11:59:59 PM",
-        "short": "Oct 23, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3374,7 +3134,6 @@
       "output": {
         "relative": "Oct 24, 12:00 AM",
         "exact": "Saturday, October 24, 2026 at 12:00:00 AM",
-        "short": "Oct 24, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3388,7 +3147,6 @@
       "output": {
         "relative": "Oct 24, 12:00 PM",
         "exact": "Saturday, October 24, 2026 at 12:00:00 PM",
-        "short": "Oct 24, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3402,7 +3160,6 @@
       "output": {
         "relative": "Dec 31, 2025",
         "exact": "Wednesday, December 31, 2025 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3416,7 +3173,6 @@
       "output": {
         "relative": "Jan 1, 12:00 AM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3430,7 +3186,6 @@
       "output": {
         "relative": "Jan 2, 2026, 2:05 AM",
         "exact": "Friday, January 2, 2026 at 2:05:00 AM",
-        "short": "Jan 2, 02:05:00",
         "withinLastHour": false
       }
     },
@@ -3444,7 +3199,6 @@
       "output": {
         "relative": "Jan 2, 2026, 12:06 AM",
         "exact": "Friday, January 2, 2026 at 12:06:00 AM",
-        "short": "Jan 2, 00:06:00",
         "withinLastHour": false
       }
     },
@@ -3458,7 +3212,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:06:00 AM",
-        "short": "Jan 2, 00:06:00",
         "withinLastHour": true
       }
     },
@@ -3472,7 +3225,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:05:59 AM",
-        "short": "Jan 2, 00:05:59",
         "withinLastHour": true
       }
     },
@@ -3486,7 +3238,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:05:00 AM",
-        "short": "Jan 2, 00:05:00",
         "withinLastHour": true
       }
     },
@@ -3500,7 +3251,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:59 AM",
-        "short": "Jan 2, 00:04:59",
         "withinLastHour": true
       }
     },
@@ -3514,7 +3264,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:40 AM",
-        "short": "Jan 2, 00:04:40",
         "withinLastHour": true
       }
     },
@@ -3528,7 +3277,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:00 AM",
-        "short": "Jan 2, 00:04:00",
         "withinLastHour": true
       }
     },
@@ -3542,7 +3290,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Friday, January 2, 2026 at 12:04:00 AM",
-        "short": "Jan 2, 00:04:00",
         "withinLastHour": true
       }
     },
@@ -3556,7 +3303,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Friday, January 2, 2026 at 12:03:59 AM",
-        "short": "Jan 2, 00:03:59",
         "withinLastHour": true
       }
     },
@@ -3570,7 +3316,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Friday, January 2, 2026 at 12:03:00 AM",
-        "short": "Jan 2, 00:03:00",
         "withinLastHour": true
       }
     },
@@ -3584,7 +3329,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Thursday, January 1, 2026 at 11:05:01 PM",
-        "short": "Jan 1, 23:05:01",
         "withinLastHour": true
       }
     },
@@ -3598,7 +3342,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Thursday, January 1, 2026 at 11:05:00 PM",
-        "short": "Jan 1, 23:05:00",
         "withinLastHour": true
       }
     },
@@ -3612,7 +3355,6 @@
       "output": {
         "relative": "Yesterday, 11:05 PM",
         "exact": "Thursday, January 1, 2026 at 11:05:00 PM",
-        "short": "Jan 1, 23:05:00",
         "withinLastHour": false
       }
     },
@@ -3626,7 +3368,6 @@
       "output": {
         "relative": "Yesterday, 11:04 PM",
         "exact": "Thursday, January 1, 2026 at 11:04:59 PM",
-        "short": "Jan 1, 23:04:59",
         "withinLastHour": false
       }
     },
@@ -3640,7 +3381,6 @@
       "output": {
         "relative": "Yesterday, 9:05 PM",
         "exact": "Thursday, January 1, 2026 at 9:05:00 PM",
-        "short": "Jan 1, 21:05:00",
         "withinLastHour": false
       }
     },
@@ -3654,7 +3394,6 @@
       "output": {
         "relative": "Yesterday, 12:06 AM",
         "exact": "Thursday, January 1, 2026 at 12:06:00 AM",
-        "short": "Jan 1, 00:06:00",
         "withinLastHour": false
       }
     },
@@ -3668,7 +3407,6 @@
       "output": {
         "relative": "5 min ago",
         "exact": "Thursday, January 1, 2026 at 11:59:59 PM",
-        "short": "Jan 1, 23:59:59",
         "withinLastHour": true
       }
     },
@@ -3682,7 +3420,6 @@
       "output": {
         "relative": "5 min ago",
         "exact": "Friday, January 2, 2026 at 12:00:00 AM",
-        "short": "Jan 2, 00:00:00",
         "withinLastHour": true
       }
     },
@@ -3696,7 +3433,6 @@
       "output": {
         "relative": "Jan 2, 2026, 12:00 PM",
         "exact": "Friday, January 2, 2026 at 12:00:00 PM",
-        "short": "Jan 2, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3710,7 +3446,6 @@
       "output": {
         "relative": "Wed, 11:59 PM",
         "exact": "Wednesday, December 31, 2025 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3724,7 +3459,6 @@
       "output": {
         "relative": "Yesterday, 12:00 AM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3738,7 +3472,6 @@
       "output": {
         "relative": "Yesterday, 12:00 PM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 PM",
-        "short": "Jan 1, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3752,7 +3485,6 @@
       "output": {
         "relative": "Tue, 11:59 PM",
         "exact": "Tuesday, December 30, 2025 at 11:59:59 PM",
-        "short": "Dec 30, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3766,7 +3498,6 @@
       "output": {
         "relative": "Wed, 12:00 AM",
         "exact": "Wednesday, December 31, 2025 at 12:00:00 AM",
-        "short": "Dec 31, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3780,7 +3511,6 @@
       "output": {
         "relative": "Wed, 12:00 PM",
         "exact": "Wednesday, December 31, 2025 at 12:00:00 PM",
-        "short": "Dec 31, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3794,7 +3524,6 @@
       "output": {
         "relative": "Mon, 11:59 PM",
         "exact": "Monday, December 29, 2025 at 11:59:59 PM",
-        "short": "Dec 29, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3808,7 +3537,6 @@
       "output": {
         "relative": "Tue, 12:00 AM",
         "exact": "Tuesday, December 30, 2025 at 12:00:00 AM",
-        "short": "Dec 30, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3822,7 +3550,6 @@
       "output": {
         "relative": "Tue, 12:00 PM",
         "exact": "Tuesday, December 30, 2025 at 12:00:00 PM",
-        "short": "Dec 30, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3836,7 +3563,6 @@
       "output": {
         "relative": "Sun, 11:59 PM",
         "exact": "Sunday, December 28, 2025 at 11:59:59 PM",
-        "short": "Dec 28, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3850,7 +3576,6 @@
       "output": {
         "relative": "Mon, 12:00 AM",
         "exact": "Monday, December 29, 2025 at 12:00:00 AM",
-        "short": "Dec 29, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3864,7 +3589,6 @@
       "output": {
         "relative": "Mon, 12:00 PM",
         "exact": "Monday, December 29, 2025 at 12:00:00 PM",
-        "short": "Dec 29, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3878,7 +3602,6 @@
       "output": {
         "relative": "Sat, 11:59 PM",
         "exact": "Saturday, December 27, 2025 at 11:59:59 PM",
-        "short": "Dec 27, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3892,7 +3615,6 @@
       "output": {
         "relative": "Sun, 12:00 AM",
         "exact": "Sunday, December 28, 2025 at 12:00:00 AM",
-        "short": "Dec 28, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3906,7 +3628,6 @@
       "output": {
         "relative": "Sun, 12:00 PM",
         "exact": "Sunday, December 28, 2025 at 12:00:00 PM",
-        "short": "Dec 28, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3920,7 +3641,6 @@
       "output": {
         "relative": "Dec 26, 2025",
         "exact": "Friday, December 26, 2025 at 11:59:59 PM",
-        "short": "Dec 26, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3934,7 +3654,6 @@
       "output": {
         "relative": "Sat, 12:00 AM",
         "exact": "Saturday, December 27, 2025 at 12:00:00 AM",
-        "short": "Dec 27, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3948,7 +3667,6 @@
       "output": {
         "relative": "Sat, 12:00 PM",
         "exact": "Saturday, December 27, 2025 at 12:00:00 PM",
-        "short": "Dec 27, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -3962,7 +3680,6 @@
       "output": {
         "relative": "Dec 25, 2025",
         "exact": "Thursday, December 25, 2025 at 11:59:59 PM",
-        "short": "Dec 25, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -3976,7 +3693,6 @@
       "output": {
         "relative": "Dec 26, 2025",
         "exact": "Friday, December 26, 2025 at 12:00:00 AM",
-        "short": "Dec 26, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -3990,7 +3706,6 @@
       "output": {
         "relative": "Dec 26, 2025",
         "exact": "Friday, December 26, 2025 at 12:00:00 PM",
-        "short": "Dec 26, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4004,7 +3719,6 @@
       "output": {
         "relative": "Dec 24, 2025",
         "exact": "Wednesday, December 24, 2025 at 11:59:59 PM",
-        "short": "Dec 24, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4018,7 +3732,6 @@
       "output": {
         "relative": "Dec 25, 2025",
         "exact": "Thursday, December 25, 2025 at 12:00:00 AM",
-        "short": "Dec 25, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4032,7 +3745,6 @@
       "output": {
         "relative": "Dec 25, 2025",
         "exact": "Thursday, December 25, 2025 at 12:00:00 PM",
-        "short": "Dec 25, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4046,7 +3758,6 @@
       "output": {
         "relative": "Dec 23, 2025",
         "exact": "Tuesday, December 23, 2025 at 11:59:59 PM",
-        "short": "Dec 23, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4060,7 +3771,6 @@
       "output": {
         "relative": "Dec 24, 2025",
         "exact": "Wednesday, December 24, 2025 at 12:00:00 AM",
-        "short": "Dec 24, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4074,7 +3784,6 @@
       "output": {
         "relative": "Dec 24, 2025",
         "exact": "Wednesday, December 24, 2025 at 12:00:00 PM",
-        "short": "Dec 24, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4088,7 +3797,6 @@
       "output": {
         "relative": "Jan 1, 2027, 1:59 AM",
         "exact": "Friday, January 1, 2027 at 1:59:00 AM",
-        "short": "Jan 1, 01:59:00",
         "withinLastHour": false
       }
     },
@@ -4102,7 +3810,6 @@
       "output": {
         "relative": "Jan 1, 2027, 12:00 AM",
         "exact": "Friday, January 1, 2027 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4116,7 +3823,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 1, 2027 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": true
       }
     },
@@ -4130,7 +3836,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": true
       }
     },
@@ -4144,7 +3849,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:59:00 PM",
-        "short": "Dec 31, 23:59:00",
         "withinLastHour": true
       }
     },
@@ -4158,7 +3862,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:58:59 PM",
-        "short": "Dec 31, 23:58:59",
         "withinLastHour": true
       }
     },
@@ -4172,7 +3875,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:58:40 PM",
-        "short": "Dec 31, 23:58:40",
         "withinLastHour": true
       }
     },
@@ -4186,7 +3888,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:58:00 PM",
-        "short": "Dec 31, 23:58:00",
         "withinLastHour": true
       }
     },
@@ -4200,7 +3901,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, December 31, 2026 at 11:58:00 PM",
-        "short": "Dec 31, 23:58:00",
         "withinLastHour": true
       }
     },
@@ -4214,7 +3914,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, December 31, 2026 at 11:57:59 PM",
-        "short": "Dec 31, 23:57:59",
         "withinLastHour": true
       }
     },
@@ -4228,7 +3927,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Thursday, December 31, 2026 at 11:57:00 PM",
-        "short": "Dec 31, 23:57:00",
         "withinLastHour": true
       }
     },
@@ -4242,7 +3940,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Thursday, December 31, 2026 at 10:59:01 PM",
-        "short": "Dec 31, 22:59:01",
         "withinLastHour": true
       }
     },
@@ -4256,7 +3953,6 @@
       "output": {
         "relative": "59 min ago",
         "exact": "Thursday, December 31, 2026 at 10:59:00 PM",
-        "short": "Dec 31, 22:59:00",
         "withinLastHour": true
       }
     },
@@ -4270,7 +3966,6 @@
       "output": {
         "relative": "Today, 10:59 PM",
         "exact": "Thursday, December 31, 2026 at 10:59:00 PM",
-        "short": "Dec 31, 22:59:00",
         "withinLastHour": false
       }
     },
@@ -4284,7 +3979,6 @@
       "output": {
         "relative": "Today, 10:58 PM",
         "exact": "Thursday, December 31, 2026 at 10:58:59 PM",
-        "short": "Dec 31, 22:58:59",
         "withinLastHour": false
       }
     },
@@ -4298,7 +3992,6 @@
       "output": {
         "relative": "Today, 8:59 PM",
         "exact": "Thursday, December 31, 2026 at 8:59:00 PM",
-        "short": "Dec 31, 20:59:00",
         "withinLastHour": false
       }
     },
@@ -4312,7 +4005,6 @@
       "output": {
         "relative": "Today, 12:00 AM",
         "exact": "Thursday, December 31, 2026 at 12:00:00 AM",
-        "short": "Dec 31, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4326,7 +4018,6 @@
       "output": {
         "relative": "Yesterday, 11:59 PM",
         "exact": "Wednesday, December 30, 2026 at 11:59:59 PM",
-        "short": "Dec 30, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4340,7 +4031,6 @@
       "output": {
         "relative": "Today, 12:00 PM",
         "exact": "Thursday, December 31, 2026 at 12:00:00 PM",
-        "short": "Dec 31, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4354,7 +4044,6 @@
       "output": {
         "relative": "Tue, 11:59 PM",
         "exact": "Tuesday, December 29, 2026 at 11:59:59 PM",
-        "short": "Dec 29, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4368,7 +4057,6 @@
       "output": {
         "relative": "Yesterday, 12:00 AM",
         "exact": "Wednesday, December 30, 2026 at 12:00:00 AM",
-        "short": "Dec 30, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4382,7 +4070,6 @@
       "output": {
         "relative": "Yesterday, 12:00 PM",
         "exact": "Wednesday, December 30, 2026 at 12:00:00 PM",
-        "short": "Dec 30, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4396,7 +4083,6 @@
       "output": {
         "relative": "Mon, 11:59 PM",
         "exact": "Monday, December 28, 2026 at 11:59:59 PM",
-        "short": "Dec 28, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4410,7 +4096,6 @@
       "output": {
         "relative": "Tue, 12:00 AM",
         "exact": "Tuesday, December 29, 2026 at 12:00:00 AM",
-        "short": "Dec 29, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4424,7 +4109,6 @@
       "output": {
         "relative": "Tue, 12:00 PM",
         "exact": "Tuesday, December 29, 2026 at 12:00:00 PM",
-        "short": "Dec 29, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4438,7 +4122,6 @@
       "output": {
         "relative": "Sun, 11:59 PM",
         "exact": "Sunday, December 27, 2026 at 11:59:59 PM",
-        "short": "Dec 27, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4452,7 +4135,6 @@
       "output": {
         "relative": "Mon, 12:00 AM",
         "exact": "Monday, December 28, 2026 at 12:00:00 AM",
-        "short": "Dec 28, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4466,7 +4148,6 @@
       "output": {
         "relative": "Mon, 12:00 PM",
         "exact": "Monday, December 28, 2026 at 12:00:00 PM",
-        "short": "Dec 28, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4480,7 +4161,6 @@
       "output": {
         "relative": "Sat, 11:59 PM",
         "exact": "Saturday, December 26, 2026 at 11:59:59 PM",
-        "short": "Dec 26, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4494,7 +4174,6 @@
       "output": {
         "relative": "Sun, 12:00 AM",
         "exact": "Sunday, December 27, 2026 at 12:00:00 AM",
-        "short": "Dec 27, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4508,7 +4187,6 @@
       "output": {
         "relative": "Sun, 12:00 PM",
         "exact": "Sunday, December 27, 2026 at 12:00:00 PM",
-        "short": "Dec 27, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4522,7 +4200,6 @@
       "output": {
         "relative": "Fri, 11:59 PM",
         "exact": "Friday, December 25, 2026 at 11:59:59 PM",
-        "short": "Dec 25, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4536,7 +4213,6 @@
       "output": {
         "relative": "Sat, 12:00 AM",
         "exact": "Saturday, December 26, 2026 at 12:00:00 AM",
-        "short": "Dec 26, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4550,7 +4226,6 @@
       "output": {
         "relative": "Sat, 12:00 PM",
         "exact": "Saturday, December 26, 2026 at 12:00:00 PM",
-        "short": "Dec 26, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4564,7 +4239,6 @@
       "output": {
         "relative": "Dec 24, 11:59 PM",
         "exact": "Thursday, December 24, 2026 at 11:59:59 PM",
-        "short": "Dec 24, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4578,7 +4252,6 @@
       "output": {
         "relative": "Fri, 12:00 AM",
         "exact": "Friday, December 25, 2026 at 12:00:00 AM",
-        "short": "Dec 25, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4592,7 +4265,6 @@
       "output": {
         "relative": "Fri, 12:00 PM",
         "exact": "Friday, December 25, 2026 at 12:00:00 PM",
-        "short": "Dec 25, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4606,7 +4278,6 @@
       "output": {
         "relative": "Dec 23, 11:59 PM",
         "exact": "Wednesday, December 23, 2026 at 11:59:59 PM",
-        "short": "Dec 23, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4620,7 +4291,6 @@
       "output": {
         "relative": "Dec 24, 12:00 AM",
         "exact": "Thursday, December 24, 2026 at 12:00:00 AM",
-        "short": "Dec 24, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4634,7 +4304,6 @@
       "output": {
         "relative": "Dec 24, 12:00 PM",
         "exact": "Thursday, December 24, 2026 at 12:00:00 PM",
-        "short": "Dec 24, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4648,7 +4317,6 @@
       "output": {
         "relative": "Dec 22, 11:59 PM",
         "exact": "Tuesday, December 22, 2026 at 11:59:59 PM",
-        "short": "Dec 22, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4662,7 +4330,6 @@
       "output": {
         "relative": "Dec 23, 12:00 AM",
         "exact": "Wednesday, December 23, 2026 at 12:00:00 AM",
-        "short": "Dec 23, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4676,7 +4343,6 @@
       "output": {
         "relative": "Dec 23, 12:00 PM",
         "exact": "Wednesday, December 23, 2026 at 12:00:00 PM",
-        "short": "Dec 23, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4690,7 +4356,6 @@
       "output": {
         "relative": "Dec 21, 11:59 PM",
         "exact": "Monday, December 21, 2026 at 11:59:59 PM",
-        "short": "Dec 21, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4704,7 +4369,6 @@
       "output": {
         "relative": "Dec 22, 12:00 AM",
         "exact": "Tuesday, December 22, 2026 at 12:00:00 AM",
-        "short": "Dec 22, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4718,7 +4382,6 @@
       "output": {
         "relative": "Dec 22, 12:00 PM",
         "exact": "Tuesday, December 22, 2026 at 12:00:00 PM",
-        "short": "Dec 22, 12:00:00",
         "withinLastHour": false
       }
     },
@@ -4732,7 +4395,6 @@
       "output": {
         "relative": "Dec 31, 2025",
         "exact": "Wednesday, December 31, 2025 at 11:59:59 PM",
-        "short": "Dec 31, 23:59:59",
         "withinLastHour": false
       }
     },
@@ -4746,7 +4408,6 @@
       "output": {
         "relative": "Jan 1, 12:00 AM",
         "exact": "Thursday, January 1, 2026 at 12:00:00 AM",
-        "short": "Jan 1, 00:00:00",
         "withinLastHour": false
       }
     },
@@ -4760,7 +4421,6 @@
       "output": {
         "relative": "6 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:31:53 PM",
-        "short": "Oct 13, 14:31:53",
         "withinLastHour": true
       }
     },
@@ -4774,7 +4434,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:29:57 AM",
-        "short": "Mar 9, 01:29:57",
         "withinLastHour": true
       }
     },
@@ -4788,7 +4447,6 @@
       "output": {
         "relative": "Mon, 1:48 AM",
         "exact": "Monday, December 29, 2025 at 1:48:02 AM",
-        "short": "Dec 29, 01:48:02",
         "withinLastHour": false
       }
     },
@@ -4802,7 +4460,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:55 PM",
-        "short": "Oct 1, 14:44:55",
         "withinLastHour": true
       }
     },
@@ -4816,7 +4473,6 @@
       "output": {
         "relative": "8 min ago",
         "exact": "Monday, November 2, 2026 at 9:51:54 AM",
-        "short": "Nov 2, 09:51:54",
         "withinLastHour": true
       }
     },
@@ -4830,7 +4486,6 @@
       "output": {
         "relative": "Sep 23, 10:11 AM",
         "exact": "Wednesday, September 23, 2026 at 10:11:40 AM",
-        "short": "Sep 23, 10:11:40",
         "withinLastHour": false
       }
     },
@@ -4844,7 +4499,6 @@
       "output": {
         "relative": "Thu, 3:58 PM",
         "exact": "Thursday, March 5, 2026 at 3:58:51 PM",
-        "short": "Mar 5, 15:58:51",
         "withinLastHour": false
       }
     },
@@ -4858,7 +4512,6 @@
       "output": {
         "relative": "4 min ago",
         "exact": "Monday, November 2, 2026 at 9:55:11 AM",
-        "short": "Nov 2, 09:55:11",
         "withinLastHour": true
       }
     },
@@ -4872,7 +4525,6 @@
       "output": {
         "relative": "Nov 29, 2021",
         "exact": "Monday, November 29, 2021 at 4:08:02 AM",
-        "short": "Nov 29, 04:08:02",
         "withinLastHour": false
       }
     },
@@ -4886,7 +4538,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Thursday, December 31, 2026 at 11:56:06 PM",
-        "short": "Dec 31, 23:56:06",
         "withinLastHour": true
       }
     },
@@ -4900,7 +4551,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:30:01 AM",
-        "short": "Mar 9, 01:30:01",
         "withinLastHour": true
       }
     },
@@ -4914,7 +4564,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:56 PM",
-        "short": "Oct 1, 14:44:56",
         "withinLastHour": true
       }
     },
@@ -4928,7 +4577,6 @@
       "output": {
         "relative": "5 min ago",
         "exact": "Monday, March 9, 2026 at 1:24:24 AM",
-        "short": "Mar 9, 01:24:24",
         "withinLastHour": true
       }
     },
@@ -4942,7 +4590,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, October 1, 2026 at 2:43:45 PM",
-        "short": "Oct 1, 14:43:45",
         "withinLastHour": true
       }
     },
@@ -4956,7 +4603,6 @@
       "output": {
         "relative": "Oct 26, 2:10 AM",
         "exact": "Monday, October 26, 2026 at 2:10:20 AM",
-        "short": "Oct 26, 02:10:20",
         "withinLastHour": false
       }
     },
@@ -4970,7 +4616,6 @@
       "output": {
         "relative": "Sep 9, 11:02 AM",
         "exact": "Wednesday, September 9, 2026 at 11:02:49 AM",
-        "short": "Sep 9, 11:02:49",
         "withinLastHour": false
       }
     },
@@ -4984,7 +4629,6 @@
       "output": {
         "relative": "Feb 3, 2025",
         "exact": "Monday, February 3, 2025 at 7:13:37 PM",
-        "short": "Feb 3, 19:13:37",
         "withinLastHour": false
       }
     },
@@ -4998,7 +4642,6 @@
       "output": {
         "relative": "Jan 2, 2026, 1:05 AM",
         "exact": "Friday, January 2, 2026 at 1:05:01 AM",
-        "short": "Jan 2, 01:05:01",
         "withinLastHour": false
       }
     },
@@ -5012,7 +4655,6 @@
       "output": {
         "relative": "Feb 11, 2025",
         "exact": "Tuesday, February 11, 2025 at 5:37:20 AM",
-        "short": "Feb 11, 05:37:20",
         "withinLastHour": false
       }
     },
@@ -5026,7 +4668,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, October 1, 2026 at 2:43:56 PM",
-        "short": "Oct 1, 14:43:56",
         "withinLastHour": true
       }
     },
@@ -5040,7 +4681,6 @@
       "output": {
         "relative": "Sep 23, 5:05 PM",
         "exact": "Wednesday, September 23, 2026 at 5:05:52 PM",
-        "short": "Sep 23, 17:05:52",
         "withinLastHour": false
       }
     },
@@ -5054,7 +4694,6 @@
       "output": {
         "relative": "Oct 23, 8:53 PM",
         "exact": "Friday, October 23, 2026 at 8:53:37 PM",
-        "short": "Oct 23, 20:53:37",
         "withinLastHour": false
       }
     },
@@ -5068,7 +4707,6 @@
       "output": {
         "relative": "Yesterday, 11:20 AM",
         "exact": "Sunday, March 8, 2026 at 11:20:36 AM",
-        "short": "Mar 8, 11:20:36",
         "withinLastHour": false
       }
     },
@@ -5082,7 +4720,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:51 AM",
-        "short": "Mar 8, 03:29:51",
         "withinLastHour": true
       }
     },
@@ -5096,7 +4733,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:23 AM",
-        "short": "Mar 8, 03:29:23",
         "withinLastHour": true
       }
     },
@@ -5110,7 +4746,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:58 AM",
-        "short": "Mar 8, 03:29:58",
         "withinLastHour": true
       }
     },
@@ -5124,7 +4759,6 @@
       "output": {
         "relative": "Today, 12:09 PM",
         "exact": "Thursday, October 1, 2026 at 12:09:42 PM",
-        "short": "Oct 1, 12:09:42",
         "withinLastHour": false
       }
     },
@@ -5138,7 +4772,6 @@
       "output": {
         "relative": "3 min ago",
         "exact": "Sunday, March 8, 2026 at 3:26:10 AM",
-        "short": "Mar 8, 03:26:10",
         "withinLastHour": true
       }
     },
@@ -5152,7 +4785,6 @@
       "output": {
         "relative": "7 min ago",
         "exact": "Thursday, January 1, 2026 at 11:57:30 PM",
-        "short": "Jan 1, 23:57:30",
         "withinLastHour": true
       }
     },
@@ -5166,7 +4798,6 @@
       "output": {
         "relative": "Apr 21, 8:14 AM",
         "exact": "Tuesday, April 21, 2026 at 8:14:51 AM",
-        "short": "Apr 21, 08:14:51",
         "withinLastHour": false
       }
     },
@@ -5180,7 +4811,6 @@
       "output": {
         "relative": "Yesterday, 7:33 PM",
         "exact": "Wednesday, September 30, 2026 at 7:33:30 PM",
-        "short": "Sep 30, 19:33:30",
         "withinLastHour": false
       }
     },
@@ -5194,7 +4824,6 @@
       "output": {
         "relative": "Aug 10, 2019",
         "exact": "Saturday, August 10, 2019 at 9:31:28 PM",
-        "short": "Aug 10, 21:31:28",
         "withinLastHour": false
       }
     },
@@ -5208,7 +4837,6 @@
       "output": {
         "relative": "Yesterday, 11:03 PM",
         "exact": "Sunday, March 8, 2026 at 11:03:26 PM",
-        "short": "Mar 8, 23:03:26",
         "withinLastHour": false
       }
     },
@@ -5222,7 +4850,6 @@
       "output": {
         "relative": "May 4, 2014",
         "exact": "Sunday, May 4, 2014 at 10:44:38 AM",
-        "short": "May 4, 10:44:38",
         "withinLastHour": false
       }
     },
@@ -5236,7 +4863,6 @@
       "output": {
         "relative": "Feb 11, 2022",
         "exact": "Friday, February 11, 2022 at 6:59:17 AM",
-        "short": "Feb 11, 06:59:17",
         "withinLastHour": false
       }
     },
@@ -5250,7 +4876,6 @@
       "output": {
         "relative": "Jan 11, 4:54 PM",
         "exact": "Sunday, January 11, 2026 at 4:54:00 PM",
-        "short": "Jan 11, 16:54:00",
         "withinLastHour": false
       }
     },
@@ -5264,7 +4889,6 @@
       "output": {
         "relative": "Jan 7, 12:38 AM",
         "exact": "Wednesday, January 7, 2026 at 12:38:31 AM",
-        "short": "Jan 7, 00:38:31",
         "withinLastHour": false
       }
     },
@@ -5278,7 +4902,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:29:36 AM",
-        "short": "Mar 9, 01:29:36",
         "withinLastHour": true
       }
     },
@@ -5292,7 +4915,6 @@
       "output": {
         "relative": "46 min ago",
         "exact": "Thursday, October 1, 2026 at 1:58:56 PM",
-        "short": "Oct 1, 13:58:56",
         "withinLastHour": true
       }
     },
@@ -5306,7 +4928,6 @@
       "output": {
         "relative": "Sat, 2:23 AM",
         "exact": "Saturday, October 31, 2026 at 2:23:21 AM",
-        "short": "Oct 31, 02:23:21",
         "withinLastHour": false
       }
     },
@@ -5320,7 +4941,6 @@
       "output": {
         "relative": "23 min ago",
         "exact": "Thursday, December 31, 2026 at 11:35:24 PM",
-        "short": "Dec 31, 23:35:24",
         "withinLastHour": true
       }
     },
@@ -5334,7 +4954,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 9:59:54 AM",
-        "short": "Nov 2, 09:59:54",
         "withinLastHour": true
       }
     },
@@ -5348,7 +4967,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:54 PM",
-        "short": "Oct 1, 14:44:54",
         "withinLastHour": true
       }
     },
@@ -5362,7 +4980,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:52 AM",
-        "short": "Mar 8, 03:29:52",
         "withinLastHour": true
       }
     },
@@ -5376,7 +4993,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:57 AM",
-        "short": "Mar 8, 03:29:57",
         "withinLastHour": true
       }
     },
@@ -5390,7 +5006,6 @@
       "output": {
         "relative": "6 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:32:10 PM",
-        "short": "Oct 13, 14:32:10",
         "withinLastHour": true
       }
     },
@@ -5404,7 +5019,6 @@
       "output": {
         "relative": "Dec 8, 2025",
         "exact": "Monday, December 8, 2025 at 5:20:22 PM",
-        "short": "Dec 8, 17:20:22",
         "withinLastHour": false
       }
     },
@@ -5418,7 +5032,6 @@
       "output": {
         "relative": "May 10, 2025",
         "exact": "Saturday, May 10, 2025 at 4:31:45 PM",
-        "short": "May 10, 16:31:45",
         "withinLastHour": false
       }
     },
@@ -5432,7 +5045,6 @@
       "output": {
         "relative": "Sep 6, 2037, 10:18 PM",
         "exact": "Sunday, September 6, 2037 at 10:18:40 PM",
-        "short": "Sep 6, 22:18:40",
         "withinLastHour": false
       }
     },
@@ -5446,7 +5058,6 @@
       "output": {
         "relative": "Yesterday, 11:48 PM",
         "exact": "Saturday, March 7, 2026 at 11:48:11 PM",
-        "short": "Mar 7, 23:48:11",
         "withinLastHour": false
       }
     },
@@ -5460,7 +5071,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 9:59:58 AM",
-        "short": "Nov 2, 09:59:58",
         "withinLastHour": true
       }
     },
@@ -5474,7 +5084,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:58:30 PM",
-        "short": "Dec 31, 23:58:30",
         "withinLastHour": true
       }
     },
@@ -5488,7 +5097,6 @@
       "output": {
         "relative": "24 min ago",
         "exact": "Thursday, October 1, 2026 at 2:20:54 PM",
-        "short": "Oct 1, 14:20:54",
         "withinLastHour": true
       }
     },
@@ -5502,7 +5110,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:56 PM",
-        "short": "Oct 1, 14:44:56",
         "withinLastHour": true
       }
     },
@@ -5516,7 +5123,6 @@
       "output": {
         "relative": "Mar 12, 2020",
         "exact": "Thursday, March 12, 2020 at 2:44:27 PM",
-        "short": "Mar 12, 14:44:27",
         "withinLastHour": false
       }
     },
@@ -5530,7 +5136,6 @@
       "output": {
         "relative": "Oct 10, 2024",
         "exact": "Thursday, October 10, 2024 at 3:35:56 PM",
-        "short": "Oct 10, 15:35:56",
         "withinLastHour": false
       }
     },
@@ -5544,7 +5149,6 @@
       "output": {
         "relative": "Mar 15, 2026, 9:35 AM",
         "exact": "Sunday, March 15, 2026 at 9:35:26 AM",
-        "short": "Mar 15, 09:35:26",
         "withinLastHour": false
       }
     },
@@ -5558,7 +5162,6 @@
       "output": {
         "relative": "Oct 2, 2026, 8:27 PM",
         "exact": "Friday, October 2, 2026 at 8:27:58 PM",
-        "short": "Oct 2, 20:27:58",
         "withinLastHour": false
       }
     },
@@ -5572,7 +5175,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:54 PM",
-        "short": "Oct 1, 14:44:54",
         "withinLastHour": true
       }
     },
@@ -5586,7 +5188,6 @@
       "output": {
         "relative": "Aug 29, 3:28 AM",
         "exact": "Saturday, August 29, 2026 at 3:28:08 AM",
-        "short": "Aug 29, 03:28:08",
         "withinLastHour": false
       }
     },
@@ -5600,7 +5201,6 @@
       "output": {
         "relative": "Sep 25, 10:26 PM",
         "exact": "Friday, September 25, 2026 at 10:26:55 PM",
-        "short": "Sep 25, 22:26:55",
         "withinLastHour": false
       }
     },
@@ -5614,7 +5214,6 @@
       "output": {
         "relative": "Yesterday, 6:04 PM",
         "exact": "Saturday, March 7, 2026 at 6:04:05 PM",
-        "short": "Mar 7, 18:04:05",
         "withinLastHour": false
       }
     },
@@ -5628,7 +5227,6 @@
       "output": {
         "relative": "Tue, 11:52 PM",
         "exact": "Tuesday, March 3, 2026 at 11:52:56 PM",
-        "short": "Mar 3, 23:52:56",
         "withinLastHour": false
       }
     },
@@ -5642,7 +5240,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:53 PM",
-        "short": "Oct 1, 14:44:53",
         "withinLastHour": true
       }
     },
@@ -5656,7 +5253,6 @@
       "output": {
         "relative": "21 min ago",
         "exact": "Monday, November 2, 2026 at 9:38:57 AM",
-        "short": "Nov 2, 09:38:57",
         "withinLastHour": true
       }
     },
@@ -5670,7 +5266,6 @@
       "output": {
         "relative": "Jun 20, 2024",
         "exact": "Thursday, June 20, 2024 at 11:11:07 PM",
-        "short": "Jun 20, 23:11:07",
         "withinLastHour": false
       }
     },
@@ -5684,7 +5279,6 @@
       "output": {
         "relative": "Oct 2, 2:25 AM",
         "exact": "Friday, October 2, 2026 at 2:25:00 AM",
-        "short": "Oct 2, 02:25:00",
         "withinLastHour": false
       }
     },
@@ -5698,7 +5292,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, December 31, 2026 at 11:57:31 PM",
-        "short": "Dec 31, 23:57:31",
         "withinLastHour": true
       }
     },
@@ -5712,7 +5305,6 @@
       "output": {
         "relative": "Oct 1, 2026, 2:46 PM",
         "exact": "Thursday, October 1, 2026 at 2:46:01 PM",
-        "short": "Oct 1, 14:46:01",
         "withinLastHour": false
       }
     },
@@ -5726,7 +5318,6 @@
       "output": {
         "relative": "Tue, 3:16 PM",
         "exact": "Tuesday, December 30, 2025 at 3:16:43 PM",
-        "short": "Dec 30, 15:16:43",
         "withinLastHour": false
       }
     },
@@ -5740,7 +5331,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:36 PM",
-        "short": "Oct 1, 14:44:36",
         "withinLastHour": true
       }
     },
@@ -5754,7 +5344,6 @@
       "output": {
         "relative": "Today, 7:29 AM",
         "exact": "Monday, November 2, 2026 at 7:29:58 AM",
-        "short": "Nov 2, 07:29:58",
         "withinLastHour": false
       }
     },
@@ -5768,7 +5357,6 @@
       "output": {
         "relative": "Oct 9, 2024",
         "exact": "Wednesday, October 9, 2024 at 5:08:28 PM",
-        "short": "Oct 9, 17:08:28",
         "withinLastHour": false
       }
     },
@@ -5782,7 +5370,6 @@
       "output": {
         "relative": "Yesterday, 1:25 AM",
         "exact": "Wednesday, December 30, 2026 at 1:25:58 AM",
-        "short": "Dec 30, 01:25:58",
         "withinLastHour": false
       }
     },
@@ -5796,7 +5383,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:58:52 PM",
-        "short": "Dec 31, 23:58:52",
         "withinLastHour": true
       }
     },
@@ -5810,7 +5396,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:37:06 PM",
-        "short": "Oct 13, 14:37:06",
         "withinLastHour": true
       }
     },
@@ -5824,7 +5409,6 @@
       "output": {
         "relative": "Jan 11, 2019",
         "exact": "Friday, January 11, 2019 at 7:12:43 PM",
-        "short": "Jan 11, 19:12:43",
         "withinLastHour": false
       }
     },
@@ -5838,7 +5422,6 @@
       "output": {
         "relative": "May 26, 2024",
         "exact": "Sunday, May 26, 2024 at 2:38:37 PM",
-        "short": "May 26, 14:38:37",
         "withinLastHour": false
       }
     },
@@ -5852,7 +5435,6 @@
       "output": {
         "relative": "15 min ago",
         "exact": "Thursday, October 1, 2026 at 2:29:34 PM",
-        "short": "Oct 1, 14:29:34",
         "withinLastHour": true
       }
     },
@@ -5866,7 +5448,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:38:17 PM",
-        "short": "Oct 13, 14:38:17",
         "withinLastHour": true
       }
     },
@@ -5880,7 +5461,6 @@
       "output": {
         "relative": "Today, 8:42 AM",
         "exact": "Monday, November 2, 2026 at 8:42:39 AM",
-        "short": "Nov 2, 08:42:39",
         "withinLastHour": false
       }
     },
@@ -5894,7 +5474,6 @@
       "output": {
         "relative": "Nov 3, 2026, 4:15 AM",
         "exact": "Tuesday, November 3, 2026 at 4:15:32 AM",
-        "short": "Nov 3, 04:15:32",
         "withinLastHour": false
       }
     },
@@ -5908,7 +5487,6 @@
       "output": {
         "relative": "Yesterday, 10:37 PM",
         "exact": "Thursday, January 1, 2026 at 10:37:32 PM",
-        "short": "Jan 1, 22:37:32",
         "withinLastHour": false
       }
     },
@@ -5922,7 +5500,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 9:59:37 AM",
-        "short": "Nov 2, 09:59:37",
         "withinLastHour": true
       }
     },
@@ -5936,7 +5513,6 @@
       "output": {
         "relative": "Jun 28, 1:10 AM",
         "exact": "Sunday, June 28, 2026 at 1:10:26 AM",
-        "short": "Jun 28, 01:10:26",
         "withinLastHour": false
       }
     },
@@ -5950,7 +5526,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:38:14 PM",
-        "short": "Oct 13, 14:38:14",
         "withinLastHour": true
       }
     },
@@ -5964,7 +5539,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:47 AM",
-        "short": "Mar 8, 03:29:47",
         "withinLastHour": true
       }
     },
@@ -5978,7 +5552,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, December 31, 2026 at 11:58:58 PM",
-        "short": "Dec 31, 23:58:58",
         "withinLastHour": true
       }
     },
@@ -5992,7 +5565,6 @@
       "output": {
         "relative": "Jul 8, 2:31 AM",
         "exact": "Wednesday, July 8, 2026 at 2:31:18 AM",
-        "short": "Jul 8, 02:31:18",
         "withinLastHour": false
       }
     },
@@ -6006,7 +5578,6 @@
       "output": {
         "relative": "Yesterday, 8:44 PM",
         "exact": "Sunday, March 8, 2026 at 8:44:50 PM",
-        "short": "Mar 8, 20:44:50",
         "withinLastHour": false
       }
     },
@@ -6020,7 +5591,6 @@
       "output": {
         "relative": "Jun 27, 8:19 AM",
         "exact": "Saturday, June 27, 2026 at 8:19:43 AM",
-        "short": "Jun 27, 08:19:43",
         "withinLastHour": false
       }
     },
@@ -6034,7 +5604,6 @@
       "output": {
         "relative": "Yesterday, 10:59 PM",
         "exact": "Thursday, January 1, 2026 at 10:59:35 PM",
-        "short": "Jan 1, 22:59:35",
         "withinLastHour": false
       }
     },
@@ -6048,7 +5617,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:46 AM",
-        "short": "Jan 2, 00:04:46",
         "withinLastHour": true
       }
     },
@@ -6062,7 +5630,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:13 AM",
-        "short": "Mar 8, 03:29:13",
         "withinLastHour": true
       }
     },
@@ -6076,7 +5643,6 @@
       "output": {
         "relative": "Jul 15, 2025",
         "exact": "Tuesday, July 15, 2025 at 7:52:13 PM",
-        "short": "Jul 15, 19:52:13",
         "withinLastHour": false
       }
     },
@@ -6090,7 +5656,6 @@
       "output": {
         "relative": "4 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:33:56 PM",
-        "short": "Oct 13, 14:33:56",
         "withinLastHour": true
       }
     },
@@ -6104,7 +5669,6 @@
       "output": {
         "relative": "Mar 25, 2023",
         "exact": "Saturday, March 25, 2023 at 4:30:53 PM",
-        "short": "Mar 25, 16:30:53",
         "withinLastHour": false
       }
     },
@@ -6118,7 +5682,6 @@
       "output": {
         "relative": "Feb 3, 2024",
         "exact": "Saturday, February 3, 2024 at 11:50:56 PM",
-        "short": "Feb 3, 23:50:56",
         "withinLastHour": false
       }
     },
@@ -6132,7 +5695,6 @@
       "output": {
         "relative": "Jan 1, 2024",
         "exact": "Monday, January 1, 2024 at 12:33:43 PM",
-        "short": "Jan 1, 12:33:43",
         "withinLastHour": false
       }
     },
@@ -6146,7 +5708,6 @@
       "output": {
         "relative": "Jul 28, 2014",
         "exact": "Monday, July 28, 2014 at 3:18:22 AM",
-        "short": "Jul 28, 03:18:22",
         "withinLastHour": false
       }
     },
@@ -6160,7 +5721,6 @@
       "output": {
         "relative": "22 min ago",
         "exact": "Thursday, October 1, 2026 at 2:22:18 PM",
-        "short": "Oct 1, 14:22:18",
         "withinLastHour": true
       }
     },
@@ -6174,7 +5734,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:07 AM",
-        "short": "Mar 8, 03:29:07",
         "withinLastHour": true
       }
     },
@@ -6188,7 +5747,6 @@
       "output": {
         "relative": "Sep 29, 9:59 PM",
         "exact": "Tuesday, September 29, 2026 at 9:59:53 PM",
-        "short": "Sep 29, 21:59:53",
         "withinLastHour": false
       }
     },
@@ -6202,7 +5760,6 @@
       "output": {
         "relative": "Today, 12:58 AM",
         "exact": "Sunday, March 8, 2026 at 12:58:49 AM",
-        "short": "Mar 8, 00:58:49",
         "withinLastHour": false
       }
     },
@@ -6216,7 +5773,6 @@
       "output": {
         "relative": "Dec 17, 2025",
         "exact": "Wednesday, December 17, 2025 at 5:37:56 AM",
-        "short": "Dec 17, 05:37:56",
         "withinLastHour": false
       }
     },
@@ -6230,7 +5786,6 @@
       "output": {
         "relative": "46 min ago",
         "exact": "Thursday, January 1, 2026 at 11:18:22 PM",
-        "short": "Jan 1, 23:18:22",
         "withinLastHour": true
       }
     },
@@ -6244,7 +5799,6 @@
       "output": {
         "relative": "Oct 16, 12:19 AM",
         "exact": "Friday, October 16, 2026 at 12:19:01 AM",
-        "short": "Oct 16, 00:19:01",
         "withinLastHour": false
       }
     },
@@ -6258,7 +5812,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:57 AM",
-        "short": "Mar 8, 03:29:57",
         "withinLastHour": true
       }
     },
@@ -6272,7 +5825,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:37:12 PM",
-        "short": "Oct 13, 14:37:12",
         "withinLastHour": true
       }
     },
@@ -6286,7 +5838,6 @@
       "output": {
         "relative": "Jan 24, 2026, 3:42 PM",
         "exact": "Saturday, January 24, 2026 at 3:42:17 PM",
-        "short": "Jan 24, 15:42:17",
         "withinLastHour": false
       }
     },
@@ -6300,7 +5851,6 @@
       "output": {
         "relative": "Fri, 11:51 PM",
         "exact": "Friday, October 9, 2026 at 11:51:43 PM",
-        "short": "Oct 9, 23:51:43",
         "withinLastHour": false
       }
     },
@@ -6314,7 +5864,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:58 AM",
-        "short": "Jan 2, 00:04:58",
         "withinLastHour": true
       }
     },
@@ -6328,7 +5877,6 @@
       "output": {
         "relative": "Oct 19, 2026, 8:40 AM",
         "exact": "Monday, October 19, 2026 at 8:40:29 AM",
-        "short": "Oct 19, 08:40:29",
         "withinLastHour": false
       }
     },
@@ -6342,7 +5890,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:40 AM",
-        "short": "Jan 2, 00:04:40",
         "withinLastHour": true
       }
     },
@@ -6356,7 +5903,6 @@
       "output": {
         "relative": "Oct 31, 2016",
         "exact": "Monday, October 31, 2016 at 11:11:30 PM",
-        "short": "Oct 31, 23:11:30",
         "withinLastHour": false
       }
     },
@@ -6370,7 +5916,6 @@
       "output": {
         "relative": "Apr 25, 2026, 11:40 PM",
         "exact": "Saturday, April 25, 2026 at 11:40:00 PM",
-        "short": "Apr 25, 23:40:00",
         "withinLastHour": false
       }
     },
@@ -6384,7 +5929,6 @@
       "output": {
         "relative": "Sep 21, 2025",
         "exact": "Sunday, September 21, 2025 at 8:15:13 AM",
-        "short": "Sep 21, 08:15:13",
         "withinLastHour": false
       }
     },
@@ -6398,7 +5942,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:29:54 AM",
-        "short": "Mar 9, 01:29:54",
         "withinLastHour": true
       }
     },
@@ -6412,7 +5955,6 @@
       "output": {
         "relative": "Oct 19, 2025",
         "exact": "Sunday, October 19, 2025 at 7:01:56 PM",
-        "short": "Oct 19, 19:01:56",
         "withinLastHour": false
       }
     },
@@ -6426,7 +5968,6 @@
       "output": {
         "relative": "Apr 14, 2018",
         "exact": "Saturday, April 14, 2018 at 4:29:58 AM",
-        "short": "Apr 14, 04:29:58",
         "withinLastHour": false
       }
     },
@@ -6440,7 +5981,6 @@
       "output": {
         "relative": "Jul 15, 2020",
         "exact": "Wednesday, July 15, 2020 at 4:14:05 AM",
-        "short": "Jul 15, 04:14:05",
         "withinLastHour": false
       }
     },
@@ -6454,7 +5994,6 @@
       "output": {
         "relative": "21 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:17:09 PM",
-        "short": "Oct 13, 14:17:09",
         "withinLastHour": true
       }
     },
@@ -6468,7 +6007,6 @@
       "output": {
         "relative": "Tue, 12:28 AM",
         "exact": "Tuesday, October 27, 2026 at 12:28:54 AM",
-        "short": "Oct 27, 00:28:54",
         "withinLastHour": false
       }
     },
@@ -6482,7 +6020,6 @@
       "output": {
         "relative": "Today, 9:08 PM",
         "exact": "Thursday, December 31, 2026 at 9:08:41 PM",
-        "short": "Dec 31, 21:08:41",
         "withinLastHour": false
       }
     },
@@ -6496,7 +6033,6 @@
       "output": {
         "relative": "Oct 1, 2026, 2:54 PM",
         "exact": "Thursday, October 1, 2026 at 2:54:49 PM",
-        "short": "Oct 1, 14:54:49",
         "withinLastHour": false
       }
     },
@@ -6510,7 +6046,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:23 PM",
-        "short": "Oct 1, 14:44:23",
         "withinLastHour": true
       }
     },
@@ -6524,7 +6059,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Monday, November 2, 2026 at 9:58:38 AM",
-        "short": "Nov 2, 09:58:38",
         "withinLastHour": true
       }
     },
@@ -6538,7 +6072,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:56 AM",
-        "short": "Jan 2, 00:04:56",
         "withinLastHour": true
       }
     },
@@ -6552,7 +6085,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Sunday, March 8, 2026 at 3:29:51 AM",
-        "short": "Mar 8, 03:29:51",
         "withinLastHour": true
       }
     },
@@ -6566,7 +6098,6 @@
       "output": {
         "relative": "Jul 28, 7:57 AM",
         "exact": "Tuesday, July 28, 2026 at 7:57:18 AM",
-        "short": "Jul 28, 07:57:18",
         "withinLastHour": false
       }
     },
@@ -6580,7 +6111,6 @@
       "output": {
         "relative": "Sat, 5:55 AM",
         "exact": "Saturday, December 26, 2026 at 5:55:23 AM",
-        "short": "Dec 26, 05:55:23",
         "withinLastHour": false
       }
     },
@@ -6594,7 +6124,6 @@
       "output": {
         "relative": "Oct 28, 10:20 AM",
         "exact": "Wednesday, October 28, 2026 at 10:20:09 AM",
-        "short": "Oct 28, 10:20:09",
         "withinLastHour": false
       }
     },
@@ -6608,7 +6137,6 @@
       "output": {
         "relative": "Fri, 4:07 PM",
         "exact": "Friday, October 30, 2026 at 4:07:27 PM",
-        "short": "Oct 30, 16:07:27",
         "withinLastHour": false
       }
     },
@@ -6622,7 +6150,6 @@
       "output": {
         "relative": "Today, 3:09 AM",
         "exact": "Thursday, October 1, 2026 at 3:09:10 AM",
-        "short": "Oct 1, 03:09:10",
         "withinLastHour": false
       }
     },
@@ -6636,7 +6163,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, March 9, 2026 at 1:29:50 AM",
-        "short": "Mar 9, 01:29:50",
         "withinLastHour": true
       }
     },
@@ -6650,7 +6176,6 @@
       "output": {
         "relative": "Today, 1:10 PM",
         "exact": "Tuesday, October 13, 2026 at 1:10:55 PM",
-        "short": "Oct 13, 13:10:55",
         "withinLastHour": false
       }
     },
@@ -6664,7 +6189,6 @@
       "output": {
         "relative": "Fri, 3:10 PM",
         "exact": "Friday, March 6, 2026 at 3:10:47 PM",
-        "short": "Mar 6, 15:10:47",
         "withinLastHour": false
       }
     },
@@ -6678,7 +6202,6 @@
       "output": {
         "relative": "17 min ago",
         "exact": "Tuesday, October 13, 2026 at 2:20:32 PM",
-        "short": "Oct 13, 14:20:32",
         "withinLastHour": true
       }
     },
@@ -6692,7 +6215,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Thursday, October 1, 2026 at 2:43:32 PM",
-        "short": "Oct 1, 14:43:32",
         "withinLastHour": true
       }
     },
@@ -6706,7 +6228,6 @@
       "output": {
         "relative": "Sep 27, 4:28 AM",
         "exact": "Sunday, September 27, 2026 at 4:28:55 AM",
-        "short": "Sep 27, 04:28:55",
         "withinLastHour": false
       }
     },
@@ -6720,7 +6241,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Monday, November 2, 2026 at 9:59:58 AM",
-        "short": "Nov 2, 09:59:58",
         "withinLastHour": true
       }
     },
@@ -6734,7 +6254,6 @@
       "output": {
         "relative": "Today, 12:41 AM",
         "exact": "Thursday, December 31, 2026 at 12:41:56 AM",
-        "short": "Dec 31, 00:41:56",
         "withinLastHour": false
       }
     },
@@ -6748,7 +6267,6 @@
       "output": {
         "relative": "Jan 28, 2026, 11:44 PM",
         "exact": "Wednesday, January 28, 2026 at 11:44:32 PM",
-        "short": "Jan 28, 23:44:32",
         "withinLastHour": false
       }
     },
@@ -6762,7 +6280,6 @@
       "output": {
         "relative": "2 min ago",
         "exact": "Friday, January 2, 2026 at 12:02:23 AM",
-        "short": "Jan 2, 00:02:23",
         "withinLastHour": true
       }
     },
@@ -6776,7 +6293,6 @@
       "output": {
         "relative": "Yesterday, 10:12 PM",
         "exact": "Thursday, January 1, 2026 at 10:12:08 PM",
-        "short": "Jan 1, 22:12:08",
         "withinLastHour": false
       }
     },
@@ -6790,7 +6306,6 @@
       "output": {
         "relative": "Apr 9, 10:54 AM",
         "exact": "Thursday, April 9, 2026 at 10:54:46 AM",
-        "short": "Apr 9, 10:54:46",
         "withinLastHour": false
       }
     },
@@ -6804,7 +6319,6 @@
       "output": {
         "relative": "37 min ago",
         "exact": "Thursday, January 1, 2026 at 11:27:14 PM",
-        "short": "Jan 1, 23:27:14",
         "withinLastHour": true
       }
     },
@@ -6818,7 +6332,6 @@
       "output": {
         "relative": "Yesterday, 11:14 PM",
         "exact": "Sunday, March 8, 2026 at 11:14:45 PM",
-        "short": "Mar 8, 23:14:45",
         "withinLastHour": false
       }
     },
@@ -6832,7 +6345,6 @@
       "output": {
         "relative": "10 min ago",
         "exact": "Thursday, December 31, 2026 at 11:48:58 PM",
-        "short": "Dec 31, 23:48:58",
         "withinLastHour": true
       }
     },
@@ -6846,7 +6358,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Tuesday, October 13, 2026 at 2:38:18 PM",
-        "short": "Oct 13, 14:38:18",
         "withinLastHour": true
       }
     },
@@ -6860,7 +6371,6 @@
       "output": {
         "relative": "Wed, 12:12 PM",
         "exact": "Wednesday, March 4, 2026 at 12:12:58 PM",
-        "short": "Mar 4, 12:12:58",
         "withinLastHour": false
       }
     },
@@ -6874,7 +6384,6 @@
       "output": {
         "relative": "Today, 10:21 AM",
         "exact": "Thursday, December 31, 2026 at 10:21:34 AM",
-        "short": "Dec 31, 10:21:34",
         "withinLastHour": false
       }
     },
@@ -6888,7 +6397,6 @@
       "output": {
         "relative": "Dec 26, 2025",
         "exact": "Friday, December 26, 2025 at 5:24:02 AM",
-        "short": "Dec 26, 05:24:02",
         "withinLastHour": false
       }
     },
@@ -6902,7 +6410,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Thursday, October 1, 2026 at 2:44:22 PM",
-        "short": "Oct 1, 14:44:22",
         "withinLastHour": true
       }
     },
@@ -6916,7 +6423,6 @@
       "output": {
         "relative": "Today, 11:38 AM",
         "exact": "Thursday, October 1, 2026 at 11:38:57 AM",
-        "short": "Oct 1, 11:38:57",
         "withinLastHour": false
       }
     },
@@ -6930,7 +6436,6 @@
       "output": {
         "relative": "Apr 30, 3:40 AM",
         "exact": "Thursday, April 30, 2026 at 3:40:33 AM",
-        "short": "Apr 30, 03:40:33",
         "withinLastHour": false
       }
     },
@@ -6944,7 +6449,6 @@
       "output": {
         "relative": "1 min ago",
         "exact": "Sunday, March 8, 2026 at 3:28:45 AM",
-        "short": "Mar 8, 03:28:45",
         "withinLastHour": true
       }
     },
@@ -6958,7 +6462,6 @@
       "output": {
         "relative": "Just now",
         "exact": "Friday, January 2, 2026 at 12:04:56 AM",
-        "short": "Jan 2, 00:04:56",
         "withinLastHour": true
       }
     },
@@ -6972,7 +6475,6 @@
       "output": {
         "relative": "Sep 26, 2025",
         "exact": "Friday, September 26, 2025 at 8:57:41 AM",
-        "short": "Sep 26, 08:57:41",
         "withinLastHour": false
       }
     },
@@ -6986,7 +6488,6 @@
       "output": {
         "relative": "Aug 29, 2024",
         "exact": "Thursday, August 29, 2024 at 9:38:59 PM",
-        "short": "Aug 29, 21:38:59",
         "withinLastHour": false
       }
     },
@@ -7000,7 +6501,6 @@
       "output": {
         "relative": "12 min ago",
         "exact": "Monday, November 2, 2026 at 9:47:28 AM",
-        "short": "Nov 2, 09:47:28",
         "withinLastHour": true
       }
     }

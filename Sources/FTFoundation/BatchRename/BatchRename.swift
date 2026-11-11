@@ -327,8 +327,6 @@ public enum BatchRename {
 
     // MARK: Dates
 
-    private static let tokenPattern: [[UInt16]] = ["YYYY", "YY", "MM", "DD", "HH", "mm", "ss"].map { Array($0.utf16) }
-
     /// A date in the chosen format: its parts with the separator between them, or the pattern.
     public static func formatDate(_ date: LocalDateTime, _ settings: BatchRenameSettings) -> String {
         let parts = readLocalDateTime(date)

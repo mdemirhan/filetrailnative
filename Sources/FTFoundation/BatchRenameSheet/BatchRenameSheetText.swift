@@ -1,5 +1,4 @@
-// PREVIEW_ROW_LIMIT, EXAMPLE_DATE, MODES, DATE_TOKEN_NAMES, the pop-ups' choices, describeRow, Summary and
-// describeSettingsError
+// PREVIEW_ROW_LIMIT, EXAMPLE_DATE, MODES, DATE_TOKEN_NAMES, the pop-ups' choices, describeRow and Summary
 import Foundation
 
 /// What the Rename sheet for several items says: its title, its choices, each row's note and the footer's summary.
@@ -217,7 +216,7 @@ public enum BatchRenameSheetText {
             return Summary(text: checkError, danger: true)
         }
         if let settingsError = plan.settingsError, !settingsError.isEmpty {
-            return Summary(text: describeSettingsError(settingsError), danger: true)
+            return Summary(text: settingsError, danger: true)
         }
         if checking {
             return Summary(text: "Checking names\u{2026}", danger: false)
@@ -241,29 +240,5 @@ public enum BatchRenameSheetText {
         }
         if plan.unchangedCount > 0 { parts.append("\(ContextMenuRules.groupedCount(plan.unchangedCount)) unchanged") }
         return Summary(text: parts.joined(separator: " \u{00B7} "), danger: false)
-    }
-
-    /// `describeSettingsError`: the settings' fault as the sheet says it. The matcher's own words for a broken pattern
-    /// ("Invalid regular expression: /(/giu: ") are left out, the reason kept
-    /// (`/^(The pattern isn’t valid: )(?:Invalid regular expression: )?\/.*\/[a-z]*: /su`).
-    public static func describeSettingsError(_ error: String) -> String {
-        let prefix = "The pattern isn\u{2019}t valid: "
-        guard error.hasPrefix(prefix) else { return error }
-        var rest = Substring(error.dropFirst(prefix.count))
-        let engine = "Invalid regular expression: "
-        if rest.hasPrefix(engine) { rest = rest.dropFirst(engine.count) }
-        guard rest.hasPrefix("/") else { return error }
-        // `\/.*\/[a-z]*: ` with a greedy `.*`: the last "/" followed by flags and ": ".
-        let body = rest.dropFirst()
-        var candidate = body.endIndex
-        while let slash = body[body.startIndex..<candidate].lastIndex(of: "/") {
-            var after = body.index(after: slash)
-            while after < body.endIndex, ("a"..."z").contains(body[after]) { after = body.index(after: after) }
-            if body[after...].hasPrefix(": ") {
-                return prefix + String(body[body.index(after, offsetBy: 2)...])
-            }
-            candidate = slash
-        }
-        return error
     }
 }

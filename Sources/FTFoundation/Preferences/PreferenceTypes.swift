@@ -475,6 +475,4 @@ public enum AppPreferenceLimits {
         }
         return trimmed.lowercased()
     }
-
-    public static func favoriteIconLabel(_ icon: FavoriteIconID) -> String { icon.label }
 }

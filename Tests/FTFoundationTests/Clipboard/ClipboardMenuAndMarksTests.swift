@@ -180,7 +180,6 @@ struct ClipboardMenuAndMarksTests {
         #expect(result15 == .idle)
         let result16 = hold.over("/a/F", canSpring: true, at: point, now: 700)
         #expect(result16 == .warning("/a/F"))
-        #expect(hold.warningPath == "/a/F")
         let result17 = hold.over("/a/F", canSpring: true, at: point, now: 900)
         #expect(result17 == .warning("/a/F"))
         let result18 = hold.over("/a/F", canSpring: true, at: point, now: 1100)
@@ -204,6 +203,5 @@ struct ClipboardMenuAndMarksTests {
         // A folder that can't take the drop doesn't spring.
         let result25 = moved.over("/a/F", canSpring: false, at: point, now: 3000)
         #expect(result25 == .idle)
-        #expect(moved.warningPath == nil)
     }
 }

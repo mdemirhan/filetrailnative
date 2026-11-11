@@ -6,15 +6,6 @@ public struct JSRegExpError: Error, Equatable, CustomStringConvertible {
     public var description: String { message }
 }
 
-/// Where `exec` found its match: `range` in UTF-16 units of the text searched.
-public struct JSFirstMatch: Equatable, Sendable {
-    public let range: NSRange
-
-    public init(range: NSRange) {
-        self.range = range
-    }
-}
-
 /// One match of a global search: `groups[0]` is the whole match, `nil` a group that took no part.
 struct JSMatch: Equatable {
     /// UTF-16 offset of the match in the searched text.
@@ -74,14 +65,6 @@ public struct JSRegExp: @unchecked Sendable {
             throw JSRegExpError(message: "Invalid pattern")
         }
         self.groupNames = groupNames
-    }
-
-    /// `regex.exec(text)` from the start: where the first match is, in UTF-16 units of `text` (`range` limits the
-    /// search, as `NSRegularExpression` does). Nil when nothing matches.
-    public func firstMatch(in text: String, range: NSRange? = nil) -> JSFirstMatch? {
-        let whole = NSRange(location: 0, length: (text as NSString).length)
-        guard let found = regex.firstMatch(in: text, options: [], range: range ?? whole) else { return nil }
-        return JSFirstMatch(range: found.range)
     }
 
     /// `[...text.matchAll(regex)]`.

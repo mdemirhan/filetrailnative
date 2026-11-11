@@ -31,12 +31,6 @@ struct CopyPasteClipboardTests {
         #expect(one.countLabel == "1 item copied")
         #expect(one.label == "a.txt copied")
         #expect(one.breakdown == nil)
-        #expect(
-            one.icon
-                == .item(
-                    ClipboardItemEntry(
-                        path: "/tmp/a.txt", name: "a.txt", fileExtension: "txt", kind: .file, isHidden: false,
-                        isSymlink: false)))
         let many = try #require(
             ClipboardRules.describe(
                 ClipboardRules.set(
@@ -47,11 +41,10 @@ struct CopyPasteClipboardTests {
         #expect(many.countLabel == "3 items cut")
         #expect(many.label == "3 items cut")
         #expect(many.breakdown == "1 folder and 2 files")
-        #expect(many.icon == .items(.mixed))
         #expect(many.accessibilityLabel == "Clipboard: 3 items cut")
     }
 
-    @Test func drawsSeveralFoldersOrSeveralFilesAsAPairOfTheirOwnIcon() {
+    @Test func breaksSeveralItemsDownByKind() {
         func describe(_ kind: EntryKind) -> ClipboardSummary? {
             ClipboardRules.describe(
                 ClipboardRules.set(
@@ -59,18 +52,12 @@ struct CopyPasteClipboardTests {
                     entries: ["/tmp/a": file(kind), "/tmp/b": file(kind)]))
         }
         #expect(describe(.directory)?.breakdown == "2 folders")
-        #expect(describe(.directory)?.icon == .items(.folders))
         #expect(describe(.file)?.breakdown == "2 files")
-        #expect(describe(.file)?.icon == .items(.files))
-        #expect(ClipboardIcon.pair(.folders).front == .genericFolder)
-        #expect(ClipboardIcon.pair(.files).back == .genericFile)
-        #expect(ClipboardIcon.pair(.mixed) == (.genericFolder, .genericFile))
     }
 
     @Test func doesNotGuessWhatAnItemIsWhenItWasCopiedByPathAlone() {
         let summary = ClipboardRules.describe(ClipboardRules.set(.copy, ["/tmp/a", "/tmp/b.md"], capturedAt: Self.now))
         #expect(summary?.breakdown == nil)
-        #expect(summary?.icon == .items(.mixed))
         #expect(summary?.items.map(\.entry.kind) == [.other, .other])
         #expect(summary?.items.map(\.isFolder) == [nil, nil])
     }
@@ -106,25 +93,6 @@ struct CopyPasteClipboardTests {
 
     @Test func clearsToAnEmptyClipboardState() {
         #expect(CopyPasteClipboard.empty.sourcePaths.isEmpty)
-        #expect(ClipboardRules.clearedAfterSuccessfulPaste(.empty) == .empty)
-    }
-
-    @Test func buildsAPasteRequestOnlyWhenClipboardStateIsReady() {
-        #expect(ClipboardRules.pasteRequest(.empty, destination: "/tmp/target") == nil)
-        #expect(
-            ClipboardRules.pasteRequest(
-                ClipboardRules.set(.copy, ["/tmp/a"], capturedAt: Self.now), destination: "/tmp/target")
-                == PasteRequest(
-                    mode: .copy, sourcePaths: ["/tmp/a"], destinationDirectoryPath: "/tmp/target", action: "paste"))
-    }
-
-    @Test func clearsClipboardStateAfterASuccessfulPaste() {
-        #expect(
-            ClipboardRules.clearedAfterSuccessfulPaste(ClipboardRules.set(.copy, ["/tmp/a"], capturedAt: Self.now))
-                == .empty)
-        #expect(
-            ClipboardRules.clearedAfterSuccessfulPaste(ClipboardRules.set(.cut, ["/tmp/a"], capturedAt: Self.now))
-                == .empty)
     }
 
     @Test func reportsWhetherClipboardItemsAreAvailable() {

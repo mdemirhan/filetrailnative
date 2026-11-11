@@ -110,21 +110,6 @@ struct FavoritesTests {
             Favorites.reorder(favorites, moved: "/Applications", target: "/Missing", position: .before) == favorites)
     }
 
-    @Test func recognizesMacOSRefusingToListTheTrash() {
-        let refusal = "EPERM: operation not permitted, scandir '/Users/demo/.Trash'"
-        #expect(Favorites.isTrashListingRefused(path: "/Users/demo/.Trash", error: refusal, homePath: Self.home))
-        #expect(!Favorites.isTrashListingRefused(path: "/Users/demo/Private", error: refusal, homePath: Self.home))
-        #expect(
-            !Favorites.isTrashListingRefused(
-                path: "/Users/demo/.Trash", error: "ENOENT: no such file", homePath: Self.home))
-        #expect(!Favorites.isTrashListingRefused(path: "/Users/demo/.Trash", error: nil, homePath: Self.home))
-        #expect(!Favorites.isTrashListingRefused(path: "", error: refusal, homePath: ""))
-        // Any case of the sentence counts.
-        #expect(
-            Favorites.isTrashListingRefused(
-                path: "/Users/demo/.Trash", error: "Operation Not Permitted", homePath: Self.home))
-    }
-
     @Test func infersCuratedIconsForCommonAddedFolders() {
         #expect(Favorites.create(path: "/Users/demo/Music", homePath: Self.home).icon == .music)
         #expect(Favorites.create(path: "/Users/demo/Projects", homePath: Self.home).icon == .projects)

@@ -92,10 +92,6 @@ public indirect enum JSONNode: Sendable, Equatable, Codable {
         }
     }
 
-    public var isNull: Bool {
-        if case .null = self { true } else { false }
-    }
-
     public subscript(key: String) -> JSONNode? {
         object?[key]
     }

@@ -17,8 +17,6 @@ public enum SelectionLayout {
         public static let maxWidthInset = 32.0
         /// The pill is the `bgElevated` colour at 94%.
         public static let backgroundAlpha = 0.94
-        /// The value is semibold.
-        public static let valueWeight = 600
     }
 
     /// The marquee: a grey tint with a grey edge, mixed from the text colour.

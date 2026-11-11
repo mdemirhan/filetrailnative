@@ -28,12 +28,6 @@ public struct SpringHold: Sendable {
 
     public init() {}
 
-    /// The folder about to open, if one is.
-    public var warningPath: String? {
-        guard let hover, hover.warnedAt != nil else { return nil }
-        return hover.path
-    }
-
     public mutating func reset() {
         hover = nil
     }

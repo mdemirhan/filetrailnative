@@ -12,29 +12,21 @@ public enum ClipboardMark: Equatable, Sendable {
 public struct ClipboardMarks: Equatable, Sendable {
     let paths: Set<ExactKey>
     public let mode: ClipboardMode
-    /// True for a moment after a copy or cut.
-    public var flashing: Bool
 
     /// The marks of `clipboard` while Settings' "Mark copied and cut items" is on; nil otherwise, or while it is
     /// empty, and no row has marks.
-    public init?(_ clipboard: CopyPasteClipboard, enabled: Bool, flashing: Bool = false) {
+    public init?(_ clipboard: CopyPasteClipboard, enabled: Bool) {
         guard enabled, case .ready(let mode, let sourcePaths, _, _) = clipboard, !sourcePaths.isEmpty else {
             return nil
         }
         paths = Set(sourcePaths.map(ExactKey.init))
         self.mode = mode
-        self.flashing = flashing
     }
 
     /// The mark of the item at `path` (by its exact path, so a search result is marked too), or nil.
     public func mark(for path: String?) -> ClipboardMark? {
         guard let path, paths.contains(ExactKey(path)) else { return nil }
         return mode == .cut ? .cut : .copy
-    }
-
-    /// Whether the row of `path` flashes now.
-    public func flashes(_ path: String?) -> Bool {
-        flashing && mark(for: path) != nil
     }
 }
 

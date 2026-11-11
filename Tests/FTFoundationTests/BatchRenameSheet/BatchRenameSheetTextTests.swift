@@ -59,17 +59,6 @@ import Testing
                 == "Nothing to rename yet")
     }
 
-    @Test func theSettingsFaultLeavesOutJavaScriptsWordsForThePattern() {
-        #expect(
-            BatchRenameSheetText.describeSettingsError(
-                "The pattern isn\u{2019}t valid: Invalid regular expression: /(/giu: Unterminated group")
-                == "The pattern isn\u{2019}t valid: Unterminated group")
-        #expect(
-            BatchRenameSheetText.describeSettingsError("The pattern isn\u{2019}t valid: Missing )")
-                == "The pattern isn\u{2019}t valid: Missing )")
-        #expect(BatchRenameSheetText.describeSettingsError("Put at least one") == "Put at least one")
-    }
-
     @Test func rowsSayWhatBecomesOfEachItem() {
         #expect(
             BatchRenameSheetText.describeRow(renamed("a 2.txt", number: 2))?.text

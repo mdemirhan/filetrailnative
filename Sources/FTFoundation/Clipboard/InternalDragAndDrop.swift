@@ -88,10 +88,6 @@ public struct DragFacts: Sendable {
 
 /// Finder's rules for a drag of files.
 public enum DragRules {
-    /// A folder, not an alias of one.
-    public static func isRealDirectory(kind: EntryKind?, isSymlink: Bool) -> Bool {
-        kind == .directory && !isSymlink
-    }
 
     /// The whole selection (in view order) when the dragged row is part of it,
     /// otherwise only the dragged row; nil when the dragged entry isn't known.
@@ -110,18 +106,6 @@ public enum DragRules {
 
     /// Option copies and Command moves, whatever the disks (Option-Command copies);
     /// otherwise the disks decide once they have answered, and the paths until then.
-    public static func operation(
-        sourcePaths: [String], targetPath: String, option: Bool, command: Bool, onSameDisk: Bool? = nil
-    ) -> DropOperation {
-        if option { return .copy }
-        if command { return .move }
-        if let onSameDisk { return onSameDisk ? .move : .copy }
-        let target = DragRules.volumeRootPath(targetPath)
-        for path in sourcePaths where !JSString.equals(DragRules.volumeRootPath(path), target) { return .copy }
-        return .move
-    }
-
-    /// The same, from the facts of a drag.
     public static func operation(
         _ facts: DragFacts, targetPath: String, option: Bool, command: Bool, onSameDisk: Bool? = nil
     ) -> DropOperation {
@@ -157,15 +141,8 @@ public enum DragRules {
         return paths
     }
 
-    /// Whether the items' folders and the target are all on one disk; nil while one is unknown
-    /// or can't be read (an id of nil).
-    public static func onSameDisk(sourceFolderPaths: [String], targetPath: String, diskIds: [String: Int64?])
-        -> Bool?
-    {
-        onSameDisk(sourceFolderPaths: sourceFolderPaths, targetPath: targetPath) { diskIds[$0] }
-    }
-
-    /// The same, with the ids known so far looked up by `diskId` (nil: not answered; `.some(nil)`: unreadable).
+    /// Whether the items' folders and the target are all on one disk, with the ids known so far looked up by `diskId`
+    /// (nil: not answered; `.some(nil)`: unreadable); nil while one is unknown or can't be read.
     public static func onSameDisk(sourceFolderPaths: [String], targetPath: String, diskId: (String) -> Int64??)
         -> Bool?
     {
@@ -176,12 +153,6 @@ public enum DragRules {
             same = same && id == target
         }
         return same
-    }
-
-    /// Whether another app's drag (`effectAllowed`) offers a move; nil (not said) does.
-    public static func offersMove(effectAllowed: String?) -> Bool {
-        guard let effectAllowed else { return true }
-        return ["move", "copyMove", "linkMove", "all", "uninitialized"].contains(effectAllowed)
     }
 
     /// Nil when the drop is allowed, else why not; the first failure in this order wins.

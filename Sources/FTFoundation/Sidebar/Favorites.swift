@@ -113,15 +113,6 @@ public enum Favorites {
 
     // MARK: The Trash
 
-    /// `isTrashListingRefused`: macOS refuses to list the Trash ("EPERM: operation not permitted, scandir …") to an
-    /// app without Full Disk Access, even though everything inside it can still be read.
-    public static func isTrashListingRefused(path: String, error: String?, homePath: String) -> Bool {
-        guard let error, !path.isEmpty, JSString.equals(path, FavoriteLabel.trashPath(homePath: homePath)) else {
-            return false
-        }
-        return error.contains("EPERM") || JSString.lowercased(error).contains("operation not permitted")
-    }
-
     private static func leafName(_ path: String) -> String {
         var units = Array(path.utf16)
         while units.last == 0x2F { units.removeLast() }

@@ -276,7 +276,6 @@ struct AlertButtonsTests {
         let trash = AlertButtons.confirmation("Move to Trash", destructive: true, cancelIsDefault: false)
         #expect(trash.map(\.title) == ["Cancel", "Move to Trash"])
         #expect(trash.map(\.variant) == [.plain, .default])
-        #expect(AlertButtons.defaultIndex(trash) == 1)
         let delete = AlertButtons.confirmation("Delete", destructive: true, cancelIsDefault: true)
         #expect(delete.map(\.title) == ["Delete", "Cancel"])
         #expect(delete.map(\.variant) == [.destructive, .default])

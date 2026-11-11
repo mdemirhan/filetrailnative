@@ -12,12 +12,6 @@ public struct FolderSizeDetail: Equatable, Sendable {
     public var items: String
 }
 
-public struct SizeComparison: Equatable, Sendable {
-    public var src: String
-    public var dest: String
-    public var delta: String?
-}
-
 public enum SizeText {
     /// "1.5 MB": steps of 1,000, as Finder and the rest of macOS count, so a size reads the same here
     /// as in Finder's Get Info.
@@ -43,22 +37,6 @@ public enum SizeText {
         return "\(JSString.toFixed(value, value >= 9.95 ? 0 : 1)) \(units[unitIndex])"
     }
 
-    public static func hint(_ bytes: Int64?) -> String? {
-        bytes.map { size($0) }
-    }
-
-    public static func comparison(src: Int64?, dest: Int64?) -> SizeComparison? {
-        guard let src, let dest else { return nil }
-        let srcText = size(src)
-        let destText = size(dest)
-        var delta: String?
-        if srcText == destText, src != dest {
-            let sign = src > dest ? "+" : "-"
-            delta = "\(sign)\(size(abs(src - dest)))"
-        }
-        return SizeComparison(src: srcText, dest: destText, delta: delta)
-    }
-
     public static func folderDetail(
         sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, locale: Locale = .autoupdatingCurrent
     ) -> FolderSizeDetail {
@@ -82,29 +60,6 @@ public enum SizeText {
         if fileCount > 0 { parts.append(count(fileCount, "file", "files")) }
         if folderCount > 0 { parts.append(count(folderCount, "folder", "folders")) }
         return parts.isEmpty ? "Empty" : parts.joined(separator: ", ")
-    }
-
-    /// "5 seconds", "45 min", "2 hours", "1 day", "3 months", "2 years".
-    public static func relativeDuration(milliseconds delta: Double) -> String {
-        // Round to whole milliseconds first so 999.6 ms reads "1 second", not "1000 ms".
-        let absDelta = abs(delta).rounded(.toNearestOrAwayFromZero)
-        if absDelta < 1000 {
-            return "\(Int(absDelta)) ms"
-        }
-        func plural(_ value: Int, _ one: String, _ many: String) -> String {
-            "\(value) \(value == 1 ? one : many)"
-        }
-        let seconds = Int((absDelta / 1000).rounded(.down))
-        if seconds < 60 { return plural(seconds, "second", "seconds") }
-        let minutes = seconds / 60
-        if minutes < 60 { return "\(minutes) min" }
-        let hours = minutes / 60
-        if hours < 24 { return plural(hours, "hour", "hours") }
-        let days = hours / 24
-        if days < 30 { return plural(days, "day", "days") }
-        let months = days / 30
-        if months < 12 { return plural(months, "month", "months") }
-        return plural(days / 365, "year", "years")
     }
 }
 
@@ -151,22 +106,7 @@ public enum PermissionText {
     }
 }
 
-public struct PathSegment: Equatable, Sendable {
-    public var label: String
-    public var path: String
-}
-
 public enum PathText {
-    /// Root is represented explicitly so breadcrumb-like UIs can render `/` as a real segment.
-    public static func segments(_ path: String) -> [PathSegment] {
-        var segments = [PathSegment(label: "/", path: "/")]
-        var current = ""
-        for part in JSString.components(path, separator: 0x2F) {
-            current += "/\(part)"
-            segments.append(PathSegment(label: part, path: current))
-        }
-        return segments
-    }
 
     /// The last name of a path with the trailing slashes dropped; the path itself when there is none.
     public static func leafName(_ path: String) -> String {

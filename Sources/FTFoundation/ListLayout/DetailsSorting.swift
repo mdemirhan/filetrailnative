@@ -29,9 +29,4 @@ public enum DetailsSorting {
         }
         return (requested, requested == .modified || requested == .size ? .desc : .asc)
     }
-
-    /// Whether a column is the one a folder's list is ordered by.
-    public static func isActive(_ column: DetailColumn, sortBy: SortByPreference) -> Bool {
-        sortKey(for: column, search: false) == sortBy.rawValue
-    }
 }

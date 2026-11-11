@@ -153,14 +153,6 @@ public enum VisitedFolders {
         return folders
     }
 
-    /// Reads the text `serialize` writes (a file with anything else in it gives no folders).
-    public static func parse(_ text: String) -> [VisitedFolder] {
-        guard let data = text.data(using: .utf8),
-            let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
-        else { return [] }
-        return sanitize(object["folders"])
-    }
-
     private static func sanitizeVisits(_ items: [Any]) -> [FolderVisit] {
         var visits: [FolderVisit] = []
         for item in items {

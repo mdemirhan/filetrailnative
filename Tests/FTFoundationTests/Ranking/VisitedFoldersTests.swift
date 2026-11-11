@@ -12,6 +12,14 @@ struct VisitedFoldersTests {
         VisitedFolder(path: "/x", visits: visits.map { FolderVisit(at: Self.now - $0.age, kind: $0.kind) })
     }
 
+    /// The folders of the text `serialize` writes, read as the state store reads its file.
+    static func readBack(_ text: String) -> [VisitedFolder] {
+        guard let data = text.data(using: .utf8),
+            let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else { return [] }
+        return VisitedFolders.sanitize(object["folders"])
+    }
+
     @Test func keepsEachVisitNewestFirstAndMovesTheFolderToTheFront() {
         let day = Self.day
         let now = Self.now
@@ -116,7 +124,7 @@ struct VisitedFoldersTests {
             text
                 == "{\"folders\":[\n{\"path\":\"/a\",\"visits\":[[\(nowText),\"goTo\"],[\(dayAgoText),\"stay\"]]},\n{\"path\":\"/b\",\"visits\":[]}\n]}\n"
         )
-        #expect(VisitedFolders.parse(text) == folders)
+        #expect(Self.readBack(text) == folders)
         #expect(VisitedFolders.serialize([]) == "{\"folders\":[]}\n")
     }
 
@@ -125,7 +133,7 @@ struct VisitedFoldersTests {
         #expect(
             VisitedFolders.serialize(folders)
                 == "{\"folders\":[\n{\"path\":\"/a \\\"b\\\"\\\\c\\n\\u0001é🎉/\",\"visits\":[]}\n]}\n")
-        #expect(VisitedFolders.parse(VisitedFolders.serialize(folders)) == folders)
+        #expect(Self.readBack(VisitedFolders.serialize(folders)) == folders)
     }
 
     @Test func readsSavedVisitsLeniently() throws {

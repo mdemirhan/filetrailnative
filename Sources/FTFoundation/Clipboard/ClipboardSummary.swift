@@ -22,13 +22,6 @@ public struct ClipboardItemEntry: Equatable, Sendable {
         self.isSymlink = isSymlink
         self.isExecutable = isExecutable
     }
-
-    /// The plain folder and the plain document the file list draws.
-    public static let genericFolder = ClipboardItemEntry(
-        path: "/folder", name: "folder", fileExtension: "", kind: .directory, isHidden: false, isSymlink: false)
-    public static let genericFile = ClipboardItemEntry(
-        path: "/file", name: "file", fileExtension: "", kind: .file, isHidden: false, isSymlink: false,
-        isExecutable: false)
 }
 
 /// One item on the clipboard (`ClipboardItem`).
@@ -42,25 +35,6 @@ public struct ClipboardItem: Equatable, Sendable {
     public var isFolder: Bool?
 }
 
-/// The icon that stands for what is on the clipboard: the item's own for one item, a pair of generic ones for several.
-public enum ClipboardIcon: Equatable, Sendable {
-    public enum Contents: String, Sendable {
-        case files, folders, mixed
-    }
-
-    case item(ClipboardItemEntry)
-    case items(Contents)
-
-    /// The two icons of several items, back then front: folders, files, or a folder behind a
-    /// file.
-    public static func pair(_ contents: Contents) -> (back: ClipboardItemEntry, front: ClipboardItemEntry) {
-        (
-            contents == .files ? .genericFile : .genericFolder,
-            contents == .folders ? .genericFolder : .genericFile
-        )
-    }
-}
-
 /// What the window says about the clipboard while it holds files (`ClipboardSummary`).
 public struct ClipboardSummary: Equatable, Sendable {
     public var mode: ClipboardMode
@@ -71,14 +45,10 @@ public struct ClipboardSummary: Equatable, Sendable {
     public var label: String
     /// "3 folders and 342 files": only for several items whose kinds are all known.
     public var breakdown: String?
-    public var icon: ClipboardIcon
     public var items: [ClipboardItem]
 
     /// The button's accessible name.
     public var accessibilityLabel: String { "Clipboard: \(countLabel)" }
-
-    /// The count as the button shows it, with en-US grouping ("1,234").
-    public var countText: String { Self.grouped(count) }
 
     static func grouped(_ value: Int) -> String {
         let digits = Array(String(value.magnitude))
@@ -130,13 +100,9 @@ extension ClipboardRules {
         var parts: [String] = []
         if folders > 0 { parts.append(pluralize(folders, "folder")) }
         if files > 0 { parts.append(pluralize(files, "file")) }
-        let icon: ClipboardIcon =
-            count == 1
-            ? .item(first.entry)
-            : .items(kindsKnown && files == 0 ? .folders : kindsKnown && folders == 0 ? .files : .mixed)
         return ClipboardSummary(
             mode: mode, count: count, countLabel: countLabel, label: count == 1 ? "\(first.name) \(verb)" : countLabel,
-            breakdown: count > 1 && kindsKnown ? parts.joined(separator: " and ") : nil, icon: icon, items: items)
+            breakdown: count > 1 && kindsKnown ? parts.joined(separator: " and ") : nil, items: items)
     }
 
     /// In the order the folders first appear.

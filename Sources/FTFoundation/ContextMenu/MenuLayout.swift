@@ -4,16 +4,11 @@ import Foundation
 /// menu's submenu rows.
 public struct MenuLayout: Equatable, Sendable {
     public var minWidth: Double
-    public var submenuMinWidth: Double
     public var padding: Double
     public var borderWidth: Double
     public var rowHeight: Double
-    public var rowPaddingLeading: Double
     public var rowPaddingTrailing: Double
-    /// The leading column for a checkmark or an icon; labels of every menu start 30 points in from the edge.
-    public var checkColumn: Double
     public var rowGap: Double
-    public var shortcutGap: Double
     public var separatorHeight: Double
     public var separatorMarginVertical: Double
     public var separatorMarginHorizontal: Double
@@ -21,17 +16,14 @@ public struct MenuLayout: Equatable, Sendable {
     public var iconSize: Double
     public var iconStrokeWidth: Double
     public var chevronSize: Double
-    /// The menu is kept this far inside the window.
-    public var viewportMargin: Double
-    public var historyMaxWidth: Double
     public var historyNameMaxWidth: Double
 
     static func make() -> MenuLayout {
         MenuLayout(
-            minWidth: 220, submenuMinWidth: 180, padding: 5, borderWidth: 0.5, rowHeight: 24, rowPaddingLeading: 8,
-            rowPaddingTrailing: 10, checkColumn: 16, rowGap: 6, shortcutGap: 14, separatorHeight: 1,
+            minWidth: 220, padding: 5, borderWidth: 0.5, rowHeight: 24,
+            rowPaddingTrailing: 10, rowGap: 6, separatorHeight: 1,
             separatorMarginVertical: 5, separatorMarginHorizontal: 10, iconSize: 14, iconStrokeWidth: 1.8,
-            chevronSize: 10, viewportMargin: 8, historyMaxWidth: 420, historyNameMaxWidth: 220)
+            chevronSize: 10, historyNameMaxWidth: 220)
     }
 }
 

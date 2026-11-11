@@ -950,7 +950,7 @@ Also reported unread by the second audit (prove each): members of `SidebarLayout
   `Tests/FTFoundationTests/Formatting/TooltipsTests.swift`; tests that read `button.tooltip` read `toolTip`;
   the `tooltip` entries in `tools/capture/elements.json`.
 
-### [ ] 5.6. Pure logic with no production caller (about 550 lines)
+### [x] 5.6. Pure logic with no production caller (about 550 lines)
 
 All in `Sources/FTFoundation` unless a path says otherwise. Delete with the named tests.
 
@@ -2167,3 +2167,14 @@ anything that differed from the plan, and anything found on the way that is not 
   the button can be used and, on the toolbar, while its menu isn't open. `TooltipLayout`/`DesignTokens.tooltip` went
   with the controller; the test of the bubble over the title bar is now one of the system tooltip's state.
   `tooltip` stays as the text the buttons are given (and their accessibility help).
+- 2026-11-11. 5.6, done but for two pieces. Not done: `ResolvedShortcuts.shortcutOrder` (unread by the app, but the
+  shortcut-resolution golden test compares the claim order it gives); `constructor`/`__proto__` as modifier names
+  (`ShortcutParsing`), whose removal changes the outputs of 82 cases of `shortcut-resolution.json`, a golden change
+  the item doesn't name: asked of the owner. Differs from the plan: `RawExplorerShortcutID` keeps nine cases (the
+  plan's eight and `copyPath`), and with all nine content-only its own bucket table went too; the drag-rule
+  overloads only tests called (`operation(sourcePaths:…)`, `onSameDisk(…diskIds:)`, `offersMove(effectAllowed:)`)
+  went with their tests moved to the overloads the app calls; `relative-dates.json` lost its `short` outputs and
+  `command-availability.json` the `openPaths`/`editPaths`/`rootTree` outputs and the two inputs only they read;
+  `flow-list-layout.json` lost its 167 `range`/`columnMajor`/`chunk` cases. Tests that checked a deleted member
+  beside live behaviour (the clipboard summary, spring-loaded folders, alert buttons, visited folders' round trip)
+  keep the live part.

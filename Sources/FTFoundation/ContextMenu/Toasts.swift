@@ -72,9 +72,4 @@ public enum BottomStack {
 /// something shows (ui.md §9).
 public enum ShowDelays {
     public static let progressCardMs = 500.0
-    public static let loadingFolderMs = 400.0
-    public static let loadingTreeMs = 400.0
-    public static let pathBarMenuMs = 300.0
-    public static let spinnerMs = 300.0
-    public static let searchStopMs = 400.0
 }

@@ -7,21 +7,12 @@ public enum ClipboardLayout {
     public enum Mark {
         public static let iconSize = 12.0
         public static let gap = 8.0
-        /// The badge in Icon view: an 18 pt circle on the picture's corner, 4 pt outside it, with an
-        /// 11 pt glyph and a 1 pt edge of the accent at 70%.
-        public static let badgeSize = 18.0
-        public static let badgeIconSize = 11.0
-        public static let badgeOffset = -4.0
-        public static let badgeBorderWidth = 1.0
-        public static let badgeBorderAlpha = 0.7
         /// Cut items look taken out already.
         public static let cutLabelAlpha = 0.55
         public static let cutIconAlpha = 0.45
         /// The flash over a row: 0.45 at the start, 0.12 at 60%, gone at the end.
         public static let flashKeyTimes = [0.0, 0.6, 1.0]
         public static let flashOpacities = [0.45, 0.12, 0.0]
-        /// How long the flash lasts, in milliseconds.
-        public static let flashMs = 700.0
     }
 
     /// The clipboard menu and its rows.
@@ -61,27 +52,21 @@ public enum ClipboardLayout {
         public static let clearPaddingLeading = 10.0
     }
 
-    /// The clipboard button's count is semibold.
-    public static let countWeight = 600
-
     /// How a drop target shows on rows, the tree and the pane.
     public enum Drop {
         /// A valid row: the accent's soft fill mixed 96% over the elevated background, a 2 pt halo of the accent
-        /// border at 22% (tree rows: 3 pt at 30%), the edge at 90% with white, and a 4 pt bar 5 pt in from the top
-        /// and bottom at the leading edge.
+        /// border at 22%, the edge at 90% with white, and a 4 pt bar 5 pt in from the top and bottom at the leading
+        /// edge.
         public static let fillMix = 0.96
         public static let rowHaloWidth = 2.0
         public static let rowHaloAlpha = 0.22
-        public static let treeHaloWidth = 3.0
-        public static let treeHaloAlpha = 0.3
         public static let edgeMix = 0.9
         public static let barWidth = 4.0
         public static let barInset = 5.0
         public static let barMix = 0.88
-        /// An invalid one: the danger color at 10% with its edge at 46% (tree rows 48%) and a 1 pt halo at 20%.
+        /// An invalid one: the danger color at 10% with its edge at 46% and a 1 pt halo at 20%.
         public static let invalidFillAlpha = 0.1
         public static let invalidEdgeAlpha = 0.46
-        public static let invalidTreeEdgeAlpha = 0.48
         public static let invalidHaloAlpha = 0.2
         /// An icon in Icon view: the same fill, with a 2 pt inset edge of the accent border
         /// mixed 90% with white; an invalid one the danger fill with a 1 pt inset edge at 46%.
@@ -104,18 +89,10 @@ public enum DragTimings {
     public static let springHoldGapMs = 300.0
     /// Drop highlights go when drag-overs stop this long.
     public static let dropTargetsQuietMs = 300.0
-    /// The tree's hover expand and a tab's hover switch.
+    /// The tree's hover expand.
     public static let treeHoverExpandMs = 700.0
-    public static let tabHoverSwitchMs = 700.0
-    public static let ownDropWaitMs = 1000.0
-    public static let ownDragStaleAfterMs = 500.0
-    public static let ownDragOverQuietMs = 1000.0
-    public static let dragAwayMs = 300.0
     /// A drop with no keys held waits this long for the disks.
     public static let diskAnswerWaitMs = 1500.0
-    /// Checked every 100 ms.
-    public static let externalDragGoneMs = 400.0
-    public static let externalDragCheckMs = 100.0
     /// After a drag that ended elsewhere with a move or delete, the disk is asked which
     /// items are gone after each of these waits, one after the other (about a minute in all).
     public static let draggedAwayChecksMs: [Double] = [250, 1000, 3000, 6000, 10000, 15000, 25000]

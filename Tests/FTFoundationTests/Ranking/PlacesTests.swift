@@ -180,13 +180,6 @@ struct PlacesTests {
         #expect(GoMenuPlaceCommand.goMacintoshHD.place(homePath: "")?.path == "/")
     }
 
-    @Test func tellsThePlaceCommandsFromTheOthers() {
-        #expect(GoMenuPlaceCommand.isPlaceCommand("goDesktop"))
-        #expect(GoMenuPlaceCommand.isPlaceCommand("goTrash"))
-        #expect(!GoMenuPlaceCommand.isPlaceCommand("goHomeRootTree"))
-        #expect(!GoMenuPlaceCommand.isPlaceCommand("emptyTrash"))
-    }
-
     // MARK: History menu
 
     private let history = ["/", Self.home, "/Users/demo/src", "/Users/demo/src/app", "/Applications"]

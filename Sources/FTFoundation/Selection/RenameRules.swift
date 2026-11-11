@@ -29,8 +29,4 @@ public enum InlineRenameRules {
     public static func needsDotConfirmation(name: String, hiddenFilesShown: Bool) -> Bool {
         !hiddenFilesShown && name.hasPrefix(".")
     }
-
-    /// Folders, and links to them, whose names are selected whole when renamed. Packages (an app) keep their extension
-    /// outside the selection, as files do.
-    public static func selectsWholeName(isDirectoryKind: Bool) -> Bool { isDirectoryKind }
 }

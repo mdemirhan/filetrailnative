@@ -41,14 +41,6 @@ enum JSText {
         return parts.map { String(String.UnicodeScalarView($0)).lowercased(with: nil) }.joined(separator: "\0")
     }
 
-    static func utf8Length(_ text: String) -> Int {
-        text.utf8.count
-    }
-
-    static func utf16Length(_ text: String) -> Int {
-        text.utf16.count
-    }
-
     /// Numbers as `String(number)` writes the whole ones: digits up to 1e21, then "1e+21".
     static func integerText(_ value: Double) -> String {
         if abs(value) < 9_007_199_254_740_992 {
