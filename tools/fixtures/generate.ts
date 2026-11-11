@@ -22,7 +22,8 @@ import { deflateSync } from "node:zlib";
 const CACHE = process.env.FILETRAIL_DEV_CACHE ?? join(homedir(), "Library/Caches/filetrail-dev");
 const ROOT = join(CACHE, "fixtures");
 
-// The Swift and Electron captures freeze their clocks to this local time.
+// Recent items' times are counted back from this local time (minutesAgo); older ones are fixed dates. The
+// README screenshots freeze the app's clock eight minutes later (FILETRAIL_NOW in scripts/readme-screenshots.sh).
 export const FIXTURE_NOW = new Date(2026, 9, 13, 14, 38, 0);
 const MIN = 60_000;
 const DAY = 24 * 60 * MIN;
