@@ -133,8 +133,9 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let workspace = tab.workspace
             #expect(workspace.infoPanelOpen && workspace.slide == nil)
-            // The system's inspector item, from under the title bar, the content beside it.
-            #expect(workspace.inspectorItem.behavior == .inspector && !workspace.inspectorItem.isCollapsed)
+            // A plain item, so the toolbar's material runs over it as over the content; the panel from under the title
+            // bar, the content beside it.
+            #expect(workspace.inspectorItem.behavior == .default && !workspace.inspectorItem.isCollapsed)
             #expect(workspace.inspectorCell.frame.width == 320)
             #expect(workspace.inspectorResizer.frame.maxX == workspace.inspectorCell.frame.minX)
             let width = workspace.bounds.width

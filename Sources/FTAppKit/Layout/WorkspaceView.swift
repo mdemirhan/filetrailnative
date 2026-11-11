@@ -5,8 +5,10 @@ import FTFoundation
 /// resizer, the full height of the window, under the traffic lights; the content item holds the content and, while it
 /// is open, an 8 pt resizer and the Info panel. Because the system knows where the sidebar is, it puts the toolbar's
 /// row (`ExplorerToolbar`, over the content column) and the tab bar (under the band) over the content column
-/// only. A hidden tree collapses the sidebar item and takes no room. The Info panel is the system's inspector item
-///, which the toolbar's row and the tab bar reach over; it still slides. The sidebar is the
+/// only. A hidden tree collapses the sidebar item and takes no room. The Info panel is a plain item after the content,
+/// which the toolbar's row and the tab bar reach over; it still slides. Not the system's inspector item: the toolbar
+/// lays its material over plain items only, so over an inspector the panel's own color showed through the row, behind
+/// the search field of a narrow window, and in dark mode the row had an edge where the panel began. The sidebar is the
 /// sidebar item's own material, its edge one straight line where the item ends; the content's color runs from
 /// the window's top, so the band has no edge of its own, and a line shows under it only while the pointer is over it
 ///, as Finder's. The status bar lies over the bottom of both the content and the Info panel, as Finder's under its
@@ -20,7 +22,7 @@ final class WorkspaceView: NSView {
     let sidebarColumn = WorkspaceSidebarColumn()
     /// The content item's view: the content pane.
     let contentColumn = WorkspaceContentColumn()
-    /// The inspector item's view: the Info panel's resizer and the Info panel.
+    /// The Info panel item's view: the panel's resizer and the panel.
     let inspectorColumn = WorkspaceInspectorColumn()
     private var pointerOverBand = (content: false, inspector: false)
     /// The tree pane's cell: the sidebar's views go in it.
@@ -63,7 +65,7 @@ final class WorkspaceView: NSView {
         inspectorController.view = inspectorColumn
         sidebarItem = NSSplitViewItem(sidebarWithViewController: sidebarController)
         contentItem = NSSplitViewItem(viewController: contentController)
-        inspectorItem = NSSplitViewItem(inspectorWithViewController: inspectorController)
+        inspectorItem = NSSplitViewItem(viewController: inspectorController)
         // The sidebar's own resizer is its edge: no divider of the split's between it and the content.
         split.splitView = WorkspaceSplitView()
         split.splitView.isVertical = true

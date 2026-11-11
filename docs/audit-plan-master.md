@@ -2234,3 +2234,6 @@ anything that differed from the plan, and anything found on the way that is not 
   views and Info panel parts tests reach, `--snapshot` (see 5.10). Left alone, as unlisted: `ContentDragHooks`'s
   `itemsToDrag`/`acceptDrop` and the content's `backgroundDrop`, release members only the debug seams use; and
   `AutomationDrag`'s helpers, now used only by Automation tests. `swift build -c release` compiles.
+- 2026-11-11. Outside the plan, at the owner's request: the Info panel is a plain split item, not the system's
+  inspector item. The toolbar lays its material over plain items only, so in dark mode the panel's own color showed
+  through the toolbar's row, behind the search field of a narrow window. Already so on `main`, not a regression.
