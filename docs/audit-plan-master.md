@@ -1484,7 +1484,7 @@ build), and put the numbers in the commit body. Skip any that measures as not wo
 do the disk work off the actor (as `metadata` does) and keep only the cache bookkeeping on it. This is the largest
 change in this phase; read `ResponseCache` first and keep its de-duplication of identical requests.
 
-### [ ] 7.2. Launch does not wait on slow volumes
+### [x] 7.2. Launch does not wait on slow volumes
 
 - Blocking calls on the main thread: `ScreenGeometry.isFolder` (`Sources/FTAppKit/Windows/ExplorerWindows.swift`
   42–45), called for every restored background tab in `makeGroup` (274) and every merged tab in `addTabs`
@@ -1498,7 +1498,7 @@ change in this phase; read `ResponseCache` first and keep its de-duplication of 
   covers a restored tab that is no longer a folder, drop the check for restored tabs. For the open-request paths,
   move the lookup off the main thread and continue when it answers. Write up what you found before changing it.
 
-### [ ] 7.3. "Is the Trash empty" does not read network shares
+### [x] 7.3. "Is the Trash empty" does not read network shares
 
 - `TrashState.isEmpty` (`Sources/FTFileSystem/System/TrashState.swift` 25–28) lists `/Volumes/*` and reads
   `.Trashes/<uid>` on each, network shares included, and is called while a context menu is being built
@@ -2443,3 +2443,17 @@ anything that differed from the plan, and anything found on the way that is not 
   Found, not fixed: a read that hangs for good still holds one thread of the shared pool (as `metadata`'s detached
   task did before); 16 at once, one per pool thread here, would hold them all. Blocking reads on a GCD queue would
   close that.
+- 2026-11-11. 7.3: `isEmpty` takes its Trashes from `TrashFolders` and stops at the first name; 7.1 ms to 0.16 ms
+  with 20,000 items in the home Trash. The context menu was on the main thread: it now goes by the tab's last answer
+  (read off the main thread on becoming key, after every write, on entering the Trash and on outside changes to it)
+  and reads again behind the menu; a menu already open is not changed by that answer, the next one has it.
+- 2026-11-11. 7.2, what was found before changing it. Restored background tabs and merged tabs: one stat per tab on
+  the main thread before the window shows. The load path does not make the check needless: a kept tab whose folder
+  is gone would show in the tab bar and go to the nearest folder when chosen, where today it is left out (two tests
+  say so). So the check stays, made side by side off the main thread with a half-second limit; only a tab whose disk
+  has not answered by then is kept. `openRequestsWaiting`'s `realpath` did not hold in practice: only a `.select`
+  request reaches it when the tab's folder differs from the folder given, and the only such requests are handed
+  over before the tab's first read; probes over four test suites reached it 0 times in 7 requests. Not changed.
+  `isDirectoryOnDisk` is one stat at launch for a folder named on the command line, whose window waits for that
+  folder's read anyway. Not changed. `isDirectoryIfThere`, a stat per item opened from another app on the main
+  thread: now off it, in order; items opened at launch are taken just after `applicationDidFinishLaunching` returns.

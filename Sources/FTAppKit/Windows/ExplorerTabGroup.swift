@@ -359,9 +359,10 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     func addTabs(_ added: [OpenTabPreference]) {
         let room = max(0, AppPreferenceLimits.openTabsLimit - tabs.count)
         let home = FileManager.default.homeDirectoryForCurrentUser.path
-        for preference in added.prefix(room) {
-            let startup = StartupTabs.startupTab(preference, homePath: home)
-            guard ScreenGeometry.isFolder(startup.path), let last = tabs.last else { continue }
+        let startups = added.prefix(room).map { StartupTabs.startupTab($0, homePath: home) }
+        let kept = ScreenGeometry.keepsWaitingTabs(startups.map(\.path))
+        for (startup, keep) in zip(startups, kept) {
+            guard keep, let last = tabs.last else { continue }
             insert(MainWindowController(tab: startup, frame: tabFrame, loadNow: false), after: last, select: false)
         }
     }

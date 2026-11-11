@@ -308,6 +308,21 @@ extension ExplorerWindowlessTests {
             await closeAll(app)
         }
 
+        @Test func aWaitingTabOnADiskThatDoesNotAnswerIsKeptWithoutWaitingForIt() {
+            let held = DispatchSemaphore(value: 0)
+            let kept = ScreenGeometry.keepsWaitingTabs(["/folder", "/file", "/stalled"], wait: 0.2) { path in
+                switch path {
+                case "/folder": return true
+                // Answers only once let go, after the check has answered; a check that waited for it would hear
+                // "not a folder" after 10 s.
+                case "/stalled": return held.wait(timeout: .now() + 10) == .success
+                default: return false
+                }
+            }
+            held.signal()
+            #expect(kept == [true, false, true])
+        }
+
         @Test func restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped() async throws {
             let folder = try folders()
             defer { folder.remove() }

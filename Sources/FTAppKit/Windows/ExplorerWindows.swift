@@ -2,6 +2,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import os
 
 /// Screen places as `app-state.json` keeps them: from the top left of the main screen, y growing down.
 @MainActor
@@ -39,9 +40,30 @@ enum ScreenGeometry {
         return self.bounds(of: screen?.visibleFrame ?? frame)
     }
 
-    static func isFolder(_ path: String) -> Bool {
+    nonisolated static func isFolder(_ path: String) -> Bool {
         var isDirectory: ObjCBool = false
         return FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) && isDirectory.boolValue
+    }
+
+    /// Which of `paths` may stay as waiting tabs: a folder, or one whose disk did not answer within `wait` seconds.
+    /// They are looked at side by side off the main thread, so a tab on a disk that stopped answering (a network
+    /// share gone quiet) holds up the window at most `wait`, not until the disk gives up; such a tab is kept, and
+    /// goes to the nearest folder that is there when it is shown.
+    static func keepsWaitingTabs(
+        _ paths: [String], wait: Double = 0.5,
+        isFolder: @escaping @Sendable (String) -> Bool = { ScreenGeometry.isFolder($0) }
+    ) -> [Bool] {
+        guard !paths.isEmpty else { return [] }
+        let answers = OSAllocatedUnfairLock<[Bool?]>(initialState: Array(repeating: nil, count: paths.count))
+        let looked = DispatchGroup()
+        for (index, path) in paths.enumerated() {
+            DispatchQueue.global(qos: .userInitiated).async(group: looked) {
+                let folder = isFolder(path)
+                answers.withLock { $0[index] = folder }
+            }
+        }
+        _ = looked.wait(timeout: .now() + wait)
+        return answers.withLock { $0.map { $0 ?? true } }
     }
 }
 
@@ -244,16 +266,15 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         let resolved = StartupTabs.resolve(
             preferences, homePath: home, startupFolderPath: launch.startupFolderPath, restoreTabs: launch.restoreTabs)
         // A waiting tab whose folder is gone is dropped; the one in front reads its own, and opens Home if it can't.
+        let startups = resolved.tabs.map { StartupTabs.withoutRemovedFavorite($0, preferences) }
+        let waiting = startups.indices.filter { $0 != resolved.activeIndex }
+        let kept = ScreenGeometry.keepsWaitingTabs(waiting.map { startups[$0].path })
+        let dropped = Set(zip(waiting, kept).filter { !$0.1 }.map(\.0))
         var tabs: [StartupTab] = []
         var active = 0
-        for (index, saved) in resolved.tabs.enumerated() {
-            let startup = StartupTabs.withoutRemovedFavorite(saved, preferences)
-            if index == resolved.activeIndex {
-                active = tabs.count
-                tabs.append(startup)
-            } else if ScreenGeometry.isFolder(startup.path) {
-                tabs.append(startup)
-            }
+        for (index, startup) in startups.enumerated() where !dropped.contains(index) {
+            if index == resolved.activeIndex { active = tabs.count }
+            tabs.append(startup)
         }
         let frame = ScreenGeometry.frame(for: record.bounds)
         nextGroupNumber += 1
