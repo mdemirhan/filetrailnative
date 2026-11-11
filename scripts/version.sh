@@ -5,11 +5,9 @@
 # with no output outside a repository. Usage: scripts/version.sh [--bundle]   --bundle: numbers only, what macOS shows
 # (CFBundleShortVersionString).
 set -euo pipefail
-
-# The highest release among the tags on stdin; nothing when there is none.
-latest_release() {
-    { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; } | sed 's/^v//' | sort -t. -k1,1n -k2,2n -k3,3n | tail -n 1
-}
+# latest_release: what a release tag is, as scripts/release.sh reads it.
+# shellcheck source=lib/release-lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/release-lib.sh"
 
 tags_at_commit="$(git tag --points-at HEAD 2>/dev/null)"
 tagged="$(latest_release <<<"$tags_at_commit")"
