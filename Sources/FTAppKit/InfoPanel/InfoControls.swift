@@ -3,9 +3,7 @@ import FTFoundation
 
 extension NSView {
     /// The palette of the view's own appearance (light or dark) with the app's accent.
-    var infoTheme: Theme {
-        Theme(appearance: ChromeColors.appearance(of: self), accentHex: AppearanceModel.shared.accentHex)
-    }
+    var infoTheme: Theme { Theme.of(self) }
 }
 
 /// The height of a line of text in the font, as the browser's `line-height: normal` rounds it.

@@ -23,6 +23,25 @@ public struct Theme: Equatable, Sendable {
     }
 }
 
+extension Theme {
+    @MainActor private static var made: [String: Theme] = [:]
+
+    /// The theme for a view: the palette of its appearance, the app's accent. Made once per appearance and accent, as
+    /// views ask for it each time they draw.
+    @MainActor
+    static func of(_ view: NSView?) -> Theme {
+        let appearance = ChromeColors.appearance(of: view)
+        let hex = AppearanceModel.shared.accentHex
+        let key = "\(appearance)-\(hex)"
+        if let known = made[key] { return known }
+        // A color dragged in the color panel is many accents in turn: the old ones go.
+        if made.count >= 8 { made.removeAll() }
+        let theme = Theme(appearance: appearance, accentHex: hex)
+        made[key] = theme
+        return theme
+    }
+}
+
 /// What a selected row is painted with.
 public struct SelectionColors: Equatable, Sendable {
     public var background: RGBA

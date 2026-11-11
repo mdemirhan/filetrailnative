@@ -72,17 +72,7 @@ enum SidebarListRow: Equatable {
 
 /// Colors the sidebar draws with, from the app's accent and the look of the view it is drawn in.
 enum SidebarColors {
-    @MainActor private static var cache: [String: Theme] = [:]
-
     /// The theme for a view: the palette of its appearance, the app's accent.
     @MainActor
-    static func theme(for view: NSView?) -> Theme {
-        let appearance = ChromeColors.appearance(of: view)
-        let hex = AppearanceModel.shared.accentHex
-        let key = "\(appearance)-\(hex)"
-        if let known = cache[key] { return known }
-        let made = Theme(appearance: appearance, accentHex: hex)
-        cache[key] = made
-        return made
-    }
+    static func theme(for view: NSView?) -> Theme { Theme.of(view) }
 }
