@@ -346,19 +346,4 @@ struct WriteServiceReviewTests {
 
         #expect(report.issues.map(\.code) == [.parentIntoChild])
     }
-
-    // Ensures the analysis sees .asar as a regular file rather than reading into it as a folder.
-    @Test func analyzesAsarFilesAsFilesNotDirectoryTraversals() async throws {
-        let service = WriteService(
-            .init(
-                fileSystem: PathSetFileSystem(
-                    existingPaths: ["/target", "/source", "/source/app.asar"], directoryPaths: ["/target", "/source"],
-                    fileSizes: ["/source/app.asar": 4096])))
-
-        let report = try await analyze(service, request(["/source"], into: "/target"))
-
-        #expect(report.issues.isEmpty)
-        // The folder /target/source and the file /target/source/app.asar.
-        #expect(report.summary.totalNodeCount == 2)
-    }
 }

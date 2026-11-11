@@ -289,22 +289,6 @@ struct WriteServicePasteTests {
         #expect(terminal?.result?.status == .completed)
     }
 
-    // An .asar archive is copied as the file it is, not as a folder.
-    @Test func copiesAsarFilesAsRegularFilesNotAsVirtualDirectories() async throws {
-        try await withTemporaryDirectory { root in
-            try Disk.write(root.path + "/source/app.asar", "asar-archive-content")
-            try Disk.makeDirectories(root.path + "/target")
-            let (service, events) = nativeService("asar-copy-op")
-
-            _ = try await startPaste(service, .copy, [root.path + "/source"], into: root.path + "/target")
-
-            let terminal = await events.waitForTerminal("asar-copy-op")
-            #expect(terminal?.result?.status == .completed)
-            #expect(Disk.lstat(root.path + "/target/source/app.asar")?.type == .file)
-            #expect(Disk.read(root.path + "/target/source/app.asar") == "asar-archive-content")
-        }
-    }
-
     @Test func duplicatesAFileWhenCopyPasteTargetsTheSameDirectory() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/workspace/notes.txt", "hello")

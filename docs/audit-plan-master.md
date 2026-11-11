@@ -1012,7 +1012,7 @@ Also, from the second audit (prove each the same way):
   and `FlattenedTreeNode`.
 - `AppClock.isFrozen` goes in 5.12 with the geometry dump; `AppClock` itself stays.
 
-### [ ] 5.7. Dead code in the file-system module (about 400 lines)
+### [x] 5.7. Dead code in the file-system module (about 400 lines)
 
 - `Sources/FTFileSystem/AppState/WindowBoundsRecorder.swift` (whole) and its test file; move
   `saveDelayMilliseconds = 160` to `ExplorerWindowController` (line 113).
@@ -2178,3 +2178,20 @@ anything that differed from the plan, and anything found on the way that is not 
   `flow-list-layout.json` lost its 167 `range`/`columnMajor`/`chunk` cases. Tests that checked a deleted member
   beside live behaviour (the clipboard summary, spring-loaded folders, alert buttons, visited folders' round trip)
   keep the live part.
+- 2026-11-11. 5.7 and 5.8 were done in worktrees of their own beside the main work and brought over commit by commit.
+  5.7, done. Kept: `FILETRAIL_DEBUG_TIMINGS` (it also turns debug logging on), `ResponseCache.sizes` (a test seam:
+  nine reads in two test files), `VolumeWatcher.isScheduled` (a test's one way to see a fired timer let go of).
+  `resolvePath` went; the path-suggestions golden's `resolved` field is worked out in its test instead, unchanged.
+  NativeFolderSize's queue went after checking that `FolderSizeJobs` never starts a walk while one runs (now an
+  assertion). `LogArg.error` went with `LogFormat.describe`, its only user.
+- 2026-11-11. 5.8, partly done: the journal kind test, `whenIdle`, `sendToEachWindow`, `pathExists`,
+  `FolderMetadata.apply` (`applyDirectoryMetadata` has tests of its own through the paste tests), the Keep Both path
+  wrapper, the journal "replace" kind and hidden-folder part branch (proof: no tag's code ever made a Replace entry
+  with a kind or a part inside a hidden folder; unknown kinds and keys are still tolerated, with a test),
+  `RecoveryLogger.system`, `UndoHistory.entries`, the `resolveSingleNodeWithAction` overload (moved into the test file
+  that used it), the `.asar` tests. Not done, each needing tests or goldens the item doesn't name: `NativeError`'s
+  unread fields (six test files read them); the analysis `warnings`/thresholds and `disposition`/`.blocked` (built by
+  FTAppKit tests and about 20 FTOperations test files); `AppState`'s `legacyWindowID` and top-level `"window"`
+  (161 cases of `prefs-sanitize.json`; the preferences-only fallback is needed anyway by readme-screenshots.sh);
+  the hand-written `Codable` on the Undo types (its test, `UndoLogCodingTests`, would go). Found: `.queued` is
+  produced (`startCopyPasteAnalysis` returns its handle queued), so it stays.
