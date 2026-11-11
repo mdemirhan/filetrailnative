@@ -101,19 +101,16 @@ import Testing
         #expect(window.progress.last?.status == .cancelled)
     }
 
-    @Test func namesACopyAsACopyAndHasNothingToWaitForWhenIdle() async throws {
+    @Test func namesACopyAsACopy() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
         #expect(coordinator.activeOperation == nil)
-        await coordinator.whenIdle()
 
         try await Coordinators.startPaste(coordinator, TestWindow())
         service.emit(Coordinators.event(.running))
         #expect(coordinator.activeOperation == ActiveWriteOperation(operationId: "copy-op-1", kind: .copy))
-        let idle = Task { await coordinator.whenIdle() }
         service.emit(Coordinators.event(.completed))
-        await idle.value
-        #expect(coordinator.activeOperation == nil)
+        _ = try await Coordinators.waitFor { coordinator.activeOperation == nil ? true : nil }
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
@@ -250,8 +247,7 @@ import Testing
         #expect(coordinator.activeOperation?.operationId == handle.operationId)
         #expect(coordinator.runWriteAlone {} == nil)
         gate.open()
-        await coordinator.whenIdle()
-        #expect(coordinator.runWriteAlone {} != nil)
+        _ = try await Coordinators.waitFor { coordinator.runWriteAlone {} }
         await coordinator.shutDown(maxWaitMs: 0)
     }
 

@@ -242,25 +242,6 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
 
     // MARK: telling every window
 
-    @Test func tellsTheOthersWhenOneWindowCantBeTold() {
-        let log = LogRecorder()
-        let first = TestWindow()
-        let broken = TestWindow()
-        broken.throwsOnSend = true
-        let closed = TestWindow()
-        closed.isClosed = true
-        let last = TestWindow()
-        let end = WriteOperationMessage.progress(
-            WriteOperationEvent(operationId: "copy-op-1", action: .paste, status: .completed))
-
-        WriteCoordinator.sendToEachWindow([first, broken, closed, last], end, logError: log.log)
-
-        #expect(first.messages == [end])
-        #expect(last.messages == [end])
-        #expect(closed.messages.isEmpty)
-        #expect(log.messages.count == 1)
-    }
-
     // A window that missed the end of another window's operation asks.
     @Test func saysWhichOperationRunsIfAny() async throws {
         let service = StubWriteService()

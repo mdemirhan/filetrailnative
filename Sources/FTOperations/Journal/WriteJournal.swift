@@ -86,11 +86,6 @@ public enum WriteJournalEntry: Equatable, Sendable {
         case .batchRename(let entry): entry.id
         }
     }
-
-    public var isReplace: Bool {
-        if case .replace = self { return true }
-        return false
-    }
 }
 
 /// Where writes that leave items under hidden names while they run are written down, so a crash can't strand

@@ -42,7 +42,6 @@ struct CopyPasteFingerprintTests {
                 == NodeFingerprint(
                     exists: false, kind: .missing, size: nil, mtimeMs: nil, mode: nil, ino: nil, dev: nil,
                     symlinkTarget: nil))
-        #expect(!pathExists(fileSystem, "/missing"))
     }
 
     @Test func treatsNullInodeAndDeviceValuesAsFallbackCompatible() {
@@ -78,12 +77,6 @@ struct CopyPasteFingerprintTests {
         #expect(
             !fingerprintsEqual(
                 with { $0.symlinkTarget = "caf\u{e9}" }, with { $0.symlinkTarget = "cafe\u{301}" }))
-    }
-
-    @Test func reportsExistingPathsThroughPathExists() {
-        let fileSystem = MockIdentityFileSystem([("/workspace", .directory())])
-
-        #expect(pathExists(fileSystem, "/workspace"))
     }
 }
 

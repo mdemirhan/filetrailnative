@@ -66,7 +66,7 @@ public final class WriteCoordinator {
     var analysisOwners: [String: any WriteOperationWindow] = [:]
     var watchedAnalyses: Set<String> = []
     var throttles: [String: ProgressThrottle] = [:]
-    // Callers waiting for the write slot to be free (see `whenIdle`).
+    // Callers waiting for the write slot to be free (see `idleOrTimedOut`).
     var idleWaiters: [@MainActor () -> Void] = []
     // While a copy-paste is being started: the latest event of an operation the start request hasn't recorded yet.
     var eventsBeforeStart: [String: CopyPasteProgressEvent]?
@@ -175,15 +175,6 @@ public final class WriteCoordinator {
         let waiters = idleWaiters
         idleWaiters = []
         for waiter in waiters { waiter() }
-    }
-
-    /// `whenIdle`: returns once no operation holds the write slot: at once if none does, otherwise when the running
-    /// one has finished (it has sent its last event by then).
-    public func whenIdle() async {
-        if slotHolder == nil { return }
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            idleWaiters.append { continuation.resume() }
-        }
     }
 
     /// The operation holding the slot. A rename or new folder still being checked has changed

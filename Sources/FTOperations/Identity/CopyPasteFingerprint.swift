@@ -305,10 +305,6 @@ func realItemPath(_ fileSystem: some IdentityFileSystem, _ path: String) -> Stri
     return NodePath.join(folder, NodePath.basename(path))
 }
 
-public func pathExists(_ fileSystem: some IdentityFileSystem, _ path: String) -> Bool {
-    captureFingerprint(fileSystem, path).exists
-}
-
 /// The first id that is treated as unknown: 2^53, past which a JSON number (a double) can't hold every id exactly.
 private let firstUnsafeFileId: UInt64 = 1 << 53
 
