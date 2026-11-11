@@ -79,7 +79,8 @@ private final class Shown {
     private let session: ExplorerWriteSession
 
     init() {
-        coordinator = WriteCoordinator(writeService: service, options: WriteCoordinatorOptions())
+        coordinator = WriteCoordinator(
+            writeService: service, fileSystem: NativeWriteFileSystem(), options: WriteCoordinatorOptions())
         session = ExplorerWriteSession(coordinator: coordinator, host: host, clipboard: clipboard)
     }
 

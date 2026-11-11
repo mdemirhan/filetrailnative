@@ -32,9 +32,9 @@ public enum WriteGuards {
     /// system, the apps or everyone's files, the home folder and its own folders, or a whole disk. The same folder
     /// can be reached by other paths ("/System/Volumes/Data/Users/me" is the home folder, "/USERS" is "/Users"), so
     /// besides the path, what is on disk is compared: the item's identity, and whether it is where a disk is
-    /// mounted. Without `fileSystem`, the paths alone.
+    /// mounted.
     public static func assertNotSystemLocation(
-        _ paths: [String], verb: String, fileSystem: (any IdentityFileSystem)?, homePath: String
+        _ paths: [String], verb: String, fileSystem: any IdentityFileSystem, homePath: String
     ) throws {
         let home = NodePath.resolve(homePath)
         var protectedIds: Set<String>?
@@ -42,7 +42,6 @@ public enum WriteGuards {
             if let refusal = Paths.systemLocationRefusal(path: path, verb: verb, homePath: home) {
                 throw WriteCoordinatorError(refusal)
             }
-            guard let fileSystem else { continue }
             let resolved = NodePath.resolve(path)
             // Only folders are protected; a file or a link is never one of them.
             guard let stats = try? fileSystem.lstat(resolved), stats.isDirectory else { continue }

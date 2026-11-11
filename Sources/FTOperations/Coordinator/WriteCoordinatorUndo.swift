@@ -66,14 +66,6 @@ extension WriteCoordinator {
     /// nothing.
     public nonisolated static let undoCheckWithinMs: Double = 10_000
 
-    /// The file system Undo writes with: the app's has the ACL calls; another local one goes without them.
-    func undoFileSystem() throws -> any UndoFileSystem {
-        if let fileSystem = fileSystem as? any UndoFileSystem {
-            return fileSystem
-        }
-        return LocalAsUndoFileSystem(try localFileSystem())
-    }
-
     /// `undo:prepare`: what undoing (or redoing) the last operation would ask, without changing anything. It doesn't
     /// take the write slot.
     public func prepareUndo(_ direction: UndoDirection) async throws -> UndoPrepared {
@@ -87,7 +79,7 @@ extension WriteCoordinator {
         guard let history, let entry = history.top(direction) else {
             return .refused(direction == .undo && history?.menu().cantUndo == true ? .cantUndo : .nothing)
         }
-        let fileSystem = try undoFileSystem()
+        let fileSystem = self.fileSystem
         let generation = history.generation
         undo.ticketCount += 1
         let ticket = "\(direction.rawValue):\(entry.id):\(generation):\(undo.ticketCount)"
@@ -130,7 +122,7 @@ extension WriteCoordinator {
         // Things may have changed on disk while the questions were open: what would be asked now must have been asked
         // and agreed to (each question is all or nothing).
         let asked = try entryAsked().look.questions
-        let fileSystem = try undoFileSystem()
+        let fileSystem = self.fileSystem
         let withinMs = options.undoCheckWithinMs
         return try await prepareWithReservedSlot { () async throws -> UndoQuestions? in
             let units = try entryAsked().entry.units
@@ -280,45 +272,4 @@ extension WriteCoordinator {
             }
         }
     }
-}
-
-/// A local file system Undo writes with as it is, without the ACL calls it doesn't have.
-struct LocalAsUndoFileSystem: UndoFileSystem {
-    let base: any LocalWriteFileSystem
-
-    init(_ base: any LocalWriteFileSystem) {
-        self.base = base
-    }
-
-    func rename(_ from: String, _ to: String) throws { try base.rename(from, to) }
-    func renameExclusive(_ from: String, _ to: String) throws { try base.renameExclusive(from, to) }
-    func lstat(_ path: String) throws -> WriteServiceStats { try base.lstat(path) }
-    func stat(_ path: String) throws -> WriteServiceStats { try base.stat(path) }
-    func realpath(_ path: String) throws -> String { try base.realpath(path) }
-    func readdir(_ path: String) throws -> [String] { try base.readdir(path) }
-    func readlink(_ path: String) throws -> String { try base.readlink(path) }
-    func isCaseSensitive(_ path: String) throws -> Bool? { try base.isCaseSensitive(path) }
-    func isPackage(_ path: String) throws -> Bool? { try base.isPackage(path) }
-    func isAppleDouble(_ path: String) -> Bool { base.isAppleDouble(path) }
-    func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
-    func mkdir(_ path: String) throws { try base.mkdir(path) }
-    func rm(_ path: String, recursive: Bool, force: Bool) throws {
-        try base.rm(path, recursive: recursive, force: force)
-    }
-    func rmdir(_ path: String) throws { try base.rmdir(path) }
-    func copyFile(
-        _ source: String, _ destination: String, stop: StopSignal?, onProgress: (@Sendable (Int64) -> Void)?
-    ) throws {
-        try base.copyFile(source, destination, stop: stop, onProgress: onProgress)
-    }
-    func getFlags(_ path: String) throws -> UInt32 { try base.getFlags(path) }
-    func setFlags(_ path: String, _ flags: UInt32) throws { try base.setFlags(path, flags) }
-    var chmod: ((String, UInt32) throws -> Void)? { base.chmod }
-    var utimes: ((String, Double, Double) throws -> Void)? { base.utimes }
-    var copyMetadata: ((String, String) throws -> Void)? { base.copyMetadata }
-    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { base.copyMetadataToRunInPlace }
-    var setAcl: ((String, String?) throws -> Void)? { base.setAcl }
-    var trash: ((String) throws -> String?)? { base.trash }
-    var canModifyFolder: ((String) throws -> Void)? { base.canModifyFolder }
-    var itemSize: ((String) throws -> ItemSize)? { base.itemSize }
 }

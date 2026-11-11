@@ -36,7 +36,7 @@ extension WriteCoordinator {
         return try await prepareWithReservedSlot {
             try await self.assertNotSystemLocation(paths, verb: "moved to the Trash")
         } then: { _, reservation in
-            let fileSystem = try localFileSystem()
+            let fileSystem = self.fileSystem
             return try queueLocalWriteOperation(action: .trash, window: window, reservation: reservation) {
                 [weak self, weak window] local in
                 // Only what this Trash finds without a Trash may be deleted next.

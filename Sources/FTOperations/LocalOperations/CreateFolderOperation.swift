@@ -17,7 +17,7 @@ extension WriteCoordinator {
             try await self.prepareCreateFolder(
                 parentDirectoryPath: parentDirectoryPath, folderName: folderName, nextFreeName: nextFreeName)
         } then: { destinationPath, reservation in
-            let fileSystem = try localFileSystem()
+            let fileSystem = self.fileSystem
             // As for a copy: undoing it would mean deleting it, on a disk without a Trash.
             let undoable: @MainActor () -> Bool = { [weak self] in
                 self?.canBeTrashed(in: NodePath.dirname(destinationPath)) ?? false
@@ -34,7 +34,7 @@ extension WriteCoordinator {
     {
         let parentDirectoryPath = NodePath.resolve(rawParent)
         try WriteGuards.assertNotIntoTrash(parentDirectoryPath, verb: "made in", homePath: homePath)
-        let fileSystem = try localFileSystem()
+        let fileSystem = self.fileSystem
         let folderName = InlineRenameRules.trimmedName(rawName)
         return try await LocalOperations.onDisk {
             let destinationPath = NodePath.join(parentDirectoryPath, folderName)

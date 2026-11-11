@@ -27,7 +27,7 @@ extension WriteCoordinator {
             try await self.assertNotSystemLocation(paths, verb: "deleted")
             try await self.assertDeletableImmediately(paths, window: window)
         } then: { _, reservation in
-            let fileSystem = try localFileSystem()
+            let fileSystem = self.fileSystem
             return try queueLocalWriteOperation(action: .deleteImmediately, window: window, reservation: reservation) {
                 [weak self, weak window] local in
                 // What this window was asked about, kept for the whole operation: the window closing lets go of its
@@ -41,7 +41,7 @@ extension WriteCoordinator {
     /// `assertDeletableImmediately`: the folder an item is in is looked up through any symlinks, so a link inside
     /// the Trash can't lead the deletion out of it.
     func assertDeletableImmediately(_ paths: [String], window: any WriteOperationWindow) async throws {
-        let fileSystem = try localFileSystem()
+        let fileSystem = self.fileSystem
         let homePath = homePath
         let asked = recordOfItemsWithoutTrash(window)?.items ?? [:]
         try await LocalOperations.onDisk {

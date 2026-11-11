@@ -190,7 +190,8 @@ private final class Finishing {
 
     private func makeActions(_ service: HeldAnalysisService) -> (WindowWriteActions, () -> Void) {
         let host = FakeHost()
-        let coordinator = WriteCoordinator(writeService: service, options: WriteCoordinatorOptions())
+        let coordinator = WriteCoordinator(
+            writeService: service, fileSystem: NativeWriteFileSystem(), options: WriteCoordinatorOptions())
         let session = ExplorerWriteSession(coordinator: coordinator, host: host, clipboard: SharedClipboard())
         var dialogs = WriteDialogs()
         dialogs.show = { _, _, _ in }

@@ -39,7 +39,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         var broadcasts: [(WriteOperationEvent, ObjectIdentifier)] = []
         let successor = TestWindow()
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(
                 broadcastProgress: { broadcasts.append(($0, ObjectIdentifier($1))) }, successorOf: { _ in successor }))
         let owner = TestWindow()
@@ -66,7 +66,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     // The window follows what a paste after Cut moved, as it follows a Move To.
     @Test func tellsTheWindowWhetherItCopiedOrMovedTheItems() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
 
@@ -85,7 +85,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let service = StubWriteService()
         var broadcasts: [WriteOperationEvent] = []
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(broadcastProgress: { event, _ in broadcasts.append(event) }))
         let owner = TestWindow()
         try await Coordinators.startPaste(coordinator, owner)
@@ -113,7 +113,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let service = StubWriteService()
         let successor = TestWindow()
         let coordinator = WriteCoordinator(
-            writeService: service, options: WriteCoordinatorOptions(successorOf: { _ in successor }))
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
+            options: WriteCoordinatorOptions(successorOf: { _ in successor }))
         let owner = TestWindow()
         try await Coordinators.startPaste(coordinator, owner, clearsCutClipboard: "2026-10-07T10:00:00.000Z")
 
@@ -132,7 +133,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let service = StubWriteService()
         let successor = TestWindow()
         let coordinator = WriteCoordinator(
-            writeService: service, options: WriteCoordinatorOptions(successorOf: { _ in successor }))
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
+            options: WriteCoordinatorOptions(successorOf: { _ in successor }))
         let owner = TestWindow()
         try await Coordinators.startPaste(coordinator, owner)
         service.emit(Coordinators.event(.awaitingResolution, runtimeConflict: Coordinators.conflict("conflict-1")))
@@ -153,7 +155,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         service.resolveAnswer = false
         let successor = TestWindow()
         let coordinator = WriteCoordinator(
-            writeService: service, options: WriteCoordinatorOptions(successorOf: { _ in successor }))
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
+            options: WriteCoordinatorOptions(successorOf: { _ in successor }))
         let owner = TestWindow()
         try await Coordinators.startPaste(coordinator, owner)
         service.emit(Coordinators.event(.awaitingResolution, runtimeConflict: Coordinators.conflict("conflict-1")))
@@ -179,7 +182,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let service = StubWriteService()
         let successor = TestWindow()
         let coordinator = WriteCoordinator(
-            writeService: service, options: WriteCoordinatorOptions(successorOf: { _ in successor }))
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
+            options: WriteCoordinatorOptions(successorOf: { _ in successor }))
         let owner = TestWindow()
         try await Coordinators.startPaste(coordinator, owner, clearsCutClipboard: clearsCutClipboard)
         return (coordinator, service, owner, successor)
@@ -224,7 +228,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let third = TestWindow()
         var successor = second
         let coordinator = WriteCoordinator(
-            writeService: service, options: WriteCoordinatorOptions(successorOf: { _ in successor }))
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
+            options: WriteCoordinatorOptions(successorOf: { _ in successor }))
         let owner = TestWindow()
         try await Coordinators.startPaste(coordinator, owner)
         #expect(coordinator.adoptedOperation(window: second) == nil)
@@ -245,7 +250,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     // A window that missed the end of another window's operation asks.
     @Test func saysWhichOperationRunsIfAny() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         #expect(coordinator.activeOperationId == nil)
 
@@ -261,7 +266,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
 
     @Test func cancelsAnAnalysisWhenItsWindowCloses() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.analyze(coordinator, window)
 
@@ -278,7 +283,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             let release = DispatchSemaphore(value: 0)
             defer { release.signal() }
             let coordinator = WriteCoordinator(
-                writeService: WriteService(WriteServiceDependencies(fileSystem: StuckFileSystem(release: release))))
+                writeService: WriteService(WriteServiceDependencies(fileSystem: StuckFileSystem(release: release))),
+                fileSystem: TestLocalFileSystem.stub())
             let first = TestWindow()
             let second = TestWindow()
             let source = root.appending("a.txt").path
@@ -300,7 +306,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     @Test func doesntListenToAWindowForAnAnalysisItReplacedOrPastedFrom() async throws {
         let service = StubWriteService()
         service.analysisIds = ["analysis-1", "analysis-2"]
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
 
         try await Coordinators.analyze(coordinator, window)
@@ -326,7 +332,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             let source = root.appending("src/a.txt").path
             try Data("a".utf8).write(to: URL(fileURLWithPath: source))
             let coordinator = WriteCoordinator(
-                writeService: WriteService(WriteServiceDependencies(fileSystem: NativeWriteFileSystem())))
+                writeService: WriteService(WriteServiceDependencies(fileSystem: NativeWriteFileSystem())),
+                fileSystem: TestLocalFileSystem.stub())
             let first = TestWindow()
             let second = TestWindow()
             @MainActor func analyzed(_ window: TestWindow, _ analysisId: String) async throws -> CopyPasteAnalysisUpdate
@@ -370,7 +377,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let log = LogRecorder()
         var broadcasts: [(WriteOperationEvent, ObjectIdentifier)] = []
         let coordinator = WriteCoordinator(
-            writeService: StubWriteService(),
+            writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(
                 broadcastProgress: { broadcasts.append(($0, ObjectIdentifier($1))) }, logError: log.log))
         let window = TestWindow()
@@ -394,7 +401,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     @Test func goesOnWhenTheOtherWindowsCantBeTold() async throws {
         let log = LogRecorder()
         let coordinator = WriteCoordinator(
-            writeService: StubWriteService(),
+            writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(
                 broadcastProgress: { _, _ in throw OperationError("A window broke.") }, logError: log.log))
         let window = TestWindow()
@@ -415,7 +422,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         var broadcasts: [WriteOperationEvent] = []
         var finished: [FinishedWrite] = []
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(
                 recordUndo: { finished.append($0) },
                 // Reading the mount table goes wrong.
@@ -446,7 +453,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         var starting = 0
         var ended = 0
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(
                 caches: WriteCaches(writeStarting: { starting += 1 }, writeEnded: { ended += 1 })))
         let window = TestWindow()
@@ -470,7 +477,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         let log = LogRecorder()
         var finished: [FinishedWrite] = []
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(
                 recordUndo: { finished.append($0) },
                 caches: WriteCaches(forget: { _, _ in throw OperationError("A folder size broke.") }),
@@ -489,7 +496,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
 
     @Test func sendsTheEndOfALocalOperationWhenForgettingWhatItChangedGoesWrong() async throws {
         let coordinator = WriteCoordinator(
-            writeService: StubWriteService(),
+            writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(
                 caches: WriteCaches(forget: { _, _ in throw OperationError("A folder size broke.") })))
         let window = TestWindow()

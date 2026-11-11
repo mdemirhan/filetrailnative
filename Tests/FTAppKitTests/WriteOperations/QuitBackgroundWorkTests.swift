@@ -86,7 +86,7 @@ private final class HeldFolderSize: FolderSizeNative {
     func quittingWhileAFolderIsMeasuredEndsAtOnce() async {
         let native = HeldFolderSize()
         let jobs = FolderSizeJobs(native: native)
-        let coordinator = WriteCoordinator(writeService: IdleWriteService())
+        let coordinator = WriteCoordinator(writeService: IdleWriteService(), fileSystem: NativeWriteFileSystem())
         // Two owners: one owner's second measurement would stop its first itself.
         let running = jobs.start(FolderSizeStartRequest(path: "/held/a", recalculate: true), owner: 1)
         let waiting = jobs.start(FolderSizeStartRequest(path: "/held/b", recalculate: true), owner: 2)

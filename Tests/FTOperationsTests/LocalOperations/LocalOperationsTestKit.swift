@@ -10,7 +10,7 @@ import os
 
 /// Every call goes through a closure the test can replace, and is recorded. Calls come from the operations' disk
 /// threads.
-final class TestLocalFileSystem: LocalWriteFileSystem, @unchecked Sendable {
+final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
     struct Calls {
         var lstat: [String] = []
         var stat: [String] = []

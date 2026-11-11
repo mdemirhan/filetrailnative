@@ -12,14 +12,6 @@ struct PreparedRename: Sendable {
 }
 
 extension WriteCoordinator {
-    /// The file system the local operations write with; the app's always is one.
-    func localFileSystem() throws -> any LocalWriteFileSystem {
-        guard let fileSystem = fileSystem as? any LocalWriteFileSystem else {
-            throw WriteCoordinatorError("File Trail can\u{2019}t write to the disk here.")
-        }
-        return fileSystem
-    }
-
     /// Renames one item in its folder. What the name and the disk allow is checked while the write slot is held for
     /// it, so nothing starts meanwhile; a refusal throws with the sentence to show.
     @discardableResult
@@ -33,7 +25,7 @@ extension WriteCoordinator {
         return try await prepareWithReservedSlot {
             try await self.prepareRename(sourcePath: sourcePath, destinationName: destinationName)
         } then: { operation, reservation in
-            let fileSystem = try localFileSystem()
+            let fileSystem = self.fileSystem
             return try queueLocalWriteOperation(action: .rename, window: window, reservation: reservation) { local in
                 await Self.executeRename(operation, local, fileSystem)
             }
@@ -46,7 +38,7 @@ extension WriteCoordinator {
         let sourcePath = NodePath.resolve(rawSourcePath)
         try WriteGuards.assertNotProtectedPath([sourcePath], homePath: homePath)
         try await assertNotSystemLocation([sourcePath], verb: "renamed")
-        let fileSystem = try localFileSystem()
+        let fileSystem = self.fileSystem
         let destinationName = InlineRenameRules.trimmedName(rawName)
         return try await LocalOperations.onDisk {
             try Self.checkRename(sourcePath: sourcePath, destinationName: destinationName, fileSystem)

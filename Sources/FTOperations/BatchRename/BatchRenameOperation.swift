@@ -24,7 +24,7 @@ extension WriteCoordinator {
         return try await prepareWithReservedSlot {
             try await self.prepareBatchRename(payload)
         } then: { request, reservation in
-            let fileSystem = LocalBatchRenameFileSystem(try localFileSystem())
+            let fileSystem = LocalBatchRenameFileSystem(self.fileSystem)
             return try queueLocalWriteOperation(action: .batchRename, window: window, reservation: reservation) {
                 [weak self] operation in
                 await self?.executeBatchRename(request, operation, fileSystem)

@@ -98,7 +98,7 @@ private struct Fixture {
         let boxed = Events()
         let listener = SessionBox()
         coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: NativeWriteFileSystem(),
             options: WriteCoordinatorOptions(
                 // This window hears every other window's operation.
                 broadcastProgress: { event, owner in

@@ -44,8 +44,9 @@ public final class WriteCoordinator {
     nonisolated let slot = OSAllocatedUnfairLock(initialState: Slot())
 
     let writeService: any CoordinatorWriteService
-    /// What the guards ask of the disk (the system's folders, whole disks), and what local operations write with.
-    public let fileSystem: (any WriteServiceFileSystem)?
+    /// What the guards ask of the disk (the system's folders, whole disks), and what local operations and Undo write
+    /// with.
+    public let fileSystem: any UndoFileSystem
     public let options: WriteCoordinatorOptions
     public var homePath: String { options.homePath }
 
@@ -91,7 +92,7 @@ public final class WriteCoordinator {
     }
 
     public init(
-        writeService: any CoordinatorWriteService, fileSystem: (any WriteServiceFileSystem)? = nil,
+        writeService: any CoordinatorWriteService, fileSystem: any UndoFileSystem,
         options: WriteCoordinatorOptions = WriteCoordinatorOptions()
     ) {
         self.writeService = writeService

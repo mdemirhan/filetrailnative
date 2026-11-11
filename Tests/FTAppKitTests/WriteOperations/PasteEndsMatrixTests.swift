@@ -115,7 +115,8 @@ private final class PasteFixture {
 
     init(_ analysis: ScriptedPasteService.Analysis, mode: ClipboardMode = .copy) {
         service = ScriptedPasteService(analysis)
-        coordinator = WriteCoordinator(writeService: service, options: WriteCoordinatorOptions())
+        coordinator = WriteCoordinator(
+            writeService: service, fileSystem: NativeWriteFileSystem(), options: WriteCoordinatorOptions())
         session = ExplorerWriteSession(coordinator: coordinator, host: host, clipboard: clipboard)
         var dialogs = WriteDialogs()
         let box = shownBox
@@ -500,6 +501,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.entries.map(\.name) == ["old.txt"] })
             let coordinator = WriteCoordinator(
                 writeService: ScriptedPasteService(.finishedWith(status: .error, error: nil)),
+                fileSystem: NativeWriteFileSystem(),
                 options: WriteCoordinatorOptions(homePath: window.folder.path))
             let session = ExplorerWriteSession(coordinator: coordinator, host: group, clipboard: nil)
             var dialogs = window.recorder.dialogs

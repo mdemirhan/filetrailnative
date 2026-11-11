@@ -12,7 +12,7 @@ import Testing
         let service = StubWriteService()
         var forgotten: [[String]] = []
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(caches: WriteCaches(forget: { changed, _ in forgotten.append(changed) })))
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
@@ -26,7 +26,7 @@ import Testing
     }
 
     @Test func holdsTheBusyLockWhileLocalWriteOperationsAreInFlightAndReleasesItOnTerminalEvents() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let gate = TestGate()
         #expect(try Coordinators.heldLocalOperation(coordinator, window, gate: gate).operationId == "write-op-1")
@@ -47,7 +47,7 @@ import Testing
 
     @Test func routesLocalAndDelegatedCancellationRequestsToTheCorrectOperationOwner() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let gate = TestGate()
         try Coordinators.heldLocalOperation(coordinator, window, gate: gate)
@@ -65,7 +65,7 @@ import Testing
 
     @Test func cancelsAPasteWhoseWindowClosedSoWritesDontStayLocked() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
 
@@ -80,7 +80,7 @@ import Testing
         let service = StubWriteService()
         var broadcasts: [(WriteOperationStatus, ObjectIdentifier)] = []
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(broadcastProgress: { event, owner in
                 broadcasts.append((event.status, ObjectIdentifier(owner)))
             }))
@@ -99,7 +99,8 @@ import Testing
         let service = StubWriteService()
         let successor = TestWindow()
         let coordinator = WriteCoordinator(
-            writeService: service, options: WriteCoordinatorOptions(successorOf: { _ in successor }))
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
+            options: WriteCoordinatorOptions(successorOf: { _ in successor }))
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
         service.emit(Coordinators.event(.awaitingResolution, runtimeConflict: Coordinators.conflict("conflict-1")))
@@ -133,7 +134,7 @@ import Testing
             ObjectIdentifier(first): second, ObjectIdentifier(second): third,
         ]
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(successorOf: { successors[ObjectIdentifier($0)] }))
         try await Coordinators.startPaste(coordinator, first)
 
@@ -149,7 +150,7 @@ import Testing
     }
 
     @Test func rejectsAPasteThatArrivesWhileARenameIsStillBeingPrepared() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.analyze(coordinator, window)
         let gate = TestGate()
@@ -168,7 +169,7 @@ import Testing
 
     @Test func passesPerItemChoicesAndStandingRuntimeAnswersToTheWriteService() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.analyze(coordinator, window)
         let policy = CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)
@@ -195,7 +196,7 @@ import Testing
     // A close cancels the paste and lets go of the window; an operation started afterwards listens for itself.
     @Test func cancelsAPasteWhenItsWindowClosesAndListensAfreshForTheNextOne() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
 
@@ -215,7 +216,7 @@ import Testing
     }
 
     @Test func cancelsALocalWriteWhenItsWindowClosesAndFreesTheWriteSlot() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let gate = TestGate()
         try Coordinators.heldLocalOperation(coordinator, window, gate: gate, action: .deleteImmediately)
@@ -234,7 +235,7 @@ import Testing
     }
 
     @Test func freesTheWriteSlotWhenALocalOperationsWindowThrowsOnSend() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         // A window torn down mid-operation: it doesn't say it is closed yet, but sending to it already throws.
         let window = TestWindow()
         let gate = TestGate()
@@ -256,7 +257,7 @@ import Testing
 
     @Test func skipsSendingToAClosedWindowAndStillFreesTheSlotForWriteServiceOperations() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
 
@@ -274,7 +275,7 @@ import Testing
 
     @Test func freesTheSlotEvenWhenSendingAWriteServiceTerminalEventThrows() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
         window.throwsOnSend = true
@@ -288,7 +289,7 @@ import Testing
 
     @Test func cancelsRightAwayWhenTheStartingWindowIsAlreadyClosed() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.analyze(coordinator, window)
         // Closed while the start request was on its way.
@@ -302,7 +303,7 @@ import Testing
     }
 
     @Test func stopsListeningToTheWindowWhenAnOperationFinishesNormally() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let gate = TestGate()
         try Coordinators.heldLocalOperation(coordinator, window, gate: gate)
@@ -333,7 +334,7 @@ import Testing
             }
             try Data("already here".utf8).write(to: URL(fileURLWithPath: destination + "/shared/clash.txt"))
             let service = WriteService(WriteServiceDependencies(fileSystem: NativeWriteFileSystem()))
-            let coordinator = WriteCoordinator(writeService: service)
+            let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
             let window = TestWindow()
             let handle = try await coordinator.startAnalysis(
                 CopyPasteAnalysisRequest(
@@ -383,7 +384,9 @@ import Testing
     @Test func sendsAtMostOnePlainProgressUpdatePerIntervalAndTheNewestAlwaysArrives() async throws {
         let service = StubWriteService()
         let time = ManualClock()
-        let coordinator = WriteCoordinator(writeService: service, options: WriteCoordinatorOptions(clock: time.clock))
+        let coordinator = WriteCoordinator(
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
+            options: WriteCoordinatorOptions(clock: time.clock))
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
         func sentCounts() -> [Int] { window.progress.map(\.completedItemCount) }
@@ -425,7 +428,7 @@ import Testing
 
     @Test func passesBackTheWriteServicesRejectionOfAConflictAnswer() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
         service.emit(Coordinators.event(.awaitingResolution, runtimeConflict: Coordinators.conflict("conflict-1")))
@@ -440,7 +443,7 @@ import Testing
 
     @Test func onlyAcceptsCancelAndConflictAnswersFromTheWindowThatStartedTheOperation() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let owner = TestWindow()
         let otherWindow = TestWindow()
         try await Coordinators.startPaste(coordinator, owner)
@@ -456,7 +459,7 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
 
         // Local operations follow the same rule.
-        let local = WriteCoordinator(writeService: StubWriteService())
+        let local = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let gate = TestGate()
         try Coordinators.heldLocalOperation(local, owner, gate: gate)
         #expect(!local.cancel("write-op-1", window: otherWindow))
@@ -470,7 +473,7 @@ import Testing
     @Test func forgetsCachedListingsBeforeALocalOperationsEndIsSent() async throws {
         var forgets = 0
         let coordinator = WriteCoordinator(
-            writeService: StubWriteService(),
+            writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(caches: WriteCaches(forget: { _, _ in forgets += 1 })))
         let window = TestWindow()
         var forgetsAtEnd: [Int] = []
@@ -490,7 +493,7 @@ import Testing
         let service = StubWriteService()
         var forgets = 0
         let coordinator = WriteCoordinator(
-            writeService: service,
+            writeService: service, fileSystem: TestLocalFileSystem.stub(),
             options: WriteCoordinatorOptions(caches: WriteCaches(forget: { _, _ in forgets += 1 })))
         let window = TestWindow()
         var forgetsAtEnd: [Int] = []

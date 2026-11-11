@@ -64,7 +64,7 @@ import Testing
     // never stops by itself: a quit that waited for it is caught by the time limit, and one that waited its usual 15 s
     // instead of the 50 ms asked by the clock, which is loose enough for a busy Mac.
     @Test(.timeLimit(.minutes(1))) func stopsWaitingForAnOperationThatDoesntStop() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let never = TestGate()
         try Coordinators.heldLocalOperation(coordinator, window, gate: never, action: .deleteImmediately)
@@ -79,7 +79,7 @@ import Testing
 
     @Test func cancelsARunningMoveAndWaitsForTheWriteServiceToSayItStopped() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
         service.emit(Coordinators.event(.running, mode: .cut))
@@ -103,7 +103,7 @@ import Testing
 
     @Test func namesACopyAsACopy() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         #expect(coordinator.activeOperation == nil)
 
         try await Coordinators.startPaste(coordinator, TestWindow())
@@ -121,7 +121,7 @@ import Testing
             try Data("a".utf8).write(to: root.appending("a.txt"))
             try FileManager.default.createDirectory(at: root.appending("target"), withIntermediateDirectories: false)
             let service = WriteService(WriteServiceDependencies(fileSystem: NativeWriteFileSystem()))
-            let coordinator = WriteCoordinator(writeService: service)
+            let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
             let window = TestWindow()
             let handle = try await Coordinators.analyze(
                 coordinator, window, sources: [root.appending("a.txt").path], destination: root.appending("target").path
@@ -155,7 +155,7 @@ import Testing
             service.emit(Coordinators.event(.cancelled))
             return CopyPasteOperationHandle(operationId: "copy-op-1", status: .queued)
         }
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
 
         try await Coordinators.startPaste(coordinator, window)
@@ -168,7 +168,7 @@ import Testing
 
     @Test func onlyLetsTheWindowThatStartedAnAnalysisReadCancelOrPasteFromIt() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let owner = TestWindow()
         let otherWindow = TestWindow()
         try await Coordinators.analyze(coordinator, owner)
@@ -192,7 +192,7 @@ import Testing
     // MARK: writing alone (crash recovery retries)
 
     @Test func doesntRunWhileAnOperationHoldsTheWriteSlot() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let gate = TestGate()
         try Coordinators.heldLocalOperation(coordinator, window, gate: gate, action: .deleteImmediately)
@@ -213,7 +213,7 @@ import Testing
     }
 
     @Test func doesntRunWhileARenameIsStillBeingChecked() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let gate = TestGate()
         let checking = Task { try await coordinator.prepareWithReservedSlot({ await gate.wait() }, then: { _, _ in }) }
         _ = try await Coordinators.waitFor { gate.waiting ? true : nil }
@@ -232,7 +232,7 @@ import Testing
     // Between an operation's check and its start the slot stays held: a write alone can't start in between and
     // leave the person's operation refused as busy. What the start queues takes the slot over.
     @Test func doesntRunBetweenAnOperationsCheckAndItsStart() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let gate = TestGate()
         var ranBefore: Bool?
@@ -253,7 +253,7 @@ import Testing
 
     // A check whose start throws, or queues nothing, frees the slot.
     @Test func aStartThatThrowsFreesTheSlot() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         await #expect(throws: WriteCoordinatorError.busy) {
             try await coordinator.prepareWithReservedSlot {
             } then: { _, _ in
@@ -267,7 +267,7 @@ import Testing
     }
 
     @Test func holdsTheWriteSlotWhileItRunsSoNoOperationStartsAlongside() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         let writing = DispatchSemaphore(value: 0)
         let finish = DispatchSemaphore(value: 0)
@@ -296,7 +296,7 @@ import Testing
     }
 
     @Test func freesTheWriteSlotWhenTheWriteFails() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
 
         #expect(throws: OperationError.self) {
             try coordinator.runWriteAlone { () throws -> Void in throw OperationError("EIO") }
@@ -306,7 +306,7 @@ import Testing
     }
 
     @Test func doesntRunOnceTheAppIsQuitting() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator(writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub())
         await coordinator.shutDown(maxWaitMs: 0)
         var ran = false
 
@@ -319,7 +319,7 @@ import Testing
 
     @Test func passesOnAQuestionAboutAnItemDatedBefore1970() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
         var conflict = Coordinators.conflict("conflict-old")
@@ -337,7 +337,7 @@ import Testing
     // A question the window would never see would leave the paste waiting forever.
     @Test func answersSkipToAQuestionThatCantBeSentAndGoesOn() async throws {
         let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service)
+        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
         let window = TestWindow()
         try await Coordinators.startPaste(coordinator, window)
         var conflict = Coordinators.conflict("conflict-bad")
