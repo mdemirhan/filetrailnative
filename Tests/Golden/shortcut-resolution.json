@@ -2131,7 +2131,7 @@
           },
           {
             "shortcut": "constructor+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -2139,20 +2139,11 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
-            "macOS": false,
-            "textEditing": false,
-            "withoutShift": null,
-            "menuAccelerator": "Command+K"
-          },
-          {
-            "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -2160,7 +2151,19 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
+          },
+          {
+            "shortcut": "__proto__+K",
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
+            "macOS": false,
+            "textEditing": false,
+            "withoutShift": null,
+            "menuAccelerator": null
           },
           {
             "shortcut": "toString+K",
@@ -32637,12 +32640,15 @@
         "probes": [
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Shift+Left",
@@ -40696,12 +40702,15 @@
         "probes": [
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "cmd+PLUS",
@@ -42323,7 +42332,6 @@
             "Cmd+\\"
           ],
           "openSelectionInNewTab": [
-            "Cmd+K",
             "Cmd+T"
           ],
           "focusFileSearch": [],
@@ -42343,6 +42351,7 @@
           "goApplications": [],
           "goTrash": [],
           "openLocationSheet": [
+            "Cmd+K",
             "Cmd+Shift+G"
           ],
           "rootTreeAtSelection": [
@@ -42473,10 +42482,6 @@
             "goHomeRootTree"
           ],
           [
-            "Cmd+K",
-            "openSelectionInNewTab"
-          ],
-          [
             "Cmd+T",
             "openSelectionInNewTab"
           ],
@@ -42491,6 +42496,10 @@
           [
             "Cmd+Up",
             "goEnclosingFolder"
+          ],
+          [
+            "Cmd+K",
+            "openLocationSheet"
           ],
           [
             "Cmd+Shift+G",
@@ -42640,12 +42649,8 @@
           "goHomeRootTree": [
             "Cmd+\\"
           ],
-          "openLocationSheet": [
-            "Cmd+Shift+G"
-          ],
           "newTab": [],
           "openSelectionInNewTab": [
-            "Cmd+K",
             "Cmd+T"
           ],
           "openInTerminal": [],
@@ -45100,7 +45105,7 @@
           },
           {
             "shortcut": "constructor+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -45108,7 +45113,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+F",
@@ -53406,9 +53411,7 @@
           "quit": [
             "Cmd+Q"
           ],
-          "goLibrary": [
-            "Cmd+K"
-          ],
+          "goLibrary": [],
           "editSelection": [
             "Cmd+Down",
             "Cmd+Shift+]"
@@ -53441,6 +53444,7 @@
           "goApplications": [],
           "goTrash": [],
           "openLocationSheet": [
+            "Cmd+K",
             "Cmd+Shift+G"
           ],
           "rootTreeAtSelection": [
@@ -53557,10 +53561,6 @@
         },
         "commandByShortcut": [
           [
-            "Cmd+K",
-            "goLibrary"
-          ],
-          [
             "Cmd+Down",
             "editSelection"
           ],
@@ -53599,6 +53599,10 @@
           [
             "Cmd+Shift+H",
             "goHomeRootTree"
+          ],
+          [
+            "Cmd+K",
+            "openLocationSheet"
           ],
           [
             "Cmd+Shift+G",
@@ -53730,12 +53734,6 @@
           ]
         ],
         "sanitized": {
-          "goLibrary": [
-            "Cmd+K"
-          ],
-          "openLocationSheet": [
-            "Cmd+Shift+G"
-          ],
           "pageUp": [],
           "selectNextTab": [
             "Ctrl+Tab"
@@ -53848,12 +53846,6 @@
             "command": null,
             "customized": false,
             "assigned": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -53874,12 +53866,6 @@
               ]
             },
             "removed": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -53897,12 +53883,6 @@
               ]
             },
             "reset": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -53937,12 +53917,6 @@
               "goDocuments": [
                 "Cmd+Shift+/"
               ],
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -53960,12 +53934,6 @@
               ]
             },
             "removed": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -53983,12 +53951,6 @@
               ]
             },
             "reset": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -54020,12 +53982,6 @@
             "command": null,
             "customized": false,
             "assigned": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -54046,12 +54002,6 @@
               ]
             },
             "removed": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -54070,12 +54020,6 @@
               ]
             },
             "reset": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -54107,12 +54051,6 @@
             "command": null,
             "customized": false,
             "assigned": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -54134,12 +54072,6 @@
               ]
             },
             "removed": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -54157,12 +54089,6 @@
               ]
             },
             "reset": {
-              "goLibrary": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
               "pageUp": [],
               "selectNextTab": [
                 "Ctrl+Tab"
@@ -57583,7 +57509,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -57591,7 +57517,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           }
         ],
         "assignments": [
@@ -73802,7 +73728,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -73810,16 +73736,19 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+Shift+F",
@@ -78602,9 +78531,7 @@
           "quit": [
             "Cmd+Q"
           ],
-          "goForward": [
-            "Cmd+K"
-          ],
+          "goForward": [],
           "goDesktop": [],
           "newTab": [],
           "goBack": [
@@ -78624,6 +78551,7 @@
           "goApplications": [],
           "goTrash": [],
           "openLocationSheet": [
+            "Cmd+K",
             "Cmd+Shift+G"
           ],
           "rootTreeAtSelection": [
@@ -78752,10 +78680,6 @@
         },
         "commandByShortcut": [
           [
-            "Cmd+K",
-            "goForward"
-          ],
-          [
             "Cmd+[",
             "goBack"
           ],
@@ -78770,6 +78694,10 @@
           [
             "Cmd+Shift+H",
             "goHomeRootTree"
+          ],
+          [
+            "Cmd+K",
+            "openLocationSheet"
           ],
           [
             "Cmd+Shift+G",
@@ -78921,12 +78849,7 @@
           ]
         ],
         "sanitized": {
-          "goForward": [
-            "Cmd+K"
-          ],
-          "openLocationSheet": [
-            "Cmd+Shift+G"
-          ],
+          "goForward": [],
           "newTab": []
         },
         "probes": [
@@ -78992,12 +78915,7 @@
             "command": null,
             "customized": false,
             "assigned": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": [],
               "openHelp": [
                 "?",
@@ -79005,21 +78923,11 @@
               ]
             },
             "removed": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": []
             },
             "reset": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": []
             },
             "takenFrom": [],
@@ -79037,12 +78945,7 @@
             "command": null,
             "customized": false,
             "assigned": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": [],
               "trashSelection": [
                 "Cmd+Backspace",
@@ -79051,21 +78954,11 @@
               "paste": []
             },
             "removed": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": []
             },
             "reset": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": []
             },
             "takenFrom": [],
@@ -79083,12 +78976,7 @@
             "command": null,
             "customized": false,
             "assigned": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": [],
               "quit": [
                 "Cmd+Q",
@@ -79096,21 +78984,11 @@
               ]
             },
             "removed": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": []
             },
             "reset": {
-              "goForward": [
-                "Cmd+K"
-              ],
-              "openLocationSheet": [
-                "Cmd+Shift+G"
-              ],
+              "goForward": [],
               "newTab": []
             },
             "takenFrom": [],
@@ -86183,7 +86061,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -86191,7 +86069,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           }
         ],
         "assignments": [
@@ -87858,7 +87736,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -87866,7 +87744,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           }
         ],
         "assignments": [
@@ -90415,7 +90293,7 @@
           },
           {
             "shortcut": "constructor+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -90423,7 +90301,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Escape",
@@ -92386,9 +92264,7 @@
           "trashSelection": [
             "Cmd+Backspace"
           ],
-          "copyPath": [
-            "Cmd+K"
-          ],
+          "copyPath": [],
           "clearClipboard": [
             "Cmd+Up",
             "Cmd+Delete"
@@ -92421,6 +92297,7 @@
           "goApplications": [],
           "goTrash": [],
           "openLocationSheet": [
+            "Cmd+K",
             "Cmd+Shift+G"
           ],
           "rootTreeAtSelection": [],
@@ -92533,10 +92410,6 @@
             "trashSelection"
           ],
           [
-            "Cmd+K",
-            "copyPath"
-          ],
-          [
             "Cmd+Up",
             "clearClipboard"
           ],
@@ -92575,6 +92448,10 @@
           [
             "Cmd+Shift+H",
             "goHomeRootTree"
+          ],
+          [
+            "Cmd+K",
+            "openLocationSheet"
           ],
           [
             "Cmd+Shift+G",
@@ -92662,9 +92539,6 @@
           "goDownloads": [
             "Cmd+'"
           ],
-          "openLocationSheet": [
-            "Cmd+Shift+G"
-          ],
           "rootTreeAtSelection": [],
           "pageUp": [
             "Cmd+N"
@@ -92691,9 +92565,7 @@
           "duplicateSelection": [],
           "moveSelection": [],
           "newFolder": [],
-          "copyPath": [
-            "Cmd+K"
-          ],
+          "copyPath": [],
           "clearClipboard": [
             "Cmd+Up",
             "Cmd+Delete"
@@ -99470,12 +99342,15 @@
           },
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+K",
@@ -100046,7 +99921,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -100054,16 +99929,19 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+Option+Space",
@@ -100091,7 +99969,7 @@
           },
           {
             "shortcut": "constructor+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -100099,7 +99977,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           }
         ],
         "assignments": [
@@ -104098,9 +103976,7 @@
             "Cmd+[",
             "Cmd+Shift+]"
           ],
-          "openSelection": [
-            "Cmd+K"
-          ],
+          "openSelection": [],
           "copyPath": [
             "Cmd+Left"
           ],
@@ -104244,10 +104120,6 @@
           [
             "Cmd+Shift+]",
             "mergeAllWindows"
-          ],
-          [
-            "Cmd+K",
-            "openSelection"
           ],
           [
             "Cmd+Left",
@@ -104404,9 +104276,7 @@
             "Cmd+[",
             "Cmd+Shift+]"
           ],
-          "openSelection": [
-            "Cmd+K"
-          ],
+          "openSelection": [],
           "copyPath": [
             "Cmd+Left"
           ],
@@ -104475,9 +104345,7 @@
                 "Cmd+[",
                 "Cmd+Shift+]"
               ],
-              "openSelection": [
-                "Cmd+K"
-              ],
+              "openSelection": [],
               "copyPath": [
                 "Cmd+Left"
               ],
@@ -104514,9 +104382,7 @@
                 "Cmd+[",
                 "Cmd+Shift+]"
               ],
-              "openSelection": [
-                "Cmd+K"
-              ],
+              "openSelection": [],
               "copyPath": [
                 "Cmd+Left"
               ],
@@ -104551,9 +104417,7 @@
                 "Cmd+[",
                 "Cmd+Shift+]"
               ],
-              "openSelection": [
-                "Cmd+K"
-              ],
+              "openSelection": [],
               "copyPath": [
                 "Cmd+Left"
               ],
@@ -106845,7 +106709,6 @@
             "Cmd+Plus"
           ],
           "focusTreePane": [
-            "Cmd+K",
             "Cmd+T"
           ],
           "focusContentPane": [
@@ -106857,7 +106720,9 @@
           ],
           "openSelectionInNewTab": [],
           "openSelectionInNewWindow": [],
-          "openSelection": [],
+          "openSelection": [
+            "Cmd+K"
+          ],
           "duplicateSelection": [
             "Cmd+Shift+K"
           ],
@@ -106997,10 +106862,6 @@
             "goTrash"
           ],
           [
-            "Cmd+K",
-            "focusTreePane"
-          ],
-          [
             "Cmd+T",
             "focusTreePane"
           ],
@@ -107015,6 +106876,10 @@
           [
             "Cmd+Shift+M",
             "closeTab"
+          ],
+          [
+            "Cmd+K",
+            "openSelection"
           ],
           [
             "Cmd+Shift+K",
@@ -107167,7 +107032,6 @@
             "Cmd+Shift+G"
           ],
           "focusTreePane": [
-            "Cmd+K",
             "Cmd+T"
           ],
           "focusContentPane": [
@@ -107180,7 +107044,9 @@
           "closeTab": [
             "Cmd+Shift+M"
           ],
-          "openSelection": [],
+          "openSelection": [
+            "Cmd+K"
+          ],
           "duplicateSelection": [
             "Cmd+Shift+K"
           ],
@@ -107237,7 +107103,6 @@
               ],
               "openLocationSheet": [],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107250,7 +107115,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107290,7 +107157,6 @@
                 "Cmd+Shift+G"
               ],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107303,7 +107169,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107339,7 +107207,6 @@
                 "Cmd+Shift+G"
               ],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107352,7 +107219,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107398,9 +107267,6 @@
               "openLocationSheet": [
                 "Cmd+Shift+G"
               ],
-              "focusTreePane": [
-                "Cmd+K"
-              ],
               "focusContentPane": [
                 "Cmd+Option+T",
                 "Cmd+N"
@@ -107413,7 +107279,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107449,7 +107317,6 @@
                 "Cmd+Shift+G"
               ],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107462,7 +107329,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107498,7 +107367,6 @@
                 "Cmd+Shift+G"
               ],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107509,7 +107377,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107558,7 +107428,6 @@
                 "Cmd+Shift+G"
               ],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107571,7 +107440,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107607,7 +107478,6 @@
                 "Cmd+Shift+G"
               ],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107620,7 +107490,9 @@
               "closeTab": [
                 "Cmd+Shift+M"
               ],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -107656,7 +107528,6 @@
                 "Cmd+Shift+G"
               ],
               "focusTreePane": [
-                "Cmd+K",
                 "Cmd+T"
               ],
               "focusContentPane": [
@@ -107666,7 +107537,9 @@
               "halfPageDown": [],
               "newWindow": [],
               "newTab": [],
-              "openSelection": [],
+              "openSelection": [
+                "Cmd+K"
+              ],
               "duplicateSelection": [
                 "Cmd+Shift+K"
               ],
@@ -109934,12 +109807,15 @@
         "probes": [
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Home",
@@ -109955,12 +109831,15 @@
           },
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           }
         ],
         "assignments": [
@@ -111220,7 +111099,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -111228,7 +111107,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "",
@@ -114842,12 +114721,15 @@
           },
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "cmd+k",
@@ -133758,8 +133640,11 @@
             "id": "copy",
             "shortcut": "Cmd+constructor+K",
             "slot": 0,
-            "status": "ok",
-            "refusal": null,
+            "status": "refused",
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "command": null,
             "customized": false,
             "assigned": {
@@ -134765,7 +134650,7 @@
         "probes": [
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -134773,7 +134658,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "PageUp",
@@ -135259,7 +135144,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -135267,7 +135152,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+Shift+I",
@@ -140054,7 +139939,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -140062,7 +139947,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+Shift+I",
@@ -142098,7 +141983,7 @@
           },
           {
             "shortcut": "constructor+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -142106,7 +141991,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+R",
@@ -142153,8 +142038,11 @@
             "id": "calculateSize",
             "shortcut": "Cmd+constructor+K",
             "slot": 1,
-            "status": "ok",
-            "refusal": null,
+            "status": "refused",
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "command": null,
             "customized": false,
             "assigned": {
@@ -145836,8 +145724,7 @@
             "Cmd+Q"
           ],
           "openLocationSheet": [
-            "Cmd+Shift+N",
-            "Cmd+K"
+            "Cmd+Shift+N"
           ],
           "rootTreeAtSelection": [],
           "openSelectionInNewTab": [],
@@ -145986,10 +145873,6 @@
         "commandByShortcut": [
           [
             "Cmd+Shift+N",
-            "openLocationSheet"
-          ],
-          [
-            "Cmd+K",
             "openLocationSheet"
           ],
           [
@@ -146159,8 +146042,7 @@
         ],
         "sanitized": {
           "openLocationSheet": [
-            "Cmd+Shift+N",
-            "Cmd+K"
+            "Cmd+Shift+N"
           ],
           "rootTreeAtSelection": [],
           "newFolder": []
@@ -146226,24 +146108,21 @@
             "customized": false,
             "assigned": {
               "openLocationSheet": [
-                "Cmd+Shift+N",
-                "Cmd+K"
+                "Cmd+Shift+N"
               ],
               "rootTreeAtSelection": [],
               "newFolder": []
             },
             "removed": {
               "openLocationSheet": [
-                "Cmd+Shift+N",
-                "Cmd+K"
+                "Cmd+Shift+N"
               ],
               "rootTreeAtSelection": [],
               "newFolder": []
             },
             "reset": {
               "openLocationSheet": [
-                "Cmd+Shift+N",
-                "Cmd+K"
+                "Cmd+Shift+N"
               ],
               "rootTreeAtSelection": [],
               "newFolder": []
@@ -146261,8 +146140,7 @@
             "customized": false,
             "assigned": {
               "openLocationSheet": [
-                "Cmd+Shift+N",
-                "Cmd+K"
+                "Cmd+Shift+N"
               ],
               "rootTreeAtSelection": [],
               "pageUp": [
@@ -146273,16 +146151,14 @@
             },
             "removed": {
               "openLocationSheet": [
-                "Cmd+Shift+N",
-                "Cmd+K"
+                "Cmd+Shift+N"
               ],
               "rootTreeAtSelection": [],
               "newFolder": []
             },
             "reset": {
               "openLocationSheet": [
-                "Cmd+Shift+N",
-                "Cmd+K"
+                "Cmd+Shift+N"
               ],
               "rootTreeAtSelection": [],
               "newFolder": []
@@ -149207,8 +149083,11 @@
             "id": "newFolder",
             "shortcut": "Cmd+constructor+K",
             "slot": -1,
-            "status": "ok",
-            "refusal": null,
+            "status": "refused",
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "command": null,
             "customized": false,
             "assigned": {
@@ -155384,7 +155263,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -155392,7 +155271,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+?",
@@ -156677,7 +156556,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -156685,7 +156564,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "F1",
@@ -162949,8 +162828,7 @@
             "Cmd+Q"
           ],
           "goDownloads": [
-            "F20",
-            "Cmd+K"
+            "F20"
           ],
           "goMacintoshHD": [],
           "goTrash": [],
@@ -162988,6 +162866,7 @@
           "goLibrary": [],
           "goApplications": [],
           "openLocationSheet": [
+            "Cmd+K",
             "Cmd+Shift+G"
           ],
           "rootTreeAtSelection": [
@@ -163105,10 +162984,6 @@
             "goDownloads"
           ],
           [
-            "Cmd+K",
-            "goDownloads"
-          ],
-          [
             "Ctrl+Cmd+S",
             "quickLookSelection"
           ],
@@ -163147,6 +163022,10 @@
           [
             "Cmd+Shift+H",
             "goHomeRootTree"
+          ],
+          [
+            "Cmd+K",
+            "openLocationSheet"
           ],
           [
             "Cmd+Shift+G",
@@ -163284,11 +163163,7 @@
         "sanitized": {
           "goEnclosingFolder": [],
           "goDownloads": [
-            "F20",
-            "Cmd+K"
-          ],
-          "openLocationSheet": [
-            "Cmd+Shift+G"
+            "F20"
           ],
           "quickLookSelection": [
             "Ctrl+Cmd+S"
@@ -169433,7 +169308,7 @@
           },
           {
             "shortcut": "__proto__+K",
-            "normalized": "K",
+            "normalized": null,
             "refusal": {
               "reason": "needsCommandOrControl",
               "command": null
@@ -169441,7 +169316,7 @@
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "K"
+            "menuAccelerator": null
           },
           {
             "shortcut": "Cmd+\\",
@@ -181456,12 +181331,15 @@
           },
           {
             "shortcut": "Cmd+constructor+K",
-            "normalized": "Cmd+K",
-            "refusal": null,
+            "normalized": null,
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "macOS": false,
             "textEditing": false,
             "withoutShift": null,
-            "menuAccelerator": "Command+K"
+            "menuAccelerator": null
           }
         ],
         "assignments": [
@@ -189026,8 +188904,11 @@
             "id": "openHelp",
             "shortcut": "Cmd+constructor+K",
             "slot": 0,
-            "status": "ok",
-            "refusal": null,
+            "status": "refused",
+            "refusal": {
+              "reason": "needsCommandOrControl",
+              "command": null
+            },
             "command": null,
             "customized": false,
             "assigned": {

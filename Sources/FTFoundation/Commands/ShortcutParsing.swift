@@ -37,8 +37,6 @@ public enum Shortcuts {
 
     private enum Modifier {
         case ctrl, cmd, option, shift
-        /// `constructor` and `__proto__`: they name no modifier but are not refused either.
-        case inherited
     }
 
     private static func modifier(named lowercased: String) -> Modifier? {
@@ -47,7 +45,6 @@ public enum Shortcuts {
         case "cmd", "command", "commandorcontrol": .cmd
         case "option", "alt": .option
         case "shift": .shift
-        case "constructor", "__proto__": .inherited
         default: nil
         }
     }
@@ -128,7 +125,6 @@ public enum Shortcuts {
             case .cmd: parsed.cmd = true
             case .option: parsed.option = true
             case .shift: parsed.shift = true
-            case .inherited: break
             case nil: return nil
             }
         }

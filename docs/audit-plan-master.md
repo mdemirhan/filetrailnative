@@ -1044,7 +1044,7 @@ Also, from the second audit: `FolderSizeJobs.clearCache`, `DragPasteboard.change
 `FileIconStore.lookup(_ entry:)`, `VolumeWatcher.isScheduled`, each only if no test needs it as its one way to
 observe something.
 
-### [ ] 5.8. Dead code in the write engine (about 280 lines): proceed carefully
+### [x] 5.8. Dead code in the write engine (about 280 lines): proceed carefully
 
 Nothing here changes what the app does to files; each row was proven unreachable from the app. Do them one at a
 time and run `scripts/ci.sh --scope FTOperationsTests` after each.
@@ -1319,6 +1319,8 @@ This item also fixes a visible fault: a listing that fails with `ESTALE` or `EDQ
 their names. That is the one permitted change of text: the text for every code that is named today stays byte
 for byte.
 
+- From 5.8 (the owner, 2026-11-11): `NativeError`'s fields that nothing in the app reads (six test files read them).
+
 ### [ ] 6.5. Preferences are changed by typed updates
 
 - 35 `updatePreferences(` call sites build `[String: JSONNode]` literals. Each change filters by a string key
@@ -1343,6 +1345,9 @@ for byte.
 - This is wide and mechanical. Do the store first with both APIs alive, move call sites module by module, then
   delete the old API.
 
+- From 5.8 (the owner, 2026-11-11): `AppState`'s `legacyWindowID` and top-level `"window"` key, if the typed
+  store leaves them unread. `prefs-sanitize.json` (161 cases) carries them; any change to it is by hand, case by case.
+
 ### [ ] 6.6. The paste review is a call, not a job to poll
 
 - Today: `WriteService.startCopyPasteAnalysis` stores the report under an id; the window polls
@@ -1359,6 +1364,9 @@ for byte.
   `WriteCoordinatorWindowsTests`, `HeldAnalysisService` in `PreparingDialogTests.swift`, every
   `CoordinatorWriteService` stub (nine files), `Exec/SwiftAnalysisEngine.swift`, `SwiftExecEngine.swift`.
 - The analysis goldens (`analysis-*.json`) must pass unchanged.
+
+- From 5.8 (the owner, 2026-11-11): the analysis `warnings`/thresholds and `disposition`/`.blocked`, unread by the
+  app; FTAppKit tests and about 20 FTOperations test files build them.
 
 ### [ ] 6.7. In-process events are not validated like messages from outside
 
@@ -2241,3 +2249,14 @@ anything that differed from the plan, and anything found on the way that is not 
   is the system's content material (it takes the desktop's tint, as Finder's), held by the columns and by what lies
   over scrolling content; the path bar is lifted 3.3% white and the sidebar's gray selection is 13.5% white in dark
   mode, both measured from a Finder screenshot. `ChromeColors.contentBackground` is gone; light mode is unchanged.
+- 2026-11-11. The owner, end of Phase 5: 5.6's `constructor`/`__proto__` go (yes); the rest of 5.8 is folded into
+  Phase 6 (`NativeError`'s unread fields into 6.4, the analysis `warnings`/`disposition` into 6.6, `AppState`'s
+  legacy window keys into 6.5; the Undo types keep their hand-written `Codable` as the journal's format guard); Q8:
+  delete both `NavigationHistory.mapPaths` and `QuickLookController.windowWillChange`; the launch folder that makes a
+  26th tab stays as it is.
+- 2026-11-11. 5.6, the last piece: `constructor` and `__proto__` are unknown modifier names like any other. Of the 82
+  cases of `shortcut-resolution.json` that use them, 33 change (the 49 others gave a shortcut that was refused anyway):
+  22 probes, and 11 where `Cmd+constructor+K` had been a valid Cmd+K (bindings, sanitized, command order,
+  assignments). The new outputs were worked out without the new code: the old code was run on the same inputs with
+  each of the two names replaced by a name it already refused, and the names put back where shortcuts are echoed;
+  the new code then matched them. `shortcutOrder` stays (the golden test reads it).
