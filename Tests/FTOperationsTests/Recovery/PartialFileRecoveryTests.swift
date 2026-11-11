@@ -45,13 +45,13 @@ struct PartialFileRecoveryTests {
         let removalWorks = Locked(false)
         fileSystem.rmImpl = { path, recursive, force in
             if !removalWorks.value && path.firstMatch(of: /\.filetrail-[0-9a-f]{8}$/) != nil {
-                throw MockWriteServiceFileSystem.error("EIO", path)
+                throw MockWriteServiceFileSystem.error(EIO, path)
             }
             try fileSystem.removeDirectly(path, recursive: recursive, force: force)
         }
         fileSystem.copyFileImpl = { _, destination, _, _ in
             fileSystem.addFile(destination, .file(size: 1024))
-            throw MockWriteServiceFileSystem.error("ENOSPC", destination)
+            throw MockWriteServiceFileSystem.error(ENOSPC, destination)
         }
         let journal = MemoryJournal()
 

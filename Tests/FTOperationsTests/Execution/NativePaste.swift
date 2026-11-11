@@ -119,7 +119,7 @@ enum NativePaste {
         fileSystem.statImpl = { path in onItsDisk(path, try base.stat(path)) }
         fileSystem.renameExclusiveImpl = { from, to in
             if isOnIt(from) != isOnIt(to) {
-                throw NativeError(message: "EXDEV: \(from)", code: "EXDEV", path: from)
+                throw NativeError(message: "EXDEV: \(from)", code: .errno(EXDEV), path: from)
             }
             try base.renameExclusive(from, to)
         }

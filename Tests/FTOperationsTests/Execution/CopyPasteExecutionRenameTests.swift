@@ -102,7 +102,7 @@ struct CopyPasteExecutionRenameTests {
                 return
             }
             if !fileSystem.deleteNode(path) {
-                throw MockWriteServiceFileSystem.error("ENOENT", path)
+                throw MockWriteServiceFileSystem.error(ENOENT, path)
             }
         }
         let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/dir"], into: "/target")
@@ -118,7 +118,7 @@ struct CopyPasteExecutionRenameTests {
     private func renamesOutOfSourceFail(_ fileSystem: MockWriteServiceFileSystem) {
         fileSystem.renameImpl = { from, to in
             if from.hasPrefix("/source/") {
-                throw NativeError(message: "EXDEV", code: "EXDEV", path: "/source/a.txt")
+                throw NativeError(message: "EXDEV", code: .errno(EXDEV), path: "/source/a.txt")
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -144,7 +144,9 @@ struct CopyPasteExecutionRenameTests {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
         ])
-        fileSystem.renameImpl = { _, _ in throw NativeError(message: "EPERM", code: "EPERM", path: "/source/a.txt") }
+        fileSystem.renameImpl = { _, _ in
+            throw NativeError(message: "EPERM", code: .errno(EPERM), path: "/source/a.txt")
+        }
         let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
 
         let events = await execute(fileSystem, operation, operationId: "rename-eperm-1")

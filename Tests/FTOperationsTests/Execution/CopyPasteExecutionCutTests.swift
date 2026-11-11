@@ -24,7 +24,7 @@ struct CopyPasteExecutionCutTests {
     {
         { path, recursive, force in
             if path == failing {
-                throw NativeError(message: "EPERM", code: "EPERM", path: path)
+                throw NativeError(message: "EPERM", code: .errno(EPERM), path: path)
             }
             try fileSystem.removeDirectly(path, recursive: recursive, force: force)
         }
@@ -186,7 +186,7 @@ struct CopyPasteExecutionCutTests {
             ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
             ("/target", .directory()),
         ])
-        fileSystem.rmdirImpl = { path in throw NativeError(message: "EPERM", code: "EPERM", path: path) }
+        fileSystem.rmdirImpl = { path in throw NativeError(message: "EPERM", code: .errno(EPERM), path: path) }
         let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/dir"], into: "/target")
 
         let events = await execute(fileSystem, operation, operationId: "cut-rmdir-fail-1")

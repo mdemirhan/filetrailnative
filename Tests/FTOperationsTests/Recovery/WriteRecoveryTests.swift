@@ -53,8 +53,8 @@ private struct FailingWritesJournal: RecoverableWriteJournal {
     let base: FileWriteJournal
 
     func entries() -> [WriteJournalEntry] { base.entries() }
-    func add(_ entry: WriteJournalEntry) throws { throw codedError("ENOSPC", "ENOSPC: no space left on device") }
-    func remove(_ id: String) throws { throw codedError("ENOSPC", "ENOSPC: no space left on device") }
+    func add(_ entry: WriteJournalEntry) throws { throw codedError(.errno(ENOSPC), "ENOSPC: no space left on device") }
+    func remove(_ id: String) throws { throw codedError(.errno(ENOSPC), "ENOSPC: no space left on device") }
 }
 
 /// A timer ticked by hand.

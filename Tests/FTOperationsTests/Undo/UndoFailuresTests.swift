@@ -1,6 +1,7 @@
 // What an Undo leaves to do: a step whose write failed stays on the Undo list to be tried again, a stopped Undo goes on
 // from where it stopped, and what changed outside the app is dropped. Redo only ever does again what Undo really did.
 import Darwin
+import FTFileSystem
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -13,7 +14,7 @@ import Testing
 struct UndoFailuresTests {
     private func items(_ end: WriteOperationEvent) -> [WriteOperationItem] { end.result?.items ?? [] }
 
-    private func permissionDenied() -> OperationError { codedError("EACCES", "EACCES: permission denied") }
+    private func permissionDenied() -> OperationError { codedError(.errno(EACCES), "EACCES: permission denied") }
 
     private func snapshot(_ t: UndoTest) -> [String] {
         t.snapshot().filter { !$0.hasPrefix("paste-trash") }
@@ -297,7 +298,7 @@ struct UndoFailuresTests {
 
     @Test func keepsACopyTheTrashRefusedWithoutSayingWhyOnADiskThatHasATrash() async throws {
         try await withUndoFolder { root, trashDir in
-            let unsaid = codedError("ENOTRASH", "couldn't be moved")
+            let unsaid = codedError(.noTrash, "couldn't be moved")
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
                 fileSystem.trashImpl = { _ in throw unsaid }
             }
@@ -325,28 +326,28 @@ struct UndoFailuresTests {
     }
 
     @Test func classifiesEachErrorCode() {
-        #expect(UndoExecution.classifyUndoWriteError("ENOENT") == .outsideChange)
-        #expect(UndoExecution.classifyUndoWriteError("ENOTDIR") == .outsideChange)
-        #expect(UndoExecution.classifyUndoWriteError("EEXIST") == .outsideChange)
-        #expect(UndoExecution.classifyUndoWriteError("ENOTRASH") == .permanent)
-        #expect(UndoExecution.classifyUndoWriteError("EROFS") == .permanent)
-        #expect(UndoExecution.classifyUndoWriteError("EXDEV") == .permanent)
-        #expect(UndoExecution.classifyUndoWriteError("EACCES") == .retry)
-        #expect(UndoExecution.classifyUndoWriteError("EPERM") == .retry)
-        #expect(UndoExecution.classifyUndoWriteError("EBUSY") == .retry)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(ENOENT)) == .outsideChange)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(ENOTDIR)) == .outsideChange)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(EEXIST)) == .outsideChange)
+        #expect(UndoExecution.classifyUndoWriteError(.noTrash) == .permanent)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(EROFS)) == .permanent)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(EXDEV)) == .permanent)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(EACCES)) == .retry)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(EPERM)) == .retry)
+        #expect(UndoExecution.classifyUndoWriteError(.errno(EBUSY)) == .retry)
         #expect(UndoExecution.classifyUndoWriteError(nil) == .retry)
     }
 
-    nonisolated static let renameFailures: [(String, CopyPasteItemResult.Status, String, String?)] = [
-        ("EACCES", .failed, "You don't have permission to access this item.", "Rename"),
-        ("EROFS", .skipped, "“b.txt” is on a disk that can only be read.", nil),
-        ("EXDEV", .skipped, "“b.txt” is on another disk now.", nil),
-        ("ENOENT", .skipped, "“b.txt” is no longer in", nil),
-        ("EEXIST", .skipped, "An item named “a", nil),
+    nonisolated static let renameFailures: [(Int32, CopyPasteItemResult.Status, String, String?)] = [
+        (EACCES, .failed, "You don't have permission to access this item.", "Rename"),
+        (EROFS, .skipped, "“b.txt” is on a disk that can only be read.", nil),
+        (EXDEV, .skipped, "“b.txt” is on another disk now.", nil),
+        (ENOENT, .skipped, "“b.txt” is no longer in", nil),
+        (EEXIST, .skipped, "An item named “a", nil),
     ]
 
     @Test(arguments: renameFailures)
-    func renamingBackFailsWith(code: String, status: CopyPasteItemResult.Status, error: String, left: String?)
+    func renamingBackFailsWith(code: Int32, status: CopyPasteItemResult.Status, error: String, left: String?)
         async throws
     {
         try await withUndoFolder { root, trashDir in
@@ -354,7 +355,9 @@ struct UndoFailuresTests {
             let denied = UndoFlag()
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
                 fileSystem.renameExclusiveImpl = { from, to in
-                    if denied.isSet { throw codedError(code, "\(code): failed on purpose") }
+                    if denied.isSet {
+                        throw codedError(.errno(code), "\(Errno.nameOrUnknown(of: code)): failed on purpose")
+                    }
                     try UndoDisk.move(from, to)
                 }
             }
@@ -371,13 +374,15 @@ struct UndoFailuresTests {
 
     @Test(
         arguments: [
-            ("EACCES", CopyPasteItemResult.Status.failed, "New Folder"), ("ENOENT", .skipped, nil),
-            ("EROFS", .skipped, nil),
-        ] as [(String, CopyPasteItemResult.Status, String?)])
-    func theTrashFailsWith(code: String, status: CopyPasteItemResult.Status, left: String?) async throws {
+            (EACCES, CopyPasteItemResult.Status.failed, "New Folder"), (ENOENT, .skipped, nil),
+            (EROFS, .skipped, nil),
+        ] as [(Int32, CopyPasteItemResult.Status, String?)])
+    func theTrashFailsWith(code: Int32, status: CopyPasteItemResult.Status, left: String?) async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
-                fileSystem.trashImpl = { _ in throw codedError(code, "\(code): failed on purpose") }
+                fileSystem.trashImpl = { _ in
+                    throw codedError(.errno(code), "\(Errno.nameOrUnknown(of: code)): failed on purpose")
+                }
             }
             try await t.newFolder(root, "F")
             #expect(items(try await t.undo()).map(\.status) == [status])
@@ -387,16 +392,18 @@ struct UndoFailuresTests {
     }
 
     @Test(
-        arguments: [("EACCES", CopyPasteItemResult.Status.failed), ("EROFS", .skipped)]
-            as [(String, CopyPasteItemResult.Status)])
-    func anItemOfABatchFailsWith(code: String, status: CopyPasteItemResult.Status) async throws {
+        arguments: [(EACCES, CopyPasteItemResult.Status.failed), (EROFS, .skipped)]
+            as [(Int32, CopyPasteItemResult.Status)])
+    func anItemOfABatchFailsWith(code: Int32, status: CopyPasteItemResult.Status) async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
             try UndoDisk.write("\(root)/b.txt", "b")
             let denied = UndoFlag()
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
                 fileSystem.renameExclusiveImpl = { from, to in
-                    if denied.isSet && from == "\(root)/x.txt" { throw codedError(code, "\(code): failed on purpose") }
+                    if denied.isSet && from == "\(root)/x.txt" {
+                        throw codedError(.errno(code), "\(Errno.nameOrUnknown(of: code)): failed on purpose")
+                    }
                     try UndoDisk.move(from, to)
                 }
             }
@@ -652,7 +659,7 @@ struct UndoFailuresTests {
         }
         let run = UndoExecution.runUndo(
             [UndoUnit(steps: [.batchRenamed(items: items)])],
-            UndoRunOptions(direction: .undo, fileSystem: unreadableDisk("/nowhere", codedError("ENOENT"))))
+            UndoRunOptions(direction: .undo, fileSystem: unreadableDisk("/nowhere", codedError(.errno(ENOENT)))))
         #expect(run.items.count == count)
         #expect(run.items.first?.status == .skipped)
     }

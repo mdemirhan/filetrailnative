@@ -69,7 +69,8 @@ struct UndoRecordingCoordinatorTests {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
             let (coordinator, finished, window) = setUp(root, trashDir) { fileSystem in
-                fileSystem.renameExclusiveImpl = { _, _ in throw codedError("EACCES", "EACCES: permission denied") }
+                fileSystem.renameExclusiveImpl = { _, _ in throw codedError(.errno(EACCES), "EACCES: permission denied")
+                }
             }
             let ended = try await end(
                 coordinator.rename(sourcePath: "\(root)/a.txt", destinationName: "b.txt", window: window), window)
@@ -237,7 +238,7 @@ struct UndoRecordingCoordinatorTests {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
             let (coordinator, finished, window) = setUp(root, trashDir) { fileSystem in
-                fileSystem.trashImpl = { _ in throw codedError("EPERM", "EPERM: operation not permitted") }
+                fileSystem.trashImpl = { _ in throw codedError(.errno(EPERM), "EPERM: operation not permitted") }
             }
             let ended = try await end(coordinator.trash(paths: ["\(root)/a.txt"], window: window), window)
             #expect(ended.status == .failed)
@@ -265,7 +266,7 @@ struct UndoRecordingCoordinatorTests {
             try UndoDisk.write(path, "asked about")
             let swapWhenMeasured = UndoFlag()
             let (coordinator, finished, window) = setUp(root, trashDir) { fileSystem in
-                fileSystem.trashImpl = { _ in throw codedError(CopyPasteErrors.noTrashErrorCode, "no Trash") }
+                fileSystem.trashImpl = { _ in throw codedError(.noTrash, "no Trash") }
                 // Measured just before deleting: something else is put in its place then.
                 fileSystem.itemSizeImpl = { target in
                     let size = try NativeItemSize.of(target)
@@ -296,7 +297,7 @@ struct UndoRecordingCoordinatorTests {
             let path = "\(root)/share.txt"
             try UndoDisk.write(path, "asked about")
             let (coordinator, finished, window) = setUp(root, trashDir) { fileSystem in
-                fileSystem.trashImpl = { _ in throw codedError(CopyPasteErrors.noTrashErrorCode, "no Trash") }
+                fileSystem.trashImpl = { _ in throw codedError(.noTrash, "no Trash") }
             }
             _ = try await end(coordinator.trash(paths: [path], window: window), window)
             try UndoDisk.move(path, "\(root)/moved.txt")
@@ -313,7 +314,7 @@ struct UndoRecordingCoordinatorTests {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(trashDir)/a.txt", "a")
             let (coordinator, finished, window) = setUp(root, trashDir) { fileSystem in
-                fileSystem.rmImpl = { _, _, _ in throw codedError("EACCES", "EACCES: permission denied") }
+                fileSystem.rmImpl = { _, _, _ in throw codedError(.errno(EACCES), "EACCES: permission denied") }
             }
             let ended = try await end(
                 coordinator.deleteImmediately(paths: ["\(trashDir)/a.txt"], window: window), window)
@@ -327,7 +328,7 @@ struct UndoRecordingCoordinatorTests {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(trashDir)/F")
             let (coordinator, finished, window) = setUp(root, trashDir) { fileSystem in
-                fileSystem.rmImpl = { _, _, _ in throw codedError("EACCES", "EACCES: permission denied") }
+                fileSystem.rmImpl = { _, _, _ in throw codedError(.errno(EACCES), "EACCES: permission denied") }
             }
             _ = try await end(coordinator.deleteImmediately(paths: ["\(trashDir)/F"], window: window), window)
             #expect(finished.logs == [.notUndoable(reason: .deletedForGood)])

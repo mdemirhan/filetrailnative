@@ -108,7 +108,7 @@ struct PartialFileRemovalTests {
 
     @Test func saysWhyAPartCouldntBeRemoved() {
         let fileSystem = MockWriteServiceFileSystem([(Self.part, .file(size: 9))])
-        fileSystem.rmImpl = { _, _, _ in throw codedError("EIO", "EIO: i/o error") }
+        fileSystem.rmImpl = { _, _, _ in throw codedError(.errno(EIO), "EIO: i/o error") }
 
         let outcomes = recoverPartialFiles(
             [Self.entry], fileSystem,

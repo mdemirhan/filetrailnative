@@ -1,3 +1,4 @@
+import FTFileSystem
 import FTFoundation
 import Foundation
 import os
@@ -5,8 +6,8 @@ import os
 @testable import FTOperations
 
 /// An error with a code, as the disk calls give them.
-func errno(_ code: String) -> OperationError {
-    OperationError("\(code): test", code: code)
+func errno(_ code: Int32) -> OperationError {
+    OperationError("\(Errno.nameOrUnknown(of: code)): test", code: .errno(code))
 }
 
 /// What a rename call was: "rename" or "renameExclusive", from and to.
@@ -141,7 +142,7 @@ final class MemoryDisk: BatchRenameFileSystem, @unchecked Sendable {
             if folderPaths.contains(where: { sameText($0, path) }) {
                 return WriteServiceStats(type: .directory, ino: 1, dev: 1)
             }
-            guard let entry = find(path) else { throw errno("ENOENT") }
+            guard let entry = find(path) else { throw errno(ENOENT) }
             return WriteServiceStats(type: .file, ino: UInt64(entry.ino), dev: 1)
         }
     }
@@ -197,9 +198,9 @@ final class MemoryDisk: BatchRenameFileSystem, @unchecked Sendable {
             if let failure = failures["renameExclusive:\(from)->\(to)"] ?? failWith(call) {
                 throw failure
             }
-            guard find(from) != nil else { throw errno("ENOENT") }
+            guard find(from) != nil else { throw errno(ENOENT) }
             if find(to) != nil {
-                throw errno("EEXIST")
+                throw errno(EEXIST)
             }
             move(from, to)
         }
@@ -213,7 +214,7 @@ final class MemoryDisk: BatchRenameFileSystem, @unchecked Sendable {
             if let failure = failures["rename:\(from)->\(to)"] ?? failWith(call) {
                 throw failure
             }
-            guard find(from) != nil else { throw errno("ENOENT") }
+            guard find(from) != nil else { throw errno(ENOENT) }
             move(from, to)
         }
         afterMove(call)

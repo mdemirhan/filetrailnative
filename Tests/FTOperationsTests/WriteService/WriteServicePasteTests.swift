@@ -39,7 +39,7 @@ private final class PathSetWriteFileSystem: WriteServiceFileSystem, @unchecked S
 
     private func stats(_ path: String) throws -> WriteServiceStats {
         let (exists, directory) = state.withLock { ($0.existingPaths.contains(path), $0.directoryPaths.contains(path)) }
-        guard exists else { throw codedError("ENOENT", "ENOENT: \(path)") }
+        guard exists else { throw codedError(.errno(ENOENT), "ENOENT: \(path)") }
         return WriteServiceStats(
             type: directory ? .directory : .file, size: fileSizes[path] ?? 0, mode: directory ? 0o755 : 0o644)
     }
@@ -48,7 +48,7 @@ private final class PathSetWriteFileSystem: WriteServiceFileSystem, @unchecked S
     func stat(_ path: String) throws -> WriteServiceStats { try stats(path) }
     func realpath(_ path: String) throws -> String { path }
     func readdir(_ path: String) throws -> [String] { (childrenByDirectory[path] ?? []).sorted() }
-    func readlink(_ path: String) throws -> String { throw codedError("EINVAL", "EINVAL: \(path)") }
+    func readlink(_ path: String) throws -> String { throw codedError(.errno(EINVAL), "EINVAL: \(path)") }
 
     func chmod(_ path: String, _ mode: UInt32) throws { try chmodImpl?(path, mode) }
     /// Nothing keeps dates here.
@@ -85,7 +85,7 @@ private final class PathSetWriteFileSystem: WriteServiceFileSystem, @unchecked S
     func renameExclusive(_ from: String, _ to: String) throws {
         try state.withLock { state in
             if state.existingPaths.contains(to) {
-                throw codedError("EEXIST", "EEXIST: \(to)")
+                throw codedError(.errno(EEXIST), "EEXIST: \(to)")
             }
             func moved(_ paths: Set<String>) -> Set<String> {
                 Set(paths.map { $0 == from || $0.hasPrefix(from + "/") ? to + $0.dropFirst(from.count) : $0 })
@@ -290,7 +290,7 @@ struct WriteServicePasteTests {
         let fileSystem = PathSetWriteFileSystem(
             existingPaths: ["/target", "/source", "/source/run.sh"], directoryPaths: ["/target", "/source"],
             fileSizes: ["/source/run.sh": 11])
-        fileSystem.chmodImpl = { _, _ in throw codedError("ENOTSUP", "Operation not supported") }
+        fileSystem.chmodImpl = { _, _ in throw codedError(.errno(ENOTSUP), "Operation not supported") }
         let service = WriteService(.init(fileSystem: fileSystem, createOperationId: { "chmod-unsupported-op" }))
         let events = Events()
         _ = service.subscribe { events.record($0) }

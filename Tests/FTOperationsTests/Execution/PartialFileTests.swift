@@ -99,8 +99,8 @@ struct PartialFileTests {
         expectNothingLeft(fileSystem, run)
     }
 
-    @Test(arguments: [CopyPasteMode.copy, .cut], ["ENOSPC", "EIO"])
-    func leavesNothingBehindAndSaysWhy(mode: CopyPasteMode, code: String) async throws {
+    @Test(arguments: [CopyPasteMode.copy, .cut], [ENOSPC, EIO])
+    func leavesNothingBehindAndSaysWhy(mode: CopyPasteMode, code: Int32) async throws {
         let fileSystem = largeFileOnAnotherDisk()
         copyPartThen(fileSystem) { destination, _ in throw MockWriteServiceFileSystem.error(code, destination) }
 
@@ -135,7 +135,7 @@ struct PartialFileTests {
         let fileSystem = largeFileOnAnotherDisk()
         fileSystem.renameImpl = { from, to in
             if to == Self.final && from.contains(".filetrail-") {
-                throw MockWriteServiceFileSystem.error("EIO", to)
+                throw MockWriteServiceFileSystem.error(EIO, to)
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -155,11 +155,11 @@ struct PartialFileTests {
         // rm of the hidden part fails (a disk error).
         fileSystem.rmImpl = { path, recursive, force in
             if path.firstMatch(of: /\.filetrail-[0-9a-f]{8}$/) != nil {
-                throw MockWriteServiceFileSystem.error("EIO", path)
+                throw MockWriteServiceFileSystem.error(EIO, path)
             }
             try fileSystem.removeDirectly(path, recursive: recursive, force: force)
         }
-        copyPartThen(fileSystem) { destination, _ in throw MockWriteServiceFileSystem.error("ENOSPC", destination) }
+        copyPartThen(fileSystem) { destination, _ in throw MockWriteServiceFileSystem.error(ENOSPC, destination) }
 
         let run = try await paste(fileSystem, mode)
 
@@ -193,13 +193,13 @@ struct FailedFileInsideAFolderTests {
             let fails = source.hasSuffix("/a.txt")
             fileSystem.addFile(destination, .file(size: fails ? 4 : 10))
             if fails {
-                throw MockWriteServiceFileSystem.error("EIO", destination)
+                throw MockWriteServiceFileSystem.error(EIO, destination)
             }
         }
         if !partRemovable {
             fileSystem.rmImpl = { path, recursive, force in
                 if path.hasSuffix("/a.txt") {
-                    throw MockWriteServiceFileSystem.error("EIO", path)
+                    throw MockWriteServiceFileSystem.error(EIO, path)
                 }
                 try fileSystem.removeDirectly(path, recursive: recursive, force: force)
             }

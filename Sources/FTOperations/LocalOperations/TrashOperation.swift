@@ -187,7 +187,7 @@ extension WriteCoordinator {
             outcome.tried = tried
             outcome.failure = (
                 LocalOperations.describeTrashError(error, path),
-                errorCode(error) == CopyPasteErrors.noTrashErrorCode && tried != nil
+                errorCode(error) == .noTrash && tried != nil
             )
         }
         return outcome

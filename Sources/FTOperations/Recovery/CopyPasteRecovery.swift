@@ -144,7 +144,7 @@ private func removePartialFile(_ entry: PartialFileJournalEntry, _ fileSystem: s
     do {
         _ = try fileSystem.lstat(path)
     } catch {
-        if errorCode(error) == "ENOENT" && folderIsThere(fileSystem, path) {
+        if errorCode(error) == .errno(ENOENT) && folderIsThere(fileSystem, path) {
             return .nothingLeft
         }
         return .unreachable(error: describeCopyPasteError(error))
@@ -220,7 +220,7 @@ private func recoverEntry(_ entry: ReplaceJournalEntry, _ fileSystem: some Write
     do {
         isDirectory = try fileSystem.lstat(entry.stagingPath).isDirectory
     } catch {
-        if errorCode(error) == "ENOENT" && folderIsThere(fileSystem, entry.stagingPath) {
+        if errorCode(error) == .errno(ENOENT) && folderIsThere(fileSystem, entry.stagingPath) {
             // A folder moved to another disk that was already in place, its originals not all removed yet: it is
             // in both places, and the person is told.
             if entry.movingCopy && entry.staged && captureFingerprint(fileSystem, entry.finalPath).exists {

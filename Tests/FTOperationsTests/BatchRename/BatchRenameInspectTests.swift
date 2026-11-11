@@ -98,7 +98,7 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
     }
 
     @Test func saysWhyAnItemCantBeRenamed() async {
-        let missing = await inspect(["/trip/gone.txt"], deps(lstat: { _ in throw errno("ENOENT") }))
+        let missing = await inspect(["/trip/gone.txt"], deps(lstat: { _ in throw errno(ENOENT) }))
         #expect(missing.items.first?.cannotRename == "“gone.txt” no longer exists.")
         #expect(missing.items.first?.createdAt == nil)
         #expect(missing.items.first?.modifiedAt == nil)

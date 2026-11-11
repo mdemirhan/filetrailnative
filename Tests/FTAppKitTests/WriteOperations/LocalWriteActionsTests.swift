@@ -95,7 +95,7 @@ private final class Fixture {
             if path.hasPrefix(home + "/Share/") {
                 throw OperationError(
                     "“\(NodePath.basename(path))” couldn’t be moved to the Trash. This disk may not have a Trash.",
-                    code: CopyPasteErrors.noTrashErrorCode)
+                    code: .noTrash)
             }
             let destination = home + "/.Trash/" + NodePath.basename(path)
             try NativeFS.renameExclusive(path, destination)

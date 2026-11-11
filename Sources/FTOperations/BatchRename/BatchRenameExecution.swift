@@ -356,7 +356,7 @@ public enum BatchRenameExecution {
                 try fileSystem.renameExclusive(from, destinationPath)
                 return completed(item, destinationPath)
             } catch {
-                let taken = errorCode(error) == "EEXIST"
+                let taken = errorCode(error) == .errno(EEXIST)
                 if taken && request.onConflict == .number && number <= maxAddedNumber {
                     destinationPath = NodePath.join(
                         item.folder,
@@ -416,7 +416,7 @@ public enum BatchRenameExecution {
                 try fileSystem.renameExclusive(temporaryPath, candidate)
                 return candidate
             } catch {
-                if errorCode(error) != "EEXIST" || number > maxAddedNumber {
+                if errorCode(error) != .errno(EEXIST) || number > maxAddedNumber {
                     return temporaryPath
                 }
                 candidate = NodePath.join(
@@ -476,10 +476,10 @@ public enum BatchRenameExecution {
         takenName: String? = nil
     ) -> String {
         let code = errorCode(error)
-        if code == "ENOENT" && sameText(from, item.sourcePath) {
+        if code == .errno(ENOENT) && sameText(from, item.sourcePath) {
             return "\u{201C}\(item.sourceName)\u{201D} no longer exists."
         }
-        if code == "EEXIST" {
+        if code == .errno(EEXIST) {
             return "An item named \u{201C}\(takenName ?? item.destinationName)\u{201D} already exists."
         }
         return findLockedRefusal(fileSystem.readFlags, error, [from, item.folder])?.message
@@ -561,7 +561,7 @@ public enum BatchRenameExecution {
             } catch {
                 // Gone: it took its name before the crash. Unreadable: its disk may be away.
                 let folderThere = (try? fileSystem.lstat(NodePath.dirname(written.temporaryPath)).isDirectory) ?? false
-                if errorCode(error) != "ENOENT" || !folderThere {
+                if errorCode(error) != .errno(ENOENT) || !folderThere {
                     recovery.remaining.append(written)
                 }
                 continue
@@ -588,7 +588,7 @@ public enum BatchRenameExecution {
                     path = candidate
                     break
                 } catch {
-                    if errorCode(error) != "EEXIST" {
+                    if errorCode(error) != .errno(EEXIST) {
                         break
                     }
                 }

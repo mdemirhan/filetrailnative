@@ -11,12 +11,12 @@ struct StagedDiscardTests {
     private func failRemovingHiddenCopiesPartWay(_ fileSystem: MockWriteServiceFileSystem) {
         fileSystem.rmImpl = { path, _, _ in
             if !path.contains(".filetrail-") {
-                throw codedError("EPERM")
+                throw codedError(.errno(EPERM))
             }
             if let inside = fileSystem.paths.first(where: { $0.hasPrefix(path + "/") }) {
                 fileSystem.deleteNode(inside)
             }
-            throw codedError("EIO")
+            throw codedError(.errno(EIO))
         }
     }
 
@@ -47,7 +47,7 @@ struct StagedDiscardTests {
         // Complete, but it can't take its name.
         fileSystem.renameImpl = { from, to in
             if to == "/target/dir" {
-                throw codedError("EIO")
+                throw codedError(.errno(EIO))
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -110,13 +110,13 @@ struct StagedDiscardTests {
         fileSystem.addDirectory("/target")
         fileSystem.renameImpl = { from, to in
             if to == "/target/dir" {
-                throw codedError("EIO")
+                throw codedError(.errno(EIO))
             }
             try fileSystem.renameDirectly(from, to)
         }
         let journal = ReplaceEntriesJournal()
         let journalWorks = Locked(true)
-        journal.refuseAdd = { journalWorks.value ? nil : codedError("EIO") }
+        journal.refuseAdd = { journalWorks.value ? nil : codedError(.errno(EIO)) }
         journal.onAdd = { entry in
             if entry.staged {
                 journalWorks.mutate { $0 = false }

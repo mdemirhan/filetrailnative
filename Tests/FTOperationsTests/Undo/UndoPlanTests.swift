@@ -1,3 +1,4 @@
+import FTFileSystem
 import FTFoundation
 import Foundation
 import Testing
@@ -17,7 +18,7 @@ final class PlanDisk: IdentityFileSystem, @unchecked Sendable {
     let items: [String: Item]
     /// Each look is answered by `fails` first, which names the error it throws, if any. Counted per kind
     /// of look and path, from 1.
-    var fails: ((_ look: String, _ path: String, _ count: Int) -> String?)?
+    var fails: ((_ look: String, _ path: String, _ count: Int) -> Int32?)?
     /// Each lstat, before it answers (the test may hold it).
     var onLstat: ((String) -> Void)?
     private let counts = OSAllocatedUnfairLock(initialState: [String: Int]())
@@ -33,14 +34,14 @@ final class PlanDisk: IdentityFileSystem, @unchecked Sendable {
             return counts["\(look) \(path)"] ?? 0
         }
         if let code = fails(look, path, count) {
-            throw OperationError(code, code: code)
+            throw OperationError(Errno.nameOrUnknown(of: code), code: .errno(code))
         }
     }
 
     private func stats(_ path: String) throws -> WriteServiceStats {
         switch items[path] {
         case nil:
-            throw OperationError("ENOENT", code: "ENOENT")
+            throw OperationError("ENOENT", code: .errno(ENOENT))
         case .link:
             return WriteServiceStats(type: .symlink, ino: 999, dev: 1)
         case .file(let ino, let size):
@@ -71,7 +72,7 @@ final class PlanDisk: IdentityFileSystem, @unchecked Sendable {
     }
 
     func realpath(_ path: String) throws -> String { path }
-    func readlink(_ path: String) throws -> String { throw OperationError("EINVAL", code: "EINVAL") }
+    func readlink(_ path: String) throws -> String { throw OperationError("EINVAL", code: .errno(EINVAL)) }
 }
 
 struct UndoPlanTests {
@@ -283,7 +284,7 @@ struct UndoPlanTests {
 
     @Test func findsAnItemChangedWhenItCantBeLookedAtAgain() {
         let fileSystem = disk(["/a": .file(ino: 10)])
-        fileSystem.fails = { look, _, count in look == "lstat" && count > 1 ? "EIO" : nil }
+        fileSystem.fails = { look, _, count in look == "lstat" && count > 1 ? EIO : nil }
         #expect(
             UndoPlan.checkTrash(
                 fileSystem, PlannedTrash(path: "/a", id: id(10), stamp: fileStamp(), putBack: false, unlock: true))
@@ -482,7 +483,7 @@ struct UndoPlanTests {
 
     @Test func keepsAStepWhoseItemInTheTrashCantBeLookedAtAgain() {
         // Found, then not read for how it looks (gone or not): kept, to be looked at next time.
-        for second in ["EIO", "ENOENT"] {
+        for second in [EIO, ENOENT] {
             let unread = disk(inTrashItems)
             unread.fails = { look, path, count in look == "lstat" && path == "/T/a.txt" && count == 2 ? second : nil }
             #expect(
@@ -493,7 +494,7 @@ struct UndoPlanTests {
 
     @Test func keepsAStepWhoseFolderInTheTrashCantBeListed() {
         let unlisted = disk(["/Docs": .dir(ino: 1), "/T": .dir(ino: nil), "/T/F": .dir(ino: nil)])
-        unlisted.fails = { look, _, _ in look == "readdir" ? "EACCES" : nil }
+        unlisted.fails = { look, _, _ in look == "readdir" ? EACCES : nil }
         var step = putBackFile
         step.from = "/T/F"
         step.to = "/Docs/F"
@@ -506,10 +507,10 @@ struct UndoPlanTests {
 
     @Test func keepsAStepWhoseFolderOrThePlaceItGoesBackToCantBeLookedAt() {
         let folder = disk(docs, ["/Docs/b.txt": .file(ino: 10)])
-        folder.fails = { look, path, _ in look == "stat" && path == "/Docs" ? "EIO" : nil }
+        folder.fails = { look, path, _ in look == "stat" && path == "/Docs" ? EIO : nil }
         #expect(UndoPlan.checkMove(folder, moveBack()) == cantCheck("Docs"))
         let place = disk(docs, ["/Docs/b.txt": .file(ino: 10)])
-        place.fails = { look, path, _ in look == "lstat" && path == "/Docs/a.txt" ? "EIO" : nil }
+        place.fails = { look, path, _ in look == "lstat" && path == "/Docs/a.txt" ? EIO : nil }
         #expect(UndoPlan.checkMove(place, moveBack()) == cantCheck("a.txt"))
     }
 
@@ -528,7 +529,7 @@ struct UndoPlanTests {
 
     @Test func keepsAStepToMoveToTheTrashAnItemItCantLookAt() {
         let fileSystem = disk(["/a": .file(ino: 10)])
-        fileSystem.fails = { _, _, _ in "EIO" }
+        fileSystem.fails = { _, _, _ in EIO }
         #expect(
             UndoPlan.checkTrash(
                 fileSystem, PlannedTrash(path: "/a", id: id(10), stamp: nil, putBack: false, unlock: true))
@@ -549,7 +550,7 @@ struct UndoPlanTests {
             "/D": .dir(ino: 1), "/D/a": .file(ino: 10), "/D/b": .file(ino: 11), "/D/c": .file(ino: 12),
             "/D/fat": .file(ino: nil),
         ])
-        fileSystem.fails = { look, path, _ in look == "lstat" && (path == "/D/a" || path == "/D/y") ? "EIO" : nil }
+        fileSystem.fails = { look, path, _ in look == "lstat" && (path == "/D/a" || path == "/D/y") ? EIO : nil }
         let checks = UndoPlan.checkBatch(
             fileSystem,
             [

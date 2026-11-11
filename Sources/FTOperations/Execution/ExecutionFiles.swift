@@ -29,7 +29,7 @@ func copyFileContents(
     }
     if captureFingerprint(fileSystem, targetPath).exists {
         throw DestinationTakenError(
-            original: NativeError(message: "EEXIST: \(targetPath)", code: "EEXIST", path: targetPath))
+            original: NativeError(message: "EEXIST: \(targetPath)", code: .errno(EEXIST), path: targetPath))
     }
     let partialPath = try temporarySiblingPath(fileSystem, targetPath)
     // A large file is written down first: cut short by a crash, the part copied would take up space under a
@@ -61,7 +61,7 @@ func copyFileContents(
         }
     } catch {
         try? removeStagedItem(fileSystem, partialPath)
-        throw errorCode(error) == "EEXIST"
+        throw errorCode(error) == .errno(EEXIST)
             ? DestinationTakenError(original: error) : explainMissingFolder(fileSystem, targetPath, error)
     }
 }
@@ -98,7 +98,7 @@ func isGone(_ fileSystem: some IdentityFileSystem, _ path: String) -> Bool {
         _ = try fileSystem.lstat(path)
         return false
     } catch {
-        if errorCode(error) != "ENOENT" {
+        if errorCode(error) != .errno(ENOENT) {
             return false
         }
     }
@@ -115,13 +115,13 @@ private func writeFileContents(
         try fileSystem.copyFile(sourcePath, targetPath, stop: context.signal, onProgress: onProgress)
     } catch {
         let code = errorCode(error)
-        if code == "EEXIST" {
+        if code == .errno(EEXIST) {
             throw DestinationTakenError(original: error)
         }
-        if code == "ENOENT" {
+        if code == .errno(ENOENT) {
             throw explainMissingFolder(fileSystem, targetPath, error)
         }
-        if code == "ENOTSUP" || code == "EOPNOTSUPP", let source = try? fileSystem.lstat(sourcePath),
+        if code == .errno(ENOTSUP) || code == .errno(EOPNOTSUPP), let source = try? fileSystem.lstat(sourcePath),
             source.type == .other
         {
             throw OperationError(
@@ -164,7 +164,7 @@ func reserveStagingFolder(_ fileSystem: some WriteServiceFileSystem, _ finalPath
             try fileSystem.mkdir(path)
             return path
         } catch {
-            if errorCode(error) != "EEXIST" {
+            if errorCode(error) != .errno(EEXIST) {
                 throw explainMissingFolder(fileSystem, path, error)
             }
         }
@@ -208,7 +208,7 @@ public func removeStagedItem(_ fileSystem: some WriteServiceFileSystem, _ path: 
         return
     } catch {
         let code = errorCode(error)
-        if code != "EACCES" && code != "EPERM" {
+        if code != .errno(EACCES) && code != .errno(EPERM) {
             throw error
         }
     }

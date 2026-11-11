@@ -1,3 +1,4 @@
+import FTFileSystem
 import FTFoundation
 import Foundation
 
@@ -154,7 +155,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         try locked {
             let node = try nodeOrThrow(path)
             if node.kind == .symlink {
-                guard let target = node.target, !target.isEmpty else { throw Self.error("ENOENT", path) }
+                guard let target = node.target, !target.isEmpty else { throw Self.error(ENOENT, path) }
                 return Self.stats(try nodeOrThrow(target))
             }
             return Self.stats(node)
@@ -173,7 +174,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         if let readdirImpl { return try readdirImpl(path) }
         return try locked {
             let node = try nodeOrThrow(path)
-            guard node.kind == .directory else { throw Self.error("ENOTDIR", path) }
+            guard node.kind == .directory else { throw Self.error(ENOTDIR, path) }
             return listChildren(path)
         }
     }
@@ -181,7 +182,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     func readlink(_ path: String) throws -> String {
         try locked {
             let node = try nodeOrThrow(path)
-            guard node.kind == .symlink, let target = node.target else { throw Self.error("EINVAL", path) }
+            guard node.kind == .symlink, let target = node.target else { throw Self.error(EINVAL, path) }
             return target
         }
     }
@@ -222,12 +223,12 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
             let key = existingKey(path)
             guard has(key) else {
                 if force { return }
-                throw Self.error("ENOENT", path)
+                throw Self.error(ENOENT, path)
             }
             let node = try nodeOrThrow(key)
             if node.kind == .directory {
                 if !listChildren(key).isEmpty && !recursive {
-                    throw Self.error("ENOTEMPTY", path)
+                    throw Self.error(ENOTEMPTY, path)
                 }
                 deleteTree(key)
                 return
@@ -240,9 +241,9 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         if let rmdirImpl { return try rmdirImpl(path) }
         try locked {
             let node = try nodeOrThrow(path)
-            guard node.kind == .directory else { throw Self.error("ENOTDIR", path) }
+            guard node.kind == .directory else { throw Self.error(ENOTDIR, path) }
             if !listChildren(path).isEmpty {
-                throw Self.error("ENOTEMPTY", path)
+                throw Self.error(ENOTEMPTY, path)
             }
             delete(existingKey(path))
         }
@@ -276,7 +277,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     func renameExclusive(_ oldPath: String, _ newPath: String) throws {
         try locked {
             if let there = get(existingKey(newPath)), there !== get(existingKey(oldPath)) {
-                throw Self.error("EEXIST", newPath)
+                throw Self.error(EEXIST, newPath)
             }
         }
         try rename(oldPath, newPath)
@@ -316,7 +317,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
             // Across devices: the source's against the destination folder's.
             let parentNode = try nodeOrThrow(NodePath.dirname(normalizedNew))
             if sourceNode.dev != parentNode.dev {
-                throw Self.error("EXDEV", normalizedOld)
+                throw Self.error(EXDEV, normalizedOld)
             }
             let moving = order.compactMap { $0 }.filter { isAtOrUnder($0, normalizedOld) }.map { ($0, get($0)) }
             for (path, _) in moving {
@@ -351,11 +352,11 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         try locked {
             let source = try nodeOrThrow(sourcePath)
             if source.kind == .directory {
-                throw Self.error("EISDIR", sourcePath)
+                throw Self.error(EISDIR, sourcePath)
             }
             try ensureDirectory(NodePath.dirname(destinationPath), recursive: true)
             if has(existingKey(destinationPath)) {
-                throw Self.error("EEXIST", destinationPath)
+                throw Self.error(EEXIST, destinationPath)
             }
             set(
                 newKey(destinationPath),
@@ -459,16 +460,16 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         let parent = existingKey(NodePath.dirname(normalized))
         if !has(parent) {
             if !recursive {
-                throw Self.error("ENOENT", parent)
+                throw Self.error(ENOENT, parent)
             }
             try ensureDirectory(parent, recursive: true)
         }
         if let existing = get(existingKey(normalized)) {
             if existing.kind != .directory {
-                throw Self.error(recursive ? "ENOTDIR" : "EEXIST", normalized)
+                throw Self.error(recursive ? ENOTDIR : EEXIST, normalized)
             }
             if !recursive {
-                throw Self.error("EEXIST", normalized)
+                throw Self.error(EEXIST, normalized)
             }
             return
         }
@@ -558,7 +559,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     private func nodeOrThrow(_ path: String) throws -> Node {
         let normalized = existingKey(path)
         guard let node = get(normalized) else {
-            throw Self.error("ENOENT", normalized)
+            throw Self.error(ENOENT, normalized)
         }
         return node
     }
@@ -582,8 +583,8 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         return scalars.isEmpty ? "/" : String(String.UnicodeScalarView(scalars))
     }
 
-    static func error(_ code: String, _ path: String) -> NativeError {
-        NativeError(message: "\(code): \(path)", code: code, path: path)
+    static func error(_ errnum: Int32, _ path: String) -> NativeError {
+        NativeError(message: "\(Errno.nameOrUnknown(of: errnum)): \(path)", code: .errno(errnum), path: path)
     }
 
     private static func stats(_ node: Node) -> WriteServiceStats {

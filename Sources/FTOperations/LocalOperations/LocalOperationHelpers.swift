@@ -54,7 +54,7 @@ enum LocalOperations {
         do {
             return .found(try fileSystem.lstat(path))
         } catch {
-            return errorCode(error) == "ENOENT" ? .missing : .unreadable
+            return errorCode(error) == .errno(ENOENT) ? .missing : .unreadable
         }
     }
 
@@ -63,7 +63,7 @@ enum LocalOperations {
         do {
             return .size(try fileSystem.itemSize(path))
         } catch {
-            return errorCode(error) == "ENOENT" ? .missing : .unreadable
+            return errorCode(error) == .errno(ENOENT) ? .missing : .unreadable
         }
     }
 
@@ -81,10 +81,10 @@ enum LocalOperations {
     /// error is about a particular item, it is named.
     static func describeWriteError(_ error: any Error, missing: String? = nil, existing: String? = nil) -> String {
         let code = errorCode(error)
-        if code == "ENOENT", let missing, !missing.isEmpty {
+        if code == .errno(ENOENT), let missing, !missing.isEmpty {
             return "\u{201C}\(missing)\u{201D} no longer exists."
         }
-        if code == "EEXIST", let existing, !existing.isEmpty {
+        if code == .errno(EEXIST), let existing, !existing.isEmpty {
             return "An item named \u{201C}\(existing)\u{201D} already exists."
         }
         return describeCopyPasteError(error)
@@ -94,7 +94,7 @@ enum LocalOperations {
     /// window then offers to delete the item immediately, as Finder does.
     static func describeTrashError(_ error: any Error, _ path: String) -> String {
         let name = NodePath.basename(path)
-        if errorCode(error) == CopyPasteErrors.noTrashErrorCode {
+        if errorCode(error) == .noTrash {
             return "\u{201C}\(name)\u{201D} couldn\u{2019}t be moved to the Trash because its disk has no Trash."
         }
         let described = describeCopyPasteError(error)

@@ -183,7 +183,7 @@ enum Stats {
 }
 
 /// An error with a code.
-func errorWithCode(_ message: String, _ code: String) -> OperationError {
+func errorWithCode(_ message: String, _ code: ErrorCode) -> OperationError {
     OperationError(message, code: code)
 }
 

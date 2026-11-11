@@ -22,7 +22,9 @@ func runTool(_ tool: String, _ arguments: [String]) throws {
 }
 
 /// A copy that fails with `code` at `when(source, count)`, otherwise the base's.
-private func failingCopy(_ fileSystem: TestFileSystem, code: String, when: @escaping @Sendable (String, Int) -> Bool) {
+private func failingCopy(
+    _ fileSystem: TestFileSystem, code: ErrorCode, when: @escaping @Sendable (String, Int) -> Bool
+) {
     let base = fileSystem.base
     let written = OSAllocatedUnfairLock(initialState: 0)
     fileSystem.copyFileImpl = { from, to, stop, progress in
@@ -31,7 +33,7 @@ private func failingCopy(_ fileSystem: TestFileSystem, code: String, when: @esca
             return value
         }
         if when(from, count) {
-            throw codedError(code, "\(code): \(from)")
+            throw codedError(code, "\(code.name): \(from)")
         }
         try base.copyFile(from, to, stop: stop, onProgress: progress)
     }
@@ -45,7 +47,7 @@ struct WholeFolderTests {
             try Disk.write(f.src + "/Talk.key/" + name, name)
         }
         let fileSystem = f.withoutRenameAtAll()
-        failingCopy(fileSystem, code: "EIO") { _, count in count == 3 }
+        failingCopy(fileSystem, code: .errno(EIO)) { _, count in count == 3 }
         return fileSystem
     }
 
@@ -59,7 +61,7 @@ struct WholeFolderTests {
             let base = fileSystem.base
             fileSystem.rmImpl = { path, recursive, force in
                 if NodePath.basename(path) == "Talk.key" {
-                    throw codedError("EACCES", "EACCES: permission denied")
+                    throw codedError(.errno(EACCES), "EACCES: permission denied")
                 }
                 try base.rm(path, recursive: recursive, force: force)
             }
@@ -132,7 +134,7 @@ struct WholeFolderTests {
             try runTool("/bin/chmod", ["+a", "group:everyone deny delete", f.src + "/F/A"])
             defer { try? runTool("/bin/chmod", ["-R", "-N", f.root]) }
             let fileSystem = f.withoutRenameAtAll()
-            failingCopy(fileSystem, code: "EIO") { from, _ in NodePath.basename(from) == "z.txt" }
+            failingCopy(fileSystem, code: .errno(EIO)) { from, _ in NodePath.basename(from) == "z.txt" }
 
             let run = try await runPaste(mode: .cut, sources: [f.src + "/F"], into: f.dst, fileSystem: fileSystem)
 
@@ -207,7 +209,7 @@ struct WholeFolderTests {
             try Disk.write(f.src + "/F/Tool.app/Contents/a", "a")
             try Disk.write(f.src + "/F/Tool.app/Contents/b", "b")
             let fileSystem = TestFileSystem()
-            failingCopy(fileSystem, code: "EIO") { from, _ in from.hasSuffix("Contents/b") }
+            failingCopy(fileSystem, code: .errno(EIO)) { from, _ in from.hasSuffix("Contents/b") }
 
             let run = try await runPaste(mode: .copy, sources: [f.src + "/F"], into: f.dst, fileSystem: fileSystem)
 
@@ -260,10 +262,12 @@ struct WholeFolderTests {
             try Disk.write(f.src + "/F/a.txt", "a")
             let fileSystem = f.withoutRenameAtAll()
             let base = fileSystem.base
-            fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("ENOSPC", "ENOSPC: no space left on device") }
+            fileSystem.copyFileImpl = { _, _, _, _ in
+                throw codedError(.errno(ENOSPC), "ENOSPC: no space left on device")
+            }
             fileSystem.rmImpl = { path, recursive, force in
                 if path.contains(".F.filetrail-") {
-                    throw codedError("EIO", "EIO: i/o error")
+                    throw codedError(.errno(EIO), "EIO: i/o error")
                 }
                 try base.rm(path, recursive: recursive, force: force)
             }
@@ -347,7 +351,7 @@ struct WholeFolderTests {
                 if left.value == nil {
                     left.mutate { $0 = journal.entries }
                 }
-                throw codedError("ECANCELED", "ECANCELED: the process was killed")
+                throw codedError(.errno(ECANCELED), "ECANCELED: the process was killed")
             }
 
             _ = try await runPaste(
@@ -408,7 +412,9 @@ struct LargeFileBeingCopiedTests {
             try sparseLargeFile(f.src + "/movie.mov")
             let journal = MemoryJournal()
             let fileSystem = TestFileSystem()
-            fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("ENOSPC", "ENOSPC: no space left on device") }
+            fileSystem.copyFileImpl = { _, _, _, _ in
+                throw codedError(.errno(ENOSPC), "ENOSPC: no space left on device")
+            }
 
             let run = try await runPaste(
                 mode: .copy, sources: [f.src + "/movie.mov"], into: f.dst, fileSystem: fileSystem, writeJournal: journal

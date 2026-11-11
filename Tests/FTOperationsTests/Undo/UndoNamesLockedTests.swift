@@ -238,7 +238,7 @@ struct UndoNamesLockedTests {
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
                 fileSystem.trashImpl = { path in
                     guard Darwin.rename(path, trashDir + "/" + NodePath.basename(path)) == 0 else {
-                        throw codedError("EIO", "EIO: the Trash refused it")
+                        throw codedError(.errno(EIO), "EIO: the Trash refused it")
                     }
                     return nil
                 }
@@ -264,7 +264,7 @@ struct UndoNamesLockedTests {
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
                 fileSystem.setFlagsImpl = { path, flags in
                     if refuseLock.isSet && flags & UndoNamesLockedTests.userImmutable != 0 {
-                        throw codedError("EPERM", "EPERM: operation not permitted")
+                        throw codedError(.errno(EPERM), "EPERM: operation not permitted")
                     }
                     try NativeFS.setFlags(path, flags)
                 }
@@ -293,7 +293,7 @@ struct UndoNamesLockedTests {
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
                 fileSystem.setFlagsImpl = { path, flags in
                     if refuseUnlock.isSet && flags & UndoNamesLockedTests.userImmutable == 0 {
-                        throw codedError("EPERM", "EPERM: operation not permitted")
+                        throw codedError(.errno(EPERM), "EPERM: operation not permitted")
                     }
                     try NativeFS.setFlags(path, flags)
                 }
@@ -330,11 +330,11 @@ struct UndoNamesLockedTests {
                 fileSystem.getFlagsImpl = { flags[$0] }
                 fileSystem.setFlagsImpl = { path, value in
                     if value & UndoNamesLockedTests.userImmutable != 0 {
-                        throw codedError("EPERM", "EPERM: operation not permitted")
+                        throw codedError(.errno(EPERM), "EPERM: operation not permitted")
                     }
                     flags[path] = value
                 }
-                fileSystem.trashImpl = { _ in throw codedError("EPERM", "EPERM: operation not permitted") }
+                fileSystem.trashImpl = { _ in throw codedError(.errno(EPERM), "EPERM: operation not permitted") }
             }
             try await t.newFolder(root, "F")
             flags["\(root)/F"] = Self.userImmutable
@@ -354,7 +354,7 @@ struct UndoNamesLockedTests {
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
                 fileSystem.getFlagsImpl = { flags[$0] }
                 fileSystem.setFlagsImpl = { path, value in flags[path] = value }
-                fileSystem.trashImpl = { _ in throw codedError("EPERM", "EPERM: operation not permitted") }
+                fileSystem.trashImpl = { _ in throw codedError(.errno(EPERM), "EPERM: operation not permitted") }
             }
             try await t.newFolder(root, "F")
             flags["\(root)/F"] = Self.userImmutable

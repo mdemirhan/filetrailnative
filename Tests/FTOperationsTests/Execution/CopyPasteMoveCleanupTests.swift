@@ -112,7 +112,7 @@ struct CopyPasteMoveCleanupTests {
         let report = try analyze(fileSystem, ["/source/dir/a.txt"])
         fileSystem.lstatImpl = { path in
             if path == "/source/dir/a.txt" && fileSystem.exists("/target/a.txt") {
-                throw MockWriteServiceFileSystem.error("EIO", path)
+                throw MockWriteServiceFileSystem.error(EIO, path)
             }
             return try fileSystem.lstatDirectly(path)
         }
@@ -214,7 +214,7 @@ struct CopyPasteMoveCleanupTests {
         fileSystem.addFile("/source/dir/a.txt/inside.txt", .file(size: 2, dev: 2))
         fileSystem.copyMetadataImpl = { source, _ in
             if source == "/source/dir/a.txt" {
-                throw codedError("ENOTSUP")
+                throw codedError(.errno(ENOTSUP))
             }
         }
 
@@ -240,7 +240,7 @@ struct CopyPasteMoveCleanupTests {
         fileSystem.deleteNode("/source/dir/sub/c.txt")
         fileSystem.deleteNode("/source/dir/sub")
         fileSystem.addFile("/source/dir/sub", .file(size: 7, dev: 2))
-        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EIO", "EIO: i/o error") }
+        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError(.errno(EIO), "EIO: i/o error") }
 
         let result = try await move(fileSystem, report, answer: .overwrite)
 
@@ -258,7 +258,7 @@ struct CopyPasteMoveCleanupTests {
         // A disk that refuses some of it (an ACL, a flag): the copy gets the mode and dates.
         fileSystem.copyMetadataImpl = { source, _ in
             if source == "/source/dir/sub" {
-                throw codedError("ENOTSUP")
+                throw codedError(.errno(ENOTSUP))
             }
         }
 

@@ -15,7 +15,7 @@ struct NativeRenameExclusiveTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.renameExclusive(root.appending("a.txt").path, root.appending("b.txt").path)
             }
-            #expect(error?.code == "EEXIST" && error?.syscall == "rename")
+            #expect(error?.code == .errno(EEXIST) && error?.syscall == "rename")
             #expect(error?.path == root.appending("a.txt").path && error?.dest == root.appending("b.txt").path)
             #expect(Files.read(root.appending("b.txt").path) == Array("existing".utf8))
 
@@ -40,7 +40,7 @@ struct NativeRenameExclusiveTests {
         let taken = #expect(throws: NativeError.self) {
             try NativeFS.renameExclusive("/v/a.txt", "/v/b.txt", calls: calls)
         }
-        #expect(taken?.code == "EEXIST" && taken?.syscall == "rename")
+        #expect(taken?.code == .errno(EEXIST) && taken?.syscall == "rename")
         #expect(renamed.isEmpty)
 
         try NativeFS.renameExclusive("/v/a.txt", "/v/c.txt", calls: calls)
@@ -50,7 +50,7 @@ struct NativeRenameExclusiveTests {
         let unreadable = #expect(throws: NativeError.self) {
             try NativeFS.renameExclusive("/v/a.txt", "/v/d.txt", calls: calls)
         }
-        #expect(unreadable?.code == "EACCES")
+        #expect(unreadable?.code == .errno(EACCES))
     }
 
     // FAT and exFAT: a move that never replaces, whichever way the volume allows it.
@@ -62,7 +62,7 @@ struct NativeRenameExclusiveTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.renameExclusive(volume.path + "/a.txt", volume.path + "/b.txt")
             }
-            #expect(error?.code == "EEXIST")
+            #expect(error?.code == .errno(EEXIST))
             #expect(Files.read(volume.path + "/b.txt") == Array("existing".utf8))
             try NativeFS.renameExclusive(volume.path + "/a.txt", volume.path + "/c.txt")
             #expect(Files.read(volume.path + "/c.txt") == Array("moved".utf8))
@@ -82,7 +82,7 @@ struct NativeCaseSensitivityTests {
 
     @Test func rejectsAPathThatDoesntExist() {
         let error = #expect(throws: NativeError.self) { try NativeFS.isCaseSensitive("/nonexistent/path/xyz") }
-        #expect(error?.code == "ENOENT" && error?.syscall == "pathconf")
+        #expect(error?.code == .errno(ENOENT) && error?.syscall == "pathconf")
     }
 
     @Test(.tags(.diskImage), .diskImages)
@@ -119,7 +119,7 @@ struct NativeAppleDoubleTests {
 
     @Test func namesTheErrnoForAMissingPath() {
         let error = #expect(throws: NativeError.self) { try NativeFS.usesAppleDouble("/nonexistent/path/xyz") }
-        #expect(error?.code == "ENOENT" && error?.syscall == "getattrlist")
+        #expect(error?.code == .errno(ENOENT) && error?.syscall == "getattrlist")
     }
 
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])

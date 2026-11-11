@@ -523,7 +523,8 @@ struct UndoExecutionTests {
             let t = UndoTest(root: root, trashDir: trashDir)
             try await t.rename("\(root)/a.txt", "b.txt")
             let failing = UndoTest(root: root, trashDir: trashDir) { fileSystem in
-                fileSystem.renameExclusiveImpl = { _, _ in throw codedError("EACCES", "EACCES: permission denied") }
+                fileSystem.renameExclusiveImpl = { _, _ in throw codedError(.errno(EACCES), "EACCES: permission denied")
+                }
             }
             failing.history.record(
                 FinishedWrite(
@@ -567,7 +568,7 @@ struct UndoExecutionTests {
                     // Another app takes the name between the check and the move, once.
                     if to == "\(root)/a.txt", raced.next() == 1 {
                         try UndoDisk.write(to, "someone else's")
-                        throw codedError("EEXIST", "EEXIST: file exists")
+                        throw codedError(.errno(EEXIST), "EEXIST: file exists")
                     }
                     try UndoDisk.move(from, to)
                 }
@@ -587,7 +588,7 @@ struct UndoExecutionTests {
                 fileSystem.renameExclusiveImpl = { from, to in
                     if to.hasPrefix("\(root)/a") {
                         try UndoDisk.write(to, "someone else's")
-                        throw codedError("EEXIST", "EEXIST: file exists")
+                        throw codedError(.errno(EEXIST), "EEXIST: file exists")
                     }
                     try UndoDisk.move(from, to)
                 }
@@ -607,7 +608,7 @@ struct UndoExecutionTests {
             try UndoDisk.mkdir("\(root)/src")
             try UndoDisk.write("\(root)/src/a.txt", "a")
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
-                fileSystem.trashImpl = { _ in throw codedError("EPERM", "EPERM: operation not permitted") }
+                fileSystem.trashImpl = { _ in throw codedError(.errno(EPERM), "EPERM: operation not permitted") }
             }
             try await t.paste(.copy, ["\(root)/src/a.txt"], into: "\(root)/src", action: .duplicate)
             let undone = try await t.undo()

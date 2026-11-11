@@ -20,7 +20,7 @@ struct NativeCopyFileErrorTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.copyFile(root.appending("a.txt").path, root.appending("b.txt").path)
             }
-            #expect(error?.code == "EEXIST" && error?.syscall == "copyfile")
+            #expect(error?.code == .errno(EEXIST) && error?.syscall == "copyfile")
             #expect(Files.read(root.appending("b.txt").path) == Array("existing".utf8))
         }
     }
@@ -33,7 +33,7 @@ struct NativeCopyFileErrorTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.copyFile(root.appending("a.txt").path, longDestination)
             }
-            #expect(error?.code == "ENOENT" && error?.dest == longDestination)
+            #expect(error?.code == .errno(ENOENT) && error?.dest == longDestination)
             #expect(error?.message.contains(longDestination) == true)
             #expect(
                 error?.message
@@ -48,7 +48,7 @@ struct NativeCopyFileErrorTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.copyFile(root.appending("a.txt").path, root.appending("b.txt").path + "/c.txt")
             }
-            #expect(error?.code == "ENOTDIR")
+            #expect(error?.code == .errno(ENOTDIR))
         }
     }
 }
@@ -111,7 +111,7 @@ struct NativeCopyMetadataTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.copyMetadata(root.appending("missing").path, root.appending("destination").path)
             }
-            #expect(error?.code == "ENOENT")
+            #expect(error?.code == .errno(ENOENT))
         }
     }
 }
@@ -139,7 +139,7 @@ struct NativeCopyStopFlagTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.copyFile(root.appending("a.txt").path, root.appending("b.txt").path, control: control)
             }
-            #expect(error?.code == "ECANCELED")
+            #expect(error?.code == .errno(ECANCELED))
             #expect(!Files.exists(root.appending("b.txt").path))
         }
     }
@@ -159,7 +159,7 @@ struct NativeCopyStopFlagTests {
                 try Files.waitUntil { Files.exists(destination) }
                 control.stop()
                 let error = #expect(throws: NativeError.self) { try copy.wait() }
-                #expect(error?.code == "ECANCELED")
+                #expect(error?.code == .errno(ECANCELED))
                 #expect(!Files.exists(destination))
             }
         }
@@ -195,7 +195,7 @@ struct NativeCopyStopFlagTests {
                 let error = #expect(throws: NativeError.self) {
                     try NativeFS.copyFile(source, destination, control: CopyControl())
                 }
-                #expect(error?.code == "ENOSPC")
+                #expect(error?.code == .errno(ENOSPC))
                 #expect(Date().timeIntervalSince(started) < 10)
                 #expect(!Files.exists(destination))
             }
@@ -223,7 +223,7 @@ struct NativeCopyStopFlagTests {
                     try NativeFS.copyFile(source, destination, control: CopyControl())
                 }
                 #expect(
-                    error?.code == "ENOSPC" && error?.syscall == "copyfile",
+                    error?.code == .errno(ENOSPC) && error?.syscall == "copyfile",
                     "copied \(Files.size(destination + "/..namedfork/rsrc")) of \(forkSize) bytes of the fork")
             }
         }
@@ -238,7 +238,7 @@ struct NativeCopyStopFlagTests {
     func failsWithTheWritesErrnoWhenASmallResourceForkCantBeWritten() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
             try await DiskImage.withVolume(.fat32Small) { volume in
-                let fullCode = try Files.fillDisk(volume.path, fullCodes: ["ENOSPC", "EIO"])
+                let fullCode = try Files.fillDisk(volume.path, fullCodes: [ENOSPC, EIO])
                 let source = root.appending("small.rsrc").path
                 try Files.write(source, "")
                 let fork = [UInt8](repeating: 7, count: 512 * 1024)
@@ -248,7 +248,7 @@ struct NativeCopyStopFlagTests {
                 let error = #expect(throws: NativeError.self) {
                     try NativeFS.copyFile(source, destination, control: CopyControl())
                 }
-                #expect(error?.code == fullCode && error?.syscall == "copyfile")
+                #expect(error?.code == .errno(fullCode) && error?.syscall == "copyfile")
                 // The copy got as far as the fork: it left the file it made, for the caller to remove, without the
                 // whole fork.
                 #expect(Files.exists(destination))

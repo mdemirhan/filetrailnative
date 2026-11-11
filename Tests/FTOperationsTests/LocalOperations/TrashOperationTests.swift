@@ -24,11 +24,11 @@ import Testing
     @Test func countsAnItemThatIsAlreadyGoneAsDoneAndNamesTheItemWhenTheTrashRefuses() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.trashImpl = { path in
-            if path.hasSuffix("locked.txt") { throw errorWithCode("EPERM: operation not permitted", "EPERM") }
+            if path.hasSuffix("locked.txt") { throw errorWithCode("EPERM: operation not permitted", .errno(EPERM)) }
             return inTrash(path)
         }
         fileSystem.lstatImpl = { path in
-            if path.hasSuffix("gone.txt") { throw errorWithCode("ENOENT: no such file or directory", "ENOENT") }
+            if path.hasSuffix("gone.txt") { throw errorWithCode("ENOENT: no such file or directory", .errno(ENOENT)) }
             return Stats.file()
         }
         let coordinator = WriteCoordinator.local(fileSystem)
@@ -257,7 +257,7 @@ import Testing
     @Test func explainsAFailedDeleteInPlainWords() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.rmImpl = { _, _, _ in
-            throw errorWithCode("EACCES: permission denied, rmdir '/Users/demo/a'", "EACCES")
+            throw errorWithCode("EACCES: permission denied, rmdir '/Users/demo/a'", .errno(EACCES))
         }
         let coordinator = WriteCoordinator.local(fileSystem, homePath: home)
         let window = TestWindow()
@@ -326,7 +326,7 @@ import Testing
     @Test func deletesForGoodWhatJustCouldntGoToTheTrashBecauseItsDiskHasNone() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.trashImpl = { path in
-            if path.hasPrefix("/Volumes/Share/") { throw errorWithCode("no Trash", CopyPasteErrors.noTrashErrorCode) }
+            if path.hasPrefix("/Volumes/Share/") { throw errorWithCode("no Trash", .noTrash) }
             return inTrash(path)
         }
         // Each item with its own id, so the one asked about is told from any other.
@@ -377,16 +377,16 @@ import Testing
             trash: { path in
                 switch NodePath.basename(path) {
                 case "ok.txt": return inTrash(path)
-                case "full.txt": throw NativeError(message: "The disk is full.", code: "ENOSPC")
+                case "full.txt": throw NativeError(message: "The disk is full.", code: .errno(ENOSPC))
                 case "b.txt": throw NativeError(message: "“b.txt” couldn’t be moved to the trash.", cocoaCode: 512)
                 default:
                     throw NativeError(
-                        message: "“\(NodePath.basename(path))” couldn’t be moved to the trash.", code: "ENOTSUP",
+                        message: "“\(NodePath.basename(path))” couldn’t be moved to the trash.", code: .errno(ENOTSUP),
                         cocoaCode: 3328)
                 }
             },
             lstat: { path in
-                guard let dev = devices[path] else { throw OperationError("ENOENT: \(path)", code: "ENOENT") }
+                guard let dev = devices[path] else { throw OperationError("ENOENT: \(path)", code: .errno(ENOENT)) }
                 return WriteServiceStats(type: .file, dev: dev)
             },
             getFlags: { $0.hasSuffix("locked.txt") ? 0x2 : 0 }, homePath: home,
@@ -443,7 +443,7 @@ import Testing
             try write(root.appending("a.txt").path, "asked about")
             try write(root.appending("b.txt").path, "asked about too")
             let fileSystem = TestLocalFileSystem.real()
-            fileSystem.trashImpl = { _ in throw errorWithCode("no Trash", CopyPasteErrors.noTrashErrorCode) }
+            fileSystem.trashImpl = { _ in throw errorWithCode("no Trash", .noTrash) }
             let coordinator = WriteCoordinator.local(fileSystem, homePath: home)
             let window = TestWindow()
             try await coordinator.trash(
@@ -473,7 +473,7 @@ import Testing
     @Test func tellsAFolderWithoutAnIdFromAnotherOneHoldingAsManyItems() async throws {
         let looks = Locked<(mtimeMs: Double, entries: [String])>((1_000, ["a.txt"]))
         let fileSystem = TestLocalFileSystem.stub()
-        fileSystem.trashImpl = { _ in throw errorWithCode("no Trash", CopyPasteErrors.noTrashErrorCode) }
+        fileSystem.trashImpl = { _ in throw errorWithCode("no Trash", .noTrash) }
         fileSystem.lstatImpl = { _ in Stats.directory(mtimeMs: looks.value.mtimeMs) }
         fileSystem.readdirImpl = { _ in looks.value.entries }
         let coordinator = WriteCoordinator.local(fileSystem, homePath: home)

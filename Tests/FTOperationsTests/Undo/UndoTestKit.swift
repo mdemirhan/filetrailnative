@@ -319,11 +319,11 @@ enum UndoDisk {
 }
 
 /// An error with a code.
-func codedError(_ code: String, _ message: String? = nil, cause: (any Error)? = nil) -> OperationError {
-    OperationError(message ?? code, code: code, cause: cause)
+func codedError(_ code: ErrorCode, _ message: String? = nil, cause: (any Error)? = nil) -> OperationError {
+    OperationError(message ?? code.name, code: code, cause: cause)
 }
 
 /// `noTrash`: the Trash failing on a disk macOS says has none.
 func noTrashError() -> OperationError {
-    codedError("ENOTRASH", "no Trash", cause: codedError("ENOTSUP", "not supported"))
+    codedError(.noTrash, "no Trash", cause: codedError(.errno(ENOTSUP), "not supported"))
 }

@@ -112,7 +112,7 @@ struct WriteServiceAnalysisTests {
         let base = fileSystem.base
         fileSystem.lstatImpl = { path in
             if path.hasPrefix("/target/file copy") {
-                throw codedError("EACCES", "EACCES: permission denied")
+                throw codedError(.errno(EACCES), "EACCES: permission denied")
             }
             return try base.stat(path)
         }
@@ -239,7 +239,7 @@ private struct PathSetFileSystem: ReadOnlyWriteFileSystem {
 
     private func stats(_ path: String) throws -> WriteServiceStats {
         guard existingPaths.contains(path) else {
-            throw codedError("ENOENT", "ENOENT: \(path)")
+            throw codedError(.errno(ENOENT), "ENOENT: \(path)")
         }
         let directory = directoryPaths.contains(path)
         return WriteServiceStats(
@@ -262,7 +262,7 @@ private struct PathSetFileSystem: ReadOnlyWriteFileSystem {
     }
 
     func readlink(_ path: String) throws -> String {
-        throw codedError("EINVAL", "EINVAL: \(path)")
+        throw codedError(.errno(EINVAL), "EINVAL: \(path)")
     }
 }
 

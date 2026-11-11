@@ -250,10 +250,10 @@ public enum UndoExecution {
         case retry
     }
 
-    public static func classifyUndoWriteError(_ code: String?) -> WriteErrorKind {
+    public static func classifyUndoWriteError(_ code: ErrorCode?) -> WriteErrorKind {
         switch code {
-        case "ENOENT", "ENOTDIR", "EEXIST": .outsideChange
-        case CopyPasteErrors.noTrashErrorCode, "EROFS", "EXDEV": .permanent
+        case .errno(ENOENT), .errno(ENOTDIR), .errno(EEXIST): .outsideChange
+        case .noTrash, .errno(EROFS), .errno(EXDEV): .permanent
         default: .retry
         }
     }
@@ -261,11 +261,13 @@ public enum UndoExecution {
     /// `failureCode`: the code a failure of the write to the item at `path` counts as. "No Trash" only when the disk
     /// is known to have none: macOS said the Trash isn't supported there, or the disk is a network share; a Trash that
     /// failed without saying why may work next time.
-    static func failureCode(_ code: String?, cause: (any Error)?, _ path: String, _ context: RunContext) -> String? {
-        if code == CopyPasteErrors.noTrashErrorCode {
+    static func failureCode(_ code: ErrorCode?, cause: (any Error)?, _ path: String, _ context: RunContext)
+        -> ErrorCode?
+    {
+        if code == .noTrash {
             let said = cause.flatMap(errorCode)
             let noTrash =
-                said == "ENOTSUP" || said == "EOPNOTSUPP" || context.options.diskHasTrash?(path) == false
+                said == .errno(ENOTSUP) || said == .errno(EOPNOTSUPP) || context.options.diskHasTrash?(path) == false
             return noTrash ? code : nil
         }
         return code
@@ -276,12 +278,12 @@ public enum UndoExecution {
     }
 
     /// Why a step can never be done, said about its item.
-    static func permanentReason(_ code: String?, _ path: String) -> String {
+    static func permanentReason(_ code: ErrorCode?, _ path: String) -> String {
         let name = "\u{201C}\(NodePath.basename(path))\u{201D}"
         switch code {
-        case CopyPasteErrors.noTrashErrorCode:
+        case .noTrash:
             return "\(name) couldn't be moved to the Trash because its disk has no Trash."
-        case "EROFS":
+        case .errno(EROFS):
             return "\(name) is on a disk that can only be read."
         default:
             return "\(name) is on another disk now."
@@ -302,7 +304,7 @@ public enum UndoExecution {
         let reason: String
         if kind == .permanent {
             reason = permanentReason(code, from)
-        } else if code == "EEXIST", let to {
+        } else if code == .errno(EEXIST), let to {
             reason = takenReason(to)
         } else {
             reason = UndoPlan.missingReason(fileSystem, from)
@@ -479,7 +481,7 @@ public enum UndoExecution {
                 return .success(target)
             } catch {
                 // Another item took the name just then: the next number is tried, a few times.
-                if errorCode(error) == "EEXIST" && attempt < keepBothAttempts {
+                if errorCode(error) == .errno(EEXIST) && attempt < keepBothAttempts {
                     attempt += 1
                     continue
                 }
@@ -754,7 +756,7 @@ final class RecordingErrorsFileSystem: BatchRenameFileSystem, @unchecked Sendabl
     private let base: any BatchRenameFileSystem
     private struct State {
         var startedAt: [NameKeys.Exact: String] = [:]
-        var codes: [NameKeys.Exact: String?] = [:]
+        var codes: [NameKeys.Exact: ErrorCode?] = [:]
     }
     private let state = OSAllocatedUnfairLock(initialState: State())
 
@@ -762,7 +764,7 @@ final class RecordingErrorsFileSystem: BatchRenameFileSystem, @unchecked Sendabl
         self.base = base
     }
 
-    func codeOf(_ path: String) -> String? {
+    func codeOf(_ path: String) -> ErrorCode? {
         state.withLock { $0.codes[NameKeys.Exact(path)] ?? nil }
     }
 
@@ -775,7 +777,7 @@ final class RecordingErrorsFileSystem: BatchRenameFileSystem, @unchecked Sendabl
             let code = errorCode(error)
             state.withLock { state in
                 let key = NameKeys.Exact(item)
-                if code != "EEXIST" || state.codes[key] == nil {
+                if code != .errno(EEXIST) || state.codes[key] == nil {
                     state.codes[key] = .some(code)
                 }
             }

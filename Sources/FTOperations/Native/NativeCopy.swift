@@ -115,6 +115,6 @@ public enum FolderMetadata {
 
     private static func isUnsupported(_ error: any Error) -> Bool {
         let code = errorCode(error)
-        return code == "ENOTSUP" || code == "EOPNOTSUPP"
+        return code == .errno(ENOTSUP) || code == .errno(EOPNOTSUPP)
     }
 }

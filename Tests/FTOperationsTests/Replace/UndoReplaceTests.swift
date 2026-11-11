@@ -165,7 +165,7 @@ struct MoveUndoReplaceTests {
             try Disk.write(dst + "/a.txt", "old")
             let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
             fileSystem.copyFileImpl = { _, _, _, _ in
-                throw NativeError(message: "EIO: i/o error", code: "EIO")
+                throw NativeError(message: "EIO: i/o error", code: .errno(EIO))
             }
 
             let run = try await runPaste(

@@ -236,7 +236,7 @@ struct SwiftExecEngine: ExecEngine {
                 throw NativeError(
                     message:
                         "\u{201C}\(NodePath.basename(path))\u{201D} couldn\u{2019}t be moved to the trash because its volume doesn\u{2019}t have one.",
-                    code: "ENOTSUP")
+                    code: .errno(ENOTSUP))
             }
             let number = count.withLock { value in
                 value += 1
@@ -379,7 +379,7 @@ private final class RecordingJournal: WriteJournal {
 /// process was killed, every call fails without reaching the disk.
 struct RecordedWriteFileSystem: UndoFileSystem {
     struct Killed: CodedError {
-        var code: String? { "ECANCELED" }
+        var code: ErrorCode? { .errno(ECANCELED) }
         var message: String { "The engine was killed." }
     }
 

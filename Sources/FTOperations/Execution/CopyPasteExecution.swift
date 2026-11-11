@@ -323,7 +323,7 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
             return outcome
         } catch {
             guard let taken = rootError(error) as? DestinationTakenError else {
-                if context.shared.diskFull == nil && errorCode(error) == "ENOSPC" {
+                if context.shared.diskFull == nil && errorCode(error) == .errno(ENOSPC) {
                     context.shared.diskFull = error
                 }
                 // "You don't have permission" is the wrong reason when an item is locked.

@@ -205,7 +205,7 @@ struct FolderSafetyReplaceTests {
             // Something takes the moved item's old name, then the Trash fails.
             let fileSystem = NativeWriteFileSystem(trash: { _ in
                 try Disk.write(root + "/src/a.txt", "newcomer")
-                throw codedError("EIO", "EIO: i/o error")
+                throw codedError(.errno(EIO), "EIO: i/o error")
             })
 
             let result = try await paste(

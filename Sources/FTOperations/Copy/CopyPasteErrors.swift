@@ -4,42 +4,38 @@ import Foundation
 // Readable reasons for what went wrong, without paths: the item is always shown next to them.
 
 public enum CopyPasteErrors {
-    public static let codeMessages: [String: String] = [
-        "ENOSPC": "There isn't enough free space on the destination disk.",
-        "EDQUOT": "The destination's storage quota is full.",
-        "EACCES": "You don't have permission to access this item.",
-        "EPERM": "You don't have permission to access this item.",
-        "EROFS": "The destination is read-only.",
-        "ENAMETOOLONG": "The name is too long.",
-        "ENOENT": "The item no longer exists.",
-        "EEXIST": "An item with this name already exists.",
-        "ENOTEMPTY": "The folder isn't empty.",
-        "EBUSY": "The item is in use.",
-        "EIO": "A disk error occurred.",
-        "EXDEV": "The item can't be moved directly to a different disk.",
-        "EISDIR": "A folder is in the way where a file was expected.",
-        // The write service's own code for removing a folder as if it were a file.
-        "ERR_FS_EISDIR": "A folder is in the way where a file was expected.",
-        "ENOTDIR": "Part of the path isn't a folder any more.",
-        "ENOTSUP": "This volume doesn't support this operation.",
-        "EOPNOTSUPP": "This volume doesn't support this operation.",
-        "EINVAL": "This volume doesn't accept this name or operation.",
-        "ELOOP": "The item's location loops back on itself through symbolic links.",
-        "EFBIG": "The file is too large for this volume.",
-        "EMFILE": "Too many files are open. Close some apps and try again.",
-        "ENFILE": "Too many files are open. Close some apps and try again.",
-        "ETIMEDOUT": "The volume took too long to respond.",
-        "EINTR": "The operation was interrupted. Try again.",
-        "EAGAIN": "The item is temporarily unavailable. Try again.",
-        "ENXIO": "The disk isn't available.",
-        "ENODEV": "The disk isn't available.",
-        "ENOMEM": "There isn't enough memory to finish this.",
-        "ESTALE": "The network volume went away. Reconnect it and try again.",
+    /// The reason for each errno that has one of its own; the error's message for any other.
+    public static let errnoMessages: [Int32: String] = [
+        ENOSPC: "There isn't enough free space on the destination disk.",
+        EDQUOT: "The destination's storage quota is full.",
+        EACCES: "You don't have permission to access this item.",
+        EPERM: "You don't have permission to access this item.",
+        EROFS: "The destination is read-only.",
+        ENAMETOOLONG: "The name is too long.",
+        ENOENT: "The item no longer exists.",
+        EEXIST: "An item with this name already exists.",
+        ENOTEMPTY: "The folder isn't empty.",
+        EBUSY: "The item is in use.",
+        EIO: "A disk error occurred.",
+        EXDEV: "The item can't be moved directly to a different disk.",
+        // Also the write service's own error for removing a folder as if it were a file.
+        EISDIR: "A folder is in the way where a file was expected.",
+        ENOTDIR: "Part of the path isn't a folder any more.",
+        ENOTSUP: "This volume doesn't support this operation.",
+        EOPNOTSUPP: "This volume doesn't support this operation.",
+        EINVAL: "This volume doesn't accept this name or operation.",
+        ELOOP: "The item's location loops back on itself through symbolic links.",
+        EFBIG: "The file is too large for this volume.",
+        EMFILE: "Too many files are open. Close some apps and try again.",
+        ENFILE: "Too many files are open. Close some apps and try again.",
+        ETIMEDOUT: "The volume took too long to respond.",
+        EINTR: "The operation was interrupted. Try again.",
+        EAGAIN: "The item is temporarily unavailable. Try again.",
+        ENXIO: "The disk isn't available.",
+        ENODEV: "The disk isn't available.",
+        ENOMEM: "There isn't enough memory to finish this.",
+        ESTALE: "The network volume went away. Reconnect it and try again.",
     ]
-
-    /// The code on a Trash failure on a disk that may have no Trash (a network share, some USB drives): there,
-    /// and only there, deleting the item for good may be offered instead.
-    public static let noTrashErrorCode = "ENOTRASH"
 
     // BSD flags that stop an item from being renamed, moved, changed or deleted. UF_IMMUTABLE is Finder's
     // "Locked"; the others are rarer but refuse the same things.
@@ -50,7 +46,7 @@ public enum CopyPasteErrors {
 
 /// A readable, path-free reason for a failed item (the item itself is shown next to it).
 public func describeCopyPasteError(_ error: any Error) -> String {
-    if let code = errorCode(error), let message = CopyPasteErrors.codeMessages[code] {
+    if case .errno(let errnum) = errorCode(error), let message = CopyPasteErrors.errnoMessages[errnum] {
         return message
     }
     return errorMessage(error)
@@ -69,7 +65,7 @@ public func findLockedRefusal(_ getFlags: ((String) throws -> UInt32)?, _ error:
     -> OperationError?
 {
     let code = errorCode(error)
-    guard code == "EPERM" || code == "EACCES" else { return nil }
+    guard code == .errno(EPERM) || code == .errno(EACCES) else { return nil }
     for path in paths where isLocked(getFlags, path) {
         return OperationError(lockedMessage(path))
     }

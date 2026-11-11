@@ -24,7 +24,7 @@ private func makeTrashItem(
         trash: trash,
         lstat: { path in
             guard let dev = devices[path] else {
-                throw OperationError("ENOENT: \(path)", code: "ENOENT")
+                throw OperationError("ENOENT: \(path)", code: .errno(ENOENT))
             }
             return WriteServiceStats(type: .file, dev: dev)
         },
@@ -78,12 +78,12 @@ struct TrashItemTests {
         let trashItem = makeTrashItem(devices: [home: startupDev, "/Volumes/Share/a.txt": 50]) { _ in
             throw NativeError(
                 message: "“a.txt” couldn’t be moved to the trash because the volume “Share” doesn’t have one.",
-                code: "ENOTSUP", cocoaCode: 3328)
+                code: .errno(ENOTSUP), cocoaCode: 3328)
         }
 
         let error = failure { try trashItem("/Volumes/Share/a.txt") }
 
-        #expect(error?.code == CopyPasteErrors.noTrashErrorCode)
+        #expect(error?.code == .noTrash)
         #expect(error?.message == "“a.txt” couldn’t be moved to the Trash. This disk may not have a Trash.")
     }
 
@@ -96,7 +96,7 @@ struct TrashItemTests {
         let error = failure { try trashItem("/Volumes/Share/a.txt") }
 
         #expect(error?.message == reason.message)
-        #expect(error?.code != CopyPasteErrors.noTrashErrorCode)
+        #expect(error?.code != .noTrash)
     }
 
     // A network share without a Trash often answers with no errno once something was trashed: the kind of disk
@@ -109,12 +109,12 @@ struct TrashItemTests {
 
         let error = failure { try trashItem("/Volumes/Share/a.txt") }
 
-        #expect(error?.code == CopyPasteErrors.noTrashErrorCode)
+        #expect(error?.code == .noTrash)
         #expect(error?.cause as? NativeError == reason)
     }
 
     @Test func keepsTheTrashsReasonForAFailureWithACodeOnADiskTakenToHaveNoTrash() {
-        let reason = NativeError(message: "The disk is full.", code: "ENOSPC")
+        let reason = NativeError(message: "The disk is full.", code: .errno(ENOSPC))
         let trashItem = makeTrashItem(
             devices: [home: startupDev, "/Volumes/Share/a.txt": 50], diskHasTrash: { _ in false },
             trash: { _ in throw reason })
@@ -122,19 +122,19 @@ struct TrashItemTests {
         let error = failure { try trashItem("/Volumes/Share/a.txt") }
 
         #expect(error?.message == reason.message)
-        #expect(error?.code != CopyPasteErrors.noTrashErrorCode)
+        #expect(error?.code != .noTrash)
     }
 
     // Deleting for good must never be offered for these: the disk has a Trash, the item just couldn't go to it.
-    @Test(arguments: ["EACCES", "EPERM", "EROFS", "ENOENT", "EIO", "ENOSPC", "ECANCELED", "EINVAL"])
-    func givesTheTrashsOwnReasonOnAnotherDisk(code: String) {
-        let reason = NativeError(message: "You don’t have permission to access “a.txt”.", code: code)
+    @Test(arguments: [EACCES, EPERM, EROFS, ENOENT, EIO, ENOSPC, ECANCELED, EINVAL])
+    func givesTheTrashsOwnReasonOnAnotherDisk(errnum: Int32) {
+        let reason = NativeError(message: "You don’t have permission to access “a.txt”.", code: .errno(errnum))
         let trashItem = makeTrashItem(devices: [home: startupDev, "/Volumes/USB/a.txt": 50]) { _ in throw reason }
 
         let error = failure { try trashItem("/Volumes/USB/a.txt") }
 
         #expect(error?.message == reason.message)
-        #expect(error?.code != CopyPasteErrors.noTrashErrorCode)
+        #expect(error?.code != .noTrash)
     }
 
     @Test func givesTheTrashsReasonForAnItemThatIsGone() {

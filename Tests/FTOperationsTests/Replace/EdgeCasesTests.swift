@@ -100,7 +100,7 @@ struct EdgeCasesTests {
 
     @Test func givesUpOnANameThatIsTakenEveryTimeItIsWritten() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
-        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EEXIST") }
+        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError(.errno(EEXIST)) }
 
         let (result, _) = try await edgePaste(fileSystem, sources: ["/source/a.txt"])
 
@@ -132,7 +132,7 @@ struct EdgeCasesTests {
         fileSystem.copyFileImpl = { _, path, _, _ in
             fileSystem.copyFileImpl = nil
             fileSystem.addFile(path, .file(size: 3))
-            throw codedError("EEXIST")
+            throw codedError(.errno(EEXIST))
         }
 
         let (result, conflicts) = try await edgePaste(
@@ -221,7 +221,7 @@ struct EdgeCasesTests {
             ("/source/F/a.txt", .file(size: 1)), ("/target/F/a.txt", .file(size: 1)),
         ])
         fileSystem.lstatImpl = { path in
-            if path == "/source/F" { throw MockWriteServiceFileSystem.error("EIO", path) }
+            if path == "/source/F" { throw MockWriteServiceFileSystem.error(EIO, path) }
             return try fileSystem.lstatDirectly(path)
         }
         let entry = ReplaceJournalEntry(
@@ -244,7 +244,7 @@ struct EdgeCasesTests {
         let attempts = Locked(0)
         fileSystem.copyFileImpl = { _, destination, _, _ in
             attempts.mutate { $0 += 1 }
-            throw MockWriteServiceFileSystem.error("ENOSPC", destination)
+            throw MockWriteServiceFileSystem.error(ENOSPC, destination)
         }
 
         let (result, _) = try await edgePaste(fileSystem, sources: ["/source/a.txt", "/source/b.txt", "/source/c.txt"])
@@ -269,7 +269,7 @@ struct EdgeCasesTests {
         fileSystem.copyFileImpl = { source, destination, stop, _ in
             attempts.mutate { $0 += 1 }
             if attempts.value >= 2 {
-                throw MockWriteServiceFileSystem.error("ENOSPC", destination)
+                throw MockWriteServiceFileSystem.error(ENOSPC, destination)
             }
             try fileSystem.copyDirectly(source, destination, stop: stop)
         }
@@ -303,7 +303,7 @@ struct EdgeCasesTests {
             if to == "/target/a.txt" && !sneaked.value {
                 sneaked.mutate { $0 = true }
                 fileSystem.addFile("/target/a.txt", .file(size: 5))
-                throw codedError("EEXIST")
+                throw codedError(.errno(EEXIST))
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -326,7 +326,7 @@ struct EdgeCasesTests {
             if to == "/target/a.txt" && !sneaked.value {
                 sneaked.mutate { $0 = true }
                 fileSystem.addFile("/target/a.txt", .file(size: 5))
-                throw codedError("EEXIST")
+                throw codedError(.errno(EEXIST))
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -347,7 +347,7 @@ struct EdgeCasesTests {
         let fileSystem = replaceSetup()
         fileSystem.renameImpl = { from, to in
             if !to.contains(".filetrail-") {
-                throw codedError("EIO")
+                throw codedError(.errno(EIO))
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -376,7 +376,7 @@ struct EdgeCasesTests {
         }
         fileSystem.renameImpl = { from, to in
             if !to.contains(".filetrail-") {
-                throw MockWriteServiceFileSystem.error("EIO", to)
+                throw MockWriteServiceFileSystem.error(EIO, to)
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -408,7 +408,7 @@ struct EdgeCasesTests {
         fileSystem.trashImpl = { _ in
             // Something takes the moved folder's old name, then the Trash fails.
             fileSystem.addFile("/source/Vault", .directory())
-            throw MockWriteServiceFileSystem.error("EIO", "/target/Vault")
+            throw MockWriteServiceFileSystem.error(EIO, "/target/Vault")
         }
         let journal = ReplaceEntriesJournal()
 
@@ -431,7 +431,7 @@ struct EdgeCasesTests {
         fileSystem.enableTrash()
         fileSystem.renameImpl = { from, to in
             if !to.contains(".filetrail-") {
-                throw MockWriteServiceFileSystem.error("EIO", to)
+                throw MockWriteServiceFileSystem.error(EIO, to)
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -451,7 +451,7 @@ struct EdgeCasesTests {
             if let mode = fileSystem.readNode(from)?.mode, fileSystem.readNode(from)?.kind == .directory,
                 mode & 0o200 == 0
             {
-                throw MockWriteServiceFileSystem.error("EACCES", from)
+                throw MockWriteServiceFileSystem.error(EACCES, from)
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -476,7 +476,7 @@ struct EdgeCasesTests {
 
     @Test func asksBeforeDeletingTheOldItemForGoodOnADiskWithoutATrash() async throws {
         let fileSystem = replaceSetup()
-        fileSystem.trashImpl = { _ in throw NativeError(message: "no Trash", code: CopyPasteErrors.noTrashErrorCode) }
+        fileSystem.trashImpl = { _ in throw NativeError(message: "no Trash", code: .noTrash) }
 
         let skipped = try await edgePaste(
             fileSystem, sources: ["/source/a.txt"], policy: NativePaste.replaceAll, resolve: { _ in .skip })
@@ -499,7 +499,7 @@ struct EdgeCasesTests {
         fileSystem.enableTrash()
         fileSystem.rmImpl = { path, _, _ in
             if path == "/source/Docs/Inner/b.txt" {
-                throw codedError("EBUSY")
+                throw codedError(.errno(EBUSY))
             }
             try fileSystem.removeDirectly(path, recursive: true, force: true)
         }
@@ -566,7 +566,7 @@ struct EdgeCasesTests {
         let calls = Locked<[[String]]>([])
         fileSystem.getFlagsImpl = { _ in 0x2 }
         fileSystem.setFlagsImpl = { path, flags in calls.mutate { $0.append([path, String(flags)]) } }
-        fileSystem.renameImpl = { _, _ in throw codedError("EIO") }
+        fileSystem.renameImpl = { _, _ in throw codedError(.errno(EIO)) }
 
         let outcomes = recoverInterruptedReplaces(
             [
@@ -608,7 +608,7 @@ struct EdgeCasesTests {
     }
 
     @Test func treatsAnItemWhoseFlagsCantBeReadAsUnlocked() {
-        #expect(!isLocked({ throw codedError("ENOENT", "ENOENT: \($0)") }, "/missing"))
+        #expect(!isLocked({ throw codedError(.errno(ENOENT), "ENOENT: \($0)") }, "/missing"))
         #expect(!isLocked(nil, "/a.txt"))
         #expect(lockedMessage("/") == "\u{201C}/\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
     }

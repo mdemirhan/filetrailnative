@@ -57,7 +57,7 @@ struct ExecutionReplaceTests {
                 if force {
                     return
                 }
-                throw MockWriteServiceFileSystem.error("ENOENT", path)
+                throw MockWriteServiceFileSystem.error(ENOENT, path)
             }
             try fileSystem.removeDirectly(path, recursive: recursive, force: force)
         }
@@ -369,7 +369,7 @@ struct ExecutionReplaceTests {
             ("/target/a.txt", .file(size: 9)),
         ])
         fileSystem.enableTrash()
-        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EIO") }
+        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError(.errno(EIO)) }
         let journal = ReplaceHistoryJournal()
         let operation = try createResolvedOperation(
             fileSystem, sources: ["/source/a.txt"], into: "/target", policy: NativePaste.replaceAll)
@@ -390,7 +390,7 @@ struct ExecutionReplaceTests {
             ("/target/a.txt", .file(size: 9)),
         ])
         fileSystem.enableTrash()
-        fileSystem.renameImpl = { _, _ in throw codedError("EACCES") }
+        fileSystem.renameImpl = { _, _ in throw codedError(.errno(EACCES)) }
         let journal = ReplaceHistoryJournal()
         let operation = try createResolvedOperation(
             fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target", policy: NativePaste.replaceAll)

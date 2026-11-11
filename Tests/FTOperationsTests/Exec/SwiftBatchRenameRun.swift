@@ -42,7 +42,7 @@ private struct RecordedRenameDisk: BatchRenameFileSystem {
     let signal: StopSignal
 
     private func alive() throws {
-        if recorder.crashed { throw OperationError("The engine was killed.", code: "ECANCELED") }
+        if recorder.crashed { throw OperationError("The engine was killed.", code: .errno(ECANCELED)) }
     }
 
     private func moved(_ op: String, _ from: String, _ to: String) {
@@ -77,7 +77,7 @@ private struct RecordedRenameDisk: BatchRenameFileSystem {
 
     var readFolder: ((String) throws -> [String])? {
         { [disk, recorder] in
-            if recorder.crashed { throw OperationError("The engine was killed.", code: "ECANCELED") }
+            if recorder.crashed { throw OperationError("The engine was killed.", code: .errno(ECANCELED)) }
             return try disk.readFolder?($0) ?? []
         }
     }

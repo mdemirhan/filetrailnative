@@ -15,7 +15,7 @@ struct NativeTrashTests {
     func failsWithENOTSUPOnADiskWithoutATrash() throws {
         let result = try #require(TrashProbe.devNull)
         let error = #expect(throws: NativeError.self) { try result.get() }
-        #expect(error?.code == "ENOTSUP")
+        #expect(error?.code == .errno(ENOTSUP))
         #expect(error?.cocoaCode == 3328)  // NSFeatureUnsupportedError
         #expect(error?.message.contains("null") == true)
         #expect(error?.syscall == "trash" && error?.path == "/dev/null")
@@ -74,7 +74,7 @@ struct NativeTrashTests {
         try withTemporaryDirectory(prefix: "native-fs-trash") { root in
             let missing = root.appending("missing.txt").path
             let error = #expect(throws: NativeError.self) { try NativeFS.trashItem(missing) }
-            #expect(error?.code == "ENOENT")
+            #expect(error?.code == .errno(ENOENT))
             #expect(error?.cocoaCode == 4)  // NSFileNoSuchFileError
             #expect(error?.syscall == "trash" && error?.path == missing)
             #expect(error?.message.contains("missing.txt") == true)
@@ -123,10 +123,10 @@ struct NativeTrashTests {
         #expect(error.cocoaCode == NSFileWriteUnknownError && error.syscall == "trash" && error.path == "/v/a")
 
         let posix = NativeFS.trashError(NSError(domain: NSPOSIXErrorDomain, code: Int(EACCES)), path: "/v/a")
-        #expect(posix.code == "EACCES" && posix.errnum == EACCES && posix.cocoaCode == nil)
+        #expect(posix.code == .errno(EACCES) && posix.errnum == EACCES && posix.cocoaCode == nil)
 
         let none = NativeFS.trashError(nil, path: "/v/a")
         #expect(none.message == "EIO: Input/output error, trash '/v/a'")
-        #expect(none.code == "EIO")
+        #expect(none.code == .errno(EIO))
     }
 }

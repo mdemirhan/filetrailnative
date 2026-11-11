@@ -42,9 +42,9 @@ struct NativeFlagsTests {
         try withFile { root, _ in
             let missing = root.appending("missing").path
             let read = #expect(throws: NativeError.self) { try NativeFS.getFlags(missing) }
-            #expect(read?.code == "ENOENT" && read?.syscall == "lstat")
+            #expect(read?.code == .errno(ENOENT) && read?.syscall == "lstat")
             let set = #expect(throws: NativeError.self) { try NativeFS.setFlags(missing, 0) }
-            #expect(set?.code == "ENOENT" && set?.syscall == "lchflags")
+            #expect(set?.code == .errno(ENOENT) && set?.syscall == "lchflags")
         }
     }
 }
@@ -78,9 +78,9 @@ struct NativeAclTests {
         try withTemporaryDirectory(prefix: "native-fs-acl") { root in
             let missing = root.appending("missing").path
             let read = #expect(throws: NativeError.self) { try NativeFS.getAcl(missing) }
-            #expect(read?.code == "ENOENT" && read?.syscall == "lstat")
+            #expect(read?.code == .errno(ENOENT) && read?.syscall == "lstat")
             let set = #expect(throws: NativeError.self) { try NativeFS.setAcl(missing, nil) }
-            #expect(set?.code == "ENOENT" && set?.syscall == "acl_set_link_np")
+            #expect(set?.code == .errno(ENOENT) && set?.syscall == "acl_set_link_np")
             let bad = #expect(throws: NativeError.self) { try NativeFS.setAcl(root.path, "not an acl") }
             #expect(bad?.syscall == "acl_from_text")
         }

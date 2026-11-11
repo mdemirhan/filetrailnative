@@ -17,7 +17,7 @@ private final class CrashableDisk: BatchRenameFileSystem, @unchecked Sendable {
     var hasCrashed: Bool { lock.withLock { crashed } }
 
     private func alive() throws {
-        if hasCrashed { throw OperationError("The app is gone.", code: "ECANCELED") }
+        if hasCrashed { throw OperationError("The app is gone.", code: .errno(ECANCELED)) }
     }
 
     func lstat(_ path: String) throws -> WriteServiceStats {

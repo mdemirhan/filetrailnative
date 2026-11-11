@@ -17,7 +17,7 @@ private let fuzzNames = [
     "a", "b", "c", "A", "B", "x.txt", "X.TXT", "File 1", "File 2", "File 3", "File 1.jpg", "File 2.jpg", "File-2.jpg",
     "notes", "Notes", nfcE, nfdE, "Caf\(nfcE)", "Caf\(nfdE)", "CAF\(nfcE.uppercased())", ".tmp-0", ".tmp-2",
 ]
-private let codes = ["EACCES", "EIO", "ENOENT", "EEXIST"]
+private let codes = [EACCES, EIO, ENOENT, EEXIST]
 private let onConflicts: [BatchRenameOnConflict] = [.number, .skip, .block]
 private let separators = [" ", "-", "_"]
 

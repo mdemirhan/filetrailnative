@@ -57,7 +57,7 @@ import Testing
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.trashImpl = { path in
             // What TrashItem reports on a disk that may have no Trash.
-            if path.hasSuffix("b.txt") { throw errorWithCode("no Trash", CopyPasteErrors.noTrashErrorCode) }
+            if path.hasSuffix("b.txt") { throw errorWithCode("no Trash", .noTrash) }
             return inTrash(path)
         }
         let coordinator = WriteCoordinator.local(fileSystem)
@@ -82,7 +82,7 @@ import Testing
     @Test func takesWhatWentToTheTrashOffMeasuredFoldersAndForgetsThoseItCantTell() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.itemSizeImpl = { path in
-            if path.hasSuffix("b.bin") { throw errorWithCode("denied", "EACCES") }
+            if path.hasSuffix("b.bin") { throw errorWithCode("denied", .errno(EACCES)) }
             return path == "/Users/demo"
                 ? ItemSize(kind: .folder, sizeBytes: 0, diskBytes: 0, dev: 16)
                 : ItemSize(kind: .file, sizeBytes: 200, diskBytes: 400, dev: 16)
@@ -183,7 +183,7 @@ import Testing
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.lstatImpl = { path in Stats.file(dev: 1, ino: UInt64(path.utf8.count)) }
         fileSystem.trashImpl = { path in
-            if path.hasPrefix("/Volumes/Share/") { throw errorWithCode("no Trash", CopyPasteErrors.noTrashErrorCode) }
+            if path.hasPrefix("/Volumes/Share/") { throw errorWithCode("no Trash", .noTrash) }
             return "/Users/demo/.Trash/\(NodePath.basename(path))"
         }
         return fileSystem
@@ -229,7 +229,7 @@ import Testing
         let fileSystem = noTrashDisk()
         fileSystem.trashImpl = { path in
             if path.hasSuffix("b.txt") { held.hold() }
-            throw errorWithCode("no Trash", CopyPasteErrors.noTrashErrorCode)
+            throw errorWithCode("no Trash", .noTrash)
         }
         let first = TestWindow()
         let second = TestWindow()

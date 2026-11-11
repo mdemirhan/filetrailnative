@@ -39,7 +39,7 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
     /// Gives the item the ACL `acl` (acl_to_text(3) text), or none at all for nil (a symlink not followed).
     func setAcl(_ path: String, _ acl: String?) throws
     /// Moves an item to the Trash and returns the path it has there (nil when the Trash didn't say). When it fails
-    /// because the disk has no Trash (`CopyPasteErrors.noTrashErrorCode`), the person is asked before anything is
+    /// because the disk has no Trash (the code `.noTrash`), the person is asked before anything is
     /// deleted for good.
     func trash(_ path: String) throws -> String?
     /// Whether items can be added to or removed from a folder (access(2) with W_OK; throws when not). A move to
@@ -56,7 +56,7 @@ public func removeEmptyFolder(
 ) throws {
     if try !readFolder(path).isEmpty {
         throw NativeError(
-            message: "ENOTEMPTY: directory not empty, rmdir '\(path)'", code: "ENOTEMPTY", errnum: ENOTEMPTY,
+            message: "ENOTEMPTY: directory not empty, rmdir '\(path)'", code: .errno(ENOTEMPTY), errnum: ENOTEMPTY,
             syscall: "rmdir", path: path)
     }
     try removeFolder(path)
@@ -128,7 +128,7 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
         guard let trashItem else {
             throw OperationError(
                 "\u{201C}\(NodePath.basename(path))\u{201D} couldn\u{2019}t be moved to the Trash. This disk may not have a Trash.",
-                code: CopyPasteErrors.noTrashErrorCode)
+                code: .noTrash)
         }
         return try trashItem(path)
     }
@@ -163,7 +163,7 @@ enum NativeRemoval {
         }
         guard recursive else {
             throw NativeError(
-                message: "Path is a directory: rm returned EISDIR (is a directory) \(path)", code: "ERR_FS_EISDIR",
+                message: "Path is a directory: rm returned EISDIR (is a directory) \(path)", code: .errno(EISDIR),
                 errnum: EISDIR, syscall: "rm", path: path)
         }
         try removeTree(path)

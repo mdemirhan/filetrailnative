@@ -64,7 +64,7 @@ func captureFingerprintStrictly(_ fileSystem: some IdentityFileSystem, _ path: S
         stats = try fileSystem.lstat(path)
     } catch {
         let code = errorCode(error)
-        if code == "ENOENT" || code == "ENOTDIR" {
+        if code == .errno(ENOENT) || code == .errno(ENOTDIR) {
             return .missing
         }
         throw error

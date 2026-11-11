@@ -57,11 +57,11 @@ public final class StopSignal: Sendable {
 }
 
 /// What a stopped operation throws: the signal's `AbortError` ("This operation was aborted"), which has no
-/// string `code`.
+/// `code`.
 public struct StopError: CodedError, Equatable, Sendable, CustomStringConvertible {
     public init() {}
 
-    public var code: String? { nil }
+    public var code: ErrorCode? { nil }
     public var name: String { "AbortError" }
     public var message: String { "This operation was aborted" }
     public var description: String { message }

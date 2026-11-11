@@ -202,11 +202,11 @@ import Testing
     @Test func explainsARenameThatFailsWhileRunningInPlainWords() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.lstatImpl = { path in
-            guard path == "/Users/demo/source.txt" else { throw errorWithCode("ENOENT", "ENOENT") }
+            guard path == "/Users/demo/source.txt" else { throw errorWithCode("ENOENT", .errno(ENOENT)) }
             return Stats.file()
         }
         fileSystem.renameExclusiveImpl = { _, _ in
-            throw errorWithCode("EACCES: permission denied, rename '/Users/demo/source.txt'", "EACCES")
+            throw errorWithCode("EACCES: permission denied, rename '/Users/demo/source.txt'", .errno(EACCES))
         }
         let coordinator = WriteCoordinator.local(fileSystem)
         let window = TestWindow()

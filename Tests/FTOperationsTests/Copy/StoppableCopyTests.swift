@@ -81,7 +81,7 @@ struct StoppableCopyTests {
         })
 
         let error = #expect(throws: NativeError.self) { try copy.copyFile("/a", to: "/b", stop: stop) }
-        #expect(error?.code == "EIO")
+        #expect(error?.code == .errno(EIO))
     }
 
     // The native copy counts the bytes copied so far as one 64-bit count beside the flag.

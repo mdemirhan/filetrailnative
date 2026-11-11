@@ -8,7 +8,7 @@ import Testing
 
 /// What the app's Trash reports on a disk that may have no Trash.
 func noTrashHere() -> NativeError {
-    NativeError(message: "no Trash on this volume", code: CopyPasteErrors.noTrashErrorCode)
+    NativeError(message: "no Trash on this volume", code: .noTrash)
 }
 
 /// A Trash that keeps what was moved into it, under its own name, for checking what a Replace removed.
@@ -421,7 +421,7 @@ struct ConflictSafetyTests {
             fileSystem.copyFileImpl = { _, destination, _, _ in
                 // The disk fills up half way through.
                 try Disk.write(destination, "new no")
-                throw NativeError(message: "ENOSPC: no space left on device", code: "ENOSPC")
+                throw NativeError(message: "ENOSPC: no space left on device", code: .errno(ENOSPC))
             }
             let trash = trashInto(trashDir)
             fileSystem.trashImpl = { path in
@@ -531,7 +531,7 @@ struct ConflictSafetyTests {
             // Behaves like another disk: nothing under "source" can be renamed away.
             fileSystem.renameExclusiveImpl = { from, to in
                 if from.hasPrefix(source + "/") {
-                    throw NativeError(message: "EXDEV", code: "EXDEV")
+                    throw NativeError(message: "EXDEV", code: .errno(EXDEV))
                 }
                 // The swap itself; each copied file is also renamed into place on the way.
                 if to == target + "/docs" {

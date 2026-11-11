@@ -8,7 +8,6 @@ import Foundation
 enum NativeTestFiles {
     struct WriteFailure: Error {
         let errnum: Int32
-        var code: String { Errno.nameOrUnknown(of: errnum) }
     }
 
     /// Creates or truncates the file and writes `bytes`, also to a named fork
@@ -53,9 +52,9 @@ enum NativeTestFiles {
     /// Fills a disk until a write of even 64 KB no longer fits, and says how the disk told it was full: ENOSPC,
     /// or another of `fullCodes` for a disk that says it otherwise.
     @discardableResult
-    static func fillDisk(_ mountPath: String, fullCodes: [String] = ["ENOSPC"]) throws -> String {
+    static func fillDisk(_ mountPath: String, fullCodes: [Int32] = [ENOSPC]) throws -> Int32 {
         var count = 0
-        var fullCode = "ENOSPC"
+        var fullCode = ENOSPC
         for chunkSize in [1024 * 1024, 64 * 1024] {
             let chunk = [UInt8](repeating: 1, count: chunkSize)
             while true {
@@ -65,8 +64,8 @@ enum NativeTestFiles {
                     try write(path, chunk)
                 } catch {
                     unlink(path)
-                    guard fullCodes.contains(error.code) else { throw error }
-                    fullCode = error.code
+                    guard fullCodes.contains(error.errnum) else { throw error }
+                    fullCode = error.errnum
                     break
                 }
             }

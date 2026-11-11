@@ -42,7 +42,7 @@ func removeReplacedItem(
     } catch {
         // Only a disk that may have no Trash (a network or FAT volume) is asked about below; any other reason
         // stops this item, and nothing is deleted for good.
-        if errorCode(error) != CopyPasteErrors.noTrashErrorCode {
+        if errorCode(error) != .noTrash {
             throw error
         }
     }

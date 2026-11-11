@@ -8,6 +8,7 @@
 //   the end; with failures that look like changes outside (a name taken, an item gone), nothing is lost or replaced.
 // The cases come from seeds, so a failure names the seed that makes it again.
 import Darwin
+import FTFileSystem
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -54,7 +55,7 @@ final class FuzzRandom: @unchecked Sendable {
 
 /// Writes that fail on their own, with these error codes, and Undos stopped after a write.
 struct FuzzFailures: Sendable {
-    var codes: [String]
+    var codes: [Int32]
     var chance: Double
     var stopChance: Double
 }
@@ -137,7 +138,7 @@ final class UndoFuzzCase {
             let now = failures.value
             if let now, !NodePath.basename(path).hasPrefix(".filetrail"), random.chance(now.chance) {
                 let code = random.pick(now.codes)
-                throw codedError(code, "\(code): failed on purpose")
+                throw codedError(.errno(code), "\(Errno.nameOrUnknown(of: code)): failed on purpose")
             }
             let written = try write()
             if let now, random.chance(now.stopChance) {
@@ -516,7 +517,7 @@ struct UndoFuzzTests {
             let fullyUndoable = !testCase.history.menu().cantUndo
             // No permission, or the Trash refusing, now and then: what failed stays on the list and is tried again by
             // the next Undo.
-            testCase.setFailures(FuzzFailures(codes: ["EACCES", "EPERM"], chance: 0.2, stopChance: 0.1))
+            testCase.setFailures(FuzzFailures(codes: [EACCES, EPERM], chance: 0.2, stopChance: 0.1))
             let undone = try await testCase.undoAll(.undo, tries: 500)
             if fullyUndoable { try checkBackTo(start, seed, testCase, "Undo didn't get back to the start.") }
             let redone = try await testCase.undoAll(.redo, tries: 500)
@@ -547,7 +548,7 @@ struct UndoFuzzTests {
             let end = testCase.snapshot()
             let fullyUndoable = !testCase.history.menu().cantUndo
             // Undo or Redo, either, while what failed is still left on the other list.
-            testCase.setFailures(FuzzFailures(codes: ["EACCES", "EPERM"], chance: 0.3, stopChance: 0.1))
+            testCase.setFailures(FuzzFailures(codes: [EACCES, EPERM], chance: 0.3, stopChance: 0.1))
             for _ in 0..<testCase.random.integer(2, 10) {
                 let direction: UndoDirection = testCase.random.chance(0.6) ? .undo : .redo
                 guard let result = try await testCase.undoAll(direction, tries: 1, toEnd: false).first else { continue }
@@ -575,7 +576,7 @@ struct UndoFuzzTests {
             for _ in 0..<testCase.random.integer(1, 6) { _ = try await testCase.operate() }
             let before = testCase.ids()
             testCase.setFailures(
-                FuzzFailures(codes: ["EACCES", "EPERM", "ENOENT", "EEXIST"], chance: 0.2, stopChance: 0.1))
+                FuzzFailures(codes: [EACCES, EPERM, ENOENT, EEXIST], chance: 0.2, stopChance: 0.1))
             let undone = try await testCase.undoAll(.undo, tries: 500)
             let redone = try await testCase.undoAll(.redo, tries: 500)
             // Nothing was deleted, and nothing taken a name from another item: every id is still somewhere.

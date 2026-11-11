@@ -160,7 +160,7 @@ final class MockIdentityFileSystem: IdentityFileSystem, @unchecked Sendable {
 
     private func nodeOrThrow(_ path: String) throws -> Node {
         guard let node = node(at: path) else {
-            throw NativeError(message: "ENOENT: \(existingKey(path))", code: "ENOENT", path: existingKey(path))
+            throw NativeError(message: "ENOENT: \(existingKey(path))", code: .errno(ENOENT), path: existingKey(path))
         }
         return node
     }
@@ -185,7 +185,7 @@ final class MockIdentityFileSystem: IdentityFileSystem, @unchecked Sendable {
         let node = try nodeOrThrow(path)
         if node.kind == .symlink {
             guard let target = node.target else {
-                throw NativeError(message: "ENOENT: \(path)", code: "ENOENT", path: path)
+                throw NativeError(message: "ENOENT: \(path)", code: .errno(ENOENT), path: path)
             }
             return Self.stats(try nodeOrThrow(target))
         }
@@ -200,7 +200,7 @@ final class MockIdentityFileSystem: IdentityFileSystem, @unchecked Sendable {
     func readdir(_ path: String) throws -> [String] {
         let node = try nodeOrThrow(path)
         guard node.kind == .directory else {
-            throw NativeError(message: "ENOTDIR: \(path)", code: "ENOTDIR", path: path)
+            throw NativeError(message: "ENOTDIR: \(path)", code: .errno(ENOTDIR), path: path)
         }
         let key = existingKey(path)
         let prefix = key == "/" ? "/" : key + "/"
@@ -222,7 +222,7 @@ final class MockIdentityFileSystem: IdentityFileSystem, @unchecked Sendable {
         }
         let node = try nodeOrThrow(path)
         guard node.kind == .symlink, let target = node.target else {
-            throw NativeError(message: "EINVAL: \(path)", code: "EINVAL", path: path)
+            throw NativeError(message: "EINVAL: \(path)", code: .errno(EINVAL), path: path)
         }
         return target
     }

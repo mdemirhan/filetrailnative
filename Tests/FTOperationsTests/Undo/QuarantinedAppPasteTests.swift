@@ -162,7 +162,7 @@ struct QuarantinedAppPasteTests {
             let base = fileSystem.base
             fileSystem.lstatImpl = { path in
                 if path.hasSuffix("/Downloads/Foo.app") && Disk.exists(applications + "/Foo.app") {
-                    throw NativeError(message: "EIO: \(path)", code: "EIO", path: path)
+                    throw NativeError(message: "EIO: \(path)", code: .errno(EIO), path: path)
                 }
                 return try base.lstat(path)
             }

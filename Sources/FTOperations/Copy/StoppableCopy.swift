@@ -103,7 +103,7 @@ public struct StoppableCopy: Sendable {
         do {
             try copy(source, destination, control)
         } catch {
-            if stop?.isStopped == true && errorCode(error) == "ECANCELED" {
+            if stop?.isStopped == true && errorCode(error) == .errno(ECANCELED) {
                 throw StopError()
             }
             throw error

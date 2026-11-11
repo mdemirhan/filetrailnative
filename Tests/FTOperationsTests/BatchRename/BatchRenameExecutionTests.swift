@@ -159,8 +159,8 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         // Both move aside; "b" takes "a"; "a" can't take "b" (no permission), and can't go back under "a" ("b" has
         // it) or "a 2" (no permission either): it stays hidden, and says so.
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
-        disk.failures["renameExclusive:/trip/.tmp-1->/trip/b"] = errno("EACCES")
-        disk.failures["renameExclusive:/trip/.tmp-1->/trip/a 2"] = errno("EACCES")
+        disk.failures["renameExclusive:/trip/.tmp-1->/trip/b"] = errno(EACCES)
+        disk.failures["renameExclusive:/trip/.tmp-1->/trip/a 2"] = errno(EACCES)
         let result = run(disk, request([("b", "a"), ("a", "b")]))
         #expect(result.items[0].status == .completed)
         #expect(result.items[1].status == .failed)
@@ -174,7 +174,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     @Test func failsAnItemThatCouldntMoveAsideAndTheItemWantingItsNameFindsItTaken() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
-        disk.failures["renameExclusive:/trip/b->/trip/.tmp-0"] = errno("EACCES")
+        disk.failures["renameExclusive:/trip/b->/trip/.tmp-0"] = errno(EACCES)
         let result = run(disk, request([("a", "b"), ("b", "c")]))
         #expect(result.items[1].status == .failed)
         #expect(result.items[1].error == "You don't have permission to access this item.")
@@ -185,7 +185,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     @Test func putsAWaitingItemBackWhenItsRenameFailsForAnotherReason() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
-        disk.failures["renameExclusive:/trip/.tmp-0->/trip/c"] = errno("EIO")
+        disk.failures["renameExclusive:/trip/.tmp-0->/trip/c"] = errno(EIO)
         let result = run(disk, request([("b", "c"), ("a", "b")]))
         // "b" moved aside, failed to become "c", and is back as "b"; "a" then found "b" taken. Still where it was:
         // no new path.
@@ -198,7 +198,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     @Test func namesAMissingItemAndALockedOne() {
         let disk = MemoryDisk(["/trip/locked.txt"])
         disk.lockedPaths.insert("/trip/locked.txt")
-        disk.failures["renameExclusive:/trip/locked.txt->/trip/new.txt"] = errno("EPERM")
+        disk.failures["renameExclusive:/trip/locked.txt->/trip/new.txt"] = errno(EPERM)
         let result = run(disk, request([("gone.txt", "x.txt"), ("locked.txt", "new.txt")]))
         #expect(
             result.items.map(\.error) == [
@@ -210,7 +210,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     @Test func reportsAFailedChangeOfCaseAndChangesTheCaseOfANameNotThereYet() {
         let failing = MemoryDisk(["/trip/notes.txt"])
-        failing.failures["rename:/trip/notes.txt->/trip/Notes.txt"] = errno("EIO")
+        failing.failures["rename:/trip/notes.txt->/trip/Notes.txt"] = errno(EIO)
         let result = run(failing, request([("notes.txt", "Notes.txt")]))
         #expect(result.items.first?.status == .failed)
         #expect(result.items.first?.destinationPath == nil)
@@ -228,7 +228,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         _ = run(noListing, request([("notes.txt", "NOTES.txt")]))
         #expect(noListing.names() == ["NOTES.txt"])
         let unreadable = MemoryDisk(["/trip/notes.txt"])
-        unreadable.listing = .failing(errno("EACCES"))
+        unreadable.listing = .failing(errno(EACCES))
         _ = run(unreadable, request([("notes.txt", "Notes.txt")]))
         #expect(unreadable.names() == ["Notes.txt"])
     }
@@ -258,7 +258,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
             #expect(disk.names() == ["Notes.txt"])
         }
         let failing = MemoryDisk(["/trip/notes.txt"])
-        failing.caseAnswer = .failing(errno("EIO"))
+        failing.caseAnswer = .failing(errno(EIO))
         _ = run(failing, request([("notes.txt", "NOTES.txt")]))
         #expect(failing.readdirCalls.count == 1)
         #expect(failing.names() == ["NOTES.txt"])
@@ -337,7 +337,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     @Test func stillRenamesTheFolderWhenAnItemInsideItFailsAndSaysWhereThatItemIs() {
         let disk = MemoryDisk(["/trip/sub", "/trip/sub/x.jpg"])
-        disk.failures["renameExclusive:/trip/sub/x.jpg->/trip/sub/y.jpg"] = errno("EACCES")
+        disk.failures["renameExclusive:/trip/sub/x.jpg->/trip/sub/y.jpg"] = errno(EACCES)
         let result = run(disk, request([("sub", "Day 1"), ("sub/x.jpg", "y.jpg")], folders: ["sub"]))
         #expect(result.items.map(\.status) == [.completed, .failed])
         // Not renamed, but in the folder's new name.
@@ -426,7 +426,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         let signal = StopSignal()
         disk.renameExclusiveOverride = { from, to, original in
             if from == "/trip/b" && to.hasPrefix("/trip/.tmp-") {
-                throw errno("EACCES")
+                throw errno(EACCES)
             }
             try original(from, to)
             if to == "/trip/zz" { signal.stop() }
@@ -473,8 +473,8 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     // An item that could go back nowhere stays under its hidden name: it stays written down.
     @Test func keepsWrittenDownAnItemLeftUnderItsHiddenName() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
-        disk.failures["renameExclusive:/trip/.tmp-0->/trip/b"] = errno("EACCES")
-        disk.failures["renameExclusive:/trip/.tmp-0->/trip/a"] = errno("EACCES")
+        disk.failures["renameExclusive:/trip/.tmp-0->/trip/b"] = errno(EACCES)
+        disk.failures["renameExclusive:/trip/.tmp-0->/trip/a"] = errno(EACCES)
         let journal = RenameJournal()
         _ = run(disk, request([("a", "b"), ("b", "a")]), journal: journal)
         #expect(
@@ -487,8 +487,8 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     // down.
     @Test func doesntRenameTheFolderOfAnItemLeftHidden() {
         let disk = MemoryDisk(["/trip/P", "/trip/P/a", "/trip/P/b"])
-        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/b"] = errno("EACCES")
-        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/a"] = errno("EACCES")
+        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/b"] = errno(EACCES)
+        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/a"] = errno(EACCES)
         let journal = RenameJournal()
         let result = run(disk, request([("P/a", "b"), ("P/b", "a"), ("P", "Q")], folders: ["P"]), journal: journal)
         #expect(disk.names("/trip") == ["P"])
@@ -503,8 +503,8 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     // the item stays where it is written down.
     @Test func doesntMoveAsideAFolderHoldingAnItemLeftHiddenForASwap() {
         let disk = MemoryDisk(["/trip/P", "/trip/Q", "/trip/P/a", "/trip/P/b"])
-        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/b"] = errno("EACCES")
-        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/a"] = errno("EACCES")
+        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/b"] = errno(EACCES)
+        disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/a"] = errno(EACCES)
         let journal = RenameJournal()
         _ = run(
             disk, request([("P/a", "b"), ("P/b", "a"), ("Q", "P"), ("P", "Q")], folders: ["P", "Q"]), journal: journal)
@@ -519,7 +519,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     @Test func renamesNothingOfADepthWhoseItemsCantBeWrittenDown() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         let journal = RenameJournal()
-        journal.addFailure = errno("ENOSPC")
+        journal.addFailure = errno(ENOSPC)
         let result = run(disk, request([("a", "b"), ("b", "a")]), journal: journal)
         #expect(disk.names() == ["a", "b"])
         #expect(result.items.map(\.status) == [.failed, .failed])
@@ -566,7 +566,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     @Test func keepsWrittenDownWhatCantBeReachedOrMoved() {
         let disk = MemoryDisk([hidden("a")])
         disk.folderPaths = ["/trip"]
-        disk.failures["renameExclusive:\(hidden("a"))->/trip/p.txt"] = errno("EACCES")
+        disk.failures["renameExclusive:\(hidden("a"))->/trip/p.txt"] = errno(EACCES)
         let away = BatchRenameJournalEntry.Item(
             temporaryPath: "/gone/.filetrail-rename-bbbbbbbbbbbb", originalPath: "/gone/q", newPath: "/gone/r")
         let stuck = BatchRenameJournalEntry.Item(

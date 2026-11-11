@@ -97,7 +97,7 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     /// the destination's ("There isn't enough free space on the destination disk.").
     static func recoveryInfoError(_ error: any Error) -> OperationError {
         OperationError(
-            errorCode(error) == "ENOSPC"
+            errorCode(error) == .errno(ENOSPC)
                 ? "File Trail couldn't save its recovery information because the startup disk is full. Free some space there and try again."
                 : "File Trail couldn't save its recovery information.",
             cause: error)

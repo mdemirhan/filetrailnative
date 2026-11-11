@@ -166,7 +166,7 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
         restoreAfterMove(fileSystem, finalPath, mode, flags)
     } catch {
         discard()
-        throw errorCode(error) == "EEXIST" ? DestinationTakenError(original: error) : error
+        throw errorCode(error) == .errno(EEXIST) ? DestinationTakenError(original: error) : error
     }
     // Its own metadata now that it has its name (see metadataLaterFor).
     try? applyDirectoryMetadata(context.with { $0.stagingFor = outerMode }, currentNode)
@@ -222,10 +222,10 @@ private func assertCanRemoveFrom(_ fileSystem: some WriteServiceFileSystem, _ fo
     } catch {
         let code = errorCode(error)
         let item = basenameOf(itemPath)
-        if code == "EROFS" {
+        if code == .errno(EROFS) {
             throw OperationError("\u{201C}\(item)\u{201D} wasn't moved, because its disk is read-only.")
         }
-        if code == "EACCES" || code == "EPERM" {
+        if code == .errno(EACCES) || code == .errno(EPERM) {
             let what =
                 sameText(folderPath, itemPath)
                 ? "what is inside it" : "it from \u{201C}\(basenameOf(folderPath))\u{201D}"
@@ -318,7 +318,7 @@ private func writeLeaf(_ context: ExecutionContext, _ node: ResolvedCopyPasteNod
         do {
             try fileSystem.copyFile(node.node.sourcePath, targetPath, stop: context.signal, onProgress: nil)
         } catch {
-            throw errorCode(error) == "EEXIST"
+            throw errorCode(error) == .errno(EEXIST)
                 ? DestinationTakenError(original: error) : explainMissingFolder(fileSystem, targetPath, error)
         }
         return
@@ -359,7 +359,7 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
                 try fileSystem.mkdir(currentNode.destinationPath)
             }
         } catch {
-            throw errorCode(error) == "EEXIST"
+            throw errorCode(error) == .errno(EEXIST)
                 ? DestinationTakenError(original: error)
                 : explainMissingFolder(fileSystem, currentNode.destinationPath, error)
         }
@@ -545,10 +545,10 @@ func tryRenameForCut(_ context: ExecutionContext, _ currentNode: ResolvedCopyPas
         try moveExclusive(context.fileSystem, currentNode.node.sourcePath, currentNode.destinationPath)
     } catch {
         let code = errorCode(error)
-        if code == "EXDEV" {
+        if code == .errno(EXDEV) {
             return nil
         }
-        throw code == "EEXIST"
+        throw code == .errno(EEXIST)
             ? DestinationTakenError(original: error)
             : explainMissingFolder(context.fileSystem, currentNode.destinationPath, error)
     }
@@ -567,7 +567,7 @@ func tryRenameForCut(_ context: ExecutionContext, _ currentNode: ResolvedCopyPas
 /// (deleted while the paste ran; it is never made again). The second is said as such, naming the folder.
 func explainMissingFolder(_ fileSystem: some IdentityFileSystem, _ targetPath: String, _ error: any Error) -> any Error
 {
-    guard errorCode(error) == "ENOENT" else { return error }
+    guard errorCode(error) == .errno(ENOENT) else { return error }
     let folder: NodeFingerprint
     do {
         folder = try captureFingerprintStrictly(fileSystem, dirnameOf(targetPath))

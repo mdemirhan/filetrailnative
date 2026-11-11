@@ -168,7 +168,7 @@ struct RecoveringInterruptedReplacesTests {
                 finalPath: root + "/dst/other.txt")
             let fileSystem = TestFileSystem()
             fileSystem.renameExclusiveImpl = { _, _ in
-                throw NativeError(message: "EACCES: permission denied", code: "EACCES")
+                throw NativeError(message: "EACCES: permission denied", code: .errno(EACCES))
             }
 
             let outcomes = recoverInterruptedReplaces([stuck, fine], fileSystem)

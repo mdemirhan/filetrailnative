@@ -475,7 +475,7 @@ struct WhatIsPickedTests {
             let base = fileSystem.base
             fileSystem.lstatImpl = { path in
                 if NodePath.basename(path) == "dst" && !Disk.exists(f.dst) {
-                    throw NativeError(message: "EIO: \(path)", code: "EIO", path: path)
+                    throw NativeError(message: "EIO: \(path)", code: .errno(EIO), path: path)
                 }
                 return try base.lstat(path)
             }

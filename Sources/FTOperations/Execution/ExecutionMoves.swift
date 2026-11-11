@@ -145,10 +145,10 @@ func tryRemoveEmptySourceDirectory(
         return nil
     } catch {
         let code = errorCode(error)
-        if code == "ENOENT" {
+        if code == .errno(ENOENT) {
             return nil
         }
-        if code == "ENOTEMPTY" || code == "EEXIST" {
+        if code == .errno(ENOTEMPTY) || code == .errno(EEXIST) {
             return describeLeftInMovedFolder(node, fileSystem, keptNames, onRemoved)
         }
         return "Its items were moved, but the original folder couldn't be removed. \(describeCopyPasteError(error))"

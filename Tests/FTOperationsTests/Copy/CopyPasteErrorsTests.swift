@@ -1,3 +1,4 @@
+import FTFileSystem
 import FTTestSupport
 import Foundation
 import Testing
@@ -6,13 +7,13 @@ import Testing
 
 struct CopyPasteErrorsTests {
     @Test func givesAReasonWithoutThePathForAKnownErrorCode() {
-        let error = OperationError("ENOSPC: no space left on device, write '/x/y'", code: "ENOSPC")
+        let error = OperationError("ENOSPC: no space left on device, write '/x/y'", code: .errno(ENOSPC))
         #expect(describeCopyPasteError(error) == "There isn't enough free space on the destination disk.")
     }
 
     // The write service's rm says "Path is a directory: rm returned EISDIR (is a directory) /var/…".
     @Test func readsNodesOwnCodeForAFolderRemovedAsAFile() {
-        let error = OperationError("Path is a directory: rm returned EISDIR /var/x", code: "ERR_FS_EISDIR")
+        let error = OperationError("Path is a directory: rm returned EISDIR /var/x", code: .errno(EISDIR))
         #expect(describeCopyPasteError(error) == "A folder is in the way where a file was expected.")
     }
 
@@ -23,7 +24,7 @@ struct CopyPasteErrorsTests {
 
     @Test func readsTheCodeOfASystemError() {
         #expect(describeCopyPasteError(POSIXError(.ENOSPC)) == "There isn't enough free space on the destination disk.")
-        #expect(errorCode(POSIXError(.ENOTSUP)) == "ENOTSUP")
+        #expect(errorCode(POSIXError(.ENOTSUP)) == .errno(ENOTSUP))
     }
 
     @Test func tellsALockedItemByItsFlags() {
@@ -35,13 +36,13 @@ struct CopyPasteErrorsTests {
         #expect(!isLocked({ _ in throw OperationError("gone") }, "/a"))
         #expect(!isLocked(nil, "/a"))
 
-        let refusal = OperationError("EPERM: operation not permitted", code: "EPERM")
+        let refusal = OperationError("EPERM: operation not permitted", code: .errno(EPERM))
         let flags: (String) throws -> UInt32 = { $0 == "/d/locked.txt" ? 0x2 : 0 }
         #expect(
             findLockedRefusal(flags, refusal, ["/d/free.txt", "/d/locked.txt"])?.message
                 == "“locked.txt” is locked. Unlock it in Finder's Get Info and try again.")
         #expect(findLockedRefusal(flags, refusal, ["/d/free.txt"]) == nil)
-        #expect(findLockedRefusal(flags, OperationError("full", code: "ENOSPC"), ["/d/locked.txt"]) == nil)
+        #expect(findLockedRefusal(flags, OperationError("full", code: .errno(ENOSPC)), ["/d/locked.txt"]) == nil)
         #expect(lockedMessage("plain") == "“plain” is locked. Unlock it in Finder's Get Info and try again.")
         #expect(lockedMessage("/d/") == "“/d/” is locked. Unlock it in Finder's Get Info and try again.")
     }
@@ -88,6 +89,16 @@ struct CopyPasteErrorsGoldenTests {
         var described: String
     }
 
+    /// The code the file names: an errno by its name, the write service's own name for EISDIR from removing a
+    /// folder as a file, "ENOTRASH" for a disk without a Trash; none for any other name.
+    static func code(named name: String) -> ErrorCode? {
+        switch name {
+        case "ERR_FS_EISDIR": .errno(EISDIR)
+        case "ENOTRASH": .noTrash
+        default: Errno.names.first { $0.1 == name }.map { .errno($0.0) }
+        }
+    }
+
     @Test func matchesTheGoldenFileForEveryErrnoAndErrorShape() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "copy-paste-errors")
         #expect(cases.count > 200)
@@ -96,10 +107,10 @@ struct CopyPasteErrorsGoldenTests {
             case "native":
                 let error = NativeError.errno(
                     input.errno ?? 0, syscall: input.syscall ?? "", path: input.path ?? "", dest: input.dest)
-                return Output(code: error.code, message: error.message, described: describeCopyPasteError(error))
+                return Output(code: error.code?.name, message: error.message, described: describeCopyPasteError(error))
             case "error":
-                let code: String? =
-                    if case .text(let text) = input.code { text } else { nil }
+                let code: ErrorCode? =
+                    if case .text(let text) = input.code { Self.code(named: text) } else { nil }
                 let error = OperationError(input.message ?? "", code: code)
                 return Output(described: describeCopyPasteError(error))
             default:

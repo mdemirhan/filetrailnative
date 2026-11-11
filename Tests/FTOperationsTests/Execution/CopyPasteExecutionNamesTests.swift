@@ -116,7 +116,7 @@ struct FolderRenamedWholeTests {
 
     @Test func isLeftUntouchedWhenTheRenameFindsAnotherDisk() async throws {
         let fileSystem = projectFolder()
-        fileSystem.renameImpl = { from, _ in throw codedError("EXDEV", "EXDEV: \(from)") }
+        fileSystem.renameImpl = { from, _ in throw codedError(.errno(EXDEV), "EXDEV: \(from)") }
 
         let (result, _) = try await moveFolder(fileSystem)
 

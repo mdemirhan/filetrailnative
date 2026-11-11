@@ -208,7 +208,7 @@ public enum UndoPlan {
             return .found(try look(path))
         } catch {
             let code = errorCode(error)
-            if code == "ENOENT" || code == "ENOTDIR" {
+            if code == .errno(ENOENT) || code == .errno(ENOTDIR) {
                 return .missing
             }
             return .unreadable(

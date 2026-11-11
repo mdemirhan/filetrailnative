@@ -66,7 +66,7 @@ public func isPathTaken(_ fileSystem: some IdentityFileSystem, _ path: String) -
         _ = try fileSystem.lstat(path)
         return true
     } catch {
-        return errorCode(error) != "ENOENT"
+        return errorCode(error) != .errno(ENOENT)
     }
 }
 
@@ -104,7 +104,7 @@ private struct CaseProbe<FileSystem: AnalysisFileSystem>: CopyPasteNames.CasePro
             let stats = try fileSystem.lstat(path)
             return .found(dev: stats.dev.map { UInt64(bitPattern: $0) } ?? .max, ino: stats.ino ?? .max)
         } catch {
-            return errorCode(error) == "ENOENT" ? .missing : .failed
+            return errorCode(error) == .errno(ENOENT) ? .missing : .failed
         }
     }
 }

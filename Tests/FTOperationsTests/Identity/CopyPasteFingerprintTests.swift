@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 
 @testable import FTOperations
@@ -213,7 +214,7 @@ struct PastedItemsTests {
 
         fileSystem.lstatImpl = { path in
             if path == "/d/sub/x.txt" {
-                throw MockWriteServiceFileSystem.error("EIO", path)
+                throw MockWriteServiceFileSystem.error(EIO, path)
             }
             return try disk.lstat(path)
         }
@@ -229,7 +230,7 @@ struct PastedItemsTests {
 
         fileSystem.lstatImpl = { path in
             if path == "/d/a.txt" {
-                throw MockWriteServiceFileSystem.error("EIO", path)
+                throw MockWriteServiceFileSystem.error(EIO, path)
             }
             return try disk.lstat(path)
         }

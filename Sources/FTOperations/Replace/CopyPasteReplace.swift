@@ -64,7 +64,7 @@ func executeReplace(
             try moveExclusive(fileSystem, currentNode.node.sourcePath, temporaryPath)
             movedByRename = true
         } catch {
-            if errorCode(error) != "EXDEV" {
+            if errorCode(error) != .errno(EXDEV) {
                 try? journal?.remove(journalEntry.id)
                 throw error
             }
@@ -205,7 +205,7 @@ func executeReplace(
         do {
             try moveExclusive(fileSystem, temporaryPath, finalPath)
         } catch {
-            if errorCode(error) == "EEXIST" {
+            if errorCode(error) == .errno(EEXIST) {
                 throw error
             }
             // The old item is in the Trash already: the new one must not be thrown away too. It is kept under a
@@ -235,7 +235,7 @@ func executeReplace(
         applyStagedFolderMetadata(context, currentNode, finalPath, movedByRename)
         recordReplacement(context, currentNode, finalPath, movedByRename, source)
     } catch {
-        if oldItemRemoved && journal != nil && errorCode(error) != "EEXIST" {
+        if oldItemRemoved && journal != nil && errorCode(error) != .errno(EEXIST) {
             // Neither name could be used: the journal keeps the new item, and the next start puts it in place. It gets
             // back its lock and mode first, which the next start then carries over.
             restoreAfterMove(fileSystem, temporaryPath, stagedMode, stagedFlags)
@@ -259,7 +259,7 @@ func executeReplace(
         } catch {
             // A copy this paste made that can't be cleared away now is written down, and cleared at the next start.
         }
-        throw errorCode(error) == "EEXIST" ? DestinationTakenError(original: error) : error
+        throw errorCode(error) == .errno(EEXIST) ? DestinationTakenError(original: error) : error
     }
     try? journal?.remove(journalEntry.id)
 

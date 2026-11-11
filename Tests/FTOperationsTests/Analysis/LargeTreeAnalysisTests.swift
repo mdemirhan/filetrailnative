@@ -33,7 +33,7 @@ private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sen
 
     private func node(_ path: String) throws -> Node {
         guard let node = nodes[path] else {
-            throw codedError("ENOENT", "ENOENT: \(path)")
+            throw codedError(.errno(ENOENT), "ENOENT: \(path)")
         }
         return node
     }
@@ -58,7 +58,7 @@ private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sen
     }
 
     func readlink(_ path: String) throws -> String {
-        throw codedError("EINVAL", "EINVAL: \(path)")
+        throw codedError(.errno(EINVAL), "EINVAL: \(path)")
     }
 }
 

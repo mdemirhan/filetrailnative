@@ -103,7 +103,7 @@ struct CopyPasteExecutionMetadataTests {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
         ])
-        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EACCES", "EACCES: permission denied") }
+        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError(.errno(EACCES), "EACCES: permission denied") }
         let operation = try createResolvedOperation(fileSystem, sources: ["/source/a.txt"], into: "/target")
 
         let events = await execute(fileSystem, operation, operationId: "native-error-1")
@@ -136,7 +136,7 @@ struct CopyPasteExecutionMetadataTests {
     @Test func utimesENOTSUPSilentlyIgnored() async throws {
         let fileSystem = folderWithAFile()
         fileSystem.enableUtimes()
-        fileSystem.utimesImpl = { _, _, _ in throw codedError("ENOTSUP") }
+        fileSystem.utimesImpl = { _, _, _ in throw codedError(.errno(ENOTSUP)) }
         let operation = try createResolvedOperation(fileSystem, sources: ["/source/dir"], into: "/target")
 
         await execute(fileSystem, operation, operationId: "utimes-enotsup-1")
@@ -149,7 +149,7 @@ struct CopyPasteExecutionMetadataTests {
         var tried: [String] = []
         try FolderMetadata.preserveTimestamps("/target/dir", 7777) { path, _, _ in
             tried.append(path)
-            throw codedError("EOPNOTSUPP")
+            throw codedError(.errno(EOPNOTSUPP))
         }
         #expect(tried == ["/target/dir"])
     }
@@ -157,7 +157,7 @@ struct CopyPasteExecutionMetadataTests {
     @Test func doesntFailAFolderWhoseDateCantBeSet() async throws {
         let fileSystem = folderWithAFile()
         fileSystem.enableUtimes()
-        fileSystem.utimesImpl = { _, _, _ in throw codedError("EPERM") }
+        fileSystem.utimesImpl = { _, _, _ in throw codedError(.errno(EPERM)) }
         let operation = try createResolvedOperation(fileSystem, sources: ["/source/dir"], into: "/target")
 
         let events = await execute(fileSystem, operation, operationId: "utimes-eperm-1")

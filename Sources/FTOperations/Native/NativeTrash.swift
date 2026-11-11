@@ -6,7 +6,7 @@ extension NativeFS {
     /// Moves the item to the Trash of its disk, as Finder's Move to Trash does, and returns the path it has there: the
     /// Trash renames it when its name is taken there ("notes 2.txt"), so the path is the only way to find it again. nil
     /// when the item went to the Trash but the Trash didn't say where. A failure carries the Trash's own sentence as
-    /// its message and, when it can be told, an errno `code` ("EACCES", "ENOENT", "ENOSPC", "ENOTSUP" for a disk
+    /// its message and, when it can be told, an errno `code` (EACCES, ENOENT, ENOSPC, ENOTSUP for a disk
     /// without a Trash), plus the Cocoa error's number as `cocoaCode` when it was one; syscall `trash`.
     public static func trashItem(_ path: String) throws -> String? {
         let url = URL(fileURLWithPath: path)
@@ -33,7 +33,7 @@ extension NativeFS {
             return NativeError.errno(errnum, syscall: "trash", path: path)
         }
         return NativeError(
-            message: message, code: errnum != 0 ? Errno.nameOrUnknown(of: errnum) : nil,
+            message: message, code: errnum != 0 ? .errno(errnum) : nil,
             errnum: errnum != 0 ? errnum : nil, syscall: "trash", path: path, cocoaCode: cocoaCode)
     }
 

@@ -8,7 +8,7 @@ import Foundation
 /// `NativeFS.trashItem`). A locked item says so. A disk without a Trash (a network share, some USB drives)
 /// answers ENOTSUP, or, once the app has trashed something, often no errno at all (NSFileWriteUnknownError):
 /// ENOTSUP, or no errno on a disk `diskHasTrash` takes to have none (a network share), is marked on a disk other
-/// than the startup disk with `CopyPasteErrors.noTrashErrorCode`, so callers can offer to delete instead. Any other
+/// than the startup disk with the code `.noTrash`, so callers can offer to delete instead. Any other
 /// reason (no permission, a read-only or full disk, an item that is gone, a failure the Trash gives no errno for)
 /// is the Trash's own sentence, and nothing is offered for permanent deletion; nor is anything on the startup
 /// disk ever.
@@ -56,14 +56,14 @@ public struct TrashItem: Sendable {
             let onStartupDisk = item?.dev != nil && home?.dev != nil && item?.dev == home?.dev
             let code = errorCode(error)
             let mayHaveNoTrash =
-                code == "ENOTSUP" || code == "EOPNOTSUPP" || (code == nil && diskHasTrash?(path) == false)
+                code == .errno(ENOTSUP) || code == .errno(EOPNOTSUPP) || (code == nil && diskHasTrash?(path) == false)
             let name = NodePath.basename(path)
             if onStartupDisk || item == nil || !mayHaveNoTrash {
                 throw OperationError(reason ?? "“\(name)” couldn’t be moved to the Trash.")
             }
             throw OperationError(
                 "“\(name)” couldn’t be moved to the Trash. This disk may not have a Trash.",
-                code: CopyPasteErrors.noTrashErrorCode, cause: error)
+                code: .noTrash, cause: error)
         }
     }
 }

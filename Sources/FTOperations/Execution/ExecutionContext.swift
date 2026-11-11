@@ -267,7 +267,7 @@ final class ExecutionContext: @unchecked Sendable {
 /// the whole hidden copy is given up, never put in place.
 struct StagingCleanupError: CodedError {
     let original: any Error
-    var code: String? { nil }
+    var code: ErrorCode? { nil }
     var message: String { describeCopyPasteError(original) }
 }
 
@@ -275,14 +275,14 @@ struct StagingCleanupError: CodedError {
 /// person decides what happens to the item.
 struct DestinationTakenError: CodedError {
     let original: any Error
-    var code: String? { nil }
+    var code: ErrorCode? { nil }
     var message: String { errorMessage(original) }
 }
 
 /// A stop inside a folder, carrying what was already done inside it for the result.
 struct CancelledWithItemsError: CodedError {
     let childItems: ItemList
-    var code: String? { nil }
+    var code: ErrorCode? { nil }
     var message: String { cancelledMessage }
 }
 
@@ -291,7 +291,7 @@ struct CancelledWithItemsError: CodedError {
 struct PlacedError: CodedError {
     let underlying: any Error
     let destinationPath: String
-    var code: String? { errorCode(underlying) }
+    var code: ErrorCode? { errorCode(underlying) }
     var message: String { errorMessage(underlying) }
 
     static func placed(_ error: any Error, at destinationPath: String) -> any Error {

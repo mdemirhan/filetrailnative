@@ -373,7 +373,7 @@ struct CopyPasteAnalysisTests {
         let base = fileSystem.base
         fileSystem.readdirImpl = { path in
             if path == "/target/folder" {
-                throw codedError("EACCES", "EACCES: permission denied")
+                throw codedError(.errno(EACCES), "EACCES: permission denied")
             }
             return try base.readdir(path)
         }

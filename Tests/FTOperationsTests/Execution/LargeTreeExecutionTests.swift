@@ -43,7 +43,7 @@ final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     }
 
     private func lookUp(_ path: String) throws -> Node {
-        guard let node = nodes[path] else { throw codedError("ENOENT", "ENOENT: \(path)") }
+        guard let node = nodes[path] else { throw codedError(.errno(ENOENT), "ENOENT: \(path)") }
         readCounts[path, default: 0] += 1
         return node
     }
@@ -56,7 +56,7 @@ final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     private func create(_ path: String, isDirectory: Bool, size: Int64 = 0) throws {
         try withLock {
             if nodes[path] != nil {
-                throw codedError("EEXIST", "EEXIST: \(path)")
+                throw codedError(.errno(EEXIST), "EEXIST: \(path)")
             }
             _ = try lookUp(dirnameOf(path))
             add(path, isDirectory: isDirectory, size: size)
@@ -84,7 +84,7 @@ final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     }
 
     func readdir(_ path: String) throws -> [String] { withLock { children[path] ?? [] } }
-    func readlink(_ path: String) throws -> String { throw codedError("EINVAL", "EINVAL: \(path)") }
+    func readlink(_ path: String) throws -> String { throw codedError(.errno(EINVAL), "EINVAL: \(path)") }
     func isCaseSensitive(_ path: String) throws -> Bool? { true }
     func mkdir(_ path: String) throws { try create(path, isDirectory: true) }
     func rm(_ path: String, recursive: Bool, force: Bool) throws {}
@@ -111,7 +111,7 @@ final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     func renameExclusive(_ from: String, _ to: String) throws {
         try withLock {
             if nodes[to] != nil {
-                throw codedError("EEXIST", "EEXIST: \(to)")
+                throw codedError(.errno(EEXIST), "EEXIST: \(to)")
             }
             func moved(_ path: String) -> String? {
                 path == from ? to : path.hasPrefix(from + "/") ? to + path.dropFirst(from.count) : nil

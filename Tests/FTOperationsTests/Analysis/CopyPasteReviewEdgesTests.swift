@@ -31,7 +31,7 @@ struct CopyPasteReviewEdgesTests {
     @Test func caseUsesTheFoldersOwnNameWhenTheFolderIsEmptyOrCantBeListed() {
         let sensitive = withoutNativeAnswer(MockAnalysisFileSystem([("/Target", .directory())]))
         sensitive.caseSensitive = true
-        sensitive.readdirImpl = { _ in throw codedError("EACCES") }
+        sensitive.readdirImpl = { _ in throw codedError(.errno(EACCES)) }
         #expect(detectCaseSensitivity(sensitive, in: "/Target") == true)
 
         let insensitive = withoutNativeAnswer(MockAnalysisFileSystem([("/Target", .directory())]))
@@ -58,7 +58,7 @@ struct CopyPasteReviewEdgesTests {
         let failingBase = failing.base
         failing.lstatImpl = { path in
             if path.hasSuffix("rEADME") {
-                throw codedError("EIO")
+                throw codedError(.errno(EIO))
             }
             return try failingBase.lstat(path)
         }
@@ -75,7 +75,7 @@ struct CopyPasteReviewEdgesTests {
         let base = fileSystem.base
         fileSystem.readdirImpl = { path in
             if path == "/target/Docs/Private" {
-                throw codedError("EACCES")
+                throw codedError(.errno(EACCES))
             }
             return try base.readdir(path)
         }

@@ -29,7 +29,7 @@ struct CopyPasteExecutionIntegrationTests {
         // Another disk: renames out of /source fail; a file put in place at /target doesn't.
         fileSystem.renameImpl = { from, to in
             if from.hasPrefix("/source/") {
-                throw codedError("EXDEV")
+                throw codedError(.errno(EXDEV))
             }
             try fileSystem.renameDirectly(from, to)
         }
@@ -117,11 +117,11 @@ struct CopyPasteExecutionIntegrationTests {
                     return value
                 }
             if hide {
-                throw codedError("ENOENT", "ENOENT: \(path)")
+                throw codedError(.errno(ENOENT), "ENOENT: \(path)")
             }
             return try fileSystem.lstatDirectly(path)
         }
-        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EACCES") }
+        fileSystem.copyFileImpl = { _, _, _, _ in throw codedError(.errno(EACCES)) }
 
         let events = await execute(fileSystem, operation, operationId: "someone-elses-file")
 
@@ -240,7 +240,7 @@ struct CopyPasteExecutionIntegrationTests {
         let fileSystem = otherVolumeFolder()
         let chmods = Recorded<[String]>()
         fileSystem.chmodImpl = { path, mode in chmods.append([path, String(mode, radix: 8)]) }
-        fileSystem.copyMetadataImpl = { _, _ in throw codedError("ENOTSUP") }
+        fileSystem.copyMetadataImpl = { _, _ in throw codedError(.errno(ENOTSUP)) }
 
         let result = try await run(fileSystem, .copy, ["/source/dir"])
 
@@ -253,7 +253,7 @@ struct CopyPasteExecutionIntegrationTests {
         let fileSystem = otherVolumeFolder()
         fileSystem.readdirImpl = { path in
             if path == "/source/dir" {
-                throw codedError("EACCES")
+                throw codedError(.errno(EACCES))
             }
             return []
         }

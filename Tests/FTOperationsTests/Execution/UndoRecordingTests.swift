@@ -161,7 +161,7 @@ struct CopyUndoRecordingTests {
                     return value
                 }
                 if call == 2 {
-                    throw codedError("EIO", "EIO: i/o error")
+                    throw codedError(.errno(EIO), "EIO: i/o error")
                 }
                 try native.copyFile(from, to, stop: stop, onProgress: progress)
             }
@@ -372,7 +372,7 @@ struct OtherDiskUndoRecordingTests {
             let (src, dst, trash) = try folders(root)
             try Disk.write(src + "/a.txt", "a")
             let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
-            fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EACCES", "EACCES: permission denied") }
+            fileSystem.copyFileImpl = { _, _, _, _ in throw codedError(.errno(EACCES), "EACCES: permission denied") }
 
             let run = try await runPaste(
                 mode: .cut, sources: [src + "/a.txt"], into: dst,

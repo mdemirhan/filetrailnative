@@ -41,7 +41,7 @@ struct RuntimeSafetyReplaceTests {
             let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
             fileSystem.renameExclusiveImpl = { from, to in
                 if to == dst + "/f.txt" {
-                    throw NativeError(message: "EIO: i/o error", code: "EIO")
+                    throw NativeError(message: "EIO: i/o error", code: .errno(EIO))
                 }
                 try NativeFS.renameExclusive(from, to)
             }

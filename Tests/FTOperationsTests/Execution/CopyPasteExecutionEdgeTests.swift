@@ -62,7 +62,7 @@ struct CopyPasteExecutionEdgeTests {
         let chmodIgnored = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
         ])
-        chmodIgnored.chmodImpl = { _, _ in throw codedError("EOPNOTSUPP", "unsupported") }
+        chmodIgnored.chmodImpl = { _, _ in throw codedError(.errno(EOPNOTSUPP), "unsupported") }
         let ignoredOperation = try createResolvedOperation(chmodIgnored, sources: ["/source/file.txt"], into: "/target")
 
         await execute(chmodIgnored, ignoredOperation, operationId: "copy-op-5")
@@ -72,7 +72,7 @@ struct CopyPasteExecutionEdgeTests {
         let chmodFailure = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
         ])
-        chmodFailure.chmodImpl = { _, _ in throw codedError("EPERM", "chmod denied") }
+        chmodFailure.chmodImpl = { _, _ in throw codedError(.errno(EPERM), "chmod denied") }
         let failureOperation = try createResolvedOperation(chmodFailure, sources: ["/source/file.txt"], into: "/target")
 
         let failureEvents = await execute(chmodFailure, failureOperation, operationId: "copy-op-6")

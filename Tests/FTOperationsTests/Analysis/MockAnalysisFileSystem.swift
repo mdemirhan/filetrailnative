@@ -1,5 +1,6 @@
 // The items in memory (MockIdentityFileSystem), with the hooks the tests replace calls with, and the volume's case
 // answer.
+import FTFileSystem
 import FTFoundation
 import Foundation
 import os
@@ -93,8 +94,18 @@ final class MockAnalysisFileSystem: AnalysisFileSystem, @unchecked Sendable {
 }
 
 /// An error with a code, as the disk calls throw them.
-func codedError(_ code: String, _ message: String? = nil) -> NativeError {
-    NativeError(message: message ?? code, code: code)
+func codedError(_ code: ErrorCode, _ message: String? = nil) -> NativeError {
+    NativeError(message: message ?? code.name, code: code)
+}
+
+extension ErrorCode {
+    /// The code's name, which an error made with `codedError` and no message has for its message.
+    var name: String {
+        switch self {
+        case .errno(let errnum): Errno.nameOrUnknown(of: errnum)
+        case .noTrash: "ENOTRASH"
+        }
+    }
 }
 
 /// Polls `condition` until it holds or `timeout` passes.
