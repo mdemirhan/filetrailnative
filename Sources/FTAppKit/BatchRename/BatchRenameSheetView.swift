@@ -5,7 +5,7 @@ import FTOperations
 /// The Rename sheet for several items: Finder's Replace Text, Add Text, Format and Change Case, with every item's new
 /// name shown before anything is renamed, and names that can't be used held back or settled as the person chooses.
 @MainActor
-final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
+final class BatchRenameSheetView: DialogPanelView {
     let model: BatchRenameSheetModel
     /// Cancel, Escape and ⌘.: the sheet closes (the presenter closes the model).
     var onCancel: () -> Void = {}
@@ -60,7 +60,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     let adviceText: ThemedText
     // Preview and footer
     let preview = BatchRenamePreviewView()
-    let footerLine = BatchRenameFooterLine()
+    let footerLine = DialogFooterLine(thickness: BatchRenameSheetLayout.Footer.border)
     let summaryLabel = ThemedText(wrapping: false) { _ in NSAttributedString() }
     let cancelButton = SystemButton(title: "Cancel")
     let renameButton = SystemButton(title: "Rename")
@@ -73,7 +73,6 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     private var startDraft = BatchRenameNumberDraft(value: 1)
     private var stepDraft = BatchRenameNumberDraft(value: 1)
     private var shownCells: [BatchRenameGridCell] = []
-    private var theme = AppearanceModel.shared.theme
     private var rendering = false
 
     init(model: BatchRenameSheetModel) {
@@ -96,11 +95,10 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
                 small, { $0.palette.textSecondary }, lineHeight: BatchRenameSheetLayout.controlHeight))
         adviceText = ThemedText(
             BatchRenameSheetText.extensionAdvice, style: batchRenameStyle(small, { $0.palette.textSecondary }))
-        super.init(frame: .zero)
+        super.init(cornerRadius: GlassSurface.sheetRadius)
         setAccessibilityElement(true)
         setAccessibilityRole(.sheet)
         setAccessibilityIdentifier("batchRename")
-        wantsLayer = true
         build()
         model.onChange = { [weak self] in self?.render() }
         applyTheme(theme)
@@ -108,8 +106,6 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    override var isFlipped: Bool { true }
 
     // MARK: Building
 
@@ -331,11 +327,11 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
 
     // MARK: Keys
 
-    var initialResponder: NSView? { firstField?.field ?? self }
+    override var initialResponder: NSView? { firstField?.field ?? self }
 
     /// Unlike under the other dialogs, the list keeps the accent while this sheet is open: the folder pane stays
     /// focused.
-    var keepsPaneFocus: Bool { true }
+    override var keepsPaneFocus: Bool { true }
 
     override var acceptsFirstResponder: Bool { true }
 
@@ -354,11 +350,11 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         if let field = firstField {
             field.focus(caret: (field.text as NSString).length)
         } else {
-            window?.makeFirstResponder(focusChain.first)
+            window?.makeFirstResponder(focusOrder().first)
         }
     }
 
-    func handleKey(_ event: NSEvent) -> Bool {
+    override func handleKey(_ event: NSEvent) -> Bool {
         let modifiers = event.modifierFlags.intersection([.command, .control, .option, .shift])
         if KeyCode.isCancel(event) {
             if savingPreset { stopSavingPreset() } else { onCancel() }
@@ -386,19 +382,16 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         return false
     }
 
-    /// The control of the sheet that has the keyboard (a field, for its field editor).
-    var focusedControl: NSView? {
-        guard let window else { return nil }
-        if let editor = window.firstResponder as? NSTextView, editor.isFieldEditor {
-            let delegate: AnyObject? = editor.delegate
-            if let field = delegate as? BatchRenameEditField { return field.superview }
-        }
-        if let field = window.firstResponder as? BatchRenameEditField { return field.superview }
-        return window.firstResponder as? NSView
+    /// The control of the sheet that has the keyboard: a field's whole box, for its field editor or its text.
+    override var focusedControl: NSView? {
+        if let field = super.focusedControl as? BatchRenameEditField { return field.superview }
+        return super.focusedControl
     }
 
     /// What Tab goes through, in the order the sheet shows it: the header, the mode, the options, the list of new
     /// names and the footer's buttons.
+    override func focusOrder() -> [NSView] { focusChain }
+
     var focusChain: [NSView] {
         var chain: [NSView] = []
         if savingPreset {
@@ -427,23 +420,13 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         return chain
     }
 
-    func cycleFocus(backward: Bool) {
-        let chain = focusChain
-        guard !chain.isEmpty else { return }
-        let current = focusedControl
-        let index = chain.firstIndex { $0 === current }
-        let next: Int =
-            if backward {
-                index.map { $0 == 0 ? chain.count - 1 : $0 - 1 } ?? chain.count - 1
-            } else {
-                index.map { $0 == chain.count - 1 ? 0 : $0 + 1 } ?? 0
-            }
-        let target = chain[next]
-        if let field = target as? BatchRenameTextField {
+    /// A field Tab lands on has all its text selected.
+    override func moveKeyboard(to view: NSView) {
+        if let field = view as? BatchRenameTextField {
             field.focus()
             field.field.currentEditor()?.selectAll(nil)
         } else {
-            window?.makeFirstResponder(target)
+            super.moveKeyboard(to: view)
         }
     }
 
@@ -453,16 +436,8 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     let patternBlock = NSView()
     let checksRow = NSView()
 
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        let palette = theme.palette
-        layer?.backgroundColor = NSColor(palette.bgElevated).cgColor
-        layer?.cornerRadius = GlassSurface.sheetRadius
-        // --elevation-dialog: the 0.5 edge; DialogScrim draws the drops under the panel.
-        if let edge = palette.elevationDialog.first(where: { $0.blur == 0 && $0.spread > 0 }) {
-            layer?.borderWidth = CGFloat(edge.spread)
-            layer?.borderColor = NSColor(edge.color).cgColor
-        }
+    override func applyTheme(_ theme: Theme) {
+        super.applyTheme(theme)
         for button in [presetCancelButton, presetSaveButton, cancelButton, renameButton] { button.applyTheme(theme) }
     }
 
@@ -794,7 +769,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         headerHeight + modesHeight + optionsHeight(gridRows()) + CGFloat(BatchRenameSheetLayout.Footer.height)
     }
 
-    func panelSize(in size: NSSize) -> NSSize {
+    override func panelSize(in size: NSSize) -> NSSize {
         let width = min(
             CGFloat(BatchRenameSheetLayout.width), max(0, size.width - CGFloat(BatchRenameSheetLayout.viewportInset)))
         let previous = frame.size
@@ -814,12 +789,9 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         var right = width - CGFloat(header.paddingHorizontal)
         let headerY = CGFloat(header.paddingTop)
         if savingPreset {
-            for button in [presetSaveButton, presetCancelButton] {
-                let buttonWidth = button.preferredWidth
-                right -= buttonWidth
-                button.frame = NSRect(x: right, y: headerY, width: buttonWidth, height: control)
-                right -= CGFloat(header.presetSaveGap)
-            }
+            right = layoutButtonRow(
+                [presetCancelButton, presetSaveButton], right: right, y: headerY, height: control,
+                gap: CGFloat(header.presetSaveGap))
             let fieldWidth = CGFloat(header.presetFieldWidth)
             right -= fieldWidth
             presetNameField.frame = NSRect(x: right, y: headerY, width: fieldWidth, height: control)
@@ -960,13 +932,9 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         footerLine.frame = NSRect(x: 0, y: y, width: width, height: CGFloat(layout.height))
         let control = CGFloat(BatchRenameSheetLayout.controlHeight)
         let buttonY = y + CGFloat(layout.border + layout.paddingTop)
-        var right = width - CGFloat(layout.paddingHorizontal)
-        for button in [renameButton, cancelButton] {
-            let buttonWidth = button.preferredWidth
-            right -= buttonWidth
-            button.frame = NSRect(x: right, y: buttonY, width: buttonWidth, height: control)
-            right -= CGFloat(layout.gap)
-        }
+        let right = layoutButtonRow(
+            [cancelButton, renameButton], right: width - CGFloat(layout.paddingHorizontal), y: buttonY,
+            height: control, gap: CGFloat(layout.gap))
         let line = batchRenameLine(BatchRenameSheetLayout.Fonts.summary)
         let left = CGFloat(layout.paddingHorizontal)
         summaryLabel.frame = NSRect(
@@ -991,23 +959,4 @@ struct BatchRenameGridCell {
     var height: CGFloat
     var alignStart = true
     var marginTop: CGFloat = 0
-}
-
-/// The footer's top line: 1 px in the light border color.
-@MainActor
-final class BatchRenameFooterLine: NSView, ThemeApplying {
-    private var theme = AppearanceModel.shared.theme
-    override var isFlipped: Bool { true }
-
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        needsDisplay = true
-    }
-
-    override func hitTest(_ point: NSPoint) -> NSView? { nil }
-
-    override func draw(_ dirtyRect: NSRect) {
-        NSColor(theme.palette.borderLight).setFill()
-        NSRect(x: 0, y: 0, width: bounds.width, height: CGFloat(BatchRenameSheetLayout.Footer.border)).fill()
-    }
 }

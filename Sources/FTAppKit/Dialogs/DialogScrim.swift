@@ -13,6 +13,8 @@ protocol DialogPanel: NSView {
     /// Whether the folder pane keeps its focused look under the panel. A dialog that takes the focus blurs the pane, and
     /// with the dialog up nothing gives `focusedPane` back, so the selection goes gray.
     var keepsPaneFocus: Bool { get }
+    /// Tab and ⇧Tab that the dialog left to the scrim: the keyboard goes round the panel's controls.
+    func cycleFocus(backward: Bool)
 }
 
 extension DialogPanel {
@@ -360,7 +362,7 @@ final class DialogScrim: NSView {
         }
         if panel.handleKey(event) { return true }
         if event.keyCode == KeyCode.tab {
-            cycleFocus(backward: event.modifierFlags.contains(.shift))
+            panel.cycleFocus(backward: event.modifierFlags.contains(.shift))
             return true
         }
         return false
@@ -372,49 +374,6 @@ final class DialogScrim: NSView {
             return field.isDescendant(of: panel)
         }
         return (responder as? NSView)?.isDescendant(of: panel) == true
-    }
-
-    /// Tab and ⇧Tab go round the panel's fields and enabled buttons, wrapping at either end.
-    func cycleFocus(backward: Bool) {
-        guard let window else { return }
-        let focusable = Self.focusable(in: panel)
-        guard !focusable.isEmpty else { return }
-        let current = focusable.firstIndex { view in
-            if let editor = window.firstResponder as? NSTextView, editor.isFieldEditor {
-                return editor.delegate as? NSView === view
-            }
-            return window.firstResponder === view
-        }
-        let next: Int =
-            if backward {
-                current.map { $0 <= 0 ? focusable.count - 1 : $0 - 1 } ?? focusable.count - 1
-            } else {
-                current.map { $0 >= focusable.count - 1 ? 0 : $0 + 1 } ?? 0
-            }
-        window.makeFirstResponder(focusable[next])
-    }
-
-    /// The panel's editable fields and enabled buttons, in the order they are drawn.
-    static func focusable(in root: NSView) -> [NSView] {
-        var found: [NSView] = []
-        func visit(_ view: NSView) {
-            guard !view.isHidden else { return }
-            if let field = view as? NSTextField, field.isEditable, field.isEnabled {
-                found.append(field)
-            } else if let button = view as? NSButton {
-                if button.isEnabled { found.append(button) }
-            } else if view !== root, view.acceptsFirstResponder, view is GoToRowView || view is ClearButton {
-                found.append(view)
-            }
-            for child in view.subviews { visit(child) }
-        }
-        visit(root)
-        return found.sorted { a, b in
-            let ra = a.convert(a.bounds, to: root)
-            let rb = b.convert(b.bounds, to: root)
-            if abs(ra.minY - rb.minY) > 1 { return root.isFlipped ? ra.minY < rb.minY : ra.minY > rb.minY }
-            return ra.minX < rb.minX
-        }
     }
 }
 

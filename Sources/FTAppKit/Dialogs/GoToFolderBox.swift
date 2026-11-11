@@ -25,7 +25,7 @@ struct GoToBoxOptions {
 /// The Go To box (⌘K, ⇧⌘G) and the Move To box: a panel dropped below the toolbar with a field, the folders that match
 /// and the footer's buttons.
 @MainActor
-final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelegate {
+final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
     static let placeholder = "Folder name, or a path starting with / or ~"
     /// Where the pointer last was over a box's list, by window: kept across opens, and let go of with the window.
     private static let lastPointers = NSMapTable<NSWindow, NSValue>.weakToStrongObjects()
@@ -46,12 +46,11 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
     let emptyLabel = PlainLabel(wrappingLabelWithString: "")
     let scroll = NSScrollView()
     private let listContent = FlippedView()
-    let footer = GoToFooterView()
+    let footer = DialogFooterLine(thickness: DialogLayout.GoTo.footerBorder)
     let browseButton: SystemButton?
     let cancelButton = SystemButton(title: "Cancel")
     let submitButton: SystemButton
     private(set) var rowViews: [GoToRowView] = []
-    private var theme = AppearanceModel.shared.theme
     private var browsing = false
     private weak var pointerWindow: NSWindow?
 
@@ -86,12 +85,11 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
         }
         browseButton = options.browse == nil ? nil : SystemButton(title: "Choose…")
         submitButton = SystemButton(title: options.submitLabel)
-        super.init(frame: .zero)
+        super.init(cornerRadius: GlassSurface.sheetRadius)
         setAccessibilityElement(true)
         setAccessibilityRole(.sheet)
         setAccessibilityLabel(options.title ?? "Go To")
         setAccessibilityIdentifier("goToFolder")
-        wantsLayer = true
         if let titleLabel { addSubview(titleLabel) }
         addSubview(shell)
         shell.field.delegate = self
@@ -145,8 +143,6 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    override var isFlipped: Bool { true }
 
     var field: GoToField { shell.field }
 
@@ -233,9 +229,9 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
 
     // MARK: Keys
 
-    var initialResponder: NSView? { field }
+    override var initialResponder: NSView? { field }
 
-    func handleKey(_ event: NSEvent) -> Bool {
+    override func handleKey(_ event: NSEvent) -> Bool {
         if KeyCode.isCancel(event) {
             onClose()
             return true
@@ -340,17 +336,9 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
 
     // MARK: Showing
 
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        let palette = theme.palette
-        layer?.backgroundColor = NSColor(palette.bgElevated).cgColor
-        layer?.cornerRadius = GlassSurface.sheetRadius
-        // --elevation-dialog: the 0.5 edge; DialogScrim draws the drops under the panel.
-        if let edge = palette.elevationDialog.first(where: { $0.blur == 0 && $0.spread > 0 }) {
-            layer?.borderWidth = CGFloat(edge.spread)
-            layer?.borderColor = NSColor(edge.color).cgColor
-        }
-        titleLabel?.textColor = NSColor(palette.textPrimary)
+    override func applyTheme(_ theme: Theme) {
+        super.applyTheme(theme)
+        titleLabel?.textColor = NSColor(theme.palette.textPrimary)
         styleLabels()
         shell.applyTheme(theme)
         footer.applyTheme(theme)
@@ -452,7 +440,7 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
         return ceil(emptyLabel.sizeThatFits(NSSize(width: max(1, inner), height: .greatestFiniteMagnitude)).height)
     }
 
-    func panelSize(in size: NSSize) -> NSSize {
+    override func panelSize(in size: NSSize) -> NSSize {
         let layout = DialogLayout.GoTo.self
         let width = min(CGFloat(layout.width), max(0, size.width - CGFloat(layout.viewportInset)))
         let maxHeight = max(0, size.height - CGFloat(layout.heightInset))
@@ -529,33 +517,12 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
         let layout = DialogLayout.GoTo.self
         let height = CGFloat(DesignTokens.controlHeights.regular)
         let y = CGFloat(layout.footerBorder + layout.footerTop)
-        var right = footer.bounds.width - CGFloat(layout.footerHorizontal)
-        for button in [submitButton, cancelButton] {
-            let width = button.preferredWidth
-            right -= width
-            button.frame = NSRect(x: right, y: y, width: width, height: height)
-            right -= CGFloat(layout.footerGap)
-        }
+        layoutButtonRow(
+            [cancelButton, submitButton], right: footer.bounds.width - CGFloat(layout.footerHorizontal), y: y,
+            height: height, gap: CGFloat(layout.footerGap))
         if let browseButton {
             browseButton.frame = NSRect(
                 x: CGFloat(layout.footerHorizontal), y: y, width: browseButton.preferredWidth, height: height)
         }
-    }
-}
-
-/// The footer's top line (`border-top: 1px solid var(--border-light)`).
-@MainActor
-final class GoToFooterView: NSView, ThemeApplying {
-    private var theme = AppearanceModel.shared.theme
-    override var isFlipped: Bool { true }
-
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        needsDisplay = true
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        NSColor(theme.palette.borderLight).setFill()
-        NSRect(x: 0, y: 0, width: bounds.width, height: CGFloat(DialogLayout.GoTo.footerBorder)).fill()
     }
 }

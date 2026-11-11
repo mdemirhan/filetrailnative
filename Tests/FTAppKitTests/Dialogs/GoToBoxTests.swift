@@ -139,7 +139,7 @@ extension ExplorerWindowlessTests {
             DialogKeys.press(48, "\t", in: window)
             #expect(hasKeyboard(box.rowViews[0]))
             // All the way round it never leaves.
-            for _ in DialogScrim.focusable(in: scrim.panel) {
+            for _ in DialogPanelView.focusable(in: scrim.panel) {
                 DialogKeys.press(48, "\t", in: window)
                 #expect(scrim.holdsKeyboard(window))
             }
@@ -171,7 +171,7 @@ extension ExplorerWindowlessTests {
                 #expect(box.shell.holdsKeyboard)
                 // The box is still up: the key went to the ×, not to Open.
                 #expect(tab.goToBox === box)
-                #expect(!DialogScrim.focusable(in: box).contains { $0 === box.shell.clearButton })
+                #expect(!DialogPanelView.focusable(in: box).contains { $0 === box.shell.clearButton })
             }
             await close(harness)
         }

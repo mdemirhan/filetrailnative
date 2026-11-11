@@ -5,7 +5,7 @@ import FTFoundation
 /// message, an optional bar, the list that scrolls, the footer with its note and buttons. What goes in the bar and the
 /// list is the sheet's own.
 @MainActor
-class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
+class CopyPasteSheetView: DialogPanelView {
     let titleLabel: ThemedText
     let messageLabel: ThemedText
     let scroll = NSScrollView()
@@ -21,6 +21,7 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
     }
     /// The note at the footer's left.
     let note = FooterNoteView()
+    private let footerLine = DialogFooterLine(thickness: CopyPasteSheetLayout.border)
     /// Whether the list is drawn: the review sheet leaves it out when it has no rows.
     var showsList = true {
         didSet {
@@ -32,10 +33,6 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
     var listInsets: (top: CGFloat, bottom: CGFloat) = (
         CGFloat(CopyPasteSheetLayout.listVertical), CGFloat(CopyPasteSheetLayout.listVertical)
     )
-    private(set) var theme = AppearanceModel.shared.theme
-    /// Whether Tab has been used: until then the button the sheet opens on shows no focus ring (it is already marked
-    /// by its fill).
-    private(set) var keyboardMoved = false
 
     init(identifier: String) {
         let layout = CopyPasteSheetLayout.self
@@ -51,13 +48,12 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
         messageLabel = ThemedText("", style: messageStyle, wrapping: true)
         self.titleStyle = titleStyle
         self.messageStyle = messageStyle
-        super.init(frame: .zero)
+        super.init(cornerRadius: GlassSurface.sheetRadius)
         setAccessibilityElement(true)
         setAccessibilityRole(.sheet)
         setAccessibilityIdentifier(identifier)
         titleLabel.setAccessibilityIdentifier("\(identifier).title")
         messageLabel.setAccessibilityIdentifier("\(identifier).message")
-        wantsLayer = true
         addSubview(titleLabel)
         addSubview(messageLabel)
         scroll.drawsBackground = false
@@ -67,6 +63,7 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
         scroll.documentView = list
         scroll.setAccessibilityIdentifier("\(identifier).list")
         addSubview(scroll)
+        addSubview(footerLine)
         note.setAccessibilityIdentifier("\(identifier).note")
         addSubview(note)
         applyTheme(theme)
@@ -77,7 +74,10 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
     private let titleStyle: TextStyle
     private let messageStyle: TextStyle
 
-    override var isFlipped: Bool { true }
+    override func applyTheme(_ theme: Theme) {
+        super.applyTheme(theme)
+        layer?.masksToBounds = false
+    }
 
     func setTitle(_ title: String, message: String) {
         let titleStyle = titleStyle
@@ -86,20 +86,6 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
         messageLabel.content = { messageStyle.string(message, $0) }
         setAccessibilityLabel(title)
         needsLayout = true
-    }
-
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        let palette = theme.palette
-        layer?.backgroundColor = NSColor(palette.bgElevated).cgColor
-        layer?.cornerRadius = GlassSurface.sheetRadius
-        layer?.masksToBounds = false
-        // --elevation-dialog: the 0.5 edge; DialogScrim draws the drops under the panel.
-        if let edge = palette.elevationDialog.first(where: { $0.blur == 0 && $0.spread > 0 }) {
-            layer?.borderWidth = CGFloat(edge.spread)
-            layer?.borderColor = NSColor(edge.color).cgColor
-        }
-        needsDisplay = true
     }
 
     /// The sheet's content changed (rows shown or hidden, a longer note): the sheet is sized again, growing with its
@@ -121,42 +107,19 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
     func layoutRows(width: CGFloat) -> CGFloat { 0 }
 
     /// The views Tab goes round, in order.
-    func focusOrder() -> [NSView] { buttons.filter(\.isEnabled) }
+    override func focusOrder() -> [NSView] { buttons.filter(\.isEnabled) }
 
-    // MARK: DialogPanel
-
-    var initialResponder: NSView? { buttons.last { $0.isDefault } ?? buttons.last }
-
-    func handleKey(_ event: NSEvent) -> Bool {
-        if event.keyCode == KeyCode.tab {
-            if !keyboardMoved {
-                keyboardMoved = true
-                for button in buttons { button.suppressesFocusRing = false }
-            }
-            cycleFocus(backward: event.modifierFlags.contains(.shift))
-            return true
-        }
-        return false
-    }
-
-    /// Tab and ⇧Tab go round the sheet's controls, wrapping at either end.
-    func cycleFocus(backward: Bool) {
-        guard let window else { return }
-        let order = focusOrder()
-        guard !order.isEmpty else { return }
-        let current = order.firstIndex { $0 === window.firstResponder }
-        let next: Int =
-            if backward {
-                current.map { $0 <= 0 ? order.count - 1 : $0 - 1 } ?? order.count - 1
-            } else {
-                current.map { $0 >= order.count - 1 ? 0 : $0 + 1 } ?? 0
-            }
-        let view = order[next]
-        window.makeFirstResponder(view)
+    /// A control Tab lands on is scrolled into the list's view.
+    override func moveKeyboard(to view: NSView) {
+        super.moveKeyboard(to: view)
         view.scrollToVisible(view.bounds)
     }
 
-    func panelSize(in size: NSSize) -> NSSize {
+    // MARK: DialogPanel
+
+    override var initialResponder: NSView? { buttons.last { $0.isDefault } ?? buttons.last }
+
+    override func panelSize(in size: NSSize) -> NSSize {
         let layout = CopyPasteSheetLayout.self
         let width = min(CGFloat(layout.width), max(0, size.width - CGFloat(layout.viewportInset)))
         let room = max(0, size.height - CGFloat(DialogLayout.sheetTop) - CGFloat(layout.bottomInset))
@@ -222,30 +185,17 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
         // The footer: the note at the left, the buttons in a row at the right, centered on one line.
         let contentTop = footerTop + CGFloat(layout.border) + CGFloat(layout.footerTop)
         let contentHeight = footer - CGFloat(layout.border) - CGFloat(layout.footerTop) - CGFloat(layout.footerBottom)
-        var right = width - CGFloat(layout.footerHorizontal)
-        for button in buttons.reversed() {
-            let buttonWidth = button.preferredWidth
-            right -= buttonWidth
-            button.frame = NSRect(
-                x: right, y: contentTop + (contentHeight - CGFloat(button.controlHeight)) / 2, width: buttonWidth,
-                height: CGFloat(button.controlHeight))
-            right -= CGFloat(layout.footerGap)
-        }
+        let buttonHeight = CGFloat(DesignTokens.controlHeights.regular)
+        let buttonY = contentTop + (contentHeight - buttonHeight) / 2
+        layoutButtonRow(
+            buttons, right: width - CGFloat(layout.footerHorizontal), y: buttonY, height: buttonHeight,
+            gap: CGFloat(layout.footerGap))
         let noteWidth = noteWidth(width: width)
         let noteHeight = note.height(forWidth: noteWidth)
         note.frame = NSRect(
             x: CGFloat(layout.footerHorizontal), y: contentTop + (contentHeight - noteHeight) / 2, width: noteWidth,
             height: noteHeight)
-        footerLine = footerTop
-    }
-
-    private var footerLine: CGFloat = 0
-
-    override func draw(_ dirtyRect: NSRect) {
-        // The footer's line: 1 px in the light border color.
-        NSColor(theme.palette.borderLight).setFill()
-        NSRect(x: 0, y: footerLine, width: bounds.width, height: CGFloat(CopyPasteSheetLayout.border))
-            .fill(using: .sourceOver)
+        footerLine.frame = NSRect(x: 0, y: footerTop, width: width, height: footer)
     }
 }
 

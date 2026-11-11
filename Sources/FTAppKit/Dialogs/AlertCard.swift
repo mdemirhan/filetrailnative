@@ -43,15 +43,12 @@ struct AlertContent {
 /// that holds them and isn't wide is centred. A click outside does nothing; it is answered with a button, Return or
 /// Escape.
 @MainActor
-final class AlertCard: NSView, DialogPanel, ThemeApplying {
+final class AlertCard: DialogPanelView {
     let content: AlertContent
     let titleLabel: ThemedText
     let messageLabel: ThemedText?
     let buttons: [SystemButton]
     let asideButton: SystemButton?
-    private var theme = AppearanceModel.shared.theme
-    /// Whether Tab has moved the focus: until then the default button shows no focus ring.
-    private(set) var keyboardMoved = false
 
     init(_ content: AlertContent) {
         self.content = content
@@ -87,12 +84,11 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
         }
         buttons = content.buttons.map(make)
         asideButton = content.aside.map(make)
-        super.init(frame: .zero)
+        super.init(cornerRadius: CGFloat(DesignTokens.radii.dialog))
         setAccessibilityElement(true)
         setAccessibilityRole(.sheet)
         setAccessibilityLabel(content.title)
         setAccessibilityIdentifier("alert")
-        wantsLayer = true
         addSubview(titleLabel)
         if let messageLabel { addSubview(messageLabel) }
         if let accessory = content.accessory { addSubview(accessory) }
@@ -114,33 +110,23 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    override var isFlipped: Bool { true }
-
     var defaultButton: SystemButton? { buttons.first { $0.isDefault } }
 
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        let palette = theme.palette
-        layer?.backgroundColor = NSColor(palette.bgElevated).cgColor
-        layer?.cornerRadius = CGFloat(DesignTokens.radii.dialog)
+    override func applyTheme(_ theme: Theme) {
+        super.applyTheme(theme)
         layer?.masksToBounds = false
-        // --elevation-dialog: the 0.5 edge; DialogScrim draws the drops under the panel.
-        if let edge = palette.elevationDialog.first(where: { $0.blur == 0 && $0.spread > 0 }) {
-            layer?.borderWidth = CGFloat(edge.spread)
-            layer?.borderColor = NSColor(edge.color).cgColor
-        }
         if content.isOnGlass { GlassSurface.install(in: self, radius: GlassSurface.alertRadius) }
     }
 
     // MARK: DialogPanel
 
     /// The default button, or the accessory's field.
-    var initialResponder: NSView? {
+    override var initialResponder: NSView? {
         if let field = (content.accessory as? TextPromptAccessory)?.field { return field }
         return defaultButton ?? buttons.last
     }
 
-    func panelSize(in size: NSSize) -> NSSize {
+    override func panelSize(in size: NSSize) -> NSSize {
         let layout = DialogLayout.Alert.self
         let width =
             content.wide
@@ -149,14 +135,9 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
         return NSSize(width: width, height: measure(width: width))
     }
 
-    func handleKey(_ event: NSEvent) -> Bool {
-        if event.keyCode == KeyCode.tab {
-            if !keyboardMoved {
-                keyboardMoved = true
-                for button in buttons { button.suppressesFocusRing = false }
-            }
-            return false
-        }
+    override func handleKey(_ event: NSEvent) -> Bool {
+        // Tab goes round the alert's controls (the scrim's).
+        if event.keyCode == KeyCode.tab { return false }
         if KeyCode.isCancel(event) {
             // Escape while text is being composed cancels the composition, not the alert.
             if let editor = window?.firstResponder as? NSTextView, editor.hasMarkedText() { return false }
@@ -263,13 +244,7 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
         let spacing = CGFloat(layout.buttonSpacing)
         if content.wide {
             // A row on the right, each as wide as its title; the aside button at the left.
-            var right = x + inner
-            for button in buttons.reversed() {
-                let width = button.preferredWidth
-                right -= width
-                button.frame = NSRect(x: right, y: y, width: width, height: buttonHeight)
-                right -= spacing
-            }
+            layoutButtonRow(buttons, right: x + inner, y: y, height: buttonHeight, gap: spacing)
             if let asideButton {
                 asideButton.frame = NSRect(x: x, y: y, width: asideButton.preferredWidth, height: buttonHeight)
             }
