@@ -219,52 +219,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // What goes wrong while a finished rename is reported (keeping it for Undo, telling the other windows, the
-    // window going away) never turns it into a failure, and the slot is free again.
-    @Test func doesntReportAFinishedRenameAsFailedWhenReportingItGoesWrong() async throws {
-        let fileSystem = TestLocalFileSystem.stub()
-        fileSystem.lstatImpl = { path in
-            guard path == "/Users/demo/source.txt" else { throw OperationError("missing") }
-            return Stats.file()
-        }
-        let logs = LogRecorder()
-        var bothLogged: CheckedContinuation<Void, Never>?
-        let coordinator = WriteCoordinator.local(
-            fileSystem,
-            options: WriteCoordinatorOptions(
-                recordUndo: { _ in throw OperationError("unexpected shape") },
-                broadcastProgress: { event, _ in
-                    if event.status == .completed { throw OperationError("unexpected shape") }
-                },
-                logError: { message, error in
-                    logs.log(message, error)
-                    if logs.messages.count >= 2 {
-                        bothLogged?.resume()
-                        bothLogged = nil
-                    }
-                }))
-        let window = TestWindow()
-
-        try await coordinator.rename(
-            sourcePath: "/Users/demo/source.txt", destinationName: "renamed.txt", window: window)
-        if logs.messages.count < 2 { await withCheckedContinuation { bothLogged = $0 } }
-
-        #expect(fileSystem.calls.renameExclusive.count == 1)
-        #expect(await window.ended("write-op-1").status == .completed)
-        #expect(!window.statuses.contains(.failed))
-        // The write slot is free again all the same.
-        #expect(
-            try await coordinator.createFolder(parentDirectoryPath: "/Users/demo", folderName: "Next", window: window)
-                == WriteOperationHandle(operationId: "write-op-2", status: .queued))
-        await coordinator.shutDown()
-    }
-
-    // MARK: Locked items
-
-    private func chflags(_ path: String, _ flags: UInt32) {
-        #expect(Darwin.lchflags(path, flags) == 0)
-    }
-
     @Test func saysALockedItemIsLockedWhenItCantBeRenamed() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-locked-ops") { root in
             try write(root.appending("notes.txt").path, "notes")

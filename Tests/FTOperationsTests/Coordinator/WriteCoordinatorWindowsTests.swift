@@ -398,24 +398,6 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    @Test func goesOnWhenTheOtherWindowsCantBeTold() async throws {
-        let log = LogRecorder()
-        let coordinator = WriteCoordinator(
-            writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub(),
-            options: WriteCoordinatorOptions(
-                broadcastProgress: { _, _ in throw OperationError("A window broke.") }, logError: log.log))
-        let window = TestWindow()
-        let gate = TestGate()
-        gate.open()
-
-        let handle = try Coordinators.heldLocalOperation(coordinator, window, gate: gate)
-
-        #expect(try await Coordinators.end(of: handle.operationId, in: window).status == .completed)
-        #expect(coordinator.activeOperation == nil)
-        #expect(log.messages.contains("[filetrail] couldn't tell the other windows about an operation"))
-        await coordinator.shutDown(maxWaitMs: 0)
-    }
-
     @Test func endsAPasteWhoseDiskCantBeToldToHaveATrashAndCantUndoIt() async throws {
         let service = StubWriteService()
         let log = LogRecorder()
@@ -468,44 +450,6 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
 
         #expect(starting == 1)
         #expect(ended == 1)
-        #expect(coordinator.activeOperation == nil)
-        await coordinator.shutDown(maxWaitMs: 0)
-    }
-
-    @Test func endsAPasteAndFreesTheSlotWhenForgettingWhatItChangedGoesWrong() async throws {
-        let service = StubWriteService()
-        let log = LogRecorder()
-        var finished: [FinishedWrite] = []
-        let coordinator = WriteCoordinator(
-            writeService: service, fileSystem: TestLocalFileSystem.stub(),
-            options: WriteCoordinatorOptions(
-                recordUndo: { finished.append($0) },
-                caches: WriteCaches(forget: { _, _ in throw OperationError("A folder size broke.") }),
-                logError: log.log))
-        let window = TestWindow()
-        try await Coordinators.startPaste(coordinator, window)
-
-        service.emit(Coordinators.copied())
-
-        #expect(try await Coordinators.end(of: "copy-op-1", in: window).status == .completed)
-        #expect(coordinator.activeOperation == nil)
-        #expect(finished.count == 1)
-        #expect(log.messages.contains("[filetrail] couldn't forget what an operation changed"))
-        await coordinator.shutDown(maxWaitMs: 0)
-    }
-
-    @Test func sendsTheEndOfALocalOperationWhenForgettingWhatItChangedGoesWrong() async throws {
-        let coordinator = WriteCoordinator(
-            writeService: StubWriteService(), fileSystem: TestLocalFileSystem.stub(),
-            options: WriteCoordinatorOptions(
-                caches: WriteCaches(forget: { _, _ in throw OperationError("A folder size broke.") })))
-        let window = TestWindow()
-        let gate = TestGate()
-        gate.open()
-
-        let handle = try Coordinators.heldLocalOperation(coordinator, window, gate: gate)
-
-        #expect(try await Coordinators.end(of: handle.operationId, in: window).status == .completed)
         #expect(coordinator.activeOperation == nil)
         await coordinator.shutDown(maxWaitMs: 0)
     }

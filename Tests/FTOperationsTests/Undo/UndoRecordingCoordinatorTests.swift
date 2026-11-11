@@ -387,24 +387,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    @Test func freesTheWriteSlotEvenWhenKeepingTheHistoryFails() async throws {
-        try await withUndoFolder { root, trashDir in
-            try UndoDisk.write("\(root)/a.txt", "a")
-            let log = LogRecorder()
-            let coordinator = WriteCoordinator(
-                writeService: StubWriteService(), fileSystem: UndoTestFileSystem(trashDir: trashDir),
-                options: WriteCoordinatorOptions(
-                    homePath: root, recordUndo: { _ in throw OperationError("history broke") },
-                    logError: { log.log($0, $1) }))
-            let window = TestWindow()
-            _ = try await end(
-                coordinator.rename(sourcePath: "\(root)/a.txt", destinationName: "b.txt", window: window), window)
-            #expect(coordinator.activeOperation == nil)
-            #expect(log.messages.contains("[filetrail] couldn't record an operation for Undo"))
-            await coordinator.shutDown()
-        }
-    }
-
     // MARK: What a paste records
 
     private static let copied = UndoLog.undoable(units: [

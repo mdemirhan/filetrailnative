@@ -1368,7 +1368,7 @@ for byte.
 - From 5.8 (the owner, 2026-11-11): the analysis `warnings`/thresholds and `disposition`/`.blocked`, unread by the
   app; FTAppKit tests and about 20 FTOperations test files build them.
 
-### [ ] 6.7. In-process events are not validated like messages from outside
+### [x] 6.7. In-process events are not validated like messages from outside
 
 - `WriteOperationEvent.checked()`/`WriteOperationEventCheck` (`Coordinator/WriteOperationEvent.swift` 179–186,
   203–263) check non-empty ids and non-negative counts on values built a few lines earlier. If a check ever
@@ -2338,3 +2338,7 @@ anything that differed from the plan, and anything found on the way that is not 
   is read and handled by one thread, chunk after chunk, and its close comes after both readers end. Found, not fixed:
   `handleClose` copies the job (and its results) once per search (Phase 7); a doc comment names "search:start"
   (Phase 10).
+- 2026-11-11. 6.7's rest, after the owner's yes: `recordUndo`, `caches.forget` and `broadcastProgress` don't throw,
+  and their do/catch and log lines are gone (the handling around `UndoHistory.finish` stays). Five tests that threw
+  from them on purpose went whole: everything else each checked (the write ends completed, the slot is free, the next
+  write's id) is checked by the remaining tests, so the rename test was not kept trimmed as first said.

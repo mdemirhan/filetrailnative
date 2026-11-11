@@ -108,14 +108,9 @@ extension WriteCoordinator {
         sender.receive(.progress(payload))
     }
 
-    /// `broadcast`: the other windows miss this update when telling them fails; the operation, and its own window,
-    /// go on.
+    /// `broadcast`: the other windows hear the update, without the result's items they don't need.
     func broadcast(_ payload: WriteOperationEvent, owner: any WriteOperationWindow) {
-        do {
-            try options.broadcastProgress?(payload.forOtherWindows, owner)
-        } catch {
-            options.logError("[filetrail] couldn't tell the other windows about an operation", error)
-        }
+        options.broadcastProgress?(payload.forOtherWindows, owner)
     }
 
     // MARK: Analyses and their windows

@@ -156,12 +156,12 @@ public struct WriteCoordinatorError: Error, Equatable, Sendable, CustomStringCon
 public struct WriteCaches {
     /// Forgets the listings, and what the operation changed of the folder sizes; what a delete removed is taken off
     /// the sizes of the measured folders that held it.
-    public var forget: (_ changedPaths: [String], _ removedItems: [RemovedItem]) throws -> Void
+    public var forget: (_ changedPaths: [String], _ removedItems: [RemovedItem]) -> Void
     public var writeStarting: () -> Void
     public var writeEnded: () -> Void
 
     public init(
-        forget: @escaping (_ changedPaths: [String], _ removedItems: [RemovedItem]) throws -> Void = { _, _ in },
+        forget: @escaping (_ changedPaths: [String], _ removedItems: [RemovedItem]) -> Void = { _, _ in },
         writeStarting: @escaping () -> Void = {}, writeEnded: @escaping () -> Void = {}
     ) {
         self.forget = forget
@@ -204,7 +204,7 @@ public struct WriteCoordinatorOptions {
     public var homePath: String
     /// Told what each operation did, before the next one can start, so they are kept in the order they happened.
     /// Operations that changed nothing aren't told. The app fills it with the Undo history.
-    public var recordUndo: ((FinishedWrite) throws -> Void)?
+    public var recordUndo: ((FinishedWrite) -> Void)?
     /// Whether the disk holding `path` has a Trash. Copies onto one that hasn't can't be undone. Undo also asks it
     /// from its disk thread.
     public var diskHasTrash: (@Sendable (String) throws -> Bool)?
@@ -218,7 +218,7 @@ public struct WriteCoordinatorOptions {
     public var writeJournal: (any WriteJournal)?
     /// Every window hears how the running operation is doing, so the others know one is running and can follow
     /// what it changed. Called with each progress event and the window it was sent to.
-    public var broadcastProgress: ((WriteOperationEvent, any WriteOperationWindow) throws -> Void)?
+    public var broadcastProgress: ((WriteOperationEvent, any WriteOperationWindow) -> Void)?
     /// The window an operation goes to when the one that started it closes; nil when there is none, and it is
     /// cancelled.
     public var successorOf: ((any WriteOperationWindow) -> (any WriteOperationWindow)?)?
@@ -230,12 +230,12 @@ public struct WriteCoordinatorOptions {
     public var logError: (_ message: String, _ error: (any Error)?) -> Void
 
     public init(
-        homePath: String = NSHomeDirectory(), recordUndo: ((FinishedWrite) throws -> Void)? = nil,
+        homePath: String = NSHomeDirectory(), recordUndo: ((FinishedWrite) -> Void)? = nil,
         diskHasTrash: (@Sendable (String) throws -> Bool)? = nil, undoHistory: UndoHistory? = nil,
         undoCheckWithinMs: Double = WriteCoordinator.undoCheckWithinMs,
         undoBatchRename: @escaping UndoBatchRenamer = UndoBatchRename.runBatchRename,
         writeJournal: (any WriteJournal)? = nil,
-        broadcastProgress: ((WriteOperationEvent, any WriteOperationWindow) throws -> Void)? = nil,
+        broadcastProgress: ((WriteOperationEvent, any WriteOperationWindow) -> Void)? = nil,
         successorOf: ((any WriteOperationWindow) -> (any WriteOperationWindow)?)? = nil,
         onTrashEmptied: (() -> Void)? = nil, caches: WriteCaches = WriteCaches(), clock: CoordinatorClock = .system,
         logError: @escaping (_ message: String, _ error: (any Error)?) -> Void = { _, _ in }

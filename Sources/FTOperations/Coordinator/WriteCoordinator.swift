@@ -249,23 +249,15 @@ public final class WriteCoordinator {
 
     // MARK: Caches and Undo
 
-    /// `forgetCachedResponses`: forgetting reads nothing from disk, but it tells the folder sizes, and a mistake there
-    /// must never keep the write slot from being freed or the end from being sent.
+    /// `forgetCachedResponses`: the listings and folder sizes forget what an operation changed. It reads nothing from
+    /// disk.
     func forgetCachedResponses(_ changedPaths: [String], _ removedItems: [RemovedItem] = []) {
-        do {
-            try options.caches.forget(changedPaths, removedItems)
-        } catch {
-            options.logError("[filetrail] couldn't forget what an operation changed", error)
-        }
+        options.caches.forget(changedPaths, removedItems)
     }
 
-    /// `recordFinishedWrite`: a mistake in keeping the history must never keep the write slot from being freed.
+    /// `recordFinishedWrite`: the Undo history is told what an operation did.
     func recordFinishedWrite(_ finished: FinishedWrite) {
-        do {
-            try options.recordUndo?(finished)
-        } catch {
-            options.logError("[filetrail] couldn't record an operation for Undo", error)
-        }
+        options.recordUndo?(finished)
     }
 
     /// `pasteUndoLog`: a paste's own log, except that copies onto a disk without a Trash can't be undone.
