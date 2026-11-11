@@ -102,6 +102,7 @@ final class InfoRowView: NSView {
     /// The slide: the height over 220 ms, the opacity over 180 ms.
     static let slideDuration = 0.22
 
+    private let backdrop = ContentBackdrop()
     private let icon = InfoIconView()
     private let name = FlushTextField(labelWithString: "")
     private let factsClip = InfoFlippedView()
@@ -173,6 +174,7 @@ final class InfoRowView: NSView {
         name.lineBreakMode = .byTruncatingTail
         factsClip.wantsLayer = true
         factsClip.layer?.masksToBounds = true
+        addSubview(backdrop)
         addSubview(icon)
         addSubview(name)
         addSubview(factsClip)
@@ -250,6 +252,8 @@ final class InfoRowView: NSView {
 
     override func layout() {
         super.layout()
+        // Under the 1 pt edge drawn above it.
+        backdrop.frame = NSRect(x: 0, y: 1, width: bounds.width, height: max(0, bounds.height - 1))
         let reach = PathBarRowView.reach
         let left = reach + InfoMetrics.infoRowPaddingInline
         let right = bounds.width - InfoMetrics.infoRowPaddingInline
@@ -295,8 +299,6 @@ final class InfoRowView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         let palette = infoTheme.palette
-        ChromeColors.contentBackground(for: self).setFill()
-        bounds.fill()
         ChromeColors.color(palette.border).setFill()
         NSRect(x: 0, y: 0, width: bounds.width, height: 1).fill()
     }

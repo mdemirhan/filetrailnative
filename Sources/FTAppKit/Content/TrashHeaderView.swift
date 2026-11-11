@@ -11,6 +11,7 @@ final class TrashHeaderView: NSView {
     var onSwitchPane: () -> Void = {}
 
     private static var layout: SearchLayout { .standard }
+    private let backdrop = ContentBackdrop()
     private let label = FlushTextField(labelWithString: "Trash")
     let emptyButton = SearchSmallButton(title: "Empty", spinner: false)
 
@@ -24,6 +25,7 @@ final class TrashHeaderView: NSView {
         emptyButton.onPress = { [weak self] in self?.onEmpty() }
         emptyButton.onMouseDown = { [weak self] in self?.onFocusList() }
         emptyButton.onTab = { [weak self] _ in self?.onSwitchPane() }
+        addSubview(backdrop)
         addSubview(label)
         addSubview(emptyButton)
         label.font = SearchHeaderView.font(DesignTokens.typeScale.callout)
@@ -39,8 +41,6 @@ final class TrashHeaderView: NSView {
     override func mouseDown(with event: NSEvent) { onFocusList() }
 
     override func draw(_ dirtyRect: NSRect) {
-        ChromeColors.contentBackground(for: self).setFill()
-        bounds.fill()
         let edge = CGFloat(Self.layout.headerBorderWidth)
         ChromeColors.color(infoTheme.palette.borderLight).setFill()
         NSRect(x: 0, y: bounds.height - edge, width: bounds.width, height: edge).fill()
@@ -52,6 +52,9 @@ final class TrashHeaderView: NSView {
         label.textColor = ChromeColors.color(theme.palette.textSecondary)
         emptyButton.applyTheme(theme)
         let layout = Self.layout
+        // Over the list's top: opaque, but for its 1 pt edge.
+        backdrop.frame = NSRect(
+            x: 0, y: 0, width: bounds.width, height: max(0, bounds.height - layout.headerBorderWidth))
         let centerY = layout.scopeBarMinHeight / 2
         let buttonWidth = emptyButton.preferredWidth
         emptyButton.frame = NSRect(

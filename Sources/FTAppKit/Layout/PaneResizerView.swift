@@ -99,9 +99,6 @@ final class PaneResizerView: NSView {
             NSRect(x: bounds.maxX - 1, y: 0, width: 1, height: bounds.height).fill()
             return
         }
-        // The opaque part of the window.
-        ChromeColors.contentBackground(for: self).setFill()
-        NSRect(x: 0, y: 0, width: bounds.width, height: bounds.height).fill()
         let line = hovered ? ChromeColors.accent(for: self).border : palette.border
         ChromeColors.color(line).setFill()
         NSRect(x: half - 0.5, y: 0, width: 1, height: bounds.height).fill()

@@ -48,6 +48,8 @@ struct InfoPanelDisplay: Equatable {
 
 /// The Info panel's place in the window's last column: opaque, on the base background.
 final class InfoPanelView: NSView {
+    /// Opaque: the panel slides away over the content.
+    private let backdrop = ContentBackdrop()
     private let header = InfoPanelHeader()
     private let scroll = NSScrollView()
     private let content = InfoPanelContentView()
@@ -82,6 +84,7 @@ final class InfoPanelView: NSView {
         scroll.scrollerStyle = .overlay
         scroll.borderType = .noBorder
         scroll.documentView = content
+        addSubview(backdrop)
         addSubview(scroll)
         addSubview(header)
         header.close.onClick = { [weak self] in self?.onClose() }
@@ -118,7 +121,7 @@ final class InfoPanelView: NSView {
             height: max(0, bounds.height - InfoMetrics.panelHeaderHeight))
         content.frame.size.width = scroll.contentSize.width
         content.relayout()
-        layer?.backgroundColor = ChromeColors.contentBackground(for: self).cgColor
+        backdrop.frame = bounds
     }
 
     override func viewDidChangeEffectiveAppearance() {

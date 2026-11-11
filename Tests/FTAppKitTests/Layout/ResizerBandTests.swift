@@ -118,11 +118,12 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The Info panel's resizer is still the opaque gutter with its hairline.
-        @Test func theInfoPanelsResizerStaysAnOpaqueGutter() throws {
+        // The Info panel's resizer is a gutter with its hairline: the column's material shows on either side of it.
+        @Test func theInfoPanelsResizerIsAGutterWithItsHairline() throws {
             let resizer = PaneResizerView(pane: .inspector, identifier: "t", label: "t")
             resizer.frame = NSRect(x: 0, y: 0, width: 8, height: 40)
-            #expect(try Self.pixel(of: resizer, xFraction: 0.1, y: 20).alphaComponent == 1)
+            #expect(try Self.pixel(of: resizer, xFraction: 0.1, y: 20).alphaComponent == 0)
+            #expect(try Self.pixel(of: resizer, xFraction: 0.5, y: 20).alphaComponent > 0)
         }
 
         // Finder: no line at rest; the pointer over the band shows one device pixel under it, across the content column.
@@ -229,53 +230,54 @@ extension ExplorerWindowlessTests {
             #expect(dark.redComponent == 1 && abs(dark.alphaComponent - key.alphaComponent) < 0.01)
         }
 
-        // The content's background is the system's in both appearances: dark's has no blue cast, so the band has no seam
-        // with what lies under it.
-        @Test func theContentsBackgroundIsTheSystems() async throws {
+        // The content's background is the system's content material, Finder's, under both columns from the window's top:
+        // in dark mode it takes the desktop's tint as Finder's does. The panes paint nothing over it.
+        @Test func theContentsBackgroundIsTheSystemsMaterial() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            let window = try #require(tab.window)
             let workspace = tab.workspace
-            let column = workspace.contentColumn
-            for (name, white) in [(NSAppearance.Name.aqua, 255.0), (.darkAqua, 30.0)] {
-                window.appearance = NSAppearance(named: name)
-                workspace.viewDidChangeEffectiveAppearance()
-                harness.layout(tab)
-                #expect(Self.level(ChromeColors.contentBackground(for: workspace)) == [white, white, white])
-                for layer in [column.backdrop.layer, column.mainCell.layer] {
-                    let color = try #require(layer?.backgroundColor.flatMap { NSColor(cgColor: $0) })
-                    #expect(Self.level(color) == [white, white, white], "\(name.rawValue)")
-                }
+            harness.layout(tab)
+            for backdrop in [workspace.contentColumn.backdrop, workspace.inspectorColumn.backdrop] {
+                #expect(backdrop.material == .contentBackground && backdrop.blendingMode == .behindWindow)
+                #expect(backdrop.state == .followsWindowActiveState)
             }
+            #expect(workspace.contentColumn.subviews.first === workspace.contentColumn.backdrop)
+            #expect(workspace.inspectorColumn.subviews.first === workspace.inspectorColumn.backdrop)
+            #expect(workspace.mainCell.layer?.backgroundColor == nil)
             await harness.close()
         }
 
-        @Test func thePanesInTheContentColumnShareTheBackground() throws {
-            let dark = NSAppearance(named: .darkAqua)
-            func level(_ view: NSView, x: Int = 300, y: Int = 12) throws -> [Double] {
-                view.appearance = dark
-                view.frame = NSRect(x: 0, y: 0, width: 600, height: 40)
-                view.layoutSubtreeIfNeeded()
-                let rep = try #require(view.bitmapImageRepForCachingDisplay(in: view.bounds))
-                view.cacheDisplay(in: view.bounds, to: rep)
-                return Self.level(try #require(rep.colorAt(x: x, y: y)))
-            }
-            let system = [30.0, 30.0, 30.0]
+        // What lies over scrolling content holds the same material under its own views, so it is opaque and the same
+        // color as the columns; the path bar is lifted as Finder's in dark mode, and nothing else is.
+        @Test func thePanesOverTheContentHoldTheMaterial() throws {
             let infoRow = InfoRowView()
             infoRow.setOpen(true, animated: false)
-            #expect(try level(infoRow) == system)
-            #expect(try level(SearchHeaderView(frame: .zero), x: 300, y: 3) == system)
-
-            let inspector = PaneResizerView(pane: .inspector, identifier: "test", label: "test")
-            #expect(try level(inspector, x: 10, y: 12) == system)
-
-            for view in [PathBarRowView(), InfoPanelView()] as [NSView] {
-                view.appearance = dark
+            let pathBar = PathBarRowView()
+            let views: [NSView] = [
+                infoRow, SearchHeaderView(frame: .zero), TrashHeaderView(), pathBar, InfoPanelView(),
+            ]
+            for view in views {
                 view.frame = NSRect(x: 0, y: 0, width: 600, height: 40)
                 view.layout()
-                let color = try #require(view.layer?.backgroundColor.flatMap { NSColor(cgColor: $0) })
-                #expect(Self.level(color) == system, "\(type(of: view))")
+                let backdrop = try #require(view.subviews.first as? ContentBackdrop, "\(type(of: view))")
+                #expect(backdrop.isLifted == (view === pathBar), "\(type(of: view))")
+                #expect(backdrop.frame.width == 600 && backdrop.frame.height >= 39, "\(type(of: view))")
             }
+        }
+
+        // The lift is white at 3.3% over the material, in dark mode only.
+        @Test func aLiftedBackdropIsLighterInDarkModeOnly() throws {
+            let backdrop = ContentBackdrop()
+            func shade(_ name: NSAppearance.Name, lifted: Bool) -> NSColor? {
+                backdrop.appearance = NSAppearance(named: name)
+                backdrop.isLifted = lifted
+                backdrop.viewDidChangeEffectiveAppearance()
+                return backdrop.shade.layer?.backgroundColor.flatMap { NSColor(cgColor: $0) }
+            }
+            let dark = try #require(shade(.darkAqua, lifted: true))
+            #expect(Self.level(dark) == [255, 255, 255] && abs(dark.alphaComponent - 0.033) < 0.001)
+            #expect(shade(.aqua, lifted: true) == nil)
+            #expect(shade(.darkAqua, lifted: false) == nil)
         }
 
         // Finder's toolbar fit: the traffic lights and the row on one line, 26 pt below the window's top.

@@ -18,6 +18,7 @@ final class SearchHeaderView: NSView {
 
     private static var layout: SearchLayout { .standard }
     private(set) var theme = AppearanceModel.shared.theme
+    private let backdrop = ContentBackdrop()
     private let bar = SearchScopeBarView()
     private let label = FlushTextField(labelWithString: SearchBarText.scopeLabel)
     private let track = SearchSegmentTrack()
@@ -32,6 +33,7 @@ final class SearchHeaderView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         setAccessibilityIdentifier("searchHeader")
+        addSubview(backdrop)
         bar.setAccessibilityIdentifier("searchBar")
         bar.setAccessibilityElement(true)
         bar.setAccessibilityRole(.toolbar)
@@ -167,8 +169,6 @@ final class SearchHeaderView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         let palette = theme.palette
-        ChromeColors.contentBackground(for: self).setFill()
-        bounds.fill()
         let edge = CGFloat(Self.layout.headerBorderWidth)
         NSColor(palette.borderLight).setFill()
         NSRect(x: 0, y: bounds.height - edge, width: bounds.width, height: edge).fill()
@@ -178,6 +178,9 @@ final class SearchHeaderView: NSView {
         super.layout()
         let layout = Self.layout
         let barHeight = Self.barHeight
+        // Over the results' top: opaque, but for its 1 pt edge.
+        backdrop.frame = NSRect(
+            x: 0, y: 0, width: bounds.width, height: max(0, bounds.height - layout.headerBorderWidth))
         bar.frame = NSRect(x: 0, y: 0, width: bounds.width, height: barHeight)
         let gap = layout.scopeBarGap
         let centerY = barHeight / 2

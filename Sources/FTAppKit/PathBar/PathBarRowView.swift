@@ -12,6 +12,8 @@ final class PathBarRowView: NSView {
     /// Padding: 10 on each side.
     static let paddingInline = InfoMetrics.pathRowPaddingInline
 
+    /// Opaque: the path bar lies over the bottom of the content and the Info panel.
+    private let backdrop = ContentBackdrop()
     let status = TextBoxField(labelWithString: "")
     let pathBar = PathBarView()
     let editor = PathEditorView()
@@ -49,6 +51,8 @@ final class PathBarRowView: NSView {
         super.init(frame: frame)
         wantsLayer = true
         setAccessibilityIdentifier("pathBarRow")
+        backdrop.isLifted = true
+        addSubview(backdrop)
         status.font = tabularFont(DesignTokens.typeScale.small)
         status.alignment = .left
         status.lineBreakMode = .byTruncatingTail
@@ -170,7 +174,8 @@ final class PathBarRowView: NSView {
         }
         let theme = infoTheme
         status.textColor = ChromeColors.color(theme.palette.textSecondary)
-        layer?.backgroundColor = ChromeColors.contentBackground(for: self).cgColor
+        // Under the 1 pt edge drawn above it.
+        backdrop.frame = NSRect(x: 0, y: 1, width: bounds.width, height: max(0, bounds.height - 1))
         needsDisplay = true
     }
 

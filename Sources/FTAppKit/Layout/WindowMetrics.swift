@@ -48,11 +48,6 @@ enum ChromeColors {
         return result
     }
 
-    /// The content column's background, band included, Finder's: the system's, in every appearance.
-    static func contentBackground(for view: NSView?) -> NSColor {
-        resolved(.controlBackgroundColor, for: view)
-    }
-
     /// How much of the system's label color Finder's toolbar title shows in a key window: 0.70 black on its white band
     /// against the label's 0.847, measured from Finder's screenshots.
     private static let toolbarTitleStrength = 0.7 / 0.847

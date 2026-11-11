@@ -2237,3 +2237,7 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-11. Outside the plan, at the owner's request: the Info panel is a plain split item, not the system's
   inspector item. The toolbar lays its material over plain items only, so in dark mode the panel's own color showed
   through the toolbar's row, behind the search field of a narrow window. Already so on `main`, not a regression.
+- 2026-11-11. Outside the plan, at the owner's request: dark mode's colors match Finder's. The content's background
+  is the system's content material (it takes the desktop's tint, as Finder's), held by the columns and by what lies
+  over scrolling content; the path bar is lifted 3.3% white and the sidebar's gray selection is 13.5% white in dark
+  mode, both measured from a Finder screenshot. `ChromeColors.contentBackground` is gone; light mode is unchanged.

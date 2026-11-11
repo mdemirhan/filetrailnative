@@ -106,7 +106,7 @@ extension ExplorerWindowlessTests {
             #expect(workspace.contentColumn.layer?.backgroundColor == nil)
             let backdrop = workspace.contentColumn.backdrop
             #expect(backdrop.frame == workspace.contentColumn.bounds)
-            #expect(backdrop.layer?.backgroundColor == ChromeColors.contentBackground(for: workspace).cgColor)
+            #expect(backdrop.material == .contentBackground && backdrop.blendingMode == .behindWindow)
             let band = workspace.contentColumn.band
             #expect(band.frame.minY == 0 && band.frame.height == 52)
             #expect(band.frame.width == workspace.contentColumn.frame.width)

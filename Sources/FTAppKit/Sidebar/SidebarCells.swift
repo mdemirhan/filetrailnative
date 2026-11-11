@@ -84,6 +84,12 @@ enum SidebarText {
 final class SidebarItemCell: NSTableCellView {
 
     static let identifier = NSUserInterfaceItemIdentifier("SidebarItemCell")
+    /// Finder's gray selection, not the system's opaque unemphasized color: the system fill in light mode (about 9.5%
+    /// black over the sidebar); in dark mode white at 13.5%, measured from Finder's screenshots ((64, 70, 73) over
+    /// (35, 41, 44)), where the system fill is only about 10%. Resolved as it is drawn, in either appearance.
+    static let inactiveSelection = NSColor(name: "sidebarInactiveSelection") { appearance in
+        appearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua ? NSColor(white: 1, alpha: 0.135) : .systemFill
+    }
 
     let box = SidebarRowBox()
     private let chevron = SidebarChevronView()
@@ -163,8 +169,7 @@ final class SidebarItemCell: NSTableCellView {
         box.ringWidth = 0
         switch state.selection {
         case .focused: box.fill = ChromeColors.color(accent.selectionBg)
-        // Finder's: about 9.5% of black or white over its sidebar, not the system's opaque unemphasized color.
-        case .inactive: box.fill = .systemFill
+        case .inactive: box.fill = Self.inactiveSelection
         case .none: break
         }
         switch state.drop {

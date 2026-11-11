@@ -164,11 +164,22 @@ import Testing
         #expect(try iconView(row).subviews.compactMap { $0 as? NSImageView }.first?.isHidden == true)
     }
 
-    // The tree's rows are the same row.
-    @Test func theGraySelectionIsTheSystemsFill() {
+    // The tree's rows are the same row. Finder's gray: the system's fill in light mode, a little lighter in dark.
+    @Test func theGraySelectionIsFinders() throws {
         for (kind, id) in [(TreeItemKind.favorite, TreeItemID.favorite("/x")), (.filesystem, .filesystem("/x"))] {
             let inactive = cell(kind, id: id, icon: nil, path: "/x", selection: .inactive)
-            #expect(inactive.box.fill == .systemFill)
+            let fill = try #require(inactive.box.fill)
+            func resolved(_ color: NSColor, _ name: NSAppearance.Name) -> NSColor? {
+                var result: NSColor?
+                NSAppearance(named: name)?.performAsCurrentDrawingAppearance {
+                    result = color.usingColorSpace(.sRGB)
+                }
+                return result
+            }
+            #expect(resolved(fill, .aqua) == resolved(.systemFill, .aqua))
+            let dark = try #require(resolved(fill, .darkAqua))
+            #expect(dark.redComponent == 1 && dark.greenComponent == 1 && dark.blueComponent == 1)
+            #expect(abs(dark.alphaComponent - 0.135) < 0.001)
             let focused = cell(kind, id: id, icon: nil, path: "/x", selection: .focused)
             #expect(focused.box.fill == ChromeColors.color(SidebarColors.theme(for: focused).accent.selectionBg))
         }

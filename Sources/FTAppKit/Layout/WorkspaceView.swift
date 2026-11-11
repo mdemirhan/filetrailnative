@@ -237,10 +237,6 @@ final class WorkspaceView: NSView {
     }
 
     private func applyColors() {
-        let background = ChromeColors.contentBackground(for: self).cgColor
-        mainCell.layer?.backgroundColor = background
-        contentColumn.backdrop.layer?.backgroundColor = background
-        inspectorColumn.backdrop.layer?.backgroundColor = background
         effectiveAppearance.performAsCurrentDrawingAppearance {
             contentColumn.bandLine.layer?.backgroundColor = WorkspaceBandLine.color.cgColor
             inspectorColumn.bandLine.layer?.backgroundColor = WorkspaceBandLine.color.cgColor
@@ -410,7 +406,7 @@ final class WorkspaceSplitController: NSSplitViewController {
 /// The inspector item's view: its background from the window's top, as the content's, the resizer and the Info panel.
 final class WorkspaceInspectorColumn: NSView {
     fileprivate weak var workspace: WorkspaceView?
-    let backdrop = NSView()
+    let backdrop = ContentBackdrop()
     let resizer = PaneResizerView(
         pane: .inspector, identifier: "pane.resizer.inspector", label: "Resize Info Panel pane")
     let cell = WorkspaceCell()
@@ -423,7 +419,6 @@ final class WorkspaceInspectorColumn: NSView {
         wantsLayer = true
         cell.setAccessibilityIdentifier("workspace.inspector")
         cell.layer?.masksToBounds = true
-        backdrop.wantsLayer = true
         for view in [backdrop, band, cell, resizer, bandLine] as [NSView] { addSubview(view) }
         bandLine.isHidden = true
     }
@@ -448,7 +443,7 @@ final class WorkspaceContentColumn: NSView {
     fileprivate weak var workspace: WorkspaceView?
     /// The panes' color, from the window's top: the band is the content's color with nothing between them, as under
     /// Finder's toolbar, in every appearance.
-    let backdrop = NSView()
+    let backdrop = ContentBackdrop()
     /// The place of the system's band over the content column.
     let band = WorkspaceBandPlace()
     /// Finder's line under the band: only while the pointer is over the band.
@@ -461,7 +456,6 @@ final class WorkspaceContentColumn: NSView {
         mainCell.setAccessibilityIdentifier("workspace.main")
         // The rows that reached the old hairline stop at the sidebar's edge.
         mainCell.layer?.masksToBounds = true
-        backdrop.wantsLayer = true
         for view in [backdrop, band, mainCell, bandLine] as [NSView] { addSubview(view) }
         band.setAccessibilityIdentifier("toolbar.band")
         bandLine.isHidden = true
