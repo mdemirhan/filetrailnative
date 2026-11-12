@@ -161,7 +161,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         rowsCache = made
         return made
     }
-    private(set) var fitted = DetailsColumnSet(columns: [.name], widths: [:])
+    private(set) var columnSet = DetailsColumnSet(columns: [.name], widths: [:])
     private(set) var layoutMetrics = DesignTokens.details(density: .standard)
     private var isSyncing = false
     /// Whether the table's selection is being set from the model (and not from outside).
@@ -256,7 +256,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         rowsCache = nil
         layoutMetrics = metrics
         table.rowHeight = CGFloat(layoutMetrics.rowHeight)
-        fitColumns()
+        sizeColumns()
         configureHeader()
         isSyncing = true
         table.reloadData()
@@ -320,7 +320,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             reload(scrollToTop: false, change: .layout)
             return
         }
-        fitColumns()
+        sizeColumns()
         configureHeader()
         reconfigureVisibleBars()
         requestMetadata()
@@ -382,9 +382,9 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         headerShell.lineWidth = CGFloat(layoutMetrics.headerBorderWidth)
         let rowsTop = headerHeight + root.roomAboveRows
         scroll.frame = NSRect(x: 0, y: rowsTop, width: width, height: max(0, height - rowsTop))
-        let before = fitted
-        fitColumns()
-        if fitted != before {
+        let before = columnSet
+        sizeColumns()
+        if columnSet != before {
             configureHeader()
             reconfigureVisibleBars()
         }
@@ -400,14 +400,13 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     private var lastViewport = NSSize.zero
 
-    /// The columns fitted to the pane: in a narrow pane Name gives up width and then columns drop away from the
-    /// right, instead of the table scrolling sideways.
-    private func fitColumns() {
+    /// The columns keep the widths they were given whatever the pane's width: a pane narrower than the columns
+    /// scrolls sideways, and a wider one leaves room to the right of the last column.
+    private func sizeColumns() {
         let state = host?.columnState ?? .standard
-        let available = max(0, root.bounds.width - layoutMetrics.scrollbarAllowance - 2 * layoutMetrics.rowInset)
-        fitted = DetailsColumns.fit(
-            columns: state.columns, widths: state.widths, availableWidth: available, layout: layoutMetrics)
-        let table = DetailsColumns.tableWidth(widths: fitted.widths, columns: fitted.columns, layout: layoutMetrics)
+        columnSet = DetailsColumnSet(columns: state.columns, widths: state.widths)
+        let table = DetailsColumns.tableWidth(
+            widths: columnSet.widths, columns: columnSet.columns, layout: layoutMetrics)
         let documentWidth = max(root.bounds.width, table + 2 * layoutMetrics.rowInset)
         column.width = documentWidth
         column.minWidth = documentWidth
@@ -427,7 +426,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     /// The header is as wide as the table, at least the pane; it follows the rows' horizontal scroll.
     private func positionHeader() {
         let inset = CGFloat(layoutMetrics.rowInset)
-        let table = DetailsColumns.tableWidth(widths: fitted.widths, columns: fitted.columns, layout: layoutMetrics)
+        let table = DetailsColumns.tableWidth(
+            widths: columnSet.widths, columns: columnSet.columns, layout: layoutMetrics)
         let width = max(CGFloat(table), root.bounds.width - 2 * inset)
         header.frame = NSRect(
             x: inset - scroll.contentView.bounds.origin.x, y: 0, width: width, height: headerShell.bounds.height)
@@ -438,7 +438,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         headerShell.lineColor = NSColor(host.theme.palette.borderLight)
         let search = host.search
         header.configure(
-            fitted: fitted, sortKey: search?.headerSortKey ?? host.sortBy.rawValue,
+            columnSet: columnSet, sortKey: search?.headerSortKey ?? host.sortBy.rawValue,
             sortDirection: search?.sortDirection ?? host.sortDirection, search: search != nil, theme: host.theme,
             layout: layoutMetrics)
         positionHeader()
@@ -475,7 +475,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         guard rows.length > 0 else { return }
         for row in rows.location..<(rows.location + rows.length) where entries.indices.contains(row) {
             bar(atRow: row)?.configure(
-                entry: entries[row], row: row, selected: selected.contains(row), host: host, fitted: fitted,
+                entry: entries[row], row: row, selected: selected.contains(row), host: host, columnSet: columnSet,
                 layout: layoutMetrics)
         }
     }
@@ -496,7 +496,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             tableView.makeView(withIdentifier: DetailsCellView.identifier, owner: nil) as? DetailsCellView
             ?? DetailsCellView()
         cell.bar.configure(
-            entry: entries[row], row: row, selected: tableView.isRowSelected(row), host: host, fitted: fitted,
+            entry: entries[row], row: row, selected: tableView.isRowSelected(row), host: host, columnSet: columnSet,
             layout: layoutMetrics)
         return cell
     }
@@ -595,7 +595,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     // MARK: Columns
 
     private func beginResize(_ column: DetailColumn) -> (width: Double, saved: [DetailColumn: Double]) {
-        (fitted.width(column), host?.columnState.widths ?? [:])
+        (columnSet.width(column), host?.columnState.widths ?? [:])
     }
 
     private func resize(_ column: DetailColumn, to width: Double, from saved: [DetailColumn: Double]) {
@@ -604,18 +604,20 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         var next = saved
         next[column] = clamped
         host?.columnWidthsChanged(next)
+        keepDividerInView(column)
     }
 
     /// ←/→ on a focused separator steps the width.
     private func nudge(_ column: DetailColumn, _ direction: Int) {
         let saved = host?.columnState.widths ?? [:]
         let width = DetailsColumns.clamp(
-            fitted.width(column) + Double(direction) * layoutMetrics.columnKeyboardStep, column: column,
+            columnSet.width(column) + Double(direction) * layoutMetrics.columnKeyboardStep, column: column,
             search: host?.search != nil)
         guard width != saved[column] else { return }
         var next = saved
         next[column] = width
         host?.columnWidthsChanged(next)
+        keepDividerInView(column)
     }
 
     /// A double-click on a separator fits the column to its title and its widest value, every row's and not only those
@@ -646,6 +648,23 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         guard width != saved[column] else { return }
         saved[column] = width
         host.columnWidthsChanged(saved)
+        keepDividerInView(column)
+    }
+
+    /// A column made wider than the pane has room for scrolls the list sideways, so its divider stays in view.
+    private func keepDividerInView(_ column: DetailColumn) {
+        guard let index = columnSet.columns.firstIndex(of: column) else { return }
+        let through = columnSet.columns[...index]
+        let edge =
+            layoutMetrics.rowInset + layoutMetrics.rowPaddingInline
+            + through.reduce(0) { $0 + columnSet.width($1) } + Double(index) * layoutMetrics.columnGap
+            + layoutMetrics.separatorHitOverhang
+        let clip = scroll.contentView
+        let visible = clip.bounds
+        guard CGFloat(edge) > visible.maxX else { return }
+        let maxX = max(0, table.frame.width - visible.width)
+        clip.scroll(to: NSPoint(x: min(maxX, CGFloat(edge) - visible.width), y: visible.origin.y))
+        scroll.reflectScrolledClipView(clip)
     }
 
     // MARK: Details of the rows on screen

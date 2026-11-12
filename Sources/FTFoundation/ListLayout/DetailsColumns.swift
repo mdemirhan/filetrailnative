@@ -51,35 +51,6 @@ public enum DetailsColumns {
         return content + Double(max(0, columns.count - 1)) * layout.columnGap + layout.rowPadding
     }
 
-    /// Fits the columns into the pane instead of letting the table scroll sideways. When the
-    /// pane is too narrow, Name first gives up width (down to `nameFloorWidth`), then columns drop away one at a
-    /// time from the right. The saved widths and the saved column choices are not changed: everything comes back
-    /// when the pane is wider again. An `availableWidth` of 0 means the pane has not been measured yet, so nothing
-    /// is fitted.
-    public static func fit(
-        columns: [DetailColumn], widths: [DetailColumn: Double], availableWidth: Double, layout: DetailsLayout
-    ) -> DetailsColumnSet {
-        if availableWidth <= 0 || tableWidth(widths: widths, columns: columns, layout: layout) <= availableWidth {
-            return DetailsColumnSet(columns: columns, widths: widths)
-        }
-        let savedName = widths[.name] ?? 0
-        let nameFloor = min(savedName, layout.nameFloorWidth)
-        var kept = columns
-        var floored = widths
-        floored[.name] = nameFloor
-        while kept.count > 1, tableWidth(widths: floored, columns: kept, layout: layout) > availableWidth {
-            kept.removeLast()
-        }
-        // Name takes whatever the remaining columns leave over.
-        var withoutName = widths
-        withoutName[.name] = 0
-        let rest = tableWidth(widths: withoutName, columns: kept, layout: layout)
-        let name = max(min(layout.nameMinWidth, savedName), min(savedName, availableWidth - rest))
-        var fitted = widths
-        fitted[.name] = name
-        return DetailsColumnSet(columns: kept, widths: fitted)
-    }
-
     /// The width that shows a column's title and its widest value whole (a double-click on its
     /// divider, as in Finder), kept within the column's limits by `clamp`. Permissions fits its codes alone: its
     /// title is three times as wide as "755", and ends in an ellipsis instead. `valueExtraWidth` is what a cell

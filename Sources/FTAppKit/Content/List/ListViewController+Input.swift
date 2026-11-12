@@ -237,7 +237,7 @@ extension ListViewController {
         let cellX = metrics.rowInset + metrics.rowPaddingInline
         let labelX = cellX + metrics.iconSize + metrics.nameIconGap
         let x = labelX + layout.marginLeft
-        let right = cellX + fitted.width(.name) - layout.marginRight
+        let right = cellX + columnSet.width(.name) - layout.marginRight
         return NSRect(
             x: x, y: rowRect.minY + (rowRect.height - layout.height) / 2, width: max(0, right - x),
             height: layout.height)

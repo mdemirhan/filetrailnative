@@ -39,61 +39,6 @@ struct DetailsLayoutTests {
                 == 320 + 152 + 108 + 12 * 2 + 24)
     }
 
-    static let columns: [DetailColumn] = [.name, .modified, .size, .kind]
-    // The four columns, three gaps and the row padding.
-    static let fullWidth = 728.0 + 36 + 24
-
-    static func fit(_ available: Double, columns: [DetailColumn] = columns) -> DetailsColumnSet {
-        DetailsColumns.fit(columns: columns, widths: defaults, availableWidth: available, layout: layout)
-    }
-
-    @Test func fittingChangesNothingWhenItFitsOrThePaneIsNotMeasured() {
-        let same = DetailsColumnSet(columns: Self.columns, widths: Self.defaults)
-        #expect(Self.fit(Self.fullWidth) == same)
-        #expect(Self.fit(0) == same)
-    }
-
-    @Test func nameNarrowsBeforeAnyColumnDrops() {
-        var narrowed = Self.defaults
-        narrowed[.name] = 220
-        #expect(Self.fit(Self.fullWidth - 100) == DetailsColumnSet(columns: Self.columns, widths: narrowed))
-        narrowed[.name] = 160
-        #expect(Self.fit(Self.fullWidth - 160) == DetailsColumnSet(columns: Self.columns, widths: narrowed))
-    }
-
-    @Test func columnsDropFromTheRightOneAtATime() {
-        let withoutKind = Self.fit(Self.fullWidth - 161)
-        #expect(withoutKind.columns == [.name, .modified, .size])
-        #expect(withoutKind.width(.name) == 319)
-        #expect(Self.fit(468).columns == [.name, .modified, .size])
-        #expect(Self.fit(467).columns == [.name, .modified])
-        var alone = Self.defaults
-        alone[.name] = 240
-        #expect(Self.fit(264) == DetailsColumnSet(columns: [.name], widths: alone))
-    }
-
-    @Test func neverMoreThanThePaneHoldsAndNameStaysReadable() {
-        var available = 120.0
-        while available <= Self.fullWidth {
-            let fitted = Self.fit(available)
-            #expect(fitted.columns[0] == .name)
-            #expect(fitted.width(.name) >= Self.layout.nameMinWidth)
-            if fitted.width(.name) > Self.layout.nameMinWidth {
-                #expect(
-                    DetailsColumns.tableWidth(widths: fitted.widths, columns: fitted.columns, layout: Self.layout)
-                        <= available)
-            }
-            available += 7
-        }
-    }
-
-    @Test func fittingLeavesTheOtherSavedWidthsAlone() {
-        let fitted = Self.fit(400)
-        #expect(fitted.width(.modified) == 152)
-        #expect(fitted.width(.size) == 108)
-        #expect(fitted.width(.kind) == 148)
-    }
-
     static func fitWidth(_ column: DetailColumn, header: Double, values: [Double], extra: Double = 0) -> Double {
         DetailsColumns.fitWidth(
             for: column, headerWidth: header, valueWidths: values, valueExtraWidth: extra, layout: layout
@@ -172,29 +117,20 @@ struct DetailsLayoutTests {
         var order: [String]?
         var columns: [String]?
         var widths: [String: Double]?
-        var availableWidth: Double?
         var key: String?
         var headerWidth: Double?
         var valueWidths: [Double]?
         var valueExtraWidth: Double?
     }
 
-    struct Fitted: Codable, Equatable, Sendable {
-        var columns: [String]
-        var widths: [String: Double]
-    }
-
     enum Output: Codable, Equatable, Sendable {
         case columns([String])
         case number(Double)
-        case fitted(Fitted)
         case constants([String: Double])
 
         init(from decoder: any Decoder) throws {
             let single = try decoder.singleValueContainer()
-            if let value = try? single.decode(Fitted.self) {
-                self = .fitted(value)
-            } else if let value = try? single.decode([String].self) {
+            if let value = try? single.decode([String].self) {
                 self = .columns(value)
             } else if let value = try? single.decode(Double.self) {
                 self = .number(value)
@@ -208,7 +144,6 @@ struct DetailsLayoutTests {
             switch self {
             case .columns(let value): try single.encode(value)
             case .number(let value): try single.encode(value)
-            case .fitted(let value): try single.encode(value)
             case .constants(let value): try single.encode(value)
             }
         }
@@ -236,17 +171,6 @@ struct DetailsLayoutTests {
             return .number(
                 DetailsColumns.tableWidth(
                     widths: widths(input.widths), columns: columns(input.columns), layout: layout))
-        case "fit":
-            let fitted = DetailsColumns.fit(
-                columns: columns(input.columns), widths: widths(input.widths),
-                availableWidth: input.availableWidth ?? 0, layout: layout)
-            // The golden keeps every width it was given, Folder's included.
-            let given = input.widths ?? [:]
-            var out: [String: Double] = [:]
-            for name in given.keys {
-                out[name] = DetailColumn(rawValue: name).flatMap { fitted.widths[$0] } ?? given[name]
-            }
-            return .fitted(Fitted(columns: fitted.columns.map(\.rawValue), widths: out))
         case "fitWidth":
             guard let column = DetailColumn(rawValue: input.key ?? "") else { return .number(-1) }
             return .number(
@@ -259,15 +183,14 @@ struct DetailsLayoutTests {
                 "regularRowHeight": DesignTokens.details(density: .standard).rowHeight,
                 // Finder's sizes have the golden's compact rows.
                 "compactRowHeight": DesignTokens.details(density: .finder).rowHeight, "columnGap": l.columnGap,
-                "rowPadding": l.rowPadding, "rowInset": l.rowInset, "nameFloorWidth": l.nameFloorWidth,
-                "nameMinWidth": l.nameMinWidth,
+                "rowPadding": l.rowPadding, "rowInset": l.rowInset,
             ])
         }
     }
 
     @Test func theColumnMathMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "details-layout")
-        #expect(cases.count >= 500)
+        #expect(cases.count >= 190)
         Golden.expectMatches(cases) { Self.run($0) }
     }
 }

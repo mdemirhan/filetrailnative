@@ -184,7 +184,7 @@ final class DetailsBarView: NSView {
     private var labels: [DetailColumn: ListLabel] = [:]
 
     private(set) var layoutMetrics = DesignTokens.details(density: .standard)
-    private var fitted = DetailsColumnSet(columns: [.name], widths: [:])
+    private var columnSet = DetailsColumnSet(columns: [.name], widths: [:])
     private var colors = RowColors.make(
         theme: AppearanceModel.shared.theme, layout: DesignTokens.details(density: .standard), selected: false,
         odd: false, paneFocused: false, windowActive: true)
@@ -230,14 +230,14 @@ final class DetailsBarView: NSView {
     // MARK: Content
 
     func configure(
-        entry: DirectoryEntry, row: Int, selected: Bool, host: any ContentPaneHost, fitted: DetailsColumnSet,
+        entry: DirectoryEntry, row: Int, selected: Bool, host: any ContentPaneHost, columnSet: DetailsColumnSet,
         layout: DetailsLayout
     ) {
         self.host = host
         self.entry = entry
         self.row = row
         self.selected = selected
-        self.fitted = fitted
+        self.columnSet = columnSet
         layoutMetrics = layout
         nameLabel.stringValue = entry.name
         nameLabel.fileExtension = entry.fileExtension
@@ -276,7 +276,7 @@ final class DetailsBarView: NSView {
         dropMarker.isHidden = dropState == nil || dropState == .invalid
         DropHighlight.setWiggle(nameCell.iconView, on: dropState == .springing)
         sizeBarFraction = nil
-        for column in fitted.columns where column != .name {
+        for column in columnSet.columns where column != .name {
             let content = ListCellText.content(
                 column: column, entry: entry, metadata: metadata, folderSize: host.folderSizeEntry(entry.path),
                 now: now)
@@ -351,7 +351,7 @@ final class DetailsBarView: NSView {
         guard let entry, let host else { return false }
         let metadata = host.metadata(for: entry.path)
         let now = RelativeClock.shared.relativeNow
-        return fitted.columns.contains { column in
+        return columnSet.columns.contains { column in
             switch column {
             case .modified: ListCellText.readsInMinutes(metadata?.modifiedAt, now: now)
             case .created: ListCellText.readsInMinutes(metadata?.createdAt, now: now)
@@ -401,8 +401,8 @@ final class DetailsBarView: NSView {
         for label in labels.values { label.isHidden = true }
         sizeCell.isHidden = true
         var x = layout.rowPaddingInline
-        for column in fitted.columns {
-            let width = fitted.width(column)
+        for column in columnSet.columns {
+            let width = columnSet.width(column)
             switch column {
             case .name:
                 let icon = layout.iconSize

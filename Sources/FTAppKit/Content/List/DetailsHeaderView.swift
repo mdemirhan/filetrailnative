@@ -241,7 +241,7 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
 final class DetailsHeaderView: NSView {
     private var cells: [DetailsHeaderCell] = []
     private(set) var layoutMetrics = DesignTokens.details(density: .standard)
-    private var fitted = DetailsColumnSet(columns: [], widths: [:])
+    private var columnSet = DetailsColumnSet(columns: [], widths: [:])
 
     var onSort: (DetailColumn) -> Void = { _ in }
     var onPress: () -> Void = {}
@@ -265,12 +265,12 @@ final class DetailsHeaderView: NSView {
     /// `sortKey` is the key the list is ordered by: a folder's (`SortByPreference`) or search results'
     /// (`SearchResultsSortByPreference`).
     func configure(
-        fitted: DetailsColumnSet, sortKey: String, sortDirection: SortDirectionPreference, search: Bool,
+        columnSet: DetailsColumnSet, sortKey: String, sortDirection: SortDirectionPreference, search: Bool,
         theme: Theme, layout: DetailsLayout
     ) {
-        self.fitted = fitted
+        self.columnSet = columnSet
         layoutMetrics = layout
-        while cells.count < fitted.columns.count {
+        while cells.count < columnSet.columns.count {
             let cell = DetailsHeaderCell()
             cell.onSort = { [weak self] column in self?.onSort(column) }
             cell.onPress = { [weak self] in self?.onPress() }
@@ -282,11 +282,11 @@ final class DetailsHeaderView: NSView {
             cells.append(cell)
         }
         for (index, cell) in cells.enumerated() {
-            guard fitted.columns.indices.contains(index) else {
+            guard columnSet.columns.indices.contains(index) else {
                 cell.isHidden = true
                 continue
             }
-            let column = fitted.columns[index]
+            let column = columnSet.columns[index]
             let key = DetailsSorting.sortKey(for: column, search: search)
             cell.isHidden = false
             cell.configure(
@@ -300,8 +300,8 @@ final class DetailsHeaderView: NSView {
     override func layout() {
         super.layout()
         var x = layoutMetrics.rowPaddingInline
-        for (index, cell) in cells.enumerated() where fitted.columns.indices.contains(index) {
-            let width = fitted.width(fitted.columns[index])
+        for (index, cell) in cells.enumerated() where columnSet.columns.indices.contains(index) {
+            let width = columnSet.width(columnSet.columns[index])
             let height = cell.title.lineHeight
             cell.frame = NSRect(x: x, y: ((bounds.height - height) / 2), width: width, height: height)
             cell.layoutPieces(layout: layoutMetrics)

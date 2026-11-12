@@ -85,8 +85,6 @@ public struct DetailsLayout: Equatable, Sendable {
     public var rowPadding: Double
     public var rowInset: Double
     public var rowRadius: Double
-    public var nameFloorWidth: Double
-    public var nameMinWidth: Double
     public var cellFontSize: Double
     public var headerHeight: Double
     public var headerFontSize: Double
@@ -108,8 +106,6 @@ public struct DetailsLayout: Equatable, Sendable {
     public var headerBorderWidth: Double
     /// How far a separator's hit area reaches beyond the header cell, above and to the right.
     public var separatorHitOverhang: Double
-    /// Room kept free for the vertical scroller when the columns are fitted.
-    public var scrollbarAllowance: Double
     /// Size bars: inset from the cell's top and bottom, reach past its right edge, the least width and the share of
     /// the colour (accent; the selection text on a selected row).
     public var sizeBarInsetVertical: Double
@@ -123,12 +119,12 @@ public struct DetailsLayout: Equatable, Sendable {
     static func make(density: Density) -> DetailsLayout {
         DetailsLayout(
             rowHeight: density.isFinder ? 24 : 28, columnGap: 12, rowPadding: 24, rowInset: 10,
-            rowRadius: 6, nameFloorWidth: 160, nameMinWidth: 96, cellFontSize: density.isFinder ? 13 : 14,
+            rowRadius: 6, cellFontSize: density.isFinder ? 13 : 14,
             headerHeight: 28, headerFontSize: 11, sortChevronWidth: 9, sortChevronHeight: 6,
             separatorWidth: 1, separatorHeight: 14, separatorHitWidth: 12, columnKeyboardStep: 12,
             iconSize: density.isFinder ? 16 : 18,
             nameIconGap: 8, rowPaddingInline: 12, headerButtonGap: 6, sortChevronTrailingMargin: 6,
-            headerBorderWidth: 1, separatorHitOverhang: 6, scrollbarAllowance: 8, sizeBarInsetVertical: 3,
+            headerBorderWidth: 1, separatorHitOverhang: 6, sizeBarInsetVertical: 3,
             sizeBarOverhang: 4, sizeBarMinWidth: 2, sizeBarAlpha: 0.2, sizeBarSelectedAlpha: 0.28, fitSlack: 2)
     }
 }

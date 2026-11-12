@@ -97,6 +97,38 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A pane narrower than the columns keeps every column at its width and scrolls sideways; a column dragged
+        // wider than the pane scrolls the list so its divider stays in view.
+        @Test func columnsKeepTheirWidthsAndTheListScrollsSideways() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            tab.perform(.viewAsDetails)
+            _ = await waitUntil { !bars(tab).isEmpty }
+            tab.window?.setContentSize(NSSize(width: 760, height: 500))
+            harness.layout(tab)
+            let list = try #require(tab.content.pane as? ListViewController)
+            let saved = tab.content.columnState.widths
+            #expect(list.columnSet.columns == [.name, .modified, .size, .kind])
+            #expect(list.columnSet.widths == saved)
+            #expect(list.table.frame.width > list.scroll.contentView.bounds.width)
+            #expect(list.scroll.contentView.bounds.minX == 0)
+
+            let header = try #require(header(tab))
+            let separator = try #require(header.cell(for: .kind)?.separator)
+            let start = separator.onBegin(.kind)
+            separator.onDrag(.kind, start.width + 150, start.saved)
+            harness.layout(tab)
+            #expect(tab.content.columnState.widths[.kind] == start.width + 150)
+            #expect(tab.content.columnState.widths[.name] == saved[.name])
+            let visible = list.scroll.contentView.bounds
+            #expect(visible.minX > 0)
+            #expect(visible.maxX <= list.table.frame.width)
+            let divider = try #require(header.cell(for: .kind)).separator
+            let onScreen = divider.convert(divider.bounds, to: list.scroll.contentView)
+            #expect(onScreen.midX > visible.minX && onScreen.midX < visible.maxX)
+            await harness.close()
+        }
+
         // The empty, error and Full Disk Access states.
         @Test func theStates() async throws {
             let harness = try ExplorerHarness.windowless()

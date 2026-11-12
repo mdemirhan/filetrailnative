@@ -91,12 +91,13 @@ extension ExplorerWindowlessTests {
         }
 
         // With the Info panel open the rows stop where the header does, 10 pt before the pane's edge, and follow
-        // the pane back when it closes.
+        // the pane back when it closes. The window is wide enough for the columns beside the panel.
         @Test func rowsKeepTheGutterBeforeTheInfoPanel() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.perform(.viewAsDetails)
             _ = await waitUntil { !listViews("list.row", in: tab.window?.contentView).isEmpty }
+            tab.window?.setContentSize(NSSize(width: 1600, height: 700))
             harness.layout(tab)
             func gutters() -> [Double] {
                 let pane = tab.content.contentShell.convert(tab.content.contentShell.bounds, to: nil)
