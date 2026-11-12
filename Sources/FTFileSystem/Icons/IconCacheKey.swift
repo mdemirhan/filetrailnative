@@ -101,6 +101,13 @@ public struct IconRequest: Sendable, Equatable {
         IconRequest(cacheKey: "app:\(path)", path: path)
     }
 
+    /// The plain folder of a tag color, which all folders of that color share. The path is not used.
+    public static func tintedFolder(_ color: FinderTagColor, isEmpty: Bool) -> IconRequest {
+        IconRequest(
+            cacheKey: IconCacheKey.tintedFolderKey(color, isEmpty: isEmpty), path: "/", tint: color,
+            isEmptyFolder: isEmpty)
+    }
+
     /// The plain icon of a kind. The path is not used for an icon asked for by kind.
     public static func generic(_ kind: GenericIconKind) -> IconRequest {
         IconRequest(cacheKey: kind.cacheKey, path: "/", generic: kind)

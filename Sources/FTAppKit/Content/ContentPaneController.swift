@@ -257,7 +257,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         container.stateView.onSearchSubfolders = onSearchSubfolders
         shell.onMovedToWindow = { [weak self] window in self?.observeWindow(window) }
         shell.pathBarRow.onSizeSlide = { [weak self] value, done in self?.sizeSlid(to: value, save: done) }
-        loaders.iconStore()?.preloadGenericIcons()
         // The date formatters take a few milliseconds to make: they are made off the main thread, before a row needs them.
         Task.detached(priority: .utility) {
             _ = DateText.shared

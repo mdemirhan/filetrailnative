@@ -205,8 +205,11 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             })
         self.folderWatches = folderWatches
         windows.folderWatches = folderWatches
+        let iconStore = FileIconStore()
+        // The icons nearly every folder shows are drawn while the first window opens.
+        iconStore.preloadGenericIcons()
         ExplorerServices.installed = ExplorerServices(
-            directoryService: directoryService, iconStore: FileIconStore(), clipboard: windows.clipboard,
+            directoryService: directoryService, iconStore: iconStore, clipboard: windows.clipboard,
             preferences: preferenceChannel)
         let diskImages = DiskImageOpener(
             onMounted: {}, logError: { [weak logger] message in logger?.error(.text(message)) })

@@ -78,7 +78,7 @@ public final class FileIconStore {
     /// The info panel's icon changes with the selection. Its request waits this long, so holding an arrow
     /// key does not ask for the icon of every item passed on the way.
     public nonisolated static let deferredLoadDelay: Duration = .milliseconds(80)
-    /// The icons nearly every folder shows, asked for once when the window opens.
+    /// The icons nearly every folder shows, asked for once when the app starts.
     public nonisolated static let preloadedKinds: [GenericIconKind] = [.folder, .emptyFolder, .file]
 
     private let source: any IconSource
@@ -143,13 +143,14 @@ public final class FileIconStore {
         pending[request.cacheKey] = nil
     }
 
-    /// Asks for the plain folder icons and the document icon, so the first folder already draws them.
+    /// Asks for the plain folder icons, those of each tag color and the document icon, so the first folder already
+    /// draws them: Quick Look takes a moment to draw a folder.
     public func preloadGenericIcons() {
-        for kind in Self.preloadedKinds {
-            let request = IconRequest.generic(kind)
-            if !cache.contains(request.cacheKey) {
-                _ = fetch(request)
-            }
+        let tinted = FinderTagColor.allCases.flatMap { color in
+            [false, true].map { IconRequest.tintedFolder(color, isEmpty: $0) }
+        }
+        for request in Self.preloadedKinds.map(IconRequest.generic) + tinted where !cache.contains(request.cacheKey) {
+            _ = fetch(request)
         }
     }
 

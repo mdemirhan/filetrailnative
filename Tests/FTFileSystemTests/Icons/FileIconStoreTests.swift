@@ -220,32 +220,40 @@ private func entry(
         }
     }
 
-    @Test func thePlainFolderAndDocumentIconsAreReadyBeforeAnyItemAsksForThem() async throws {
+    @Test func thePlainFolderTaggedFolderAndDocumentIconsAreReadyBeforeAnyItemAsksForThem() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
             let store = makeStore(source: source, samples: directory)
             let samples = IconSamples(root: directory.appending("samples"))
+            let preloaded = 3 + FinderTagColor.allCases.count * 2
 
             store.preloadGenericIcons()
             store.preloadGenericIcons()
-            await pollUntil { store.cachedCount == 3 }
+            await pollUntil { store.cachedCount == preloaded }
 
-            // Each kind once.
-            let folderPath = try samples.path(for: .folder)
-            let emptyFolderPath = try samples.path(for: .emptyFolder)
-            let documentPath = try samples.path(for: .file)
-            #expect(Set(source.paths) == [folderPath, emptyFolderPath, documentPath])
-            #expect(source.paths.count == 3)
+            // Each once: the plain folders, the document, and a folder of each tag color, holding something or not.
+            var expected: Set<String> = [
+                try samples.path(for: .folder), try samples.path(for: .emptyFolder), try samples.path(for: .file),
+            ]
+            for color in FinderTagColor.allCases {
+                expected.insert(try samples.path(forTint: color))
+                expected.insert(try samples.path(forTint: color, isEmpty: true))
+            }
+            #expect(Set(source.paths) == expected)
+            #expect(source.paths.count == preloaded)
             // Drawn from the first look, with nothing more asked for.
-            guard case .image = store.lookup(IconRequest(entry: entry("/a/folder", kind: .directory))) else {
-                Issue.record("no folder icon")
-                return
+            let lookups = [
+                entry("/a/folder", kind: .directory), entry("/a/Makefile", executable: false),
+                IconEntry(path: "/a/red", kind: .directory, tagColor: .red),
+                IconEntry(path: "/a/gray", kind: .directory, tagColor: .gray, isEmptyFolder: true),
+            ]
+            for item in lookups {
+                guard case .image = store.lookup(IconRequest(entry: item)) else {
+                    Issue.record("no icon for \(item.path)")
+                    return
+                }
             }
-            guard case .image = store.lookup(IconRequest(entry: entry("/a/Makefile", executable: false))) else {
-                Issue.record("no document icon")
-                return
-            }
-            #expect(source.paths.count == 3)
+            #expect(source.paths.count == preloaded)
         }
     }
 
@@ -259,7 +267,7 @@ private func entry(
                 source: source, samples: IconSamples(root: blocker.appendingPathComponent("samples")))
 
             store.preloadGenericIcons()
-            await pollUntil { store.cachedCount == 3 }
+            await pollUntil { store.cachedCount == 3 + FinderTagColor.allCases.count * 2 }
             #expect(source.paths.isEmpty)
             guard case .none = store.lookup(IconRequest.generic(.folder)) else {
                 Issue.record("a failure should read as no icon")
