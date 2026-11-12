@@ -141,6 +141,21 @@ import Testing
         #expect(custom.isFolder)
     }
 
+    /// Quick Look looks inside a folder to draw it, which makes macOS ask for Desktop, Documents and Downloads.
+    @Test func specialFoldersAndDisksAreNotDrawnByQuickLook() {
+        for name in ["Desktop", "Documents", "Downloads"] {
+            let special = IconRequest(entry: IconEntry(path: "/Users/u/\(name)", name: name, kind: .directory))
+            #expect(special.cacheKey == "path:/Users/u/\(name)")
+            #expect(!special.isFolder)
+            let customized = IconRequest(
+                entry: IconEntry(path: "/Users/u/\(name)", name: name, kind: .directory, hasCustomIcon: true))
+            #expect(!customized.isFolder)
+        }
+        let disk = IconRequest(entry: IconEntry(path: "/Volumes/Backup", name: "Backup", kind: .directory))
+        #expect(disk.cacheKey == "path:/Volumes/Backup")
+        #expect(!disk.isFolder)
+    }
+
     @Test func quickLookDrawsTheSampleFoldersAsFinderDoes() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

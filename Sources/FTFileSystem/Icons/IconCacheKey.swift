@@ -79,6 +79,10 @@ public struct IconRequest: Sendable, Equatable {
     /// The icon of a listing entry. Files share one icon per extension, extension-less files one of two,
     /// and ordinary folders one for holding something and one for holding nothing; apps, bundles, symlinks,
     /// volumes and special folders have their own.
+    ///
+    /// A special folder or a disk is drawn by NSWorkspace, not Quick Look: its picture doesn't change with what it
+    /// holds, and Quick Look looks inside, which for Desktop, Documents and Downloads makes macOS ask for permission
+    /// though the folder was only shown.
     public init(entry: IconEntry) {
         let key = IconCacheKey.key(for: entry)
         let tint = entry.tagColor.flatMap {
@@ -88,7 +92,8 @@ public struct IconRequest: Sendable, Equatable {
         self.init(
             cacheKey: key, path: entry.path, generic: generic, tint: tint,
             isEmptyFolder: tint != nil && entry.isEmptyFolder,
-            isFolder: entry.kind == .directory && generic == nil && tint == nil)
+            isFolder: entry.kind == .directory && generic == nil && tint == nil
+                && !IconCacheKey.isDrawnBySystem(entry))
     }
 
     /// An application's own icon, for the app pop-ups and lists in Settings.
@@ -109,18 +114,24 @@ public enum IconCacheKey {
         "Pictures", "Public", "System", "Users",
     ]
 
+    /// A special folder or a disk's top folder, which is drawn as the disk: a drive, a disk image, a network share.
+    static func isDrawnBySystem(_ entry: IconEntry) -> Bool {
+        VolumePaths.isVolumeRootPath(entry.path) || specialFolderNames.contains(folderName(entry))
+    }
+
+    private static func folderName(_ entry: IconEntry) -> String {
+        entry.name.isEmpty
+            ? (entry.path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? "")
+            : entry.name
+    }
+
     public static func key(for entry: IconEntry) -> String {
         switch entry.kind {
         case .bundle, .other, .symlinkFile, .symlinkDirectory:
             return "path:\(entry.path)"
         case .directory:
-            let name =
-                entry.name.isEmpty
-                ? (entry.path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? "")
-                : entry.name
-            // A disk's top folder is drawn as the disk: a drive, a disk image, a network share.
             let isEmpty = entry.isEmptyFolder
-            if entry.hasCustomIcon || VolumePaths.isVolumeRootPath(entry.path) || specialFolderNames.contains(name) {
+            if entry.hasCustomIcon || isDrawnBySystem(entry) {
                 return isEmpty ? "path:\(entry.path):empty" : "path:\(entry.path)"
             }
             return entry.tagColor.map { tintedFolderKey($0, isEmpty: isEmpty) }
