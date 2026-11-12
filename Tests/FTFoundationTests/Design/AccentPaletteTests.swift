@@ -8,7 +8,7 @@ import Testing
     /// The accent golden's token keys the palette still has, in the Swift palette.
     nonisolated(unsafe) private static let tokenFields: [(String, KeyPath<AccentPalette, RGBA>)] = [
         ("solid", \.solid), ("solidButton", \.solidButton), ("onSolid", \.onSolid), ("selectionBg", \.selectionBg),
-        ("onSelection", \.onSelection), ("pillText", \.pillText), ("border", \.border), ("softBg", \.softBg),
+        ("onSelection", \.onSelection), ("border", \.border), ("softBg", \.softBg),
         ("folderTint", \.folderTint), ("actionHoverBg", \.actionHoverBg),
     ]
 
@@ -17,7 +17,7 @@ import Testing
         ("--ft-accent-solid", \.solid), ("--ft-accent-solid-button", \.solidButton),
         ("--ft-accent-on-solid", \.onSolid), ("--ft-accent-selection-bg", \.selectionBg),
         ("--ft-accent-on-selection", \.onSelection), ("--ft-accent-on-selection-soft", \.onSelectionSoft),
-        ("--ft-accent-border", \.border), ("--ft-accent-pill-text", \.pillText),
+        ("--ft-accent-border", \.border),
         ("--ft-accent-folder-tint", \.folderTint), ("--ft-accent-soft-bg", \.softBg),
         ("--ft-accent-action-hover-bg", \.actionHoverBg),
     ]

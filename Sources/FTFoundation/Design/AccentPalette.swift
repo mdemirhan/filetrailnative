@@ -17,7 +17,6 @@ public struct AccentPalette: Equatable, Sendable {
     public let onSelection: RGBA
     /// Secondary text on `selectionBg`: a selected row's other cells and placeholders.
     public let onSelectionSoft: RGBA
-    public let pillText: RGBA
     public let border: RGBA
     public let softBg: RGBA
     public let folderTint: RGBA
@@ -46,7 +45,6 @@ public struct AccentPalette: Equatable, Sendable {
         selectionBg = selection.background
         onSelection = selection.foreground
         onSelectionSoft = selection.foreground.withAlpha(0.85)
-        pillText = isLight ? dark : accent
         border = accent.withAlpha(0.3)
         softBg = accent.withAlpha(0.08)
         folderTint = accent.withAlpha(profile.folderTintAlpha)

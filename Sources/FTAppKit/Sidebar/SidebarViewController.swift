@@ -59,7 +59,6 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     /// Whether the "Folders" label is out (the integrated layout has none).
     var foldersHeaderHiddenForTests: Bool { foldersHeader.isHidden }
     let tree = SidebarListView(subview: .tree)
-    private let pill = SidebarTypeaheadPill()
     private var volumesToken: SidebarVolumes.Token?
     private var themeObservation: AppearanceModel.Observation?
     private var activity: WindowActivity?
@@ -107,14 +106,12 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         tree.outline.setAccessibilityLabel("Folders")
         foldersHeader.setAccessibilityIdentifier("sidebar.foldersHeader")
         foldersTitle.setAccessibilityIdentifier("sidebar.foldersTitle")
-        pill.setAccessibilityIdentifier("sidebar.typeahead")
         foldersHeader.addSubview(foldersTitle)
-        for subview in [sections, foldersHeader, tree, pill] as [NSView] { root.addSubview(subview) }
+        for subview in [sections, foldersHeader, tree] as [NSView] { root.addSubview(subview) }
         sections.delegate = self
         sections.scroll.gutter = 0
         tree.delegate = self
         tree.fadesTop = true
-        pill.isHidden = true
 
         model.onChange = { [weak self] in self?.refresh() }
         model.onSectionsChanged = { [weak self] in
@@ -297,8 +294,6 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         sections.isHidden = !showsSections || sections.rowCount == 0
         foldersHeader.isHidden = !showsSections
         tree.fadesTop = showsSections
-        pill.isHidden = model.typeaheadQuery.isEmpty || !isFocused
-        if !pill.isHidden { pill.configure(query: model.typeaheadQuery, theme: SidebarColors.theme(for: view)) }
         if hadSections != sections.isHidden { root.needsLayout = true }
         root.needsLayout = true
         layoutIfNeeded()
@@ -444,14 +439,6 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         }
         tree.frame = NSRect(x: 0, y: y, width: width, height: max(0, height - y))
         tree.updateFade(height: layout.treeFadeHeight)
-        if !pill.isHidden {
-            let size = pill.fittingSize(maxWidth: width - 24)
-            let region = NSRect(x: 0, y: layout.titlebarHeight, width: width, height: available)
-            pill.frame = NSRect(
-                x: ((region.width - size.width) / 2).rounded(),
-                y: (region.minY + (region.height - size.height) / 2).rounded(),
-                width: size.width, height: size.height)
-        }
     }
 }
 
@@ -481,65 +468,4 @@ struct SidebarFileDrops {
         /// URLs dropped by the debug seam (`AutomationDropTarget`).
         var dropURLs: (_ row: SidebarRowState, _ urls: [URL], _ allowed: NSDragOperation) -> Bool = { _, _, _ in false }
     #endif
-}
-
-/// The "Jump to" pill: the prefix typed in the sidebar.
-final class SidebarTypeaheadPill: NSView {
-    private let label = TextBoxField(labelWithString: "Jump to")
-    private let value = TextBoxField(labelWithString: "")
-    private var border = NSColor.clear
-
-    override var isFlipped: Bool { true }
-    override func hitTest(_ point: NSPoint) -> NSView? { nil }
-
-    override init(frame: NSRect) {
-        super.init(frame: frame)
-        wantsLayer = true
-        for field in [label, value] {
-            field.isBordered = false
-            field.drawsBackground = false
-            field.lineBreakMode = .byTruncatingTail
-            addSubview(field)
-        }
-        layer?.shadowOpacity = 0.12
-        layer?.shadowRadius = 2
-        layer?.shadowOffset = CGSize(width: 0, height: -1)
-    }
-
-    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    static let padding = (x: 10.0, y: 6.0)
-    static let gap = 8.0
-
-    func configure(query: String, theme: Theme) {
-        let size = DesignTokens.typeScale.callout
-        label.font = ChromeColors.font(size: size)
-        label.textColor = ChromeColors.color(GlassSurface.text(theme))
-        value.font = NSFont.monospacedDigitSystemFont(ofSize: size, weight: .regular)
-        value.textColor = ChromeColors.color(theme.accent.pillText)
-        value.stringValue = query
-        border = ChromeColors.color(theme.accent.border)
-        layer?.borderColor = border.cgColor
-        layer?.borderWidth = 1
-        needsLayout = true
-    }
-
-    func fittingSize(maxWidth: Double) -> NSSize {
-        let lineHeight = SidebarText.lineHeight(label.font ?? .systemFont(ofSize: 12))
-        let textWidth = SidebarText.width(label.stringValue, font: label.font ?? .systemFont(ofSize: 12))
-        let valueWidth = SidebarText.width(value.stringValue, font: value.font ?? .systemFont(ofSize: 12))
-        let width = min(maxWidth, textWidth + Self.gap + valueWidth + 2 * Self.padding.x + 2)
-        return NSSize(width: width, height: lineHeight + 2 * Self.padding.y + 2)
-    }
-
-    override func layout() {
-        super.layout()
-        GlassSurface.installFloating(in: self, radius: bounds.height / 2)
-        let line = SidebarText.lineHeight(label.font ?? .systemFont(ofSize: 12))
-        let labelWidth = SidebarText.width(label.stringValue, font: label.font ?? .systemFont(ofSize: 12))
-        label.frame = NSRect(x: 1 + Self.padding.x, y: 1 + Self.padding.y, width: labelWidth, height: line)
-        value.frame = NSRect(
-            x: label.frame.maxX + Self.gap, y: 1 + Self.padding.y,
-            width: max(0, bounds.width - label.frame.maxX - Self.gap - Self.padding.x - 1), height: line)
-    }
 }

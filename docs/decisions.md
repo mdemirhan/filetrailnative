@@ -9,7 +9,7 @@ The owner's decisions about how File Trail behaves and how its code is kept, eac
 - **The system's look.** Tabs and toolbars use Liquid Glass. Commands use SF Symbols, Finder's where Finder has the command. Sheets, the Info panel and Settings use the system's checkboxes, pop-up buttons, switches, number fields and tables.
 - **Font sizes and row heights are the app's own, not Finder's**: sidebar 14 pt, icon labels 13, list 14, path bar 12. From Finder the app takes the Favorites and Locations icons as system symbols, the Locations icon color, the unfocused selected fill and the toolbar's sizes. Favorites icons use the app's accent, not the system's, and the search field keeps its own 200 pt width rather than Finder's.
 - **Dark mode uses Finder's colors.** The content's background is the system's content material, so it takes the desktop's tint as Finder's does. The path bar is 3.3% white lighter and the sidebar's gray selection is 13.5% white, both measured from Finder. Light mode is unchanged.
-- **Glass goes on brief surfaces only.** Toasts, the progress card, plain alerts (a title, a message and buttons) and the type-select pill are glass, and keep their edge and shadow so they read over a white pane. Go To and Move To, the paste review, the Rename sheet, the path bar's suggestion list, and alerts with a list or a field stay opaque. The system's own sheet is opaque and its alert is glass, and glass behind lists and fields lets colorful content smear behind the text.
+- **Glass goes on brief surfaces only.** Toasts, the progress card and plain alerts (a title, a message and buttons) are glass, and keep their edge and shadow so they read over a white pane. Go To and Move To, the paste review, the Rename sheet, the path bar's suggestion list, and alerts with a list or a field stay opaque. The system's own sheet is opaque and its alert is glass, and glass behind lists and fields lets colorful content smear behind the text.
 - **The Info panel is a plain split item**, not the system's inspector item. The toolbar lays its material over plain items only; as an inspector the panel's own color showed through the toolbar in dark mode.
 - **File Copy, Cut and Paste use the app's own clipboard**, the one the toolbar's clipboard button lists, not the system's. What this means for people is in known-issues.md. Copy Path puts text on the system's clipboard.
 - **Batch rename keeps JavaScript regular-expression rules, for now.** `JSRegExp.swift` stays as it is. Moving to `NSRegularExpression` would remove about 530 lines, but it would change what `\d`, `\w`, `\s` and `\b` match (ASCII only today, Unicode in ICU), how `ß` and ligatures fold, which syntax is accepted, and the wording of pattern errors. `expandReplacement` (`$1`, `$&`, `$<name>`) stays either way. Revisit later.
@@ -67,7 +67,7 @@ Not done, and not to be done without a plan of its own. Kept so the reasons are 
   - The search-result highlight did move to `NSRegularExpression`; batch rename did not.
 - **The file clipboard on the system pasteboard.** See "Decisions".
   - known-issues.md now says so for people.
-- **The sidebar filtering as the file list does, or a "contains" fallback to its type-to-select.** The sidebar keeps prefix type-to-select with its reset timer, as Finder's does. The tree knows only expanded rows, and a tree filter has to keep parent folders and can hide the current location.
+- **The sidebar filtering as the file list does, or a "contains" fallback to its type-to-select.** The sidebar keeps prefix type-to-select with its reset timer and shows nothing of what was typed, as Finder's does. The tree knows only expanded rows, and a tree filter has to keep parent folders and can hide the current location.
 - **The sidebar as a real source-list outline** (about 1,000 lines). A redesign with every sidebar interaction test redone.
 - **The in-window dialog framework replaced by `NSAlert` and sheets.** High risk; about 3,800 lines of tests drive it.
   - The cheap part is done: alerts and sheets share one base for their panel, footer, button row and Tab order, and use the system's checkboxes and pop-up buttons.
@@ -119,7 +119,7 @@ Things that look removable and are not. Don't change them; if a change seems to 
 - The `density` migration; `PreferencesSanitizer.sanitize`; `@NullEncoded`; the app-state file format.
 - The `vtool` restamp in `build-app.sh`, as SwiftPM still stamps the SDK as 26.0 while the app is built with a later one; `FTTestSupport` as a regular target; the release-script tests; `AppClock` and `FILETRAIL_NOW`.
 - The app's own clipboard and the rules that keep it truthful.
-- Glass only on toasts, the progress card, plain alerts and the pill; sheets, Go To and alerts with lists or fields stay opaque.
+- Glass only on toasts, the progress card and plain alerts; sheets, Go To and alerts with lists or fields stay opaque.
 - Accessibility identifiers and `accessibilityPerformPress()`; the read-only test seams.
 - `adopt`/`absorb` and the `ExplorerWindowLike` generic with `FakeWindow`.
 - The rule that no paste review starts while a write runs, and that only one runs at a time.

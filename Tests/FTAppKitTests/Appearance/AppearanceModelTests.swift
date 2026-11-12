@@ -107,8 +107,6 @@ import Testing
     @Test func derivesTheAccentTokensFromTheAccentColor() {
         let light = Theme(appearance: .light, accentHex: "#007aff").accent
         let dark = Theme(appearance: .dark, accentHex: "#007aff").accent
-        #expect(light.pillText.hexString == "#0064d1")
-        #expect(dark.pillText.hexString == "#007aff")
         #expect(light.border.alpha == 0.3)
         #expect(light.folderTint.alpha == 0.16)
         #expect(dark.folderTint.alpha == 0.14)

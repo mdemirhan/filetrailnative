@@ -164,7 +164,6 @@
     "sidebar row error line": {"swift": "sidebar.row.error"},
     "sidebar row drop pill": {"swift": "sidebar.row.dropBadge"},
     "favorite drop line": {"swift": "sidebar.favorite.dropLine"},
-    "jump to pill": {"swift": "sidebar.typeahead"},
     "list header cell box": {"swift": "list.header.cell"},
     "list header title": {"swift": "list.header.title"},
     "list sort chevron": {"swift": "list.header.chevron"},
