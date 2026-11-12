@@ -54,6 +54,26 @@ private final class HeldSource: IconSource, @unchecked Sendable {
     }
 }
 
+/// Draws a type's icon at once, as the workspace does, and remembers which extensions it drew.
+private final class TypeIconSource: IconSource, @unchecked Sendable {
+    private let lock = NSLock()
+    private var recordedTypes: [String] = []
+    private var recordedPaths: [String] = []
+
+    var types: [String] { lock.withLock { recordedTypes } }
+    var paths: [String] { lock.withLock { recordedPaths } }
+
+    func icon(atPath path: String) -> NSImage? {
+        lock.withLock { recordedPaths.append(path) }
+        return NSImage(size: NSSize(width: 2, height: 2))
+    }
+
+    func typeIcon(forExtension fileExtension: String) -> NSImage? {
+        lock.withLock { recordedTypes.append(fileExtension) }
+        return NSImage(size: NSSize(width: 2, height: 2))
+    }
+}
+
 @MainActor
 private func fetch(_ store: FileIconStore, _ request: IconRequest, deferLoad: Bool = false) async -> NSImage? {
     await withCheckedContinuation { continuation in
@@ -92,6 +112,33 @@ private func entry(
                 Issue.record("not remembered as having none")
                 return
             }
+        }
+    }
+
+    // A file's icon by its extension comes from its type at once, the first time it is looked up, and only once; an
+    // icon that depends on the item itself is still drawn later.
+    @Test func aFilesTypeIconIsThereAtOnceWithoutReadingTheFile() async throws {
+        try await withTemporaryDirectory { directory in
+            let source = TypeIconSource()
+            let store = FileIconStore(source: source, samples: IconSamples(root: directory.appending("samples")))
+            let photo = IconRequest(entry: entry("/Volumes/Slow/photo.JPG", extension: "JPG"))
+            guard case .image(let first) = store.lookup(photo) else {
+                Issue.record("not there at once")
+                return
+            }
+            var answered: NSImage?
+            store.load(IconRequest(entry: entry("/Volumes/Slow/other.jpg", extension: "jpg"))) { answered = $0 }
+            #expect(answered === first)
+            #expect(source.types == ["jpg"])
+            #expect(source.paths.isEmpty)
+
+            let app = IconRequest(entry: entry("/Applications/Mail.app", kind: .bundle))
+            guard case .missing = store.lookup(app) else {
+                Issue.record("an app's own icon drawn at once")
+                return
+            }
+            #expect(await fetch(store, app) != nil)
+            #expect(source.paths == ["/Applications/Mail.app"])
         }
     }
 
@@ -322,6 +369,11 @@ private func entry(
             try FileManager.default.removeItem(at: blocker)
             #expect(throws: Never.self) { try samples.path(for: .folder) }
         }
+    }
+
+    @Test func theWorkspaceDrawsATypesIconWithoutAFile() {
+        #expect(WorkspaceIconSource().typeIcon(forExtension: "jpg").map { $0.size.width > 0 } == true)
+        #expect(WorkspaceIconSource().typeIcon(forExtension: "no-such-type-here").map { $0.size.width > 0 } == true)
     }
 
     @Test @MainActor func theWorkspaceGivesAnItemItsOwnIcon() throws {

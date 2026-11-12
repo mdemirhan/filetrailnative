@@ -156,6 +156,11 @@ public enum IconCacheKey {
         "\((isEmpty ? GenericIconKind.emptyFolder : .folder).cacheKey):\(color.rawValue)"
     }
 
+    /// The extension of a key the files of one extension share; nil for other keys.
+    public static func fileExtension(ofKey key: String) -> String? {
+        key.hasPrefix("ext:") ? String(key.dropFirst(4)) : nil
+    }
+
     /// The sample kind to draw a shared key from; nil for keys that go with one path.
     public static func genericKind(forKey key: String) -> GenericIconKind? {
         GenericIconKind.allCases.first { $0.cacheKey == key }

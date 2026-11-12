@@ -1,17 +1,23 @@
 import AppKit
 import QuickLookThumbnailing
+import UniformTypeIdentifiers
 
 /// Draws the icon macOS has for a path.
 public protocol IconSource: Sendable {
     func icon(atPath path: String) -> NSImage?
     /// The icon of a folder as Finder draws it.
     func folderIcon(atPath path: String) async -> NSImage?
+    /// The icon of the files with this extension, drawn from their type alone, without reading a file; nil when the
+    /// source can't draw it at once.
+    func typeIcon(forExtension fileExtension: String) -> NSImage?
 }
 
 extension IconSource {
     public func folderIcon(atPath path: String) async -> NSImage? {
         icon(atPath: path)
     }
+
+    public func typeIcon(forExtension fileExtension: String) -> NSImage? { nil }
 }
 
 public struct WorkspaceIconSource: IconSource {
@@ -22,6 +28,10 @@ public struct WorkspaceIconSource: IconSource {
 
     public func icon(atPath path: String) -> NSImage? {
         NSWorkspace.shared.icon(forFile: path)
+    }
+
+    public func typeIcon(forExtension fileExtension: String) -> NSImage? {
+        NSWorkspace.shared.icon(for: UTType(filenameExtension: fileExtension) ?? .data)
     }
 
     /// Quick Look's icon, as NSWorkspace's has neither the sheet of paper of a folder holding something nor the color
@@ -91,8 +101,10 @@ public final class FileIconStore {
     public var cachedCount: Int { cache.count }
 
     public func lookup(_ request: IconRequest) -> IconLookup {
-        guard let slot = cache.read(request.cacheKey) else { return .missing }
-        return slot.map(IconLookup.image) ?? .none
+        if let slot = cache.read(request.cacheKey) {
+            return slot.map(IconLookup.image) ?? .none
+        }
+        return drawnAtOnce(request).map(IconLookup.image) ?? .missing
     }
 
     /// Calls `completion` with the icon (nil when macOS has none): at once when it is cached, otherwise when
@@ -104,6 +116,10 @@ public final class FileIconStore {
     ) -> LoadHandle {
         if let slot = cache.read(request.cacheKey) {
             completion(slot)
+            return LoadHandle()
+        }
+        if let image = drawnAtOnce(request) {
+            completion(image)
             return LoadHandle()
         }
         let sleep = self.sleep
@@ -135,6 +151,16 @@ public final class FileIconStore {
                 _ = fetch(request)
             }
         }
+    }
+
+    /// The icon files share by their extension depends on their type alone, which macOS draws at once: it is drawn
+    /// now and kept, so the first item of a kind shows it in its first frame, not an empty space.
+    private func drawnAtOnce(_ request: IconRequest) -> NSImage? {
+        guard let fileExtension = IconCacheKey.fileExtension(ofKey: request.cacheKey),
+            let image = source.typeIcon(forExtension: fileExtension)
+        else { return nil }
+        cache.write(image, for: request.cacheKey)
+        return image
     }
 
     private func fetch(_ request: IconRequest) -> Task<NSImage?, Never> {
