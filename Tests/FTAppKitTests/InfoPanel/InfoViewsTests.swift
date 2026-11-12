@@ -359,6 +359,24 @@ struct InfoPanelViewTests {
         await settle()
         #expect(isBlue(button.appIcon))
     }
+
+    // A quick action's tooltip covers the button once it is placed: the tooltip is one of the view's tracking areas,
+    // sized when it is set (before the button is), and the button's own hover area replaces only its own.
+    @Test func aQuickActionKeepsItsTooltipOncePlaced() throws {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 320, height: 900), styleMask: [.borderless], backing: .buffered,
+            defer: true)
+        window.isReleasedWhenClosed = false
+        let view = panel(display())
+        window.contentView?.addSubview(view)
+        let button = try #require(findViews("infoPanel.action", in: view).first as? InfoIconButton)
+        button.updateTrackingAreas()
+        #expect(button.toolTip == "Quick Look (Space)")
+        #expect(button.trackingAreas.contains { $0.owner !== button && $0.rect == button.bounds })
+        #expect(button.trackingAreas.contains { $0.owner === button })
+        let close = try #require(findViews("infoPanel.close", in: view).first)
+        #expect(close.trackingAreas.contains { $0.owner !== close && $0.rect == close.bounds })
+    }
 }
 
 @MainActor

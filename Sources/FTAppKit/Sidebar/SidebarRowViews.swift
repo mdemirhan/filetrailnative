@@ -267,7 +267,7 @@ final class SidebarEjectView: SidebarPlainView {
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
-        for area in trackingAreas { removeTrackingArea(area) }
+        for area in trackingAreas where area.owner === self { removeTrackingArea(area) }
         addTrackingArea(
             NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInKeyWindow], owner: self))
     }

@@ -102,6 +102,15 @@ final class InfoIconButton: NSView {
         if toolTip != shown { toolTip = shown }
     }
 
+    /// The tooltip covers the bounds it had when it was set, and the button is sized after that: set it again.
+    override func setFrameSize(_ newSize: NSSize) {
+        let resized = newSize != frame.size
+        super.setFrameSize(newSize)
+        guard resized, let shown = toolTip else { return }
+        toolTip = nil
+        toolTip = shown
+    }
+
     override func draw(_ dirtyRect: NSRect) {
         let theme = infoTheme
         let hover = isHovered && isEnabled
@@ -116,7 +125,7 @@ final class InfoIconButton: NSView {
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
-        for area in trackingAreas { removeTrackingArea(area) }
+        for area in trackingAreas where area.owner === self { removeTrackingArea(area) }
         addTrackingArea(
             NSTrackingArea(
                 rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))

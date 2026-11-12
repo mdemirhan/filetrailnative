@@ -328,7 +328,7 @@ final class SplitOpenButton: NSView, TextStyleSource {
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
-        for area in trackingAreas { removeTrackingArea(area) }
+        for area in trackingAreas where area.owner === self { removeTrackingArea(area) }
         addTrackingArea(
             NSTrackingArea(
                 rect: bounds, options: [.mouseEnteredAndExited, .mouseMoved, .activeInActiveApp, .inVisibleRect],
@@ -457,7 +457,7 @@ final class OpensWithPopupView: NSView {
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
-        for area in trackingAreas { removeTrackingArea(area) }
+        for area in trackingAreas where area.owner === self { removeTrackingArea(area) }
         addTrackingArea(
             NSTrackingArea(
                 rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
