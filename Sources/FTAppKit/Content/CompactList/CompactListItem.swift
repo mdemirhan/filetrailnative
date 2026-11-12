@@ -206,7 +206,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         root.drop = dropState.map { ($0, host.theme) }
         dropMarker.isHidden = dropState == nil || dropState == .invalid
         DropHighlight.setWiggle(iconView, on: dropState == .springing)
-        let tagColors = host.tagColors(for: entry.path)
+        let tagColors = host.tagColors(for: entry)
         let tagsChanged = tagDots.colors != tagColors
         tagDots.colors = tagColors
         if wasMarked != (mark != nil) || tagsChanged { layoutParts() }

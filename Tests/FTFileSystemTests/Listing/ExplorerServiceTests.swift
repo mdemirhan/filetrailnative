@@ -66,6 +66,39 @@ struct ExplorerServiceTests {
         #expect(!looked.contains("folder"))
     }
 
+    @Test func readsTheTagsOfItemsWithALabelSoTheyShowWithTheFolder() async throws {
+        var labelled = fakeDirent("labelled.txt", file: true)
+        labelled.tagColor = .orange
+        var folder = fakeDirent("Folder", directory: true)
+        folder.tagColor = .blue
+        let fake = workspace(
+            [labelled, folder, fakeDirent("plain.txt", file: true)],
+            stat: { path in
+                fakeStats(directory: path == "/workspace" || path.hasSuffix("Folder"), file: true, size: 1)
+            })
+        fake.tagColorsHandler = { path in path.hasSuffix("labelled.txt") ? [.red, .orange] : [.blue] }
+        let snapshot = try await service(fake).snapshot(path: "/workspace")
+        let colors = Dictionary(uniqueKeysWithValues: snapshot.entries.map { ($0.name, $0.tagColors) })
+        #expect(colors["labelled.txt"] == [.red, .orange])
+        #expect(colors["Folder"] == [.blue])
+        // Without a label an item has no colored tag: its tags are not read.
+        #expect(colors["plain.txt"] == .some(nil))
+        #expect(Set(fake.tagsRead) == ["/workspace/labelled.txt", "/workspace/Folder"])
+    }
+
+    @Test func readsTheTagsOfAtMostSoManyItems() async throws {
+        let records = (0..<(ExplorerListing.listedTagLimit + 3)).map { index in
+            var record = fakeDirent("item\(index).txt", file: true)
+            record.tagColor = .red
+            return record
+        }
+        let fake = workspace(records, stat: { path in fakeStats(directory: path == "/workspace", file: true, size: 1) })
+        fake.tagColorsHandler = { _ in [.red] }
+        let snapshot = try await service(fake).snapshot(path: "/workspace")
+        #expect(fake.tagsRead.count == ExplorerListing.listedTagLimit)
+        #expect(snapshot.entries.filter { $0.tagColors == nil }.count == 3)
+    }
+
     @Test func readsRealFileProperties() async throws {
         try await withTemporaryDirectory { directory in
             let path = directory.path + "/notes.txt"

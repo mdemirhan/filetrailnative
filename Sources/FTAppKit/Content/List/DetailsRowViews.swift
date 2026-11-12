@@ -270,7 +270,7 @@ final class DetailsBarView: NSView {
         nameCell.markGlyph.color = ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection)
         nameLabel.alphaValue = mark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
         nameCell.iconView.alphaValue = entry.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
-        nameCell.tagDots.colors = host.tagColors(for: entry.path)
+        nameCell.tagDots.colors = host.tagColors(for: entry)
         cutMarker.isHidden = mark != .cut
         dropState = host.dropState(for: entry.path)
         dropMarker.isHidden = dropState == nil || dropState == .invalid

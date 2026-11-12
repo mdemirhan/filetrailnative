@@ -11,10 +11,19 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     var statHandler: @Sendable (String) throws -> FileStats = { _ in throw FakeError() }
     var lstatHandler: @Sendable (String) throws -> FileStats = { _ in throw FakeError() }
     var realpathHandler: @Sendable (String) throws -> String = { $0 }
+    var tagColorsHandler: @Sendable (String) -> [FinderTagColor] = { _ in [] }
 
     private let lock = NSLock()
     private var statPaths: [String] = []
     private var lstatPaths: [String] = []
+    private var tagPaths: [String] = []
+
+    /// The paths whose tags were read.
+    var tagsRead: [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return tagPaths
+    }
 
     /// The paths asked about by `stat` and `lstat`.
     var lookedUp: [String] {
@@ -40,6 +49,13 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     }
 
     func realpath(_ path: String) throws -> String { try realpathHandler(path) }
+
+    func tagColors(_ path: String) -> [FinderTagColor] {
+        lock.lock()
+        tagPaths.append(path)
+        lock.unlock()
+        return tagColorsHandler(path)
+    }
 }
 
 /// A fake file's stats: a directory, a file, a symlink or other, with fixed dates.

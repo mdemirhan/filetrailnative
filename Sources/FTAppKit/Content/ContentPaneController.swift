@@ -1128,7 +1128,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// What is listed: the search results shown, or the folder. An answer read for another list doesn't count.
     private var listKey: String { searchDisplay?.viewKey ?? folderPath }
 
-    func tagColors(for path: String) -> [FinderTagColor] { tags[path] ?? [] }
+    /// What was read for the item on screen, unless it changed since and its listing read it again; then what the
+    /// listing read, which an item with a colored tag has from its first frame.
+    func tagColors(for entry: DirectoryEntry) -> [FinderTagColor] {
+        if let read = tags[entry.path], !tags.stale.contains(entry.path) { return read }
+        return entry.tagColors ?? tags[entry.path] ?? []
+    }
 
     /// Tags are read for the items on screen in every view, which draw them: reading them for a whole folder would
     /// cost a call per item for what is rarely there.

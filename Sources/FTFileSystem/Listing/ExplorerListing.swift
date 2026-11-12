@@ -198,6 +198,9 @@ enum ExplorerListing {
 
     // MARK: Snapshot
 
+    /// How many items' tags a listing reads at most. Those of the others are read once they are on screen.
+    static let listedTagLimit = 500
+
     /// Snapshot listing fetches extra stat data only for sort modes that require it so the common
     /// name-sorted path stays as cheap as possible. The items of `alsoListing` are listed as if in the folder, under
     /// their own paths (the Trash of each disk); one that can't be read has nothing to add.
@@ -220,6 +223,7 @@ enum ExplorerListing {
         var modified: [Int64?] = []
         var sizes: [Int64?] = []
         var labels: [String] = []
+        var tagsLeft = listedTagLimit
         for folder in folders {
             for record in folder.records {
                 let hidden = isHidden(record)
@@ -244,6 +248,11 @@ enum ExplorerListing {
                     if record.hasCustomIcon { entry.hasCustomIcon = true }
                     entry.tagColor = record.tagColor
                     if record.isEmptyFolder { entry.isEmptyFolder = true }
+                }
+                // Only an item with a label can have a colored tag, so the others cost nothing.
+                if record.tagColor != nil, tagsLeft > 0 {
+                    entry.tagColors = fileSystem.tagColors(entryPath)
+                    tagsLeft -= 1
                 }
                 switch sortBy {
                 case .modified:

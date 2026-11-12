@@ -110,12 +110,17 @@ extension ExplorerWindowlessTests {
             let red = try #require(row.buttons.first { $0.color == .red })
             #expect(red.accessibilityPerformPress())
             #expect(await waitUntil { FinderTags.colors(target.path) == [.red] })
-            #expect(await waitUntil { tab.content.tagColors(for: target.path) == [.red] })
+            #expect(await waitUntil { listedTags(tab, target.path) == [.red] })
             // A menu opened now marks the color the item has.
             let again = try #require(tab.contextMenus.contentMenu(for: [target]))
             let marked = try #require(again.items.compactMap { $0.view as? TagColorsMenuRow }.first)
             #expect(await waitUntil { marked.buttons.first { $0.color == .red }?.state == .all })
             await harness.close()
+        }
+
+        /// The tag colors the views draw for the item as it is listed now.
+        private func listedTags(_ tab: MainWindowController, _ path: String) -> [FinderTagColor]? {
+            tab.content.listedEntry(at: path).map(tab.content.tagColors(for:))
         }
 
         /// What the folder watch does on a change: the listing kept of it goes, and the window hears.
@@ -144,7 +149,7 @@ extension ExplorerWindowlessTests {
             try FinderTags.write([FinderTag(name: "Red", color: .red)], to: path)
             tab.content.tagsChanged([path])
             held?.resume()
-            #expect(await waitUntil { tab.content.tagColors(for: path) == [.red] })
+            #expect(await waitUntil { listedTags(tab, path) == [.red] })
             await harness.close()
         }
 
@@ -155,11 +160,26 @@ extension ExplorerWindowlessTests {
             defer { try? FinderTags.write([], to: target.path) }
             try FinderTags.write([FinderTag(name: "Red", color: .red)], to: target.path)
             tab.content.tagsChanged([target.path])
-            #expect(await waitUntil { tab.content.tagColors(for: target.path) == [.red] })
+            #expect(await waitUntil { listedTags(tab, target.path) == [.red] })
             // As Finder or another app would write it.
             try (URL(fileURLWithPath: target.path) as NSURL).setResourceValue(["Orange"], forKey: .tagNamesKey)
             changed(harness, tab, [target.path])
-            #expect(await waitUntil { tab.content.tagColors(for: target.path) == [.orange] })
+            #expect(await waitUntil { listedTags(tab, target.path) == [.orange] })
+            await harness.close()
+        }
+
+        @Test func aTaggedItemsColorsComeWithItsListingBeforeTheRowsOnScreenAreRead() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let target = try entry(tab, "Alpha")
+            defer { try? FinderTags.write([], to: target.path) }
+            #expect(await waitUntil { listedTags(tab, target.path) == [] })
+            // The read of the rows on screen never answers: what shows is what the listing read.
+            tab.content.loaders.tagColors = { _ in await withCheckedContinuation { _ in } }
+            try (URL(fileURLWithPath: target.path) as NSURL).setResourceValue(
+                ["Green", "Orange"], forKey: .tagNamesKey)
+            changed(harness, tab, [target.path])
+            #expect(await waitUntil { listedTags(tab, target.path) == [.green, .orange] })
             await harness.close()
         }
 

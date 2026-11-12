@@ -92,7 +92,7 @@ final class CompactListViewController: ItemGridPane {
     /// clipboard.
     private func markedNameWidth(_ entry: DirectoryEntry) -> Double {
         var width = nameWidth(entry)
-        let tags = host?.tagColors(for: entry.path).count ?? 0
+        let tags = host?.tagColors(for: entry).count ?? 0
         if tags > 0 { width += Double(TagDotsView.gap + TagDotsView.width(count: tags)) }
         if host?.clipboardMarks?.mark(for: entry.path) != nil {
             width += ClipboardLayout.Mark.gap + ClipboardLayout.Mark.iconSize

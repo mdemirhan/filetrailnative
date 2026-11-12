@@ -72,6 +72,12 @@ public protocol ExplorerFileSystem: Sendable {
     func stat(_ path: String) throws -> FileStats
     func lstat(_ path: String) throws -> FileStats
     func realpath(_ path: String) throws -> String
+    /// The colors of an item's Finder tags, in their order; none for an item that can't be read.
+    func tagColors(_ path: String) -> [FinderTagColor]
+}
+
+extension ExplorerFileSystem {
+    public func tagColors(_ path: String) -> [FinderTagColor] { FinderTags.colors(path) }
 }
 
 public struct NativeFileSystem: ExplorerFileSystem {

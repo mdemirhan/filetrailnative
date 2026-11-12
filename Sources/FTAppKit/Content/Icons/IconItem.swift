@@ -307,7 +307,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         root.setAccessibilityLabel(entry.name)
         // `title={entry.name}`: the whole name, for one shortened in the middle.
         root.toolTip = entry.name
-        label.tagDots.colors = host.tagColors(for: entry.path)
+        label.tagDots.colors = host.tagColors(for: entry)
         fitName(entry, host: host, layout: layout)
         tile.radius = CGFloat(style.tileRadius)
         if changed || iconView.image == nil {
@@ -394,7 +394,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
             badge.isHidden = true
             badge.removeFromSuperview()
         }
-        let tagColors = host.tagColors(for: entry.path)
+        let tagColors = host.tagColors(for: entry)
         if label.tagDots.colors != tagColors {
             label.tagDots.colors = tagColors
             fitName(entry, host: host, layout: pane.layout)
