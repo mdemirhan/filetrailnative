@@ -2,12 +2,21 @@ import Foundation
 
 /// Previews of the content of files, for icon view.
 ///
-/// Longest side previews are asked for in: the 64-point icon of icon view on a Retina display, at either density.
+/// Previews are asked for at `pixelSize(forIconSize:)` on their longest side: twice the icon, for a Retina display.
 /// Previews are kept in memory only (Quick Look has its own cache on disk), most recently used last. 500 cover
 /// several screens of icon view; older ones are asked for again.
 @MainActor
 public final class ThumbnailStore {
+    /// Previews for icons up to 64 points.
     public nonisolated static let pixelSize = 128
+    /// Previews for larger icons.
+    public nonisolated static let largePixelSize = 256
+
+    /// The preview size that stays sharp for icons `iconSize` points square on a Retina display.
+    public nonisolated static func pixelSize(forIconSize iconSize: Double) -> Int {
+        iconSize <= Double(pixelSize) / 2 ? pixelSize : largePixelSize
+    }
+
     public nonisolated static let maxEntries = 500
 
     private struct Cached {
@@ -15,6 +24,8 @@ public final class ThumbnailStore {
         var version: String?
         /// Nil when Quick Look has no preview for the file.
         var picture: ThumbnailPicture?
+        /// The size it was asked for at.
+        var size: Int
         /// The listing the preview was last checked against the file for.
         var checkedFor: AnyObject
     }
@@ -50,11 +61,12 @@ public final class ThumbnailStore {
 
     /// Calls `completion` with the item's preview (nil while it is loading or when there is none). A cached
     /// preview is given at once and checked against the file once per `listing`, so a file that changed
-    /// gets a new preview the next time its folder is read. `listing` stands for one reading of the
+    /// gets a new preview the next time its folder is read. One cached at a smaller `size` is given at once too, and
+    /// asked for again at this size. `listing` stands for one reading of the
     /// folder: any object that changes when the list of items does.
     @discardableResult
     public func load(
-        path: String, kind: IconEntryKind, listing: AnyObject,
+        path: String, kind: IconEntryKind, size: Int = ThumbnailStore.pixelSize, listing: AnyObject,
         completion: @escaping @MainActor (ThumbnailPicture?) -> Void
     ) -> LoadHandle {
         guard Self.canHaveThumbnail(kind) else {
@@ -63,19 +75,22 @@ public final class ThumbnailStore {
         }
         let cached = cache.read(path)
         completion(cached?.picture)
-        if let cached, cached.checkedFor === listing {
+        if let cached, cached.checkedFor === listing, cached.size >= size {
             return LoadHandle()
         }
+        // A preview too small is made again even when the file is as it was.
+        let knownVersion = cached.flatMap { $0.size >= size ? $0.version : nil }
+        let wanted = max(size, cached?.size ?? 0)
         let cancelled = CancelFlag()
         let provider = self.provider
         let queued = queue.enqueue { [weak self] in
             let response = await provider.response(
-                path: path, size: Self.pixelSize, knownVersion: cached?.version)
+                path: path, size: wanted, knownVersion: knownVersion)
             guard let self else { return }
             let thumbnail =
                 response.unchanged && cached != nil
-                ? Cached(version: cached?.version, picture: cached?.picture, checkedFor: listing)
-                : Cached(version: response.version, picture: response.picture, checkedFor: listing)
+                ? Cached(version: cached?.version, picture: cached?.picture, size: wanted, checkedFor: listing)
+                : Cached(version: response.version, picture: response.picture, size: wanted, checkedFor: listing)
             self.cache.write(thumbnail, for: path)
             if !cancelled.value {
                 completion(thumbnail.picture)

@@ -245,6 +245,9 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
 
     private(set) var path: String?
     private var density = Density.standard
+    /// The pane's grid and look, at its icon size.
+    private var layout = DesignTokens.iconGrid(density: .standard)
+    private var style = IconItemStyle.make(density: .standard)
     private var iconRequest: LoadHandle?
     private var thumbnailRequest: LoadHandle?
     private var hasThumbnail = false
@@ -294,12 +297,12 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         let changed = path != entry.path
         path = entry.path
         density = pane.density
+        layout = pane.layout
+        style = pane.style
         nameField.stringValue = entry.name
         root.setAccessibilityLabel(entry.name)
         // `title={entry.name}`: the whole name, for one shortened in the middle.
         root.toolTip = entry.name
-        let layout = pane.layout
-        let style = pane.style
         label.tagDots.colors = host.tagColors(for: entry.path)
         fitName(entry, host: host, layout: layout)
         tile.radius = CGFloat(style.tileRadius)
@@ -318,17 +321,17 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
     private func fitName(_ entry: DirectoryEntry, host: any ContentPaneHost, layout: IconGridLayout) {
         let indent = label.firstLineIndent
         let fitted = IconLabelText.fit(
-            name: entry.name, extension: entry.fileExtension, density: density, firstLineIndent: indent)
+            name: entry.name, extension: entry.fileExtension, layout: layout, firstLineIndent: indent)
         label.density = density
         label.font = IconLabelText.font(layout)
         label.stringValue = fitted
-        label.lines = IconLabelText.lines(fitted, density: density, firstLineIndent: indent)
+        label.lines = IconLabelText.lines(fitted, layout: layout, firstLineIndent: indent)
         // The match is marked in what is left of a name shortened in the middle.
         label.marks =
             host.search?.match(in: entry.name).map {
                 NameHighlight.mapToLabel(name: entry.name, label: fitted, match: $0)
             } ?? []
-        labelTextWidth = IconLabelText.width(fitted, density: density) + Double(indent)
+        labelTextWidth = IconLabelText.width(fitted, layout: layout) + Double(indent)
     }
 
     private var labelTextWidth = 0.0
@@ -339,7 +342,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         let theme = pane.host?.theme ?? AppearanceModel.shared.theme
         let style = pane.style
         thumbnailRequest = IconThumbnails.store.load(
-            path: entry.path, kind: entry.iconEntry.kind, listing: pane.listing
+            path: entry.path, kind: entry.iconEntry.kind, size: ThumbnailStore.pixelSize(forIconSize: layout.iconSize),
+            listing: pane.listing
         ) { [weak self] picture in
             guard let self, self.path == entry.path else { return }
             if let picture {
@@ -411,8 +415,6 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
     // MARK: Layout
 
     private func layoutParts() {
-        let layout = DesignTokens.iconGrid(density: density)
-        let style = IconItemStyle.make(density: density)
         let tileFrame = layout.tileFrame(style: style)
         tile.frame = NSRect(x: tileFrame.x, y: tileFrame.y, width: tileFrame.width, height: tileFrame.height)
         let inset = layout.iconInset

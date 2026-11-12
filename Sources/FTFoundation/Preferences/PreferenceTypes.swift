@@ -214,8 +214,8 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
     }
 }
 
-/// How wide the Compact List's columns are, at each density.
-public struct CompactListWidths: Codable, Equatable, Sendable {
+/// A size kept for each density: the Compact List's column width, the Icons view's icon size.
+public struct DensitySizes: Codable, Equatable, Sendable {
     public var standard: Int
     public var finder: Int
 
@@ -224,8 +224,10 @@ public struct CompactListWidths: Codable, Equatable, Sendable {
         self.finder = finder
     }
 
-    /// The widths before the columns are resized.
-    public static let defaults = CompactListWidths(standard: 292, finder: 252)
+    /// The Compact List's column widths before they are changed.
+    public static let compactListDefaults = DensitySizes(standard: 292, finder: 252)
+    /// The Icons view's icon sizes before they are changed.
+    public static let iconDefaults = DensitySizes(standard: 64, finder: 64)
 
     public subscript(density: Density) -> Int {
         get {
@@ -432,6 +434,16 @@ public enum AppPreferenceLimits {
     public static let treeWidthRange = 220...520
     public static let inspectorWidthRange = 260...480
     public static let compactListWidthRange = 160...600
+    public static let iconSizeRange = 32...128
+    /// Icon sizes go in steps of this many points.
+    public static let iconSizeStep = 8
+
+    /// An icon size within its range, at a whole step.
+    public static func clampIconSize(_ value: Double) -> Int {
+        let step = Double(iconSizeStep)
+        let stepped = (value / step).rounded() * step
+        return clampRounded(stepped, Double(iconSizeRange.lowerBound), Double(iconSizeRange.upperBound))
+    }
 
     /// The order of the columns before any is moved: the order `OptionalDetailColumnKey` lists them in.
     public static let defaultDetailColumnOrder: [OptionalDetailColumnKey] = OptionalDetailColumnKey.allCases

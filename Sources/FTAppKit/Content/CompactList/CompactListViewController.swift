@@ -30,7 +30,7 @@ final class CompactListViewController: ItemGridPane {
     /// The density's sizes, at the column width saved for it.
     override func metricsChanged() -> Bool {
         let next = host?.columnState.density ?? .standard
-        let width = Double(host?.columnState.compactListWidths[next] ?? CompactListWidths.defaults[next])
+        let width = Double(host?.columnState.compactListWidths[next] ?? DensitySizes.compactListDefaults[next])
         guard next != density || width != layout.itemWidth else { return false }
         if next != density {
             density = next
@@ -145,7 +145,8 @@ final class CompactListViewController: ItemGridPane {
     // MARK: Resizing the columns
 
     /// A new column width (the status bar's slider) resizes the columns in place, the column at the left of the view
-    /// keeping its left edge where it is; a new density lays the list out again.
+    /// keeping its left edge where it is, then the lead brought back into view if it was in view; a new density lays
+    /// the list out again.
     override func columnsChanged() {
         guard (host?.columnState.density ?? .standard) == density else {
             super.columnsChanged()
@@ -162,6 +163,7 @@ final class CompactListViewController: ItemGridPane {
         clip.scroll(to: NSPoint(x: min(maxLeft, max(0, left)), y: clip.bounds.origin.y))
         scroll.reflectScrolledClipView(clip)
         positionRenameField()
+        keepInView(.layout)
     }
 
     // MARK: Keeping the selection in view

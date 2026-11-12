@@ -139,21 +139,35 @@ struct AppPreferencesTests {
         // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 54)
+        #expect(PreferenceKey.allCases.count == 55)
     }
 
     // The Compact List keeps a width for each density; a saved one is kept within 160…600, a missing one is the
     // density's default.
     @Test func compactListWidthsAreKeptPerDensityWithinTheirLimits() throws {
-        #expect(AppPreferences.defaults().compactListWidths == CompactListWidths(standard: 292, finder: 252))
+        #expect(AppPreferences.defaults().compactListWidths == DensitySizes(standard: 292, finder: 252))
         let read = PreferencesSanitizer.sanitize(
             try JSONNode.parse(Data(#"{"compactListWidths": {"standard": 9000, "finder": "wide"}}"#.utf8)),
             defaults: .defaults())
-        #expect(read.compactListWidths == CompactListWidths(standard: 600, finder: 252))
+        #expect(read.compactListWidths == DensitySizes(standard: 600, finder: 252))
         let narrow = PreferencesSanitizer.sanitize(
             try JSONNode.parse(Data(#"{"compactListWidths": {"finder": 12.4}}"#.utf8)), defaults: .defaults())
-        #expect(narrow.compactListWidths == CompactListWidths(standard: 292, finder: 160))
+        #expect(narrow.compactListWidths == DensitySizes(standard: 292, finder: 160))
         #expect(!PreferenceKey.compactListWidths.isWindowSessionKey)
+    }
+
+    // The Icons view keeps an icon size for each density, from 32 to 128 in steps of 8; a missing one is 64.
+    @Test func iconSizesAreKeptPerDensityInStepsWithinTheirLimits() throws {
+        #expect(AppPreferences.defaults().iconSizes == DensitySizes(standard: 64, finder: 64))
+        let read = PreferencesSanitizer.sanitize(
+            try JSONNode.parse(Data(#"{"iconSizes": {"standard": 99, "finder": 4}}"#.utf8)), defaults: .defaults())
+        #expect(read.iconSizes == DensitySizes(standard: 96, finder: 32))
+        let large = PreferencesSanitizer.sanitize(
+            try JSONNode.parse(Data(#"{"iconSizes": {"finder": 500}}"#.utf8)), defaults: .defaults())
+        #expect(large.iconSizes == DensitySizes(standard: 64, finder: 128))
+        #expect(AppPreferenceLimits.clampIconSize(75.9) == 72)
+        #expect(AppPreferenceLimits.clampIconSize(76) == 80)
+        #expect(!PreferenceKey.iconSizes.isWindowSessionKey)
     }
 
     @Test func filesRoundTripWithTheSameJSONKeys() throws {

@@ -1592,6 +1592,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.onCompactListWidthChanged = { [weak self] density, width in
             self?.updatePreferences { $0.compactListWidths[density] = width }
         }
+        content.onIconSizeChanged = { [weak self] density, size in
+            self?.updatePreferences { $0.iconSizes[density] = size }
+        }
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
         content.setColumns(ListColumnState(preferences: preferences))

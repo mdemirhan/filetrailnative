@@ -157,12 +157,14 @@ public enum PreferencesSanitizer {
         return result
     }
 
-    private static func compactListWidths(_ value: JSONNode?, _ defaults: CompactListWidths) -> CompactListWidths {
+    /// A size for each density, each checked by `clamp`; a missing one is its default.
+    private static func densitySizes(
+        _ value: JSONNode?, _ defaults: DensitySizes, clamp: (Double) -> Int
+    ) -> DensitySizes {
         guard let record = value?.object else { return defaults }
         var result = defaults
         for density in Density.allCases {
-            let saved = record[density.rawValue]?.number ?? Double(defaults[density])
-            result[density] = AppPreferenceLimits.clampPaneWidth(saved, AppPreferenceLimits.compactListWidthRange)
+            result[density] = clamp(record[density.rawValue]?.number ?? Double(defaults[density]))
         }
         return result
     }
@@ -195,7 +197,10 @@ public enum PreferencesSanitizer {
                 ? defaults.searchColumnOrder
                 : AppPreferenceLimits.normalizeSearchColumnOrder(record["searchColumnOrder"]),
             searchColumnWidths: searchColumnWidths(record["searchColumnWidths"], defaults.searchColumnWidths),
-            compactListWidths: compactListWidths(record["compactListWidths"], defaults.compactListWidths),
+            compactListWidths: densitySizes(record["compactListWidths"], defaults.compactListWidths) {
+                AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
+            },
+            iconSizes: densitySizes(record["iconSizes"], defaults.iconSizes) { AppPreferenceLimits.clampIconSize($0) },
             notificationsEnabled: bool(record, "notificationsEnabled", defaults.notificationsEnabled),
             markClipboardItems: bool(record, "markClipboardItems", defaults.markClipboardItems),
             autoCalculateFolderSizes: bool(record, "autoCalculateFolderSizes", defaults.autoCalculateFolderSizes),

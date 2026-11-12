@@ -9,7 +9,9 @@ struct ListColumnState: Equatable {
     var widths: [DetailColumn: Double]
     var density: Density
     /// The Compact List's column width at each density.
-    var compactListWidths: CompactListWidths = .defaults
+    var compactListWidths: DensitySizes = .compactListDefaults
+    /// The Icons view's icon size at each density.
+    var iconSizes: DensitySizes = .iconDefaults
 
     /// A folder's columns, from Settings and the window's saved widths.
     init(preferences: AppPreferences) {
@@ -18,6 +20,7 @@ struct ListColumnState: Equatable {
         widths = DetailsColumns.widths(preferences.detailColumnWidths)
         density = preferences.density
         compactListWidths = preferences.compactListWidths
+        iconSizes = preferences.iconSizes
     }
 
     init(columns: [DetailColumn], widths: [DetailColumn: Double], density: Density) {

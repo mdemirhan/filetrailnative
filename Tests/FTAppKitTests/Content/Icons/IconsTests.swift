@@ -197,12 +197,15 @@ extension ExplorerWindowlessTests {
         // keeping the end of the stem and the extension.
         @Test func longNamesAreShortenedInTheMiddle() {
             let name = "Panorama of the Miradouro da Senhora do Monte at sunset.jpeg"
-            let fitted = IconLabelText.fit(name: name, extension: "jpeg", density: .standard)
+            let fitted = IconLabelText.fit(
+                name: name, extension: "jpeg", layout: DesignTokens.iconGrid(density: .standard))
             #expect(fitted != name)
             #expect(fitted.contains(IconLabel.ellipsis))
             #expect(fitted.hasSuffix("unset.jpeg"))
-            #expect(IconLabelText.lines(fitted, density: .standard).count == 2)
-            #expect(IconLabelText.fit(name: "note.txt", extension: "txt", density: .standard) == "note.txt")
+            #expect(IconLabelText.lines(fitted, layout: DesignTokens.iconGrid(density: .standard)).count == 2)
+            #expect(
+                IconLabelText.fit(name: "note.txt", extension: "txt", layout: DesignTokens.iconGrid(density: .standard))
+                    == "note.txt")
         }
 
         // An item on the clipboard gets an 18 pt badge on the corner of its tile, 4 pt out.
@@ -296,6 +299,48 @@ extension ExplorerWindowlessTests {
             await settle()
             #expect(!tab.content.isReadingDetails)
             #expect(tab.content.entries.allSatisfy { tab.content.metadata(for: $0.path) == nil })
+            await harness.close()
+        }
+
+        // The status bar's slider sets the icon size in steps of 8: the grid follows it as it moves, and the size is
+        // saved once the slider is let go. The slider shows the icon size in the Icons view.
+        @Test func theSliderSetsTheIconSize() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsIcons)
+            let bar = tab.content.contentShell.pathBarRow
+            let slider = bar.sizeSlider
+            #expect(bar.showsSizeSlider && !slider.isHidden)
+            #expect(slider.minValue == 32 && slider.maxValue == 128 && slider.doubleValue == 64)
+            #expect(slider.toolTip == "Icon Size")
+            #expect(bar.sizeLabel.stringValue == "64 pt" && bar.sizeLabel.isHidden)
+            tab.content.iconSizeChanged(125, save: false)
+            #expect(bar.sizeLabel.stringValue == "128 pt")
+            probe.layout()
+            let icons = try #require(probe.icons)
+            #expect(icons.layout.iconSize == 128)
+            #expect(tab.preferences.iconSizes.standard == 64)
+            let item = try #require(probe.iconItems["Alpha"])
+            #expect(item.view.frame.size == NSSize(width: 168, height: 178))
+            #expect(item.tile.frame == NSRect(x: 16, y: 5, width: 136, height: 136))
+            #expect(item.iconBox.frame == NSRect(x: 4, y: 4, width: 128, height: 128))
+            // Let go: the slider's own action, outside a drag, saves the size.
+            slider.doubleValue = 41
+            _ = slider.sendAction(slider.action, to: slider.target)
+            probe.layout()
+            #expect(icons.layout.iconSize == 40)
+            #expect(slider.doubleValue == 40)
+            // The size shows in place of the status text while the slider moves, and goes once it is still.
+            #expect(bar.sizeLabel.stringValue == "40 pt" && !bar.sizeLabel.isHidden)
+            #expect(bar.status.alphaValue == 0)
+            #expect(await waitUntil(timeout: .seconds(5)) { bar.sizeLabel.isHidden })
+            #expect(bar.status.alphaValue == 1)
+            #expect(tab.preferences.iconSizes == DensitySizes(standard: 40, finder: 64))
+            // The Compact List's slider is the column width; the List has none.
+            tab.perform(.viewAsList)
+            #expect(slider.toolTip == "Column Width" && slider.doubleValue == 292)
+            #expect(bar.sizeLabel.stringValue == "292 pt")
+            tab.perform(.viewAsDetails)
+            #expect(!bar.showsSizeSlider && slider.isHidden && bar.sizeLabel.isHidden)
             await harness.close()
         }
     }

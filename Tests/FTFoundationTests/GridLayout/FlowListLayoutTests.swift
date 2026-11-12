@@ -235,3 +235,27 @@ struct FlowListResizeTests {
         #expect(before == after)
     }
 }
+
+/// The icon grid at another icon size.
+struct IconGridSizeTests {
+    static let base = DesignTokens.iconGrid(density: .standard)
+
+    // At 64 the grid is as it was; larger icons widen the tile, the column, the label and the row with them.
+    @Test func theGridGrowsWithTheIcon() {
+        #expect(Self.base.sized(iconSize: 64) == Self.base)
+        let large = Self.base.sized(iconSize: 128)
+        #expect(large.iconSize == 128 && large.iconBoxSize == 136)
+        #expect(large.cellMinWidth == 168 && large.labelWidth == 166)
+        #expect(large.rowHeight == 180)
+        #expect(large.iconInset == 4)
+    }
+
+    // Smaller icons keep the column wide enough for two lines of name.
+    @Test func smallIconsKeepRoomForTheirNames() {
+        let small = Self.base.sized(iconSize: 32)
+        #expect(small.iconBoxSize == 40)
+        #expect(small.cellMinWidth == 104 && small.labelWidth == 102)
+        #expect(small.rowHeight == 84)
+        #expect(small.columns(containerWidth: 1000) == Self.base.columns(containerWidth: 1000))
+    }
+}

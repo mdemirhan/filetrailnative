@@ -249,24 +249,26 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The status bar's slider shows in the Compact List only, at the width saved for the density on screen.
+        // The status bar's slider is the column width in the Compact List, at the width saved for the density on
+        // screen; the List has none.
         @Test func theColumnWidthSliderShowsInTheCompactListOnly() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 12)
             let bar = tab.content.contentShell.pathBarRow
-            #expect(bar.showsColumnWidth && !bar.columnWidth.isHidden)
-            #expect(bar.columnWidth.doubleValue == 292)
-            #expect(bar.columnWidth.minValue == 160 && bar.columnWidth.maxValue == 600)
+            #expect(bar.showsSizeSlider && !bar.sizeSlider.isHidden)
+            #expect(bar.sizeSlider.doubleValue == 292)
+            #expect(bar.sizeSlider.minValue == 160 && bar.sizeSlider.maxValue == 600)
             probe.layout()
             bar.layoutSubtreeIfNeeded()
-            #expect(bar.columnWidth.frame.maxX == bar.bounds.width - 10)
-            #expect(bar.status.frame.maxX <= bar.columnWidth.frame.minX)
+            #expect(bar.sizeSlider.frame.maxX == bar.bounds.width - 10)
+            #expect(bar.sizeLabel.frame.maxX + 6 == bar.sizeSlider.frame.minX && bar.sizeLabel.isHidden)
+            #expect(bar.status.frame.maxX <= bar.sizeSlider.frame.minX)
             tab.perform(.viewAsIcons)
-            #expect(!bar.showsColumnWidth && bar.columnWidth.isHidden)
+            #expect(bar.showsSizeSlider && bar.sizeSlider.toolTip == "Icon Size")
             tab.perform(.viewAsDetails)
-            #expect(bar.columnWidth.isHidden)
+            #expect(bar.sizeSlider.isHidden)
             tab.perform(.viewAsList)
-            #expect(!bar.columnWidth.isHidden)
+            #expect(!bar.sizeSlider.isHidden)
             await harness.close()
         }
 
@@ -292,11 +294,11 @@ extension ExplorerWindowlessTests {
             let columns = (120 + rows - 1) / rows
             #expect(Double(probe.grid?.frame.width ?? 0) == 20 + Double(columns) * 352 + Double(columns - 1) * 18)
             // Let go: the slider's own action, outside a drag, saves.
-            let slider = tab.content.contentShell.pathBarRow.columnWidth
+            let slider = tab.content.contentShell.pathBarRow.sizeSlider
             slider.doubleValue = 9000
             _ = slider.sendAction(slider.action, to: slider.target)
             #expect(compact.layout.itemWidth == 600)
-            #expect(tab.preferences.compactListWidths == CompactListWidths(standard: 600, finder: 252))
+            #expect(tab.preferences.compactListWidths == DensitySizes(standard: 600, finder: 252))
             await harness.close()
         }
     }

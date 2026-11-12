@@ -15,21 +15,72 @@ final class PathBarRowView: NSView {
     /// Opaque: the path bar lies over the bottom of the content and the Info panel.
     private let backdrop = ContentBackdrop()
     let status = TextBoxField(labelWithString: "")
-    /// The Compact List's column width, at the right of the bar while that view shows.
-    let columnWidth = NSSlider(
-        value: Double(CompactListWidths.defaults.standard),
-        minValue: Double(AppPreferenceLimits.compactListWidthRange.lowerBound),
-        maxValue: Double(AppPreferenceLimits.compactListWidthRange.upperBound), target: nil, action: nil)
-    /// The slider moved to a width; `done` once it is let go, or when a click or a key set it.
-    var onColumnWidth: (Double, Bool) -> Void = { _, _ in }
-    var showsColumnWidth = false {
+    /// The view's size at the right of the bar: the Icons view's icon size, the Compact List's column width. The
+    /// content pane sets its range and value for the view on screen.
+    let sizeSlider = NSSlider(value: 0, minValue: 0, maxValue: 1, target: nil, action: nil)
+    /// The slider moved to a value; `done` once it is let go, or when a click or a key set it.
+    var onSizeSlide: (Double, Bool) -> Void = { _, _ in }
+    var showsSizeSlider = false {
         didSet {
-            guard showsColumnWidth != oldValue else { return }
-            columnWidth.isHidden = !showsColumnWidth || isEditing
+            guard showsSizeSlider != oldValue else { return }
+            sizeSlider.isHidden = !showsSizeSlider || isEditing
+            hideSizeValue(animated: false)
             needsLayout = true
         }
     }
-    static let columnWidthSliderWidth = 96.0
+    static let sizeSliderWidth = 96.0
+    /// The size the slider sets, in points ("64 pt"): it shows over the status text while the slider moves, and fades
+    /// shortly after it stops.
+    let sizeLabel = TextBoxField(labelWithString: "")
+    /// How long the size stays after the slider last moved.
+    static let sizeValueLinger: Duration = .milliseconds(1200)
+    private var sizeValueHide: Task<Void, Never>?
+    var sizeValue = 0 {
+        didSet {
+            guard sizeValue != oldValue else { return }
+            sizeLabel.stringValue = "\(sizeValue) pt"
+            needsLayout = true
+        }
+    }
+    /// The gap between the size and its slider.
+    static let sizeLabelGap = 6.0
+
+    /// The size shows, in place of the status text, until the slider has been still for `sizeValueLinger`.
+    func flashSizeValue() {
+        sizeValueHide?.cancel()
+        sizeLabel.isHidden = false
+        sizeLabel.alphaValue = 1
+        status.alphaValue = 0
+        sizeValueHide = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: Self.sizeValueLinger)
+            guard !Task.isCancelled else { return }
+            self?.hideSizeValue(animated: true)
+        }
+    }
+
+    func hideSizeValue(animated: Bool) {
+        sizeValueHide?.cancel()
+        sizeValueHide = nil
+        guard !sizeLabel.isHidden else {
+            status.alphaValue = 1
+            return
+        }
+        guard animated else {
+            sizeLabel.isHidden = true
+            status.alphaValue = 1
+            return
+        }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.2
+            sizeLabel.animator().alphaValue = 0
+            status.animator().alphaValue = 1
+        } completionHandler: { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self, self.sizeValueHide == nil else { return }
+                self.sizeLabel.isHidden = true
+            }
+        }
+    }
     let pathBar = PathBarView()
     let editor = PathEditorView()
     private let folderMenu = PathFolderMenuController()
@@ -75,16 +126,20 @@ final class PathBarRowView: NSView {
         status.alignment = .left
         status.lineBreakMode = .byTruncatingTail
         status.setAccessibilityIdentifier("statusBar")
-        columnWidth.controlSize = .small
-        columnWidth.isContinuous = true
-        columnWidth.isHidden = true
-        columnWidth.toolTip = "Column Width"
-        columnWidth.setAccessibilityIdentifier("statusBar.columnWidth")
-        columnWidth.target = self
-        columnWidth.action = #selector(columnWidthSlid(_:))
+        sizeSlider.controlSize = .small
+        sizeSlider.isContinuous = true
+        sizeSlider.isHidden = true
+        sizeSlider.setAccessibilityIdentifier("statusBar.sizeSlider")
+        sizeSlider.target = self
+        sizeSlider.action = #selector(sizeSlid(_:))
+        sizeLabel.font = tabularFont(DesignTokens.typeScale.small)
+        sizeLabel.alignment = .right
+        sizeLabel.isHidden = true
+        sizeLabel.setAccessibilityIdentifier("statusBar.sizeValue")
         addSubview(pathBar)
         addSubview(status)
-        addSubview(columnWidth)
+        addSubview(sizeSlider)
+        addSubview(sizeLabel)
         addSubview(editor)
         editor.isHidden = true
         showSegments()
@@ -129,9 +184,10 @@ final class PathBarRowView: NSView {
         needsLayout = true
     }
 
-    @objc private func columnWidthSlid(_ slider: NSSlider) {
+    @objc private func sizeSlid(_ slider: NSSlider) {
         let dragging = NSApp.currentEvent?.type == .leftMouseDragged
-        onColumnWidth(slider.doubleValue, !dragging)
+        onSizeSlide(slider.doubleValue, !dragging)
+        flashSizeValue()
     }
 
     // MARK: Editing
@@ -142,7 +198,8 @@ final class PathBarRowView: NSView {
         folderMenu.close()
         pathBar.isHidden = true
         status.isHidden = true
-        columnWidth.isHidden = true
+        sizeSlider.isHidden = true
+        hideSizeValue(animated: false)
         editor.isHidden = false
         needsLayout = true
         layoutSubtreeIfNeeded()
@@ -156,7 +213,7 @@ final class PathBarRowView: NSView {
         editor.isHidden = true
         pathBar.isHidden = false
         status.isHidden = false
-        columnWidth.isHidden = !showsColumnWidth
+        sizeSlider.isHidden = !showsSizeSlider
         needsLayout = true
         if restoreFocus { onFocusContent() }
     }
@@ -203,12 +260,18 @@ final class PathBarRowView: NSView {
         let contentHeight = bounds.height - contentTop
         // The slider takes the right end; the path bar and the status text share what is left of it.
         var right = bounds.width - Self.paddingInline
-        if showsColumnWidth && !isEditing {
-            let height = columnWidth.intrinsicContentSize.height
-            right -= Self.columnWidthSliderWidth
-            columnWidth.frame = NSRect(
-                x: right, y: contentTop + ((contentHeight - height) / 2), width: Self.columnWidthSliderWidth,
+        if showsSizeSlider && !isEditing {
+            let height = sizeSlider.intrinsicContentSize.height
+            right -= Self.sizeSliderWidth
+            sizeSlider.frame = NSRect(
+                x: right, y: contentTop + ((contentHeight - height) / 2), width: Self.sizeSliderWidth,
                 height: height)
+            // Over the end of the status text, right next to the slider; it takes no room of its own.
+            let labelWidth = ceil(textExtent("600 pt", sizeLabel.font))
+            let labelHeight = lineBox(sizeLabel.font)
+            sizeLabel.frame = NSRect(
+                x: right - Self.sizeLabelGap - labelWidth, y: contentTop + ((contentHeight - labelHeight) / 2),
+                width: labelWidth, height: labelHeight)
             right -= InfoMetrics.pathRowGap
         }
         let width = max(0, right - left)
@@ -228,6 +291,7 @@ final class PathBarRowView: NSView {
         }
         let theme = infoTheme
         status.textColor = ChromeColors.color(theme.palette.textSecondary)
+        sizeLabel.textColor = status.textColor
         // Under the 1 pt edge drawn above it.
         backdrop.frame = NSRect(x: 0, y: 1, width: bounds.width, height: max(0, bounds.height - 1))
         needsDisplay = true

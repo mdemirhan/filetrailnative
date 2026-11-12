@@ -99,6 +99,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onSelectionChanged: ((ContentSelection) -> Void)?
     var onColumnWidthsChanged: (([DetailColumn: Double]) -> Void)?
     var onCompactListWidthChanged: ((Density, Int) -> Void)?
+    var onIconSizeChanged: ((Density, Int) -> Void)?
     /// The menu for a right-click on items or on the background.
     var contextMenuProvider: (([DirectoryEntry]?) -> NSMenu?)?
     var dragHooks = ContentDragHooks()
@@ -251,9 +252,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         container.filterPill.onClear = { [weak self] in self?.clearFilter() }
         container.stateView.onSearchSubfolders = onSearchSubfolders
         shell.onMovedToWindow = { [weak self] window in self?.observeWindow(window) }
-        shell.pathBarRow.onColumnWidth = { [weak self] width, done in
-            self?.compactListWidthChanged(width, save: done)
-        }
+        shell.pathBarRow.onSizeSlide = { [weak self] value, done in self?.sizeSlid(to: value, save: done) }
         loaders.iconStore()?.preloadGenericIcons()
         // The date formatters take a few milliseconds to make: they are made off the main thread, before a row needs them.
         Task.detached(priority: .utility) {
@@ -297,7 +296,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard newMode != mode || pane == nil else { return }
         mode = newMode
         installPane()
-        syncColumnWidthSlider()
         // The new view starts at the top and then brings the selection's lead into view.
         pane?.reload(scrollToTop: true)
         pane?.syncSelection()
@@ -322,6 +320,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         next.showNothingMatches(nothingMatches)
         container.topInset = nothingMatches ? 0 : next.contentTopInset
         next.view.frame = container.bounds
+        syncSizeSlider()
     }
 
     // MARK: A folder
@@ -970,6 +969,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func compactListWidthChanged(_ width: Double, save: Bool) {
         let density = columnState.density
         let clamped = AppPreferenceLimits.clampPaneWidth(width, AppPreferenceLimits.compactListWidthRange)
+        shell.pathBarRow.sizeValue = clamped
         if clamped != columnState.compactListWidths[density] {
             columnState.compactListWidths[density] = clamped
             pane?.columnsChanged()
@@ -977,11 +977,56 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if save { onCompactListWidthChanged?(density, clamped) }
     }
 
-    /// The slider shows in the Compact List only, at its width for the density on screen.
-    private func syncColumnWidthSlider() {
+    /// The status bar's slider set the Icons view's icon size, in steps of 8 points: the icons follow it while it
+    /// moves, and the size is saved once it is let go (or set by a click or a key).
+    func iconSizeChanged(_ size: Double, save: Bool) {
+        let density = columnState.density
+        let stepped = AppPreferenceLimits.clampIconSize(size)
+        shell.pathBarRow.sizeValue = stepped
+        if stepped != columnState.iconSizes[density] {
+            columnState.iconSizes[density] = stepped
+            pane?.columnsChanged()
+        }
+        if save {
+            syncSizeSlider()
+            onIconSizeChanged?(density, stepped)
+        }
+    }
+
+    private func sizeSlid(to value: Double, save: Bool) {
+        switch mode {
+        case .icons: iconSizeChanged(value, save: save)
+        case .list: compactListWidthChanged(value, save: save)
+        case .details: break
+        }
+    }
+
+    /// The slider shows the icon size in the Icons view and the column width in the Compact List, for the density on
+    /// screen; the List has none.
+    private func syncSizeSlider() {
         let bar = shell.pathBarRow
-        bar.showsColumnWidth = mode == .list
-        bar.columnWidth.doubleValue = Double(columnState.compactListWidths[columnState.density])
+        let slider = bar.sizeSlider
+        let density = columnState.density
+        switch mode {
+        case .icons:
+            let range = AppPreferenceLimits.iconSizeRange
+            slider.minValue = Double(range.lowerBound)
+            slider.maxValue = Double(range.upperBound)
+            slider.doubleValue = Double(columnState.iconSizes[density])
+            bar.sizeValue = columnState.iconSizes[density]
+            slider.toolTip = "Icon Size"
+            bar.showsSizeSlider = true
+        case .list:
+            let range = AppPreferenceLimits.compactListWidthRange
+            slider.minValue = Double(range.lowerBound)
+            slider.maxValue = Double(range.upperBound)
+            slider.doubleValue = Double(columnState.compactListWidths[density])
+            bar.sizeValue = columnState.compactListWidths[density]
+            slider.toolTip = "Column Width"
+            bar.showsSizeSlider = true
+        case .details:
+            bar.showsSizeSlider = false
+        }
     }
 
     func contextMenu(for entries: [DirectoryEntry]?) -> NSMenu? {
@@ -997,7 +1042,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard state != columnState else { return }
         columnState = state
         pane?.columnsChanged()
-        syncColumnWidthSlider()
+        syncSizeSlider()
     }
 
     // MARK: Details of the rows on screen

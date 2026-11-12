@@ -25,11 +25,13 @@ final class IconViewController: ItemGridPane {
         collection.wantsLayer = true
     }
 
+    /// The density's grid, at the icon size saved for it.
     override func metricsChanged() -> Bool {
         let next = host?.columnState.density ?? .standard
-        guard next != density else { return false }
+        let size = Double(host?.columnState.iconSizes[next] ?? DensitySizes.iconDefaults[next])
+        guard next != density || size != layout.iconSize else { return false }
         density = next
-        layout = DesignTokens.iconGrid(density: next)
+        layout = DesignTokens.iconGrid(density: next).sized(iconSize: size)
         style = IconItemStyle.make(density: next)
         collection.collectionViewLayout?.invalidateLayout()
         return true

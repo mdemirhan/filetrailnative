@@ -55,6 +55,19 @@ public struct GridRect: Equatable, Sendable, Codable {
 }
 
 extension IconGridLayout {
+    /// The grid for icons `iconSize` points square: the tile is 8 wider than the icon, the column 32 wider than the
+    /// tile but never narrower than the names need (104), the label as wide as the column less 2, and the row the
+    /// tile's height plus room for two lines of name.
+    public func sized(iconSize size: Double) -> IconGridLayout {
+        var sized = self
+        sized.iconSize = size
+        sized.iconBoxSize = size + (iconBoxSize - iconSize)
+        sized.cellMinWidth = max(cellMinWidth, sized.iconBoxSize + (cellMinWidth - iconBoxSize))
+        sized.labelWidth = sized.cellMinWidth - (cellMinWidth - labelWidth)
+        sized.rowHeight = sized.iconBoxSize + (rowHeight - iconBoxSize)
+        return sized
+    }
+
     /// The scroll offset that brings the row holding `itemIndex` whole into view, moving
     /// as little as possible. The first and last rows also bring in the padding next to them.
     public func revealScrollTop(

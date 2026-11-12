@@ -73,6 +73,39 @@ private func request(
 }
 
 @MainActor @Suite struct ThumbnailStoreTests {
+    // Icons up to 64 points take 128-pixel previews; larger ones 256.
+    @Test func largerIconsAskForLargerPreviews() {
+        #expect(ThumbnailStore.pixelSize(forIconSize: 32) == 128)
+        #expect(ThumbnailStore.pixelSize(forIconSize: 64) == 128)
+        #expect(ThumbnailStore.pixelSize(forIconSize: 72) == 256)
+        #expect(ThumbnailStore.pixelSize(forIconSize: 128) == 256)
+    }
+
+    // A preview cached too small is given at once and made again at the larger size, the file being as it was; one
+    // cached large enough serves a smaller size without asking again.
+    @Test func aPreviewTooSmallIsMadeAgainAtTheLargerSize() async {
+        let provider = ScriptedProvider { _ in ThumbnailResponse(version: "10:20", unchanged: false, picture: picture())
+        }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let path = "/Users/demo/photo.jpeg"
+        _ = store.load(path: path, kind: .file, size: 128, listing: listing) { _ in }
+        await idle(queue)
+        let larger = Receiver()
+        _ = store.load(path: path, kind: .file, size: 256, listing: listing) { larger.answers.append($0) }
+        #expect(larger.answers.count == 1 && larger.last != nil)
+        await idle(queue)
+        #expect(
+            provider.calls == [
+                ScriptedProvider.Call(path: path, size: 128, knownVersion: nil),
+                ScriptedProvider.Call(path: path, size: 256, knownVersion: nil),
+            ])
+        _ = store.load(path: path, kind: .file, size: 128, listing: listing) { _ in }
+        await idle(queue)
+        #expect(provider.calls.count == 2)
+    }
+
     @Test func givesNothingUntilThePreviewArrivesThenThePreview() async {
         let provider = ScriptedProvider()
         let queue = ThumbnailLoadQueue()

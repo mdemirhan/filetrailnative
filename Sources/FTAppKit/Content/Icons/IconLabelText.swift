@@ -11,7 +11,7 @@ enum IconLabelText {
         ThemeFonts.sans(layout.labelFontSize)
     }
 
-    /// A wrapping engine per density, kept: making one for each name would be slow.
+    /// A wrapping engine per font size and label width, kept: making one for each name would be slow.
     @MainActor
     private final class Wrapper {
         let storage = NSTextStorage()
@@ -46,47 +46,52 @@ enum IconLabelText {
         }
     }
 
-    private static var wrappers: [Density: Wrapper] = [:]
+    private struct WrapperKey: Hashable {
+        var fontSize: Double
+        var textWidth: Double
+    }
+
+    private static var wrappers: [WrapperKey: Wrapper] = [:]
     private static var fitted: [String: String] = [:]
 
-    private static func wrapper(_ density: Density) -> Wrapper {
-        if let made = wrappers[density] { return made }
-        let made = Wrapper(layout: DesignTokens.iconGrid(density: density))
-        wrappers[density] = made
+    private static func wrapper(_ layout: IconGridLayout) -> Wrapper {
+        let key = WrapperKey(fontSize: layout.labelFontSize, textWidth: layout.labelTextWidth)
+        if let made = wrappers[key] { return made }
+        let made = Wrapper(layout: layout)
+        wrappers[key] = made
         return made
     }
 
     /// The lines `text` wraps into under an icon.
-    static func lines(_ text: String, density: Density, firstLineIndent: CGFloat = 0) -> [String] {
+    static func lines(_ text: String, layout: IconGridLayout, firstLineIndent: CGFloat = 0) -> [String] {
         let string = text as NSString
-        return wrapper(density).lines(text, firstLineIndent: firstLineIndent).map { string.substring(with: $0) }
+        return wrapper(layout).lines(text, firstLineIndent: firstLineIndent).map { string.substring(with: $0) }
     }
 
     /// The width `text` takes on one line.
-    static func width(_ text: String, density: Density) -> Double {
-        Double((text as NSString).size(withAttributes: [.font: wrapper(density).font]).width)
+    static func width(_ text: String, layout: IconGridLayout) -> Double {
+        Double((text as NSString).size(withAttributes: [.font: wrapper(layout).font]).width)
     }
 
     /// The name whole when it fits on two lines, shortened in the middle otherwise. The first line stays
-    /// as it wraps, after the tag dots if there are any; what follows is shortened to one line. Remembered per density,
-    /// indent and name.
+    /// as it wraps, after the tag dots if there are any; what follows is shortened to one line. Remembered per font
+    /// size, label width, indent and name.
     static func fit(
-        name: String, extension fileExtension: String, density: Density, firstLineIndent: CGFloat = 0
+        name: String, extension fileExtension: String, layout: IconGridLayout, firstLineIndent: CGFloat = 0
     ) -> String {
-        let key = "\(density.isFinder ? "f" : "r")\(firstLineIndent)\0\(name)"
+        let key = "\(layout.labelFontSize):\(layout.labelTextWidth):\(firstLineIndent)\0\(name)"
         if let cached = fitted[key] { return cached }
         let result = fitNow(
-            name: name, extension: fileExtension, density: density, firstLineIndent: firstLineIndent)
+            name: name, extension: fileExtension, layout: layout, firstLineIndent: firstLineIndent)
         if fitted.count >= IconLabel.fittedLabelCacheMax { fitted.removeAll() }
         fitted[key] = result
         return result
     }
 
     private static func fitNow(
-        name: String, extension fileExtension: String, density: Density, firstLineIndent: CGFloat
+        name: String, extension fileExtension: String, layout: IconGridLayout, firstLineIndent: CGFloat
     ) -> String {
-        let engine = wrapper(density)
-        let layout = DesignTokens.iconGrid(density: density)
+        let engine = wrapper(layout)
         let lines = engine.lines(name, firstLineIndent: firstLineIndent)
         if lines.count <= IconLabel.lineCount { return name }
         let string = name as NSString
@@ -95,7 +100,7 @@ enum IconLabelText {
         let lineWidth = layout.labelTextWidth + 0.5
         let rest = IconLabel.shortenInMiddle(
             name: string.substring(from: firstLength), extension: fileExtension
-        ) { width($0, density: density) <= lineWidth }
+        ) { width($0, layout: layout) <= lineWidth }
         let candidate = string.substring(to: firstLength) + rest
         return engine.lines(candidate, firstLineIndent: firstLineIndent).count <= IconLabel.lineCount ? candidate : name
     }
