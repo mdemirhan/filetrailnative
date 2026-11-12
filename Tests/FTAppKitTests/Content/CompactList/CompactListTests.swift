@@ -264,11 +264,15 @@ extension ExplorerWindowlessTests {
             #expect(bar.sizeLabel.frame.maxX + 6 == bar.sizeSlider.frame.minX && bar.sizeLabel.isHidden)
             #expect(bar.status.frame.maxX <= bar.sizeSlider.frame.minX)
             tab.perform(.viewAsIcons)
-            #expect(bar.showsSizeSlider && bar.sizeSlider.toolTip == "Icon Size")
+            #expect(bar.showsSizeSlider && bar.sizeSlider.toolTip == "Icon Size (⌘+ bigger, ⌘- smaller, ⌘0 default)")
             tab.perform(.viewAsDetails)
             #expect(bar.sizeSlider.isHidden)
             tab.perform(.viewAsList)
             #expect(!bar.sizeSlider.isHidden)
+            // The tooltip names the keys of the size commands, as chosen in Settings.
+            #expect(bar.sizeSlider.toolTip == "Column Width (⌘+ wider, ⌘- narrower, ⌘0 default)")
+            tab.updatePreferences { $0.shortcutOverrides = ["increaseSize": ["Ctrl+Cmd+="], "resetSize": []] }
+            #expect(await waitUntil { bar.sizeSlider.toolTip == "Column Width (⌃⌘= wider, ⌘- narrower)" })
             await harness.close()
         }
 

@@ -10,6 +10,16 @@ struct TooltipsTests {
         #expect(Tooltips.format("Home", shortcutLabel: "") == "Home")
     }
 
+    // The status bar's slider says what it sets and the keys that change it a step at a time; the List has none.
+    @Test func namesTheSizeSlidersKeys() {
+        #expect(Tooltips.sizeSliderTooltip(.icons) == "Icon Size (⌘+ bigger, ⌘- smaller, ⌘0 default)")
+        #expect(Tooltips.sizeSliderTooltip(.list) == "Column Width (⌘+ wider, ⌘- narrower, ⌘0 default)")
+        #expect(Tooltips.sizeSliderTooltip(.details) == nil)
+        let none = ShortcutDisplay(
+            shortcuts: ShortcutCommands.resolve(["increaseSize": [], "decreaseSize": [], "resetSize": []]))
+        #expect(Tooltips.sizeSliderTooltip(.icons, shortcuts: none) == "Icon Size")
+    }
+
     @Test func saysWhatAClickOnAnOnOffButtonWillDo() {
         let off = ToolbarTooltipState(
             foldersFirst: false, hiddenFilesShown: false, infoPanelOpen: false, infoRowOpen: false)

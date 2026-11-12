@@ -100,6 +100,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onColumnWidthsChanged: (([DetailColumn: Double]) -> Void)?
     var onCompactListWidthChanged: ((Density, Int) -> Void)?
     var onIconSizeChanged: ((Density, Int) -> Void)?
+    /// The keys the size slider's tooltip names, as chosen in Settings.
+    var sizeShortcuts = ShortcutDisplay.defaults {
+        didSet { if sizeShortcuts != oldValue { syncSizeSlider() } }
+    }
     /// The menu for a right-click on items or on the background.
     var contextMenuProvider: (([DirectoryEntry]?) -> NSMenu?)?
     var dragHooks = ContentDragHooks()
@@ -1036,7 +1040,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             slider.maxValue = Double(range.upperBound)
             slider.doubleValue = Double(columnState.iconSizes[density])
             bar.sizeValue = columnState.iconSizes[density]
-            slider.toolTip = "Icon Size"
+            slider.toolTip = Tooltips.sizeSliderTooltip(.icons, shortcuts: sizeShortcuts)
             bar.showsSizeSlider = true
         case .list:
             let range = AppPreferenceLimits.compactListWidthRange
@@ -1044,7 +1048,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             slider.maxValue = Double(range.upperBound)
             slider.doubleValue = Double(columnState.compactListWidths[density])
             bar.sizeValue = columnState.compactListWidths[density]
-            slider.toolTip = "Column Width"
+            slider.toolTip = Tooltips.sizeSliderTooltip(.list, shortcuts: sizeShortcuts)
             bar.showsSizeSlider = true
         case .details:
             bar.showsSizeSlider = false

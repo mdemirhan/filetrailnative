@@ -44,6 +44,22 @@ public enum Tooltips {
         return format(label, shortcutLabel: ShortcutLabels.format(shortcut))
     }
 
+    /// The status bar's size slider: what it sets, then the keys of Make Bigger, Make Smaller and Default Size, each
+    /// with what it does ("Icon Size (⌘+ bigger, ⌘- smaller, ⌘0 default)"). A command with no key is left out.
+    public static func sizeSliderTooltip(_ mode: ExplorerViewMode, shortcuts: ShortcutDisplay = .defaults) -> String? {
+        let label: String
+        let bigger: String
+        let smaller: String
+        switch mode {
+        case .icons: (label, bigger, smaller) = ("Icon Size", "bigger", "smaller")
+        case .list: (label, bigger, smaller) = ("Column Width", "wider", "narrower")
+        case .details: return nil
+        }
+        let keys = [(ShortcutCommandID.increaseSize, bigger), (.decreaseSize, smaller), (.resetSize, "default")]
+            .compactMap { id, effect in shortcuts.label(id).map { "\($0) \(effect)" } }
+        return format(label, shortcutLabel: keys.joined(separator: ", "))
+    }
+
     /// The item's name where it is listed or pointed at: its tooltip, and the » menu.
     public static func toolbarItemLabel(itemID: ToolbarItemID, state: ToolbarTooltipState = ToolbarTooltipState())
         -> String

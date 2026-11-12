@@ -311,7 +311,7 @@ extension ExplorerWindowlessTests {
             let slider = bar.sizeSlider
             #expect(bar.showsSizeSlider && !slider.isHidden)
             #expect(slider.minValue == 32 && slider.maxValue == 128 && slider.doubleValue == 64)
-            #expect(slider.toolTip == "Icon Size")
+            #expect(slider.toolTip == "Icon Size (⌘+ bigger, ⌘- smaller, ⌘0 default)")
             #expect(bar.sizeLabel.stringValue == "64 pt" && bar.sizeLabel.isHidden)
             tab.content.iconSizeChanged(125, save: false)
             #expect(bar.sizeLabel.stringValue == "128 pt")
@@ -337,7 +337,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.preferences.iconSizes == DensitySizes(standard: 40, finder: 64))
             // The Compact List's slider is the column width; the List has none.
             tab.perform(.viewAsList)
-            #expect(slider.toolTip == "Column Width" && slider.doubleValue == 292)
+            #expect(slider.toolTip == "Column Width (⌘+ wider, ⌘- narrower, ⌘0 default)" && slider.doubleValue == 292)
             #expect(bar.sizeLabel.stringValue == "292 pt")
             tab.perform(.viewAsDetails)
             #expect(!bar.showsSizeSlider && slider.isHidden && bar.sizeLabel.isHidden)

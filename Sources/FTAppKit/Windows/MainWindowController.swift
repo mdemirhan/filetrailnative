@@ -1597,6 +1597,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
+        content.sizeShortcuts = sizeShortcuts
         content.setColumns(ListColumnState(preferences: preferences))
         content.setMode(viewMode)
     }
@@ -1630,7 +1631,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// The columns and the density again, from the preferences (Settings changed them, or a scenario did).
+    /// The keys of the size commands, which the status bar's slider names.
+    private var sizeShortcuts: ShortcutDisplay {
+        ShortcutDisplay(shortcuts: ShortcutCommands.resolve(preferences.shortcutOverrides))
+    }
+
     func refreshColumns() {
+        content.sizeShortcuts = sizeShortcuts
         if let search = searchStore, search.showsResults {
             content.setColumns(search.columnState(preferences))
         } else {
