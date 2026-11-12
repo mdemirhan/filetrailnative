@@ -16,7 +16,7 @@ public enum InfoMetrics {
     public static let itemGap = 2.0
     public static let widthSafetyMargin = 8.0
     public static let separatorSlotWidth = 20.0
-    public static let segmentClickDelay = 0.32
+    public static let segmentClickDelay = 0.25
     public static let collapseAfter = 4
     public static let folderMenuMinWidth = 200.0
     public static let folderMenuMaxWidth = 360.0

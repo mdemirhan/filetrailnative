@@ -75,7 +75,6 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     private var revealSignature = ""
     /// A tab that has just come back keeps the scroll it left.
     var holdsScrollPosition = false
-    var clickTimer: (() -> Void)?
     private var loadingTimers: [SidebarModel.ExactKeyBox: () -> Void] = [:]
     private var loadingShown: Set<SidebarModel.ExactKeyBox> = []
 

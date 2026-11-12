@@ -384,8 +384,6 @@ public struct SidebarLayout: Equatable, Sendable {
 
     // MARK: Behavior timings
 
-    /// A click opens the row this long after.
-    public static let clickDelayMilliseconds = 180
     /// After a hand toggle the sidebar does not scroll to the selection for this long.
     public static let handToggleSettleMilliseconds = 1500
     /// The "Jump to" prefix is forgotten this long after the last key.

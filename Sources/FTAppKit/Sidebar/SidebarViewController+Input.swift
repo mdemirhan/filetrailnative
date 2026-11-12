@@ -35,8 +35,6 @@ extension SidebarViewController {
         let meta = event.modifierFlags.contains(.command)
         let isCurrent = state.selection != .none
         if meta, isCurrent {
-            clickTimer?()
-            clickTimer = nil
             model.clearSelection()
             return
         }
@@ -44,21 +42,20 @@ extension SidebarViewController {
             openInNewTab(path)
             return
         }
-        clickTimer?()
-        clickTimer = model.schedule(SidebarLayout.clickDelayMilliseconds) { [weak self] in
-            self?.clickTimer = nil
-            self?.activate(state, expandFirst: self?.model.singleClickExpand ?? false)
-        }
+        // A click opens the folder at once; the second click of a double-click only opens or closes its branch.
+        guard clickCount <= 1 else { return }
+        activate(state, expandFirst: model.singleClickExpand)
     }
 
     func sidebarList(_ list: SidebarListView, doubleClick state: SidebarRowState) {
         model.setSubview(state.subview)
-        // Its clicks have already opened or closed a heading.
-        if state.item.id.isHeading { return }
-        clickTimer?()
-        clickTimer = nil
-        model.markPressed(state.item.id)
-        activate(state, expandFirst: true)
+        let item = state.item
+        // Its clicks have already opened or closed a heading. With single-click expand on, the first click has already
+        // opened or closed the branch.
+        guard !item.id.isHeading, !model.singleClickExpand, item.kind == .filesystem, item.canExpand,
+            let path = item.path
+        else { return }
+        model.toggleByHand(path)
     }
 
     /// Opens the row's folder; a folder of the tree toggles first when asked to.

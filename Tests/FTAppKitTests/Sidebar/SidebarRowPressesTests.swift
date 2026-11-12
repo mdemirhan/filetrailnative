@@ -78,28 +78,18 @@ extension ExplorerWindowlessTests {
 
         // MARK: Clicks
 
-        @Test func aClickOpensTheRowAfterTheDelayAndAnotherClickStartsItAgain() async throws {
+        // A click opens its folder at once: nothing waits to see whether a second click follows.
+        @Test func aClickOpensTheRowAtOnce() async throws {
             let opened = try await open()
-            let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
-            let root = tab.shownFolderPath
+            let (tab, controller) = (opened.tab, opened.controller)
             let alpha = listed(opened.harness, "Alpha")
             let steps = tab.navigationHistory.paths.count
 
             try press(try row(alpha, in: controller))
-            clock.advance(179)
-            await settle()
-            #expect(tab.shownFolderPath == root)
-            #expect(controller.model.selected != .filesystem(alpha))
-            // Another click in the 180 ms: the time starts again from it.
-            try press(try row(alpha, in: controller))
-            clock.advance(179)
-            await settle()
-            #expect(controller.model.selected != .filesystem(alpha))
-            #expect(tab.shownFolderPath == root)
-            clock.advance(1)
             #expect(controller.model.selected == .filesystem(alpha))
             #expect(await waitUntil { tab.shownFolderPath == alpha })
             #expect(tab.navigationHistory.paths.count == steps + 1)
+            #expect(controller.model.nodes[alpha]?.expanded == false)
             await opened.harness.close()
         }
 
@@ -153,12 +143,11 @@ extension ExplorerWindowlessTests {
 
         @Test func aSingleClickExpandsTheFolderOnlyWithTheSettingOn() async throws {
             let opened = try await open()
-            let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
+            let (tab, controller) = (opened.tab, opened.controller)
             let alpha = listed(opened.harness, "Alpha")
             let beta = listed(opened.harness, "Beta")
 
             try press(try row(alpha, in: controller))
-            clock.advance(180)
             #expect(await waitUntil { tab.shownFolderPath == alpha })
             #expect(controller.model.nodes[alpha]?.expanded == false)
 
@@ -166,8 +155,6 @@ extension ExplorerWindowlessTests {
             tab.preferencesChanged(PreferencesChange(keys: [], senderID: nil))
             #expect(controller.model.singleClickExpand)
             try press(try row(beta, in: controller))
-            #expect(controller.model.nodes[beta]?.expanded == false)
-            clock.advance(180)
             #expect(controller.model.selected == .filesystem(beta))
             #expect(await waitUntil { controller.model.nodes[beta]?.expanded == true })
             #expect(await waitUntil { tab.shownFolderPath == beta })
@@ -183,7 +170,28 @@ extension ExplorerWindowlessTests {
             try press(try row(alpha, in: controller), count: 2)
             #expect(await waitUntil { controller.model.nodes[alpha]?.expanded == true })
             #expect(await waitUntil { tab.shownFolderPath == alpha })
-            // The first click's time was called off, as was the second's.
+            clock.advance(1000)
+            await settle()
+            #expect(controller.model.nodes[alpha]?.expanded == true)
+            #expect(tab.navigationHistory.paths.count == steps + 1)
+            // Another double-click closes the branch again, and the folder stays open.
+            try press(try row(alpha, in: controller), count: 2)
+            #expect(await waitUntil { controller.model.nodes[alpha]?.expanded == false })
+            #expect(tab.shownFolderPath == alpha)
+            await opened.harness.close()
+        }
+
+        // With single-click expand on, the first click of a double-click opens the branch and the second leaves it open.
+        @Test func aDoubleClickWithSingleClickExpandOnTogglesTheFolderOnce() async throws {
+            let opened = try await open()
+            let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
+            let alpha = listed(opened.harness, "Alpha")
+            let steps = tab.navigationHistory.paths.count
+            tab.updatePreferences { $0.singleClickExpandTreeItems = true }
+            tab.preferencesChanged(PreferencesChange(keys: [], senderID: nil))
+
+            try press(try row(alpha, in: controller), count: 2)
+            #expect(await waitUntil { tab.shownFolderPath == alpha })
             clock.advance(1000)
             await settle()
             #expect(controller.model.nodes[alpha]?.expanded == true)
