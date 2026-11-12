@@ -29,6 +29,7 @@ enum AppStateJSON {
         "searchColumns": ["folder"] + columnKeys,
         "detailColumnWidths": ["name"] + columnKeys,
         "searchColumnWidths": ["name", "folder"] + columnKeys,
+        "compactListWidths": Density.allCases.map(\.rawValue),
         "favorites": ["path", "icon"],
         "openWithApplications": ["id", "appPath", "appName"],
         "terminalApp": ["appPath", "appName"],

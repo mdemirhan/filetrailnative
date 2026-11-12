@@ -18,7 +18,7 @@ struct PreferenceKeyTests {
                                         "created": 169},
                  "searchColumns": {"folder": false, "kind": true, "created": true},
                  "searchColumnOrder": ["size", "folder", "modified", "kind", "created", "permissions"],
-                 "searchColumnWidths": {"name": 400, "folder": 300},
+                 "searchColumnWidths": {"name": 400, "folder": 300}, "compactListWidths": {"standard": 400, "finder": 200},
                  "notificationsEnabled": false, "markClipboardItems": false, "autoCalculateFolderSizes": false,
                  "folderTreeOpen": false, "propertiesOpen": true, "detailRowOpen": true,
                  "topToolbarItems": ["search", "back", "title"],
@@ -44,7 +44,7 @@ struct PreferenceKeyTests {
     @Test func namesEveryFieldOfThePreferencesOnce() throws {
         let encoded = try #require(try JSONNode.of(AppPreferences.defaults()).object)
         #expect(Set(encoded.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 53)
+        #expect(PreferenceKey.allCases.count == 54)
         #expect(PreferenceKey(\AppPreferences.theme) == .theme)
         #expect(PreferenceKey(\AppPreferences.terminalApp) == .terminalApp)
         #expect(PreferenceKey(\AppPreferences.detailColumnWidths.name) == nil)

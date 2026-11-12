@@ -15,6 +15,21 @@ final class PathBarRowView: NSView {
     /// Opaque: the path bar lies over the bottom of the content and the Info panel.
     private let backdrop = ContentBackdrop()
     let status = TextBoxField(labelWithString: "")
+    /// The Compact List's column width, at the right of the bar while that view shows.
+    let columnWidth = NSSlider(
+        value: Double(CompactListWidths.defaults.standard),
+        minValue: Double(AppPreferenceLimits.compactListWidthRange.lowerBound),
+        maxValue: Double(AppPreferenceLimits.compactListWidthRange.upperBound), target: nil, action: nil)
+    /// The slider moved to a width; `done` once it is let go, or when a click or a key set it.
+    var onColumnWidth: (Double, Bool) -> Void = { _, _ in }
+    var showsColumnWidth = false {
+        didSet {
+            guard showsColumnWidth != oldValue else { return }
+            columnWidth.isHidden = !showsColumnWidth || isEditing
+            needsLayout = true
+        }
+    }
+    static let columnWidthSliderWidth = 96.0
     let pathBar = PathBarView()
     let editor = PathEditorView()
     private let folderMenu = PathFolderMenuController()
@@ -60,8 +75,16 @@ final class PathBarRowView: NSView {
         status.alignment = .left
         status.lineBreakMode = .byTruncatingTail
         status.setAccessibilityIdentifier("statusBar")
+        columnWidth.controlSize = .small
+        columnWidth.isContinuous = true
+        columnWidth.isHidden = true
+        columnWidth.toolTip = "Column Width"
+        columnWidth.setAccessibilityIdentifier("statusBar.columnWidth")
+        columnWidth.target = self
+        columnWidth.action = #selector(columnWidthSlid(_:))
         addSubview(pathBar)
         addSubview(status)
+        addSubview(columnWidth)
         addSubview(editor)
         editor.isHidden = true
         showSegments()
@@ -106,6 +129,11 @@ final class PathBarRowView: NSView {
         needsLayout = true
     }
 
+    @objc private func columnWidthSlid(_ slider: NSSlider) {
+        let dragging = NSApp.currentEvent?.type == .leftMouseDragged
+        onColumnWidth(slider.doubleValue, !dragging)
+    }
+
     // MARK: Editing
 
     func beginEditing() {
@@ -114,6 +142,7 @@ final class PathBarRowView: NSView {
         folderMenu.close()
         pathBar.isHidden = true
         status.isHidden = true
+        columnWidth.isHidden = true
         editor.isHidden = false
         needsLayout = true
         layoutSubtreeIfNeeded()
@@ -127,6 +156,7 @@ final class PathBarRowView: NSView {
         editor.isHidden = true
         pathBar.isHidden = false
         status.isHidden = false
+        columnWidth.isHidden = !showsColumnWidth
         needsLayout = true
         if restoreFocus { onFocusContent() }
     }
@@ -169,9 +199,19 @@ final class PathBarRowView: NSView {
     override func layout() {
         super.layout()
         let left = Self.paddingInline
-        let width = max(0, bounds.width - left - Self.paddingInline)
         let contentTop = 1.0
         let contentHeight = bounds.height - contentTop
+        // The slider takes the right end; the path bar and the status text share what is left of it.
+        var right = bounds.width - Self.paddingInline
+        if showsColumnWidth && !isEditing {
+            let height = columnWidth.intrinsicContentSize.height
+            right -= Self.columnWidthSliderWidth
+            columnWidth.frame = NSRect(
+                x: right, y: contentTop + ((contentHeight - height) / 2), width: Self.columnWidthSliderWidth,
+                height: height)
+            right -= InfoMetrics.pathRowGap
+        }
+        let width = max(0, right - left)
         if isEditing {
             editor.frame = NSRect(x: left, y: contentTop, width: width, height: contentHeight)
         } else {

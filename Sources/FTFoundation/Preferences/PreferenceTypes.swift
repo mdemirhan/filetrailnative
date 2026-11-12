@@ -214,6 +214,35 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
     }
 }
 
+/// How wide the Compact List's columns are, at each density.
+public struct CompactListWidths: Codable, Equatable, Sendable {
+    public var standard: Int
+    public var finder: Int
+
+    public init(standard: Int, finder: Int) {
+        self.standard = standard
+        self.finder = finder
+    }
+
+    /// The widths before the columns are resized.
+    public static let defaults = CompactListWidths(standard: 292, finder: 252)
+
+    public subscript(density: Density) -> Int {
+        get {
+            switch density {
+            case .standard: standard
+            case .finder: finder
+            }
+        }
+        set {
+            switch density {
+            case .standard: standard = newValue
+            case .finder: finder = newValue
+            }
+        }
+    }
+}
+
 public struct SearchColumnVisibility: Codable, Equatable, Sendable {
     public var folder: Bool
     public var modified: Bool
@@ -402,6 +431,7 @@ public enum AppPreferenceLimits {
     public static let openItemLimitMax = 50
     public static let treeWidthRange = 220...520
     public static let inspectorWidthRange = 260...480
+    public static let compactListWidthRange = 160...600
 
     /// The order of the columns before any is moved: the order `OptionalDetailColumnKey` lists them in.
     public static let defaultDetailColumnOrder: [OptionalDetailColumnKey] = OptionalDetailColumnKey.allCases

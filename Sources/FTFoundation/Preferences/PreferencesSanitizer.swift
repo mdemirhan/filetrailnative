@@ -157,6 +157,16 @@ public enum PreferencesSanitizer {
         return result
     }
 
+    private static func compactListWidths(_ value: JSONNode?, _ defaults: CompactListWidths) -> CompactListWidths {
+        guard let record = value?.object else { return defaults }
+        var result = defaults
+        for density in Density.allCases {
+            let saved = record[density.rawValue]?.number ?? Double(defaults[density])
+            result[density] = AppPreferenceLimits.clampPaneWidth(saved, AppPreferenceLimits.compactListWidthRange)
+        }
+        return result
+    }
+
     // MARK: Preferences
 
     /// Every saved value is checked; one that is missing or invalid takes its default from
@@ -185,6 +195,7 @@ public enum PreferencesSanitizer {
                 ? defaults.searchColumnOrder
                 : AppPreferenceLimits.normalizeSearchColumnOrder(record["searchColumnOrder"]),
             searchColumnWidths: searchColumnWidths(record["searchColumnWidths"], defaults.searchColumnWidths),
+            compactListWidths: compactListWidths(record["compactListWidths"], defaults.compactListWidths),
             notificationsEnabled: bool(record, "notificationsEnabled", defaults.notificationsEnabled),
             markClipboardItems: bool(record, "markClipboardItems", defaults.markClipboardItems),
             autoCalculateFolderSizes: bool(record, "autoCalculateFolderSizes", defaults.autoCalculateFolderSizes),

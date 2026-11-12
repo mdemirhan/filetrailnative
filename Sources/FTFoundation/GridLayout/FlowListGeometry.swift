@@ -89,6 +89,21 @@ extension FlowListLayout {
         return (first * rows)..<min(itemCount, (last + 1) * rows)
     }
 
+    // MARK: Resizing the columns
+
+    /// The column at the left of a view scrolled to `scrollLeft`: the one whose step (the column and its gap) holds it.
+    public func column(atScrollLeft scrollLeft: Double) -> Int {
+        let column = ((scrollLeft - paddingInline) / columnStep).rounded(.down)
+        guard column.isFinite, column > 0 else { return 0 }
+        return Int(min(column, 1e9))
+    }
+
+    /// The scroll offset that keeps `column`'s left edge where it was on screen when the columns were `startWidth`
+    /// wide and scrolled to `startScrollLeft`: the columns before it grew or shrank by as much each.
+    public func anchoredScrollLeft(column: Int, startWidth: Double, startScrollLeft: Double) -> Double {
+        startScrollLeft + Double(column) * (itemWidth - startWidth)
+    }
+
     /// What a page is made of: the columns that fit in the viewport (its width less the padding, plus the gap after
     /// the last column), each a column and its gap.
     public func pageViewport(viewportWidth: Double) -> Double {

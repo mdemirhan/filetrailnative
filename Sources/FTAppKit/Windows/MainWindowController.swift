@@ -1589,6 +1589,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.onSearchSubfolders = { [weak self] in self?.focusFileSearch() }
         content.onColumnWidthsChanged = { [weak self] widths in self?.saveColumnWidths(widths) }
+        content.onCompactListWidthChanged = { [weak self] density, width in
+            self?.updatePreferences { $0.compactListWidths[density] = width }
+        }
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
         content.setColumns(ListColumnState(preferences: preferences))

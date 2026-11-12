@@ -248,5 +248,56 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.entries.allSatisfy { tab.content.metadata(for: $0.path) == nil })
             await harness.close()
         }
+
+        // The status bar's slider shows in the Compact List only, at the width saved for the density on screen.
+        @Test func theColumnWidthSliderShowsInTheCompactListOnly() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsList, files: 12)
+            let bar = tab.content.contentShell.pathBarRow
+            #expect(bar.showsColumnWidth && !bar.columnWidth.isHidden)
+            #expect(bar.columnWidth.doubleValue == 292)
+            #expect(bar.columnWidth.minValue == 160 && bar.columnWidth.maxValue == 600)
+            probe.layout()
+            bar.layoutSubtreeIfNeeded()
+            #expect(bar.columnWidth.frame.maxX == bar.bounds.width - 10)
+            #expect(bar.status.frame.maxX <= bar.columnWidth.frame.minX)
+            tab.perform(.viewAsIcons)
+            #expect(!bar.showsColumnWidth && bar.columnWidth.isHidden)
+            tab.perform(.viewAsDetails)
+            #expect(bar.columnWidth.isHidden)
+            tab.perform(.viewAsList)
+            #expect(!bar.columnWidth.isHidden)
+            await harness.close()
+        }
+
+        // Moving the slider resizes every column as it goes; the column at the left of the view keeps its left edge.
+        // The width is saved once the slider is let go, for the density on screen.
+        @Test func theSliderResizesTheColumnsAndSavesTheWidthWhenLetGo() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsList, files: 120)
+            let compact = try #require(probe.compact)
+            let clip = compact.scroll.contentView
+            let rows = compact.rowsPerColumn
+            clip.scroll(to: NSPoint(x: 10 + 2 * 310 + 40, y: 0))
+            compact.scroll.reflectScrolledClipView(clip)
+            let leftEdge = { (width: Double) in 10 + 2 * (width + 18) - Double(clip.bounds.minX) }
+            let before = leftEdge(292)
+            tab.content.compactListWidthChanged(352, save: false)
+            probe.layout()
+            #expect(compact.layout.itemWidth == 352)
+            #expect(leftEdge(352) == before)
+            #expect(tab.preferences.compactListWidths.standard == 292)
+            let third = try #require(probe.compactItems[tab.content.entries[2 * rows].name])
+            #expect(Double(third.view.frame.minX) == 10 + 2 * 370)
+            let columns = (120 + rows - 1) / rows
+            #expect(Double(probe.grid?.frame.width ?? 0) == 20 + Double(columns) * 352 + Double(columns - 1) * 18)
+            // Let go: the slider's own action, outside a drag, saves.
+            let slider = tab.content.contentShell.pathBarRow.columnWidth
+            slider.doubleValue = 9000
+            _ = slider.sendAction(slider.action, to: slider.target)
+            #expect(compact.layout.itemWidth == 600)
+            #expect(tab.preferences.compactListWidths == CompactListWidths(standard: 600, finder: 252))
+            await harness.close()
+        }
     }
 }

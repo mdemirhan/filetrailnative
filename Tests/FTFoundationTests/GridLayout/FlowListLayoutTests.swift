@@ -209,3 +209,29 @@ struct RowsPerColumnTests {
         #expect(Self.rows(669) == 14)
     }
 }
+
+/// Resizing the Compact List's columns in place.
+struct FlowListResizeTests {
+    static let standard = DesignTokens.flowList(density: .standard)
+
+    // The column at the left of the view is the one whose step holds the scroll offset.
+    @Test func findsTheColumnAtTheLeftOfTheView() {
+        let layout = Self.standard
+        #expect(layout.column(atScrollLeft: 0) == 0)
+        #expect(layout.column(atScrollLeft: 10 + 309) == 0)
+        #expect(layout.column(atScrollLeft: 10 + 310) == 1)
+        #expect(layout.column(atScrollLeft: 10 + 3 * 310 + 5) == 3)
+        #expect(layout.column(atScrollLeft: -40) == 0)
+    }
+
+    // That column's left edge stays put: the columns before it grew by as much each, so the list scrolls by that.
+    @Test func keepsTheColumnsLeftEdgeInPlace() {
+        var wider = Self.standard
+        wider.itemWidth = 352
+        #expect(wider.anchoredScrollLeft(column: 0, startWidth: 292, startScrollLeft: 40) == 40)
+        #expect(wider.anchoredScrollLeft(column: 3, startWidth: 292, startScrollLeft: 40) == 40 + 3 * 60)
+        let before = Self.standard.paddingInline + 3 * Self.standard.columnStep - 40
+        let after = wider.paddingInline + 3 * wider.columnStep - (40 + 3 * 60)
+        #expect(before == after)
+    }
+}

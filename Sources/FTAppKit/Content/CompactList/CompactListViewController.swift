@@ -27,13 +27,18 @@ final class CompactListViewController: ItemGridPane {
         scroll.verticalScrollElasticity = .none
     }
 
+    /// The density's sizes, at the column width saved for it.
     override func metricsChanged() -> Bool {
         let next = host?.columnState.density ?? .standard
-        guard next != density else { return false }
-        density = next
+        let width = Double(host?.columnState.compactListWidths[next] ?? CompactListWidths.defaults[next])
+        guard next != density || width != layout.itemWidth else { return false }
+        if next != density {
+            density = next
+            nameWidths = [:]
+        }
         layout = DesignTokens.flowList(density: next)
+        layout.itemWidth = width
         nameFont = ThemeFonts.sans(layout.fontSize)
-        nameWidths = [:]
         collection.collectionViewLayout?.invalidateLayout()
         return true
     }
@@ -135,6 +140,28 @@ final class CompactListViewController: ItemGridPane {
                 bottom: hit.rect.bottom + top)
             return moved
         }
+    }
+
+    // MARK: Resizing the columns
+
+    /// A new column width (the status bar's slider) resizes the columns in place, the column at the left of the view
+    /// keeping its left edge where it is; a new density lays the list out again.
+    override func columnsChanged() {
+        guard (host?.columnState.density ?? .standard) == density else {
+            super.columnsChanged()
+            return
+        }
+        let startWidth = layout.itemWidth
+        let clip = scroll.contentView
+        let startScroll = Double(clip.bounds.origin.x)
+        let column = layout.column(atScrollLeft: startScroll)
+        guard metricsChanged() else { return }
+        placeItems()
+        let maxLeft = max(0, Double(collection.frame.width - clip.bounds.width))
+        let left = layout.anchoredScrollLeft(column: column, startWidth: startWidth, startScrollLeft: startScroll)
+        clip.scroll(to: NSPoint(x: min(maxLeft, max(0, left)), y: clip.bounds.origin.y))
+        scroll.reflectScrolledClipView(clip)
+        positionRenameField()
     }
 
     // MARK: Keeping the selection in view

@@ -20,6 +20,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var searchColumns: SearchColumnVisibility
     public var searchColumnOrder: [OptionalSearchColumnKey]
     public var searchColumnWidths: SearchColumnWidths
+    /// The Compact List's column width, at each density.
+    public var compactListWidths: CompactListWidths
     public var notificationsEnabled: Bool
     /// Items that were copied or cut flash and keep a mark, in the folder tree and the file list.
     public var markClipboardItems: Bool
@@ -75,7 +77,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             singleClickExpandTreeItems: false, detailColumns: .defaults,
             detailColumnOrder: AppPreferenceLimits.defaultDetailColumnOrder, detailColumnWidths: .defaults,
             searchColumns: .defaults, searchColumnOrder: AppPreferenceLimits.defaultSearchColumnOrder,
-            searchColumnWidths: .defaults, notificationsEnabled: true, markClipboardItems: true,
+            searchColumnWidths: .defaults, compactListWidths: .defaults, notificationsEnabled: true,
+            markClipboardItems: true,
             autoCalculateFolderSizes: true, folderTreeOpen: true, propertiesOpen: false, detailRowOpen: false,
             topToolbarItems: ToolbarItems.defaultTopItems, terminalApp: nil,
             defaultTextEditor: AppPreferenceLimits.defaultTextEditor, openWithApplications: [],

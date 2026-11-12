@@ -8,6 +8,8 @@ struct ListColumnState: Equatable {
     var columns: [DetailColumn]
     var widths: [DetailColumn: Double]
     var density: Density
+    /// The Compact List's column width at each density.
+    var compactListWidths: CompactListWidths = .defaults
 
     /// A folder's columns, from Settings and the window's saved widths.
     init(preferences: AppPreferences) {
@@ -15,6 +17,7 @@ struct ListColumnState: Equatable {
             visibility: preferences.detailColumns, order: preferences.detailColumnOrder)
         widths = DetailsColumns.widths(preferences.detailColumnWidths)
         density = preferences.density
+        compactListWidths = preferences.compactListWidths
     }
 
     init(columns: [DetailColumn], widths: [DetailColumn: Double], density: Density) {

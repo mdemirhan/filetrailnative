@@ -139,7 +139,21 @@ struct AppPreferencesTests {
         // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 53)
+        #expect(PreferenceKey.allCases.count == 54)
+    }
+
+    // The Compact List keeps a width for each density; a saved one is kept within 160…600, a missing one is the
+    // density's default.
+    @Test func compactListWidthsAreKeptPerDensityWithinTheirLimits() throws {
+        #expect(AppPreferences.defaults().compactListWidths == CompactListWidths(standard: 292, finder: 252))
+        let read = PreferencesSanitizer.sanitize(
+            try JSONNode.parse(Data(#"{"compactListWidths": {"standard": 9000, "finder": "wide"}}"#.utf8)),
+            defaults: .defaults())
+        #expect(read.compactListWidths == CompactListWidths(standard: 600, finder: 252))
+        let narrow = PreferencesSanitizer.sanitize(
+            try JSONNode.parse(Data(#"{"compactListWidths": {"finder": 12.4}}"#.utf8)), defaults: .defaults())
+        #expect(narrow.compactListWidths == CompactListWidths(standard: 292, finder: 160))
+        #expect(!PreferenceKey.compactListWidths.isWindowSessionKey)
     }
 
     @Test func filesRoundTripWithTheSameJSONKeys() throws {
