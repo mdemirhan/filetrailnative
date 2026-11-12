@@ -238,7 +238,11 @@ extension ExplorerWindowlessTests {
             // Another write holds the slot: a review fails to start, says why, and its button works again.
             let coordinator = actions.session.coordinator
             let writing = DispatchSemaphore(value: 0)
-            DispatchQueue.global().async { _ = coordinator.runWriteAlone { writing.wait() } }
+            // Until it has the slot: the paste before lets go of it a moment after the lock, and the check below takes
+            // it for an instant too.
+            DispatchQueue.global().async {
+                while coordinator.runWriteAlone({ writing.wait() }) == nil { usleep(1000) }
+            }
             #expect(await waitUntil { coordinator.runWriteAlone({ true }) == nil })
             reviews.review(
                 report, action: .paste, policy: CopyPasteReview.safePolicy, clearsCutClipboard: nil, actions: actions)
