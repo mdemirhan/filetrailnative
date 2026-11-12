@@ -197,12 +197,30 @@ public enum ApplicationMenu {
             case .redo: textUndo ? "Redo" : window.undoLabels?.redo ?? "Redo"
             case .toggleFavorite: state.favoriteIsSet ? "Remove from Favorites" : "Add to Favorites"
             case .toggleFolderTree: state.folderTreeOpen ? "Hide Folder Tree" : "Show Folder Tree"
+            case .increaseSize, .decreaseSize, .resetSize: ApplicationMenu.sizeTitle(type, viewMode: state.viewMode)
             default: nil
             }
         }
 
         return AppCommand.allCases.map {
             ApplicationMenuItemState(id: $0.rawValue, enabled: isEnabled($0), checked: checked($0), title: title($0))
+        }
+    }
+
+    /// The size commands name what they change in the view on screen: the icons in the Icons view, the columns in the
+    /// Compact List. In the List, which has no size, they keep their names in Settings.
+    public static func sizeTitle(_ command: AppCommand, viewMode: ExplorerViewMode) -> String? {
+        switch (command, viewMode) {
+        case (.increaseSize, .icons): "Make Icons Bigger"
+        case (.decreaseSize, .icons): "Make Icons Smaller"
+        case (.resetSize, .icons): "Default Icon Size"
+        case (.increaseSize, .list): "Make Columns Wider"
+        case (.decreaseSize, .list): "Make Columns Narrower"
+        case (.resetSize, .list): "Default Column Width"
+        case (.increaseSize, .details): "Make Bigger"
+        case (.decreaseSize, .details): "Make Smaller"
+        case (.resetSize, .details): "Default Size"
+        default: nil
         }
     }
 

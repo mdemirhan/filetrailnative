@@ -38,7 +38,8 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "View")) == [
-                "as Icons", "as List", "as Compact List", "-", "Sort By", "Folders First", "Hidden Files", "Refresh",
+                "as Icons", "as List", "as Compact List", "-", "Make Bigger", "Make Smaller", "Default Size", "-",
+                "Sort By", "Folders First", "Hidden Files", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Customize Toolbar…",
             ])
         #expect(
@@ -125,6 +126,10 @@ import Testing
             ("View", "as Icons", "Command+1", .viewAsIcons),
             ("View", "as List", "Command+2", .viewAsDetails),
             ("View", "as Compact List", "Command+3", .viewAsList),
+            // ⌘+ (⌘=, its other key, is the window's).
+            ("View", "Make Bigger", "Command++", .increaseSize),
+            ("View", "Make Smaller", "Command+-", .decreaseSize),
+            ("View", "Default Size", "Command+0", .resetSize),
             ("View", "Folders First", nil, .toggleFoldersFirst),
             ("View", "Hidden Files", "Command+Shift+.", .toggleHiddenFiles),
             ("View", "Info Panel", "Command+I", .toggleInfoPanel),
@@ -231,6 +236,34 @@ import Testing
             #expect(found.first.flatMap(accelerator) == key, "\(id)")
         }
         #expect(!items.contains { $0.isHidden })
+    }
+
+    /// Records the items chosen.
+    private final class ChosenItems: NSObject {
+        var ids: [String] = []
+        @objc func choose(_ sender: NSMenuItem) { ids.append(sender.identifier?.rawValue ?? "") }
+    }
+
+    // ⌘+ is typed as ⇧⌘= on a US keyboard: the menu takes it, ⌘- and ⌘0, and leaves ⌘=, Make Bigger's other key, to
+    // the window.
+    @Test func theSizeItemsTakeTheirKeysAndLeaveCommandEqualsToTheWindow() throws {
+        let (built, _) = build()
+        let chosen = ChosenItems()
+        for id in ["increaseSize", "decreaseSize", "resetSize"] {
+            let item = try #require(built.itemsByID[id])
+            item.target = chosen
+            item.action = #selector(ChosenItems.choose(_:))
+        }
+        func press(_ code: UInt16, _ flags: CGEventFlags) throws -> Bool {
+            built.menu.performKeyEquivalent(with: try systemKeyEvent(code, flags))
+        }
+        // The keys of =, - and 0.
+        #expect(try press(24, [.maskCommand, .maskShift]))
+        #expect(try press(27, [.maskCommand]))
+        #expect(try press(29, [.maskCommand]))
+        #expect(chosen.ids == ["increaseSize", "decreaseSize", "resetSize"])
+        #expect(try !press(24, [.maskCommand]))
+        #expect(chosen.ids.count == 3)
     }
 
     @Test func keysOnlyComeFromTheShortcutTable() {

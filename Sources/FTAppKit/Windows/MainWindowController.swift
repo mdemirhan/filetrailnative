@@ -2113,6 +2113,8 @@ extension MainWindowController: ExplorerWindowHandle {
         case .viewAsIcons: setMode(.icons)
         case .viewAsDetails: setMode(.details)
         case .viewAsList: setMode(.list)
+        case .increaseSize, .decreaseSize, .resetSize:
+            if let change = ViewSize.Change(command) { content.stepViewSize(change) }
         // Search results have an order of their own, chosen in the List view's headers.
         case .sortByName, .sortByKind, .sortByModified, .sortBySize, .toggleFoldersFirst:
             guard searchRootPath == nil else { return }
@@ -2325,7 +2327,8 @@ extension MainWindowController: ExplorerWindowContext {
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,
             tabCount: group?.tabs.count ?? 1, trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
-            trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)))
+            trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),
+            viewSizeSteps: content.viewSize?.steps ?? .unavailable)
     }
 
     /// The folders File > Calculate Size measures now.

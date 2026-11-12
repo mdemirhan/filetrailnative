@@ -272,6 +272,41 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // View ▸ Make Columns Wider and Narrower go to the next whole 40 points, Default Column Width back to the
+        // density's width, and save it. The width shows over the status text, as it does while the slider moves. ⌘=,
+        // Make Bigger's other key, reaches it from the list.
+        @Test func theSizeCommandsStepTheColumnWidthAndShowIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsList, files: 12)
+            let compact = try #require(probe.compact)
+            let bar = tab.content.contentShell.pathBarRow
+            #expect(bar.sizeLabel.isHidden)
+            tab.perform(.increaseSize)
+            probe.layout()
+            #expect(compact.layout.itemWidth == 320 && bar.sizeSlider.doubleValue == 320)
+            #expect(tab.preferences.compactListWidths == DensitySizes(standard: 320, finder: 252))
+            #expect(bar.sizeLabel.stringValue == "320 pt" && !bar.sizeLabel.isHidden && bar.status.alphaValue == 0)
+            tab.perform(.decreaseSize)
+            tab.perform(.decreaseSize)
+            #expect(tab.preferences.compactListWidths.standard == 240 && bar.sizeLabel.stringValue == "240 pt")
+            tab.perform(.resetSize)
+            probe.layout()
+            #expect(compact.layout.itemWidth == 292 && tab.preferences.compactListWidths.standard == 292)
+            #expect(tab.menuState.disabledCommands.contains(.resetSize))
+            #expect(await waitUntil(timeout: .seconds(5)) { bar.sizeLabel.isHidden })
+            // ⌘= in the list.
+            let window = try #require(tab.window)
+            tab.content.focusList()
+            window.firstResponder?.keyDown(with: try systemKeyEvent(24, [.maskCommand]))
+            #expect(tab.preferences.compactListWidths.standard == 320 && !bar.sizeLabel.isHidden)
+            // ⌘- and ⌘0 work from the list as well; in the app the menu takes them first.
+            window.firstResponder?.keyDown(with: try systemKeyEvent(27, [.maskCommand]))
+            #expect(tab.preferences.compactListWidths.standard == 280)
+            window.firstResponder?.keyDown(with: try systemKeyEvent(29, [.maskCommand]))
+            #expect(tab.preferences.compactListWidths.standard == 292)
+            await harness.close()
+        }
+
         // Moving the slider resizes every column as it goes; the column at the left of the view keeps its left edge.
         // The width is saved once the slider is let go, for the density on screen.
         @Test func theSliderResizesTheColumnsAndSavesTheWidthWhenLetGo() async throws {
@@ -299,6 +334,9 @@ extension ExplorerWindowlessTests {
             _ = slider.sendAction(slider.action, to: slider.target)
             #expect(compact.layout.itemWidth == 600)
             #expect(tab.preferences.compactListWidths == DensitySizes(standard: 600, finder: 252))
+            // The width shows over the status text while the slider moves, as the icon size does in the Icons view.
+            let bar = tab.content.contentShell.pathBarRow
+            #expect(bar.sizeLabel.stringValue == "600 pt" && !bar.sizeLabel.isHidden && bar.status.alphaValue == 0)
             await harness.close()
         }
     }

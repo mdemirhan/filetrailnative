@@ -116,6 +116,11 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.viewAsDetails, "as List"))
             menu.addItem(context.command(.viewAsList, "as Compact List"))
             menu.addItem(.separator())
+            // Named for the view on screen once the menu is synced: "Make Icons Bigger", "Make Columns Wider".
+            menu.addItem(context.command(.increaseSize, "Make Bigger"))
+            menu.addItem(context.command(.decreaseSize, "Make Smaller"))
+            menu.addItem(context.command(.resetSize, "Default Size"))
+            menu.addItem(.separator())
             let sortBy = NSMenuItem(title: "Sort By", action: nil, keyEquivalent: "")
             let sortMenu = NSMenu(title: "Sort By")
             sortMenu.addItem(context.command(.sortByName, "Name"))
@@ -134,7 +139,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.toggleInfoRow, "Info Row"))
             menu.addItem(.separator())
             menu.addItem(context.command(.customizeToolbar, "Customize Toolbar…"))
-            // No Zoom In, Zoom Out or Actual Size, and no hidden full screen item: AppKit adds its
+            // No Zoom In, Zoom Out or Actual Size of the whole window, and no hidden full screen item: AppKit adds its
             // own Enter Full Screen to this menu, with ⌃⌘F.
         }
 

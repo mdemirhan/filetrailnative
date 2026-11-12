@@ -993,6 +993,28 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         }
     }
 
+    /// The size of the view on screen, which View ▸ Make Bigger, Make Smaller and Default Size change; nil in the List.
+    var viewSize: ViewSize? {
+        ViewSize.of(
+            mode, density: columnState.density, iconSizes: columnState.iconSizes,
+            compactListWidths: columnState.compactListWidths)
+    }
+
+    /// View ▸ Make Bigger, Make Smaller or Default Size: the icons or the columns go a step bigger or smaller, or back
+    /// to their default, and are saved. The slider follows, and the size shows over the status text as it does while
+    /// the slider moves, even when it is already at its end.
+    func stepViewSize(_ change: ViewSize.Change) {
+        guard let size = viewSize else { return }
+        let next = Double(size.stepped(change))
+        switch mode {
+        case .icons: iconSizeChanged(next, save: true)
+        case .list: compactListWidthChanged(next, save: true)
+        case .details: return
+        }
+        syncSizeSlider()
+        shell.pathBarRow.flashSizeValue()
+    }
+
     private func sizeSlid(to value: Double, save: Bool) {
         switch mode {
         case .icons: iconSizeChanged(value, save: save)

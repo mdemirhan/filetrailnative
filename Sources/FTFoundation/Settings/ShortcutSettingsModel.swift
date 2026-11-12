@@ -47,6 +47,7 @@ public enum ShortcutSettingsText {
         case .renameSelection: returnKeyAction == .rename ? "Return renames too: Settings → Files." : nil
         case .openSelectedItem: "Does what a double-click does."
         case .toggleFavorite: "Removes the folder when it is a favorite already."
+        case .increaseSize, .decreaseSize, .resetSize: "The icons in the Icons view, the columns in the Compact List."
         default: nil
         }
     }

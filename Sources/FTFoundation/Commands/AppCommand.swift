@@ -60,6 +60,9 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case viewAsIcons
     case viewAsList
     case viewAsDetails
+    case increaseSize
+    case decreaseSize
+    case resetSize
     case sortByName
     case sortByModified
     case sortBySize

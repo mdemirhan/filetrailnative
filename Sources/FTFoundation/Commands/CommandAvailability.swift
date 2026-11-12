@@ -59,6 +59,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var trashIsEmpty: Bool?
     /// The disk File ▸ Eject ejects; none when nil.
     public var ejectTargetPath: String?
+    /// Which of View ▸ Make Bigger, Make Smaller and Default Size would change the view on screen (nil: all of them).
+    public var viewSizeSteps: ViewSize.Steps?
 
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
@@ -67,7 +69,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
         hasCachedSearch: Bool? = nil, tabCount: Int? = nil, trashPath: String? = nil, homePath: String? = nil,
-        trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false
+        trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
+        viewSizeSteps: ViewSize.Steps? = nil
     ) {
         self.shortcutContext = shortcutContext
         self.currentPath = currentPath
@@ -89,6 +92,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.trashIsEmpty = trashIsEmpty
         self.ejectTargetPath = ejectTargetPath
         self.trashIsFavorite = trashIsFavorite
+        self.viewSizeSteps = viewSizeSteps
     }
 }
 
@@ -352,6 +356,10 @@ public enum CommandAvailability {
             return !context.currentPath.isEmpty && parentDirectoryPath(context.currentPath) != nil
         case .selectNextTab, .selectPreviousTab, .moveTabToNewWindow:
             return context.tabCount.map { $0 > 1 } ?? true
+        case .increaseSize, .decreaseSize, .resetSize:
+            // The Icons view's icon size and the Compact List's column width, short of their ends; the List has none.
+            guard let change = ViewSize.Change(command) else { return true }
+            return context.viewSizeSteps?.allows(change) ?? true
         default:
             return true
         }

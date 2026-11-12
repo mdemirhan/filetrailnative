@@ -17,7 +17,8 @@
             "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
             "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows", "quickLookSelection",
             "calculateSize", "revealInFolder", "toggleFavorite", "showInFinder", "showLastSearchResults",
-            "viewAsIcons", "viewAsList", "viewAsDetails", "sortByName", "sortByModified", "sortBySize", "sortByKind",
+            "viewAsIcons", "viewAsList", "viewAsDetails", "increaseSize", "decreaseSize", "resetSize", "sortByName",
+            "sortByModified", "sortBySize", "sortByKind",
             "toggleFoldersFirst", "toggleHiddenFiles", "goBack", "goForward", "goEnclosingFolder", "focusTreePane",
             "focusContentPane", "openHelp", "openKeyboardShortcuts",
         ]

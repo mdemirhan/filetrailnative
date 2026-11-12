@@ -434,6 +434,8 @@ public enum AppPreferenceLimits {
     public static let treeWidthRange = 220...520
     public static let inspectorWidthRange = 260...480
     public static let compactListWidthRange = 160...600
+    /// View ▸ Make Bigger and Make Smaller widen and narrow the Compact List's columns by this many points.
+    public static let compactListWidthStep = 40
     public static let iconSizeRange = 32...128
     /// Icon sizes go in steps of this many points.
     public static let iconSizeStep = 8

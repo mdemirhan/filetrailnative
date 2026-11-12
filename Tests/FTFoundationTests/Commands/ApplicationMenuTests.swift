@@ -99,6 +99,20 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("toggleFolderTree", hidden).title == "Show Folder Tree")
     }
 
+    // The size commands name what they change: the icons in the Icons view, the columns in the Compact List.
+    @Test func namesTheSizeCommandsForTheViewOnScreen() {
+        var state = Self.initial
+        let titles = { (state: ApplicationMenuState) in
+            [AppCommand.increaseSize, .decreaseSize, .resetSize].map { Self.stateOf($0.rawValue, state).title }
+        }
+        state.viewMode = .icons
+        #expect(titles(state) == ["Make Icons Bigger", "Make Icons Smaller", "Default Icon Size"])
+        state.viewMode = .list
+        #expect(titles(state) == ["Make Columns Wider", "Make Columns Narrower", "Default Column Width"])
+        state.viewMode = .details
+        #expect(titles(state) == ["Make Bigger", "Make Smaller", "Default Size"])
+    }
+
     @Test func turnsTheFilesUndoAndRedoOnOnlyWhenThereIsSomethingToDo() {
         let window = Window(explorerFocused: true, undoAvailable: (undo: true, redo: false))
         #expect(Self.stateOf("undo", Self.initial, window).enabled == true)

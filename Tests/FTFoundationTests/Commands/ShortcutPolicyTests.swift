@@ -226,7 +226,7 @@ struct ShortcutPolicyTests {
         for command in AppCommand.allCases {
             _ = ShortcutPolicy.treeFocusBucket(of: command)
         }
-        #expect(AppCommand.allCases.count == 72)
+        #expect(AppCommand.allCases.count == 75)
         // Two commands that sit with the global explorer ones.
         #expect(ShortcutPolicy.treeFocusBucket(of: .ejectVolume) == .globalExplorer)
         #expect(ShortcutPolicy.treeFocusBucket(of: .calculateSize) == .globalExplorer)

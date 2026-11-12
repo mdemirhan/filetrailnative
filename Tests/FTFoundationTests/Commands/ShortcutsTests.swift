@@ -17,7 +17,7 @@ struct ShortcutsTests {
     @Test func namesEveryCommandOnceAndGivesNoKeyToTwoCommands() {
         let ids = ShortcutCommands.all.map(\.id)
         #expect(Set(ids).count == ids.count)
-        #expect(ids.count == 80)
+        #expect(ids.count == 83)
 
         let keys = ShortcutCommands.all.flatMap { Self.defaults[$0.id] ?? [] }
         #expect(Set(keys).count == keys.count)
@@ -28,10 +28,10 @@ struct ShortcutsTests {
         }
     }
 
-    // 67 commands can be changed; the standard ones stay fixed.
-    @Test func letsSixtySevenCommandsBeChangedAndKeepsTheStandardOnesFixed() {
+    // 70 commands can be changed; the standard ones stay fixed.
+    @Test func letsSeventyCommandsBeChangedAndKeepsTheStandardOnesFixed() {
         let fixed = ShortcutCommands.all.filter(\.fixed)
-        #expect(ShortcutCommands.all.count - fixed.count == 67)
+        #expect(ShortcutCommands.all.count - fixed.count == 70)
         #expect(
             fixed.map(\.id) == [
                 .undo, .redo, .cut, .copy, .paste, .selectAll, .settings, .closeWindow, .minimize, .fullScreen, .hide,
@@ -376,6 +376,7 @@ struct ShortcutsTests {
             (.showClipboard, []), (.clearClipboard, []), (.showInFinder, []), (.toggleFavorite, []),
             (.focusFileSearch, ["Cmd+F"]), (.showLastSearchResults, ["Cmd+Shift+F"]), (.revealInFolder, []),
             (.viewAsIcons, ["Cmd+1"]), (.viewAsDetails, ["Cmd+2"]), (.viewAsList, ["Cmd+3"]),
+            (.increaseSize, ["Cmd+Plus", "Cmd+="]), (.decreaseSize, ["Cmd+-"]), (.resetSize, ["Cmd+0"]),
             (.toggleHiddenFiles, ["Cmd+Shift+."]), (.toggleFolderTree, ["Ctrl+Cmd+S"]), (.toggleInfoPanel, ["Cmd+I"]),
             (.toggleInfoRow, ["Cmd+Shift+I"]), (.openHelp, ["?"]), (.sortByName, []), (.sortByKind, []),
             (.sortByModified, []), (.sortBySize, []), (.toggleFoldersFirst, []), (.customizeToolbar, []),
@@ -391,13 +392,33 @@ struct ShortcutsTests {
         }
     }
 
-    // The zoom commands and their keys (Cmd+Plus, Cmd+-, Cmd+0) are dropped.
-    @Test func zoomHasNoCommandsAndNoKeys() {
+    // There is no zoom of the whole window. ⌘+, ⌘- and ⌘0 change the size of the icons or the columns; ⌘+ is pressed
+    // as ⌘= on most keyboards, which is its other key.
+    @Test func zoomHasNoCommandsAndItsKeysSizeTheView() {
         #expect(ShortcutCommandID(rawValue: "zoomIn") == nil)
         #expect(ShortcutCommandID(rawValue: "zoomOut") == nil)
         #expect(ShortcutCommandID(rawValue: "resetZoom") == nil)
         #expect(AppCommand(rawValue: "zoomIn") == nil)
         #expect(Shortcuts.normalize("Cmd+Plus") == "Cmd+Plus")
-        #expect(ShortcutCommands.defaultResolved.commandByShortcut["Cmd+Plus"] == nil)
+        let keys = ShortcutCommands.defaultResolved.commandByShortcut
+        #expect(keys["Cmd+Plus"] == .increaseSize && keys["Cmd+="] == .increaseSize)
+        #expect(keys["Cmd+-"] == .decreaseSize && keys["Cmd+0"] == .resetSize)
+        // The menu shows and listens for ⌘+; the window takes ⌘=.
+        #expect(Shortcuts.menuShortcut(ShortcutCommands.defaultBindings[.increaseSize] ?? []) == "Cmd+Plus")
+        #expect(ShortcutDisplay.defaults.label(.increaseSize) == "⌘+")
+        #expect(
+            Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "=", code: "Equal", meta: true)).flatMap { keys[$0] }
+                == .increaseSize)
+        #expect(
+            Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "-", code: "Minus", meta: true)).flatMap { keys[$0] }
+                == .decreaseSize)
+        #expect(
+            Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "0", code: "Digit0", meta: true)).flatMap { keys[$0] }
+                == .resetSize)
+        // A keyboard with + on a key of its own.
+        #expect(
+            Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "+", code: "BracketRight", meta: true)).flatMap {
+                keys[$0]
+            } == .increaseSize)
     }
 }

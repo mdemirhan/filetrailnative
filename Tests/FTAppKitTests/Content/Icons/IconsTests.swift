@@ -343,5 +343,38 @@ extension ExplorerWindowlessTests {
             #expect(!bar.showsSizeSlider && slider.isHidden && bar.sizeLabel.isHidden)
             await harness.close()
         }
+
+        // View ▸ Make Icons Bigger, Make Icons Smaller and Default Icon Size step the icon size by 8 and save it; the
+        // slider follows, and the size shows over the status text as it does while the slider moves.
+        @Test func theSizeCommandsStepTheIconSize() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsIcons)
+            let bar = tab.content.contentShell.pathBarRow
+            let icons = try #require(probe.icons)
+            #expect(tab.menuState.disabledCommands.filter { ViewSize.Change($0) != nil } == [.resetSize])
+            tab.perform(.increaseSize)
+            probe.layout()
+            #expect(icons.layout.iconSize == 72 && bar.sizeSlider.doubleValue == 72)
+            #expect(tab.preferences.iconSizes == DensitySizes(standard: 72, finder: 64))
+            #expect(bar.sizeLabel.stringValue == "72 pt" && !bar.sizeLabel.isHidden && bar.status.alphaValue == 0)
+            for _ in 0..<5 { tab.perform(.decreaseSize) }
+            #expect(tab.preferences.iconSizes.standard == 32 && bar.sizeLabel.stringValue == "32 pt")
+            #expect(tab.menuState.disabledCommands.contains(.decreaseSize))
+            #expect(!tab.menuState.disabledCommands.contains(.increaseSize))
+            // At its end the size still shows, and stays.
+            tab.perform(.decreaseSize)
+            #expect(tab.preferences.iconSizes.standard == 32 && !bar.sizeLabel.isHidden)
+            tab.perform(.resetSize)
+            probe.layout()
+            #expect(icons.layout.iconSize == 64 && bar.sizeSlider.doubleValue == 64)
+            #expect(tab.preferences.iconSizes.standard == 64 && bar.sizeLabel.stringValue == "64 pt")
+            #expect(await waitUntil(timeout: .seconds(5)) { bar.sizeLabel.isHidden })
+            // The List has no size: the commands are dimmed and do nothing.
+            tab.perform(.viewAsDetails)
+            #expect(Set(tab.menuState.disabledCommands).isSuperset(of: [.increaseSize, .decreaseSize, .resetSize]))
+            tab.perform(.increaseSize)
+            #expect(tab.preferences.iconSizes.standard == 64 && bar.sizeLabel.isHidden)
+            await harness.close()
+        }
     }
 }

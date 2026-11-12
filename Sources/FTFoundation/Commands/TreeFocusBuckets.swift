@@ -16,7 +16,8 @@ extension ShortcutPolicy {
             .newWindow, .newTab, .duplicateTab, .reopenClosedTab, .closeTab, .selectNextTab, .selectPreviousTab,
             .moveTabToNewWindow,
             .mergeAllWindows, .calculateSize, .toggleFavorite, .showInFinder, .showLastSearchResults, .viewAsIcons,
-            .viewAsList, .viewAsDetails, .sortByName, .sortByModified, .sortBySize, .sortByKind, .toggleFoldersFirst,
+            .viewAsList, .viewAsDetails, .increaseSize, .decreaseSize, .resetSize, .sortByName, .sortByModified,
+            .sortBySize, .sortByKind, .toggleFoldersFirst,
             .toggleHiddenFiles, .goBack, .goForward, .goEnclosingFolder, .focusTreePane, .focusContentPane, .openHelp,
             .openKeyboardShortcuts:
             .globalExplorer

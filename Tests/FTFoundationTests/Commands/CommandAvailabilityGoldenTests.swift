@@ -88,14 +88,16 @@ struct CommandAvailabilityGoldenTests {
             contextMenuPaths: input.contextMenuPaths, selectedContentPaths: input.selectedPaths,
             selectedTreePath: input.selectedTreeTargetPath, currentPath: input.currentPath)
         return Output(
-            // Duplicate Tab is left out: the golden never names it.
-            disabled: state.disabledCommands.filter { $0 != .duplicateTab }.map(\.rawValue),
+            // Duplicate Tab and the size commands are left out: the golden never names them.
+            disabled: state.disabledCommands.filter { !Self.notInTheGolden.contains($0) }.map(\.rawValue),
             newTab: CommandAvailability.newTabTargetPath(target),
             favorite: CommandAvailability.favoriteTargetPath(target),
             showInFinder: CommandAvailability.showInFinderPaths(target),
             calculateSize: CommandAvailability.calculateSizePaths(target),
             openTerminal: ShortcutTargets.openInTerminalPaths(selection))
     }
+
+    private static let notInTheGolden: Set<AppCommand> = [.duplicateTab, .increaseSize, .decreaseSize, .resetSize]
 
     @Test func commandAvailabilityMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "command-availability")

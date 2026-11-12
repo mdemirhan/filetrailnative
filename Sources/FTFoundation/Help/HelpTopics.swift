@@ -471,6 +471,11 @@ extension HelpContent {
                                 "The three buttons in the toolbar, the View menu, or {viewAsIcons}, {viewAsDetails} and {viewAsList} switch between large icons with previews of photos, PDFs and other files, a list with columns for date, size and kind, and a compact list of names. Settings → Browsing chooses the columns, and Sizes → Match Finder uses Finder’s text and icon sizes in every view and the folder tree."
                         ),
                         HelpRow(
+                            label: "Icon size and column width",
+                            description:
+                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Sizes → Match Finder keeps sizes of its own."
+                        ),
+                        HelpRow(
                             label: "Sort",
                             description:
                                 "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again in View > Sort By, or clicking the same heading, reverses it; the sort button has Ascending and Descending. Search results order by name, folder or kind: click their headings in List view."
@@ -621,6 +626,10 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.viewAsIcons), "View as icons"),
         HelpShortcutItem(group: .views, .command(.viewAsDetails), "View as a list, with columns"),
         HelpShortcutItem(group: .views, .command(.viewAsList), "View as a compact list of names"),
+        HelpShortcutItem(
+            group: .views, .command(.increaseSize), "Bigger icons in the Icons view, wider columns in the Compact List"),
+        HelpShortcutItem(group: .views, .command(.decreaseSize), "Smaller icons, or narrower columns"),
+        HelpShortcutItem(group: .views, .command(.resetSize), "Icons or columns back to their default size"),
         HelpShortcutItem(group: .views, .command(.sortByName), "Sort by name"),
         HelpShortcutItem(group: .views, .command(.sortByKind), "Sort by kind"),
         HelpShortcutItem(group: .views, .command(.sortByModified), "Sort by date modified"),
