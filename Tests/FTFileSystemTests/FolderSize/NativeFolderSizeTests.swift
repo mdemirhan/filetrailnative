@@ -59,6 +59,11 @@ func write(_ path: String, _ size: Int) throws {
     }
 }
 
+/// One folder, in a folder that is already there.
+private func makeOneFolder(_ path: String) throws {
+    if mkdir(path, 0o755) != 0 { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+}
+
 /// `mkdir -p`.
 func makeFolder(_ path: String) throws {
     var made = path.hasPrefix("/") ? "" : "."
@@ -317,12 +322,15 @@ extension RealWalks {
             try await withTemporaryDirectory(prefix: "native-fs-many") { directory in
                 let root = directory.path
                 // 1,200 folders of 3 holding 3 each: every folder the walk lists hands it more to queue, so the queue
-                // grows faster than four threads empty it.
+                // grows faster than four threads empty it. Each folder is made once, after the one holding it.
                 let count = 1_200
                 for index in 0..<count {
+                    let top = "\(root)/f\(index)"
+                    try makeOneFolder(top)
                     for middle in 0..<3 {
+                        try makeOneFolder("\(top)/m\(middle)")
                         for inner in 0..<3 {
-                            try makeFolder("\(root)/f\(index)/m\(middle)/i\(inner)")
+                            try makeOneFolder("\(top)/m\(middle)/i\(inner)")
                         }
                     }
                 }

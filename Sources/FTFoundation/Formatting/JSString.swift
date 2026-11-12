@@ -117,10 +117,17 @@ public enum JSString {
     /// Lowercased with no rule of a language: Unicode's full case mappings, and the Greek capital sigma lowered to
     /// the final form at the end of a word.
     static func lowercased(_ text: String) -> String {
+        // ASCII lowers only A to Z, by itself: most text, and much faster than asking each scalar's mapping.
+        if text.utf8.allSatisfy({ $0 < 0x80 }) {
+            return String(decoding: text.utf8.map { (0x41...0x5A).contains($0) ? $0 + 0x20 : $0 }, as: UTF8.self)
+        }
         var result = String.UnicodeScalarView()
         let scalars = Array(text.unicodeScalars)
         for (index, scalar) in scalars.enumerated() {
-            if scalar == "\u{03A3}" {
+            if scalar.isASCII {
+                let isUpper = (0x41...0x5A).contains(scalar.value)
+                result.append(isUpper ? Unicode.Scalar(UInt8(scalar.value) + 0x20) : scalar)
+            } else if scalar == "\u{03A3}" {
                 result.append(isFinalSigma(scalars, at: index) ? "\u{03C2}" : "\u{03C3}")
             } else {
                 result.append(contentsOf: scalar.properties.lowercaseMapping.unicodeScalars)

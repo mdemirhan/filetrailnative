@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 public enum HelpTopicID: String, CaseIterable, Sendable, Hashable {
     case navigation
@@ -165,25 +166,77 @@ public enum HelpContent {
     /// What the "Search help" field looks through: every row and every shortcut, by the words on screen (and the
     /// shortcut as written, so "cmd+f" finds Find files).
     public static func search(_ query: String, _ display: ShortcutDisplay = .defaults) -> [HelpSearchResult] {
-        let needle = JSString.lowercased(JSString.trimmed(query))
+        let needle = Array(JSString.lowercased(JSString.trimmed(query)).utf16)
         if needle.isEmpty { return [] }
-        func matches(_ texts: String...) -> Bool {
-            texts.contains { JSString.includes(JSString.lowercased($0), needle) }
+        func matches(_ texts: [[UInt16]]) -> Bool {
+            texts.contains { JSString.index(of: needle, in: $0) != nil }
         }
-        let shown = listShortcuts(display)
-        return topics.filter { $0.id != .shortcuts }.compactMap { topic in
-            let rows = topic.sections.flatMap { section in
-                section.rows.filter {
-                    matches($0.label, fillShortcutMentions($0.description, display), section.title)
-                }
-                .map { (section: section.title, row: $0) }
-            }
-            let shortcuts = shown.filter {
-                $0.group.topicID == topic.id && matches($0.description, writeForReading($0.shortcut))
-            }
+        return searchIndex(display).topics.compactMap { entry in
+            let rows = entry.rows.filter { matches($0.texts) }.map { (section: $0.section, row: $0.row) }
+            let shortcuts = entry.shortcuts.filter { matches($0.texts) }.map(\.shown)
             return rows.isEmpty && shortcuts.isEmpty
-                ? nil : HelpSearchResult(topic: topic, rows: rows, shortcuts: shortcuts)
+                ? nil : HelpSearchResult(topic: entry.topic, rows: rows, shortcuts: shortcuts)
         }
+    }
+
+    /// What "Search help" looks through for one display, every text lowercased once: lowercasing them all again for
+    /// each letter typed was most of a search's time.
+    private struct SearchIndex: Sendable {
+        struct Row: Sendable {
+            let section: String
+            let row: HelpRow
+            /// The label, the description with its keys filled in, and the section's title.
+            let texts: [[UInt16]]
+        }
+
+        struct Shortcut: Sendable {
+            let shown: HelpShownShortcut
+            /// What it does, and the shortcut as written.
+            let texts: [[UInt16]]
+        }
+
+        struct Topic: Sendable {
+            let topic: HelpTopic
+            let rows: [Row]
+            let shortcuts: [Shortcut]
+        }
+
+        let display: ShortcutDisplay
+        let topics: [Topic]
+
+        init(_ display: ShortcutDisplay) {
+            func lowered(_ texts: String...) -> [[UInt16]] { texts.map { Array(JSString.lowercased($0).utf16) } }
+            let shown = HelpContent.listShortcuts(display)
+            self.display = display
+            topics = HelpContent.topics.filter { $0.id != .shortcuts }.map { topic in
+                Topic(
+                    topic: topic,
+                    rows: topic.sections.flatMap { section in
+                        section.rows.map { row in
+                            Row(
+                                section: section.title, row: row,
+                                texts: lowered(
+                                    row.label, HelpContent.fillShortcutMentions(row.description, display),
+                                    section.title))
+                        }
+                    },
+                    shortcuts: shown.filter { $0.group.topicID == topic.id }.map { shortcut in
+                        Shortcut(
+                            shown: shortcut,
+                            texts: lowered(shortcut.description, HelpContent.writeForReading(shortcut.shortcut)))
+                    })
+            }
+        }
+    }
+
+    /// The index of the display searched last; the keys change only in Settings.
+    private static let lastSearchIndex = Mutex<SearchIndex?>(nil)
+
+    private static func searchIndex(_ display: ShortcutDisplay) -> SearchIndex {
+        if let index = lastSearchIndex.withLock({ $0 }), index.display == display { return index }
+        let index = SearchIndex(display)
+        lastSearchIndex.withLock { $0 = index }
+        return index
     }
 
     /// Pieces of a sentence for display: the plain text between `backticks` and the code inside them.

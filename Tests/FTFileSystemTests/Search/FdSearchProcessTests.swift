@@ -4,6 +4,7 @@ import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
+import os
 
 @testable import FTFileSystem
 
@@ -105,7 +106,7 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
             try build(entries, in: scratch.url)
         }
 
-        try Golden.expectMatches(usable) { input in
+        @Sendable func search(_ input: ResultsInput) throws -> ResultsOutput {
             let top = input.tree == "lighthouse" ? lighthouse.path : scratchTop
             let root = input.root.isEmpty ? top : top + "/" + input.root
             let request = SearchRequest(
@@ -123,6 +124,16 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
                 status: update.status.rawValue, truncated: update.truncated,
                 error: update.error?.replacingOccurrences(of: top, with: "$ROOT"), items: masked)
         }
+
+        // The searches run side by side, each a job of its own in the one runtime, and are then compared with the golden.
+        let outputs = OSAllocatedUnfairLock(initialState: [String: Result<ResultsOutput, any Error>]())
+        DispatchQueue.concurrentPerform(iterations: usable.count) { index in
+            let input = usable[index].input
+            let output = Result { try search(input) }
+            outputs.withLock { $0[Golden.render(input)] = output }
+        }
+        let searched = outputs.withLock { $0 }
+        try Golden.expectMatches(usable) { input in try #require(searched[Golden.render(input)]).get() }
         runtime.close()
     }
 

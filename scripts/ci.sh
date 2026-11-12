@@ -296,6 +296,33 @@ full_tests() {
     return "$status"
 }
 
+# The format lint runs beside the tests: it only reads the sources, and takes about a core for several seconds. Its
+# line goes in the summary after the tests'.
+format_out="$logs/.ci-format-summary"
+(
+    out="$format_out"
+    : >"$out"
+    failed=0
+    if [ -n "$scope" ] || [ "$affected" = 1 ]; then
+        # A scoped or affected run lints only the Swift files changed on this branch; a full run lints everything.
+        changed=()
+        while IFS= read -r f; do [ -f "$f" ] && changed+=("$f"); done < <(
+            changed_files | grep -E '^((Sources|Tests|tools)/.*\.swift|Package\.swift)$'
+        )
+        if [ "${#changed[@]}" -gt 0 ]; then
+            step format 'error:|warning:' xcrun swift-format lint --strict "${changed[@]}"
+        else
+            echo "PASS format (no changed files)" >>"$out"
+        fi
+    else
+        step format 'error:|warning:' xcrun swift-format lint --strict -r Sources Tests tools Package.swift
+    fi
+    exit "$failed"
+) &
+format_pid=$!
+# A background process ignores Ctrl-C, so the lint is stopped with the run.
+trap 'if [ -n "$format_pid" ]; then pkill -P "$format_pid"; kill "$format_pid"; fi 2>/dev/null; echo "stopped" >&2; exit 130' INT
+
 # What a failed test step reports: not a test that passes with "Fatal" or "error:" in its name, nor the system's
 # sandbox_extension_consume lines.
 test_failures='^error:|: error: |^✘|Fatal error:|: the test process failed$'
@@ -357,20 +384,10 @@ for tree in names lighthouse large; do
     fi
 done
 
-if [ -n "$scope" ] || [ "$affected" = 1 ]; then
-    # A scoped or affected run lints only the Swift files changed on this branch; a full run lints everything.
-    changed=()
-    while IFS= read -r f; do [ -f "$f" ] && changed+=("$f"); done < <(
-        changed_files | grep -E '^((Sources|Tests|tools)/.*\.swift|Package\.swift)$'
-    )
-    if [ "${#changed[@]}" -gt 0 ]; then
-        step format 'error:|warning:' xcrun swift-format lint --strict "${changed[@]}"
-    else
-        echo "PASS format (no changed files)" >>"$out"
-    fi
-else
-    step format 'error:|warning:' xcrun swift-format lint --strict -r Sources Tests tools Package.swift
-fi
+wait "$format_pid" || failed=1
+format_pid=""
+cat "$format_out" >>"$out"
+rm -f "$format_out"
 
 if [ "$full" = 1 ]; then
     # The release build's output is in build-app.sh's own log: a warning there fails the step.

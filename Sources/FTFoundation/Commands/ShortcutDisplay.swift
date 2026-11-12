@@ -41,7 +41,7 @@ public enum ShortcutLabels {
 
 /// What the window shows for a command's shortcut: in a tooltip, beside a menu item, in Help. It follows the keys
 /// chosen in Settings.
-public struct ShortcutDisplay: Sendable {
+public struct ShortcutDisplay: Sendable, Equatable {
     public var shortcuts: ResolvedShortcuts
     public var returnKeyAction: ReturnKeyAction
 

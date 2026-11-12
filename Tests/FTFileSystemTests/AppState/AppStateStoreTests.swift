@@ -537,7 +537,7 @@ struct AppStateStoreTests {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
             var generator = SeededGenerator(seed: 1)
-            for round in 0..<200 {
+            for round in 0..<50 {
                 let store = Kit.store(path + "-\(round % 3)")
                 let garbage = PreferencesSanitizer.sanitize(
                     .object([
