@@ -58,7 +58,7 @@ struct DetailsLayoutTests {
 
     @Test func aFittedWidthStaysWithinTheColumnsLimits() {
         #expect(Self.fitWidth(.size, header: 26, values: []) == 60)
-        #expect(Self.fitWidth(.name, header: 40, values: [5000], extra: 24) == 720)
+        #expect(Self.fitWidth(.name, header: 40, values: [5000], extra: 24) == 1000)
     }
 
     // MARK: The sort rules of the header

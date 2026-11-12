@@ -10670,7 +10670,7 @@
               "treeWidth": 520,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 280,
                 "size": 60,
                 "kind": 60,
@@ -11445,7 +11445,7 @@
           ],
           "searchColumnWidths": {
             "name": 300,
-            "folder": 720,
+            "folder": 1000,
             "modified": 80,
             "size": 60,
             "kind": 80,
@@ -11735,7 +11735,7 @@
               },
               "searchColumnWidths": {
                 "name": 300,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 80,
                 "size": 60,
                 "kind": 80,
@@ -13013,7 +13013,7 @@
             "permissions"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "folder": 240,
             "modified": 152,
             "size": 60,
@@ -13414,7 +13414,7 @@
             "created"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "modified": 80,
             "size": 108,
             "kind": 80,
@@ -13597,7 +13597,7 @@
               "treeWidth": 220,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 80,
                 "size": 108,
                 "kind": 80,
@@ -13605,7 +13605,7 @@
                 "permissions": 60
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 720,
                 "modified": 280,
                 "size": 60,
@@ -13930,7 +13930,7 @@
             },
             "searchColumnWidths": {
               "name": 140,
-              "folder": 720,
+              "folder": 1000,
               "modified": 280,
               "size": 140,
               "kind": 148,
@@ -14256,7 +14256,7 @@
           ],
           "searchColumnWidths": {
             "name": 140,
-            "folder": 720,
+            "folder": 721,
             "modified": 152,
             "size": 80,
             "kind": 148,
@@ -14392,7 +14392,7 @@
             },
             "searchColumnWidths": {
               "name": 140,
-              "folder": 720,
+              "folder": 721,
               "modified": 152,
               "size": 80,
               "kind": 148,
@@ -14614,7 +14614,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 721,
                 "modified": 152,
                 "size": 80,
                 "kind": 148,
@@ -15049,7 +15049,7 @@
                 "permissions": 260
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 140,
                 "modified": 201,
                 "size": 108,
@@ -15333,7 +15333,7 @@
               "permissions": 60
             },
             "searchColumnWidths": {
-              "name": 720,
+              "name": 1000,
               "folder": 300,
               "modified": 80,
               "size": 60,
@@ -15603,7 +15603,7 @@
           ],
           "searchColumnWidths": {
             "name": 300,
-            "folder": 720,
+            "folder": 721,
             "modified": 152,
             "size": 60,
             "kind": 140,
@@ -15775,7 +15775,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 201,
                 "size": 152,
                 "kind": 140,
@@ -16628,7 +16628,7 @@
             "permissions"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 201,
             "size": 140,
             "kind": 60,
@@ -16814,7 +16814,7 @@
             "treeWidth": 280,
             "inspectorWidth": 480,
             "detailColumnWidths": {
-              "name": 720,
+              "name": 721,
               "modified": 201,
               "size": 140,
               "kind": 60,
@@ -16890,7 +16890,7 @@
             "permissions"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "folder": 80,
             "modified": 80,
             "size": 60,
@@ -17069,7 +17069,7 @@
               "treeWidth": 220,
               "inspectorWidth": 320,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 140,
                 "size": 80,
                 "kind": 320,
@@ -17077,7 +17077,7 @@
                 "permissions": 140
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "folder": 80,
                 "modified": 80,
                 "size": 60,
@@ -17535,7 +17535,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 721,
                 "modified": 80,
                 "size": 240,
                 "kind": 60,
@@ -17603,7 +17603,7 @@
           ],
           "searchColumnWidths": {
             "name": 140,
-            "folder": 720,
+            "folder": 1000,
             "modified": 280,
             "size": 108,
             "kind": 320,
@@ -17763,7 +17763,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 280,
                 "size": 108,
                 "kind": 320,
@@ -18362,7 +18362,7 @@
               },
               "searchColumnWidths": {
                 "name": 300,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 280,
                 "size": 108,
                 "kind": 140,
@@ -18857,7 +18857,7 @@
             "created"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 80,
             "size": 60,
             "kind": 148,
@@ -19059,7 +19059,7 @@
               "treeWidth": 520,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 80,
                 "size": 60,
                 "kind": 148,
@@ -19460,7 +19460,7 @@
             "created"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "folder": 80,
             "modified": 80,
             "size": 201,
@@ -19624,7 +19624,7 @@
                 "permissions": 36
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "folder": 80,
                 "modified": 80,
                 "size": 201,
@@ -21707,8 +21707,8 @@
             "size"
           ],
           "searchColumnWidths": {
-            "name": 720,
-            "folder": 720,
+            "name": 721,
+            "folder": 721,
             "modified": 280,
             "size": 240,
             "kind": 60,
@@ -21958,8 +21958,8 @@
               "permissions": 140
             },
             "searchColumnWidths": {
-              "name": 720,
-              "folder": 720,
+              "name": 721,
+              "folder": 721,
               "modified": 280,
               "size": 240,
               "kind": 60,
@@ -22415,7 +22415,7 @@
           ],
           "searchColumnWidths": {
             "name": 140,
-            "folder": 720,
+            "folder": 1000,
             "modified": 280,
             "size": 60,
             "kind": 60,
@@ -22551,7 +22551,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 280,
                 "size": 60,
                 "kind": 60,
@@ -24598,7 +24598,7 @@
             "permissions"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 721,
             "folder": 240,
             "modified": 152,
             "size": 240,
@@ -24739,7 +24739,7 @@
                 "permissions": 108
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 240,
                 "modified": 152,
                 "size": 240,
@@ -27292,7 +27292,7 @@
                 "permissions": 201
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 140,
                 "modified": 80,
                 "size": 60,
@@ -27974,7 +27974,7 @@
               "treeWidth": 520,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 140,
                 "size": 240,
                 "kind": 60,
@@ -29397,7 +29397,7 @@
               "permissions": 260
             },
             "searchColumnWidths": {
-              "name": 720,
+              "name": 721,
               "folder": 140,
               "modified": 80,
               "size": 240,
@@ -31080,7 +31080,7 @@
           ],
           "searchColumnWidths": {
             "name": 720,
-            "folder": 720,
+            "folder": 721,
             "modified": 152,
             "size": 60,
             "kind": 60,
@@ -31244,7 +31244,7 @@
               },
               "searchColumnWidths": {
                 "name": 720,
-                "folder": 720,
+                "folder": 721,
                 "modified": 152,
                 "size": 60,
                 "kind": 60,
@@ -31688,7 +31688,7 @@
               },
               "searchColumnWidths": {
                 "name": 720,
-                "folder": 720,
+                "folder": 721,
                 "modified": 280,
                 "size": 240,
                 "kind": 320,
@@ -31954,7 +31954,7 @@
               "treeWidth": 220,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 80,
                 "size": 60,
                 "kind": 60,
@@ -34399,7 +34399,7 @@
             "created"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "folder": 240,
             "modified": 280,
             "size": 60,
@@ -36115,7 +36115,7 @@
           ],
           "searchColumnWidths": {
             "name": 140,
-            "folder": 720,
+            "folder": 1000,
             "modified": 80,
             "size": 60,
             "kind": 148,
@@ -36267,7 +36267,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 80,
                 "size": 60,
                 "kind": 148,
@@ -38031,7 +38031,7 @@
               "treeWidth": 301,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 201,
                 "size": 80,
                 "kind": 320,
@@ -38102,7 +38102,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 280,
                 "size": 240,
                 "kind": 140,
@@ -38315,7 +38315,7 @@
             },
             "searchColumnWidths": {
               "name": 140,
-              "folder": 720,
+              "folder": 721,
               "modified": 80,
               "size": 60,
               "kind": 320,
@@ -38809,7 +38809,7 @@
                 "permissions": 36
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 201,
                 "modified": 80,
                 "size": 80,
@@ -38853,7 +38853,7 @@
             "size"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "modified": 80,
             "size": 60,
             "kind": 60,
@@ -39013,7 +39013,7 @@
               "treeWidth": 280,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 80,
                 "size": 60,
                 "kind": 60,
@@ -39515,7 +39515,7 @@
             "created"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "modified": 280,
             "size": 60,
             "kind": 300,
@@ -41626,7 +41626,7 @@
             "size"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 721,
             "folder": 240,
             "modified": 152,
             "size": 240,
@@ -42466,7 +42466,7 @@
               "treeWidth": 220,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 80,
                 "size": 240,
                 "kind": 201,
@@ -43517,7 +43517,7 @@
           ],
           "searchColumnWidths": {
             "name": 140,
-            "folder": 720,
+            "folder": 721,
             "modified": 80,
             "size": 240,
             "kind": 60,
@@ -43683,7 +43683,7 @@
             },
             "searchColumnWidths": {
               "name": 140,
-              "folder": 720,
+              "folder": 721,
               "modified": 80,
               "size": 60,
               "kind": 60,
@@ -44995,7 +44995,7 @@
             "size"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "modified": 152,
             "size": 240,
             "kind": 140,
@@ -45260,7 +45260,7 @@
               "treeWidth": 220,
               "inspectorWidth": 301,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 152,
                 "size": 240,
                 "kind": 140,
@@ -45373,7 +45373,7 @@
               "treeWidth": 520,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 152,
                 "size": 240,
                 "kind": 140,
@@ -45889,7 +45889,7 @@
               "treeWidth": 520,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 80,
                 "size": 80,
                 "kind": 320,
@@ -45898,7 +45898,7 @@
               },
               "searchColumnWidths": {
                 "name": 152,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 80,
                 "size": 80,
                 "kind": 320,
@@ -47133,7 +47133,7 @@
                 "permissions": 260
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 152,
                 "modified": 280,
                 "size": 240,
@@ -48422,7 +48422,7 @@
               "treeWidth": 280,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 152,
                 "size": 152,
                 "kind": 320,
@@ -49332,7 +49332,7 @@
             "permissions"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 140,
             "size": 108,
             "kind": 60,
@@ -49489,7 +49489,7 @@
               "treeWidth": 280,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 140,
                 "size": 108,
                 "kind": 60,
@@ -50002,7 +50002,7 @@
             "created"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 280,
             "size": 201,
             "kind": 320,
@@ -50026,7 +50026,7 @@
             "permissions"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "folder": 201,
             "modified": 80,
             "size": 240,
@@ -50209,7 +50209,7 @@
               "treeWidth": 280,
               "inspectorWidth": 320,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 280,
                 "size": 201,
                 "kind": 320,
@@ -50217,7 +50217,7 @@
                 "permissions": 36
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "folder": 201,
                 "modified": 80,
                 "size": 240,
@@ -50987,7 +50987,7 @@
               },
               "searchColumnWidths": {
                 "name": 300,
-                "folder": 720,
+                "folder": 721,
                 "modified": 280,
                 "size": 80,
                 "kind": 300,
@@ -54466,7 +54466,7 @@
               },
               "searchColumnWidths": {
                 "name": 720,
-                "folder": 720,
+                "folder": 721,
                 "modified": 152,
                 "size": 152,
                 "kind": 60,
@@ -58502,7 +58502,7 @@
             },
             "searchColumnWidths": {
               "name": 140,
-              "folder": 720,
+              "folder": 721,
               "modified": 80,
               "size": 60,
               "kind": 60,
@@ -58619,7 +58619,7 @@
               "treeWidth": 220,
               "inspectorWidth": 301,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 80,
                 "size": 140,
                 "kind": 201,
@@ -59213,7 +59213,7 @@
             "permissions"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 201,
             "size": 60,
             "kind": 60,
@@ -59424,7 +59424,7 @@
               "treeWidth": 520,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 201,
                 "size": 60,
                 "kind": 60,
@@ -59471,7 +59471,7 @@
               "treeWidth": 520,
               "inspectorWidth": 320,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 201,
                 "size": 60,
                 "kind": 60,
@@ -59479,7 +59479,7 @@
                 "permissions": 36
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 80,
                 "modified": 80,
                 "size": 240,
@@ -60135,7 +60135,7 @@
             "permissions"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 80,
             "size": 108,
             "kind": 320,
@@ -60370,7 +60370,7 @@
               "treeWidth": 220,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 80,
                 "size": 201,
                 "kind": 60,
@@ -60494,7 +60494,7 @@
           ],
           "searchColumnWidths": {
             "name": 140,
-            "folder": 720,
+            "folder": 1000,
             "modified": 152,
             "size": 60,
             "kind": 60,
@@ -61572,7 +61572,7 @@
               "treeWidth": 280,
               "inspectorWidth": 320,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 80,
                 "size": 60,
                 "kind": 80,
@@ -61624,7 +61624,7 @@
             "created"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 80,
             "size": 60,
             "kind": 148,
@@ -61864,7 +61864,7 @@
               "treeWidth": 520,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 80,
                 "size": 60,
                 "kind": 148,
@@ -61916,7 +61916,7 @@
             "permissions"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "modified": 80,
             "size": 152,
             "kind": 320,
@@ -61941,7 +61941,7 @@
           ],
           "searchColumnWidths": {
             "name": 140,
-            "folder": 720,
+            "folder": 1000,
             "modified": 80,
             "size": 108,
             "kind": 60,
@@ -62099,7 +62099,7 @@
               "treeWidth": 280,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 80,
                 "size": 152,
                 "kind": 320,
@@ -62108,7 +62108,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 80,
                 "size": 108,
                 "kind": 60,
@@ -62667,7 +62667,7 @@
               },
               "searchColumnWidths": {
                 "name": 300,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 80,
                 "size": 108,
                 "kind": 140,
@@ -64235,7 +64235,7 @@
               },
               "searchColumnWidths": {
                 "name": 140,
-                "folder": 720,
+                "folder": 721,
                 "modified": 140,
                 "size": 60,
                 "kind": 320,
@@ -64765,7 +64765,7 @@
               "treeWidth": 520,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 280,
                 "size": 60,
                 "kind": 320,
@@ -67397,7 +67397,7 @@
               "treeWidth": 220,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 280,
                 "size": 240,
                 "kind": 60,
@@ -69971,7 +69971,7 @@
             "treeWidth": 220,
             "inspectorWidth": 320,
             "detailColumnWidths": {
-              "name": 720,
+              "name": 1000,
               "modified": 80,
               "size": 60,
               "kind": 201,
@@ -70380,7 +70380,7 @@
                 "permissions": 108
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 240,
                 "modified": 80,
                 "size": 240,
@@ -70677,7 +70677,7 @@
                 "permissions": 201
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 80,
                 "modified": 80,
                 "size": 140,
@@ -71917,7 +71917,7 @@
                 "permissions": 108
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "folder": 80,
                 "modified": 140,
                 "size": 80,
@@ -72282,7 +72282,7 @@
           ],
           "searchColumnWidths": {
             "name": 300,
-            "folder": 720,
+            "folder": 1000,
             "modified": 80,
             "size": 60,
             "kind": 60,
@@ -72476,7 +72476,7 @@
               },
               "searchColumnWidths": {
                 "name": 300,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 80,
                 "size": 60,
                 "kind": 60,
@@ -72585,7 +72585,7 @@
               },
               "searchColumnWidths": {
                 "name": 300,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 80,
                 "size": 60,
                 "kind": 60,
@@ -73394,7 +73394,7 @@
           ],
           "searchColumnWidths": {
             "name": 152,
-            "folder": 720,
+            "folder": 1000,
             "modified": 152,
             "size": 240,
             "kind": 80,
@@ -73568,7 +73568,7 @@
               },
               "searchColumnWidths": {
                 "name": 152,
-                "folder": 720,
+                "folder": 1000,
                 "modified": 152,
                 "size": 240,
                 "kind": 80,
@@ -73606,7 +73606,7 @@
               "treeWidth": 220,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 140,
                 "size": 240,
                 "kind": 60,
@@ -75086,7 +75086,7 @@
             "created"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 721,
             "folder": 720,
             "modified": 140,
             "size": 108,
@@ -75231,7 +75231,7 @@
                 "permissions": 108
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "folder": 720,
                 "modified": 140,
                 "size": 108,
@@ -75275,7 +75275,7 @@
             "permissions"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 80,
             "size": 60,
             "kind": 300,
@@ -75424,7 +75424,7 @@
               "treeWidth": 520,
               "inspectorWidth": 301,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 80,
                 "size": 60,
                 "kind": 300,
@@ -75670,8 +75670,8 @@
               "permissions": 260
             },
             "searchColumnWidths": {
-              "name": 720,
-              "folder": 720,
+              "name": 1000,
+              "folder": 721,
               "modified": 80,
               "size": 108,
               "kind": 140,
@@ -75862,7 +75862,7 @@
             "treeWidth": 520,
             "inspectorWidth": 260,
             "detailColumnWidths": {
-              "name": 720,
+              "name": 1000,
               "modified": 152,
               "size": 140,
               "kind": 152,
@@ -76210,7 +76210,7 @@
             "permissions"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 721,
             "modified": 152,
             "size": 60,
             "kind": 80,
@@ -76373,7 +76373,7 @@
             "treeWidth": 220,
             "inspectorWidth": 320,
             "detailColumnWidths": {
-              "name": 720,
+              "name": 721,
               "modified": 152,
               "size": 60,
               "kind": 80,
@@ -76625,7 +76625,7 @@
             "created"
           ],
           "detailColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "modified": 140,
             "size": 201,
             "kind": 148,
@@ -76786,7 +76786,7 @@
               "treeWidth": 520,
               "inspectorWidth": 480,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "modified": 140,
                 "size": 201,
                 "kind": 148,
@@ -80294,7 +80294,7 @@
               "treeWidth": 280,
               "inspectorWidth": 260,
               "detailColumnWidths": {
-                "name": 720,
+                "name": 721,
                 "modified": 280,
                 "size": 60,
                 "kind": 140,
@@ -80370,7 +80370,7 @@
             "permissions"
           ],
           "searchColumnWidths": {
-            "name": 720,
+            "name": 1000,
             "folder": 140,
             "modified": 80,
             "size": 201,
@@ -80584,7 +80584,7 @@
                 "permissions": 36
               },
               "searchColumnWidths": {
-                "name": 720,
+                "name": 1000,
                 "folder": 140,
                 "modified": 80,
                 "size": 201,

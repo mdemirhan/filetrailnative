@@ -109,7 +109,7 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     /// The least and the greatest width the column can be given, in points.
     public var widthLimits: ClosedRange<Int> {
         switch self {
-        case .name: 140...720
+        case .name: 140...1000
         case .modified: 80...280
         case .size: 60...240
         case .kind: 60...320
@@ -135,7 +135,7 @@ public enum SearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
 
     /// The least and the greatest width the column can be given: Folder's own, the others as in a folder's List.
     public var widthLimits: ClosedRange<Int> {
-        self == .folder ? 80...720 : DetailColumnKey(rawValue: rawValue)?.widthLimits ?? 80...720
+        self == .folder ? 80...1000 : DetailColumnKey(rawValue: rawValue)?.widthLimits ?? 80...1000
     }
 }
 

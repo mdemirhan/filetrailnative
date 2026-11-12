@@ -174,7 +174,7 @@ struct AppStateReaderTests {
         #expect(reloaded.detailColumnOrder == [.kind, .size, .modified, .created, .permissions])
         #expect(
             reloaded.detailColumnWidths
-                == DetailColumnWidths(name: 720, modified: 180, size: 60, kind: 148, created: 168, permissions: 40))
+                == DetailColumnWidths(name: 1000, modified: 180, size: 60, kind: 148, created: 168, permissions: 40))
         // Search results' columns are read the same way, apart from a folder's.
         #expect(
             reloaded.searchColumns

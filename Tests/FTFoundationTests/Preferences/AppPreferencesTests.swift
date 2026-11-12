@@ -12,13 +12,13 @@ struct AppPreferencesTests {
     }
 
     @Test func clampsDetailColumnWidthsUsingPerColumnLimits() {
-        #expect(AppPreferenceLimits.clampDetailColumnWidth(.name, 719.8) == 720)
+        #expect(AppPreferenceLimits.clampDetailColumnWidth(.name, 999.8) == 1000)
         #expect(AppPreferenceLimits.clampDetailColumnWidth(.size, 10) == DetailColumnKey.size.widthLimits.lowerBound)
         #expect(
             AppPreferenceLimits.clampDetailColumnWidth(.permissions, 400)
                 == DetailColumnKey.permissions.widthLimits.upperBound)
         #expect(AppPreferenceLimits.clampSearchColumnWidth(.folder, 10) == 80)
-        #expect(AppPreferenceLimits.clampSearchColumnWidth(.folder, 4000) == 720)
+        #expect(AppPreferenceLimits.clampSearchColumnWidth(.folder, 4000) == 1000)
     }
 
     @Test func offersAutoLightAndDark() {

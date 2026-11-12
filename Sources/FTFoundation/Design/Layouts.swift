@@ -151,13 +151,13 @@ public struct ColumnWidths: Equatable, Sendable {
             ColumnWidths(defaultWidth: defaultWidth, min: min, max: max)
         }
         switch column {
-        case .name: return search ? spec(300, 140, 720) : spec(320, 140, 720)
+        case .name: return search ? spec(300, 140, 1000) : spec(320, 140, 1000)
         case .modified: return spec(152, 80, 280)
         case .size: return spec(108, 60, 240)
         case .kind: return spec(148, 60, 320)
         case .created: return spec(152, 80, 280)
         case .permissions: return spec(108, 36, 260)
-        case .folder: return spec(240, 80, 720)
+        case .folder: return spec(240, 80, 1000)
         }
     }
 }
