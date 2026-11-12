@@ -328,6 +328,8 @@
                 return newTab(window: window)
             case .selectTab(let index):
                 return selectTab(index, window: window)
+            case .scroll(let distance, let milliseconds):
+                return await scroll(by: distance, milliseconds: milliseconds, window: window)
             case .selectWindow(let index, let title):
                 return await selectWindow(index: index, title: title)
             }

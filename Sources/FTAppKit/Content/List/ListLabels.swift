@@ -58,6 +58,10 @@ final class NameLabel: ListLabel {
         didSet { needsDisplay = true }
     }
 
+    override var textWidth: CGFloat {
+        SplitName.width(stringValue, extension: fileExtension, marks: marks, font: font)
+    }
+
     override func draw(_ dirtyRect: NSRect) {
         let parts = DisplayName.split(stringValue, extension: fileExtension)
         let font = font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
@@ -88,6 +92,26 @@ final class NameLabel: ListLabel {
                 with: NSRect(x: drawn, y: y, width: suffixWidth, height: height), options: [.usesLineFragmentOrigin],
                 attributes: plain)
         }
+    }
+}
+
+/// The width of a name drawn as its stem and then its extension, each measured on its own and rounded up to whole
+/// points. That can be a point more than the name measured whole: a label only that wide would cut the stem short.
+@MainActor
+enum SplitName {
+    static func width(_ name: String, extension fileExtension: String, marks: [HighlightRange], font: NSFont?)
+        -> CGFloat
+    {
+        guard let font else { return 0 }
+        let parts = DisplayName.split(name, extension: fileExtension)
+        if !marks.isEmpty {
+            return MarkedName.splitNameWidth(
+                stem: parts.stem, suffix: parts.extensionSuffix, ranges: marks, font: font)
+        }
+        func measure(_ text: String) -> CGFloat {
+            ceil((text as NSString).size(withAttributes: [.font: font]).width)
+        }
+        return measure(parts.stem) + measure(parts.extensionSuffix)
     }
 }
 

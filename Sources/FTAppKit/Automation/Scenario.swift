@@ -58,6 +58,9 @@
             case newTab
             case selectTab(index: Int)
             case selectWindow(index: Int?, title: String?)
+            /// Scrolls the folder's view by `distance` points (back when negative) over `milliseconds`, a step each frame;
+            /// the step's message says how long the main thread took over the frames.
+            case scroll(distance: Double, milliseconds: Int)
 
             /// The step's name as written in the file.
             var kind: String {
@@ -80,6 +83,7 @@
                 case .newTab: "newTab"
                 case .selectTab: "selectTab"
                 case .selectWindow: "selectWindow"
+                case .scroll: "scroll"
                 }
             }
         }
@@ -261,6 +265,8 @@
                 let title = step["title"] as? String
                 guard position != nil || title != nil else { throw fail("needs \"index\" or \"title\"") }
                 return .selectWindow(index: position, title: title)
+            case "scroll":
+                return .scroll(distance: try number("distance"), milliseconds: Int(try number("ms")))
             default:
                 throw ParseError(description: "step \(index): unknown step \"\(kind)\"")
             }

@@ -90,10 +90,10 @@ enum SymbolGlyph {
 /// A system symbol of its own in a color, filling its bounds; it ignores the pointer.
 final class SymbolIconView: NSView {
     var symbolName: String {
-        didSet { needsDisplay = true }
+        didSet { if symbolName != oldValue { needsDisplay = true } }
     }
     var color: NSColor = .labelColor {
-        didSet { needsDisplay = true }
+        didSet { if color != oldValue { needsDisplay = true } }
     }
 
     init(_ symbolName: String) {

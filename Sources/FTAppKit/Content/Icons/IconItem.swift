@@ -180,30 +180,48 @@ final class ClipboardBadgeView: PassThroughView {
     }
 }
 
-/// The tile the icon sits on: a backdrop of the text colour while the item is selected.
+/// The tile the icon sits on: a backdrop of the text colour while the item is selected, shown by the layer's own color
+/// and corners. AppKit visits every view that draws itself with `draw(_:)`, hidden or not, on each frame of a scroll,
+/// and draws one that may draw past its bounds again: the items' views draw only what needs drawing (their names).
 final class IconTileView: PassThroughView {
     var backdrop: NSColor? {
-        didSet { needsDisplay = true }
+        didSet { if backdrop != oldValue { needsDisplay = true } }
     }
-    var radius: CGFloat = 0
+    var radius: CGFloat = 0 {
+        didSet { if radius != oldValue { needsDisplay = true } }
+    }
 
-    override func draw(_ dirtyRect: NSRect) {
-        guard let backdrop else { return }
-        backdrop.setFill()
-        NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
+    override var wantsUpdateLayer: Bool { true }
+
+    override func updateLayer() {
+        layer?.backgroundColor = backdrop?.cgColor
+        layer?.cornerRadius = radius
     }
 }
 
 /// The root of an item: the pointer goes through to the collection, which asks the item whether a press is on its tile
-/// or its name. It draws what a drop on the item would do while a drag is over it.
+/// or its name. It shows what a drop on the item would do while a drag is over it, in its layer's color and border, as
+/// the tile does.
 final class IconItemRootView: PassThroughView {
-    var drop: (state: DropTargetState, theme: Theme)? {
-        didSet { needsDisplay = true }
+    var drop: DropTargetState? {
+        didSet { if drop != oldValue { needsDisplay = true } }
     }
-    var radius: CGFloat = 0
+    var theme = AppearanceModel.shared.theme {
+        didSet { if drop != nil, theme != oldValue { needsDisplay = true } }
+    }
+    var radius: CGFloat = 0 {
+        didSet { if radius != oldValue { needsDisplay = true } }
+    }
 
-    override func draw(_ dirtyRect: NSRect) {
-        if let drop { DropHighlight.drawIcon(drop.state, in: bounds, radius: radius, theme: drop.theme) }
+    override var wantsUpdateLayer: Bool { true }
+
+    override func updateLayer() {
+        guard let layer else { return }
+        let look = drop.map { DropHighlight.iconLook($0, theme: theme) }
+        layer.backgroundColor = look.map { NSColor($0.fill).cgColor }
+        layer.borderColor = look.map { NSColor($0.edge).cgColor }
+        layer.borderWidth = look?.edgeWidth ?? 0
+        layer.cornerRadius = radius
     }
 }
 
@@ -251,7 +269,6 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         iconBox.addSubview(thumbnail)
         tile.addSubview(iconBox)
         root.addSubview(tile)
-        root.addSubview(badge)
         root.addSubview(label)
         label.addSubview(pill)
         label.addSubview(label.tagDots)
@@ -358,13 +375,16 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         label.marksUnderlined = selected && pane.paneFocused && pane.windowActive
         label.isHidden = renaming
         pill.isHidden = !selected || renaming
+        // The badge is in the item only while it shows, as `IconTileView` says.
         if let mark = host.clipboardMark(for: entry.path) {
             badge.mark = mark
             badge.theme = theme
             badge.style = pane.style
             badge.isHidden = false
+            if badge.superview == nil { root.addSubview(badge, positioned: .above, relativeTo: tile) }
         } else {
             badge.isHidden = true
+            badge.removeFromSuperview()
         }
         let tagColors = host.tagColors(for: entry.path)
         if label.tagDots.colors != tagColors {
@@ -379,7 +399,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
             cut ? CGFloat(ClipboardLayout.Mark.cutIconAlpha) : entry.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
         let dropState = host.dropState(for: entry.path)
         root.radius = CGFloat(pane.style.tileRadius)
-        root.drop = dropState.map { ($0, theme) }
+        root.theme = theme
+        root.drop = dropState
         dropMarker.isHidden = dropState == nil || dropState == .invalid
         DropHighlight.setWiggle(iconBox, on: dropState == .springing)
         if hasThumbnail, !thumbnail.isHidden, let picture = IconThumbnails.store.loadedPicture(forPath: entry.path) {

@@ -26,7 +26,8 @@ extension FinderTagColor {
 }
 
 /// Up to three overlapping dots, as Finder draws them: the item's last three colors, the newest at the left and on top.
-/// The pointer goes through to the row.
+/// The pointer goes through to the row. The dots are a picture made once for each set of colors and look, shown as the
+/// layer's contents, as `IconTileView` says.
 final class TagDotsView: NSView {
     static let diameter: CGFloat = 10
     static let step: CGFloat = 4
@@ -55,7 +56,6 @@ final class TagDotsView: NSView {
 
     init() {
         super.init(frame: .zero)
-        // A layer of its own, so the ring can cut through to what is behind.
         wantsLayer = true
         isHidden = true
         setAccessibilityElement(false)
@@ -65,17 +65,62 @@ final class TagDotsView: NSView {
 
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 
-    override func draw(_ dirtyRect: NSRect) {
-        guard let context = NSGraphicsContext.current else { return }
-        let y = (bounds.height - Self.diameter) / 2
+    override var wantsUpdateLayer: Bool { true }
+
+    /// The dots at the left edge, in the middle of the view's height.
+    override func updateLayer() {
+        guard let layer else { return }
+        let scale = window?.backingScaleFactor ?? layer.contentsScale
+        layer.contents = Self.picture(Array(shown), scale: scale, appearance: effectiveAppearance)
+        layer.contentsScale = scale
+        layer.contentsGravity = .left
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        needsDisplay = true
+    }
+
+    override func viewDidChangeBackingProperties() {
+        super.viewDidChangeBackingProperties()
+        needsDisplay = true
+    }
+
+    private static var pictures: [String: CGImage] = [:]
+
+    /// The dots of `colors` (oldest first), `scale` pixels to the point, in the colors of `appearance`.
+    static func picture(_ colors: [FinderTagColor], scale: CGFloat, appearance: NSAppearance) -> CGImage? {
+        guard !colors.isEmpty, scale > 0 else { return nil }
+        let key = "\(colors.map(\.rawValue)) \(scale) \(appearance.name.rawValue)"
+        if let picture = pictures[key] { return picture }
+        let width = Int((self.width(count: colors.count) * scale).rounded(.up))
+        let height = Int((diameter * scale).rounded(.up))
+        guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+            let bitmap = CGContext(
+                data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space,
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        else { return nil }
+        bitmap.scaleBy(x: scale, y: scale)
+        let context = NSGraphicsContext(cgContext: bitmap, flipped: false)
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = context
+        appearance.performAsCurrentDrawingAppearance { draw(colors, in: context) }
+        NSGraphicsContext.restoreGraphicsState()
+        let picture = bitmap.makeImage()
+        pictures[key] = picture
+        return picture
+    }
+
+    private static func draw(_ colors: [FinderTagColor], in context: NSGraphicsContext) {
         // Oldest first, so the newer ones cover them.
-        for (index, color) in shown.enumerated() {
-            let position = shown.count - 1 - index
-            let rect = NSRect(x: CGFloat(position) * Self.step, y: y, width: Self.diameter, height: Self.diameter)
+        for (index, color) in colors.enumerated() {
+            let position = colors.count - 1 - index
+            let rect = NSRect(x: CGFloat(position) * step, y: 0, width: diameter, height: diameter)
             if index > 0 {
+                // The ring cut around the dots already drawn, where this one overlaps them.
                 context.compositingOperation = .destinationOut
                 NSColor.black.setFill()
-                NSBezierPath(ovalIn: rect.insetBy(dx: -Self.ring, dy: -Self.ring)).fill()
+                NSBezierPath(ovalIn: rect.insetBy(dx: -ring, dy: -ring)).fill()
                 context.compositingOperation = .sourceOver
             }
             color.dotColor.setFill()

@@ -19,6 +19,10 @@ final class CompactNameLabel: ListLabel {
         didSet { needsDisplay = true }
     }
 
+    override var textWidth: CGFloat {
+        SplitName.width(stringValue, extension: fileExtension, marks: marks, font: font)
+    }
+
     override func draw(_ dirtyRect: NSRect) {
         let parts = DisplayName.split(stringValue, extension: fileExtension)
         let font = font ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
@@ -54,23 +58,57 @@ final class CompactNameLabel: ListLabel {
     }
 }
 
-/// The root of a Compact List item: as wide as its icon and name, with the selection behind them. The pointer goes
-/// through to the collection.
+/// The root of a Compact List item: as wide as its icon and name, with the selection behind them in the layer's color
+/// and corners, as `IconTileView` says. The pointer goes through to the collection.
 final class CompactItemRootView: PassThroughView {
     var highlight: NSColor? {
-        didSet { needsDisplay = true }
+        didSet { if highlight != oldValue { needsDisplay = true } }
     }
-    var radius: CGFloat = 0
-    /// What a drop on the item would do, while a drag is over it.
+    var radius: CGFloat = 0 {
+        didSet {
+            if radius != oldValue { needsDisplay = true }
+            dropView?.radius = radius
+        }
+    }
+    /// What a drop on the item would do, while a drag is over it: drawn over the selection by a view that is there only
+    /// as long as the drag is.
+    var drop: (state: DropTargetState, theme: Theme)? {
+        didSet {
+            guard let drop else {
+                dropView?.removeFromSuperview()
+                dropView = nil
+                return
+            }
+            let view = dropView ?? CompactDropView(frame: bounds)
+            if dropView == nil {
+                view.autoresizingMask = [.width, .height]
+                addSubview(view, positioned: .below, relativeTo: nil)
+                dropView = view
+            }
+            view.radius = radius
+            view.drop = drop
+        }
+    }
+    private var dropView: CompactDropView?
+
+    override var wantsUpdateLayer: Bool { true }
+
+    override func updateLayer() {
+        layer?.backgroundColor = highlight?.cgColor
+        layer?.cornerRadius = radius
+    }
+}
+
+/// The drop highlight of a Compact List item, under its icon and name.
+private final class CompactDropView: PassThroughView {
     var drop: (state: DropTargetState, theme: Theme)? {
         didSet { needsDisplay = true }
     }
+    var radius: CGFloat = 0 {
+        didSet { if radius != oldValue { needsDisplay = true } }
+    }
 
     override func draw(_ dirtyRect: NSRect) {
-        if let highlight {
-            highlight.setFill()
-            NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
-        }
         if let drop { DropHighlight.drawRow(drop.state, in: bounds, radius: radius, theme: drop.theme) }
     }
 }

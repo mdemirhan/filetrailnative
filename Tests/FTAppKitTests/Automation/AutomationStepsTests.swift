@@ -62,7 +62,8 @@
                     { "step": "newTab" },
                     { "step": "selectTab", "index": 1 },
                     { "step": "selectWindow", "title": "Settings" },
-                    { "step": "selectWindow", "index": 0 }
+                    { "step": "selectWindow", "index": 0 },
+                    { "step": "scroll", "distance": -4000, "ms": 1500 }
                   ]
                 }
                 """)
@@ -80,6 +81,7 @@
                     .selectTab(index: 1),
                     .selectWindow(index: nil, title: "Settings"),
                     .selectWindow(index: 0, title: nil),
+                    .scroll(distance: -4000, milliseconds: 1500),
                 ])
             #expect(scenario.steps.map(\.kind).contains("selectWindow"))
         }
@@ -92,6 +94,7 @@
                 #"{"step": "click", "element": "x", "holdMs": 9000}"#,
                 #"{"step": "menu", "path": []}"#,
                 #"{"step": "selectWindow"}"#,
+                #"{"step": "scroll", "distance": 100}"#,
             ]
             for step in bad {
                 #expect(throws: Scenario.ParseError.self, "\(step)") {

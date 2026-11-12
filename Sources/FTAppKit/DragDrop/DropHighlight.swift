@@ -45,32 +45,25 @@ enum DropHighlight {
         }
     }
 
-    /// Draws the highlight of an icon of the Icons view in `rect`: the fill and an inset edge, with no bar or halo.
-    static func drawIcon(_ state: DropTargetState, in rect: NSRect, radius: CGFloat, theme: Theme) {
+    /// The highlight of an icon of the Icons view: a fill and an edge `edgeWidth` wide inside the item, with no bar or
+    /// halo.
+    static func iconLook(_ state: DropTargetState, theme: Theme) -> (fill: RGBA, edge: RGBA, edgeWidth: CGFloat) {
         let palette = theme.palette
         let accent = theme.accent
-        let fill: RGBA
-        let edge: RGBA
-        let width: CGFloat
         switch state {
         case .valid, .springing:
-            fill = colorMix(accent.softBg, ClipboardLayout.Drop.fillMix, palette.bgElevated)
-            edge = colorMix(accent.border, ClipboardLayout.Drop.edgeMix, .white)
-            width = CGFloat(ClipboardLayout.Drop.iconEdgeWidth)
+            return (
+                colorMix(accent.softBg, ClipboardLayout.Drop.fillMix, palette.bgElevated),
+                colorMix(accent.border, ClipboardLayout.Drop.edgeMix, .white),
+                CGFloat(ClipboardLayout.Drop.iconEdgeWidth)
+            )
         case .invalid:
-            fill = palette.danger.withAlpha(palette.danger.alpha * ClipboardLayout.Drop.invalidFillAlpha)
-            edge = palette.danger.withAlpha(palette.danger.alpha * ClipboardLayout.Drop.invalidEdgeAlpha)
-            width = CGFloat(ClipboardLayout.Drop.invalidIconEdgeWidth)
+            return (
+                palette.danger.withAlpha(palette.danger.alpha * ClipboardLayout.Drop.invalidFillAlpha),
+                palette.danger.withAlpha(palette.danger.alpha * ClipboardLayout.Drop.invalidEdgeAlpha),
+                CGFloat(ClipboardLayout.Drop.invalidIconEdgeWidth)
+            )
         }
-        NSColor(fill).setFill()
-        NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius).fill()
-        // An edge `width` wide, inside the item.
-        let inset = rect.insetBy(dx: width / 2, dy: width / 2)
-        let ring = NSBezierPath(
-            roundedRect: inset, xRadius: max(0, radius - width / 2), yRadius: max(0, radius - width / 2))
-        ring.lineWidth = width
-        NSColor(edge).setStroke()
-        ring.stroke()
     }
 
     /// The wiggle of a springing folder's icon (`spring-warning-wiggle`), or its pulse with Reduce Motion.

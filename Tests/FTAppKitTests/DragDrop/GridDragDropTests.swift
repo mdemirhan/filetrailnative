@@ -91,7 +91,7 @@ extension ExplorerWindowlessTests {
                 tab.content.setDropTarget(alpha.path, .valid, background: nil)
                 if mode == .viewAsIcons {
                     let item = try #require(probe.iconItems["Alpha"])
-                    #expect(item.root.drop?.state == .valid && !item.dropMarker.isHidden)
+                    #expect(item.root.drop == .valid && !item.dropMarker.isHidden)
                     tab.content.setDropTarget(nil, nil, background: nil)
                     #expect(item.root.drop == nil && item.dropMarker.isHidden)
                 } else {

@@ -10,6 +10,13 @@ final class ClipboardMarkGlyph: NSView {
         didSet {
             isHidden = mark == nil
             glyph.symbolName = (mark == .cut ? CommandIcon.cut : .copy).symbolName
+            // The glyph is there only while it shows, as `IconTileView` says: every row of the folder's views has one.
+            if mark == nil {
+                glyph.removeFromSuperview()
+            } else if glyph.superview == nil {
+                addSubview(glyph)
+                needsLayout = true
+            }
         }
     }
 
@@ -20,7 +27,6 @@ final class ClipboardMarkGlyph: NSView {
 
     init(identifier: String) {
         super.init(frame: .zero)
-        addSubview(glyph)
         isHidden = true
         setAccessibilityElement(false)
         setAccessibilityIdentifier(identifier)

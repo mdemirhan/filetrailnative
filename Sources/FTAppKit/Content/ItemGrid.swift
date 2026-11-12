@@ -101,32 +101,14 @@ final class ItemGridLayout: NSCollectionViewLayout {
     }
 }
 
-/// The scroll container: thin overlay scrollers, no background of its own. The Compact List turns
-/// the wheel's up and down into sideways travel.
-final class ItemGridScrollView: NSScrollView {
-    /// The vertical wheel scrolls sideways.
-    var wheelScrollsSideways = false
+/// The scroll container: thin overlay scrollers, no background of its own. The wheel is left to AppKit, which then
+/// scrolls on a thread of its own (responsive scrolling) while the main thread fills in the items: a scroll view that
+/// overrides `scrollWheel(with:)` gives that up and scrolls only as fast as the main thread lays out and draws.
+class ItemGridScrollView: NSScrollView {
+    /// Whether the vertical wheel scrolls sideways: the Compact List's `SidewaysScrollView`.
+    var wheelScrollsSideways: Bool { false }
     /// How far one notch of a wheel without precise deltas moves: 40 points per line.
     static let wheelLineStep = 40.0
-
-    /// The collection view gives its scroll view the scrollers of its layout's direction, which is vertical for a custom
-    /// layout: without this the Compact List would lose the one scroller it has, and its thumb with it.
-    override var hasHorizontalScroller: Bool {
-        get { super.hasHorizontalScroller }
-        set { super.hasHorizontalScroller = newValue || wheelScrollsSideways }
-    }
-
-    override func scrollWheel(with event: NSEvent) {
-        guard wheelScrollsSideways, !event.modifierFlags.contains(.control),
-            abs(event.scrollingDeltaY) > abs(event.scrollingDeltaX)
-        else {
-            super.scrollWheel(with: event)
-            return
-        }
-        // AppKit's delta is up-positive, so it is turned over. A wheel without precise deltas moves by lines.
-        let delta = -event.scrollingDeltaY * (event.hasPreciseScrollingDeltas ? 1 : CGFloat(Self.wheelLineStep))
-        scrollSideways(by: Double(delta))
-    }
 
     /// `scrollLeft += delta`, kept within the content.
     func scrollSideways(by delta: Double) {
@@ -137,6 +119,29 @@ final class ItemGridScrollView: NSScrollView {
         guard next != clip.bounds.origin.x else { return }
         clip.scroll(to: NSPoint(x: next, y: clip.bounds.origin.y))
         reflectScrolledClipView(clip)
+    }
+}
+
+/// The Compact List's scroll container: the wheel's up and down move it sideways. Handling the wheel itself costs it
+/// responsive scrolling, which the Icons view keeps.
+final class SidewaysScrollView: ItemGridScrollView {
+    override var wheelScrollsSideways: Bool { true }
+
+    /// The collection view gives its scroll view the scrollers of its layout's direction, which is vertical for a custom
+    /// layout: without this the Compact List would lose the one scroller it has, and its thumb with it.
+    override var hasHorizontalScroller: Bool {
+        get { super.hasHorizontalScroller }
+        set { super.hasHorizontalScroller = true }
+    }
+
+    override func scrollWheel(with event: NSEvent) {
+        guard !event.modifierFlags.contains(.control), abs(event.scrollingDeltaY) > abs(event.scrollingDeltaX) else {
+            super.scrollWheel(with: event)
+            return
+        }
+        // AppKit's delta is up-positive, so it is turned over. A wheel without precise deltas moves by lines.
+        let delta = -event.scrollingDeltaY * (event.hasPreciseScrollingDeltas ? 1 : CGFloat(Self.wheelLineStep))
+        scrollSideways(by: Double(delta))
     }
 }
 

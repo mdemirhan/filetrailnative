@@ -16,6 +16,8 @@ final class CompactListViewController: ItemGridPane {
     override var navigationViewMode: ExplorerViewMode { .list }
     override var itemIdentifier: NSUserInterfaceItemIdentifier { CompactListItem.identifier }
 
+    override func makeScrollView() -> ItemGridScrollView { SidewaysScrollView() }
+
     override func loadView() {
         super.loadView()
         collection.register(CompactListItem.self, forItemWithIdentifier: CompactListItem.identifier)
@@ -23,7 +25,6 @@ final class CompactListViewController: ItemGridPane {
         scroll.hasVerticalScroller = false
         scroll.hasHorizontalScroller = true
         scroll.verticalScrollElasticity = .none
-        scroll.wheelScrollsSideways = true
     }
 
     override func metricsChanged() -> Bool {
@@ -50,12 +51,18 @@ final class CompactListViewController: ItemGridPane {
     /// The rows per column at the pane's height; the arrow keys move by it sideways.
     var rowsPerColumn: Int { layout.rowsPerColumn(containerHeight: Double(viewport.height)) }
 
-    private func nameWidth(_ name: String) -> Double {
-        if let known = nameWidths[name] { return known }
+    /// The width the name takes as its label draws it (`SplitName`): an item only as wide as the name measured whole
+    /// would cut its stem short. A search's marks pad the name, so a marked one is measured each time.
+    private func nameWidth(_ entry: DirectoryEntry) -> Double {
+        if let match = host?.search?.match(in: entry.name) {
+            return Double(SplitName.width(entry.name, extension: entry.fileExtension, marks: [match], font: nameFont))
+        }
+        let key = entry.fileExtension.isEmpty ? entry.name : entry.name + "\u{0}" + entry.fileExtension
+        if let known = nameWidths[key] { return known }
         // Names of folders left behind are let go once there are many more than this folder has.
         if nameWidths.count >= max(2 * entries.count, 10_000) { nameWidths.removeAll(keepingCapacity: true) }
-        let width = Double((name as NSString).size(withAttributes: [.font: nameFont]).width)
-        nameWidths[name] = width
+        let width = Double(SplitName.width(entry.name, extension: entry.fileExtension, marks: [], font: nameFont))
+        nameWidths[key] = width
         return width
     }
 
@@ -79,7 +86,7 @@ final class CompactListViewController: ItemGridPane {
     /// The name's width, and what follows it with its gap: the tag dots, and the clipboard glyph on an item on the
     /// clipboard.
     private func markedNameWidth(_ entry: DirectoryEntry) -> Double {
-        var width = nameWidth(entry.name)
+        var width = nameWidth(entry)
         let tags = host?.tagColors(for: entry.path).count ?? 0
         if tags > 0 { width += Double(TagDotsView.gap + TagDotsView.width(count: tags)) }
         if host?.clipboardMarks?.mark(for: entry.path) != nil {

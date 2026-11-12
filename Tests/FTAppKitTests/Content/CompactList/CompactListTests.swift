@@ -29,7 +29,8 @@ extension ExplorerWindowlessTests {
                 #expect(Double(item.view.frame.minX) == 10 + Double(column) * 310)
                 #expect(Double(item.view.frame.minY) == 8 + Double(row) * 28)
                 #expect(item.view.frame.height == 28)
-                let nameWidth = (name as NSString).size(withAttributes: [.font: compact.nameFont]).width
+                let entry = tab.content.entries[index]
+                let nameWidth = SplitName.width(name, extension: entry.fileExtension, marks: [], font: compact.nameFont)
                 #expect(abs(item.view.frame.width - min(292, nameWidth + 50)) < 0.01)
                 #expect(item.iconView.frame == NSRect(x: 12, y: 5, width: 18, height: 18))
                 #expect(item.label.frame.minX == 38)
@@ -47,7 +48,9 @@ extension ExplorerWindowlessTests {
             let compact = try #require(probe.compact)
             let entry = tab.content.entries[1]
             defer { try? FinderTags.write([], to: entry.path) }
-            let nameWidth = (entry.name as NSString).size(withAttributes: [.font: compact.nameFont]).width
+            // The name as its label draws it: the stem and the extension, each in whole points.
+            let nameWidth = SplitName.width(
+                entry.name, extension: entry.fileExtension, marks: [], font: compact.nameFont)
             let plainWidth = nameWidth + 50
 
             try FinderTags.write(

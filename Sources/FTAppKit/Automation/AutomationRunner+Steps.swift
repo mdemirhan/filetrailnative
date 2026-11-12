@@ -197,4 +197,47 @@
                 .map(\.0)
         }
     }
+
+    extension AutomationRunner {
+        /// Scrolls the folder's view by `distance` points over `milliseconds`, a step each frame at 120 Hz (sideways in the
+        /// Compact List), and says how long the main thread took over each frame: the scroll, the layout of the items it
+        /// brings in, their drawing and the commit. It moves the clip view itself, so it times the main thread's part of
+        /// scrolling, which a trackpad's responsive scrolling would otherwise hide.
+        func scroll(by distance: Double, milliseconds: Int, window: NSWindow) async -> Outcome {
+            let scrollView =
+                Views.first(NSCollectionView.self, in: window.contentView)?.enclosingScrollView
+                ?? Views.folderTable(in: window)?.enclosingScrollView
+            guard let scrollView else { return Outcome(.failed, "no folder view to scroll") }
+            let clip = scrollView.contentView
+            let start = clip.bounds.origin
+            let document = scrollView.documentView?.frame.size ?? .zero
+            let maxX = max(0, document.width - clip.bounds.width)
+            let maxY = max(0, document.height - clip.bounds.height)
+            let sideways = (scrollView as? ItemGridScrollView)?.wheelScrollsSideways == true
+            let frame = 1.0 / 120
+            let count = max(1, Int(Double(milliseconds) / 1000 / frame))
+            var times: [Double] = []
+            for step in 1...count {
+                let began = ContinuousClock.now
+                let along = distance * Double(step) / Double(count)
+                clip.scroll(
+                    to: sideways
+                        ? NSPoint(x: min(maxX, max(0, start.x + along)), y: start.y)
+                        : NSPoint(x: start.x, y: min(maxY, max(0, start.y + along))))
+                scrollView.reflectScrolledClipView(clip)
+                window.contentView?.layoutSubtreeIfNeeded()
+                window.displayIfNeeded()
+                CATransaction.flush()
+                times.append(Double((ContinuousClock.now - began).milliseconds))
+                try? await Task.sleep(for: .milliseconds(Int(frame * 1000)))
+            }
+            let sorted = times.sorted()
+            let late = times.filter { $0 > frame * 1000 }.count
+            return Outcome(
+                .ok,
+                String(
+                    format: "%d frames: median %.1f ms, slowest %.1f ms, %d over %.1f ms", count, sorted[count / 2],
+                    sorted[count - 1], late, frame * 1000))
+        }
+    }
 #endif

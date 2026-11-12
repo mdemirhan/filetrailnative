@@ -30,7 +30,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     private(set) var keyboard: ContentKeyboard?
 
     let root = ItemGridRootView()
-    let scroll = ItemGridScrollView()
+    private(set) lazy var scroll = makeScrollView()
     let collection = ItemGridView()
     let gridLayout = ItemGridLayout()
     /// The marquee box, in the collection's content so it scrolls with the items.
@@ -71,6 +71,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     var navigationViewMode: ExplorerViewMode { .icons }
     var itemIdentifier: NSUserInterfaceItemIdentifier { NSUserInterfaceItemIdentifier("grid.item") }
     func makeItem() -> NSCollectionViewItem { NSCollectionViewItem() }
+    func makeScrollView() -> ItemGridScrollView { ItemGridScrollView() }
     /// Shows `entry` in `item`.
     func configure(_ item: NSCollectionViewItem, entry: DirectoryEntry, index: Int) {}
     /// Draws the selection and focus of an item again.
