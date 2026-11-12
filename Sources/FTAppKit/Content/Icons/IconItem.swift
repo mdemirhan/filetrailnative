@@ -121,6 +121,10 @@ final class IconThumbnailView: PassThroughView {
     func show(_ picture: ThumbnailPicture, theme: Theme, style: IconItemStyle) {
         isFramed = picture.isOpaque
         setAccessibilityIdentifier(isFramed ? "icons.item.thumbnail" : "")
+        // At once: layers of their own fade a new picture and frame in over a quarter of a second otherwise.
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        defer { CATransaction.commit() }
         imageLayer.contents = picture.image
         let radius = isFramed ? CGFloat(style.thumbnailRadius) : 0
         imageLayer.cornerRadius = radius
