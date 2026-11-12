@@ -19,10 +19,10 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 ## Design
 
-- Prefer the system's look on current macOS: Liquid Glass for tabs and toolbars, Finder's symbols, font sizes and row heights.
+- Prefer the system's look on current macOS: Liquid Glass for tabs and toolbars, Finder's symbols. Font sizes and row heights stay the app's own, not Finder's.
 - A window holds at most 25 tabs.
 
-Open issues are in `docs/known-issues.md` and `docs/battery.md`.
+The owner's decisions are in `docs/decisions.md`: read it before changing anything it covers. Open issues are in `docs/known-issues.md` and `docs/battery.md`.
 
 ## Don't add
 
