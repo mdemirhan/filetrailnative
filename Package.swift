@@ -21,9 +21,7 @@ let package = Package(
             name: "FTFoundationTests", dependencies: ["FTFoundation", "FTTestSupport"], path: "Tests/FTFoundationTests"),
         .testTarget(
             name: "FTFileSystemTests", dependencies: ["FTFileSystem", "FTFoundation", "FTTestSupport"],
-            path: "Tests/FTFileSystemTests",
-            // Budgets hold only when optimized; tools/bench/listing.sh also defines DEBUG for FTAppKitTests to compile.
-            swiftSettings: [.define("RELEASE", .when(configuration: .release))]),
+            path: "Tests/FTFileSystemTests"),
         .testTarget(
             name: "FTOperationsTests", dependencies: ["FTOperations", "FTFoundation", "FTTestSupport"],
             path: "Tests/FTOperationsTests"),
