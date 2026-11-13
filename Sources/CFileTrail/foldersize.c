@@ -18,10 +18,12 @@
 //
 // A folder whose listing fails part way (EIO, say), or that holds a sub-folder that couldn't be opened
 // for a reason other than having no access to it, is incomplete: it and the folders holding it are
-// never reported finished, and a walk whose root is incomplete fails with the error. A sub-folder gone or
-// replaced since it was listed makes its folder incomplete too: the folder changed while it was walked,
-// and what was counted of it is no longer its size. A sub-folder the walk has no access to is counted as
-// a folder with nothing in it, as Finder does.
+// never reported finished, and a walk whose root is incomplete fails with the error. A sub-folder gone
+// along with the folder it was listed in (a folder above it was renamed or removed), or replaced by
+// something else, makes its folder incomplete too: what was counted is no longer that folder's size. One
+// removed from a folder still in its place holds nothing now and is left out, so a cache or a build
+// folder deleted meanwhile doesn't fail the walk of everything above it. A sub-folder the walk has no
+// access to is counted as a folder with nothing in it, as Finder does.
 //
 // Each folder is finished as soon as everything inside it has been walked: it counts its own listing
 // and each sub-folder not finished yet, and whichever thread brings that count to zero adds the
@@ -115,6 +117,9 @@ typedef struct walk_dir {
   /* Set when it turned out not to be walked after it was queued (no access, gone, on
      another disk): it counts only as a folder in its parent and is never finished. */
   atomic_int skipped;
+  /* Which folder it was when it was opened (0 until then): how a sub-folder that has gone
+     tells whether this one is still where it was listed. */
+  _Atomic uint64_t ino;
   /* Its own files and folders, plus the totals of each finished sub-folder. */
   _Atomic int64_t size_bytes;
   _Atomic int64_t disk_bytes;
@@ -137,6 +142,7 @@ static walk_dir_t *walk_dir_new(char *path, walk_dir_t *parent) {
   atomic_init(&dir->pending, 1);
   atomic_init(&dir->incomplete, 0);
   atomic_init(&dir->skipped, 0);
+  atomic_init(&dir->ino, 0);
   atomic_init(&dir->size_bytes, 0);
   atomic_init(&dir->disk_bytes, 0);
   atomic_init(&dir->file_count, 0);
@@ -194,8 +200,9 @@ static void mark_incomplete(work_queue_t *wq, walk_dir_t *dir, int errnum) {
 }
 
 /* Whether a sub-folder that couldn't be opened for `errnum` is simply left out, as one
-   the walk has no access to; anything else (gone or replaced since it was listed, no file
-   descriptors left, an I/O error) leaves its folder incomplete. */
+   the walk has no access to; anything else (replaced since it was listed, no file
+   descriptors left, an I/O error) leaves its folder incomplete, but for one that is gone
+   (see `open_queued_dir`). */
 static int is_skippable_open_error(int errnum) { return errnum == EACCES || errnum == EPERM; }
 
 /* For tests: called with each queued sub-folder's path just before it is opened. */
@@ -531,17 +538,32 @@ static int open_dir_path(const char *path) {
   return fd;
 }
 
+/* Whether the folder `dir` was listed in is still that folder, at its path: then a `dir`
+   that is gone was itself removed, and nothing above it was moved away. A path too long
+   for one call isn't looked at, and counts as not there. */
+static int listed_in_is_still_there(work_queue_t *wq, walk_dir_t *dir) {
+  walk_dir_t *parent = dir->parent;
+  if (parent == NULL) return 0;
+  uint64_t ino = atomic_load(&parent->ino);
+  struct stat st;
+  return ino != 0 && lstat(parent->path, &st) == 0 && S_ISDIR(st.st_mode) &&
+         (uint64_t)st.st_ino == ino && st.st_dev == wq->root_dev;
+}
+
 /* Opens a queued sub-folder, or -1 when it isn't walked. One the walk has no access to, or
-   on another disk (an open can cross onto one, as an automount does), is skipped; one that
-   couldn't be opened for another reason (gone or replaced since it was listed, among them)
-   leaves it incomplete. */
+   on another disk (an open can cross onto one, as an automount does), is skipped, and so
+   is one removed since it was listed, from a folder still in its place: it holds nothing
+   now. One that couldn't be opened for another reason leaves it incomplete: gone with the
+   folder it was listed in (a folder above it was renamed or removed, and what was counted
+   is no longer that folder's size), replaced by something else, no descriptors left. */
 static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
   ft_folder_walk_open_hook hook = atomic_load(&open_hook);
   if (hook != NULL) hook(dir->path);
   int fd = open_dir_path(dir->path);
   if (fd < 0) {
     int errnum = errno;
-    if (is_skippable_open_error(errnum)) {
+    if (is_skippable_open_error(errnum) ||
+        (errnum == ENOENT && listed_in_is_still_there(wq, dir))) {
       atomic_store(&dir->skipped, 1);
     } else {
       mark_incomplete(wq, dir, errnum);
@@ -554,6 +576,7 @@ static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
     atomic_store(&dir->skipped, 1);
     return -1;
   }
+  atomic_store(&dir->ino, (uint64_t)sub_stat.st_ino);
   return fd;
 }
 
@@ -674,6 +697,7 @@ void ft_folder_walk_run(ft_folder_walk *w) {
     close(root_fd);
     return;
   }
+  atomic_store(&root->ino, (uint64_t)root_stat.st_ino);
   work_queue_t wq;
   wq_init(&wq, root_stat.st_dev, &w->cancelled);
   if (!wq_push(&wq, root_fd, root)) {

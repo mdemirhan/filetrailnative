@@ -212,18 +212,36 @@ extension RealWalks {
             }
         }
 
-        // A sub-folder removed between its folder's listing and its own opening: the folders holding it changed while
-        // they were walked, so none of them is reported whole and the walk fails, rather than a size being kept
-        // that leaves out what it held.
-        @Test func aSubfolderGoneBeforeItIsOpenedLeavesTheFoldersHoldingItIncomplete() async throws {
+        // A sub-folder removed between its folder's listing and its own opening, from a folder still in its place,
+        // holds nothing now: it is left out, and the walk goes on to a size for everything above it.
+        @Test func aSubfolderRemovedBeforeItIsOpenedIsLeftOut() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
                 try makeTree(root)
                 let gone = "\(root)/sub/gone"
                 try makeFolder(gone)
                 try write("\(gone)/big.bin", 50_000)
-                VanishingFolder.path.withLock { $0 = gone }
-                ft_folder_walk_set_open_hook(removeVanishingFolder)
+                VanishingFolder.change.withLock { $0 = (at: gone, movingAway: nil) }
+                ft_folder_walk_set_open_hook(changeVanishingFolder)
+                defer { ft_folder_walk_set_open_hook(nil) }
+
+                let walk = try await measure(NativeFolderSize(), root)
+
+                #expect(walk.result.total < 50_000)
+                #expect(totals(walk, "\(root)/sub")?.sizeBytes == 105)
+                #expect(walk.dirs["\(gone)"] == nil)
+            }
+        }
+
+        // The folder it was listed in moved away meanwhile: what was counted is no longer that folder's size, so the
+        // folders holding it are not reported whole and the walk fails, rather than a size being kept that leaves out
+        // everything under the folder that moved.
+        @Test func aSubfolderGoneWithTheFolderItWasListedInLeavesTheFoldersHoldingItIncomplete() async throws {
+            try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
+                let root = directory.path
+                try makeTree(root)
+                VanishingFolder.change.withLock { $0 = (at: "\(root)/sub/deep", movingAway: "\(root)/sub") }
+                ft_folder_walk_set_open_hook(changeVanishingFolder)
                 defer { ft_folder_walk_set_open_hook(nil) }
                 var batches: [FinishedFolders] = []
                 let walk = NativeFolderSize().getFolderSize(root, background: false) { batches.append($0) }
@@ -233,7 +251,7 @@ extension RealWalks {
                 let finished = Set(batches.flatMap { $0.dirs.map(\.path) })
                 #expect(!finished.contains(root) && !finished.contains("\(root)/sub"))
                 // A folder beside it is whole.
-                #expect(finished.contains("\(root)/sub/deep"))
+                #expect(finished.contains("\(root)/empty"))
             }
         }
 
@@ -601,13 +619,21 @@ extension RealWalks {
 
 /// The folder the walk's open hook removes, for the test that removes one as it is about to be opened.
 private enum VanishingFolder {
-    static let path = OSAllocatedUnfairLock(initialState: "")
+    /// The folder the walk is about to open, and the folder to move away then (nil: the folder itself is removed).
+    static let change = OSAllocatedUnfairLock<(at: String, movingAway: String?)>(
+        initialState: (at: "", movingAway: nil))
 }
 
-/// The walk's open hook for that test: called on the walk's threads, it removes the folder about to be opened.
-private func removeVanishingFolder(_ path: UnsafePointer<CChar>?) {
-    guard let path, String(cString: path) == VanishingFolder.path.withLock({ $0 }) else { return }
-    try? FileManager.default.removeItem(atPath: String(cString: path))
+/// The walk's open hook for those tests: called on the walk's threads, it removes the folder about to be opened, or
+/// moves the folder holding it away.
+private func changeVanishingFolder(_ path: UnsafePointer<CChar>?) {
+    let change = VanishingFolder.change.withLock { $0 }
+    guard let path, String(cString: path) == change.at else { return }
+    if let away = change.movingAway {
+        try? FileManager.default.moveItem(atPath: away, toPath: away + "-moved")
+    } else {
+        try? FileManager.default.removeItem(atPath: change.at)
+    }
 }
 
 /// The test process the file-limit test starts: this test bundle again, running one test, with fewer files allowed open.
