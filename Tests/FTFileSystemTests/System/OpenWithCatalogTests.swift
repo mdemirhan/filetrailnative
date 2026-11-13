@@ -140,8 +140,12 @@ struct SettingTheDefaultAppTests {
     @Test func givesUpOnMacOSAtTheTimeLimitWithoutWaitingForIt() async {
         let catalog = OpenWithCatalog()
         let answered = OSAllocatedUnfairLock(initialState: false)
+        // macOS answers once the test is over, and isn't stopped meanwhile.
+        let release = DispatchSemaphore(value: 0)
+        defer { release.signal() }
+        @Sendable func hang() { _ = release.wait(timeout: .now() + 10) }
         catalog.setDefaultInSystem = { _, _ in
-            usleep(2_000_000)
+            hang()
             answered.withLock { $0 = true }
         }
         catalog.setDefaultTimeLimit = .milliseconds(100)

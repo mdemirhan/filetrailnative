@@ -25,8 +25,10 @@ final class Hang: Sendable {
     }
 }
 
-/// How long a test lets a disk take to answer.
+/// How long a test lets a disk take to answer, when it must: on a Mac kept busy by the other tests.
 private let answerWithinMs = 1_000
+/// How long a test waits for a disk that hangs, which is waited out in full.
+private let hangWithinMs = 50
 
 struct ReplaceRecoveryAtStartTests {
     @Test func leavesAnEntryForLaterUntouchedWhenItsOriginalsDiskDoesntAnswer() {
@@ -43,7 +45,7 @@ struct ReplaceRecoveryAtStartTests {
         let started = Date()
 
         let outcomes = recoverInterruptedReplaces(
-            [entry], fileSystem, RecoveryOptions(answerWithinMs: answerWithinMs))
+            [entry], fileSystem, RecoveryOptions(answerWithinMs: hangWithinMs))
 
         #expect(Date().timeIntervalSince(started) < 10)
         #expect(outcomes == [ReplaceRecovery(entry: entry, outcome: .unreachable(error: "The disk didn't answer."))])
@@ -99,7 +101,7 @@ struct PartialFileRemovalTests {
         defer { hang.release() }
         hang.under(fileSystem, "/target")
         #expect(
-            recoverPartialFiles([Self.entry], fileSystem, RecoveryOptions(answerWithinMs: answerWithinMs))
+            recoverPartialFiles([Self.entry], fileSystem, RecoveryOptions(answerWithinMs: hangWithinMs))
                 == [PartialFileRecovery(entry: Self.entry, outcome: .unreachable(error: "The disk didn't answer."))])
         hang.release()
         fileSystem.lstatImpl = nil

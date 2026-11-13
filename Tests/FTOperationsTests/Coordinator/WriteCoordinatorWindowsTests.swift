@@ -540,14 +540,14 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
                         if hanging.isSet && path.hasSuffix("b.txt") { gate.wait() }
                         return try base.lstat(path)
                     }
-                }, undoCheckWithinMs: 500)
+                }, undoCheckWithinMs: 50)
             try await t.rename("\(root)/a.txt", "b.txt")
             hanging.set(true)
             let coordinator = t.coordinator
             // The second press comes while the first still looks, in the same turn: the first starts here and
-            // now, up to where it waits for the disk. Waiting for the disk call
-            // instead let the first give up (after 20 ms) before the second came when the main actor or the disk
-            // thread was kept waiting by other suites, and the second then looked again rather than doing nothing.
+            // now, up to where it waits for the disk. Had the second waited for the disk call instead, the first could
+            // give up (after its 50 ms) before the second came when the main actor or the disk thread was kept waiting
+            // by other suites, and the second would then look again rather than do nothing.
             let first = Task.immediate { @MainActor in try await coordinator.prepareUndo(.undo) }
             let meanwhile = try await t.coordinator.prepareUndo(.undo)
             #expect(meanwhile.ticket == nil)

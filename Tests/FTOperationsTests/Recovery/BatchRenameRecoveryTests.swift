@@ -131,7 +131,7 @@ struct BatchRenameRecoveryTests {
             let started = Date()
 
             let report = recoverWrites(
-                journal, fileSystem, logger: RecordingLogger().logger, answerWithinMs: 1_000)
+                journal, fileSystem, logger: RecordingLogger().logger, answerWithinMs: 50)
 
             #expect(Date().timeIntervalSince(started) < 10)
             #expect(report.notices.isEmpty)

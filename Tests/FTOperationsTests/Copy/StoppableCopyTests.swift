@@ -121,20 +121,47 @@ struct StoppableCopyTests {
         #expect(calls.all.isEmpty)
     }
 
-    // The real ticker: a tick under way finishes before the copy returns, and none comes after.
-    @Test func neverReportsProgressAfterTheCopyReturns() throws {
+    // The real ticker tells the bytes copied so far while the copy runs.
+    @Test func reportsProgressOnTheRealTicker() throws {
         let progress = OSAllocatedUnfairLock(initialState: [Int64]())
+        let told = DispatchSemaphore(value: 0)
         let copy = StoppableCopy(copy: { _, _, control in
             control?.copiedBytes = 7
-            Thread.sleep(forTimeInterval: 0.6)
+            _ = told.wait(timeout: .now() + 5)
         })
 
-        try copy.copyFile("/a", to: "/b", onProgress: { bytes in progress.withLock { $0.append(bytes) } })
-        let reported = progress.withLock { $0 }
-        Thread.sleep(forTimeInterval: 0.4)
+        try copy.copyFile(
+            "/a", to: "/b",
+            onProgress: { bytes in
+                progress.withLock { $0.append(bytes) }
+                told.signal()
+            })
 
-        #expect(reported == [7])
-        #expect(progress.withLock { $0 } == reported)
+        #expect(progress.withLock { $0 } == [7])
+    }
+
+    // The real ticker, cancelled: a tick under way has finished when `cancel` returns, and none comes after.
+    @Test func theDispatchTickerTicksNoMoreOnceCancelled() {
+        let ticks = OSAllocatedUnfairLock(initialState: 0)
+        let running = OSAllocatedUnfairLock(initialState: false)
+        let ticked = DispatchSemaphore(value: 0)
+        let ticking = DispatchProgressTicker().start(every: .milliseconds(5)) {
+            running.withLock { $0 = true }
+            ticks.withLock { $0 += 1 }
+            ticked.signal()
+            Thread.sleep(forTimeInterval: 0.002)
+            running.withLock { $0 = false }
+        }
+        // It ticks again and again.
+        #expect(ticked.wait(timeout: .now() + 5) == .success)
+        #expect(ticked.wait(timeout: .now() + 5) == .success)
+
+        ticking.cancel()
+        #expect(!running.withLock { $0 })
+        let count = ticks.withLock { $0 }
+        // Ten intervals.
+        Thread.sleep(forTimeInterval: 0.05)
+        #expect(ticks.withLock { $0 } == count)
     }
 
     @Test func stopSignalRunsEachHandlerOnceAndNoneAfterRemoval() {

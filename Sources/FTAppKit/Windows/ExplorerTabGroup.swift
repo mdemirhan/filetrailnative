@@ -302,7 +302,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
 
     // MARK: Opening tabs
 
-    /// How many tabs make `hasRoomForTab` say no (test seam: a window at the limit without building its 25 tabs).
+    /// How many tabs make `hasRoomForTab` say no and `addTabs` stop (test seam: a window at the limit without building
+    /// its 25 tabs).
     var tabLimit = AppPreferenceLimits.openTabsLimit
 
     /// `hasRoomForTab`: a window holds no more tabs than it can save, and Merge All Windows can hand over; a notice
@@ -357,7 +358,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// Merge All Windows: the other windows' tabs join this window's, after them, waiting unread until they are
     /// shown. No more are kept than a window may hold; one whose folder is gone is left out.
     func addTabs(_ added: [OpenTabPreference]) {
-        let room = max(0, AppPreferenceLimits.openTabsLimit - tabs.count)
+        let room = max(0, tabLimit - tabs.count)
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let startups = added.prefix(room).map { StartupTabs.startupTab($0, homePath: home) }
         let kept = ScreenGeometry.keepsWaitingTabs(startups.map(\.path))

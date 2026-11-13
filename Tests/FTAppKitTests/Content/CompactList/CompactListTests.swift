@@ -284,6 +284,8 @@ extension ExplorerWindowlessTests {
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 12)
             let compact = try #require(probe.compact)
             let bar = tab.content.contentShell.pathBarRow
+            let timers = ManualTimers()
+            bar.timers = timers
             #expect(bar.sizeLabel.isHidden)
             tab.perform(.increaseSize)
             probe.layout()
@@ -297,7 +299,10 @@ extension ExplorerWindowlessTests {
             probe.layout()
             #expect(compact.layout.itemWidth == 292 && tab.preferences.compactListWidths.standard == 292)
             #expect(tab.menuState.disabledCommands.contains(.resetSize))
-            #expect(await waitUntil(timeout: .seconds(5)) { bar.sizeLabel.isHidden })
+            timers.advance(PathBarRowView.sizeValueLinger - 0.1)
+            #expect(!bar.sizeLabel.isHidden)
+            timers.advance(0.1)
+            #expect(await waitUntil { bar.sizeLabel.isHidden })
             // ⌘= in the list.
             let window = try #require(tab.window)
             tab.content.focusList()

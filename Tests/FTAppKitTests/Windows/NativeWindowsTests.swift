@@ -125,11 +125,13 @@ extension ExplorerWindowlessTests {
             #expect(copy.treeRootPath == first.treeRootPath)
             #expect(copy.viewMode == first.viewMode)
 
-            // No copy past the limit; a notice says why.
+            // No copy past the limit; a notice says why. A limit of 5 stands for the 25, which
+            // PreferenceKeyTests checks.
+            group.tabLimit = 5
             group.addTabs(Array(repeating: first.openTab, count: 120))
-            #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
+            #expect(group.tabs.count == group.tabLimit)
             copy.perform(.duplicateTab)
-            #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
+            #expect(group.tabs.count == group.tabLimit)
             #expect(notices == [.tabLimit])
             await closeAll(app)
         }

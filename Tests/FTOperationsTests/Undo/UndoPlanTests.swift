@@ -448,16 +448,22 @@ struct UndoPlanTests {
             units.append(UndoUnit(steps: [trashed("/D/\(index)", "/D/T/\(index)", UInt64(100 + index))]))
         }
         let fileSystem = PlanDisk(items)
-        let reading = OSAllocatedUnfairLock(initialState: (now: 0, most: 0))
+        let reading = OSAllocatedUnfairLock(initialState: (now: 0, most: 0, held: Int?.none))
+        // The first unit looked at is held until another unit's look has come back: looked at one at a time it would
+        // wait out the timeout alone, and an order kept by luck would show.
+        let anotherAnswered = DispatchSemaphore(value: 0)
         fileSystem.onLstat = { path in
-            reading.withLock { state in
+            let index = Int(NodePath.basename(path))
+            let (hold, held) = reading.withLock { state in
                 state.now += 1
                 state.most = max(state.most, state.now)
+                guard let index, state.held == nil else { return (false, state.held) }
+                state.held = index
+                return (true, index)
             }
-            // Later units answer sooner, so an order kept by luck would show.
-            let index = Int(NodePath.basename(path)) ?? 40
-            usleep(UInt32(max(0, 40 - index)) * 200)
+            if hold { _ = anotherAnswered.wait(timeout: .now() + 5) }
             reading.withLock { $0.now -= 1 }
+            if let index, index != held { anotherAnswered.signal() }
         }
         let questions = UndoPlan.findQuestions(fileSystem, units)
         #expect(questions.nameTaken.map(\.name) == (0..<40).filter { $0 % 3 == 0 }.reversed().map(String.init))

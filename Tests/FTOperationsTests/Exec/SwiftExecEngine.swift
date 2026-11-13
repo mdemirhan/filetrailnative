@@ -106,7 +106,7 @@ struct SwiftExecEngine: ExecEngine {
         let undo =
             scenario.undo == nil
             ? nil : await SwiftUndoRun.make(service, fileSystem, places, hasTrash: scenario.trash != false)
-        _ = try service.startCopyPaste(
+        let handle = try service.startCopyPaste(
             report: report,
             policy: CopyPastePolicy(
                 file: try Self.choice(scenario.policy.file), directory: try Self.choice(scenario.policy.directory),
@@ -115,8 +115,8 @@ struct SwiftExecEngine: ExecEngine {
                 CopyPasteNodeOverride(nodeId: $0.nodeId, action: try Self.choice($0.action))
             })
         for await _ in finished.stream {}
-        // Anything the service does after its last event (it lets the operation go) is done by now.
-        try await Task.sleep(for: .milliseconds(10))
+        // The service lets the operation go just after its last event: that is done before anything is read.
+        while !service.hasReleased(handle.operationId) { await Task.yield() }
         if log.crashed {
             // The tree, the Trash and the journal as the crash left them, then what recovery made of them.
             var left = try outcome(before, log, places)

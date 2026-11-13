@@ -32,9 +32,11 @@ final class PathBarRowView: NSView {
     /// The size the slider sets, in points ("64 pt"): it shows over the status text while the slider moves, and fades
     /// shortly after it stops.
     let sizeLabel = TextBoxField(labelWithString: "")
-    /// How long the size stays after the slider last moved.
-    static let sizeValueLinger: Duration = .milliseconds(1200)
-    private var sizeValueHide: Task<Void, Never>?
+    /// How long the size stays after the slider last moved, in seconds.
+    static let sizeValueLinger: TimeInterval = 1.2
+    private var sizeValueHide: TimerToken?
+    /// What waits out `sizeValueLinger`; tests move it by hand.
+    var timers: any TimerScheduling = TaskTimerScheduler()
     var sizeValue = 0 {
         didSet {
             guard sizeValue != oldValue else { return }
@@ -51,9 +53,7 @@ final class PathBarRowView: NSView {
         sizeLabel.isHidden = false
         sizeLabel.alphaValue = 1
         status.alphaValue = 0
-        sizeValueHide = Task { @MainActor [weak self] in
-            try? await Task.sleep(for: Self.sizeValueLinger)
-            guard !Task.isCancelled else { return }
+        sizeValueHide = timers.schedule(after: Self.sizeValueLinger) { [weak self] in
             self?.hideSizeValue(animated: true)
         }
     }

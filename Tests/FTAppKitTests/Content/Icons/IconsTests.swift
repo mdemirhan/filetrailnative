@@ -308,6 +308,8 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
             let bar = tab.content.contentShell.pathBarRow
+            let timers = ManualTimers()
+            bar.timers = timers
             let slider = bar.sizeSlider
             #expect(bar.showsSizeSlider && !slider.isHidden)
             #expect(slider.minValue == 32 && slider.maxValue == 128 && slider.doubleValue == 64)
@@ -332,7 +334,10 @@ extension ExplorerWindowlessTests {
             // The size shows in place of the status text while the slider moves, and goes once it is still.
             #expect(bar.sizeLabel.stringValue == "40 pt" && !bar.sizeLabel.isHidden)
             #expect(bar.status.alphaValue == 0)
-            #expect(await waitUntil(timeout: .seconds(5)) { bar.sizeLabel.isHidden })
+            timers.advance(PathBarRowView.sizeValueLinger - 0.1)
+            #expect(!bar.sizeLabel.isHidden)
+            timers.advance(0.1)
+            #expect(await waitUntil { bar.sizeLabel.isHidden })
             #expect(bar.status.alphaValue == 1)
             #expect(tab.preferences.iconSizes == DensitySizes(standard: 40, finder: 64))
             // The Compact List's slider is the column width; the List has none.
@@ -350,6 +355,8 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
             let bar = tab.content.contentShell.pathBarRow
+            let timers = ManualTimers()
+            bar.timers = timers
             let icons = try #require(probe.icons)
             #expect(tab.menuState.disabledCommands.filter { ViewSize.Change($0) != nil } == [.resetSize])
             tab.perform(.increaseSize)
@@ -368,7 +375,10 @@ extension ExplorerWindowlessTests {
             probe.layout()
             #expect(icons.layout.iconSize == 64 && bar.sizeSlider.doubleValue == 64)
             #expect(tab.preferences.iconSizes.standard == 64 && bar.sizeLabel.stringValue == "64 pt")
-            #expect(await waitUntil(timeout: .seconds(5)) { bar.sizeLabel.isHidden })
+            timers.advance(PathBarRowView.sizeValueLinger - 0.1)
+            #expect(!bar.sizeLabel.isHidden)
+            timers.advance(0.1)
+            #expect(await waitUntil { bar.sizeLabel.isHidden })
             // The List has no size: the commands are dimmed and do nothing.
             tab.perform(.viewAsDetails)
             #expect(Set(tab.menuState.disabledCommands).isSuperset(of: [.increaseSize, .decreaseSize, .resetSize]))

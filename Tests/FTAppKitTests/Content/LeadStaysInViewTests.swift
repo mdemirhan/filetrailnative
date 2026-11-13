@@ -50,11 +50,10 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.entries.count == count + names.count })
         }
 
-        // Items come before the lead: where the view is scrolled it would
-        // be out of view.
-        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func keepsTheLeadInViewWhenTheListChangesAroundIt(_ view: AppCommand) async throws {
-            let (harness, tab, folder) = try await open(view)
+        // Items come before the lead: where the view is scrolled it would be out of view. By the route a refresh
+        // takes; each view's is in LeadStaysOnThePaneTests, with the other changes around the lead.
+        @Test func keepsTheLeadInViewWhenTheListChangesAroundIt() async throws {
+            let (harness, tab, folder) = try await open(.viewAsDetails)
             let lead = tab.content.entries[150].path
             tab.content.select(paths: [lead])
             let before = try scroller(tab).scrollOrigin
@@ -63,37 +62,6 @@ extension ExplorerWindowlessTests {
             try await add((0..<200).map { "a-\($0).txt" }, to: folder, tab)
 
             #expect(try position(of: lead, tab) == 350)
-            #expect(try leadIsInView(tab))
-            #expect(try scroller(tab).scrollOrigin != before)
-            await harness.close()
-        }
-
-        // A lead the view was scrolled away from doesn't bring the view back.
-        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func staysWhereItWasScrolledWhenAnItemIsAddedAboveALeadOutOfView(_ view: AppCommand) async throws {
-            let (harness, tab, folder) = try await open(view)
-            tab.content.select(paths: [tab.content.entries[5].path])
-            scrollAway(view, tab)
-            let before = try scroller(tab).scrollOrigin
-            #expect(try !leadIsInView(tab))
-
-            try await add(["a-new.txt"], to: folder, tab)
-
-            #expect(try scroller(tab).scrollOrigin == before)
-            await harness.close()
-        }
-
-        // A new item is selected before the folder is read again with it.
-        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func bringsANewItemIntoViewOnceTheListHasIt(_ view: AppCommand) async throws {
-            let (harness, tab, folder) = try await open(view)
-            let made = (folder as NSString).appendingPathComponent("zz-new.txt")
-            tab.content.applySelection(.single(made))
-            let before = try scroller(tab).scrollOrigin
-
-            try await add(["zz-new.txt"], to: folder, tab)
-
-            #expect(tab.content.selection.leadPath == made)
             #expect(try leadIsInView(tab))
             #expect(try scroller(tab).scrollOrigin != before)
             await harness.close()
@@ -263,28 +231,6 @@ extension ExplorerWindowlessTests {
             #expect(try position(of: lead, tab) == names.count - 1)
             #expect(try leadIsInView(tab))
             #expect(try scroller(tab).scrollOrigin != before)
-            await harness.close()
-        }
-
-        // The item being renamed, and a refused name, come into view in the List and the Icons view;
-        // the Compact List follows only the lead.
-        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func theItemBeingRenamedIsBroughtIntoViewButNotInTheCompactList(_ view: AppCommand) async throws {
-            let (harness, tab, _) = try await open(view)
-            let taken = tab.content.entries[6].name
-            tab.content.select(paths: [tab.content.entries[5].path])
-            let renamed = tab.content.entries[150].path
-            let index = try position(of: renamed, tab)
-
-            // The name is taken, as the file operations would say.
-            tab.renameItem = { _, name in .refused("An item named \u{201C}\(name)\u{201D} already exists.") }
-            #expect(tab.content.beginRename(path: renamed))
-            #expect(try scroller(tab).isInView(index: index) == (view != .viewAsList))
-
-            tab.content.pane?.scrollPosition = (top: 0, left: 0)
-            tab.content.renameSubmitted(taken)
-            #expect(await waitUntil { tab.content.inlineRename?.error != nil })
-            #expect(try scroller(tab).isInView(index: index) == (view != .viewAsList))
             await harness.close()
         }
 
@@ -458,6 +404,82 @@ struct LeadStaysOnThePaneTests {
     private func leadIsInView(_ content: ContentPaneController, _ scroller: any RevealScroller) throws -> Bool {
         let lead = try #require(content.selection.leadPath)
         return scroller.isInView(index: try #require(content.entries.firstIndex { $0.path == lead }))
+    }
+
+    /// The folder read again in place with `added` in it, in name order, as a refresh shows it.
+    private func readAgain(_ content: ContentPaneController, adding added: [String]) {
+        let entries = (content.entries + added.map { ContentModelTests.entry($0) }).sorted { $0.name < $1.name }
+        content.show(folder: "/f", entries: entries, selecting: nil, keepingScroll: true)
+        content.view.layoutSubtreeIfNeeded()
+    }
+
+    private func position(of path: String, _ content: ContentPaneController) throws -> Int {
+        try #require(content.entries.firstIndex { $0.path == path })
+    }
+
+    // Items come before the lead: where the view is scrolled it would be out of view.
+    @Test(arguments: views)
+    func keepsTheLeadInViewWhenTheListChangesAroundIt(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        let lead = content.entries[150].path
+        content.select(paths: [lead])
+        let before = scroller.scrollOrigin
+        #expect(try leadIsInView(content, scroller))
+
+        readAgain(content, adding: (0..<200).map { "a-\($0).txt" })
+
+        #expect(try position(of: lead, content) == 350)
+        #expect(try leadIsInView(content, scroller))
+        #expect(scroller.scrollOrigin != before)
+    }
+
+    // A lead the view was scrolled away from doesn't bring the view back.
+    @Test(arguments: views)
+    func staysWhereItWasScrolledWhenAnItemIsAddedAboveALeadOutOfView(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        content.select(paths: [content.entries[5].path])
+        scrollAway(view, content)
+        let before = scroller.scrollOrigin
+        #expect(try !leadIsInView(content, scroller))
+
+        readAgain(content, adding: ["a-new.txt"])
+
+        #expect(content.entries.first?.name == "a-new.txt")
+        #expect(scroller.scrollOrigin == before)
+    }
+
+    // A new item is selected before the folder is read again with it.
+    @Test(arguments: views)
+    func bringsANewItemIntoViewOnceTheListHasIt(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        let made = "/f/zz-new.txt"
+        content.applySelection(.single(made))
+        let before = scroller.scrollOrigin
+
+        readAgain(content, adding: ["zz-new.txt"])
+
+        #expect(content.selection.leadPath == made)
+        #expect(try leadIsInView(content, scroller))
+        #expect(scroller.scrollOrigin != before)
+    }
+
+    // The item being renamed, and a refused name, come into view in the List and the Icons view; the Compact List
+    // follows only the lead.
+    @Test(arguments: views)
+    func theItemBeingRenamedIsBroughtIntoViewButNotInTheCompactList(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        content.select(paths: [content.entries[5].path])
+        let renamed = content.entries[150].path
+        let index = try position(of: renamed, content)
+
+        #expect(content.beginRename(path: renamed))
+        #expect(scroller.isInView(index: index) == (view != .list))
+
+        // The name is taken, as the file operations would say.
+        content.pane?.scrollPosition = (top: 0, left: 0)
+        content.refuseRename("An item named \u{201C}item-006.txt\u{201D} already exists.")
+        #expect(content.inlineRename?.error != nil)
+        #expect(scroller.isInView(index: index) == (view != .list))
     }
 
     // Scrolled away since: the view stays where it was scrolled.
