@@ -14,6 +14,19 @@ struct ShortcutsTests {
 
     // MARK: Shortcut commands
 
+    // ⇧= types + on most keyboards: a key given as ⌘⇧= clashes with Make Bigger's ⌘+, however either is written.
+    @Test func takesShiftEqualsAsThePlusKeyWhenAKeyIsGiven() {
+        #expect(Shortcuts.plusForShiftEquals("Cmd+Shift+=") == "Cmd+Plus")
+        #expect(Shortcuts.plusForShiftEquals("Ctrl+Shift+=") == "Ctrl+Plus")
+        // ⌥ types another character.
+        #expect(Shortcuts.plusForShiftEquals("Cmd+Option+Shift+=") == "Cmd+Option+Shift+=")
+        #expect(Shortcuts.plusForShiftEquals("Cmd+=") == "Cmd+=")
+        #expect(ShortcutCommands.checkAssignment(Self.defaults, .newFolder, "Cmd+Shift+=") == .conflict(.increaseSize))
+        #expect(ShortcutCommands.checkAssignment(Self.defaults, .increaseSize, "Cmd+Shift+=") == .unchanged)
+        let moved = ShortcutCommands.assign(Self.defaults, .newFolder, slot: 1, "Cmd+Shift+=")
+        #expect(moved[.increaseSize] == ["Cmd+="])
+    }
+
     @Test func namesEveryCommandOnceAndGivesNoKeyToTwoCommands() {
         let ids = ShortcutCommands.all.map(\.id)
         #expect(Set(ids).count == ids.count)

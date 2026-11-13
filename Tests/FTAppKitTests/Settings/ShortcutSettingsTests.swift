@@ -176,6 +176,17 @@ import Testing
         #expect(view.row(.duplicateSelection)?.slots.first?.stringValue != "⌘D")
     }
 
+    // ⌘⇧= types ⌘+ on most keyboards: it is Make Bigger's key, shown as the default shows it.
+    @Test func takesCommandShiftEqualsAsMakeBiggersCommandPlus() throws {
+        let (controller, _, view) = try make()
+        try slot(.newFolder, 1, in: view).perform()
+        press(Kit.key("+", code: 24, modifiers: [.command, .shift], window: controller.window), in: controller)
+        #expect(notes(view) == ["⌘+ is used by Make Bigger."])
+        Kit.click(view.row(.newFolder)?.reassignButton)
+        #expect(view.row(.newFolder)?.slots.map(\.stringValue) == ["⇧⌘N", "⌘+"])
+        #expect(view.row(.increaseSize)?.slots.map(\.stringValue).contains("⌘+") == false)
+    }
+
     // The conflict: after a refusal, the recorder still takes ⌘D before the menu would; the row grows to 60 with the
     // note and its buttons on one line under the keys.
     @Test func drawsTheConflictUnderTheKeysWithReassignAndCancelAtTheEnd() throws {

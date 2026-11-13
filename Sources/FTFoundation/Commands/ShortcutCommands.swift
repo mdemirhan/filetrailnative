@@ -209,7 +209,13 @@ public enum ShortcutCommands {
 
     /// Whether `shortcuts` holds `shortcut`: strings are equal scalar for scalar.
     private static func has(_ shortcuts: [String], _ shortcut: String) -> Bool {
-        shortcuts.contains { JSString.equals($0, shortcut) }
+        shortcuts.contains { sameKey($0, shortcut) }
+    }
+
+    /// Whether two keys are one: as written, or ⌘⇧= and ⌘+ (see `Shortcuts.plusForShiftEquals`).
+    private static func sameKey(_ left: String, _ right: String) -> Bool {
+        JSString.equals(left, right)
+            || JSString.equals(Shortcuts.plusForShiftEquals(left), Shortcuts.plusForShiftEquals(right))
     }
 
     private static func same(_ left: [String], _ right: [String]) -> Bool {
@@ -272,9 +278,9 @@ public enum ShortcutCommands {
     {
         var next = bindings
         for command in all where command.id != id && has(next[command.id] ?? [], shortcut) {
-            next[command.id] = (next[command.id] ?? []).filter { !JSString.equals($0, shortcut) }
+            next[command.id] = (next[command.id] ?? []).filter { !sameKey($0, shortcut) }
         }
-        var own = (next[id] ?? []).filter { !JSString.equals($0, shortcut) }
+        var own = (next[id] ?? []).filter { !sameKey($0, shortcut) }
         if slot < own.count {
             if slot >= 0 {
                 own[slot] = shortcut

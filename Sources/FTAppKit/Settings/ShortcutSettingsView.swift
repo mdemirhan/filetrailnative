@@ -183,7 +183,9 @@ final class ShortcutSlotView: TextControl {
         // Everything else is the answer, and must not reach the menu or close the window.
         if event.isARepeat { return true }
         keyReached(event)
-        let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event))
+        // ⌘⇧= is recorded as ⌘+, as Make Bigger's default shows it.
+        let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)).map(
+            Shortcuts.plusForShiftEquals)
         owner?.recorderPressed(slot, pressed)
         return true
     }

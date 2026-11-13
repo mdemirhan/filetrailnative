@@ -154,6 +154,15 @@ public enum Shortcuts {
         parse(value).map(write)
     }
 
+    /// The plus key as most keyboards type it: ⇧= is +, so a key given as "Cmd+Shift+=" is "Cmd+Plus", as the
+    /// defaults write it. Not with ⌥, which types another character; anything else is returned as it is.
+    public static func plusForShiftEquals(_ shortcut: String) -> String {
+        guard var parsed = parse(shortcut), parsed.key == "=", parsed.shift, !parsed.option else { return shortcut }
+        parsed.key = "Plus"
+        parsed.shift = false
+        return write(parsed)
+    }
+
     /// `withoutShift`: the shortcut with ⇧ let go ("Ctrl+Shift+D" is "Ctrl+D"), or nil when it has no ⇧.
     public static func withoutShift(_ shortcut: String) -> String? {
         guard var parsed = parse(shortcut), parsed.shift else { return nil }
