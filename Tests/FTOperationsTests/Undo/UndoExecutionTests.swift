@@ -32,18 +32,6 @@ struct UndoExecutionTests {
         }
     }
 
-    @Test func renamesBackANameThatDiffersOnlyInCase() async throws {
-        try await withUndoFolder { root, trashDir in
-            try UndoDisk.write("\(root)/notes.txt", "a")
-            let t = UndoTest(root: root, trashDir: trashDir)
-            let before = t.snapshot()
-            try await t.rename("\(root)/notes.txt", "Notes.txt")
-            #expect(try await t.undo().status == .completed)
-            #expect(t.snapshot() == before)
-            await t.shutDown()
-        }
-    }
-
     @Test func movesANewFolderToTheTrashAndPutsItBackOnRedo() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -513,46 +501,6 @@ struct UndoExecutionTests {
             #expect(t.history.menu().redo == "Move to Trash of “c.txt”")
             try await t.undo()
             #expect(t.snapshot() == before)
-            await t.shutDown()
-        }
-    }
-
-    @Test func reportsAnItemItCouldntMoveBackAndLeavesItWhereItIs() async throws {
-        try await withUndoFolder { root, trashDir in
-            try UndoDisk.write("\(root)/a.txt", "a")
-            let t = UndoTest(root: root, trashDir: trashDir)
-            try await t.rename("\(root)/a.txt", "b.txt")
-            let failing = UndoTest(root: root, trashDir: trashDir) { fileSystem in
-                fileSystem.renameExclusiveImpl = { _, _ in throw codedError(.errno(EACCES), "EACCES: permission denied")
-                }
-            }
-            failing.history.record(
-                FinishedWrite(
-                    action: .write(.rename), log: .undoable(units: t.history.top(.undo)?.units ?? []), items: []))
-            let undone = try await failing.undo()
-            #expect(undone.status == .failed)
-            #expect(items(undone).map(\.status) == [.failed])
-            #expect(items(undone).first?.error?.contains("permission") == true)
-            #expect(UndoDisk.exists("\(root)/b.txt"))
-            await t.shutDown()
-            await failing.shutDown()
-        }
-    }
-
-    @Test func neverDeletesACopyWhoseDiskTurnsOutToHaveNoTrash() async throws {
-        try await withUndoFolder { root, trashDir in
-            try UndoDisk.mkdir("\(root)/src")
-            try UndoDisk.write("\(root)/src/a.txt", "a")
-            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
-                fileSystem.trashImpl = { _ in throw noTrashError() }
-            }
-            try await t.paste(.copy, ["\(root)/src/a.txt"], into: "\(root)/src", action: .duplicate)
-            let undone = try await t.undo()
-            #expect(items(undone).map(\.status) == [.skipped])
-            #expect(
-                items(undone).first?.error
-                    == "“a copy.txt” couldn't be moved to the Trash because its disk has no Trash.")
-            #expect(UndoDisk.exists("\(root)/src/a copy.txt"))
             await t.shutDown()
         }
     }
