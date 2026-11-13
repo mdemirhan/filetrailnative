@@ -246,8 +246,15 @@ struct JSRegExpTranslator {
             case "*", "+", "?":
                 try quantifier(String(Character(scalar)))
             case "{":
-                guard let bounds = braceQuantifier() else { throw Self.fail("Incomplete quantifier") }
-                try quantifier(bounds)
+                // As JavaScript has it: a brace that isn't a whole {n,m} is an incomplete quantifier after
+                // something to repeat and a lone bracket anywhere else; {n,m} with m below n is out of order.
+                guard let bounds = braceQuantifier() else {
+                    throw Self.fail(previous == .atom ? "Incomplete quantifier" : "Lone quantifier brackets")
+                }
+                if bounds.outOfOrder {
+                    throw Self.fail(previous == .atom ? "numbers out of order in {} quantifier" : "Nothing to repeat")
+                }
+                try quantifier(bounds.text)
             case "}", "]":
                 throw Self.fail("Lone quantifier brackets")
             default:
@@ -286,8 +293,8 @@ struct JSRegExpTranslator {
         previous = .quantified
     }
 
-    /// `{n}`, `{n,}` or `{n,m}` at the position, consumed; nil when it is not one.
-    private mutating func braceQuantifier() -> String? {
+    /// `{n}`, `{n,}` or `{n,m}` at the position, consumed, and whether m is below n; nil when it is not one.
+    private mutating func braceQuantifier() -> (text: String, outOfOrder: Bool)? {
         var index = position + 1
         func number() -> (text: String, value: Double)? {
             let start = index
@@ -298,17 +305,18 @@ struct JSRegExpTranslator {
         }
         guard let low = number() else { return nil }
         var result = "{\(low.text)"
+        var outOfOrder = false
         if index < scalars.count, scalars[index] == "," {
             index += 1
             result += ","
             if let high = number() {
-                guard low.value <= high.value else { return nil }
+                outOfOrder = low.value > high.value
                 result += high.text
             }
         }
         guard index < scalars.count, scalars[index] == "}" else { return nil }
         position = index + 1
-        return result + "}"
+        return (result + "}", outOfOrder)
     }
 
     private mutating func openGroup() throws {
@@ -452,8 +460,11 @@ struct JSRegExpTranslator {
             $0 == "_" || $0 == "=" || ("a"..."z").contains($0) || ("A"..."Z").contains($0) || ("0"..."9").contains($0)
         }
         guard body.allSatisfy(allowed) else { throw Self.fail("Invalid property name") }
+        let escape = "\\\(negated ? "P" : "p"){\(String(String.UnicodeScalarView(body)))}"
+        // A name ICU doesn't know is JavaScript's unknown property, not a pattern ICU can't read.
+        guard (try? NSRegularExpression(pattern: escape)) != nil else { throw Self.fail("Invalid property name") }
         position = end + 1
-        return "\\\(negated ? "P" : "p"){\(String(String.UnicodeScalarView(body)))}"
+        return escape
     }
 
     /// The character an escape names (`\n`, `\x41`, `\u{1F600}`, `\/`, `\-` in a class…), the position on the
