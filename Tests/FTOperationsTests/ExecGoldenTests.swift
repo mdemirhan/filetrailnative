@@ -8,6 +8,10 @@ import Foundation
 import Testing
 
 struct ExecGoldenTests {
+    /// The cases to run: without disk images (`FILETRAIL_NO_DISK_IMAGES=1`), those on a disk image are left out.
+    static func runnable<T>(_ cases: [T], volumes: (T) -> [String: String]?) -> [T] {
+        DiskImage.isEnabled ? cases : cases.filter { (volumes($0) ?? [:]).isEmpty }
+    }
 
     /// The suites the Swift engine runs: every execution suite, stops and crashes included.
     static let engineSuites = ExecHarness.executionSuites
@@ -18,7 +22,7 @@ struct ExecGoldenTests {
         let cases = try ExecHarness.cases(suite: suite)
         #expect(!cases.isEmpty)
         let engine = SwiftExecEngine()
-        for testCase in cases {
+        for testCase in Self.runnable(cases, volumes: { $0.input.volumes }) {
             let lines = try await ExecHarness.check(testCase, with: engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
         }
@@ -34,14 +38,14 @@ struct ExecGoldenTests {
         #expect(report == nil, Comment(rawValue: report ?? ""))
     }
 
-    /// The Swift review (SwiftAnalysisEngine) against its recordings, case by case; the disk-image cases where the
-    /// images exist.
+    /// The Swift review (SwiftAnalysisEngine) against its recordings, case by case; the disk-image cases unless disk
+    /// images are off.
     @Test(arguments: ExecHarness.analysisSuites)
     func analysisMatchesItsRecording(suite: String) async throws {
         let cases = try ExecHarness.cases(suite: suite)
         #expect(!cases.isEmpty)
         let engine = SwiftAnalysisEngine()
-        for testCase in cases {
+        for testCase in Self.runnable(cases, volumes: { $0.input.volumes }) {
             let lines = try await ExecHarness.checkAnalysis(testCase, with: engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
         }
@@ -234,11 +238,12 @@ struct ExecGoldenTests {
 
     /// The Swift batch rename (Exec/SwiftBatchRenameRun.swift) against its recordings (exec-batch-rename), case by
     /// case: each item as it starts, each rename on the disk, each journal write, the results, the undo record, the
-    /// Rename sheet's checks, and after a crash what recovery made of it; the disk-image cases where the images exist.
+    /// Rename sheet's checks, and after a crash what recovery made of it; the disk-image cases unless disk images are
+    /// off.
     @Test func batchRenameMatchesItsRecording() async throws {
         let cases = try ExecBatchRenameHarness.cases()
         #expect(cases.count >= 60)
-        for testCase in cases {
+        for testCase in Self.runnable(cases, volumes: { $0.input.volumes }) {
             let lines = try await ExecBatchRenameHarness.check(testCase, with: SwiftBatchRenameRun.engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
         }
