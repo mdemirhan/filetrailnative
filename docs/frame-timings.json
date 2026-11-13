@@ -1,0 +1,48 @@
+{
+  "releases": [
+    {
+      "version": "0.20.1",
+      "date": "2026-11-12",
+      "machine": "Mac16,5",
+      "macOS": "27.0.1",
+      "timings": [
+        {
+          "lateShare": 0.206,
+          "medianMs": 6.51,
+          "size": "default",
+          "slowestMs": 15.33,
+          "view": "list"
+        },
+        {
+          "lateShare": 0.283,
+          "medianMs": 5.48,
+          "size": "default",
+          "slowestMs": 17.36,
+          "view": "icons"
+        },
+        {
+          "lateShare": 0.133,
+          "medianMs": 4.37,
+          "size": "largest",
+          "slowestMs": 12.66,
+          "view": "icons"
+        },
+        {
+          "lateShare": 0.194,
+          "medianMs": 7.02,
+          "size": "default",
+          "slowestMs": 22.54,
+          "view": "compact"
+        },
+        {
+          "lateShare": 0.094,
+          "medianMs": 5.45,
+          "size": "largest",
+          "slowestMs": 18.99,
+          "view": "compact"
+        }
+      ],
+      "note": "The first record: measured on 2026-11-13 from v0.20.1, the release installed then, with FrameTimeGUITests added to its code and run in its whole GUI suite, as a release runs it."
+    }
+  ]
+}
