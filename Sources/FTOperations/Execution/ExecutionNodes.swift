@@ -77,6 +77,7 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
         try assertRemovableAfterCopy(context, currentNode, deep: true)
     }
     // Made now, under a hidden name nothing else had: what is there is this paste's own.
+    try assertItemsCanLeave(context, dirnameOf(finalPath))
     let temporaryPath = try reserveStagingFolder(fileSystem, finalPath)
     let journal = context.writeJournal
     let journalEntry = ReplaceJournalEntry(

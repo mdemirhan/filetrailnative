@@ -139,6 +139,8 @@ final class ExecutionShared {
     var undo: UndoRecorder
     /// The ids of the folders items were in, read once per paste.
     var folderIds = FolderIds()
+    /// The destination folders found to let items leave (`assertItemsCanLeave`), each asked once per paste.
+    var foldersItemsCanLeave = Set<NameKeys.Exact>()
     /// Where the items a Replace moved out of the way went in the Trash, which they changed.
     var trashedPaths: [String] = []
     var replacedPaths: [String] = []

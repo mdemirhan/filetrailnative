@@ -31,6 +31,7 @@ func copyFileContents(
         throw DestinationTakenError(
             original: NativeError(message: "EEXIST: \(targetPath)", code: .errno(EEXIST), path: targetPath))
     }
+    try assertItemsCanLeave(context, dirnameOf(targetPath))
     let partialPath = try temporarySiblingPath(fileSystem, targetPath)
     // A large file is written down first: cut short by a crash, the part copied would take up space under a
     // hidden name, unseen, until the next start removes it. Small ones aren't, for speed (two writes to the
@@ -138,6 +139,16 @@ private func writeFileContents(
         }
         throw error
     }
+}
+
+/// Before anything is built under a hidden name in `folder`: the folder must let items be renamed and removed, or
+/// the hidden item could be neither put in place nor cleared away (and a moved item would stay hidden for good).
+/// Asked once per folder for a paste.
+func assertItemsCanLeave(_ context: ExecutionContext, _ folder: String) throws {
+    let key = NameKeys.Exact(folder)
+    if context.shared.foldersItemsCanLeave.contains(key) { return }
+    try context.fileSystem.assertItemsCanLeave(folder)
+    context.shared.foldersItemsCanLeave.insert(key)
 }
 
 /// A hidden name next to `finalPath` for building an item under, within the volume's name length limit.

@@ -41,6 +41,8 @@ func executeReplace(
     }
 
     let appMovedByCopy = movesAppByCopy(context, currentNode)
+    // Before the source is moved under a hidden name there, or anything is copied there under one.
+    try assertItemsCanLeave(context, dirnameOf(finalPath))
     var temporaryPath = try temporarySiblingPath(fileSystem, finalPath)
     // Written down before anything is staged, so a crash can't leave the item under the hidden name: the next
     // start finishes or undoes the Replace.

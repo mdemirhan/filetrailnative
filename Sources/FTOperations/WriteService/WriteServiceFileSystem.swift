@@ -45,6 +45,14 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
     /// Whether items can be added to or removed from a folder (access(2) with W_OK; throws when not). A move to
     /// another disk asks before copying anything, so it never copies what it then can't remove.
     func canModifyFolder(_ path: String) throws
+    /// Throws when items can be added to a folder but not renamed or removed there (an access rule against it, as
+    /// on a drop box): what a paste builds there under a hidden name could then be neither put in place nor cleared
+    /// away. A folder nothing can be added to passes: writing to it fails with its own reason.
+    func assertItemsCanLeave(_ folder: String) throws
+}
+
+extension WriteServiceFileSystem {
+    public func assertItemsCanLeave(_ folder: String) throws {}
 }
 
 /// `removeEmptyFolder`: rmdir(2) on macOS also removes a folder that holds nothing but "._name" files, deleting
@@ -130,6 +138,17 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
                 code: .noTrash)
         }
         return try trashItem(path)
+    }
+
+    public func assertItemsCanLeave(_ folder: String) throws {
+        // `_RMFILE_OK`: removing an item from the folder, which a rename of one in it needs too.
+        let removeFromFolder: Int32 = 1 << 14
+        guard access(folder, W_OK) == 0, access(folder, removeFromFolder) != 0, errno == EACCES || errno == EPERM
+        else { return }
+        throw NativeError(
+            message:
+                "Items can be added to \u{201C}\(NodePath.basename(folder))\u{201D} but not renamed or removed there, so nothing was put in it.",
+            path: folder)
     }
 
     public func canModifyFolder(_ path: String) throws {
