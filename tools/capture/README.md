@@ -14,7 +14,8 @@ The script freezes the clock with `FILETRAIL_NOW`.
 The `scroll` step (`{"step": "scroll", "distance": 4000, "ms": 1500}`) moves the folder's view a step each frame at
 120 Hz and reports, in `report.json`, how long the main thread took per frame. A frame has about 8.3 ms. It moves the
 clip view itself, so it times the main thread's part even where a trackpad would scroll on AppKit's own thread. Nothing
-runs it by default: it's for checking a change by hand. Automation is in debug builds only, so for numbers close to a
+runs it by default: it's for checking a change by hand. A release measures with the same code, in `FrameTimeGUITests`
+(see `scripts/release.sh`), in the debug build the tests run in. Automation is in debug builds only, so for numbers close to a
 release build, build optimized with `DEBUG` defined, into a folder of its own:
 
 ```bash
