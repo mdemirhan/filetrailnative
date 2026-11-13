@@ -18,7 +18,7 @@ private final class Recorder: @unchecked Sendable {
 
 private func makeTrashItem(
     devices: [String: Int64], flags: [String: UInt32] = [:], diskHasTrash: (@Sendable (String) -> Bool)? = nil,
-    trash: @escaping TrashItem.Trash
+    isReadOnly: (@Sendable (String) -> Bool)? = nil, trash: @escaping TrashItem.Trash
 ) -> TrashItem {
     TrashItem(
         trash: trash,
@@ -28,7 +28,7 @@ private func makeTrashItem(
             }
             return WriteServiceStats(type: .file, dev: dev)
         },
-        getFlags: { flags[$0] ?? 0 }, homePath: home, diskHasTrash: diskHasTrash)
+        getFlags: { flags[$0] ?? 0 }, homePath: home, diskHasTrash: diskHasTrash, isReadOnly: isReadOnly)
 }
 
 private func failure(_ body: () throws -> String?) -> OperationError? {
@@ -74,6 +74,29 @@ struct TrashItemTests {
 
     // A network share or some USB drives have no Trash: only there may deleting be offered. The Trash says so with
     // NSFeatureUnsupportedError, which NativeFS.trashItem gives as ENOTSUP.
+    // A disk that can only be read (a disk image, a write-protected card) answers as one without a Trash does. It
+    // isn't one: deleting for good, which would fail there too, is never offered for it.
+    @Test func saysADiskCanOnlyBeReadInsteadOfTakingItForOneWithoutATrash() {
+        let refuse: TrashItem.Trash = { _ in
+            throw NativeError(
+                message: "“a.txt” couldn’t be moved to the trash because the volume “Image” doesn’t have one.",
+                code: .errno(ENOTSUP))
+        }
+        let trashItem = makeTrashItem(
+            devices: [home: startupDev, "/Volumes/Image/a.txt": 50], diskHasTrash: { _ in false },
+            isReadOnly: { $0 == "/Volumes/Image/a.txt" }, trash: refuse)
+
+        let error = failure { try trashItem("/Volumes/Image/a.txt") }
+
+        #expect(error?.code == nil)
+        #expect(error?.message == "“a.txt” couldn’t be moved to the Trash because its disk can only be read.")
+    }
+
+    @Test func tellsADiskThatCanBeWrittenTo() {
+        #expect(!TrashItem.isOnReadOnlyDisk(NSTemporaryDirectory()))
+        #expect(!TrashItem.isOnReadOnlyDisk(NSTemporaryDirectory() + "/gone-\(UUID().uuidString)"))
+    }
+
     @Test func marksADiskTheTrashSaysHasNoneAsOneThatMayHaveNoTrash() {
         let trashItem = makeTrashItem(devices: [home: startupDev, "/Volumes/Share/a.txt": 50]) { _ in
             throw NativeError(

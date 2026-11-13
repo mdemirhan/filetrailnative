@@ -11,7 +11,8 @@ import Foundation
 /// than the startup disk with the code `.noTrash`, so callers can offer to delete instead. Any other
 /// reason (no permission, a read-only or full disk, an item that is gone, a failure the Trash gives no errno for)
 /// is the Trash's own sentence, and nothing is offered for permanent deletion; nor is anything on the startup
-/// disk ever.
+/// disk ever. A disk that can only be read answers as one without a Trash does (a disk image, a write-protected
+/// card): it is told apart first (`isReadOnly`), and says so, with nothing offered: a delete would fail there too.
 public struct TrashItem: Sendable {
     public typealias Trash = @Sendable (String) throws -> String?
 
@@ -20,12 +21,14 @@ public struct TrashItem: Sendable {
     private let getFlags: (@Sendable (String) throws -> UInt32)?
     private let homePath: String
     private let diskHasTrash: (@Sendable (String) -> Bool)?
+    private let isReadOnly: (@Sendable (String) -> Bool)?
 
     public init(
         trash: @escaping Trash, lstat: @escaping @Sendable (String) throws -> WriteServiceStats,
         getFlags: (@Sendable (String) throws -> UInt32)?, homePath: String,
-        diskHasTrash: (@Sendable (String) -> Bool)? = nil
+        diskHasTrash: (@Sendable (String) -> Bool)? = nil, isReadOnly: (@Sendable (String) -> Bool)? = nil
     ) {
+        self.isReadOnly = isReadOnly
         self.trash = trash
         self.lstat = lstat
         self.getFlags = getFlags
@@ -39,7 +42,13 @@ public struct TrashItem: Sendable {
         let fileSystem = PosixFileSystem()
         return TrashItem(
             trash: NativeFS.trashItem, lstat: { try fileSystem.lstat($0) }, getFlags: NativeFS.getFlags,
-            homePath: homePath, diskHasTrash: makeDiskHasTrash())
+            homePath: homePath, diskHasTrash: makeDiskHasTrash(), isReadOnly: Self.isOnReadOnlyDisk)
+    }
+
+    /// Whether the disk holding `path` is mounted to be read only (`statfs`); false when it can't be told.
+    public static func isOnReadOnlyDisk(_ path: String) -> Bool {
+        var info = statfs()
+        return statfs(path, &info) == 0 && info.f_flags & UInt32(MNT_RDONLY) != 0
     }
 
     public func callAsFunction(_ path: String) throws -> String? {
@@ -58,6 +67,10 @@ public struct TrashItem: Sendable {
             let mayHaveNoTrash =
                 code == .errno(ENOTSUP) || code == .errno(EOPNOTSUPP) || (code == nil && diskHasTrash?(path) == false)
             let name = NodePath.basename(path)
+            if item != nil, isReadOnly?(path) == true {
+                throw OperationError(
+                    "“\(name)” couldn’t be moved to the Trash because its disk can only be read.", cause: error)
+            }
             if onStartupDisk || item == nil || !mayHaveNoTrash {
                 throw OperationError(reason ?? "“\(name)” couldn’t be moved to the Trash.")
             }
