@@ -25,16 +25,20 @@ struct ItemNamesTests {
         #expect(ItemNames.error(for: "nul\0byte") != nil)
     }
 
-    @Test func limitsNamesTo255BytesOfUTF8NotCharacters() {
+    // The Mac's disks (APFS, HFS+, exFAT, FAT) count a name in UTF-16 units, not bytes or characters.
+    @Test func limitsNamesTo255UTF16UnitsNotBytesOrCharacters() {
         let tooLong = "The name is too long."
         #expect(ItemNames.error(for: String(repeating: "a", count: 255)) == nil)
         #expect(ItemNames.error(for: String(repeating: "a", count: 256)) == tooLong)
-        // 128 two-byte characters: 128 characters, 256 bytes.
-        #expect(ItemNames.error(for: String(repeating: "\u{E9}", count: 127)) == nil)
-        #expect(ItemNames.error(for: String(repeating: "\u{E9}", count: 128)) == tooLong)
-        // Three bytes each: 86 of them are 258 bytes.
-        #expect(ItemNames.error(for: String(repeating: "\u{65E5}", count: 85)) == nil)
-        #expect(ItemNames.error(for: String(repeating: "\u{65E5}", count: 86)) == tooLong)
+        // Two bytes each, one unit: 255 of them are 510 bytes.
+        #expect(ItemNames.error(for: String(repeating: "\u{E9}", count: 255)) == nil)
+        #expect(ItemNames.error(for: String(repeating: "\u{E9}", count: 256)) == tooLong)
+        // Three bytes each, one unit.
+        #expect(ItemNames.error(for: String(repeating: "\u{65E5}", count: 255)) == nil)
+        #expect(ItemNames.error(for: String(repeating: "\u{65E5}", count: 256)) == tooLong)
+        // An emoji is two units: 127 fit, 128 don't.
+        #expect(ItemNames.error(for: String(repeating: "\u{1F600}", count: 127)) == nil)
+        #expect(ItemNames.error(for: String(repeating: "\u{1F600}", count: 128)) == tooLong)
         // Surrounding spaces are trimmed before counting.
         #expect(ItemNames.error(for: " \(String(repeating: "a", count: 255))") == nil)
     }

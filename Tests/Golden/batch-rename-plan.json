@@ -2186,30 +2186,30 @@
       },
       "output": {
         "settingsError": null,
+        "blockingCount": 0,
         "items": [
           {
-            "status": "problem",
-            "proposedName": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.txt",
+            "addedNumber": 2,
+            "becomesHidden": false,
+            "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 2.txt",
+            "numberedForItemInBatch": false,
             "segments": [
               {
-                "text": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
-                "changed": true
+                "changed": true,
+                "text": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 2"
               },
               {
-                "text": ".txt",
-                "changed": false
+                "changed": false,
+                "text": ".txt"
               }
             ],
-            "problem": {
-              "kind": "invalid",
-              "message": "The name is too long."
-            }
+            "status": "rename",
+            "usedCreatedForTaken": false
           }
         ],
-        "renameCount": 0,
-        "unchangedCount": 0,
+        "renameCount": 1,
         "skippedCount": 0,
-        "blockingCount": 1
+        "unchangedCount": 0
       }
     },
     {

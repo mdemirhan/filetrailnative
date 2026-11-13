@@ -2,7 +2,12 @@ import Foundation
 
 /// Rules for the name of a file or folder typed by a person.
 public enum ItemNames {
-    /// The longest name macOS disks take, in UTF-8 bytes (not characters: "é" takes two, "日" three).
+    /// The longest name the Mac's disks take (APFS, HFS+, exFAT, FAT), in UTF-16 units: "日" is one, an emoji two.
+    /// A name typed by a person is refused past it. A disk that takes less (a server that counts bytes, HFS+ for
+    /// accents it stores apart) says so itself when the name is given to it.
+    public static let maxUnits = 255
+    /// The length the app keeps to in names it makes up itself (a number added, " copy", a hidden name), in UTF-8
+    /// bytes ("é" takes two, "日" three): within every disk's limit, also one that counts bytes.
     public static let maxBytes = 255
 
     /// A user-supplied file or folder name must name a single entry inside its parent directory.
@@ -21,7 +26,7 @@ public enum ItemNames {
         if scalars.contains(where: { $0 == "/" || $0 == "\0" }) {
             return "Names can\u{2019}t contain \u{201C}/\u{201D}."
         }
-        if trimmed.utf8.count > maxBytes {
+        if trimmed.utf16.count > maxUnits {
             return "The name is too long."
         }
         return nil
