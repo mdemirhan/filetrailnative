@@ -51,4 +51,28 @@ struct NativeRemovalTests {
             #expect(files.contents(atPath: holding + "/._notes") == Data("someone's".utf8))
         }
     }
+
+    // A disk mounted inside the folder is someone's other disk: the removal stops at it, and nothing on it is touched.
+    @Test(.tags(.diskImage), .diskImages)
+    func stopsAtADiskMountedInsideTheFolderAndTouchesNothingOnIt() async throws {
+        try await DiskImage.withVolume(.apfsSmall, ownMountPoint: true) { volume in
+            let files = FileManager.default
+            try files.createDirectory(atPath: volume.path + "/dir", withIntermediateDirectories: false)
+            try Data("s".utf8).write(to: volume.appendingPathComponent("SENTINEL.txt"))
+            try Data("t".utf8).write(to: volume.appendingPathComponent("dir/inner.txt"))
+            // The folder the volume is mounted in.
+            let around = volume.deletingLastPathComponent().path
+            var parent = stat()
+            var mounted = stat()
+            #expect(lstat(around, &parent) == 0 && lstat(volume.path, &mounted) == 0)
+            #expect(parent.st_dev != mounted.st_dev)
+            let refused = #expect(throws: NativeError.self) {
+                try NativeWriteFileSystem().rm(around, recursive: true, force: true)
+            }
+            #expect(refused?.message.contains("is another disk") == true)
+            #expect(refused?.path == volume.path)
+            #expect(files.fileExists(atPath: volume.path + "/SENTINEL.txt"))
+            #expect(files.fileExists(atPath: volume.path + "/dir/inner.txt"))
+        }
+    }
 }

@@ -165,11 +165,13 @@ enum NativeRemoval {
                 message: "Path is a directory: rm returned EISDIR (is a directory) \(path)", code: .errno(EISDIR),
                 path: path)
         }
-        try removeTree(path)
+        try removeTree(path, dev: info.st_dev)
     }
 
-    /// What is inside first, deepest first, then the folder.
-    private static func removeTree(_ path: String) throws {
+    /// What is inside first, deepest first, then the folder. Only what is on the folder's own disk: a folder inside
+    /// that another disk is mounted on stops the delete before anything on that disk is touched (its items are
+    /// someone's other disk, not part of what was asked to be deleted).
+    private static func removeTree(_ path: String, dev: dev_t) throws {
         for name in try PosixFileSystem().readdir(path) {
             let child = path + "/" + name
             var info = Darwin.stat()
@@ -178,7 +180,13 @@ enum NativeRemoval {
                 throw NativeError.errno(errno, syscall: "rm", path: child)
             }
             if info.st_mode & S_IFMT == S_IFDIR {
-                try removeTree(child)
+                if info.st_dev != dev {
+                    throw NativeError(
+                        message:
+                            "\u{201C}\(name)\u{201D} is another disk, mounted inside the folder being deleted, so the delete stopped there. Eject it and try again.",
+                        path: child)
+                }
+                try removeTree(child, dev: dev)
             } else if unlink(child) != 0 && errno != ENOENT {
                 throw NativeError.errno(errno, syscall: "rm", path: child)
             }
