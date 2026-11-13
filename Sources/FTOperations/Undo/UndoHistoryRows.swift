@@ -33,10 +33,11 @@ public struct UndoHistoryContent: Equatable, Sendable {
     public var isEmpty: Bool { redo.isEmpty && undo.isEmpty }
 }
 
-/// The rows built for a list that is open, by operation: when the history changes, only the operations that are new,
-/// or that a stopped Undo left smaller, are built again.
+/// The rows built for the list, by operation of one history: an operation is gone over once, the first time the list
+/// shows it, and again only when a stopped Undo left it smaller.
 @MainActor
 public final class UndoHistoryRowCache {
+    fileprivate weak var history: UndoHistory?
     fileprivate var rows: [Int: (size: Int, row: UndoHistoryRow)] = [:]
 
     public init() {}
@@ -48,6 +49,11 @@ public enum UndoHistoryRows {
     public static let maxItemLines = 10
     /// The most operations of each list shown; the rest are counted.
     public static let maxRows = 100
+    /// The most items of an operation whose folders are read: a longer one is told by its first 1,000, and the rest
+    /// are only counted.
+    public static let maxItemsRead = 1_000
+    /// The most folders an operation's items are counted in: past it the row says "in over 100 folders".
+    public static let maxFolders = 100
 
     /// `content`: the history as the list shows it, at most `limit` operations of each list. With a `cache`, the rows
     /// it holds are used again, and it is left holding the rows of this content.
@@ -57,6 +63,11 @@ public enum UndoHistoryRows {
     ) -> UndoHistoryContent {
         let redo = history.entries(.redo)
         let undo = history.entries(.undo)
+        // Another history numbers its operations from 1 again.
+        if let cache, cache.history !== history {
+            cache.history = history
+            cache.rows = [:]
+        }
         var built: [Int: (size: Int, row: UndoHistoryRow)] = [:]
         // An operation is on one list only, and a stopped Undo leaves it with fewer steps under the same id.
         func rowOf(_ entry: UndoEntry, _ direction: UndoDirection) -> UndoHistoryRow {
@@ -88,75 +99,123 @@ public enum UndoHistoryRows {
         case putBack(String)
     }
 
-    /// `row`: the entry of the `direction` list, its folders written with `homePath` as "~".
+    /// `row`: the entry of the `direction` list, its folders written with `homePath` as "~". Where it happened is
+    /// read from its first `maxItemsRead` items; the items past those are counted, and nothing of them is read.
     public static func row(_ entry: UndoEntry, _ direction: UndoDirection, homePath: String) -> UndoHistoryRow {
-        var items: [(change: Change, replacing: Bool)] = []
+        var count = 0
+        // The items the tooltip's lines are about.
+        var first: [(change: Change, replacing: Bool)] = []
+        var places = Places()
+        func take(_ change: Change, replacing: Bool) {
+            count += 1
+            if first.count < maxItemLines { first.append((change, replacing)) }
+            places.add(change)
+        }
         for unit in entry.units {
-            let changes = unit.steps.map { changes($0, direction) }
             // A batch rename's items are each a line.
             if unit.steps.contains(where: { if case .batchRenamed = $0 { return true } else { return false } }) {
-                items += changes.flatMap { $0 }.map { ($0, false) }
+                for step in unit.steps {
+                    guard case .batchRenamed(let items) = step else {
+                        if count < maxItemsRead, let change = change(step, direction) {
+                            take(change, replacing: false)
+                        } else {
+                            count += 1
+                        }
+                        continue
+                    }
+                    let read = min(items.count, max(0, maxItemsRead - count))
+                    let undone = direction == .redo
+                    for item in items.prefix(read) {
+                        take(
+                            undone ? .moved(from: item.to, to: item.from) : .moved(from: item.from, to: item.to),
+                            replacing: false)
+                    }
+                    count += items.count - read
+                }
                 continue
             }
-            let all = changes.flatMap { $0 }
+            guard count < maxItemsRead else {
+                if !unit.steps.isEmpty { count += 1 }
+                continue
+            }
             // The item the unit is about: what was made or moved, or else what went to the Trash. A Trash beside it
             // is the item it replaced.
-            if let main = all.last(where: { if case .trashed = $0 { return false } else { return true } }) {
-                items.append((main, all.contains { if case .trashed = $0 { return true } else { return false } }))
-            } else if let main = all.last {
-                items.append((main, false))
+            var main: Change?
+            var last: Change?
+            var trashes = false
+            for step in unit.steps.reversed() {
+                guard let change = change(step, direction) else { continue }
+                if last == nil { last = change }
+                if case .trashed = change { trashes = true } else if main == nil { main = change }
             }
+            if let main { take(main, replacing: trashes) } else if let last { take(last, replacing: false) }
         }
-        let place = place(items.map(\.change), homePath: homePath)
-        // Only the lines the tooltip shows are written: an operation may hold many thousands of items.
-        let shown = items.count > maxItemLines ? maxItemLines - 1 : items.count
-        var lines = items.prefix(shown).map { item in
+        let place = place(places, homePath: homePath)
+        let shown = count > maxItemLines ? maxItemLines - 1 : count
+        var lines = first.prefix(shown).map { item in
             line(item.change, replacing: item.replacing, withFolders: place.paths == nil, homePath: homePath)
         }
-        if items.count > shown { lines.append("and \(items.count - shown) more") }
+        if count > shown { lines.append("and \(count - shown) more") }
         return UndoHistoryRow(
             id: entry.id, icon: icon(entry), title: UndoHistory.labelOf(entry.action, entry.units, moves: entry.moves),
             place: place.names, placePaths: place.paths, items: lines, date: entry.date)
     }
 
-    /// What `step` did, as the person did it: on the Redo list, the reverse of what the Undo did.
-    static func changes(_ step: UndoStep, _ direction: UndoDirection) -> [Change] {
+    /// What a step of one item did; nil for a batch rename, which holds many (`changes`).
+    static func change(_ step: UndoStep, _ direction: UndoDirection) -> Change? {
         let undone = direction == .redo
         switch step {
         case .moved(let moved):
-            if moved.fromTrash == true { return [undone ? .trashed(moved.to) : .putBack(moved.to)] }
-            return [undone ? .moved(from: moved.to, to: moved.from) : .moved(from: moved.from, to: moved.to)]
+            if moved.fromTrash == true { return undone ? .trashed(moved.to) : .putBack(moved.to) }
+            return undone ? .moved(from: moved.to, to: moved.from) : .moved(from: moved.from, to: moved.to)
         case .created(let path, _, _):
-            return [.made(path)]
+            return .made(path)
         case .trashed(let from, _, _, _, _):
-            return [undone ? .made(from) : .trashed(from)]
-        case .batchRenamed(let items):
-            return items.map { undone ? .moved(from: $0.to, to: $0.from) : .moved(from: $0.from, to: $0.to) }
+            return undone ? .made(from) : .trashed(from)
+        case .batchRenamed:
+            return nil
         }
     }
 
-    /// Where the items were, by folder name and by whole path; both nil for no items.
-    static func place(_ changes: [Change], homePath: String) -> (names: String?, paths: String?) {
-        guard !changes.isEmpty else { return (nil, nil) }
+    /// What `step` did, as the person did it: on the Redo list, the reverse of what the Undo did.
+    static func changes(_ step: UndoStep, _ direction: UndoDirection) -> [Change] {
+        guard case .batchRenamed(let items) = step else { return change(step, direction).map { [$0] } ?? [] }
+        let undone = direction == .redo
+        return items.map { undone ? .moved(from: $0.to, to: $0.from) : .moved(from: $0.from, to: $0.to) }
+    }
+
+    /// The folders the items of an operation were taken from and put in, and whether every item was moved, or every
+    /// one went to the Trash.
+    struct Places {
         var sources = Folders()
         var destinations = Folders()
         var allMoved = true
         var allTrashed = true
-        for change in changes {
+        var isEmpty = true
+
+        mutating func add(_ change: Change) {
+            isEmpty = false
             switch change {
             case .moved(let from, let to):
-                sources.add(NodePath.dirname(from))
-                destinations.add(NodePath.dirname(to))
+                sources.add(parentOf: from)
+                destinations.add(parentOf: to)
                 allTrashed = false
             case .made(let path), .putBack(let path):
-                destinations.add(NodePath.dirname(path))
+                destinations.add(parentOf: path)
                 allMoved = false
                 allTrashed = false
             case .trashed(let path):
-                sources.add(NodePath.dirname(path))
+                sources.add(parentOf: path)
                 allMoved = false
             }
         }
+    }
+
+    /// Where the items were, by folder name and by whole path; both nil for no items.
+    static func place(_ places: Places, homePath: String) -> (names: String?, paths: String?) {
+        guard !places.isEmpty else { return (nil, nil) }
+        let (sources, destinations) = (places.sources, places.destinations)
+        let (allMoved, allTrashed) = (places.allMoved, places.allTrashed)
         func both(_ word: String, _ folder: String) -> (String?, String?) {
             ("\(word) \(folderName(folder))", "\(word) \(tilde(folder, homePath: homePath))")
         }
@@ -173,7 +232,11 @@ public enum UndoHistoryRows {
         var folders = sources
         for folder in destinations.list { folders.add(folder) }
         if folders.count == 1 { return both("in", folders.list[0]) }
-        return ("\(allTrashed ? "from" : "in") \(folders.count) folders", nil)
+        let word = allTrashed ? "from" : "in"
+        if sources.isOver || destinations.isOver || folders.isOver {
+            return ("\(word) over \(maxFolders) folders", nil)
+        }
+        return ("\(word) \(folders.count) folders", nil)
     }
 
     /// An item's line: its name, or its old and new names when it has a new one; with its folders when the row's
@@ -267,18 +330,42 @@ public enum UndoHistoryRows {
         return "~/" + String(decoding: path.utf8.dropFirst(prefix.utf8.count), as: UTF8.self)
     }
 
-    /// Folders, each once, in the order they were added. Two are the same when their text is, scalar for scalar
-    /// (`sameText`), which their UTF-8 bytes tell too.
-    private struct Folders {
+    /// Folders, each once, in the order they were added, up to `maxFolders` of them: past that they are no longer
+    /// told apart (`isOver`). Two are the same when their text is, scalar for scalar (`sameText`), which their UTF-8
+    /// bytes tell too.
+    struct Folders {
         private(set) var list: [String] = []
         private var seen: Set<[UInt8]> = []
+        private(set) var isOver = false
 
         var count: Int { list.count }
 
+        /// The folder `path` is in.
+        mutating func add(parentOf path: String) {
+            guard !isOver else { return }
+            // The items of an operation are mostly in one folder after another: nothing is made for those.
+            if let last = list.last, Self.isDirectly(path, in: last) { return }
+            add(NodePath.dirname(path))
+        }
+
         mutating func add(_ folder: String) {
-            // The items of an operation are mostly in one folder after another.
+            guard !isOver else { return }
             if let last = list.last, sameText(last, folder) { return }
-            if seen.insert(Array(folder.utf8)).inserted { list.append(folder) }
+            guard seen.insert(Array(folder.utf8)).inserted else { return }
+            if list.count == maxFolders {
+                isOver = true
+            } else {
+                list.append(folder)
+            }
+        }
+
+        /// Whether `path` is `folder`, a "/" and one name: `folder` is then what `NodePath.dirname` gives for it.
+        static func isDirectly(_ path: String, in folder: String) -> Bool {
+            let (path, folder) = (path.utf8, folder.utf8)
+            let slash = UInt8(ascii: "/")
+            guard folder.last != slash, path.count > folder.count + 1, path.starts(with: folder) else { return false }
+            let rest = path.dropFirst(folder.count)
+            return rest.first == slash && !rest.dropFirst().contains(slash)
         }
     }
 }

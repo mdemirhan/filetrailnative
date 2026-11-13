@@ -177,23 +177,48 @@ struct UndoHistoryRowsTests {
         #expect(history.entries(.undo).count == 2)
     }
 
-    // An operation on many thousands of items in as many folders is told in the time of going over them once: its
-    // folders are counted, and only the lines the tooltip shows are written.
-    @Test func tellsAnOperationOnManyItemsInManyFoldersQuickly() {
-        let count = 40_000
-        let big = entry(.trash, (0..<count).map { [trashed("/Users/demo/d\($0)/f\($0)")] })
+    // An operation on a million items is told at once: where it happened is read from its first 1,000 items, and
+    // the rest are only counted.
+    @Test func tellsAnOperationOnAMillionItemsFromItsFirstThousand() {
+        let count = 1_000_000
+        let big = entry(.trash, (0..<count).map { [trashed("/Users/demo/d\($0 / 1_000)/f\($0)")] })
         // CPU time of this thread, not wall time, so a busy machine does not fail it.
         let (told, seconds) = CPUTime.measureThread { row(big) }
-        #expect(told.place == "from \(count) folders")
-        #expect(told.placePaths == nil)
+        #expect(told.place == "from d0")
+        #expect(told.placePaths == "from ~/d0")
         #expect(told.items.count == UndoHistoryRows.maxItemLines)
-        #expect(told.items.first == "f0 (from ~/d0)")
+        #expect(told.items.first == "f0")
         #expect(told.items.last == "and \(count - 9) more")
         #expect(seconds < 1)
+        // The items of a batch rename are counted the same way.
+        let renamed = (0..<5_000).map {
+            BatchRenamedItem(from: "/p/d\($0 / 1_000)/a\($0)", to: "/p/d\($0 / 1_000)/b\($0)", id: nil, itemKind: .file)
+        }
+        let batch = row(entry(.batchRename, [[.batchRenamed(items: renamed)]]))
+        #expect(batch.place == "in d0")
+        #expect(batch.items.last == "and 4991 more")
     }
 
-    // The rows of a list that is open are kept from one change of the history to the next, and say the same as
-    // rows built anew: an operation a stopped Undo left smaller is told again.
+    // Up to 100 folders are counted; a folder met again is the same one, wherever its items are in the operation.
+    @Test func countsTheFoldersOfAnOperationUpToAHundred() {
+        let hundred = row(entry(.trash, (0..<300).map { [trashed("/p/d\($0 % 100)/f\($0)")] }))
+        #expect(hundred.place == "from 100 folders")
+        let more = row(entry(.trash, (0..<300).map { [trashed("/p/d\($0 % 101)/f\($0)")] }))
+        #expect(more.place == "from over 100 folders")
+        let moved = row(
+            entry(.moveTo, (0..<300).map { [self.moved("/p/d\($0)/f\($0)", "/q/f\($0)")] }, moves: true))
+        #expect(moved.place == "to q")
+        #expect(moved.placePaths == "to /q")
+        // The folder is the one `NodePath.dirname` gives, for a name with a slash after it too.
+        #expect(UndoHistoryRows.Folders.isDirectly("/p/d/f", in: "/p/d"))
+        #expect(!UndoHistoryRows.Folders.isDirectly("/p/d/f/", in: "/p/d"))
+        #expect(!UndoHistoryRows.Folders.isDirectly("/p/d/e/f", in: "/p/d"))
+        #expect(!UndoHistoryRows.Folders.isDirectly("/p/de/f", in: "/p/d"))
+        #expect(!UndoHistoryRows.Folders.isDirectly("/f", in: "/"))
+    }
+
+    // The rows are kept from one change of the history to the next, and say the same as rows built anew: an operation
+    // a stopped Undo left smaller is told again, and so are the operations of another history.
     @Test func keepsTheRowsOfAnOpenListAndTellsAChangedOperationAgain() throws {
         let history = UndoHistory(clock: { Date(timeIntervalSince1970: 5) })
         let cache = UndoHistoryRowCache()
@@ -218,6 +243,11 @@ struct UndoHistoryRowsTests {
         let after = same()
         #expect(after.undo.map(\.items) == [["a → b"]])
         #expect(after.redo.map(\.items) == [["c → d"]])
+        let other = UndoHistory()
+        other.record(
+            FinishedWrite(
+                action: .write(.rename), log: .undoable(units: [UndoUnit(steps: [moved("/p/x", "/p/y")])]), items: []))
+        #expect(UndoHistoryRows.content(other, homePath: Self.home, cache: cache).undo.map(\.items) == [["x → y"]])
     }
 
     @Test func namesEachThingThatCantBeUndone() {

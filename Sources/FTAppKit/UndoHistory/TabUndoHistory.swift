@@ -11,8 +11,8 @@ final class TabUndoHistory {
     private(set) var view: UndoHistoryView?
     private var list: ToolbarListPopover?
     private var stopListening: (@MainActor () -> Void)?
-    /// The rows built while the list is open: a change to the history builds only the rows that are new.
-    private var rows = UndoHistoryRowCache()
+    /// The rows built so far, for every tab's list: opening the list again goes over no operation twice.
+    private static let rows = UndoHistoryRowCache()
 
     init(tab: MainWindowController) {
         self.tab = tab
@@ -27,7 +27,7 @@ final class TabUndoHistory {
     private func content() -> UndoHistoryContent? {
         guard let history else { return nil }
         let content = UndoHistoryRows.content(
-            history, homePath: FileManager.default.homeDirectoryForCurrentUser.path, cache: rows)
+            history, homePath: FileManager.default.homeDirectoryForCurrentUser.path, cache: Self.rows)
         return content.isEmpty ? nil : content
     }
 
@@ -65,7 +65,6 @@ final class TabUndoHistory {
         stopListening = nil
         list?.close()
         list = nil
-        rows = UndoHistoryRowCache()
     }
 
     /// An operation, an Undo or a Redo ended: the list shows it, or closes with nothing left to list.
