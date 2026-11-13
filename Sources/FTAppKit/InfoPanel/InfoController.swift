@@ -164,6 +164,9 @@ final class InfoController {
 
     private var startupDiskName: String { host.services.startupDisk.name }
 
+    /// Whether the item is being asked for, or about to be: a test seam.
+    var isAskingForItem: Bool { fetchTimer != nil || loading }
+
     /// The startup disk was renamed: the item is asked for again, so `/` comes back with its new name.
     func namesChanged() {
         if let path = targetPath { scheduleFetch(path, immediately: true) }

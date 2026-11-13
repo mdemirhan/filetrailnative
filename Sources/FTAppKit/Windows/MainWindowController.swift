@@ -980,13 +980,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// The startup disk was renamed: the window title, the toolbar's title, the path bar, the sidebar and the Info panel
-    /// say its new name. The tab bar follows with the window's titles (`ExplorerTabGroup.startupDiskNameChanged`).
+    /// say its new name. The tab bar follows with the window's titles (`ExplorerTabGroup.startupDiskNameChanged`). A
+    /// tab waiting unread reads nothing for it: its Info panel asks for its item once the tab is first shown.
     func startupDiskNameChanged() {
         updateTitle()
         explorerToolbar.reload()
         content.contentShell.pathBarRow.namesChanged()
         sidebar.model.namesChanged()
-        infoController?.namesChanged()
+        if loaded { infoController?.namesChanged() }
     }
 
     // MARK: Navigation

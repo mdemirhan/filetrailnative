@@ -76,3 +76,24 @@ struct StartupDiskTests {
         var count = 0
     }
 }
+
+extension ExplorerWindowlessTests.StartupDiskNameTests {
+    // A tab waiting unread (merged in, brought back) reads nothing when the startup disk is renamed: its Info panel
+    // asks for its item once the tab is first shown. A tab that has read its folder asks again at once.
+    @Test func aRenameLeavesATabWaitingUnreadUnread() async throws {
+        let harness = try ExplorerHarness.windowless()
+        let tab = try await harness.open()
+        tab.perform(.toggleInfoPanel)
+        let group = try #require(tab.group)
+        group.addTabs([FTAppKitTests.tab(harness.folder.appending("Alpha").path)])
+        let other = try #require(group.tabs.last)
+        #expect(!other.loaded && other.panels.propertiesOpen)
+        let info = try #require(other.infoController)
+        #expect(await waitUntil { !info.isAskingForItem && tab.infoController?.isAskingForItem == false })
+        group.startupDiskNameChanged()
+        #expect(!other.loaded)
+        #expect(!info.isAskingForItem)
+        #expect(tab.infoController?.isAskingForItem == true)
+        await harness.close()
+    }
+}
