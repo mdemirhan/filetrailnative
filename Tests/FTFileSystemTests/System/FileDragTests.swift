@@ -89,6 +89,36 @@ struct FileDragTests {
         #expect(!called)
     }
 
+    /// Whether a real drag a test started has ended, and what ends the test process when it hasn't in time. A real
+    /// drag holds the Mac's mouse (the Dock, other apps) until its button comes up; one whose button-up never reached
+    /// it kept the mouse for as long as the tests were left running. The main thread is inside the drag then, so this
+    /// watches from a thread of its own, and ending the process is what lets the mouse go.
+    private final class RealDrag: @unchecked Sendable {
+        static let longest: TimeInterval = 10
+        private let lock = NSLock()
+        private var ended = false
+
+        var hasEnded: Bool { lock.withLock { ended } }
+        func end() { lock.withLock { ended = true } }
+
+        func endTheProcessIfItNeverEnds() {
+            let watch = Thread { [self] in
+                let deadline = Date(timeIntervalSinceNow: Self.longest)
+                while !hasEnded {
+                    if Date() >= deadline {
+                        let said =
+                            "FileDragTests: a real drag didn't end in \(Int(Self.longest)) s and was holding the "
+                            + "mouse: the test process ends itself to let it go.\n"
+                        FileHandle.standardError.write(Data(said.utf8))
+                        _exit(1)
+                    }
+                    Thread.sleep(forTimeInterval: 0.05)
+                }
+            }
+            watch.start()
+        }
+    }
+
     /// A view of the app's: its `isFlipped` may only be asked on the main thread.
     private final class FlippedView: NSView {
         override var isFlipped: Bool { true }
@@ -107,12 +137,14 @@ struct FileDragTests {
         let folder = try TemporaryDirectory(prefix: "filetrail-drag-many")
         defer { folder.remove() }
         let paths = (0..<2000).map { folder.appending("\($0)").path }
-        var ended = false
+        let drag = RealDrag()
+        // Before the drag is there to be run: whatever runs it, it can't keep the mouse past this.
+        drag.endTheProcessIfItNeverEnds()
         #expect(
             FileDrag.start(
                 from: view, event: mouseDown(in: window), paths: paths, directories: paths.map { _ in false },
                 images: (0..<9).map(image(index:)), buttonDown: true
-            ) { _, _ in ended = true })
+            ) { _, _ in drag.end() })
         let dragged = NSPasteboard(name: .drag).readObjects(forClasses: [NSURL.self], options: nil) as? [URL] ?? []
         #expect(dragged.map(\.path) == paths)
 
@@ -130,10 +162,11 @@ struct FileDragTests {
             }
         }
         let deadline = Date(timeIntervalSinceNow: 5)
-        while !ended && Date() < deadline {
+        while !drag.hasEnded && Date() < deadline {
             CFRunLoopRunInMode(.defaultMode, 0.05, false)
         }
-        #expect(ended)
+        // One that hasn't ended is still there for a later turn of the main run loop to run: the watch stays on it.
+        #expect(drag.hasEnded)
     }
 
     // The first picture is at the stack's top left, however many there are, and the others step down and to the right.
