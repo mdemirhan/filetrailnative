@@ -253,10 +253,11 @@ func executeReplace(
         }
         do {
             try undoStaging()
-        } catch let undoError where movedByRename && isPathTaken(fileSystem, temporaryPath) {
+        } catch let undoError where movedByRename && !isGone(fileSystem, temporaryPath) {
             // The moved item couldn't go back where it was: it waits under its hidden name, written down, until the
-            // next start puts it somewhere it can be seen. It gets back its lock and mode first, which the next start
-            // carries over.
+            // next start puts it somewhere it can be seen. So too when it can't be looked at just now (its disk went
+            // away): only one known to be gone isn't there. It gets back its lock and mode first, which the next
+            // start carries over.
             restoreAfterMove(fileSystem, temporaryPath, stagedMode, stagedFlags)
             let oldTrashed =
                 oldItemRemoved

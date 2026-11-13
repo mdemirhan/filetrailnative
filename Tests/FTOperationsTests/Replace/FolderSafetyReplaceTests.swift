@@ -3,6 +3,7 @@ import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
+import os
 
 @testable import FTOperations
 
@@ -190,6 +191,42 @@ struct FolderSafetyReplaceTests {
             #expect(entry.moved && entry.staged)
             #expect(entry.sourcePath == root + "/src/a.txt")
             #expect(copying.flushes == [false, false, false])
+        }
+    }
+
+    // The disk goes away while the old item is being moved to the Trash: nothing there can be looked at, and the
+    // moved item, under its hidden name by then, can't be put back. The item's error still says where it is.
+    @Test func saysWhereAMovedItemWaitsWhenItsDiskWentAwayDuringTheReplace() async throws {
+        try await withWritableCleanup { root in
+            try Disk.write(root + "/src/a.txt", "new")
+            try Disk.write(root + "/dst/a.txt", "old")
+            let journal = ReplaceHistoryJournal()
+            let away = OSAllocatedUnfairLock(initialState: false)
+            let gone: (String) -> Bool = { path in away.withLock { $0 } && path.hasPrefix(root + "/dst") }
+            let fileSystem = TestFileSystem()
+            fileSystem.trashImpl = { _ in
+                away.withLock { $0 = true }
+                throw codedError(.errno(EIO), "EIO: i/o error")
+            }
+            fileSystem.lstatImpl = { path in
+                if gone(path) { throw codedError(.errno(ENOENT), "ENOENT: \(path)") }
+                return try NativeWriteFileSystem().lstat(path)
+            }
+            fileSystem.renameExclusiveImpl = { from, to in
+                if gone(from) || gone(to) { throw codedError(.errno(ENOENT), "ENOENT: \(from)") }
+                try NativeWriteFileSystem().renameExclusive(from, to)
+            }
+
+            let result = try await paste(
+                .cut, [root + "/src/a.txt"], into: root + "/dst", policy: NativePaste.replaceAll,
+                fileSystem: fileSystem, writeJournal: journal)
+
+            let hidden = try #require(Disk.list(root + "/dst").first(where: { $0.hasPrefix(".a.txt.filetrail-") }))
+            #expect(Disk.read(root + "/dst/" + hidden) == "new")
+            #expect(!Disk.exists(root + "/src/a.txt"))
+            #expect(journal.live.map(\.moved) == [true])
+            #expect(result.items.first?.status == .failed)
+            #expect(result.items.first?.error?.contains("is under the hidden name \u{201C}\(hidden)\u{201D}") == true)
         }
     }
 
