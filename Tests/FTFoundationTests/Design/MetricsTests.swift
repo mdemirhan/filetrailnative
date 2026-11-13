@@ -4,7 +4,7 @@ import Testing
 @testable import FTFoundation
 
 /// For each density, every metric is typed out here apart from the code under test: File Trail's are its own pixel
-/// values (no zoom), and Finder's are the defaults of Finder's View Options and AppKit's source list sizes.
+/// values, and Finder's are the defaults of Finder's View Options and AppKit's source list sizes.
 @Suite struct MetricsTests {
     typealias Table = [String: Double]
 

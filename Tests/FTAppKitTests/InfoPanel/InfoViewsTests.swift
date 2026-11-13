@@ -547,7 +547,7 @@ struct PathBarViewTests {
         #expect(findViews("pathBar.separator", in: view).isEmpty)
     }
 
-    // A click navigates after 320 ms; command-click opens a new tab at once.
+    // A click navigates after 250 ms; command-click opens a new tab at once.
     @Test func aSingleClickNavigatesAfterTheDelay() async throws {
         let view = bar("/Users/demo/Projects", width: 600)
         var navigated: [String] = []

@@ -235,8 +235,7 @@ run_bundle() {
 # test.log.
 full_tests() {
     local dir="$logs/bundles" names=() pids=() i name status=0 group
-    [ "$CI_LIVE" = 1 ] && echo "Building the tests…" >&9
-    swift build --build-tests || return 1
+    # The build step has built the tests.
     rm -rf "$dir"
     mkdir -p "$dir"
     # Background processes ignore Ctrl-C, so they are stopped here.

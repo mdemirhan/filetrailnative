@@ -396,7 +396,7 @@ struct WriteRecoveryTests {
         }
     }
 
-    @Test func readsBothKindsOfEntryBackAndLeavesOutWhatItCantRead() throws {
+    @Test func readsEntriesBackAndLeavesOutWhatItCantRead() throws {
         try withTemporaryDirectory { directory in
             let root = directory.path
             let filePath = root + "/replace-journal.json"

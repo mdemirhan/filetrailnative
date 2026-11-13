@@ -42,7 +42,7 @@ final class ExplorerHarness {
         _ = NSApplication.shared
         TestServices.install()
         self.onScreen = onScreen
-        folder = try TemporaryDirectory.shallow(prefix: "filetrail-toolbar-gui")
+        folder = try TemporaryDirectory.shallow(prefix: onScreen ? "filetrail-gui" : "filetrail-windowless")
         for name in ["Alpha", "Beta", "Gamma"] {
             try FileManager.default.createDirectory(
                 at: folder.appending("\(name)/Inner"), withIntermediateDirectories: true)

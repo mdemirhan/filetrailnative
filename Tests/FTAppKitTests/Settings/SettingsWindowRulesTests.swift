@@ -55,8 +55,8 @@ import Testing
         #expect(target(2, 4, 1) == nil)
     }
 
-    /// The description at the pinned commit.
-    @Test func folderSizeSwitchHasThePinnedDescription() throws {
+    /// The folder-size switch's description.
+    @Test func folderSizeSwitchHasItsDescription() throws {
         let (controller, _) = Kit.make(tab: .general)
         let row = try Kit.row("Calculate folder sizes automatically", in: controller)
         #expect(

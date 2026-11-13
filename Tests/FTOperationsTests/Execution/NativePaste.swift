@@ -263,7 +263,7 @@ final class MemoryJournal: WriteJournal {
     }
 
     private let state = OSAllocatedUnfairLock(initialState: State())
-    /// Fails the n-th call (1-based) of add or remove when set.
+    /// The error a call of add or remove fails with, if any, decided by the write it is asked for.
     let failOn: (@Sendable (Write) -> (any Error)?)?
 
     init(failOn: (@Sendable (Write) -> (any Error)?)? = nil) {

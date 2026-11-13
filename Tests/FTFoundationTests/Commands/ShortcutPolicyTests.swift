@@ -39,7 +39,7 @@ struct ShortcutPolicyTests {
         #expect(!Self.handle(.openLocationSheet, Self.ctx(mainView: .settings)))
     }
 
-    // The zoom commands are dropped, so only Settings is checked.
+    // Settings opens on the views that aren't the explorer.
     @Test func keepsSettingsAvailableOnNonExplorerViews() {
         #expect(Self.handle(.openSettings, Self.ctx(mainView: .help)))
     }
