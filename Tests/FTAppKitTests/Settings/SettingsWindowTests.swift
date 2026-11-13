@@ -381,6 +381,60 @@ import Testing
         #expect(Kit.names(list) == start)
     }
 
+    // With no row selected (the selection cleared), ⌫, Return and Space act on no row; an arrow selects the first.
+    @Test func keysActOnNoRowWhileNoneIsSelected() async throws {
+        let home = "/Users/demo"
+        let preferences = AppPreferences.defaults(theme: .light).with {
+            $0.favorites = Favorites.defaults(homePath: home)
+        }
+        let (controller, recorder) = Kit.make(tab: .browsing, preferences: preferences, homePath: home)
+        let favorites = try Kit.list("Favorites", in: controller)
+        let start = Kit.names(favorites)
+        controller.window?.makeFirstResponder(favorites.table)
+        favorites.table.deselectAll(nil)
+        #expect(favorites.selectedIndex == nil)
+        recorder.pickedDirectory = "\(home)/Projects"
+        favorites.table.keyDown(with: Kit.key(Kit.backspace.0, code: Kit.backspace.1, window: controller.window))
+        favorites.table.keyDown(with: Kit.key(Kit.returnKey.0, code: Kit.returnKey.1, window: controller.window))
+        await Kit.settle()
+        #expect(Kit.names(favorites) == start)
+        #expect(recorder.directoryRequests.isEmpty)
+        favorites.table.keyDown(with: Kit.key(Kit.down.0, code: Kit.down.1, window: controller.window))
+        #expect(favorites.selectedIndex == 0)
+
+        let columns = try Kit.list("Columns in List view", in: controller)
+        controller.window?.makeFirstResponder(columns.table)
+        columns.table.deselectAll(nil)
+        #expect(columns.selectedIndex == nil)
+        columns.table.keyDown(with: Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window))
+        #expect(recorder.saved["detailColumns"] == nil)
+    }
+
+    // A folder that is a favorite already, chosen for Add or Change…: nothing changes, and a notice says so.
+    @Test func saysWhenTheFolderChosenIsAFavoriteAlready() async throws {
+        let home = "/Users/demo"
+        let preferences = AppPreferences.defaults(theme: .light).with {
+            $0.favorites = Favorites.defaults(homePath: home)
+        }
+        let (controller, recorder) = Kit.make(tab: .browsing, preferences: preferences, homePath: home)
+        let list = try Kit.list("Favorites", in: controller)
+        let start = list.rows.map(\.spec.path)
+        recorder.pickedDirectory = "\(home)/Desktop"
+        Kit.click(Kit.barButton("Add Favorite", in: controller.settingsView))
+        await Kit.settle()
+        #expect(list.rows.map(\.spec.path) == start)
+        #expect(controller.settingsView.noticeText?.stringValue == "\u{201C}Desktop\u{201D} is already a favorite.")
+        controller.settingsView.dismissNotice()
+
+        list.select(0)
+        recorder.pickedDirectory = "\(home)/Documents"
+        Kit.click(Kit.barButton("Change Applications", in: controller.settingsView))
+        await Kit.settle()
+        #expect(list.rows.map(\.spec.path) == start)
+        #expect(controller.settingsView.noticeText?.stringValue == "\u{201C}Documents\u{201D} is already a favorite.")
+        #expect(recorder.saved["favorites"] == nil)
+    }
+
     @Test func letsATrashFavoriteBeRemoved() throws {
         let home = "/Users/demo"
         let preferences = AppPreferences.defaults(theme: .light).with {

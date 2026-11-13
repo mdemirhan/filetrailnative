@@ -344,20 +344,35 @@ final class SettingsPageView: NSView {
         guard let store else { return }
         let home = store.homePath
         Task { @MainActor [weak self] in
-            guard let path = await self?.pickDirectory(home.isEmpty ? nil : home) else { return }
-            self?.update { preferences in
+            guard let self, let path = await self.pickDirectory(home.isEmpty ? nil : home) else { return }
+            if Favorites.contains(self.preferences.favorites, path: path) {
+                self.sayAlreadyFavorite(path)
+                return
+            }
+            self.update { preferences in
                 guard !Favorites.contains(preferences.favorites, path: path) else { return }
                 preferences.favorites.append(Favorites.create(path: path, homePath: home))
             }
         }
     }
 
+    /// A folder chosen for Add or Change… is a favorite already: nothing changes, and the notice says why.
+    private func sayAlreadyFavorite(_ path: String) {
+        let name = FavoriteLabel.label(
+            for: path, homePath: store?.homePath ?? "", startupDiskName: StartupDisk.shared.name)
+        host?.showNotice(SettingsText.alreadyFavorite(name))
+    }
+
     private func browseFavorite(_ index: Int) {
         guard preferences.favorites.indices.contains(index) else { return }
         let current = preferences.favorites[index]
         Task { @MainActor [weak self] in
-            guard let path = await self?.pickDirectory(current.path) else { return }
-            self?.update { preferences in
+            guard let self, let path = await self.pickDirectory(current.path) else { return }
+            if path != current.path && self.preferences.favorites.contains(where: { $0.path == path }) {
+                self.sayAlreadyFavorite(path)
+                return
+            }
+            self.update { preferences in
                 // Known by its path, which no other favorite has: the list may have changed while the picker was open.
                 guard let position = preferences.favorites.firstIndex(where: { $0.path == current.path }) else {
                     return

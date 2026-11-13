@@ -72,4 +72,7 @@ public enum SettingsText {
     public static let chooseTerminalFailed = "Couldn’t choose the terminal app."
     public static let chooseTextEditorFailed = "Couldn’t choose the text editor."
     public static let missingApp = "Not found · "
+
+    /// A folder chosen for Add or Change… that is a favorite already.
+    public static func alreadyFavorite(_ name: String) -> String { "\u{201C}\(name)\u{201D} is already a favorite." }
 }

@@ -605,11 +605,21 @@ final class SettingsListView: ThemedView, SettingsListBlock, NSTableViewDataSour
     }
 
     /// The list's own keys: the arrows select, ⌥ or ⌘ with them moves the row; Return changes it, ⌫ removes it, Space
-    /// checks it. True when the key was one of them.
+    /// checks it. True when the key was one of them. With no row selected, an arrow selects the first and the others
+    /// act on nothing.
     func handleKey(_ event: NSEvent) -> Bool {
-        guard let index = selectedIndex ?? (rows.isEmpty ? nil : 0) else { return false }
         let flags = event.modifierFlags.intersection([.command, .option, .control, .shift])
         let code = event.keyCode
+        guard let index = selectedIndex else {
+            if code == 125 || code == 126 {
+                if !rows.isEmpty {
+                    select(0)
+                    scrollRowToVisible(0)
+                }
+                return true
+            }
+            return (keys == .items && [36, 76, 51, 117].contains(code)) || (keys == .columns && code == 49)
+        }
         if code == 125 || code == 126 {
             let target = index + (code == 126 ? -1 : 1)
             if flags.contains(.option) || flags.contains(.command) {

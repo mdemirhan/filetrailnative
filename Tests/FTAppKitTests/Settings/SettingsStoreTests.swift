@@ -34,4 +34,24 @@ import Testing
         store.update { $0.theme = app.theme }
         #expect(sent == 0)
     }
+
+    // The app tells every window of an edit as it is made, Settings included, which reads it back: the page is
+    // refreshed once for it, not again when the edit returns.
+    @Test func refreshesThePageOnceForAnEdit() {
+        var app = AppPreferences.defaults(theme: .light)
+        weak var heard: SettingsStore?
+        let shared = SettingsPreferences(
+            read: { app },
+            update: { change in
+                change(&app)
+                heard?.reload()
+            })
+        let store = SettingsStore(preferences: app, homePath: "", shared: shared)
+        heard = store
+        var refreshes = 0
+        store.onChange = { refreshes += 1 }
+        store.update { $0.theme = .dark }
+        #expect(refreshes == 1)
+        #expect(store.preferences.theme == .dark)
+    }
 }
