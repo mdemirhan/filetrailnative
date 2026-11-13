@@ -186,7 +186,7 @@ extension SidebarViewController {
         // A key that has a command (?, or one chosen in Settings) goes on to the window's table; Quick Look's is matched
         // only with the list focused (`quickLook`).
         if let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
-            let command = ShortcutCommands.resolve(preferences().shortcutOverrides).commandByShortcut[pressed],
+            let command = ShortcutCommands.resolve(preferences().shortcutOverrides).command(pressed: pressed),
             command != .quickLookSelection
         {
             return false
@@ -217,7 +217,7 @@ extension SidebarViewController {
         guard let shortcut = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)) else { return nil }
         let resolved = ShortcutCommands.resolve(preferences().shortcutOverrides)
         guard
-            let command = resolved.commandByShortcut[shortcut]
+            let command = resolved.command(pressed: shortcut)
                 ?? Shortcuts.withoutShift(shortcut).flatMap({ resolved.commandByShortcut[$0] })
         else { return nil }
         let forward: Bool

@@ -33,7 +33,7 @@ public enum ContentKeys {
     private static func shiftedPageMove(_ pressed: String?, _ resolved: ResolvedShortcuts)
         -> (forward: Bool, size: SelectionNavigation.PageSize)?
     {
-        guard let pressed, let unshifted = Shortcuts.withoutShift(pressed), resolved.commandByShortcut[pressed] == nil
+        guard let pressed, let unshifted = Shortcuts.withoutShift(pressed), resolved.command(pressed: pressed) == nil
         else { return nil }
         return pageMove(resolved.commandByShortcut[unshifted])
     }
@@ -53,7 +53,7 @@ public enum ContentKeys {
         hasEntries: Bool, hasSelection: Bool
     ) -> ContentKeyAction? {
         let pressed = Shortcuts.fromKeyboardEvent(event)
-        let command = pressed.flatMap { shortcuts.commandByShortcut[$0] }
+        let command = pressed.flatMap { shortcuts.command(pressed: $0) }
         // ? opens Help from anywhere.
         if command == .openHelp { return .command(.openHelp) }
         if let move = pageMove(command) { return .page(forward: move.forward, size: move.size, extend: false) }

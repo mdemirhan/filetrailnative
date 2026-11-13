@@ -1426,7 +1426,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func keyOfDimmedItem(_ event: NSEvent) -> Bool {
         guard !isTextFieldEditing, !isDialogOpen,
             let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
-            let id = ShortcutCommands.resolve(preferences.shortcutOverrides).commandByShortcut[pressed],
+            let id = ShortcutCommands.resolve(preferences.shortcutOverrides).command(pressed: pressed),
             id != .openSelectedItem, let command = AppCommand(rawValue: id.rawValue), !canPerform(command),
             ShortcutPolicy.canHandle(command, shortcutContext)
         else { return false }
@@ -1462,7 +1462,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func windowKeyDown(_ event: NSEvent) -> Bool {
         guard !isTextFieldEditing, !isDialogOpen,
             let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
-            let command = ShortcutCommands.resolve(preferences.shortcutOverrides).commandByShortcut[pressed]
+            let command = ShortcutCommands.resolve(preferences.shortcutOverrides).command(pressed: pressed)
         else { return false }
         if WriteStartingShortcuts.runs(command.rawValue, isRepeat: event.isARepeat) { _ = runKeyCommand(command) }
         return true

@@ -27,6 +27,19 @@ struct ShortcutsTests {
         #expect(moved[.increaseSize] == ["Cmd+="])
     }
 
+    // A key recorded as ⌘+ runs its command when ⌘⇧= is pressed, which is how most keyboards type it; a command that
+    // has ⌘⇧= itself keeps it.
+    @Test func aPressOfCommandShiftEqualsRunsTheCommandThatHasCommandPlus() {
+        let moved = ShortcutCommands.resolve(
+            .object(["newFolder": .array([.string("Cmd+Shift+N"), .string("Cmd+Plus")])]))
+        #expect(moved.commandByShortcut["Cmd+Shift+="] == nil)
+        #expect(moved.command(pressed: "Cmd+Shift+=") == .newFolder)
+        #expect(moved.command(pressed: "Cmd+Plus") == .newFolder)
+        let own = ShortcutCommands.resolve(.object(["newFolder": .array([.string("Cmd+Shift+=")])]))
+        #expect(own.command(pressed: "Cmd+Shift+=") == .newFolder)
+        #expect(own.command(pressed: "Cmd+Plus") == .increaseSize)
+    }
+
     @Test func namesEveryCommandOnceAndGivesNoKeyToTwoCommands() {
         let ids = ShortcutCommands.all.map(\.id)
         #expect(Set(ids).count == ids.count)

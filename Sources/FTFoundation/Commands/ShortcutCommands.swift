@@ -34,6 +34,12 @@ public struct ResolvedShortcuts: Sendable, Equatable {
     public var commandByShortcut: [String: ShortcutCommandID]
     /// The keys of `commandByShortcut` in the order they were claimed.
     public var shortcutOrder: [String]
+
+    /// The command of a key as it was pressed. ⌘⇧= pressed is the ⌘+ a command has, when nothing has ⌘⇧= itself: a
+    /// press names the key by its place on the keyboard while Shift is down, and Settings records it as ⌘+.
+    public func command(pressed: String) -> ShortcutCommandID? {
+        commandByShortcut[pressed] ?? commandByShortcut[Shortcuts.plusForShiftEquals(pressed)]
+    }
 }
 
 /// The one table of keyboard shortcuts. The application menu, the window's key handler, the context menus, tooltips,
