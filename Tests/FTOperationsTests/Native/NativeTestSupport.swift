@@ -79,6 +79,13 @@ enum NativeTestFiles {
         return Int(info.f_blocks) * Int(info.f_bsize)
     }
 
+    /// The space a non-root writer can still use on the disk (`statfs` `f_bavail`).
+    static func freeBytes(_ path: String) -> Int {
+        var info = statfs()
+        guard statfs(path, &info) == 0 else { return -1 }
+        return Int(info.f_bavail) * Int(info.f_bsize)
+    }
+
     /// The length of the file at `path`, or -1 when there is none.
     static func size(_ path: String) -> Int {
         var info = stat()

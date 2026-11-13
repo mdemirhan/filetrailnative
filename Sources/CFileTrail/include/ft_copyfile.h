@@ -26,6 +26,10 @@ void ft_copy_control_set_copied(ft_copy_control *control, int64_t copied);
 /// couldn't be written.
 int ft_copyfile(const char *source, const char *destination, ft_copy_control *control);
 
+/// 0 when `source` has no resource fork or `destination` has the same one in full; otherwise the errno a copy that
+/// lost it fails with: ENOSPC when the destination's disk hasn't the room for it, EIO otherwise.
+int ft_check_resource_fork(const char *source, const char *destination);
+
 /// copyfile(3) with COPYFILE_METADATA | NOFOLLOW_SRC, a folder's own metadata onto a
 /// folder that already exists. Returns 0 or the errno.
 int ft_copy_metadata(const char *source, const char *destination);

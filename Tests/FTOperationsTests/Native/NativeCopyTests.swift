@@ -1,3 +1,4 @@
+import CFileTrail
 import FTTestSupport
 import Foundation
 import Testing
@@ -224,7 +225,12 @@ struct NativeCopyStopFlagTests {
                 }
                 #expect(
                     error?.code == .errno(ENOSPC),
-                    "copied \(Files.size(destination + "/..namedfork/rsrc")) of \(forkSize) bytes of the fork")
+                    """
+                    copied \(Files.size(destination + "/..namedfork/rsrc")) of \(forkSize) bytes of the fork; \
+                    the copy \(Files.exists(destination) ? "is there, \(Files.size(destination)) bytes" : "isn't there"); \
+                    the source's fork \(Files.size(source + "/..namedfork/rsrc")) bytes; \
+                    \(Files.freeBytes(volume.path)) bytes free on the disk
+                    """)
             }
         }
     }
@@ -271,6 +277,32 @@ struct NativeCopyStopFlagTests {
                 defer { try? handle.close() }
                 #expect(try handle.read(upToCount: 5) == Data("start".utf8))
             }
+        }
+    }
+}
+
+/// What a copy copyfile reported as done is checked for: the source's resource fork, whole.
+struct ResourceForkCheckTests {
+    @Test func aCopyWithoutTheWholeForkIsAFailure() throws {
+        try withTemporaryDirectory(prefix: "native-fs-fork") { root in
+            let source = root.appending("old.rsrc").path
+            let copy = root.appending("copy.rsrc").path
+            let plain = root.appending("plain.txt").path
+            try Files.write(source, "data")
+            try Files.write(source + "/..namedfork/rsrc", "the fork")
+            try Files.write(copy, "data")
+            try Files.write(plain, "data")
+
+            // No fork in the copy, then part of it.
+            #expect(ft_check_resource_fork(source, copy) == EIO)
+            try Files.write(copy + "/..namedfork/rsrc", "the")
+            #expect(ft_check_resource_fork(source, copy) == EIO)
+            // The whole fork.
+            try Files.write(copy + "/..namedfork/rsrc", "the fork")
+            #expect(ft_check_resource_fork(source, copy) == 0)
+            // A source without one asks nothing of the copy.
+            #expect(ft_check_resource_fork(plain, copy) == 0)
+            #expect(ft_check_resource_fork(plain, root.appending("missing").path) == 0)
         }
     }
 }

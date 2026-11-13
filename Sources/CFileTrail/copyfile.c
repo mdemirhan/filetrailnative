@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mount.h>
 #include <sys/xattr.h>
 
 struct ft_copy_control {
@@ -103,6 +104,25 @@ static int copy_status(int what, int stage, copyfile_state_t state, const char *
     return COPYFILE_CONTINUE;
 }
 
+/* The resource fork is an old Mac file's content, and copyfile has been seen to report a copy as done with none in
+   it (once, writing to a full disk while the Mac was busy): a move would then remove the original with it. So a
+   copy reported as done is checked for it, by its size. */
+int ft_check_resource_fork(const char *source, const char *destination) {
+    ssize_t wanted = getxattr(source, XATTR_RESOURCEFORK_NAME, NULL, 0, 0, XATTR_NOFOLLOW);
+    if (wanted <= 0) {
+        return 0;
+    }
+    ssize_t found = getxattr(destination, XATTR_RESOURCEFORK_NAME, NULL, 0, 0, XATTR_NOFOLLOW);
+    if (found == wanted) {
+        return 0;
+    }
+    struct statfs disk;
+    if (statfs(destination, &disk) == 0 && (uint64_t)disk.f_bavail * disk.f_bsize < (uint64_t)wanted) {
+        return ENOSPC;
+    }
+    return EIO;
+}
+
 int ft_copyfile(const char *source, const char *destination, ft_copy_control *control) {
     /* NOFOLLOW_SRC copies a symlink as a symlink instead of its target's data.
        EXCL fails with EEXIST instead of writing over an item that appeared at the destination: callers
@@ -112,7 +132,7 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
     const copyfile_flags_t flags =
         COPYFILE_ALL | COPYFILE_CLONE | COPYFILE_NOFOLLOW_SRC | COPYFILE_EXCL | COPYFILE_DATA_SPARSE;
     if (control == NULL) {
-        return copyfile(source, destination, NULL, flags) == 0 ? 0 : errno;
+        return copyfile(source, destination, NULL, flags) == 0 ? ft_check_resource_fork(source, destination) : errno;
     }
     if (ft_copy_control_is_stopped(control)) {
         return ECANCELED;
@@ -128,7 +148,7 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
     int saved = errno;
     copyfile_state_free(state);
     if (rc == 0) {
-        return 0;
+        return ft_check_resource_fork(source, destination);
     }
     if (ft_copy_control_is_stopped(control)) {
         /* A copy told to quit reports ECANCELED, though some versions leave errno as it was: a stop
