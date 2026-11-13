@@ -36,11 +36,11 @@ public final class AppLogger: @unchecked Sendable {
     public static let defaultMaxBytes = 5 * 1024 * 1024
     public static let defaultMaxFiles = 10
 
-    /// `isDebugLoggingEnabled`: `FILETRAIL_DEBUG` or `FILETRAIL_DEBUG_TIMINGS` is `1`.
+    /// `isDebugLoggingEnabled`: `FILETRAIL_DEBUG` is `1`.
     public static func isDebugLoggingEnabled(
         environment: [String: String] = ProcessInfo.processInfo.environment
     ) -> Bool {
-        environment["FILETRAIL_DEBUG"] == "1" || environment["FILETRAIL_DEBUG_TIMINGS"] == "1"
+        environment["FILETRAIL_DEBUG"] == "1"
     }
 
     private let filePath: String

@@ -116,6 +116,28 @@
                 ])
         }
 
+        // The README's scenes, as committed: each parses, and every element it names is in elements.json.
+        @Test func theReadmeScenesParseAndNameKnownElements() throws {
+            let elements = try AutomationElements.load(Self.capture.appendingPathComponent("elements.json"))
+            let folder = Self.capture.appendingPathComponent("readme")
+            let scenes = try FileManager.default.contentsOfDirectory(atPath: folder.path)
+                .filter { $0.hasSuffix(".json") && $0 != "visited-folders.json" }.sorted()
+            #expect(scenes.count >= 9)
+            for scene in scenes {
+                let scenario = try Scenario.parse(Data(contentsOf: folder.appendingPathComponent(scene)))
+                #expect(!scenario.steps.isEmpty, "\(scene)")
+                for step in scenario.steps {
+                    let name: String? =
+                        switch step {
+                        case .click(let element, _, _, _, _): element.name
+                        case .expectSheet(let name): name
+                        default: nil
+                        }
+                    if let name { #expect(elements.identifiers[name] != nil, "\(scene) names \"\(name)\"") }
+                }
+            }
+        }
+
         @Test func elementsNameOneIdentifierEach() throws {
             let elements = try AutomationElements.load(Self.capture.appendingPathComponent("elements.json"))
             #expect(elements.identifiers["list row"] == "list.row")

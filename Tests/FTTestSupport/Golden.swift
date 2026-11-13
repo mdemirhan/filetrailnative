@@ -1,4 +1,4 @@
-// Golden files, frozen expected results: Tests/Golden/<suite>.json.
+// Golden files, expected results kept by hand: Tests/Golden/<suite>.json.
 import Foundation
 import Testing
 
@@ -34,7 +34,7 @@ public enum Golden {
         public let from: String
 
         public var description: String {
-            "no Golden/\(suite).json above \(from): the goldens are frozen; add it by hand"
+            "no Golden/\(suite).json above \(from): goldens are kept by hand; add it by hand"
         }
     }
 

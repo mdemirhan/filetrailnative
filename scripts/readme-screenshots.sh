@@ -39,8 +39,9 @@ scripts/build-app.sh debug --out "$folder"
 codesign --force --sign "$identity" "$app/Contents/Helpers/fd"
 codesign --force --sign "$identity" "$app"
 
-cp -cpR "$fixture" "$project"
+# The demo project and home are taken away however the script ends, a copy cut short too. Neither was there before.
 trap 'rm -rf "$project" "$home_root"' EXIT
+cp -cpR "$fixture" "$project"
 swiftc -o "build/readme-photos" tools/capture/readme/photos.swift
 build/readme-photos "$project/photos"
 # The fixture's big files are sparse, which would show as "on disk" sizes of nothing.
@@ -94,7 +95,8 @@ PY
             --elements "$PWD/tools/capture/elements.json" --user-data-dir "$data" && break
         sleep 2
     done
-    if [ -f "$out/$scene/$scene.png" ] && ! grep -qE '"status" *: *"(failed|timeout)"' "$out/$scene/report.json"; then
+    # A step the app couldn't do as asked (unsupported) leaves a picture that isn't the scene: that fails too.
+    if [ -f "$out/$scene/$scene.png" ] && ! grep -qE '"status" *: *"(failed|timeout|unsupported)"' "$out/$scene/report.json"; then
         cp "$out/$scene/$scene.png" "docs/screenshots/$scene.png"
         echo "PASS $scene"
     else

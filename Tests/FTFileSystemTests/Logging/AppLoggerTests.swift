@@ -34,13 +34,13 @@ struct AppLoggerTests {
             let logger = AppLogger(filePath: path, debugEnabled: false, sink: sink)
             logger.info("[filetrail] app start", .context(["pid": .number(1234), "platform": .string("darwin")]))
             logger.error("[filetrail] ipc directory:getSnapshot failed")
-            logger.warn("[filetrail] renderer process unresponsive", .context(["windowId": .number(1)]))
+            logger.warn("[filetrail] window stopped answering", .context(["windowId": .number(1)]))
             logger.flush()
 
             let raw = read(path)
             #expect(raw.contains("INFO [filetrail] app start { pid: 1234, platform: 'darwin' }"))
             #expect(raw.contains("ERROR [filetrail] ipc directory:getSnapshot failed"))
-            #expect(raw.contains("WARN [filetrail] renderer process unresponsive { windowId: 1 }"))
+            #expect(raw.contains("WARN [filetrail] window stopped answering { windowId: 1 }"))
             #expect(sink.count(.info) == 1)
             #expect(sink.count(.error) == 1)
             #expect(sink.count(.warn) == 1)
@@ -153,7 +153,6 @@ struct AppLoggerTests {
 
     @Test func debugFlagsAreOnlyOnForOne() {
         #expect(AppLogger.isDebugLoggingEnabled(environment: ["FILETRAIL_DEBUG": "1"]))
-        #expect(AppLogger.isDebugLoggingEnabled(environment: ["FILETRAIL_DEBUG_TIMINGS": "1"]))
         #expect(!AppLogger.isDebugLoggingEnabled(environment: ["FILETRAIL_DEBUG": "true"]))
         #expect(!AppLogger.isDebugLoggingEnabled(environment: [:]))
     }
