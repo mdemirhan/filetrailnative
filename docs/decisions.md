@@ -97,6 +97,7 @@ Not done, and not to be done without a plan of its own. Kept so the reasons are 
   - The file-system protocols' members are now all required, so every test double implements them all.
 - **Flushing a cross-disk move before deleting the original.** Today the original is deleted after comparing kind and size. Recommended later: one full sync of the destination volume before the originals go. Needs a decision on the cost.
   - The move's journal entry now stays until the originals are gone. Still not flushed: the record of a folder move to another disk, which a power cut could leave naming a folder that isn't the paste's.
+  - A folder that replaces another by a move to another disk has the same gap, and a wider one: after a power cut that loses the other disk's last writes, the folder at the destination can still be the one that was to be replaced, and recovery, finding a folder there and the original at its source, says the moved folder is in place. Telling the two apart needs the journal to say when the swap was made, which is a change to its format and to the order of a Replace's writes.
 - **Partial files under 32 MB left behind by a crash.** Needs a measured cost of journaling smaller files.
 - **File ids of 2^53 or more treated as unknown.** Needs a check on a FAT disk of which ids are really shared.
 - **Date and number formats tied to the language, not the region; English words around localized dates.**
