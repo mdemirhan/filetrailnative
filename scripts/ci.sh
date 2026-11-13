@@ -270,9 +270,8 @@ full_tests() {
             return 1
         fi
     fi
-    # FTFoundationTests first, beside the windowless processes only (about a core each). Its timing tests measure CPU
-    # time now, but run beside every bundle at once the run was no faster, and a disk image test of FTOperationsTests
-    # failed in one run of two (a resource fork written to a full disk image), so it stays apart.
+    # FTFoundationTests first, beside the windowless processes only (about a core each): run beside every bundle at
+    # once, the run was no faster.
     if selected FTFoundationTests; then
         start FTFoundationTests FTFoundationTests
         finish $((${#pids[@]} - 1))
