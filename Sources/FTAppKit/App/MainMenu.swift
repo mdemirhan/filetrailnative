@@ -61,7 +61,7 @@ public final class MainMenu {
         NSApp.servicesMenu = result.servicesMenu
         NSApp.windowsMenu = result.windowsMenu
         NSApp.helpMenu = result.helpMenu
-        sync.menuBuilt()
+        sync.sync()
         if renameObserver == nil {
             renameObserver = NotificationCenter.default.addObserver(
                 forName: StartupDisk.nameChanged, object: nil, queue: .main

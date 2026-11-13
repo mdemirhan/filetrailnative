@@ -6,7 +6,6 @@ import Foundation
 /// A paste to run from its review's report, with the review's choices resolved.
 public struct CopyPasteExecution: Sendable {
     public var operationId: String
-    public var analysisId: String
     public var report: CopyPasteAnalysisReport
     public var policy: CopyPastePolicy
     public var overrides: [CopyPasteNodeOverride]?
@@ -89,7 +88,7 @@ extension WriteService {
             }
             try await executeCopyPaste(
                 CopyPasteExecution(
-                    operationId: operationId, analysisId: report.analysisId, report: report, policy: policy,
+                    operationId: operationId, report: report, policy: policy,
                     overrides: overrides, resolvedNodes: resolvedNodes, signal: signal,
                     emit: { [weak self] in self?.emit($0) }, fileSystem: fileSystem, writeJournal: writeJournal,
                     now: now,

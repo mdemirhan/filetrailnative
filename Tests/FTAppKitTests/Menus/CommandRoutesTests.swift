@@ -33,7 +33,7 @@ extension ExplorerWindowlessTests {
                     _ = window.firstResponder?.tryToPerform(selector, with: nil)
                 }
                 harness.windows.onMenuState = { [unowned self] id, state in sync.setWindowState(windowID: id, state) }
-                sync.menuBuilt()
+                sync.sync()
                 report()
             }
 

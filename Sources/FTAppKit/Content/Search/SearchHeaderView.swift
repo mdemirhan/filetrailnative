@@ -558,26 +558,13 @@ final class SearchBannerView: NSView, TextStyleSource {
         let accent = theme.accent.solid
         NSColor(accent.withAlpha(layout.bannerFillAccentAlpha)).setFill()
         NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
-        let edgeColor = Self.mix(accent, layout.bannerBorderAccentShare, theme.palette.border)
+        let edgeColor = colorMix(accent, layout.bannerBorderAccentShare, theme.palette.border)
         let inset = CGFloat(layout.bannerBorderWidth) / 2
         let edge = NSBezierPath(
             roundedRect: bounds.insetBy(dx: inset, dy: inset), xRadius: radius - inset, yRadius: radius - inset)
         edge.lineWidth = CGFloat(layout.bannerBorderWidth)
         NSColor(edgeColor).setStroke()
         edge.stroke()
-    }
-
-    /// `share` of `color` mixed with the rest of `other` in sRGB, each channel weighted by its color's alpha
-    /// (premultiplied).
-    static func mix(_ color: RGBA, _ share: Double, _ other: RGBA) -> RGBA {
-        let alpha = color.alpha * share + other.alpha * (1 - share)
-        guard alpha > 0 else { return RGBA(red: 0, green: 0, blue: 0, alpha: 0) }
-        func channel(_ a: Double, _ b: Double) -> Double {
-            (a * color.alpha * share + b * other.alpha * (1 - share)) / alpha
-        }
-        return RGBA(
-            red: channel(color.red, other.red), green: channel(color.green, other.green),
-            blue: channel(color.blue, other.blue), alpha: alpha)
     }
 }
 

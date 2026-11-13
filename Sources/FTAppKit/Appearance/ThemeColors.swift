@@ -9,9 +9,6 @@ extension NSColor {
     }
 }
 
-extension RGBA {
-}
-
 /// The app's two fonts: the system font, and the system's monospaced font.
 public enum ThemeFonts {
     public static func sans(_ size: Double, _ weight: NSFont.Weight = .regular) -> NSFont {

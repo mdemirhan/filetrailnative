@@ -324,6 +324,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
         let currentPath = host.currentPath
         let refresh: WriteEndRefresh
         if let result = event.result {
+            let replaced = Set(result.replacedPaths ?? [])
             refresh = WriteEndRefresh(
                 path: AfterWrite.refreshPath(result, currentPath: currentPath),
                 selecting: startedInTabOnScreen
@@ -333,7 +334,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
                 treeSelectionPath: completedTreeSelectionPath(event, result),
                 treeReloadPaths: AfterWrite.treeReloadPaths(result),
                 // What a Replace removed has another item at its path, which stays selected.
-                leftPaths: AfterWrite.pathsLeftByWrite(result).filter { !(result.replacedPaths ?? []).contains($0) })
+                leftPaths: AfterWrite.pathsLeftByWrite(result).filter { !replaced.contains($0) })
         } else {
             refresh = WriteEndRefresh(path: currentPath, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [])
         }

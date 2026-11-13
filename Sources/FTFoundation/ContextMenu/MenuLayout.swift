@@ -12,8 +12,6 @@ public struct MenuLayout: Equatable, Sendable {
     public var separatorHeight: Double
     public var separatorMarginVertical: Double
     public var separatorMarginHorizontal: Double
-    /// A submenu row's chevron.
-    public var chevronSize: Double
     public var historyNameMaxWidth: Double
 
     static func make() -> MenuLayout {
@@ -21,7 +19,7 @@ public struct MenuLayout: Equatable, Sendable {
             minWidth: 220, padding: 5, borderWidth: 0.5, rowHeight: 24,
             rowPaddingTrailing: 10, rowGap: 6, separatorHeight: 1,
             separatorMarginVertical: 5, separatorMarginHorizontal: 10,
-            chevronSize: 10, historyNameMaxWidth: 220)
+            historyNameMaxWidth: 220)
     }
 }
 

@@ -16,8 +16,6 @@ public struct Metrics: Equatable, Sendable {
     public let scrollbarWidth: Double
     public let paneHeaderHeight: Double
     public let breadcrumbRowHeight: Double
-    public let settingsSidebarWidth: Double
-    public let settingsPopupMinWidth: Double
     public let focusRingWidth: Double
 
     public init(density: Density) {
@@ -34,8 +32,6 @@ public struct Metrics: Equatable, Sendable {
         scrollbarWidth = DesignTokens.scrollbarWidth
         paneHeaderHeight = DesignTokens.paneHeaderHeight
         breadcrumbRowHeight = DesignTokens.breadcrumbRowHeight
-        settingsSidebarWidth = DesignTokens.settingsSidebarWidth
-        settingsPopupMinWidth = DesignTokens.settingsPopupMinWidth
         focusRingWidth = DesignTokens.focusRingWidth
     }
 

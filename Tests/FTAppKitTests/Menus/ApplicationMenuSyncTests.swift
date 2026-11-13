@@ -28,7 +28,7 @@ import Testing
         /// Builds the menu, as the host does at launch and when the shortcuts or the text editor change.
         func build() {
             index = Self.index(router)
-            sync.menuBuilt()
+            sync.sync()
         }
 
         static func index(_ router: MenuCommandRouter) -> MenuItemIndex {

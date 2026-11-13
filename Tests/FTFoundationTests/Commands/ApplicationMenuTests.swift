@@ -222,25 +222,17 @@ struct ApplicationMenuTests {
     // MARK: Undo and Redo labels
 
     @Test func namesWhatTheFilesUndoAndRedoWouldDo() {
-        let named = ApplicationMenu.undoLabels(
-            undo: "Move of “a.txt”", redo: "Rename", cantUndo: false, textEditing: false)
+        let named = ApplicationMenu.undoLabels(undo: "Move of “a.txt”", redo: "Rename", cantUndo: false)
         #expect(named.undo == "Undo Move of “a.txt”")
         #expect(named.redo == "Redo Rename")
-        let plain = ApplicationMenu.undoLabels(undo: nil, redo: nil, cantUndo: false, textEditing: false)
+        let plain = ApplicationMenu.undoLabels(undo: nil, redo: nil, cantUndo: false)
         #expect(plain.undo == "Undo")
         #expect(plain.redo == "Redo")
     }
 
     @Test func saysCantUndoAfterAnOperationThatCantBeUndone() {
-        let labels = ApplicationMenu.undoLabels(undo: nil, redo: nil, cantUndo: true, textEditing: false)
+        let labels = ApplicationMenu.undoLabels(undo: nil, redo: nil, cantUndo: true)
         #expect(labels.undo == "Can’t Undo")
-    }
-
-    @Test func saysJustUndoAndRedoWhileATextFieldHasTheKeyboard() {
-        let labels = ApplicationMenu.undoLabels(
-            undo: "Move of “a.txt”", redo: "Rename", cantUndo: false, textEditing: true)
-        #expect(labels.undo == "Undo")
-        #expect(labels.redo == "Redo")
     }
 
     // MARK: The menu state of the window

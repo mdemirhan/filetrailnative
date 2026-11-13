@@ -301,7 +301,8 @@ public final class FdSearchRuntime: @unchecked Sendable {
         }
         let found = trailing?.results() ?? []
         lock.withLock {
-            guard var job = jobs[jobId] else { return }
+            // Taken out while it is changed, so its results aren't copied.
+            guard var job = jobs.removeValue(forKey: jobId) else { return }
             defer { jobs[jobId] = job }
             if let trailing, !job.done {
                 // Over the limit here only ends the job, there is nothing left to stop.

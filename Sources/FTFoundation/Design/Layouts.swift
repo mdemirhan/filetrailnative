@@ -191,25 +191,15 @@ public struct ToolbarLayout: Equatable, Sendable {
     public var titleMinWidth: Double
     public var searchWidth: Double
     public var searchMinWidth: Double
-    public var controlHeight: Double
-    public var buttonWidth: Double
     public var minHeight: Double
-    public var paddingLeading: Double
-    public var paddingTrailing: Double
     public var titlePaddingLeading: Double
     public var titlePaddingTrailing: Double
     public var titleFontSize: Double
-    public var iconSize: Double
-    public var segmentedTrackPadding: Double
-    public var segmentWidth: Double
-    public var segmentHeight: Double
 
     static func make() -> ToolbarLayout {
         ToolbarLayout(
-            titleMinWidth: 96, searchWidth: 200, searchMinWidth: 110, controlHeight: 32,
-            buttonWidth: 32, minHeight: 52, paddingLeading: 8, paddingTrailing: 12,
-            titlePaddingLeading: 8, titlePaddingTrailing: 4, titleFontSize: 15, iconSize: 17,
-            segmentedTrackPadding: 4, segmentWidth: 32, segmentHeight: 24)
+            titleMinWidth: 96, searchWidth: 200, searchMinWidth: 110, minHeight: 52, titlePaddingLeading: 8,
+            titlePaddingTrailing: 4, titleFontSize: 15)
     }
 }
 

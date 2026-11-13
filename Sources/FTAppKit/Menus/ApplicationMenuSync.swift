@@ -172,11 +172,6 @@ final class ApplicationMenuSync {
         }
     }
 
-    /// Called once the host has built and set the menu.
-    func menuBuilt() {
-        sync()
-    }
-
     /// The explorer window a menu command goes to: the focused window when it is one, else the one in front while
     /// Settings has the keyboard. With no window focused (every window minimized, say) it is the one in front only
     /// while it is on screen: a command must not act unseen on a minimized window's selection.
@@ -199,7 +194,7 @@ final class ApplicationMenuSync {
             otherWindowFocused: current.otherWindowFocused,
             undoAvailable: (undo: undoHistory.undo != nil, redo: undoHistory.redo != nil),
             undoLabels: ApplicationMenu.undoLabels(
-                undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo, textEditing: false))
+                undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo))
         ApplicationMenu.apply(ApplicationMenu.itemStates(current.state, window: facts)) { menu.control($0) }
     }
 

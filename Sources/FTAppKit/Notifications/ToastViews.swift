@@ -44,10 +44,9 @@ final class ToastIconView: NSView, ThemeApplying {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        // `viewBox="0 0 16 16"` drawn at 18.
+        // Drawn on a 16-point square, scaled to the view.
         let scale = bounds.width / 16
-        var transform = AffineTransform(scaleByX: scale, byY: scale)
-        transform.translate(x: 0, y: 0)
+        let transform = AffineTransform(scaleByX: scale, byY: scale)
         let disc = NSBezierPath(ovalIn: NSRect(x: 1, y: 1, width: 14, height: 14))
         disc.transform(using: transform)
         NSColor(theme.palette.textPrimary).setFill()
