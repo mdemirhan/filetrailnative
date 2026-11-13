@@ -120,23 +120,25 @@ public enum SearchResults {
         _ left: SearchResultItem, _ right: SearchResultItem, by sortBy: SearchResultsSortByPreference,
         order: NameOrder
     ) -> Int {
-        // Names and paths the order holds equal are told apart by their text, so equal ones come in a fixed order.
-        let byName = firstNonZero(order.compare(left.name, right.name), order.compare(left.path, right.path))
-        let byText = NameOrder.compareText(left.path, right.path)
+        // Names and paths the order holds equal are told apart by their text, so equal ones come in a fixed order. Each
+        // step is worked out only when the one before it holds the two equal: most pairs differ at the first.
+        func byName() -> Int {
+            let names = order.compare(left.name, right.name)
+            return names != 0 ? names : order.compare(left.path, right.path)
+        }
+        let first: Int
         switch sortBy {
         case .name:
-            return firstNonZero(byName, byText)
+            first = byName()
         case .kind:
             // Kind is told from the extension, which every result has at once (the kind's name loads only for the rows
             // on screen): folders first, then files by extension, those without one last, each group by name.
-            return firstNonZero(compareKindKeys(kindKey(left), kindKey(right), order: order), byName, byText)
+            let kinds = compareKindKeys(kindKey(left), kindKey(right), order: order)
+            first = kinds != 0 ? kinds : byName()
         case .path:
-            return firstNonZero(order.compare(left.path, right.path), byText)
+            first = order.compare(left.path, right.path)
         }
-    }
-
-    private static func firstNonZero(_ values: Int...) -> Int {
-        values.first { $0 != 0 } ?? 0
+        return first != 0 ? first : NameOrder.compareText(left.path, right.path)
     }
 
     /// Folders (and links to them) are 0, files with an extension 1, files without one 2.
