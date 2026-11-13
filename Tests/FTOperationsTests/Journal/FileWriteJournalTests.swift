@@ -174,4 +174,62 @@ struct FileWriteJournalTests {
             #expect(FileWriteJournal.open(filePath).entries() == journal.entries())
         }
     }
+
+    /// A rename of several is kept in the same format: its kind, its id and each item's three paths.
+    @Test func writesARenameOfSeveralInTheJournalsFormat() throws {
+        try withTemporaryDirectory { directory in
+            let filePath = directory.path + "/replace-journal.json"
+            let journal = FileWriteJournal.open(filePath)
+            try journal.add(
+                .batchRename(
+                    BatchRenameJournalEntry(
+                        id: "0123456789abcdef",
+                        items: [
+                            .init(
+                                temporaryPath: "/d/.filetrail-rename-0a1b2c3d4e5f", originalPath: "/d/a",
+                                newPath: "/d/b"),
+                            .init(
+                                temporaryPath: "/d/.filetrail-rename-a0b1c2d3e4f5", originalPath: "/d/b",
+                                newPath: "/d/a"),
+                        ])))
+
+            #expect(
+                Disk.read(filePath)
+                    == #"[{"kind":"batch_rename","id":"0123456789abcdef","items":[{"temporaryPath":"/d/.filetrail-rename-0a1b2c3d4e5f","originalPath":"/d/a","newPath":"/d/b"},{"temporaryPath":"/d/.filetrail-rename-a0b1c2d3e4f5","originalPath":"/d/b","newPath":"/d/a"}]}]"#
+            )
+            #expect(FileWriteJournal.open(filePath).entries() == journal.entries())
+        }
+    }
+
+    // Paths are written by hand: a quote, a backslash, a line break, a tab, a control character, a name stored
+    // decomposed and one beyond the basic plane come back as they were, byte for byte. One that didn't would set the
+    // whole journal aside, and the items it guards with it.
+    @Test func readsBackEveryCharacterAPathCanHold() throws {
+        try withTemporaryDirectory { directory in
+            let filePath = directory.path + "/replace-journal.json"
+            let name = "q\"b\\n\nr\rt\tc\u{01}u\u{1F}d\u{7F}e\u{301}\u{1F600}"
+            let written = WriteJournalEntry.replace(
+                ReplaceJournalEntry(
+                    id: "1", stagingPath: "/d/.\(name).filetrail-0a1b2c3d", finalPath: "/d/\(name)",
+                    sourcePath: "/s/\(name)", moved: true, staged: true))
+            let journal = FileWriteJournal.open(filePath)
+            try journal.add(written)
+
+            let text = try #require(Disk.read(filePath))
+            #expect(text.contains(#"q\"b\\n\nr\rt\tc\u0001u\u001fd"#))
+            let read = FileWriteJournal.open(filePath).entries()
+            #expect(read == [written])
+            // Swift's == takes a name composed and decomposed as one: the scalars tell them apart.
+            guard case .replace(let entry)? = read.first else {
+                Issue.record("no entry read back")
+                return
+            }
+            for (back, path) in [
+                (entry.stagingPath, "/d/.\(name).filetrail-0a1b2c3d"), (entry.finalPath, "/d/\(name)"),
+                (entry.sourcePath, "/s/\(name)"),
+            ] {
+                #expect(Array(back.unicodeScalars) == Array(path.unicodeScalars))
+            }
+        }
+    }
 }

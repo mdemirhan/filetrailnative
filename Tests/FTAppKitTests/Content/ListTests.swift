@@ -49,6 +49,33 @@ extension ContentPaneController {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ListTests: ListTesting {
+        // A click on a column's header sorts by it; a second click turns the order around. A press that is let go
+        // outside the header doesn't sort.
+        @Test func aClickOnAColumnsHeaderSortsByIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, list) = try await harness.openList()
+            let cell = try #require(header(tab)?.cell(for: .kind))
+            func click(at point: NSPoint) throws {
+                let at = cell.convert(point, to: nil)
+                cell.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: at, in: list.window)))
+                cell.mouseUp(with: try #require(MouseEvents.event(.leftMouseUp, at: at, in: list.window)))
+            }
+            let inside = NSPoint(x: cell.bounds.midX, y: cell.bounds.midY)
+            #expect(tab.sortBy == .name)
+
+            try click(at: inside)
+            #expect(await waitUntil { tab.sortBy == .kind })
+            let direction = tab.sortDirection
+            try click(at: inside)
+            #expect(await waitUntil { tab.sortDirection != direction })
+            #expect(tab.sortBy == .kind)
+
+            try click(at: NSPoint(x: cell.bounds.midX, y: cell.bounds.maxY + 40))
+            await settle()
+            #expect(tab.sortBy == .kind && tab.sortDirection != direction)
+            await harness.close()
+        }
+
         // The rows are 28 high and inset 10, the header
         // titles are the columns', and a folder shows "--" for its size.
         @Test func drawsTheRowsAndTheHeader() async throws {

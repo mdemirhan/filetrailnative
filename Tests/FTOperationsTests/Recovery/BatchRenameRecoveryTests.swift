@@ -102,6 +102,66 @@ struct BatchRenameRecoveryTests {
         }
     }
 
+    /// Two items of a rename of several left under hidden names, in folders `trip` and `away`.
+    private func twoLeftHidden(_ root: String) throws -> BatchRenameJournalEntry {
+        for folder in ["trip", "away"] {
+            try FileManager.default.createDirectory(atPath: "\(root)/\(folder)", withIntermediateDirectories: false)
+        }
+        try "a".write(toFile: "\(root)/trip/.filetrail-rename-aaaaaaaaaaaa", atomically: false, encoding: .utf8)
+        try "b".write(toFile: "\(root)/away/.filetrail-rename-bbbbbbbbbbbb", atomically: false, encoding: .utf8)
+        return BatchRenameJournalEntry(
+            id: "rename",
+            items: [
+                .init(
+                    temporaryPath: "\(root)/trip/.filetrail-rename-aaaaaaaaaaaa", originalPath: "\(root)/trip/a.jpg",
+                    newPath: "\(root)/trip/b.jpg"),
+                .init(
+                    temporaryPath: "\(root)/away/.filetrail-rename-bbbbbbbbbbbb", originalPath: "\(root)/away/c.jpg",
+                    newPath: "\(root)/away/d.jpg"),
+            ])
+    }
+
+    // A retry while another write runs leaves the entry, and its items, as they are.
+    @Test func leavesARenameOfSeveralAloneWhileAnotherWriteRuns() throws {
+        try withTemporaryDirectory { directory in
+            let journal = FileWriteJournal.open(directory.path + "/replace-journal.json")
+            let entry = try twoLeftHidden(directory.path)
+            try journal.add(.batchRename(entry))
+
+            let report = recoverWrites(
+                journal, NativeWriteFileSystem(), logger: RecordingLogger().logger, retry: true,
+                runWriteAlone: { _ in false })
+
+            #expect(report.notices.isEmpty)
+            #expect(journal.entries() == [.batchRename(entry)])
+            #expect(Disk.list(directory.path + "/trip") == [".filetrail-rename-aaaaaaaaaaaa"])
+            #expect(Disk.list(directory.path + "/away") == [".filetrail-rename-bbbbbbbbbbbb"])
+        }
+    }
+
+    // One item is put back and the other can't be read yet: the journal keeps the one left, and only it.
+    @Test func keepsOnlyWhatIsLeftOfARenameOfSeveralPutBackInPart() throws {
+        try withTemporaryDirectory { directory in
+            let journalPath = directory.path + "/replace-journal.json"
+            let journal = FileWriteJournal.open(journalPath)
+            let entry = try twoLeftHidden(directory.path)
+            try journal.add(.batchRename(entry))
+            let away = directory.path + "/away"
+            Darwin.chmod(away, 0)
+            defer { Darwin.chmod(away, 0o755) }
+
+            let report = recoverWrites(journal, NativeWriteFileSystem(), logger: RecordingLogger().logger)
+
+            #expect(Disk.list(directory.path + "/trip") == ["a.jpg"])
+            #expect(report.notices.count == 1)
+            let left = WriteJournalEntry.batchRename(BatchRenameJournalEntry(id: "rename", items: [entry.items[1]]))
+            #expect(journal.entries() == [left])
+            #expect(FileWriteJournal.open(journalPath).entries() == [left])
+            Darwin.chmod(away, 0o755)
+            #expect(Disk.list(away) == [".filetrail-rename-bbbbbbbbbbbb"])
+        }
+    }
+
     // Items renamed from search results, one on a network share that hangs: the start goes on, and nothing of the
     // entry is put back until every folder answers.
     @Test func leavesARenameOfSeveralForLaterWhenAnyOfItsFoldersDoesntAnswer() throws {

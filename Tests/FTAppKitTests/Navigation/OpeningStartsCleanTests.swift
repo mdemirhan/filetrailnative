@@ -130,6 +130,16 @@ extension ExplorerWindowlessTests {
                 clipboard: harness.windows.clipboard, preferences: harness.channel)
         }
 
+        /// Runs what was put off for later, until nothing is left, and lets what it started run.
+        private func comeBack(_ timers: ManualTimers) async {
+            for _ in 0..<10 where timers.pending > 0 {
+                timers.advance(MainWindowController.retryDelay)
+                await settle()
+            }
+            #expect(timers.pending == 0)
+            await settle()
+        }
+
         // Refresh and a write's end, while another folder is being opened from the tree: neither takes the tree
         // or the list back to the old folder, and neither reads anything.
         @Test func aRefreshOrAWritesEndDuringAnOpeningLeaveItAlone() async throws {
@@ -143,6 +153,8 @@ extension ExplorerWindowlessTests {
             let files = HeldFolder(beta)
             defer { files.letGo() }
             reading(files, tab, harness)
+            let timers = ManualTimers()
+            tab.timers = timers
 
             model.selectItem(.filesystem(beta))
             #expect(await waitUntil { files.reads(of: beta) == 1 })
@@ -163,8 +175,8 @@ extension ExplorerWindowlessTests {
             files.letGo()
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             #expect(names(tab) == ["Inner"])
-            // Long enough for anything put off for the opening (250 ms) to have come back.
-            try await Task.sleep(for: .milliseconds(300))
+            // Anything put off for the opening (250 ms at a time) comes back.
+            await comeBack(timers)
             #expect(tab.shownFolderPath == beta)
             #expect(names(tab) == ["Inner"])
             #expect(model.selected == .filesystem(beta))
@@ -214,6 +226,8 @@ extension ExplorerWindowlessTests {
             let files = HeldFolder(beta)
             defer { files.letGo() }
             reading(files, tab, harness)
+            let timers = ManualTimers()
+            tab.timers = timers
 
             tab.go(to: URL(fileURLWithPath: beta))
             #expect(await waitUntil { files.reads(of: beta) == 1 })
@@ -225,7 +239,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             try "x".write(toFile: beta + "/late.txt", atomically: true, encoding: .utf8)
             tab.services.directoryService.cache.forgetFolderListings(beta, changedPaths: nil)
-            try await Task.sleep(for: .milliseconds(300))
+            await comeBack(timers)
             #expect(!names(tab).contains("late.txt"))
             #expect(files.reads(of: beta) == 1)
             #expect(files.reads(of: root) == 0)

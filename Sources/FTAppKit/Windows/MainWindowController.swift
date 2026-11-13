@@ -830,8 +830,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         case .none:
             break
         case .scheduleRetry:
-            DispatchQueue.main.asyncAfter(deadline: .now() + Self.retryDelay) { [weak self] in
-                MainActor.assumeIsolated { self?.updateFolderChanges { $0.retryElapsed($1) } }
+            _ = timers.schedule(after: Self.retryDelay) { [weak self] in
+                self?.updateFolderChanges { $0.retryElapsed($1) }
             }
         case .read(let changedPaths):
             Task {
@@ -967,7 +967,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    private static let retryDelay = 0.25
+    static let retryDelay = 0.25
+    /// What waits out `retryDelay`; tests move it by hand.
+    var timers: any TimerScheduling = TaskTimerScheduler()
 
     private func updateTitle() {
         // The window title is the folder name, which the toolbar shows; the tab bar and the Window menu have the

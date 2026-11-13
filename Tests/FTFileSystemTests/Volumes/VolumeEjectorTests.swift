@@ -91,6 +91,19 @@ private func wholeDevice(of path: String) throws -> String {
         }
     }
 
+    // Disk Arbitration that doesn't answer in time: the eject fails with ETIMEDOUT rather than waiting on. No time
+    // at all to answer stands for a share that stopped answering. Only a release runs it: it mounts an image.
+    @Test(.tags(.diskImage), .diskImages, .enabled(if: ReleaseTests.enabled))
+    func givesUpWhenTheDiskDoesntAnswerInTime() async throws {
+        try await DiskImage.withVolume(.apfs) { folder in
+            let error = await #expect(throws: EjectError.self) {
+                try await VolumeEjector.eject(path: folder.path, timeoutSeconds: 0)
+            }
+            #expect(error?.errnum == ETIMEDOUT)
+            #expect(error?.path == folder.path)
+        }
+    }
+
     @Test(.tags(.diskImage), .diskImages) func unmountsOnlyTheVolumeWithoutWholeDiskLeavingItsDiskAttached()
         async throws
     {

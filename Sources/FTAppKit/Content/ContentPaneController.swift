@@ -151,8 +151,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     private struct Loading {
         var cardShown = false
-        var timer: DispatchWorkItem?
+        var timer: TimerToken?
     }
+    /// What waits out the Loading… delay; tests move it by hand.
+    var timers: any TimerScheduling = TaskTimerScheduler()
     /// A Go To that couldn't read its folder (`directoryError` over the folder still shown): the error card shows over
     /// the items until the next folder is read.
     private(set) var readError: FolderReadError?
@@ -339,16 +341,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         loading?.timer?.cancel()
         loading = Loading()
         guard listed.isEmpty else { return }
-        let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated {
-                guard let self, self.loading != nil else { return }
-                self.loading?.cardShown = true
-                self.refreshState()
-            }
+        loading?.timer = timers.schedule(after: ContentStateText.loadingDelayMilliseconds / 1000) { [weak self] in
+            guard let self, self.loading != nil else { return }
+            self.loading?.cardShown = true
+            self.refreshState()
         }
-        loading?.timer = work
-        DispatchQueue.main.asyncAfter(
-            deadline: .now() + ContentStateText.loadingDelayMilliseconds / 1000, execute: work)
     }
 
     /// A navigation that opens nothing (the folder is gone): the listing in front stays as it was.

@@ -223,12 +223,14 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let probe = FolderReadProbe()
             harness.reading(through: probe, in: tab)
+            let timers = ManualTimers()
+            tab.content.timers = timers
             let beta = tab.folder.appendingPathComponent("Beta").path
             probe.hold(beta)
             tab.go(to: URL(fileURLWithPath: beta))
             #expect(await waitUntil { probe.isHolding })
             // Past the 400 ms a Loading… would wait for.
-            try await Task.sleep(for: .milliseconds(450))
+            timers.advance(ContentStateText.loadingDelayMilliseconds / 1000 + 0.05)
             #expect(!tab.content.container(for: .loading))
             probe.letGo()
             #expect(await waitUntil { !tab.isNavigating })

@@ -547,6 +547,39 @@ struct PathBarViewTests {
         #expect(findViews("pathBar.separator", in: view).isEmpty)
     }
 
+    // A double click on a segment edits the path: the single click it began with doesn't navigate.
+    @Test func aDoubleClickEditsThePathInsteadOfNavigating() async throws {
+        func up(_ count: Int) throws -> NSEvent {
+            try #require(
+                NSEvent.mouseEvent(
+                    with: .leftMouseUp, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: 0,
+                    context: nil, eventNumber: 0, clickCount: count, pressure: 0))
+        }
+        func segment(_ view: PathBarView) throws -> PathSegmentView {
+            try #require(
+                findViews("pathBar.segment", in: view).first { fieldText($0) == "demo" } as? PathSegmentView)
+        }
+        let view = bar("/Users/demo/Projects", width: 600)
+        var navigated: [String] = []
+        var edits = 0
+        view.onNavigate = { navigated.append($0) }
+        view.onEdit = { edits += 1 }
+        let demo = try segment(view)
+        demo.onClick?(try up(1))
+        demo.onClick?(try up(2))
+        demo.onDoubleClick?()
+        #expect(edits == 1)
+
+        // A click on another bar, made after: once it has navigated, the first click's moment has long passed.
+        let other = bar("/Users/demo/Projects", width: 600)
+        var otherNavigated: [String] = []
+        other.onNavigate = { otherNavigated.append($0) }
+        try segment(other).onClick?(try up(1))
+        #expect(await waitUntil { otherNavigated == ["/Users/demo"] })
+        #expect(navigated.isEmpty)
+        #expect(edits == 1)
+    }
+
     // A click navigates after 250 ms; command-click opens a new tab at once.
     @Test func aSingleClickNavigatesAfterTheDelay() async throws {
         let view = bar("/Users/demo/Projects", width: 600)

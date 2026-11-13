@@ -15,6 +15,8 @@ final class ManualTimers: TimerScheduling {
 
     private(set) var time: TimeInterval = 0
     private var jobs: [Job] = []
+    /// How many are waiting.
+    var pending: Int { jobs.count }
     private var next = 0
 
     func schedule(after delay: TimeInterval, _ action: @escaping @MainActor () -> Void) -> TimerToken {

@@ -527,6 +527,42 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Back held 350 ms opens the folders behind, nearest first, and the click that ends the hold doesn't step;
+        // released sooner, it opens nothing. (The same on screen: ToolbarStateGUITests.)
+        @Test func holdingBackOpensItsHistoryAndReleasingSoonerSteps() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let root = harness.folder.url
+            let tab = try await harness.open(root.path)
+            for name in ["Alpha", "Alpha/Inner"] {
+                await tab.navigate(to: root.appendingPathComponent(name))
+            }
+            harness.layout(tab)
+            let timers = ManualTimers()
+            tab.explorerToolbar.timers = timers
+            let back = try #require(button(tab, .back))
+            defer { AppMenuPresenter.shared.close() }
+
+            back.onPress?()
+            timers.advance(ExplorerToolbar.historyHoldSeconds - 0.05)
+            #expect(menu == nil)
+            timers.advance(0.05)
+            #expect(menu?.identifier == "historyMenu")
+            #expect(titles(menu) == ["Alpha", root.lastPathComponent])
+            back.onRelease?(true)
+            back.onClick?()
+            #expect(tab.currentFolder.lastPathComponent == "Inner")
+            AppMenuPresenter.shared.close()
+
+            back.onPress?()
+            timers.advance(ExplorerToolbar.historyHoldSeconds - 0.05)
+            back.onRelease?(true)
+            timers.advance(1)
+            #expect(menu == nil)
+            back.onClick?()
+            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Alpha" })
+            await harness.close()
+        }
+
         // AppKit routes a right press on the toolbar itself: sent to the window, it reaches Forward, whose menu
         // lists the folders ahead, and not the toolbar's own menu, whose tracking would hold the window.
         @Test func aRightPressOnForwardOpensItsHistory() async throws {

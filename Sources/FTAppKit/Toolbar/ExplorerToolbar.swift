@@ -46,8 +46,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     private var commitPending = false
 
     // History buttons: a hold opens the menu, and the click that ends that hold does not step.
-    var holdTimer: DispatchWorkItem?
+    var holdTimer: TimerToken?
     var openedByHold = false
+    /// What waits out the hold; tests move it by hand.
+    var timers: any TimerScheduling = TaskTimerScheduler()
     /// How a press on the magnifier brings a back window forward. A window that is never shown can't become key, so a
     /// windowless test watches this instead.
     var bringForward: @MainActor (NSWindow) -> Void = { $0.makeKeyAndOrderFront(nil) }
@@ -487,16 +489,12 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 guard let self, let button else { return }
                 self.openedByHold = false
                 self.holdTimer?.cancel()
-                let timer = DispatchWorkItem { [weak self, weak button] in
+                self.holdTimer = self.timers.schedule(after: Self.historyHoldSeconds) { [weak self, weak button] in
                     guard let self, let button else { return }
-                    MainActor.assumeIsolated {
-                        self.holdTimer = nil
-                        self.openedByHold = true
-                        self.showHistoryMenu(back: back, from: button)
-                    }
+                    self.holdTimer = nil
+                    self.openedByHold = true
+                    self.showHistoryMenu(back: back, from: button)
                 }
-                self.holdTimer = timer
-                DispatchQueue.main.asyncAfter(deadline: .now() + Self.historyHoldSeconds, execute: timer)
             }
             button.onRelease = { [weak self] _ in self?.cancelHold() }
             button.onClick = { [weak self, weak button] in

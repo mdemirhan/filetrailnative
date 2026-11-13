@@ -86,6 +86,65 @@ struct NativeFileSystemTests {
         }
     }
 
+    // On exFAT and FAT32, which leave attributes out, a folder lists what `lstat` says and is measured whole. Only a
+    // release runs it: it mounts an image of each.
+    @Test(
+        .tags(.diskImage), .diskImages, .enabled(if: ReleaseTests.enabled), arguments: [DiskImage.Kind.exfat, .fat32])
+    func aDiskThatLeavesAttributesOutListsAndMeasuresAsLstatSays(kind: DiskImage.Kind) async throws {
+        try await DiskImage.withVolume(kind) { volume in
+            let folder = volume.path + "/folder"
+            try FileManager.default.createDirectory(atPath: folder + "/inner", withIntermediateDirectories: true)
+            try Data("12345".utf8).write(to: URL(fileURLWithPath: folder + "/five.txt"))
+            try Data("123".utf8).write(to: URL(fileURLWithPath: folder + "/inner/three.txt"))
+
+            // macOS keeps the attributes these disks can't in "._" files beside each item: they are listed and
+            // measured too, as the disk lists them (Foundation hides them).
+            func names(_ path: String) -> [String] {
+                guard let directory = opendir(path) else { return [] }
+                defer { closedir(directory) }
+                var found: [String] = []
+                while let entry = readdir(directory) {
+                    let name = withUnsafeBytes(of: entry.pointee.d_name) {
+                        String(decoding: $0.prefix { $0 != 0 }, as: UTF8.self)
+                    }
+                    if name != "." && name != ".." { found.append(name) }
+                }
+                return found.sorted()
+            }
+            let records = try native.readDirectory(folder)
+            #expect(records.map(\.name).sorted() == names(folder))
+            #expect(records.contains { $0.name == "five.txt" } && records.contains { $0.name == "inner" })
+            for record in records {
+                let real = try native.lstat(folder + "/" + record.name)
+                let read = record.lstat ?? real
+                #expect(read.mode & 0o170000 == real.mode & 0o170000, "\(record.name)")
+                if record.type != .directory { #expect(read.size == real.size, "\(record.name)") }
+            }
+
+            // Everything inside, as lstat has it.
+            var total: Int64 = 0
+            var files = 0
+            var folders = 0
+            func count(_ path: String) throws {
+                for name in names(path) {
+                    let stats = try native.lstat(path + "/" + name)
+                    if stats.mode & 0o170000 == 0o040000 {
+                        folders += 1
+                        try count(path + "/" + name)
+                    } else {
+                        files += 1
+                        total += stats.size
+                    }
+                }
+            }
+            try count(folder)
+            let walk = try await measure(NativeFolderSize(), folder)
+            #expect(walk.result.total == total)
+            #expect(walk.result.fileCount == files)
+            #expect(walk.result.folderCount == folders)
+        }
+    }
+
     // An entry the disk didn't fully describe has no stats from the read: the listing asks `lstat`.
     @Test func anEntryTheDiskLeftAttributesOutOfHasNoStats() {
         var entry = FTDirEntry()

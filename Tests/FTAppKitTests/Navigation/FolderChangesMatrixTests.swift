@@ -88,19 +88,26 @@ extension ExplorerWindowlessTests {
         // read: that read may have started before the change.
         @Test func aChangeWhileTheFolderIsBeingReadAgainIsAskedForAgain() async throws {
             let (harness, tab, probe) = try await opened()
+            let timers = ManualTimers()
+            tab.timers = timers
             let folder = tab.folder.path
             tab.services.directoryService.cache.clear()
             probe.hold(folder)
             tab.cameBack()
             #expect(await waitUntil { probe.isHolding })
             changed(harness, tab, nil)
-            // A try has come and gone by now, and kept it.
-            try await Task.sleep(for: .milliseconds(300))
+            // A try comes and goes, and keeps it for the next.
+            #expect(timers.pending == 1)
+            timers.advance(MainWindowController.retryDelay)
+            await settle()
             #expect(tab.isNavigating)
             #expect(tab.pendingChange != nil)
+            #expect(timers.pending == 1)
             probe.letGo()
             #expect(await waitUntil { !tab.isNavigating })
             // Nothing else asks for this read: only the 250 ms try comes back to it.
+            #expect(tab.pendingChange != nil)
+            timers.advance(MainWindowController.retryDelay)
             #expect(await waitUntil { tab.pendingChange == nil })
             await harness.close()
         }
