@@ -325,23 +325,44 @@ public let dispatchRecoveryTimer: RecoveryTimer = { intervalMs, tick in
     return { source.cancel() }
 }
 
-/// Tries the entries left at start again every minute, while no operation runs, until none of them is left.
+/// Tries the entries left at start again every minute, while no operation runs, until none of them is left; and
+/// those an operation leaves behind while the app runs (`watch`: a moved item left under its hidden name because
+/// its disk went away), so they are put right once their disk is back, not only at the next start.
 /// Tells what was put in place, and what the person must know of what it found (a move found in place, a rename put
 /// back), each message once: an entry whose record can't be removed is found again at every try.
 public final class RecoveryRetry: Sendable {
     private struct State {
         var waiting: Set<String>
         var running = false
+        /// Ends the timer; nil while none runs (nothing waits).
         var cancel: (@Sendable () -> Void)?
+        /// A timer is being made.
+        var starting = false
         var stopped = false
         /// The messages already told, at start or by an earlier try.
         var told: Set<String>
     }
 
     private let state: OSAllocatedUnfairLock<State>
+    private let recover: @Sendable (Set<String>) -> RecoveryReport
+    private let remainingIds: @Sendable () -> Set<String>
+    private let isBusy: @Sendable () -> Bool
+    private let onReport: @Sendable (RecoveryReport) -> Void
+    private let intervalMs: Int
+    private let timer: RecoveryTimer
 
-    private init(_ waiting: Set<String>, told: Set<String>) {
+    private init(
+        _ waiting: Set<String>, told: Set<String>, recover: @escaping @Sendable (Set<String>) -> RecoveryReport,
+        remainingIds: @escaping @Sendable () -> Set<String>, isBusy: @escaping @Sendable () -> Bool,
+        onReport: @escaping @Sendable (RecoveryReport) -> Void, intervalMs: Int, timer: @escaping RecoveryTimer
+    ) {
         state = OSAllocatedUnfairLock(initialState: State(waiting: waiting, told: told))
+        self.recover = recover
+        self.remainingIds = remainingIds
+        self.isBusy = isBusy
+        self.onReport = onReport
+        self.intervalMs = intervalMs
+        self.timer = timer
     }
 
     /// `told` is what recovery at start already said, so a try that finds the same is quiet about it.
@@ -351,24 +372,42 @@ public final class RecoveryRetry: Sendable {
         recover: @escaping @Sendable (_ entryIds: Set<String>) -> RecoveryReport,
         remainingIds: @escaping @Sendable () -> Set<String>, isBusy: @escaping @Sendable () -> Bool,
         onReport: @escaping @Sendable (_ report: RecoveryReport) -> Void, intervalMs: Int = recoveryRetryIntervalMs,
-        timer: RecoveryTimer = dispatchRecoveryTimer
+        timer: @escaping RecoveryTimer = dispatchRecoveryTimer
     ) -> RecoveryRetry {
-        let retry = RecoveryRetry(leftoverIds, told: Set(told))
-        if leftoverIds.isEmpty {
-            return retry
+        let retry = RecoveryRetry(
+            leftoverIds, told: Set(told), recover: recover, remainingIds: remainingIds, isBusy: isBusy,
+            onReport: onReport, intervalMs: intervalMs, timer: timer)
+        retry.startTimerIfNeeded()
+        return retry
+    }
+
+    /// The entries an operation that just ended left in the journal (`ids`: all that are in it now, with none
+    /// running): tried again like those left at start. Nothing once stopped.
+    public func watch(_ ids: Set<String>) {
+        guard !ids.isEmpty else { return }
+        state.withLock { $0.waiting.formUnion(ids) }
+        startTimerIfNeeded()
+    }
+
+    /// The timer runs while something waits.
+    private func startTimerIfNeeded() {
+        let start = state.withLock { state -> Bool in
+            guard !state.stopped, !state.starting, state.cancel == nil, !state.waiting.isEmpty else { return false }
+            state.starting = true
+            return true
         }
-        // Held by the timer, as an interval keeps going whether or not anyone holds it; let go once stopped.
-        let cancel = timer(intervalMs) {
-            retry.tick(recover: recover, remainingIds: remainingIds, isBusy: isBusy, onReport: onReport)
-        }
-        let stopNow = retry.state.withLock { state -> Bool in
+        guard start else { return }
+        // Held by the timer, as an interval keeps going whether or not anyone holds it; let go once it is ended.
+        let cancel = timer(intervalMs) { self.tick() }
+        let endNow = state.withLock { state -> Bool in
+            state.starting = false
+            if state.stopped || state.waiting.isEmpty { return true }
             state.cancel = cancel
-            return state.stopped
+            return false
         }
-        if stopNow {
+        if endNow {
             cancel()
         }
-        return retry
     }
 
     public func stop() {
@@ -380,10 +419,7 @@ public final class RecoveryRetry: Sendable {
         cancel?()
     }
 
-    private func tick(
-        recover: @Sendable (Set<String>) -> RecoveryReport, remainingIds: @Sendable () -> Set<String>,
-        isBusy: @Sendable () -> Bool, onReport: @Sendable (RecoveryReport) -> Void
-    ) {
+    private func tick() {
         let waiting = state.withLock { state -> Set<String>? in
             if state.running || state.stopped {
                 return nil
@@ -398,19 +434,21 @@ public final class RecoveryRetry: Sendable {
         }
         let report = recover(waiting)
         let remaining = remainingIds()
-        let (untold, done) = state.withLock { state -> (RecoveryReport, Bool) in
+        let (untold, cancel) = state.withLock { state -> (RecoveryReport, (@Sendable () -> Void)?) in
             let untold = RecoveryReport(
                 notices: report.notices.filter { state.told.insert($0).inserted },
                 finished: report.finished.filter { state.told.insert($0).inserted })
-            state.waiting = state.waiting.filter { remaining.contains($0) }
+            // Those tried, as far as they are still in the journal; and any that came to wait meanwhile.
+            state.waiting = state.waiting.filter { remaining.contains($0) || !waiting.contains($0) }
             state.running = false
-            return (untold, state.waiting.isEmpty)
+            guard state.waiting.isEmpty else { return (untold, nil) }
+            // Nothing waits: the timer ends, until an operation leaves something again.
+            defer { state.cancel = nil }
+            return (untold, state.cancel)
         }
         if untold != RecoveryReport() {
             onReport(untold)
         }
-        if done {
-            stop()
-        }
+        cancel?()
     }
 }

@@ -170,6 +170,11 @@ final class AppWriteOperations {
                         action: $0.action, mode: $0.mode,
                         items: $0.items.map(\.effect))
                 }))
+        if event.status.isTerminal {
+            // What the operation left under a hidden name (its disk went away part way) is put right once the disk
+            // is back, as what a crash left is: no operation runs now, so all that is in the journal was left.
+            retry?.watch(Set(journal.entries().map(\.id)))
+        }
         if event.status.isTerminal, let result = event.result {
             let intoTrash = event.action == .trash || event.action == .undo || event.action == .redo
             for tab in windows.allTabs {

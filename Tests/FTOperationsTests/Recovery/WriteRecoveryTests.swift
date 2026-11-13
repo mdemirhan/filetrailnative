@@ -312,6 +312,57 @@ struct WriteRecoveryTests {
         #expect(recoveryRetryIntervalMs == 60_000)
     }
 
+    // An operation can leave an item under its hidden name while the app runs (its disk went away part way): it is
+    // tried again like what was left at start, with a timer only while something waits.
+    @Test func takesOnWhatAnOperationLeavesWhileTheAppRuns() {
+        let left = Locked<Set<String>>([])
+        let tried = Locked<[Set<String>]>([])
+        let made = Locked(0)
+        let ended = Locked(0)
+        let handler = Locked<(@Sendable () -> Void)?>(nil)
+        let timer: RecoveryTimer = { _, tick in
+            made.mutate { $0 += 1 }
+            handler.mutate { $0 = tick }
+            return {
+                ended.mutate { $0 += 1 }
+                handler.mutate { $0 = nil }
+            }
+        }
+        let retry = RecoveryRetry.start(
+            leftoverIds: [],
+            recover: { ids in
+                tried.mutate { $0.append(ids) }
+                return RecoveryReport()
+            }, remainingIds: { left.value }, isBusy: { false }, onReport: { _ in }, timer: timer)
+        // Nothing was left at start: no timer.
+        #expect(made.value == 0)
+        retry.watch([])
+        #expect(made.value == 0)
+
+        left.mutate { $0 = ["b"] }
+        retry.watch(["b"])
+        retry.watch(["b"])
+        #expect(made.value == 1)
+        // Its disk is still away.
+        handler.value?()
+        #expect(tried.value == [["b"]])
+        #expect(ended.value == 0)
+        // Back: nothing waits, and the timer ends.
+        left.mutate { $0 = [] }
+        handler.value?()
+        #expect(tried.value == [["b"], ["b"]])
+        #expect(ended.value == 1)
+
+        // The next one starts a timer again.
+        left.mutate { $0 = ["c"] }
+        retry.watch(["c"])
+        #expect(made.value == 2)
+        retry.stop()
+        #expect(ended.value == 2)
+        retry.watch(["d"])
+        #expect(made.value == 2)
+    }
+
     /// What a retry passes on, each time it does.
     private func retryReports(
         leftoverIds: Set<String> = ["a"], told: [String] = [], ticks: Int,
