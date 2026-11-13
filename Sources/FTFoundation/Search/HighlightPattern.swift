@@ -5,10 +5,22 @@ import Foundation
 /// (`NSRegularExpression`), or the text itself, found as typed. It only says which letters are painted; which files a
 /// search finds is fd's.
 public struct HighlightPattern: @unchecked Sendable {
+    /// How long one name may take a regular expression to look through. The names are marked on the main thread, and a
+    /// pattern such as `(a+)+$` can take seconds on a name that almost matches: past this, it gives up.
+    public static let timePerName: DispatchTimeInterval = .milliseconds(5)
+
     private enum Matcher {
-        case regex(NSRegularExpression)
+        case regex(NSRegularExpression, GaveUp)
         /// The text's UTF-16 units, folded when case doesn't matter.
         case text([UInt16], ignoreCase: Bool)
+    }
+
+    /// Set once a name took the pattern too long: it marks no more names, as the next would likely take as long.
+    private final class GaveUp: @unchecked Sendable {
+        private let lock = NSLock()
+        private var value = false
+        var isSet: Bool { lock.withLock { value } }
+        func set() { lock.withLock { value = true } }
     }
 
     private let matcher: Matcher
@@ -17,7 +29,7 @@ public struct HighlightPattern: @unchecked Sendable {
     public init?(regex source: String, ignoreCase: Bool) {
         guard let regex = try? NSRegularExpression(pattern: source, options: ignoreCase ? [.caseInsensitive] : [])
         else { return nil }
-        matcher = .regex(regex)
+        matcher = .regex(regex, GaveUp())
     }
 
     /// The text itself; nil for an empty one. Without case, each character is compared by its simple case fold, as
@@ -27,11 +39,27 @@ public struct HighlightPattern: @unchecked Sendable {
         matcher = .text(ignoreCase ? Self.folded(text) : Array(text.utf16), ignoreCase: ignoreCase)
     }
 
-    /// Where the first match in `name` is, in UTF-16 units; nil when there is none.
+    /// Where the first match in `name` is, in UTF-16 units; nil when there is none, or when a regular expression took
+    /// longer than `timePerName` over this name or an earlier one.
     public func firstMatch(in name: String) -> NSRange? {
         switch matcher {
-        case .regex(let regex):
-            return regex.firstMatch(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))?.range
+        case .regex(let regex, let gaveUp):
+            guard !gaveUp.isSet else { return nil }
+            var found: NSRange?
+            let deadline = DispatchTime.now() + Self.timePerName
+            // The block is called with each match, and now and then while a long one is looked for.
+            regex.enumerateMatches(
+                in: name, options: [.reportProgress], range: NSRange(location: 0, length: name.utf16.count)
+            ) { result, _, stop in
+                if let result {
+                    found = result.range
+                    stop.pointee = true
+                } else if DispatchTime.now() > deadline {
+                    gaveUp.set()
+                    stop.pointee = true
+                }
+            }
+            return found
         case .text(let text, let ignoreCase):
             let units = ignoreCase ? Self.folded(name) : Array(name.utf16)
             guard units.count >= text.count else { return nil }

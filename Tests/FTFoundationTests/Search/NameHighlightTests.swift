@@ -1,3 +1,4 @@
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -14,6 +15,18 @@ import Testing
                 == HighlightRange(start: 7, end: 10))
         #expect(NameHighlight.match(pattern("x*"), in: "Report.pdf") == nil)
         #expect(NameHighlight.match(nil, in: "Report.pdf") == nil)
+    }
+
+    // A pattern that takes seconds on a name that almost matches (`(a+)+$` on "aaa…ab") gives up on it at once, as
+    // the names are marked on the main thread, and marks no later name; another pattern still marks its names.
+    @Test func aPatternThatTakesTooLongGivesUpAndMarksNothingMore() throws {
+        let slow = try #require(pattern("(a+)+$"))
+        let name = String(repeating: "a", count: 28) + "b"
+        let (first, seconds) = CPUTime.measureThread { slow.firstMatch(in: name) }
+        #expect(first == nil)
+        #expect(seconds < 0.5)
+        #expect(slow.firstMatch(in: "aaa") == nil)
+        #expect(pattern("(a+)+$")?.firstMatch(in: "aaa") == NSRange(location: 0, length: 3))
     }
 
     @Test func marksTheMatchWhereItShowsInALabelShortenedInTheMiddle() {
