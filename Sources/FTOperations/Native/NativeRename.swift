@@ -59,6 +59,28 @@ extension NativeFS {
         throw NativeError.errno(errnum, syscall: "pathconf", path: path)
     }
 
+    /// The name the item at `path` has on its disk, a symlink not followed (`getattrlist` `ATTR_CMN_NAME`): on a disk
+    /// that ignores case, `path` may spell it otherwise. nil when it can't be read.
+    public static func nameOnDisk(_ path: String) -> String? {
+        var request = attrlist()
+        request.bitmapcount = u_short(ATTR_BIT_MAP_COUNT)
+        request.commonattr = attrgroup_t(ATTR_CMN_NAME)
+        // u_int32_t length, then attrreference_t, then the name and its NUL.
+        let headerSize = 4 + MemoryLayout<attrreference_t>.size
+        var buffer = [UInt8](repeating: 0, count: headerSize + 4 * Int(NAME_MAX) + 1)
+        let status = buffer.withUnsafeMutableBytes { bytes in
+            getattrlist(path, &request, bytes.baseAddress, bytes.count, UInt32(FSOPT_NOFOLLOW))
+        }
+        guard status == 0 else { return nil }
+        return buffer.withUnsafeBytes { bytes in
+            let reference = bytes.loadUnaligned(fromByteOffset: 4, as: attrreference_t.self)
+            let start = 4 + Int(reference.attr_dataoffset)
+            let length = Int(reference.attr_length) - 1
+            guard length > 0, start + length <= bytes.count else { return nil }
+            return String(decoding: bytes[start..<(start + length)], as: UTF8.self)
+        }
+    }
+
     /// Whether the volume holding `path` keeps extended attributes in "._name" files (FAT, exFAT, some network volumes)
     /// rather than natively: `getattrlist` `VOL_CAP_INT_EXTENDED_ATTR`. nil when the volume doesn't say. Failures
     /// throw, naming `getattrlist`.

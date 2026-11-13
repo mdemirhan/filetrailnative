@@ -19,6 +19,8 @@ func removeReplacedItem(
             context.recordsUndo && context.shared.undo.topLevelNodeIds.contains(NameKeys.Exact(node.node.id))
         let id = itemIdOf(dev: current.dev, ino: current.ino)
         let looks = records ? stampWithoutId(StampReader(fileSystem), node.destinationPath, id) : nil
+        // On a disk that ignores case, "X.TXT" replaces "x.txt": an Undo puts the item back under its own name.
+        let replacedPath = records ? pathAsOnDisk(node.destinationPath) : node.destinationPath
         let trashPath = try fileSystem.trash(node.destinationPath)
         noteChanged(context)
         context.shared.replacedPaths.append(node.destinationPath)
@@ -31,7 +33,7 @@ func removeReplacedItem(
                     context, node,
                     .step(
                         .trashed(
-                            from: node.destinationPath, trashPath: trashPath, id: id, parentId: parentId,
+                            from: replacedPath, trashPath: trashPath, id: id, parentId: parentId,
                             stamp: looks)))
             }
         } else {
@@ -137,4 +139,14 @@ private func findLockedInside(_ context: ExecutionContext, _ folderPath: String)
         }
     }
     return nil
+}
+
+/// `path` with its last name as the disk keeps it, when the disk spells it otherwise only in letter case or in how
+/// accents are stored; `path` itself when the name can't be read or is another name (another hard link's).
+private func pathAsOnDisk(_ path: String) -> String {
+    let name = basenameOf(path)
+    guard let onDisk = NativeFS.nameOnDisk(path), !sameText(onDisk, name),
+        onDisk.compare(name, options: .caseInsensitive) == .orderedSame
+    else { return path }
+    return NodePath.join(dirnameOf(path), onDisk)
 }

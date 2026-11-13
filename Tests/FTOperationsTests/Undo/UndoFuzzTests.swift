@@ -226,8 +226,13 @@ final class UndoFuzzCase {
     func operate() async throws -> Operation? {
         let before = history.generation
         let kind = try await operateOnce()
+        // One that can't be undone (a merge) lets go of everything before it, though the next one can be undone again.
+        if history.menu().cantUndo { undoesToTheStart = false }
         return history.generation != before ? kind : nil
     }
+
+    /// Whether every operation so far could be undone, so Undo can get back to the start.
+    private(set) var undoesToTheStart = true
 
     private func operateOnce() async throws -> Operation {
         let items = items()
@@ -465,7 +470,7 @@ struct UndoFuzzTests {
             }
             let end = testCase.snapshot()
             // Undo goes back only as far as the last operation that can't be undone.
-            let fullyUndoable = !testCase.history.menu().cantUndo
+            let fullyUndoable = testCase.undoesToTheStart
             let undone = try await testCase.undoAll(.undo)
             undoneOperations += undone.count
             for result in undone where result.status != .completed {
@@ -519,7 +524,7 @@ struct UndoFuzzTests {
             let start = testCase.snapshot()
             for _ in 0..<testCase.random.integer(1, 6) { _ = try await testCase.operate() }
             let end = testCase.snapshot()
-            let fullyUndoable = !testCase.history.menu().cantUndo
+            let fullyUndoable = testCase.undoesToTheStart
             // No permission, or the Trash refusing, now and then: what failed stays on the list and is tried again by
             // the next Undo.
             testCase.setFailures(FuzzFailures(codes: [EACCES, EPERM], chance: 0.2, stopChance: 0.1))
@@ -551,7 +556,7 @@ struct UndoFuzzTests {
             let start = testCase.snapshot()
             for _ in 0..<testCase.random.integer(2, 6) { _ = try await testCase.operate() }
             let end = testCase.snapshot()
-            let fullyUndoable = !testCase.history.menu().cantUndo
+            let fullyUndoable = testCase.undoesToTheStart
             // Undo or Redo, either, while what failed is still left on the other list.
             testCase.setFailures(FuzzFailures(codes: [EACCES, EPERM], chance: 0.3, stopChance: 0.1))
             for _ in 0..<testCase.random.integer(2, 10) {

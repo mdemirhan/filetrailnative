@@ -32,6 +32,8 @@ struct UndoNamesLockedTests {
             try UndoDisk.mkdir("\(root)/paste-trash")
             try UndoDisk.write("\(root)/src/\(newName)", "new")
             try UndoDisk.write("\(root)/dst/\(oldName)", "old")
+            // The old item's name as the disk keeps it, which is the name it comes back under.
+            let ownName = UndoDisk.names("\(root)/dst")
             let t = UndoTest(root: root, trashDir: trashDir)
             try await t.paste(
                 mode, ["\(root)/src/\(newName)"], into: "\(root)/dst", policy: NativePaste.replaceAll,
@@ -40,8 +42,8 @@ struct UndoNamesLockedTests {
             #expect(prepared.nameTaken.isEmpty)
             #expect(prepared.changed.isEmpty)
             #expect(try await t.undo().status == .completed)
-            #expect(bytes(UndoDisk.names("\(root)/dst")) == bytes([newName]))
-            #expect(try UndoDisk.read("\(root)/dst/\(newName)") == "old")
+            #expect(bytes(UndoDisk.names("\(root)/dst")) == bytes(ownName))
+            #expect(try UndoDisk.read("\(root)/dst/\(oldName)") == "old")
             await t.shutDown()
         }
     }

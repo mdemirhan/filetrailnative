@@ -59,6 +59,55 @@ struct UndoRealDiskTests {
         }
     }
 
+    // "Notes.txt" replaces "notes.txt", the same name on this disk: Undo puts the old item back as "notes.txt", and
+    // Redo brings the new one back as "Notes.txt".
+    @Test func putsAReplacedItemBackUnderItsOwnNameOnADiskThatIgnoresCase() async throws {
+        try await onDisk(.apfs) { t, disk in
+            try UndoDisk.mkdir("\(disk)/src")
+            try UndoDisk.mkdir("\(disk)/dst")
+            try UndoDisk.write("\(disk)/src/Notes.txt", "new")
+            try UndoDisk.write("\(disk)/dst/notes.txt", "old")
+            let pasteTrash = "\(disk)/paste-trash"
+            try UndoDisk.mkdir(pasteTrash)
+            try await t.paste(
+                .cut, ["\(disk)/src/Notes.txt"], into: "\(disk)/dst", policy: NativePaste.replaceAll,
+                fileSystem: NativePaste.withTrash(pasteTrash))
+            #expect(visible("\(disk)/dst") == ["Notes.txt"])
+
+            #expect(try await t.undo().status == .completed)
+            #expect(visible("\(disk)/dst") == ["notes.txt"])
+            #expect(try UndoDisk.read("\(disk)/dst/notes.txt") == "old")
+            #expect(visible("\(disk)/src") == ["Notes.txt"])
+
+            #expect(try await t.undo(.redo).status == .completed)
+            #expect(visible("\(disk)/dst") == ["Notes.txt"])
+            #expect(try UndoDisk.read("\(disk)/dst/Notes.txt") == "new")
+        }
+    }
+
+    // On a disk that minds case "Notes.txt" and "notes.txt" are two names: the paste replaces nothing, and Undo takes
+    // back only the item it moved.
+    @Test func replacesNothingSpelledOtherwiseOnADiskThatMindsCase() async throws {
+        try await onDisk(.apfsCaseSensitive) { t, disk in
+            try UndoDisk.mkdir("\(disk)/src")
+            try UndoDisk.mkdir("\(disk)/dst")
+            try UndoDisk.write("\(disk)/src/Notes.txt", "new")
+            try UndoDisk.write("\(disk)/dst/notes.txt", "old")
+            let pasteTrash = "\(disk)/paste-trash"
+            try UndoDisk.mkdir(pasteTrash)
+            try await t.paste(
+                .cut, ["\(disk)/src/Notes.txt"], into: "\(disk)/dst", policy: NativePaste.replaceAll,
+                fileSystem: NativePaste.withTrash(pasteTrash))
+            #expect(visible("\(disk)/dst") == ["Notes.txt", "notes.txt"])
+            #expect(visible(pasteTrash).isEmpty)
+
+            #expect(try await t.undo().status == .completed)
+            #expect(visible("\(disk)/dst") == ["notes.txt"])
+            #expect(try UndoDisk.read("\(disk)/dst/notes.txt") == "old")
+            #expect(visible("\(disk)/src") == ["Notes.txt"])
+        }
+    }
+
     @Test func keepsBothOnlyWhenTheVeryNameIsTakenOnADiskThatMindsCase() async throws {
         try await onDisk(.apfsCaseSensitive) { t, disk in
             try UndoDisk.write("\(disk)/a.txt", "a")
