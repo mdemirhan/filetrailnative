@@ -222,8 +222,17 @@ private func recoverEntry(_ entry: ReplaceJournalEntry, _ fileSystem: some Write
     } catch {
         if errorCode(error) == .errno(ENOENT) && folderIsThere(fileSystem, entry.stagingPath) {
             // A folder moved to another disk that was already in place, its originals not all removed yet: it is
-            // in both places, and the person is told.
-            if entry.movingCopy && entry.staged && captureFingerprint(fileSystem, entry.finalPath).exists {
+            // in both places, and the person is told. A place that can't be read just now may hold it: what is there
+            // is said once it can be read, as for its source.
+            let placed: NodeFingerprint
+            do {
+                placed =
+                    entry.movingCopy && entry.staged
+                    ? try captureFingerprintStrictly(fileSystem, entry.finalPath) : .missing
+            } catch {
+                return .unreachable(error: describeCopyPasteError(error))
+            }
+            if placed.exists {
                 let source: NodeFingerprint
                 do {
                     source = try captureFingerprintStrictly(fileSystem, entry.sourcePath)

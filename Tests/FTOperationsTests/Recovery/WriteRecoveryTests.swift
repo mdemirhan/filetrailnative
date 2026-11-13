@@ -424,6 +424,27 @@ struct WriteRecoveryTests {
         }
     }
 
+    // A folder moved to another disk, its hidden copy already gone: where it went can't be read just now, so whether it
+    // is in place isn't known. The entry waits rather than being taken as done.
+    @Test func keepsAMovesEntryWhenItsPlaceCantBeRead() throws {
+        try withJournal { root, journal in
+            let entry = createEntry(
+                root, "move", stagingPath: root + "/.F.filetrail-00000000", finalPath: root + "/F",
+                sourcePath: root + "/src/F", staged: true, movingCopy: true)
+            try journal.add(.replace(entry))
+            let fileSystem = TestFileSystem()
+            fileSystem.lstatImpl = { path in
+                if path == entry.finalPath { throw codedError(.errno(EIO), "EIO: i/o error") }
+                return try NativeWriteFileSystem().lstat(path)
+            }
+
+            let report = recoverWrites(journal, fileSystem, logger: RecordingLogger().logger)
+
+            #expect(report == RecoveryReport())
+            #expect(ids(journal) == ["move"])
+        }
+    }
+
     // A crash during a Replace that filled the disk must not keep the app from starting.
     @Test func neverThrowsWhenTheJournalCantBeWritten() throws {
         try withJournal { root, journal in
