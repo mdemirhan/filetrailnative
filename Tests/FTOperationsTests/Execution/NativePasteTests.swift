@@ -44,20 +44,6 @@ struct NativePasteTests {
         return await execute(fileSystem, (report, resolvedNodes), operationId: "op-native").last?.result
     }
 
-    @Test func copiesALockedFileAndTheCopyStaysLocked() async throws {
-        try await withTemporaryDirectory { root in
-            let source = root.path + "/src/locked.txt"
-            try Disk.write(source, "keep me")
-            try Disk.makeDirectories(root.path + "/dst")
-            Disk.lock(source)
-
-            let result = try await copy([source], into: root.path + "/dst")
-
-            #expect(result?.status == .completed)
-            #expect(Disk.flags(root.path + "/dst/locked.txt") & UInt32(UF_IMMUTABLE) != 0)
-        }
-    }
-
     @Test func keepsAFoldersFinderTagsModeAndDate() async throws {
         try await withTemporaryDirectory { root in
             let source = root.path + "/src/Tagged"

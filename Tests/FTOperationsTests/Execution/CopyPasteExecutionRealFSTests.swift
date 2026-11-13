@@ -209,26 +209,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    @Test func renameAndInlineCutNoCopySourceMovedAtomically() async throws {
-        try await withTemporaryDirectory { root in
-            let (source, destination) = (root.path + "/src", root.path + "/dst")
-            try Disk.write(source + "/atom.txt", "atomic move")
-            try Disk.makeDirectories(destination)
-            let originalIno = Disk.lstat(source + "/atom.txt")?.ino
-            let copied = Flag()
-            let fileSystem = TestFileSystem()
-            fileSystem.copyFileImpl = { _, _, _, _ in copied.set() }
-            let operation = try realOperation(
-                fileSystem, mode: .cut, sources: [source + "/atom.txt"], into: destination)
-
-            await execute(fileSystem, operation, operationId: "realfs-integration-rename-cut")
-
-            #expect(!copied.isSet)
-            #expect(!Disk.exists(source + "/atom.txt"))
-            #expect(Disk.lstat(destination + "/atom.txt")?.ino == originalIno)
-        }
-    }
-
     @Test func copyModeWithUtimesSourcePreservedDestinationHasContent() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")

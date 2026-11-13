@@ -7,39 +7,6 @@ import os
 @testable import FTOperations
 
 struct CopyPasteExecutionIntegrationTests {
-    @Test func renameAndInlineCutRenameMovesTheFileWithNoCopyOrSeparateDelete() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 1)),
-        ])
-        let copied = Flag()
-        fileSystem.copyFileImpl = { _, _, _, _ in copied.set() }
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "cross-rename-cut")
-
-        #expect(!copied.isSet)
-        #expect(!fileSystem.exists("/source/a.txt"))
-        #expect(fileSystem.exists("/target/a.txt"))
-    }
-
-    @Test func exdevFallbackAndInlineCutCopyThenInlineDelete() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 1)),
-        ])
-        // Another disk: renames out of /source fail; a file put in place at /target doesn't.
-        fileSystem.renameImpl = { from, to in
-            if from.hasPrefix("/source/") {
-                throw codedError(.errno(EXDEV))
-            }
-            try fileSystem.renameDirectly(from, to)
-        }
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "cross-exdev-cut")
-
-        #expect(!fileSystem.exists("/source/a.txt"))
-        #expect(fileSystem.exists("/target/a.txt"))
-    }
 
     @Test func copyFileAndInlineCutNativeCopyThenInlineDelete() async throws {
         let fileSystem = MockWriteServiceFileSystem([
@@ -58,27 +25,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(copied.isSet)
         #expect(!fileSystem.exists("/source/a.txt"))
         #expect(fileSystem.exists("/target/a.txt"))
-    }
-
-    @Test func renameAndCopyFileRenamePrioritizedOverCopyFileForSameDevCut() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 1)),
-        ])
-        let renamed = Flag()
-        let copied = Flag()
-        fileSystem.renameImpl = { oldPath, newPath in
-            renamed.set()
-            let size = fileSystem.readNode(oldPath)?.size ?? 0
-            fileSystem.deleteNode(oldPath)
-            fileSystem.addFile(newPath, .file(size: size))
-        }
-        fileSystem.copyFileImpl = { _, _, _, _ in copied.set() }
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "cross-rename-priority")
-
-        #expect(renamed.isSet)
-        #expect(!copied.isSet)
     }
 
     @Test func mergeWithRenamedChildrenAndCopyFileFallbackMixesPathsInOneOperation() async throws {

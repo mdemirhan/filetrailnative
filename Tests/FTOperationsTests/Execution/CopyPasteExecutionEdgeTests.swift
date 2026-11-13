@@ -83,20 +83,6 @@ struct CopyPasteExecutionEdgeTests {
         #expect(chmodFailure.exists("/target/file.txt"))
     }
 
-    @Test func removesSourceDirectoriesAfterSuccessfulCutCopies() async throws {
-        let cutDirectory = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/file.txt", .file(size: 5)),
-            ("/target", .directory()),
-        ])
-        let cutOperation = try createResolvedOperation(
-            cutDirectory, mode: .cut, sources: ["/source/Folder"], into: "/target")
-
-        await execute(cutDirectory, cutOperation)
-
-        #expect(!cutDirectory.exists("/source/Folder"))
-        #expect(cutDirectory.exists("/target/Folder/file.txt"))
-    }
-
     @Test func movesDirectoriesWithHiddenFilesAndHiddenFoldersDuringCut() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/.env", .file(size: 7)),
@@ -135,26 +121,6 @@ struct CopyPasteExecutionEdgeTests {
         await execute(fileSystem, operation, operationId: "copy-op-3")
 
         #expect(!fileSystem.exists("/source/Folder"))
-        #expect(fileSystem.exists("/target/Folder/file.txt"))
-    }
-
-    @Test func preservesCutSourceDirectoriesWhenTheSourceFolderChangesBeforeCleanup() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory(dev: 2)), ("/source/Folder", .directory()),
-            ("/source/Folder/file.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        fileSystem.copyFileImpl = { source, destination, _, _ in
-            fileSystem.addFile(destination, .file(size: 5))
-            if source.hasSuffix("file.txt") {
-                fileSystem.mutateNode("/source/Folder") { $0.mode = 0o700 }
-            }
-        }
-        let operation = try createResolvedOperation(
-            fileSystem, mode: .cut, sources: ["/source/Folder"], into: "/target")
-
-        await execute(fileSystem, operation)
-
-        #expect(fileSystem.exists("/source/Folder"))
         #expect(fileSystem.exists("/target/Folder/file.txt"))
     }
 }

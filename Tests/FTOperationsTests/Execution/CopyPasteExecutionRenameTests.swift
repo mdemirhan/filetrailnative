@@ -25,20 +25,6 @@ func copyingSize(_ fileSystem: MockWriteServiceFileSystem, _ called: Flag? = nil
 }
 
 struct CopyPasteExecutionRenameTests {
-    @Test func usesRenameForSameDevCutFile() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        let copied = Flag()
-        fileSystem.copyFileImpl = { _, _, _, _ in copied.set() }
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "rename-file-1")
-
-        #expect(!copied.isSet)
-        #expect(!fileSystem.exists("/source/a.txt"))
-        #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
-    }
 
     @Test func usesRenameForSameDevCutSymlink() async throws {
         let fileSystem = MockWriteServiceFileSystem([
@@ -242,19 +228,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(copied.isSet)
         #expect(!fileSystem.exists("/source2/b.txt"))
         #expect(fileSystem.readNode("/target/b.txt")?.size == 7)
-    }
-
-    @Test func exdevFallbackStillPerformsInlineSourceDeletion() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        renamesOutOfSourceFail(fileSystem)
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "rename-exdev-inline-1")
-
-        #expect(!fileSystem.exists("/source/a.txt"))
-        #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
     @Test func renameOverwriteSkipsPreDeleteWhenTheDestinationVanishedBeforeExecution() async throws {

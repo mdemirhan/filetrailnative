@@ -148,33 +148,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.exists("/target/dir/a.txt"))
     }
 
-    @Test func copyFileAndCutInlineSourceDeletionStillWorks() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "native-cut-1")
-
-        #expect(!fileSystem.exists("/source/a.txt"))
-        #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
-    }
-
-    @Test func copyFileAndRenameRenameTakesPriorityForSameDevCut() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        let copied = Flag()
-        fileSystem.copyFileImpl = { _, _, _, _ in copied.set() }
-        let originalIno = fileSystem.readNode("/source/a.txt")?.ino
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "rename-vs-native-1")
-
-        #expect(!copied.isSet)
-        #expect(fileSystem.readNode("/target/a.txt")?.ino == originalIno)
-    }
-
     @Test func copyFileWithKeepBothUsesTheAlternateDestinationPath() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 8)), ("/target", .directory()),

@@ -98,23 +98,6 @@ struct CopyPasteExecutionCutTests {
         }
     }
 
-    @Test func preservesSourceFileWhenSourceMutatedAfterCopy() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        fileSystem.copyFileImpl = { source, destination, _, _ in
-            fileSystem.addFile(destination, .file(size: 5))
-            fileSystem.mutateNode(source) { $0.size = 99 }
-        }
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "cut-mutated-1")
-
-        #expect(fileSystem.exists("/source/a.txt"))
-        #expect(fileSystem.readNode("/source/a.txt")?.size == 99)
-        #expect(fileSystem.exists("/target/a.txt"))
-    }
-
     @Test func preservesSourceFileWhenSourceDeletedExternallyAfterCopy() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -310,7 +293,7 @@ struct CopyPasteExecutionCutTests {
         let first = events.last?.result?.items.first
         #expect(first?.status == .failed)
         #expect(first?.error?.contains("so the original was kept") == true)
-        #expect(fileSystem.exists("/source/a.txt"))
+        #expect(fileSystem.readNode("/source/a.txt")?.size == 99)
         #expect(fileSystem.exists("/target/a.txt"))
     }
 }
