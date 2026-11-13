@@ -458,26 +458,27 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         }
     }
 
-    /// A window keeps at most `openTabsLimit` tabs: tabs the system dropped on a full one leave it again, each for a
-    /// window of its own as if dragged out, and the notice says why. The tab group's change brings the next pass, which
-    /// makes the windows one again. False when none left: a tab the system wouldn't take out joins the window, and only
-    /// the first `openTabsLimit` are saved.
+    /// A window keeps at most its tab limit (`openTabsLimit`): tabs the system dropped on a full one leave it again,
+    /// each for a window of its own as if dragged out, and the notice says why in the window of the last one, where the
+    /// tab now is. The tab group's change brings the next pass, which makes the windows one again. False when none
+    /// left: a tab the system wouldn't take out joins the window, and only the first `openTabsLimit` are saved.
     private func sendBackSurplusTabs(_ sets: [[MainWindowController]], _ live: [ExplorerTabGroup]) -> Bool {
-        let limit = AppPreferenceLimits.openTabsLimit
         var sentBack = false
-        for set in sets where set.count > limit {
+        for set in sets {
             // The window that keeps the set is the one most of its tabs are in; the others arrived.
             let owner = live.max { first, second in
                 set.filter { $0.group === first }.count < set.filter { $0.group === second }.count
             }
+            let limit = owner?.tabLimit ?? AppPreferenceLimits.openTabsLimit
+            guard set.count > limit else { continue }
             let arrived = set.filter { $0.group !== owner }
-            var left = false
+            var leftWindow: NSWindow?
             for tab in arrived.suffix(set.count - limit) {
                 (tab.window as? ExplorerTabWindow)?.leaveTabGroup()
-                if (tab.window?.tabbedWindows?.count ?? 1) <= 1 { left = true }
+                if (tab.window?.tabbedWindows?.count ?? 1) <= 1 { leftWindow = tab.window }
             }
-            guard left else { continue }
-            tellTabLimit(in: owner?.selected?.window)
+            guard let leftWindow else { continue }
+            tellTabLimit(in: leftWindow)
             sentBack = true
         }
         return sentBack

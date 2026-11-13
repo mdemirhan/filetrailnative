@@ -69,6 +69,36 @@ struct NativeWindowsGUITests {
         await app.closeAll()
     }
 
+    // A tab dropped into a window that is full goes back out into a window of its own, and the notice says why in that
+    // window, where the tab is. A limit of 1 stands for the 25.
+    @Test func aTabDroppedIntoAFullWindowGoesBackOutAndIsToldWhy() async throws {
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
+        defer { folder.remove() }
+        let app = launch(folder.appending("app-state.json").path)
+        var notices: [(WindowNotice, NSWindow?)] = []
+        app.windows.showNotice = { notices.append(($0, $1)) }
+        app.windows.openStartupWindows(folder: folder.path)
+        let first = try #require(app.frontTab)
+        #expect(await waitUntil { first.window?.isVisible == true })
+        first.perform(.newTab)
+        let group = try #require(first.group)
+        #expect(await waitUntil { group.tabs.count == 2 })
+        group.tabs[1].perform(.moveTabToNewWindow)
+        #expect(await waitUntil { app.groupCount == 2 && group.tabs.count == 1 })
+        let moved = try #require(app.frontTab)
+        let movedWindow = try #require(moved.window)
+        #expect(await waitUntil { movedWindow.isVisible })
+
+        group.tabLimit = 1
+        try #require(first.window).addTabbedWindow(movedWindow, ordered: .above)
+        #expect(await waitUntil { !notices.isEmpty && (movedWindow.tabbedWindows?.count ?? 1) <= 1 })
+        #expect(await waitUntil { app.groupCount == 2 && group.tabs.count == 1 })
+        #expect(notices.map(\.0) == [.tabLimit])
+        #expect(notices.first?.1 === movedWindow)
+
+        await app.closeAll()
+    }
+
     // While a name is edited a press on a tab does nothing and the field stays. The system's tab bar has no type to
     // ask, so this checks its class names too.
     @Test func theTabBarTakesNoPressWhileANameIsEdited() async throws {
