@@ -47,6 +47,25 @@ private final class ScriptedProvider: ThumbnailProviding, @unchecked Sendable {
     }
 }
 
+/// A provider whose calls the test answers one size at a time, in any order.
+private final class SizedProvider: ThumbnailProviding, @unchecked Sendable {
+    private let lock = NSLock()
+    private var waiting: [Int: CheckedContinuation<ThumbnailResponse, Never>] = [:]
+
+    var waitingSizes: Set<Int> { lock.withLock { Set(waiting.keys) } }
+
+    func response(path: String, size: Int, knownVersion: String?) async -> ThumbnailResponse {
+        await withCheckedContinuation { continuation in
+            lock.withLock { waiting[size] = continuation }
+        }
+    }
+
+    func release(size: Int, _ response: ThumbnailResponse) {
+        let continuation = lock.withLock { waiting.removeValue(forKey: size) }
+        continuation?.resume(returning: response)
+    }
+}
+
 private func picture(opaque: Bool = true) -> ThumbnailPicture {
     ThumbnailPicture(image: NSImage(size: NSSize(width: 4, height: 4)), isOpaque: opaque)
 }
@@ -104,6 +123,32 @@ private func request(
         _ = store.load(path: path, kind: .file, size: 128, listing: listing) { _ in }
         await idle(queue)
         #expect(provider.calls.count == 2)
+    }
+
+    // Two loads of one file at different sizes, the larger ending first: the smaller one's picture never takes the
+    // larger one's place.
+    @Test func neverReplacesALargerPreviewWithASmallerOne() async {
+        let provider = SizedProvider()
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let path = "/Users/demo/photo.jpeg"
+        let small = Receiver()
+        _ = store.load(path: path, kind: .file, size: 128, listing: listing) { small.answers.append($0) }
+        _ = store.load(path: path, kind: .file, size: 256, listing: listing) { _ in }
+        await pollUntil { provider.waitingSizes == [128, 256] }
+        let large = picture()
+        provider.release(size: 256, ThumbnailResponse(version: "10:20", unchanged: false, picture: large))
+        await pollUntil { provider.waitingSizes == [128] && store.loadedPicture(forPath: path) != nil }
+        provider.release(size: 128, ThumbnailResponse(version: "10:20", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(store.loadedPicture(forPath: path)?.image === large.image)
+        // The smaller load is given the larger picture, and nothing is asked again at 256.
+        #expect(small.last?.image === large.image)
+        let again = Receiver()
+        _ = store.load(path: path, kind: .file, size: 256, listing: listing) { again.answers.append($0) }
+        #expect(again.answers.count == 1 && again.last?.image === large.image)
+        #expect(provider.waitingSizes.isEmpty)
     }
 
     @Test func givesNothingUntilThePreviewArrivesThenThePreview() async {

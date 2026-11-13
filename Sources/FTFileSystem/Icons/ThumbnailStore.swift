@@ -87,11 +87,19 @@ public final class ThumbnailStore {
             let response = await provider.response(
                 path: path, size: wanted, knownVersion: knownVersion)
             guard let self else { return }
-            let thumbnail =
+            var thumbnail =
                 response.unchanged && cached != nil
                 ? Cached(version: cached?.version, picture: cached?.picture, size: wanted, checkedFor: listing)
                 : Cached(version: response.version, picture: response.picture, size: wanted, checkedFor: listing)
-            self.cache.write(thumbnail, for: path)
+            // A load of a larger size, asked for since and ended first, made a sharper picture of the file as it is:
+            // it stays, and serves this load too.
+            if let current = self.cache.peek(path), current.size > wanted, current.checkedFor === listing,
+                current.version == thumbnail.version
+            {
+                thumbnail = current
+            } else {
+                self.cache.write(thumbnail, for: path)
+            }
             if !cancelled.value {
                 completion(thumbnail.picture)
             }
