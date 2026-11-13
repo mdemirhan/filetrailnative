@@ -151,13 +151,20 @@ func assertItemsCanLeave(_ context: ExecutionContext, _ folder: String) throws {
     context.shared.foldersItemsCanLeave.insert(key)
 }
 
-/// A hidden name next to `finalPath` for building an item under, within the volume's name length limit.
+/// A hidden name for building the item `name` under (`tag`: ".filetrail-" and 8 hex digits), within the volume's name
+/// length limit. On a disk that keeps attributes in "._name" files (FAT, exFAT, some network disks) the item must
+/// be able to take its attributes under this name too: so it never begins with "._" (a name the disk keeps for
+/// those files, and refuses attributes on), and it leaves the two bytes its own "._" file needs.
+func temporaryName(for name: String, tag: String) -> String {
+    let hidden = startsWith(name, "_") ? ".~\(name)" : ".\(name)"
+    return CopyPasteNames.fitName(hidden, suffix: tag, extension: "", limit: CopyPasteNames.maxNameBytes - 2)
+}
+
+/// A hidden name next to `finalPath` for building an item under (`temporaryName`).
 func temporarySiblingPath(_ fileSystem: some IdentityFileSystem, _ finalPath: String) throws -> String {
     for _ in 0..<10 {
         let tag = ".filetrail-\(randomHex(bytes: 4))"
-        let candidate = NodePath.join(
-            dirnameOf(finalPath),
-            CopyPasteNames.fitName(".\(basenameOf(finalPath))", suffix: tag, extension: ""))
+        let candidate = NodePath.join(dirnameOf(finalPath), temporaryName(for: basenameOf(finalPath), tag: tag))
         if !captureFingerprint(fileSystem, candidate).exists {
             return candidate
         }

@@ -221,4 +221,54 @@ struct EmptyFilesOnFATTests {
             }
         }
     }
+
+    // A file is built under a hidden name and renamed into place. On these disks a name that begins with "._" takes
+    // no attributes, and a name of the full length leaves no room for the "._" file that holds them.
+    @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.exfat, .fat32])
+    func copiesAFileWhoseNameBeginsWithAnUnderscoreOrIsVeryLongWithItsAttributes(kind: DiskImage.Kind) async throws {
+        try await withTemporaryDirectory { root in
+            try await DiskImage.withSharedVolume(kind) { stick in
+                let long = String(repeating: "n", count: 240) + ".txt"
+                for name in ["_config.yml", "plain.txt", long] {
+                    try Disk.write(root.path + "/" + name, name)
+                    try Attributes.write(root.path + "/" + name, "com.filetrail.test", "kept")
+                }
+                let run = try await runPaste(
+                    mode: .copy, sources: ["_config.yml", "plain.txt", long].map { root.path + "/" + $0 },
+                    into: stick.path)
+                #expect(run.result?.status == .completed)
+                for name in ["_config.yml", "plain.txt", long] {
+                    #expect(Attributes.read(stick.path + "/" + name, "com.filetrail.test") == "kept")
+                }
+                #expect(Disk.list(stick.path).filter { $0.contains(".filetrail-") } == [])
+            }
+        }
+    }
+}
+
+struct TemporaryNameTests {
+    private let tag = ".filetrail-0123abcd"
+
+    @Test func isHiddenIsKnownAsTheAppsOwnAndNeverAnAppleDoubleName() {
+        #expect(temporaryName(for: "notes.txt", tag: tag) == ".notes.txt.filetrail-0123abcd")
+        #expect(temporaryName(for: "_config.yml", tag: tag) == ".~_config.yml.filetrail-0123abcd")
+        #expect(temporaryName(for: "__init__.py", tag: tag) == ".~__init__.py.filetrail-0123abcd")
+        for name in ["notes.txt", "_config.yml", "_", String(repeating: "\u{65E5}", count: 85)] {
+            let temporary = temporaryName(for: name, tag: tag)
+            #expect(isStagingName(temporary))
+            #expect(!temporary.hasPrefix("._"))
+        }
+    }
+
+    @Test func leavesRoomForItsOwnAppleDoubleFile() {
+        let names = [
+            String(repeating: "n", count: 255), String(repeating: "\u{65E5}", count: 85),
+            "_" + String(repeating: "n", count: 254),
+        ]
+        for name in names {
+            let temporary = temporaryName(for: name, tag: tag)
+            #expect(temporary.utf8.count <= 253)
+            #expect(temporary.hasSuffix(tag))
+        }
+    }
 }

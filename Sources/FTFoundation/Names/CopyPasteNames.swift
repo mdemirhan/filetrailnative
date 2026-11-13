@@ -179,7 +179,10 @@ public enum CopyPasteNames {
 
     /// Adds `suffix` before the extension, shortening the name to fit the volume's limit. Shortening
     /// drops whole characters as people see them (an accented letter or an emoji is never cut in half).
-    public static func fitName(_ baseName: String, suffix: String, extension ext: String) -> String {
+    /// `limit` is the longest the name may be, in UTF-8 bytes.
+    public static func fitName(
+        _ baseName: String, suffix: String, extension ext: String, limit maxNameBytes: Int = maxNameBytes
+    ) -> String {
         var base = baseName
         var extra = ext
         if (suffix + extra).utf8.count >= maxNameBytes {
