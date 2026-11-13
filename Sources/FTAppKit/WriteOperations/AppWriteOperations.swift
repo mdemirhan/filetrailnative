@@ -91,16 +91,16 @@ final class AppWriteOperations {
         let coordinator = coordinator
         let runWriteAlone = coordinator.runWriteAloneForRecovery
         retry = RecoveryRetry.start(
-            leftoverIds: Set(journal.entries().map(\.id)),
+            leftoverIds: Set(journal.entries().map(\.id)), told: recovery.notices,
             recover: { entryIds in
                 recoverWrites(
                     journal, fileSystem, logger: recoveryLog, caches: recoveryCaches, entryIds: entryIds,
                     answerWithinMs: recoveryAnswerWithinMs, retry: true, runWriteAlone: runWriteAlone)
             },
             remainingIds: { Set(journal.entries().map(\.id)) }, isBusy: { coordinator.isBusy },
-            onFinished: { messages in
+            onReport: { report in
                 DispatchQueue.main.async {
-                    MainActor.assumeIsolated { AppWriteOperations.current?.showRecoveryNotices(messages) }
+                    MainActor.assumeIsolated { AppWriteOperations.current?.showRetryReport(report) }
                 }
             })
         Self.current = self
@@ -190,10 +190,9 @@ final class AppWriteOperations {
 
     // MARK: Notices
 
-    /// Items that waited for their disk and are in place now.
-    private func showRecoveryNotices(_ messages: [String]) {
-        // A native message box, not the window's alert.
-        Self.showRecoveryNotices(messages, dialogs: .native, window: windows?.front?.window)
+    /// What a later try of the leftover work found: native message boxes, not the window's alert.
+    private func showRetryReport(_ report: RecoveryReport) {
+        Self.showRetryReport(report, dialogs: .native, window: windows?.front?.window)
     }
 
     /// What recovery at start says the person must know, once the windows are open.
@@ -201,6 +200,12 @@ final class AppWriteOperations {
         let notices = startupNotices
         startupNotices = []
         Self.showStartupNotices(notices, dialogs: .native, window: windows?.front?.window)
+    }
+
+    /// What a later try found: what the person must know first, as at start, then the items now in place.
+    static func showRetryReport(_ report: RecoveryReport, dialogs: WriteDialogs, window: NSWindow?) {
+        showStartupNotices(report.notices, dialogs: dialogs, window: window)
+        showRecoveryNotices(report.finished, dialogs: dialogs, window: window)
     }
 
     /// `showRecoveryNotices`: an information, on the window in front or on its own.

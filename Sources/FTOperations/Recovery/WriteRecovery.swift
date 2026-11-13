@@ -317,35 +317,40 @@ public let dispatchRecoveryTimer: RecoveryTimer = { intervalMs, tick in
 }
 
 /// Tries the entries left at start again every minute, while no operation runs, until none of them is left.
-/// Tells what was put in place.
+/// Tells what was put in place, and what the person must know of what it found (a move found in place, a rename put
+/// back), each message once: an entry whose record can't be removed is found again at every try.
 public final class RecoveryRetry: Sendable {
     private struct State {
         var waiting: Set<String>
         var running = false
         var cancel: (@Sendable () -> Void)?
         var stopped = false
+        /// The messages already told, at start or by an earlier try.
+        var told: Set<String>
     }
 
     private let state: OSAllocatedUnfairLock<State>
 
-    private init(_ waiting: Set<String>) {
-        state = OSAllocatedUnfairLock(initialState: State(waiting: waiting))
+    private init(_ waiting: Set<String>, told: Set<String>) {
+        state = OSAllocatedUnfairLock(initialState: State(waiting: waiting, told: told))
     }
 
+    /// `told` is what recovery at start already said, so a try that finds the same is quiet about it.
     @discardableResult
     public static func start(
-        leftoverIds: Set<String>, recover: @escaping @Sendable (_ entryIds: Set<String>) -> RecoveryReport,
+        leftoverIds: Set<String>, told: [String] = [],
+        recover: @escaping @Sendable (_ entryIds: Set<String>) -> RecoveryReport,
         remainingIds: @escaping @Sendable () -> Set<String>, isBusy: @escaping @Sendable () -> Bool,
-        onFinished: @escaping @Sendable (_ messages: [String]) -> Void, intervalMs: Int = recoveryRetryIntervalMs,
+        onReport: @escaping @Sendable (_ report: RecoveryReport) -> Void, intervalMs: Int = recoveryRetryIntervalMs,
         timer: RecoveryTimer = dispatchRecoveryTimer
     ) -> RecoveryRetry {
-        let retry = RecoveryRetry(leftoverIds)
+        let retry = RecoveryRetry(leftoverIds, told: Set(told))
         if leftoverIds.isEmpty {
             return retry
         }
         // Held by the timer, as an interval keeps going whether or not anyone holds it; let go once stopped.
         let cancel = timer(intervalMs) {
-            retry.tick(recover: recover, remainingIds: remainingIds, isBusy: isBusy, onFinished: onFinished)
+            retry.tick(recover: recover, remainingIds: remainingIds, isBusy: isBusy, onReport: onReport)
         }
         let stopNow = retry.state.withLock { state -> Bool in
             state.cancel = cancel
@@ -368,7 +373,7 @@ public final class RecoveryRetry: Sendable {
 
     private func tick(
         recover: @Sendable (Set<String>) -> RecoveryReport, remainingIds: @Sendable () -> Set<String>,
-        isBusy: @Sendable () -> Bool, onFinished: @Sendable ([String]) -> Void
+        isBusy: @Sendable () -> Bool, onReport: @Sendable (RecoveryReport) -> Void
     ) {
         let waiting = state.withLock { state -> Set<String>? in
             if state.running || state.stopped {
@@ -383,14 +388,17 @@ public final class RecoveryRetry: Sendable {
             return
         }
         let report = recover(waiting)
-        if !report.finished.isEmpty {
-            onFinished(report.finished)
-        }
         let remaining = remainingIds()
-        let done = state.withLock { state -> Bool in
+        let (untold, done) = state.withLock { state -> (RecoveryReport, Bool) in
+            let untold = RecoveryReport(
+                notices: report.notices.filter { state.told.insert($0).inserted },
+                finished: report.finished.filter { state.told.insert($0).inserted })
             state.waiting = state.waiting.filter { remaining.contains($0) }
             state.running = false
-            return state.waiting.isEmpty
+            return (untold, state.waiting.isEmpty)
+        }
+        if untold != RecoveryReport() {
+            onReport(untold)
         }
         if done {
             stop()

@@ -147,6 +147,18 @@ private final class Shown {
         #expect(shown.titles.isEmpty)
     }
 
+    // A later try of the leftover work: what the person must know comes first, under the start's title, and the
+    // items now in place keep theirs.
+    @Test func aRetrysNoticesComeFirstAndKeepTheirTitlesApart() {
+        let shown = Shown()
+        AppWriteOperations.showRetryReport(
+            RecoveryReport(notices: ["Put back."], finished: ["In place."]), dialogs: shown.dialogs, window: nil)
+        AppWriteOperations.showRetryReport(RecoveryReport(notices: ["Only this."]), dialogs: shown.dialogs, window: nil)
+        #expect(shown.titles == Array(repeating: "Work was cut short when File Trail last stopped", count: 2))
+        #expect(shown.infos == ["An item waiting for its disk is in place now"])
+        #expect(shown.messages == ["Put back.", "In place.", "Only this."])
+    }
+
     // Cut and Copy from the tree take one of its folders, never a favorite, which only points to one.
     @Test func cutAndCopyOfAFavoriteDoNothing() {
         let favorite = ShortcutContext(focusedPane: .tree, selectedTreeTargetKind: .favorite)

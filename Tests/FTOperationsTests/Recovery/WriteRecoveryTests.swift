@@ -297,7 +297,7 @@ struct WriteRecoveryTests {
                 left.mutate { $0 = [] }
                 return RecoveryReport(finished: ["\u{201C}a.txt\u{201D} is in place now, in \u{201C}/x\u{201D}."])
             }, remainingIds: { left.value }, isBusy: { busy.value },
-            onFinished: { messages in finished.mutate { $0.append(messages) } }, intervalMs: 1_000,
+            onReport: { report in finished.mutate { $0.append(report.finished) } }, intervalMs: 1_000,
             timer: timer.timer)
 
         #expect(timer.intervalMs == 1_000)
@@ -310,6 +310,118 @@ struct WriteRecoveryTests {
         #expect(recovered.value == 1)
         #expect(timer.isCancelled)
         #expect(recoveryRetryIntervalMs == 60_000)
+    }
+
+    /// What a retry passes on, each time it does.
+    private func retryReports(
+        leftoverIds: Set<String> = ["a"], told: [String] = [], ticks: Int,
+        recover: @escaping @Sendable (Set<String>) -> RecoveryReport,
+        remainingIds: @escaping @Sendable () -> Set<String>
+    ) -> [RecoveryReport] {
+        let reports = Locked<[RecoveryReport]>([])
+        let timer = ManualTimer()
+        RecoveryRetry.start(
+            leftoverIds: leftoverIds, told: told, recover: recover, remainingIds: remainingIds, isBusy: { false },
+            onReport: { report in reports.mutate { $0.append(report) } }, timer: timer.timer)
+        timer.tick(ticks)
+        return reports.value
+    }
+
+    @Test func passesOnWhatARetryFoundThatThePersonMustKnow() {
+        let reports = retryReports(
+            ticks: 1, recover: { _ in RecoveryReport(notices: ["Found in place."]) }, remainingIds: { [] })
+        #expect(reports == [RecoveryReport(notices: ["Found in place."])])
+    }
+
+    @Test func passesOnBothKindsOfMessageApart() {
+        let reports = retryReports(
+            ticks: 1, recover: { _ in RecoveryReport(notices: ["Put back."], finished: ["In place now."]) },
+            remainingIds: { [] })
+        #expect(reports == [RecoveryReport(notices: ["Put back."], finished: ["In place now."])])
+    }
+
+    // An entry whose record can't be removed is found again at every try: what it says is told once, and not again
+    // when the start already told it.
+    @Test func tellsEachMessageOnceThoughTheEntryIsFoundAgainAtEveryTry() {
+        let reports = retryReports(
+            leftoverIds: ["a", "b"], told: ["Told at start."], ticks: 4,
+            recover: { _ in RecoveryReport(notices: ["Told at start.", "Found in place."]) },
+            remainingIds: { ["a", "b"] })
+        #expect(reports == [RecoveryReport(notices: ["Found in place."])])
+    }
+
+    // A folder moved to another disk, found in place while its originals went; its source couldn't be read at start,
+    // so nothing was said then. Once it can, the retry says what is where.
+    @Test func aMoveFoundInPlaceOnARetryIsTold() throws {
+        try withJournal { root, journal in
+            let source = root + "/src"
+            try Disk.write(source + "/F/a.txt", "a")
+            try Disk.write(root + "/dst/F/a.txt", "a")
+            let entry = createEntry(
+                root, "move", stagingPath: root + "/dst/.F.filetrail-00000000", finalPath: root + "/dst/F",
+                sourcePath: source + "/F", staged: true, movingCopy: true)
+            try journal.add(.replace(entry))
+            let log = RecordingLogger()
+            Darwin.chmod(source, 0)
+            defer { Darwin.chmod(source, 0o755) }
+
+            let atStart = recoverWrites(journal, NativeWriteFileSystem(), logger: log.logger)
+            #expect(atStart == RecoveryReport())
+            #expect(ids(journal) == ["move"])
+            Darwin.chmod(source, 0o755)
+
+            let reports = retryReports(
+                leftoverIds: ["move"], ticks: 1,
+                recover: { entryIds in
+                    recoverWrites(
+                        journal, NativeWriteFileSystem(), logger: log.logger, entryIds: entryIds, retry: true)
+                }, remainingIds: { Set(journal.entries().map(\.id)) })
+
+            #expect(
+                reports.map(\.notices) == [
+                    [
+                        "\u{201C}F\u{201D} was being moved when File Trail stopped. It is in \u{201C}dst\u{201D} now, and what was left of the original is still in \u{201C}src\u{201D}, perhaps not all of it."
+                    ]
+                ])
+            #expect(journal.entries().isEmpty)
+        }
+    }
+
+    // A rename of several whose folder couldn't be read at start is put back by a retry, and the person is told.
+    @Test func aRenameOfSeveralPutBackOnARetryIsTold() throws {
+        try withJournal { root, journal in
+            let folder = root + "/trip"
+            try Disk.write(folder + "/.filetrail-rename-aaaaaaaaaaaa", "a")
+            let entry = BatchRenameJournalEntry(
+                id: "rename",
+                items: [
+                    .init(
+                        temporaryPath: folder + "/.filetrail-rename-aaaaaaaaaaaa", originalPath: folder + "/a.jpg",
+                        newPath: folder + "/b.jpg")
+                ])
+            try journal.add(.batchRename(entry))
+            let log = RecordingLogger()
+            Darwin.chmod(folder, 0)
+            defer { Darwin.chmod(folder, 0o755) }
+            #expect(recoverWrites(journal, NativeWriteFileSystem(), logger: log.logger) == RecoveryReport())
+            #expect(ids(journal) == ["rename"])
+            Darwin.chmod(folder, 0o755)
+
+            let reports = retryReports(
+                leftoverIds: ["rename"], ticks: 1,
+                recover: { entryIds in
+                    recoverWrites(
+                        journal, NativeWriteFileSystem(), logger: log.logger, entryIds: entryIds, retry: true)
+                }, remainingIds: { Set(journal.entries().map(\.id)) })
+
+            #expect(
+                reports.map(\.notices) == [
+                    [
+                        "A rename of several items was cut short when File Trail stopped. \u{201C}a.jpg\u{201D} is back under its old name."
+                    ]
+                ])
+            #expect(Disk.list(folder) == ["a.jpg"])
+        }
     }
 
     // A crash during a Replace that filled the disk must not keep the app from starting.
