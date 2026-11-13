@@ -8,12 +8,7 @@ private struct KindInput: Codable {
     var path: String
 }
 
-private let fixtures: URL = {
-    let cache =
-        ProcessInfo.processInfo.environment["FILETRAIL_DEV_CACHE"]
-        ?? NSHomeDirectory() + "/Library/Caches/filetrail-dev"
-    return URL(fileURLWithPath: cache).appendingPathComponent("fixtures")
-}()
+private let fixtures = URL(fileURLWithPath: Fixtures.root)
 
 /// The golden reads kinds in the names and lighthouse trees.
 private let hasFixtures = ["names", "lighthouse"].allSatisfy {

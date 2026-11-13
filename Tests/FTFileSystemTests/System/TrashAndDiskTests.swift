@@ -211,21 +211,6 @@ private struct NoSuchFile: Error {}
     }
 }
 
-private final class ScriptLog: @unchecked Sendable {
-    private let lock = NSLock()
-    private var recorded: [String] = []
-    var sources: [String] {
-        lock.lock()
-        defer { lock.unlock() }
-        return recorded
-    }
-    func add(_ source: String) {
-        lock.lock()
-        recorded.append(source)
-        lock.unlock()
-    }
-}
-
 @Suite struct EmptyTrashTests {
     // AppleScript stops waiting for Finder after two minutes, which a large Trash takes longer than.
     @Test func asksFinderWithAWaitOfADayNotAppleScriptsTwoMinutes() async {

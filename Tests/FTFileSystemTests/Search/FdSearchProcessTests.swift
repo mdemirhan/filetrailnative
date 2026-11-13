@@ -58,12 +58,7 @@ private struct ResultItem: Codable {
     }
 }
 
-private let fixtures: URL = {
-    let cache =
-        ProcessInfo.processInfo.environment["FILETRAIL_DEV_CACHE"]
-        ?? NSHomeDirectory() + "/Library/Caches/filetrail-dev"
-    return URL(fileURLWithPath: cache).appendingPathComponent("fixtures")
-}()
+private let fixtures = URL(fileURLWithPath: Fixtures.root)
 
 private let lighthouse = fixtures.appendingPathComponent("lighthouse/Lighthouse")
 private let hasFixtures = FileManager.default.fileExists(atPath: lighthouse.path)

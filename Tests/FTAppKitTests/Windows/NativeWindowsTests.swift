@@ -11,14 +11,8 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct NativeWindowsTests {
-        private struct App {
-            let store: AppStateStore
-            let quit: QuitCoordinator
-            let windows: ExplorerWindows
-        }
-
         /// The app's windows on a state file, as a launch opens them, none of them shown.
-        private func launch(_ folder: TemporaryDirectory) -> App {
+        private func launch(_ folder: TemporaryDirectory) -> NativeApp {
             _ = NSApplication.shared
             TestServices.install()
             let store = AppStateStore(
@@ -27,46 +21,15 @@ extension ExplorerWindowlessTests {
             let windows = ExplorerWindows(store: store, quit: quit)
             windows.presentsWindows = false
             windows.home = folder.path
-            return App(store: store, quit: quit, windows: windows)
-        }
-
-        private func folders() throws -> TemporaryDirectory {
-            let folder = try TemporaryDirectory.shallow(prefix: "filetrail-windows")
-            try "alpha".write(to: folder.appending("a.txt"), atomically: true, encoding: .utf8)
-            try FileManager.default.createDirectory(at: folder.appending("Sub"), withIntermediateDirectories: false)
-            try "inside".write(to: folder.appending("Sub/inside.txt"), atomically: true, encoding: .utf8)
-            return folder
-        }
-
-        private func groupCount(_ app: App) -> Int { app.windows.count }
-
-        private func frontTab(_ app: App) -> MainWindowController? { app.windows.front as? MainWindowController }
-
-        private func closeAll(_ app: App) async {
-            for tab in app.windows.allTabs { tab.window?.close() }
-            await settle()
-        }
-
-        /// The menu bar of the app on `app`'s windows, wired as the app delegate wires it.
-        private func menuBar(_ app: App) -> MainMenu {
-            let menu = MainMenu(windows: app.windows)
-            menu.connect(
-                openWindowFor: { command in app.windows.openDefaultWindow(initialCommand: command) },
-                openNewWindowFromFront: { app.windows.openNewWindowFromFront() })
-            menu.build()
-            app.windows.onWindowsChanged = { [weak menu] in menu?.sync.windowsChanged() }
-            app.windows.onMenuState = { [weak menu] windowID, state in
-                menu?.sync.setWindowState(windowID: windowID, state)
-            }
-            return menu
+            return NativeApp(store: store, quit: quit, windows: windows)
         }
 
         @Test func closesAndReopensTabsAndStepsThroughThem() async throws {
-            let folder = try folders()
+            let folder = try NativeApp.folders(prefix: "filetrail-windows")
             defer { folder.remove() }
             let app = launch(folder)
             app.windows.openStartupWindows(folder: folder.path)
-            let first = try #require(frontTab(app))
+            let first = try #require(app.frontTab)
             #expect(await waitUntil { first.loaded })
             first.perform(.newTab)
             let group = try #require(first.group)
@@ -90,17 +53,17 @@ extension ExplorerWindowlessTests {
             #expect(group.tabs[1].folder.path == folder.appending("Sub").path)
             #expect(group.selected === group.tabs[1])
 
-            await closeAll(app)
+            await app.closeAll()
         }
 
         @Test func duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit() async throws {
-            let folder = try folders()
+            let folder = try NativeApp.folders(prefix: "filetrail-windows")
             defer { folder.remove() }
             let app = launch(folder)
             var notices: [WindowNotice] = []
             app.windows.showNotice = { notice, _ in notices.append(notice) }
             app.windows.openStartupWindows(folder: folder.path)
-            let first = try #require(frontTab(app))
+            let first = try #require(app.frontTab)
             #expect(await waitUntil { first.loaded })
             first.go(to: folder.appending("Sub"))
             #expect(await waitUntil { first.folder.lastPathComponent == "Sub" })
@@ -111,7 +74,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { group.selected === first })
 
             // File › Duplicate Tab, from the menu, to the tab in front.
-            let menu = menuBar(app)
+            let menu = app.menuBar()
             defer { NSApp.mainMenu = nil }
             menu.router.focusedWindow = { first.window }
             menu.router.choose(itemID: AppCommand.duplicateTab.rawValue)
@@ -133,17 +96,17 @@ extension ExplorerWindowlessTests {
             copy.perform(.duplicateTab)
             #expect(group.tabs.count == group.tabLimit)
             #expect(notices == [.tabLimit])
-            await closeAll(app)
+            await app.closeAll()
         }
 
         @Test func tabsFollowAFolderRenamedOrMovedByAnyWindow() async throws {
-            let folder = try folders()
+            let folder = try NativeApp.folders(prefix: "filetrail-windows")
             defer { folder.remove() }
             try FileManager.default.createDirectory(
                 at: folder.appending("Sub/Deep"), withIntermediateDirectories: false)
             let app = launch(folder)
             app.windows.openStartupWindows(folder: folder.path)
-            let first = try #require(frontTab(app))
+            let first = try #require(app.frontTab)
             #expect(await waitUntil { first.loaded })
             first.perform(.newTab)
             let group = try #require(first.group)
@@ -157,8 +120,8 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { group.selected === first })
             // Another window, on the folder that moves.
             group.openNewWindow(from: first, path: folder.appending("Sub").path)
-            #expect(await waitUntil { groupCount(app) == 2 && frontTab(app)?.loaded == true })
-            let other = try #require(frontTab(app))
+            #expect(await waitUntil { app.groupCount == 2 && app.frontTab?.loaded == true })
+            let other = try #require(app.frontTab)
             #expect(await waitUntil { other.folder.lastPathComponent == "Sub" })
 
             try FileManager.default.moveItem(at: folder.appending("Sub"), to: folder.appending("Moved"))
@@ -190,11 +153,11 @@ extension ExplorerWindowlessTests {
             group.select(deep)
             #expect(await waitUntil { !deep.stale && group.selected === deep })
             #expect(await waitUntil { deep.window?.title == "Deep" })
-            await closeAll(app)
+            await app.closeAll()
         }
 
         /// A folder of `folder` that the windows take for a disk of its own.
-        private func fakeDisk(_ app: App, _ folder: TemporaryDirectory) throws -> String {
+        private func fakeDisk(_ app: NativeApp, _ folder: TemporaryDirectory) throws -> String {
             let disk = folder.appending("Disk")
             try FileManager.default.createDirectory(
                 at: folder.appending("Disk/Inner"), withIntermediateDirectories: true)
@@ -207,12 +170,12 @@ extension ExplorerWindowlessTests {
         }
 
         @Test func tabsOnAnUnmountedDiskCloseAndAWindowAllOnItCloses() async throws {
-            let folder = try folders()
+            let folder = try NativeApp.folders(prefix: "filetrail-windows")
             defer { folder.remove() }
             let app = launch(folder)
             let disk = try fakeDisk(app, folder)
             app.windows.openStartupWindows(folder: folder.path)
-            let first = try #require(frontTab(app))
+            let first = try #require(app.frontTab)
             #expect(await waitUntil { first.loaded })
             let group = try #require(first.group)
             group.openTab(path: disk, from: first)
@@ -220,23 +183,23 @@ extension ExplorerWindowlessTests {
             group.openTab(path: disk + "/Inner", from: group.tabs[1])
             #expect(await waitUntil { group.tabs.count == 3 && group.selected === group.tabs[2] })
             group.openNewWindow(from: first, path: disk)
-            #expect(await waitUntil { groupCount(app) == 2 })
+            #expect(await waitUntil { app.groupCount == 2 })
 
             app.windows.disksUnmounted([disk])
 
             // The window all on the disk closes; in the other the tabs on it close, and Reopen doesn't offer them.
-            #expect(await waitUntil { groupCount(app) == 1 && group.tabs.count == 1 })
+            #expect(await waitUntil { app.groupCount == 1 && group.tabs.count == 1 })
             #expect(group.tabs.first === first)
             #expect(await waitUntil { group.selected === first })
             #expect(group.session.closedTabs.isEmpty)
             // Another disk's going leaves the window as it is.
             app.windows.disksUnmounted(["/Volumes/FileTrailNoSuchDisk"])
             #expect(group.tabs.count == 1)
-            await closeAll(app)
+            await app.closeAll()
         }
 
         @Test func anUnmountedDisksItemsComeOffTheClipboard() async throws {
-            let folder = try folders()
+            let folder = try NativeApp.folders(prefix: "filetrail-windows")
             defer { folder.remove() }
             let app = launch(folder)
             let disk = try fakeDisk(app, folder)
@@ -264,12 +227,12 @@ extension ExplorerWindowlessTests {
         }
 
         @Test func tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen() async throws {
-            let folder = try folders()
+            let folder = try NativeApp.folders(prefix: "filetrail-windows")
             defer { folder.remove() }
             let app = launch(folder)
             let disk = try fakeDisk(app, folder)
             app.windows.openStartupWindows(folder: disk)
-            let first = try #require(frontTab(app))
+            let first = try #require(app.frontTab)
             #expect(await waitUntil { first.loaded })
             let group = try #require(first.group)
             first.perform(.newTab)
@@ -307,7 +270,7 @@ extension ExplorerWindowlessTests {
             #expect(first.snapshot.historyPaths == [disk, folder.path])
             window.endSheet(alert.window)
             #expect(await waitUntil { window.attachedSheet == nil })
-            await closeAll(app)
+            await app.closeAll()
         }
 
         @Test func aWaitingTabOnADiskThatDoesNotAnswerIsKeptWithoutWaitingForIt() {
@@ -326,7 +289,7 @@ extension ExplorerWindowlessTests {
         }
 
         @Test func restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped() async throws {
-            let folder = try folders()
+            let folder = try NativeApp.folders(prefix: "filetrail-windows")
             defer { folder.remove() }
             let app = launch(folder)
             add(
@@ -335,8 +298,8 @@ extension ExplorerWindowlessTests {
                     app.store, "window-1",
                     [folder.path, folder.appending("Gone").path, folder.appending("Sub").path]))
             app.windows.openStartupWindows(folder: nil)
-            #expect(await waitUntil { frontTab(app)?.loaded == true })
-            let front = try #require(frontTab(app))
+            #expect(await waitUntil { app.frontTab?.loaded == true })
+            let front = try #require(app.frontTab)
             let group = try #require(front.group)
             #expect(group.tabs.map(\.folder.path) == [folder.path, folder.appending("Sub").path])
             #expect(front.folder.path == folder.path)
@@ -344,7 +307,7 @@ extension ExplorerWindowlessTests {
             #expect(!waiting.loaded)
             group.select(waiting)
             #expect(await waitUntil { waiting.loaded && waiting.window?.title == "Sub" })
-            await closeAll(app)
+            await app.closeAll()
         }
     }
 }

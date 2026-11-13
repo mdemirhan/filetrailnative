@@ -167,6 +167,20 @@ final class PasteRecorder: Sendable {
     var result: CopyPasteOperationResult? { events.last { $0.result != nil }?.result }
 }
 
+/// A source folder that seems to be on a disk of its own (another device number, EXDEV out of it), and a destination
+/// beside it: a move between them copies and then removes the originals, as one to a real other disk does. The engine
+/// tells disks apart by device number alone.
+func withOtherDisk(
+    _ body: (_ source: String, _ destination: String, _ fileSystem: TestFileSystem) async throws -> Void
+) async throws {
+    try await withTemporaryDirectory { root in
+        let (source, destination) = (root.path + "/src", root.path + "/dst")
+        try Disk.makeDirectories(source)
+        try Disk.makeDirectories(destination)
+        try await body(source, destination, NativePaste.asOnAnotherDisk(source))
+    }
+}
+
 /// `runPaste`: reviews and pastes as the write service would, answering each question with `resolve` ("skip"
 /// without one).
 func runPaste(

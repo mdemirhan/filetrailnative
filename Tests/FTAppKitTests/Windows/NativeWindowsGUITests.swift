@@ -11,14 +11,8 @@ import Testing
 @MainActor
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct NativeWindowsGUITests {
-    private struct App {
-        let store: AppStateStore
-        let quit: QuitCoordinator
-        let windows: ExplorerWindows
-    }
-
     /// The app's windows on a state file, as a launch opens them.
-    private func launch(_ statePath: String) -> App {
+    private func launch(_ statePath: String) -> NativeApp {
         _ = NSApplication.shared
         TestServices.install()
         let store = AppStateStore(filePath: statePath, defaultTheme: .light, timer: HeldStateTimer())
@@ -27,7 +21,7 @@ struct NativeWindowsGUITests {
         quit.hooks.recordAllBounds = { windows.controller.recordAllBounds() }
         quit.hooks.flushStore = { store.flush() }
         quit.hooks.anyWindowOpen = { !windows.allTabs.isEmpty }
-        return App(store: store, quit: quit, windows: windows)
+        return NativeApp(store: store, quit: quit, windows: windows)
     }
 
     private func waitUntil(_ condition: () -> Bool) async -> Bool {
@@ -38,29 +32,12 @@ struct NativeWindowsGUITests {
         return condition()
     }
 
-    private func folders() throws -> TemporaryDirectory {
-        let folder = try TemporaryDirectory.shallow(prefix: "filetrail-windows-gui")
-        try "alpha".write(to: folder.appending("a.txt"), atomically: true, encoding: .utf8)
-        try FileManager.default.createDirectory(at: folder.appending("Sub"), withIntermediateDirectories: false)
-        try "inside".write(to: folder.appending("Sub/inside.txt"), atomically: true, encoding: .utf8)
-        return folder
-    }
-
-    private func groupCount(_ app: App) -> Int { app.windows.count }
-
-    private func frontTab(_ app: App) -> MainWindowController? { app.windows.front as? MainWindowController }
-
-    private func closeAll(_ app: App) async {
-        for tab in app.windows.allTabs { tab.window?.close() }
-        await settle()
-    }
-
     @Test func opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let app = launch(folder.appending("app-state.json").path)
         app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true })
 
         first.perform(.newTab)
@@ -74,32 +51,32 @@ struct NativeWindowsGUITests {
 
         // Move Tab to New Window: the tab leaves for a window of its own.
         group.tabs[1].perform(.moveTabToNewWindow)
-        #expect(await waitUntil { groupCount(app) == 2 && group.tabs.count == 1 })
+        #expect(await waitUntil { app.groupCount == 2 && group.tabs.count == 1 })
         // A tab moved to a window of its own is not offered by Reopen Closed Tab.
         #expect(group.session.closedTabs.isEmpty)
-        let moved = try #require(frontTab(app))
+        let moved = try #require(app.frontTab)
         #expect(await waitUntil { moved.window?.isVisible == true && moved.window?.title == "Sub" })
         #expect(moved.group !== group)
 
         // Merge All Windows: the other window's tabs join this one's, after them, and it closes.
         first.perform(.mergeAllWindows)
-        #expect(await waitUntil { groupCount(app) == 1 && group.tabs.count == 2 })
+        #expect(await waitUntil { app.groupCount == 1 && group.tabs.count == 2 })
         #expect(group.tabs.map(\.folder.lastPathComponent) == [folder.url.lastPathComponent, "Sub"])
         #expect(first.window?.tabbedWindows?.count == 2)
         // Merged windows weren't closed by hand.
         #expect(app.store.lastClosedWindow() == nil)
 
-        await closeAll(app)
+        await app.closeAll()
     }
 
     // While a name is edited a press on a tab does nothing and the field stays. The system's tab bar has no type to
     // ask, so this checks its class names too.
     @Test func theTabBarTakesNoPressWhileANameIsEdited() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let app = launch(folder.appending("app-state.json").path)
         app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
         first.perform(.newTab)
         let group = try #require(first.group)
@@ -145,16 +122,16 @@ struct NativeWindowsGUITests {
         #expect(first.goToBox == nil)
         #expect(group.selected === first)
         #expect(!WindowEventRouting.intercept(press, in: window))
-        await closeAll(app)
+        await app.closeAll()
     }
 
     @Test func bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let statePath = folder.appending("app-state.json").path
         let app = launch(statePath)
         app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true })
         first.perform(.newTab)
         #expect(await waitUntil { first.group?.tabs.count == 2 })
@@ -162,8 +139,8 @@ struct NativeWindowsGUITests {
 
         // Open in New Window, as on a selected folder; then each window somewhere of its own.
         first.group?.openNewWindow(from: first, path: folder.appending("Sub").path)
-        #expect(await waitUntil { groupCount(app) == 2 && frontTab(app)?.window?.isVisible == true })
-        let second = try #require(frontTab(app))
+        #expect(await waitUntil { app.groupCount == 2 && app.frontTab?.window?.isVisible == true })
+        let second = try #require(app.frontTab)
         #expect(second.group !== first.group)
         let firstFrame = ScreenGeometry.frame(of: WindowBounds(x: 60, y: 60, width: 1000, height: 700))
         let secondFrame = ScreenGeometry.frame(of: WindowBounds(x: 220, y: 140, width: 900, height: 620))
@@ -174,14 +151,14 @@ struct NativeWindowsGUITests {
 
         // Quitting keeps the windows.
         #expect(await app.quit.quit() == .exited)
-        await closeAll(app)
+        await app.closeAll()
         #expect(app.store.explorerWindows().count == 2)
 
         let relaunched = launch(statePath)
         relaunched.windows.openStartupWindows(folder: nil)
-        #expect(await waitUntil { groupCount(relaunched) == 2 })
-        #expect(await waitUntil { frontTab(relaunched)?.window?.isVisible == true })
-        let front = try #require(frontTab(relaunched))
+        #expect(await waitUntil { relaunched.groupCount == 2 })
+        #expect(await waitUntil { relaunched.frontTab?.window?.isVisible == true })
+        let front = try #require(relaunched.frontTab)
         let frontGroup = try #require(front.group)
         #expect(frontGroup.tabs.count == 2)
         #expect(front.folder.path == folder.path)
@@ -196,17 +173,17 @@ struct NativeWindowsGUITests {
         other.group?.closeAsCloseButton()
         front.group?.closeAsCloseButton()
         await settle()
-        #expect(groupCount(relaunched) == 0)
+        #expect(relaunched.groupCount == 0)
         #expect(relaunched.store.explorerWindows().isEmpty)
         #expect(relaunched.store.lastClosedWindow()?.session.openTabs.map(\.path) == [folder.path])
 
         // With none open, a window opens where the last one closed (the Dock icon, New Window).
         relaunched.windows.openDefaultWindow(initialCommand: nil)
-        #expect(await waitUntil { frontTab(relaunched)?.window?.isVisible == true })
-        let reopened = try #require(frontTab(relaunched)?.window?.frame)
+        #expect(await waitUntil { relaunched.frontTab?.window?.isVisible == true })
+        let reopened = try #require(relaunched.frontTab?.window?.frame)
         #expect(ScreenGeometry.bounds(of: reopened) == WindowBounds(x: 60, y: 60, width: 1000, height: 700))
-        #expect(frontTab(relaunched)?.folder.path == folder.path)
-        await closeAll(relaunched)
+        #expect(relaunched.frontTab?.folder.path == folder.path)
+        await relaunched.closeAll()
     }
 
     /// The Window menu's entry for `window`.
@@ -215,7 +192,7 @@ struct NativeWindowsGUITests {
     }
 
     @Test func namesEachWindowInTheWindowMenuAfterItsTabsLabelAndTheToolbarAfterItsFolder() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let other = try TemporaryDirectory.shallow(prefix: "filetrail-windows-gui-other")
         defer { other.remove() }
@@ -225,7 +202,7 @@ struct NativeWindowsGUITests {
         menu.build()
         defer { NSApp.mainMenu = nil }
         app.windows.openStartupWindows(folder: folder.appending("Sub").path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
         #expect(await waitUntil { windowsMenuTitle(of: first.window) == "Sub" })
 
@@ -248,40 +225,27 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { group.selected === first })
         #expect(windowsMenuTitle(of: first.window) == firstLabel)
         #expect(windowsMenuTitle(of: second.window) == secondLabel)
-        await closeAll(app)
+        await app.closeAll()
     }
 
     // MARK: Opening and closing windows
 
-    /// The menu bar of the app on `app`'s windows, wired as the app delegate wires it.
-    private func menuBar(_ app: App) -> MainMenu {
-        let menu = MainMenu(windows: app.windows)
-        menu.connect(
-            openWindowFor: { command in app.windows.openDefaultWindow(initialCommand: command) },
-            openNewWindowFromFront: { app.windows.openNewWindowFromFront() })
-        menu.build()
-        app.windows.onWindowsChanged = { [weak menu] in menu?.sync.windowsChanged() }
-        app.windows.onMenuState = { [weak menu] windowID, state in menu?.sync.setWindowState(windowID: windowID, state)
-        }
-        return menu
-    }
-
     @Test func opensWindowsOnTheFolderOnScreenAndBringsBackThoseOpenAtQuit() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let statePath = folder.appending("app-state.json").path
         let app = launch(statePath)
-        let menu = menuBar(app)
+        let menu = app.menuBar()
         defer { NSApp.mainMenu = nil }
         app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
 
         // File › New Window, from the menu.
         menu.router.focusedWindow = { first.window }
         menu.router.choose(itemID: AppCommand.newWindow.rawValue)
-        #expect(await waitUntil { groupCount(app) == 2 && frontTab(app)?.window?.isVisible == true })
-        let second = try #require(frontTab(app))
+        #expect(await waitUntil { app.groupCount == 2 && app.frontTab?.window?.isVisible == true })
+        let second = try #require(app.frontTab)
         #expect(second !== first)
         #expect(await waitUntil { second.loaded && second.folder.path == folder.path })
         let firstFrame = try #require(first.window?.frame)
@@ -292,8 +256,8 @@ struct NativeWindowsGUITests {
 
         // Open in New Window, on a selected folder.
         first.group?.openNewWindow(from: first, path: folder.appending("Sub").path)
-        #expect(await waitUntil { groupCount(app) == 3 && frontTab(app)?.window?.title == "Sub" })
-        let sub = try #require(frontTab(app))
+        #expect(await waitUntil { app.groupCount == 3 && app.frontTab?.window?.title == "Sub" })
+        let sub = try #require(app.frontTab)
         #expect(
             app.windows.allTabs.map { $0.window?.title ?? "" }.sorted()
                 == [
@@ -302,39 +266,39 @@ struct NativeWindowsGUITests {
 
         // Closing a window that isn't the last leaves the others, and it doesn't come back.
         sub.group?.closeAsCloseButton()
-        #expect(await waitUntil { groupCount(app) == 2 })
+        #expect(await waitUntil { app.groupCount == 2 })
 
         #expect(await app.quit.quit() == .exited)
-        await closeAll(app)
+        await app.closeAll()
         #expect(app.store.explorerWindows().count == 2)
 
         let relaunched = launch(statePath)
         relaunched.windows.openStartupWindows(folder: nil)
-        #expect(await waitUntil { groupCount(relaunched) == 2 })
+        #expect(await waitUntil { relaunched.groupCount == 2 })
         #expect(await waitUntil { relaunched.windows.allTabs.allSatisfy { $0.window?.isVisible == true } })
         #expect(relaunched.windows.allTabs.map(\.folder.path) == [folder.path, folder.path])
-        await closeAll(relaunched)
+        await relaunched.closeAll()
     }
 
     @Test func staysOpenWithNoWindowAndOpensOneWhereTheLastOneClosed() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let statePath = folder.appending("app-state.json").path
         let app = launch(statePath)
-        let menu = menuBar(app)
+        let menu = app.menuBar()
         defer { NSApp.mainMenu = nil }
         app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
         first.go(to: folder.appending("Sub"))
         #expect(await waitUntil { first.folder.lastPathComponent == "Sub" })
 
         func closeOnlyWindow() async {
             for tab in app.windows.allTabs { tab.group?.closeAsCloseButton() }
-            _ = await waitUntil { groupCount(app) == 0 }
+            _ = await waitUntil { app.groupCount == 0 }
         }
         await closeOnlyWindow()
-        #expect(groupCount(app) == 0)
+        #expect(app.groupCount == 0)
         // Still there, with only what opens a window on offer.
         menu.router.focusedWindow = { nil }
         menu.sync.sync()
@@ -346,34 +310,34 @@ struct NativeWindowsGUITests {
 
         // The Dock icon is clicked: a window opens where the last one was.
         ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: false, host: app.windows)
-        #expect(await waitUntil { groupCount(app) == 1 && frontTab(app)?.loaded == true })
-        #expect(await waitUntil { frontTab(app)?.folder.path == folder.appending("Sub").path })
+        #expect(await waitUntil { app.groupCount == 1 && app.frontTab?.loaded == true })
+        #expect(await waitUntil { app.frontTab?.folder.path == folder.appending("Sub").path })
         await closeOnlyWindow()
 
         // A place in the Go menu opens a window there. Applications rather than Desktop, whose
         // contents macOS asks the user before showing.
         menu.router.choose(itemID: AppCommand.goApplications.rawValue)
-        #expect(await waitUntil { groupCount(app) == 1 && frontTab(app)?.folder.path == "/Applications" })
-        #expect(await waitUntil { frontTab(app)?.window?.title == "Applications" })
+        #expect(await waitUntil { app.groupCount == 1 && app.frontTab?.folder.path == "/Applications" })
+        #expect(await waitUntil { app.frontTab?.window?.title == "Applications" })
         await closeOnlyWindow()
         #expect(await app.quit.quit() == .exited)
 
         // The next launch opens one window, where the last one was.
         let relaunched = launch(statePath)
         relaunched.windows.openStartupWindows(folder: nil)
-        #expect(await waitUntil { groupCount(relaunched) == 1 && frontTab(relaunched)?.loaded == true })
-        #expect(await waitUntil { frontTab(relaunched)?.folder.path == "/Applications" })
-        await closeAll(relaunched)
+        #expect(await waitUntil { relaunched.groupCount == 1 && relaunched.frontTab?.loaded == true })
+        #expect(await waitUntil { relaunched.frontTab?.folder.path == "/Applications" })
+        await relaunched.closeAll()
     }
 
     // MARK: The tab bar
 
     @Test func showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let app = launch(folder.appending("app-state.json").path)
         app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
         let group = try #require(first.group)
         first.perform(.viewAsDetails)
@@ -405,16 +369,16 @@ struct NativeWindowsGUITests {
         group.selected?.perform(.closeTab)
         #expect(await waitUntil { group.tabs.count == 1 })
         #expect(await waitUntil { group.tabs[0].window?.tabGroup?.isTabBarVisible != true })
-        await closeAll(app)
+        await app.closeAll()
     }
 
     // Chosen in the system's tab bar, a tab reads its folder again.
     @Test func aTabChosenInTheTabBarReadsItsFolderAgain() async throws {
-        let folder = try folders()
+        let folder = try NativeApp.folders(prefix: "filetrail-windows-gui")
         defer { folder.remove() }
         let app = launch(folder.appending("app-state.json").path)
         app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
+        let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
         let group = try #require(first.group)
         group.openTab(path: folder.appending("Sub").path, from: first)
@@ -424,7 +388,7 @@ struct NativeWindowsGUITests {
         first.services.directoryService.cache.clear()
         first.window?.tabGroup?.selectedWindow = first.window
         #expect(await waitUntil { first.content.listed.contains { $0.name == "Made Meanwhile.txt" } })
-        await closeAll(app)
+        await app.closeAll()
     }
 
 }

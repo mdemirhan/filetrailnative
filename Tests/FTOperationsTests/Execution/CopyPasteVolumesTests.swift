@@ -15,20 +15,6 @@ private func visible(_ folder: String) -> [String] {
 }
 
 struct CopyPasteVolumesTests {
-    /// A source folder that seems to be on a disk of its own (another device number, EXDEV out of it), and a
-    /// destination beside it: a move between them copies and then removes the originals, as one to a real other
-    /// disk does. The engine tells disks apart by device number alone.
-    private func withOtherDisk(
-        _ body: (_ source: String, _ destination: String, _ fileSystem: TestFileSystem) async throws -> Void
-    ) async throws {
-        try await withTemporaryDirectory { root in
-            let (source, destination) = (root.path + "/src", root.path + "/dst")
-            try Disk.makeDirectories(source)
-            try Disk.makeDirectories(destination)
-            try await body(source, destination, NativePaste.asOnAnotherDisk(source))
-        }
-    }
-
     @Test func movesAFileCopiedThereThenTheOriginalRemoved() async throws {
         try await withOtherDisk { source, destination, fileSystem in
             try Disk.write(source + "/a.txt", "a")

@@ -32,20 +32,6 @@ struct LockedPasteTests {
         }
     }
 
-    /// A source folder that seems to be on a disk of its own (another device number, EXDEV out of it), and a
-    /// destination beside it: a move between them copies and then removes the originals, as one to a real other
-    /// disk does. The engine tells disks apart by device number alone.
-    private func withOtherDisk(
-        _ body: (_ src: String, _ disk: String, _ fileSystem: TestFileSystem) async throws -> Void
-    ) async throws {
-        try await withTemporaryDirectory { root in
-            let (src, disk) = (root.path + "/src", root.path + "/disk")
-            try Disk.makeDirectories(src)
-            try Disk.makeDirectories(disk)
-            try await body(src, disk, NativePaste.asOnAnotherDisk(src))
-        }
-    }
-
     // Across disks a move copies, then removes the original. A locked original can't be removed, so nothing is
     // copied: it would end up in both places.
     @Test func doesntCopyALockedFolderToAnotherDiskItCantThenRemove() async throws {

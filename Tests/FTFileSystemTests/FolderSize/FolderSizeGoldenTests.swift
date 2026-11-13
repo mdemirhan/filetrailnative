@@ -27,12 +27,7 @@ private struct TreeOutput: Codable, Equatable {
     var dirs: [String: [Int64]]
 }
 
-private let fixtures: URL = {
-    let cache =
-        ProcessInfo.processInfo.environment["FILETRAIL_DEV_CACHE"]
-        ?? NSHomeDirectory() + "/Library/Caches/filetrail-dev"
-    return URL(fileURLWithPath: cache).appendingPathComponent("fixtures")
-}()
+private let fixtures = URL(fileURLWithPath: Fixtures.root)
 
 /// The golden measures the names, lighthouse and large trees.
 private let hasFixtures = ["names", "lighthouse", "large"].allSatisfy {
