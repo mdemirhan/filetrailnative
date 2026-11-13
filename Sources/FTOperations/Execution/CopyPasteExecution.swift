@@ -326,10 +326,15 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
                 if context.shared.diskFull == nil && errorCode(error) == .errno(ENOSPC) {
                     context.shared.diskFull = error
                 }
-                // "You don't have permission" is the wrong reason when an item is locked.
+                // "You don't have permission" is the wrong reason when an item is locked. A cut-short file that
+                // couldn't be cleared away keeps its own error, which is what stops the folder holding it from being
+                // put in place.
+                let root = rootError(error)
                 let explained: any Error =
-                    findLockedRefusal(
-                        context.getFlags, rootError(error),
+                    root is StagingCleanupError
+                    ? error
+                    : findLockedRefusal(
+                        context.getFlags, root,
                         [
                             currentNode.node.sourcePath, currentNode.destinationPath,
                             dirnameOf(currentNode.destinationPath),

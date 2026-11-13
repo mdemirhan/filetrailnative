@@ -298,6 +298,32 @@ struct EdgeCasesTests {
         #expect(itemFor(result, "/source/z.txt")?.error == "Not started because the destination disk is full.")
     }
 
+    // A locked file's copy is refused part way and can't be cleared away: the folder holding it is given up, not put
+    // in place with the cut-short file because the refusal was explained as a lock.
+    @Test func givesUpAFolderWhoseLockedFilesCutShortCopyCantBeClearedAway() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/Docs/a.txt", .file(size: 1)), ("/source/Docs/b.txt", .file(size: 1)),
+            ("/target", .directory()),
+        ])
+        fileSystem.getFlagsImpl = { $0 == "/source/Docs/b.txt" ? UInt32(UF_IMMUTABLE) : 0 }
+        fileSystem.copyFileImpl = { source, destination, stop, _ in
+            if source.hasSuffix("/b.txt") {
+                fileSystem.addFile(destination)
+                throw MockWriteServiceFileSystem.error(EACCES, destination)
+            }
+            try fileSystem.copyDirectly(source, destination, stop: stop)
+        }
+        fileSystem.rmImpl = { path, recursive, force in
+            if path.hasSuffix("/b.txt") { throw MockWriteServiceFileSystem.error(EIO, path) }
+            try fileSystem.removeDirectly(path, recursive: recursive, force: force)
+        }
+
+        let (result, _) = try await edgePaste(fileSystem, sources: ["/source/Docs"])
+
+        #expect(result.status == .failed)
+        #expect(try fileSystem.readdir("/target").contains("Docs") == false)
+    }
+
     // A move to another disk that fills it: the paste ends there, and every original stays where it was.
     @Test func endsAMoveAtTheFirstItemThatFindsTheDiskFullAndKeepsTheOriginals() async throws {
         let fileSystem = MockWriteServiceFileSystem([
