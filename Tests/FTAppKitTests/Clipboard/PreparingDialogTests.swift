@@ -306,6 +306,27 @@ private final class Finishing {
         keep()
     }
 
+    // So does Stop on the card while the dialog stays up; once the flow has gone on, Stop no longer says it stopped it.
+    @Test func stopOnTheCardWhileTheDialogStaysUpEndsTheFlow() async throws {
+        let service = HeldAnalysisService()
+        let (actions, keep) = makeActions(service)
+        let run = Task { @MainActor in
+            await actions.moveTo(["/Users/demo/a.txt"], destination: "/Users/demo/Folder", initiator: nil)
+        }
+        let reviewing = await waitUntil { service.reviews > 0 }
+        #expect(reviewing)
+        timers.advance(PreparingDialog.showDelay)
+        service.answer(.failure(OperationError("")))
+        let session = actions.session
+        let ended = await waitUntil { session.coordinator.watchCount(session) == 0 }
+        #expect(ended)
+        #expect(actions.cancel())
+        timers.advance(PreparingDialog.minimumVisible)
+        #expect(await run.value == .cancelled)
+        #expect(session.card == nil)
+        keep()
+    }
+
     // Its window closing, or the app quitting, stops the check: the dialog goes at once, and nothing is said.
     @Test(arguments: [false, true])
     func closingTheWindowOrQuittingEndsTheFlow(quitting: Bool) async throws {

@@ -135,10 +135,13 @@ final class WindowWriteActions {
             session.applyCard(nil)
             return .cancelled
         }
-        if await preparing?.finish() == true {
+        // The dialog stays up for its shortest time: Cancel there, or Stop on the card meanwhile, still ends the flow.
+        if await preparing?.finish() == true || signal.isStopped {
             session.applyCard(nil)
             return .cancelled
         }
+        // The review is over, and nothing is left for Stop to stop until the write has begun.
+        session.reviewStop = nil
         let report: CopyPasteAnalysisReport
         switch outcome {
         case .success(let reviewed):
