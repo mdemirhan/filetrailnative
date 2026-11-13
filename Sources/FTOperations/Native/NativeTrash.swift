@@ -1,4 +1,5 @@
 import Darwin
+import FTFoundation
 import Foundation
 
 extension NativeFS {
@@ -7,11 +8,30 @@ extension NativeFS {
     /// when the item went to the Trash but the Trash didn't say where. A failure carries the Trash's own sentence as
     /// its message and, when it can be told, an errno `code` (EACCES, ENOENT, ENOSPC, ENOTSUP for a disk
     /// without a Trash); syscall `trash`.
+    /// The item's URL for the Trash, its name spelled byte for byte as its disk has it. `URL(fileURLWithPath:)`
+    /// spells accents its own way (decomposed), and on a FAT disk the Trash then says a name stored composed
+    /// ("café", as Windows and cameras write it) doesn't exist, though the disk finds it under either spelling.
+    static func trashURL(_ path: String) -> URL {
+        var info = stat()
+        let isFolder = lstat(path, &info) == 0 && info.st_mode & S_IFMT == S_IFDIR
+        var spelled = path
+        // Only another spelling of the same name: a disk's own folder is named after the disk.
+        let name = NodePath.basename(path)
+        if let onDisk = nameOnDisk(path),
+            onDisk.precomposedStringWithCanonicalMapping.lowercased()
+                == name.precomposedStringWithCanonicalMapping.lowercased()
+        {
+            spelled = NodePath.dirname(path) == "/" ? "/" + onDisk : NodePath.dirname(path) + "/" + onDisk
+        }
+        return spelled.withCString {
+            URL(fileURLWithFileSystemRepresentation: $0, isDirectory: isFolder, relativeTo: nil)
+        }
+    }
+
     public static func trashItem(_ path: String) throws -> String? {
-        let url = URL(fileURLWithPath: path)
         var resulting: NSURL?
         do {
-            try FileManager.default.trashItem(at: url, resultingItemURL: &resulting)
+            try FileManager.default.trashItem(at: trashURL(path), resultingItemURL: &resulting)
         } catch {
             throw trashError(error as NSError, path: path)
         }

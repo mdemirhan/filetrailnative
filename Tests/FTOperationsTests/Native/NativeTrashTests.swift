@@ -60,6 +60,32 @@ struct NativeTrashTests {
         }
     }
 
+    // FAT keeps a name's accents as they were written, and its Trash finds a name only under that spelling, though
+    // the disk itself finds it under either: names written composed (as Windows and cameras do) and decomposed both
+    // go, whichever way the path spells them.
+    @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat, .apfs])
+    func movesANameWithAccentsToTheTrashHoweverItIsSpelled(kind: DiskImage.Kind) async throws {
+        TrashProbe.touch()
+        try await DiskImage.withVolume(kind) { volume in
+            let composed = "caf\u{E9}"
+            let decomposed = "cafe\u{301}"
+            for (index, (stored, asked)) in [
+                (composed, composed), (composed, decomposed), (decomposed, decomposed), (decomposed, composed),
+            ].enumerated() {
+                let name = "\(index)-"
+                try Files.write(volume.path + "/" + name + stored + ".txt", "x")
+                let folder = volume.path + "/" + name + stored
+                try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: false)
+                let fileInTrash = try NativeFS.trashItem(volume.path + "/" + name + asked + ".txt")
+                let folderInTrash = try NativeFS.trashItem(volume.path + "/" + name + asked)
+                #expect(fileInTrash?.hasPrefix(volume.path + "/.Trashes") == true)
+                #expect(folderInTrash?.hasPrefix(volume.path + "/.Trashes") == true)
+                #expect(!Files.exists(volume.path + "/" + name + stored + ".txt"))
+                #expect(!Files.exists(folder))
+            }
+        }
+    }
+
     @Test func failsWithENOENTAndTheTrashsOwnSentenceForAnItemThatIsntThere() throws {
         TrashProbe.touch()
         try withTemporaryDirectory(prefix: "native-fs-trash") { root in
