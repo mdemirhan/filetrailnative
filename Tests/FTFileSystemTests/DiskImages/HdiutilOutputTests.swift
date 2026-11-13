@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import os
 
 @testable import FTFileSystem
 
@@ -79,6 +80,32 @@ private func attachOutput(_ mountPoints: String...) -> String {
     }
 }
 
+/// Opened once by the test; whoever waits on it before or after goes on then.
+private final class AsyncGate: Sendable {
+    private let state = OSAllocatedUnfairLock<(open: Bool, waiting: [CheckedContinuation<Void, Never>])>(
+        initialState: (false, []))
+
+    func wait() async {
+        await withCheckedContinuation { continuation in
+            let goNow = state.withLock { state in
+                if state.open { return true }
+                state.waiting.append(continuation)
+                return false
+            }
+            if goNow { continuation.resume() }
+        }
+    }
+
+    func open() {
+        let waiting = state.withLock { state in
+            state.open = true
+            defer { state.waiting = [] }
+            return state.waiting
+        }
+        for continuation in waiting { continuation.resume() }
+    }
+}
+
 @MainActor @Suite struct OpenFileEntryPointTests {
     // The app's open-file handling: what `describe` says of each, queued until windows exist.
     @Test func takesWhatItIsToldAndWaitsForTheWindows() async {
@@ -95,6 +122,28 @@ private func attachOutput(_ mountPoints: String...) -> String {
         #expect(opened == ["/a/Install.dmg"])
         _ = await entry.open(["/a/c.iso"]).value
         #expect(opened == ["/a/Install.dmg", "/a/c.iso"])
+    }
+
+    // An item on a disk that doesn't answer holds the items given after it only for a while: they open, and it opens
+    // once its disk answers.
+    @Test(.timeLimit(.minutes(1))) func anItemWhoseDiskDoesntAnswerHoldsUpTheItemsAfterItOnlyForAWhile() async {
+        let slowAnswers = DispatchSemaphore(value: 0)
+        let waited = AsyncGate()
+        var opened: [String] = []
+        let entry = OpenFileEntryPoint(
+            describe: { path in
+                if path == "/slow/a.txt" { slowAnswers.wait() }
+                return OpenRequest(path: path, kind: .reveal)
+            }, open: { opened.append($0.path) }, waitedLongEnough: { await waited.wait() })
+        entry.startupWindowsOpened()
+        let slow = entry.open(["/slow/a.txt"])
+        let fast = entry.open(["/fast/b.txt"])
+        waited.open()
+        #expect(await fast.value.map(\.path) == ["/fast/b.txt"])
+        #expect(opened == ["/fast/b.txt"])
+        slowAnswers.signal()
+        #expect(await slow.value.map(\.path) == ["/slow/a.txt"])
+        #expect(opened == ["/fast/b.txt", "/slow/a.txt"])
     }
 
     // An item on a disk slow to answer holds up neither the main thread nor the items given before it; the items given
