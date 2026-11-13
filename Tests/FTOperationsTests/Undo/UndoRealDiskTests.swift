@@ -108,6 +108,26 @@ struct UndoRealDiskTests {
         }
     }
 
+    // HFS+ keeps how an accent was encoded when a rename changes only that: Undo finds the item itself under the name
+    // it goes back to, and neither asks about it nor numbers it.
+    @Test func undoesARenameThatChangesOnlyHowAnAccentIsEncoded() async throws {
+        let nfc = "caf\u{E9}.txt"
+        let nfd = "cafe\u{301}.txt"
+        try await onDisk(.hfs) { t, disk in
+            try UndoDisk.write("\(disk)/\(nfd)", "c")
+            let stored = visible(disk)
+            try await t.rename("\(disk)/\(nfd)", nfc)
+            #expect(try await t.prepare().nameTaken.isEmpty)
+            #expect(try await t.undo().status == .completed)
+            #expect(visible(disk).map { Array($0.utf8) } == stored.map { Array($0.utf8) })
+
+            try await t.batchRename([("\(disk)/\(nfd)", nfc)])
+            #expect(try await t.prepare().nameTaken.isEmpty)
+            #expect(try await t.undo().status == .completed)
+            #expect(visible(disk).map { Array($0.utf8) } == stored.map { Array($0.utf8) })
+        }
+    }
+
     @Test func keepsBothOnlyWhenTheVeryNameIsTakenOnADiskThatMindsCase() async throws {
         try await onDisk(.apfsCaseSensitive) { t, disk in
             try UndoDisk.write("\(disk)/a.txt", "a")

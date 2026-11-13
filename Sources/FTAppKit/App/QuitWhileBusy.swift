@@ -11,6 +11,7 @@ public enum BusyOperationKind: String, Sendable, CaseIterable {
     case batchRename = "batch_rename"
     case newFolder = "new_folder"
     case undo
+    case redo
     case emptyTrash = "empty_trash"
 }
 
@@ -81,6 +82,8 @@ public enum QuitWhileBusy {
             return ("Items are still being deleted.", "\(stops) Items already deleted can't be recovered.")
         case .undo:
             return ("An Undo is still in progress.", "\(stops) What was already undone stays undone.")
+        case .redo:
+            return ("A Redo is still in progress.", "\(stops) What was already redone stays redone.")
         case .batchRename:
             return (
                 "Items are still being renamed.",

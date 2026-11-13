@@ -385,6 +385,23 @@ struct UndoExecutionTests {
         }
     }
 
+    // The old item of a moving Replace comes back to its place outside the app (Finder's Put Back, replacing the new
+    // one): it is not taken for the new one, an app's save of it, and stays where it is.
+    @Test func leavesAReplacedItemPutBackOutsideTheAppWhereItIs() async throws {
+        try await withUndoFolder { root, trashDir in
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let pasteTrash = try await pasteReplacing(t, root, mode: .cut)
+            let inTrash = try #require(UndoDisk.names(pasteTrash).first)
+            try UndoDisk.remove("\(root)/dst/a.txt")
+            try UndoDisk.move("\(pasteTrash)/\(inTrash)", "\(root)/dst/a.txt")
+            let undone = try await t.undo()
+            #expect(items(undone).first?.status == .skipped)
+            #expect(try UndoDisk.read("\(root)/dst/a.txt") == "old")
+            #expect(!UndoDisk.exists("\(root)/src/a.txt"))
+            await t.shutDown()
+        }
+    }
+
     @Test func leavesAReplacedItemInTheTrashWhileTheNewOneCantBeMovedAway() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -525,6 +542,51 @@ struct UndoExecutionTests {
             try await t.undo()
             #expect(try UndoDisk.read("\(root)/a.txt") == "someone else's")
             #expect(try UndoDisk.read("\(root)/a 2.txt") == "a")
+            await t.shutDown()
+        }
+    }
+
+    // The Trash is emptied between the look and the move back: the item is told by its own name, not the Trash's.
+    @Test func tellsAnItemEmptiedFromTheTrashJustAsItGoesBackByItsOwnName() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
+                fileSystem.renameExclusiveImpl = { from, to in
+                    if to == "\(root)/a.txt" {
+                        try UndoDisk.remove(from)
+                        throw codedError(.errno(ENOENT), "ENOENT: no such file or directory")
+                    }
+                    try UndoDisk.move(from, to)
+                }
+            }
+            try await t.trash("\(root)/a.txt")
+            let undone = try await t.undo()
+            #expect(items(undone).map(\.status) == [.skipped])
+            #expect(items(undone).first?.error == "“a.txt” isn't in the Trash any more.")
+            await t.shutDown()
+        }
+    }
+
+    // The item's folder goes between the look and the move back: that is what is told, and the item stays in the
+    // Trash.
+    @Test func tellsOfTheFolderGoneJustAsTheItemGoesBack() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.mkdir("\(root)/dst")
+            try UndoDisk.write("\(root)/dst/a.txt", "a")
+            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
+                fileSystem.renameExclusiveImpl = { from, to in
+                    if to == "\(root)/dst/a.txt" {
+                        try UndoDisk.remove("\(root)/dst")
+                        throw codedError(.errno(ENOENT), "ENOENT: no such file or directory")
+                    }
+                    try UndoDisk.move(from, to)
+                }
+            }
+            try await t.trash("\(root)/dst/a.txt")
+            let undone = try await t.undo()
+            #expect(items(undone).map(\.status) == [.skipped])
+            #expect(items(undone).first?.error == "Its folder “dst” no longer exists.")
+            #expect(t.inTrash() == ["1-a.txt"])
             await t.shutDown()
         }
     }

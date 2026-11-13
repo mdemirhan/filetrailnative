@@ -167,6 +167,12 @@ private func recordsUndo(_ context: ExecutionContext, _ node: ResolvedCopyPasteN
     context.recordsUndo && context.shared.undo.topLevelNodeIds.contains(NameKeys.Exact(node.node.id))
 }
 
+/// `ownSourcePath`: the picked item's place with its name as the disk keeps it, read before it is moved, for Undo to move
+/// it back under its own name however it was spelled when chosen. Read only for an item Undo records.
+func ownSourcePath(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> String {
+    recordsUndo(context, node) ? pathAsOnDisk(node.node.sourcePath) : node.node.sourcePath
+}
+
 /// Adds a step to the picked item's steps. Steps inside it (a file in a copied folder) are left out: undoing the
 /// item undoes them.
 func recordUndoStep(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ step: RecordingStep) {
@@ -189,9 +195,13 @@ func recordCreated(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _
 
 /// `moved` is the item as the check just before the move saw it: a move on one disk keeps the item's id, so it
 /// isn't read again at its new place.
-func recordMoved(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ to: String, _ moved: NodeFingerprint) {
+/// `from` is where the item was, its name as the disk kept it (`ownSourcePath`, read before the move).
+func recordMoved(
+    _ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ to: String, _ moved: NodeFingerprint,
+    from: String? = nil
+) {
     guard recordsUndo(context, node) else { return }
-    let from = node.node.sourcePath
+    let from = from ?? node.node.sourcePath
     let fileSystem = context.fileSystem
     let parentId = context.shared.folderIds.id({ try fileSystem.stat($0) }, dirnameOf(from))
     recordUndoStep(

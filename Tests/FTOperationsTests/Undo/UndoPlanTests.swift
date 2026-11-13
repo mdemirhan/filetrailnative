@@ -336,6 +336,10 @@ struct UndoPlanTests {
                 == UndoQuestions(
                     nameTaken: [TakenName(name: "x", path: "/D/x")],
                     changed: [ChangedItem(name: "abc", path: "/D/abc", putBack: false, replaced: false)]))
+        // Once its wait gave up, a look reads nothing more.
+        let givenUp = AnswerProgress()
+        givenUp.abandon()
+        #expect(UndoPlan.findQuestions(fileSystem, units, progress: givenUp) == UndoQuestions())
     }
 
     @Test func saysWhichChangedItemsReplacedAnOldOneAndWhichWerePutBack() {

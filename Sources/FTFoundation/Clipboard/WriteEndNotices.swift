@@ -90,8 +90,11 @@ public enum WriteEndNotices {
     public static func needsResultSheet(_ write: WriteEndSummary) -> Bool {
         if write.action == .rename || write.action == .newFolder { return write.status == .failed }
         if write.isUndoOrRedo {
+            // A stop before anything was undone still tells of the items the disk check skipped: they leave the
+            // history, so this is the only time they are told.
             return write.items.contains(where: \.note) || write.status == .failed || write.status == .partial
-                || (write.status == .cancelled && write.completedItemCount > 0)
+                || (write.status == .cancelled
+                    && (write.completedItemCount > 0 || write.failedItemCount > 0 || write.skippedItemCount > 0))
         }
         if write.status == .failed { return true }
         if write.action == .batchRename, write.skippedItemCount > 0 { return true }

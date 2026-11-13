@@ -135,6 +135,7 @@ public enum UndoExecution {
         var failed: [UndoUnit] = []
         eachUnit: for unitIndex in stride(from: units.count - 1, through: 0, by: -1) {
             let unit = units[unitIndex]
+            let unitIds = UndoPlan.idsOf(unit)
             var doneSteps: [UndoStep] = []
             // Once a step can't be undone, the ones before it in the unit aren't either: the old item of a Replace
             // isn't put back where the new one still is.
@@ -157,7 +158,7 @@ public enum UndoExecution {
                     break eachUnit
                 }
                 options.onStepStart?(firstPathOf(planned), run.completedItemCount)
-                let outcome = runStep(planned, step, context)
+                let outcome = runStep(planned, step, unitIds, context)
                 run.items.append(contentsOf: outcome.items)
                 run.completedItemCount += outcome.items.filter { $0.status == .completed }.count
                 switch outcome {
@@ -209,9 +210,11 @@ public enum UndoExecution {
         }
     }
 
-    private static func runStep(_ planned: PlannedStep, _ original: UndoStep, _ context: RunContext) -> StepOutcome {
+    private static func runStep(
+        _ planned: PlannedStep, _ original: UndoStep, _ unitIds: Set<ItemId>, _ context: RunContext
+    ) -> StepOutcome {
         switch planned {
-        case .move(let move): moveBack(move, original, context)
+        case .move(let move): moveBack(move, original, unitIds, context)
         case .trash(let trash): moveToTrash(trash, original, context)
         case .batch(let items): renameBack(items, context)
         }
@@ -291,9 +294,11 @@ public enum UndoExecution {
     }
 
     /// `writeFailed`: a step whose write (the rename, the Trash, or unlocking the item for them) failed: skipped, or
-    /// kept to be tried again, as `classifyUndoWriteError` says.
+    /// kept to be tried again, as `classifyUndoWriteError` says. `putBackTo` is where an item put back from the Trash
+    /// goes: it is told by that name, not the one the Trash gave it.
     private static func writeFailed(
-        _ error: any Error, original: UndoStep, from: String, to: String?, around: [String], _ context: RunContext
+        _ error: any Error, original: UndoStep, from: String, to: String?, putBackTo: String? = nil,
+        around: [String], _ context: RunContext
     ) -> StepOutcome {
         let fileSystem = context.fileSystem
         let code = failureCode(errorCode(error), cause: causeOf(error), from, context)
@@ -306,8 +311,13 @@ public enum UndoExecution {
             reason = permanentReason(code, from)
         } else if code == .errno(EEXIST), let to {
             reason = takenReason(to)
+        } else if let to, (try? fileSystem.lstat(from)) != nil,
+            (try? fileSystem.stat(NodePath.dirname(to))) == nil
+        {
+            // The item is still there, and the folder it was going to is gone.
+            reason = "Its folder \u{201C}\(NodePath.basename(NodePath.dirname(to)))\u{201D} no longer exists."
         } else {
-            reason = UndoPlan.missingReason(fileSystem, from)
+            reason = UndoPlan.missingReason(fileSystem, from, original: putBackTo)
         }
         return .skipped(items: [skippedItem(from, to, reason)], missing: false)
     }
@@ -324,10 +334,12 @@ public enum UndoExecution {
     // MARK: Moving back
 
     /// `moveBack`: a rename or move back, or an item put back from the Trash.
-    private static func moveBack(_ planned: PlannedMove, _ original: UndoStep, _ context: RunContext) -> StepOutcome {
+    private static func moveBack(
+        _ planned: PlannedMove, _ original: UndoStep, _ unitIds: Set<ItemId>, _ context: RunContext
+    ) -> StepOutcome {
         let fileSystem = context.fileSystem
         let found: (nameTaken: Bool, renamesItself: Bool, isFolder: Bool, id: ItemId?, kind: ItemKind)
-        switch UndoPlan.checkMove(fileSystem, planned) {
+        switch UndoPlan.checkMove(fileSystem, planned, unitIds: unitIds) {
         case .refused(let refusal):
             if refusal.retry {
                 return failedStep(original, planned.from, planned.to, refusal.reason)
@@ -345,7 +357,9 @@ public enum UndoExecution {
             do {
                 lifted = try liftRestrictions(fileSystem, planned.from)
             } catch {
-                return writeFailed(error, original: original, from: planned.from, to: planned.to, around: [], context)
+                return writeFailed(
+                    error, original: original, from: planned.from, to: planned.to,
+                    putBackTo: planned.putBack ? planned.to : nil, around: [], context)
             }
         }
         let renamed = renameInto(planned, found.nameTaken, found.renamesItself, found.isFolder, original, context)
@@ -430,6 +444,23 @@ public enum UndoExecution {
         "\u{201C}\(NodePath.basename(path))\u{201D} was moved, but its lock or permissions couldn't be put back. Set them in Finder's Get Info."
     }
 
+    /// What to know about an item an Undo or Redo moved to the Trash: its lock or permissions that couldn't be put back,
+    /// and a place in the Trash it couldn't be told.
+    private static func trashNote(
+        _ path: String, restored: Bool, located: Bool, _ direction: UndoDirection
+    ) -> String? {
+        let notes = [restored ? nil : lostLockNote(path), located ? nil : trashLocationUnknownNote(path, direction)]
+        let said = notes.compactMap { $0 }
+        return said.isEmpty ? nil : said.joined(separator: " ")
+    }
+
+    /// An item in the Trash, but the Trash didn't say where: the other command has nothing to bring it back from.
+    static func trashLocationUnknownNote(_ path: String, _ direction: UndoDirection) -> String {
+        let other = direction == .undo ? "Redo" : "Undo"
+        let name = "\u{201C}\(NodePath.basename(path))\u{201D}"
+        return "\(name) is in the Trash, but the Trash didn't say where, so \(other) can't bring it back."
+    }
+
     /// A done item, with a note when there is something to know about it.
     private static func doneItem(_ sourcePath: String, _ destinationPath: String?, _ note: String?)
         -> WriteOperationItem
@@ -488,6 +519,7 @@ public enum UndoExecution {
                 return .failure(
                     writeFailed(
                         error, original: original, from: planned.from, to: target,
+                        putBackTo: planned.putBack ? planned.to : nil,
                         around: [NodePath.dirname(planned.from), NodePath.dirname(target)], context))
             }
         }
@@ -577,7 +609,11 @@ public enum UndoExecution {
             produced: trashPath.map {
                 .trashed(from: planned.path, trashPath: $0, id: id, parentId: parentId, stamp: looks)
             },
-            items: [doneItem(planned.path, nil, restored ? nil : lostLockNote(planned.path))],
+            items: [
+                doneItem(
+                    planned.path, nil,
+                    trashNote(planned.path, restored: restored, located: trashPath != nil, options.direction))
+            ],
             removed: RemovedItem(
                 path: planned.path, item: before,
                 intoHomeTrash: before.flatMap { before in options.homeDev.map { before.dev == $0 } }))

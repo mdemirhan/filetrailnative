@@ -24,6 +24,9 @@ struct WriteEndMatrixTests {
         #expect(WriteEndNotices.needsResultSheet(summary(action, .failed)))
         #expect(WriteEndNotices.needsResultSheet(summary(action, .partial, completed: 1, failed: 1)))
         #expect(WriteEndNotices.needsResultSheet(summary(action, .cancelled, completed: 1, cancelled: 1)))
+        // Stopped before anything was done, with items the disk check skipped or that failed: those are told.
+        #expect(WriteEndNotices.needsResultSheet(summary(action, .cancelled, skipped: 1, cancelled: 1)))
+        #expect(WriteEndNotices.needsResultSheet(summary(action, .cancelled, failed: 1, cancelled: 1)))
         #expect(!WriteEndNotices.needsResultSheet(summary(action, .completed, completed: 1)))
         #expect(!WriteEndNotices.needsResultSheet(summary(action, .cancelled, cancelled: 1)))
     }

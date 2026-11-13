@@ -546,6 +546,7 @@ func incompletePackageMessage(_ node: ResolvedCopyPasteNode, _ mode: CopyPasteMo
 func tryRenameForCut(_ context: ExecutionContext, _ currentNode: ResolvedCopyPasteNode, _ source: NodeFingerprint)
     throws -> ExecuteNodeResult?
 {
+    let from = ownSourcePath(context, currentNode)
     do {
         // Exclusive: an item that appeared at the destination is asked about, never replaced.
         try moveExclusive(context.fileSystem, currentNode.node.sourcePath, currentNode.destinationPath)
@@ -559,7 +560,7 @@ func tryRenameForCut(_ context: ExecutionContext, _ currentNode: ResolvedCopyPas
             : explainMissingFolder(context.fileSystem, currentNode.destinationPath, error)
     }
     noteChanged(context)
-    recordMoved(context, currentNode, currentNode.destinationPath, source)
+    recordMoved(context, currentNode, currentNode.destinationPath, source, from: from)
     // Renamed: everything in it counts as done.
     context.shared.completedItemCount += countExecutableSteps([currentNode])
     context.shared.completedByteCount += sumSubtreeBytes([currentNode])

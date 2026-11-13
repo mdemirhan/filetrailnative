@@ -35,3 +35,14 @@ func basenameOf(_ path: String) -> String {
     }
     return String(path[bytes.index(after: slash)...])
 }
+
+/// `path` with its last name as the disk keeps it, when the disk spells it otherwise only in letter case or in how
+/// accents are stored; `path` itself when the name can't be read or is another name (another hard link's). What Undo
+/// records an item's place by, so it puts the item back under its own name.
+func pathAsOnDisk(_ path: String) -> String {
+    let name = basenameOf(path)
+    guard let onDisk = NativeFS.nameOnDisk(path), !sameText(onDisk, name),
+        onDisk.compare(name, options: .caseInsensitive) == .orderedSame
+    else { return path }
+    return NodePath.join(dirnameOf(path), onDisk)
+}

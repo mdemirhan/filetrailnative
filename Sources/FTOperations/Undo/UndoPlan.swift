@@ -222,15 +222,17 @@ public enum UndoPlan {
     /// `isExpectedItem`: whether the item at a path is the one a step was about. Its id must match; when moving or
     /// renaming it back (`relaxed`), an item of the same kind under the same name is taken too, since apps save a
     /// document by replacing its file, which gives it a new id. Without a usable id (FAT, exFAT), the kind is all
-    /// there is to go by.
-    static func isExpectedItem(_ stats: WriteServiceStats, _ id: ItemId?, _ itemKind: ItemKind?, relaxed: Bool) -> Bool
-    {
+    /// there is to go by. An item another step of the same unit is about (`unitIds`: a Replace's old item, back where the
+    /// new one was) is never taken for it.
+    static func isExpectedItem(
+        _ stats: WriteServiceStats, _ id: ItemId?, _ itemKind: ItemKind?, relaxed: Bool, unitIds: Set<ItemId> = []
+    ) -> Bool {
         let currentId = itemIdOf(stats)
         if let id, let currentId {
             if id == currentId {
                 return true
             }
-            return relaxed && itemKind != nil && kindOfStats(stats) == itemKind
+            return relaxed && itemKind != nil && kindOfStats(stats) == itemKind && !unitIds.contains(currentId)
         }
         return itemKind == nil || kindOfStats(stats) == itemKind
     }
@@ -285,9 +287,10 @@ public enum UndoPlan {
     }
 
     /// `checkMove`: whether `step` can be done now, or once the steps before it in the same unit have made `changes`
-    /// (a Replace puts its old item back where the new one was).
+    /// (a Replace puts its old item back where the new one was). `unitIds` are the ids the unit's steps are about.
     public static func checkMove(
-        _ fileSystem: some IdentityFileSystem, _ step: PlannedMove, _ changes: UnitChanges = UnitChanges()
+        _ fileSystem: some IdentityFileSystem, _ step: PlannedMove, _ changes: UnitChanges = UnitChanges(),
+        unitIds: Set<ItemId> = []
     ) -> MoveCheck {
         let item: WriteServiceStats
         // An item in the Trash goes by the name it goes back to.
@@ -299,7 +302,7 @@ public enum UndoPlan {
                 Refusal(reason: missingReason(fileSystem, step.from, original: original), missing: true))
         case .found(let stats): item = stats
         }
-        if !isExpectedItem(item, step.id, step.itemKind, relaxed: !step.putBack) {
+        if !isExpectedItem(item, step.id, step.itemKind, relaxed: !step.putBack, unitIds: unitIds) {
             return .refused(
                 Refusal(reason: replacedReason(step.from, step.id, item, original: original), missing: false))
         }
@@ -363,8 +366,8 @@ public enum UndoPlan {
 
     /// `findsItself`: on a disk that ignores case, "notes.txt" finds "Notes.txt": the item itself, not another in the
     /// way. As for a rename: the names match ignoring case and accent encoding, the ids are the same or there is none
-    /// to go by (FAT, exFAT), and the folder doesn't list the name as it is spelled. Two hard links to one file, under
-    /// two names, are two items.
+    /// to go by (FAT, exFAT), and the folder doesn't list both names as they are spelled. Two hard links to one file,
+    /// under two names, are two items.
     static func findsItself(
         _ fileSystem: some IdentityFileSystem, _ step: PlannedMove, _ itemId: ItemId?, _ thereId: ItemId?
     ) -> Bool {
@@ -374,9 +377,14 @@ public enum UndoPlan {
         if let itemId, let thereId, itemId != thereId {
             return false
         }
-        let name = NodePath.basename(step.to)
-        let entries = try? fileSystem.readdir(NodePath.dirname(step.to))
-        return !(entries?.contains { sameText($0, name) } ?? false)
+        guard let entries = try? fileSystem.readdir(NodePath.dirname(step.to)) else { return true }
+        return !listsTwoItems(entries, NodePath.basename(step.from), NodePath.basename(step.to))
+    }
+
+    /// Whether a folder lists `from` and `to`, two spellings of one name, as two items. Listed under `to` alone, the
+    /// item is already stored so: HFS+, FAT and exFAT keep how an accent was encoded when a rename changes only that.
+    nonisolated static func listsTwoItems(_ entries: [String], _ from: String, _ to: String) -> Bool {
+        !sameText(from, to) && entries.contains { sameText($0, to) } && entries.contains { sameText($0, from) }
     }
 
     /// Whether the item a step would move to the Trash is still the one the operation made: refused when it is
@@ -502,10 +510,18 @@ public enum UndoPlan {
     /// the items that would go to the Trash though they changed since. Checked as things will be by then: a step
     /// after one that can't be done isn't looked at, a place a step before it empties counts as free, and one a step
     /// before it fills as taken. It reads the disk: call it off the main actor.
-    public static func findQuestions(_ fileSystem: some IdentityFileSystem, _ units: [UndoUnit]) -> UndoQuestions {
+    /// `progress` is told of each unit looked at; once its wait gives up, the units left aren't looked at.
+    public static func findQuestions(
+        _ fileSystem: some IdentityFileSystem, _ units: [UndoUnit], progress: AnswerProgress? = nil
+    ) -> UndoQuestions {
         // Units don't depend on each other, so several are looked at at once: an Undo of thousands of items would
         // otherwise wait for each item's disk reads in turn.
-        let perUnit = mapAtMost(questionChecksAtOnce, Array(units.reversed())) { unitQuestions(fileSystem, $0) }
+        let perUnit = mapAtMost(questionChecksAtOnce, Array(units.reversed())) { unit -> UndoQuestions in
+            if progress?.abandoned == true { return UndoQuestions() }
+            let questions = unitQuestions(fileSystem, unit)
+            progress?.answered()
+            return questions
+        }
         return UndoQuestions(
             nameTaken: perUnit.flatMap(\.nameTaken), changed: perUnit.flatMap(\.changed))
     }
@@ -541,10 +557,11 @@ public enum UndoPlan {
     private static func unitQuestions(_ fileSystem: some IdentityFileSystem, _ unit: UndoUnit) -> UndoQuestions {
         var questions = UndoQuestions()
         var changes = UnitChanges()
+        let unitIds = idsOf(unit)
         steps: for step in unit.steps.reversed() {
             switch PlannedStep(reversing: step) {
             case .move(let planned):
-                switch checkMove(fileSystem, planned, changes) {
+                switch checkMove(fileSystem, planned, changes, unitIds: unitIds) {
                 case .refused(let refusal):
                     if refusal.missing { continue steps }
                     break steps
@@ -583,5 +600,21 @@ public enum UndoPlan {
             }
         }
         return questions
+    }
+}
+
+extension UndoPlan {
+    /// The ids of the items a unit's steps are about.
+    static func idsOf(_ unit: UndoUnit) -> Set<ItemId> {
+        var ids = Set<ItemId>()
+        for step in unit.steps {
+            switch step {
+            case .moved(let moved): if let id = moved.id { ids.insert(id) }
+            case .created(_, let id, _): if let id { ids.insert(id) }
+            case .trashed(_, _, let id, _, _): if let id { ids.insert(id) }
+            case .batchRenamed(let items): ids.formUnion(items.compactMap(\.id))
+            }
+        }
+        return ids
     }
 }

@@ -174,9 +174,11 @@ extension WriteCoordinator {
                 let parentId = folderIds.id({ try fileSystem.stat($0) }, NodePath.dirname(path))
                 let looks = stampWithoutId(StampReader(fileSystem), path, id)
                 tried = AskedItem(id: id, stamp: looks)
+                // Read before it goes: Undo puts it back under its own name, however it was spelled when chosen.
+                let ownPath = pathAsOnDisk(path)
                 if let trashPath = try fileSystem.trash(path) {
                     outcome.unit = UndoUnit(steps: [
-                        .trashed(from: path, trashPath: trashPath, id: id, parentId: parentId, stamp: looks)
+                        .trashed(from: ownPath, trashPath: trashPath, id: id, parentId: parentId, stamp: looks)
                     ])
                 } else {
                     // In the Trash, but the Trash didn't say where: it can't be put back.

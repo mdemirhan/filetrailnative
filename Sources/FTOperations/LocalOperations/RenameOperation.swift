@@ -69,7 +69,7 @@ extension WriteCoordinator {
             LocalOperations.isSameItem(sourceStats, destinationStats) || !LocalOperations.hasFileId(sourceStats)
                 || !LocalOperations.hasFileId(destinationStats)
         {
-            renamesItself = !listsSeparateEntry(fileSystem, folder, destinationName)
+            renamesItself = !listsSeparateEntry(fileSystem, folder, sourceName, destinationName)
         }
         if destinationStats != nil, !renamesItself {
             throw WriteCoordinatorError("An item named \u{201C}\(destinationName)\u{201D} already exists.")
@@ -77,13 +77,13 @@ extension WriteCoordinator {
         return PreparedRename(sourcePath: sourcePath, destinationPath: destinationPath, renamesItself: renamesItself)
     }
 
-    /// `listsSeparateEntry`: whether the folder holds an entry spelled exactly like `name` (another item, since the
-    /// item being renamed is spelled differently). Unknown (false) when the folder can't be read.
+    /// `listsSeparateEntry`: whether the folder holds an entry spelled exactly like `name` apart from the item being
+    /// renamed, listed as `sourceName` (another item: a hard link). Unknown (false) when the folder can't be read.
     private nonisolated static func listsSeparateEntry(
-        _ fileSystem: any LocalWriteFileSystem, _ folder: String, _ name: String
+        _ fileSystem: any LocalWriteFileSystem, _ folder: String, _ sourceName: String, _ name: String
     ) -> Bool {
         guard let entries = try? fileSystem.readdir(folder) else { return false }
-        return entries.contains { sameText($0, name) }
+        return UndoPlan.listsTwoItems(entries, sourceName, name)
     }
 
     static func executeRename(
@@ -92,6 +92,7 @@ extension WriteCoordinator {
         let sourcePath = prepared.sourcePath
         let destinationPath = prepared.destinationPath
         let startedAt = Date()
+        var ownSourcePath = sourcePath
         do {
             try operation.signal.throwIfStopped()
             operation.emit(
@@ -100,6 +101,8 @@ extension WriteCoordinator {
                     currentDestinationPath: destinationPath))
             try operation.signal.throwIfStopped()
             let renamesItself = prepared.renamesItself
+            // Read before the rename: Undo renames the item back to its own name, however it was spelled when chosen.
+            ownSourcePath = await LocalOperations.onDisk { pathAsOnDisk(sourcePath) }
             try await LocalOperations.onDisk {
                 if renamesItself {
                     try fileSystem.rename(sourcePath, destinationPath)
@@ -132,11 +135,12 @@ extension WriteCoordinator {
         }
         // Outside the do: the item has been renamed, and nothing that goes wrong while reporting it may turn that
         // into a failure (reading its id never throws).
+        let recordedSource = ownSourcePath
         let step = await LocalOperations.onDisk { () -> UndoStep in
             let renamed = readItemRef({ try fileSystem.lstat($0) }, destinationPath)
             return .moved(
                 UndoStep.Moved(
-                    from: sourcePath, to: destinationPath, id: renamed.id, itemKind: renamed.kind,
+                    from: recordedSource, to: destinationPath, id: renamed.id, itemKind: renamed.kind,
                     parentId: readFolderId({ try fileSystem.stat($0) }, NodePath.dirname(sourcePath))))
         }
         emitSingleItemResult(

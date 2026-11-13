@@ -325,6 +325,30 @@ struct UndoFailuresTests {
         }
     }
 
+    // The Trash takes an item an Undo moves there but doesn't say where: Redo has nothing to bring it back from, and
+    // the item says so rather than the operation leaving the history quietly.
+    @Test func saysSoWhenTheTrashDoesntSayWhereAnUndoPutAnItem() async throws {
+        try await withUndoFolder { root, trashDir in
+            let unsaid = UndoFlag()
+            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
+                let base = fileSystem.base
+                fileSystem.trashImpl = { path in
+                    let trashPath = try base.trash(path)
+                    return unsaid.isSet ? nil : trashPath
+                }
+            }
+            try await t.newFolder(root, "F")
+            unsaid.set(true)
+            let undone = try await t.undo()
+            let item = try #require(items(undone).first)
+            #expect(item.status == .completed)
+            #expect(item.note)
+            #expect(item.error == "“F” is in the Trash, but the Trash didn't say where, so Redo can't bring it back.")
+            #expect(t.history.menu().redo == nil)
+            await t.shutDown()
+        }
+    }
+
     @Test func classifiesEachErrorCode() {
         #expect(UndoExecution.classifyUndoWriteError(.errno(ENOENT)) == .outsideChange)
         #expect(UndoExecution.classifyUndoWriteError(.errno(ENOTDIR)) == .outsideChange)

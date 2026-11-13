@@ -89,6 +89,66 @@ struct UndoStartTests {
         }
     }
 
+    // The disks get the time for each answer, not for all of them: a large Undo on a slow disk that answers every read
+    // is looked at in full.
+    @Test func waitsForALookThatKeepsGettingAnswersPastTheTimeForOne() async {
+        let answer = await WriteCoordinator.answerWithin(150) { progress in
+            for _ in 0..<12 {
+                Thread.sleep(forTimeInterval: 0.025)
+                progress.answered()
+            }
+            return 1
+        }
+        #expect(answer == 1)
+    }
+
+    // A look given up on is told so, and stops reading: an Undo chosen again doesn't pile looks up on a stuck disk.
+    @Test func givesUpOnALookThatGetsNoAnswerAndTellsItToStop() async {
+        let sawGiveUp = UndoFlag()
+        let stopped = DiskGate()
+        let answer = await WriteCoordinator.answerWithin(50) { progress in
+            while !progress.abandoned { Thread.sleep(forTimeInterval: 0.005) }
+            sawGiveUp.set(true)
+            stopped.open()
+            return 1
+        }
+        #expect(answer == nil)
+        stopped.wait()
+        #expect(sawGiveUp.isSet)
+    }
+
+    // Another window's operation ends while Undo looks at its items: Undo is refused rather than asking about one
+    // operation under another's name.
+    @Test func refusesWhenAnotherOperationEndsWhileItLooksAtItsItems() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            try UndoDisk.write("\(root)/c.txt", "c")
+            let holding = UndoFlag()
+            let held = HeldCall()
+            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
+                let base = fileSystem.base
+                fileSystem.lstatImpl = { path in
+                    if holding.isSet && path.hasSuffix("/b.txt") { held.hold() }
+                    return try base.lstat(path)
+                }
+            }
+            try await t.rename("\(root)/a.txt", "b.txt")
+            holding.set(true)
+            let prepare = Task { try await t.prepare() }
+            await held.begun()
+            holding.set(false)
+            try await t.rename("\(root)/c.txt", "d.txt")
+            held.release()
+            await #expect(
+                throws: WriteCoordinatorError("Something changed while Undo looked at its items. Choose Undo again.")
+            ) {
+                try await prepare.value
+            }
+            #expect(try await t.prepare().label == "Rename")
+            await t.shutDown()
+        }
+    }
+
     @Test func refusesAndFreesTheWriteSlotWhenADiskDoesntAnswerItsLastLook() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")

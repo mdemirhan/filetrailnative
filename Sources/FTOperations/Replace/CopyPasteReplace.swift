@@ -53,6 +53,7 @@ func executeReplace(
     // nothing there).
     var stagingIsOurs = false
     var movedByRename = false
+    var movedFrom: String?
     if canRenameForCut(context, currentNode) {
         var moved = journalEntry
         moved.moved = true
@@ -60,9 +61,11 @@ func executeReplace(
         // The moved item's only copy will be under the hidden name: its record is flushed to the drive first, so not
         // even a power cut loses track of it.
         try journal?.addFlushed(.replace(moved))
+        let from = ownSourcePath(context, currentNode)
         do {
             try moveExclusive(fileSystem, currentNode.node.sourcePath, temporaryPath)
             movedByRename = true
+            movedFrom = from
         } catch {
             if errorCode(error) != .errno(EXDEV) {
                 try? journal?.remove(journalEntry.id)
@@ -223,7 +226,7 @@ func executeReplace(
             try moveExclusive(fileSystem, temporaryPath, visiblePath)
             restoreAfterMove(fileSystem, visiblePath, stagedMode, stagedFlags)
             applyStagedFolderMetadata(context, currentNode, visiblePath, movedByRename)
-            recordReplacement(context, currentNode, visiblePath, movedByRename, source)
+            recordReplacement(context, currentNode, visiblePath, movedByRename, source, movedFrom)
             if appMovedByCopy {
                 recordAppMovedByCopy(context, currentNode, visiblePath)
             }
@@ -236,7 +239,7 @@ func executeReplace(
         }
         restoreAfterMove(fileSystem, finalPath, stagedMode, stagedFlags)
         applyStagedFolderMetadata(context, currentNode, finalPath, movedByRename)
-        recordReplacement(context, currentNode, finalPath, movedByRename, source)
+        recordReplacement(context, currentNode, finalPath, movedByRename, source, movedFrom)
     } catch {
         if oldItemRemoved && journal != nil && errorCode(error) != .errno(EEXIST) {
             // Neither name could be used: the journal keeps the new item, and the next start puts it in place. It gets
@@ -328,13 +331,13 @@ private func applyStagedFolderMetadata(
     try? applyDirectoryMetadata(context.with { $0.stagingFor = outerMode }, placed)
 }
 
-/// The new item a Replace put in place: moved there on its disk, or copied there.
+/// The new item a Replace put in place: moved there on its disk (from `movedFrom`, its own name), or copied there.
 private func recordReplacement(
     _ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ path: String, _ movedByRename: Bool,
-    _ source: NodeFingerprint
+    _ source: NodeFingerprint, _ movedFrom: String?
 ) {
     if movedByRename {
-        recordMoved(context, node, path, source)
+        recordMoved(context, node, path, source, from: movedFrom)
     } else if context.mode == .copy {
         recordCreated(context, node, path)
     }

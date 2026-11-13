@@ -60,10 +60,10 @@ public struct UndoPrepared: Equatable, Sendable {
 }
 
 extension WriteCoordinator {
-    /// How long the disks may take to answer when an Undo looks at what it would ask, when it
-    /// is chosen and again as it starts. As it starts it holds the write slot, and a disk that doesn't answer (a
-    /// network share gone away) mustn't keep every other operation waiting; when chosen, ⌘Z mustn't seem to do
-    /// nothing.
+    /// How long the disks may take to answer when an Undo looks at what it would ask, when it is chosen and again as it
+    /// starts: from the last answer, so a large Undo on a slow disk is looked at in full. As it starts it holds the
+    /// write slot, and a disk that doesn't answer (a network share gone away) mustn't keep every other operation
+    /// waiting; when chosen, ⌘Z mustn't seem to do nothing.
     public nonisolated static let undoCheckWithinMs: Double = 10_000
 
     /// What undoing (or redoing) the last operation would ask, without changing anything. It doesn't
@@ -85,19 +85,24 @@ extension WriteCoordinator {
         let ticket = "\(direction.rawValue):\(entry.id):\(generation):\(undo.ticketCount)"
         undo.preparing = true
         let units = entry.units
-        let questions = await Self.answerWithin(options.undoCheckWithinMs) {
-            UndoPlan.findQuestions(fileSystem, units)
+        // Named now, after the entry looked at: another window's operation may end while the disks are read.
+        let label = direction == .undo ? history.menu().undo : history.menu().redo
+        let questions = await Self.answerWithin(options.undoCheckWithinMs) { progress in
+            UndoPlan.findQuestions(fileSystem, units, progress: progress)
         }
         undo.preparing = false
         guard let questions else {
             throw WriteCoordinatorError(Self.undoNotAnswered(direction))
+        }
+        if history.generation != generation {
+            throw WriteCoordinatorError(Self.undoOvertaken(direction))
         }
         // Only tickets for the history as it is now can still be started.
         undo.asked = undo.asked.filter { $0.value.generation == history.generation }
         undo.asked[ticket] = UndoLook(
             direction: direction, entryId: entry.id, generation: generation, questions: questions)
         return UndoPrepared(
-            ticket: ticket, refusal: nil, label: direction == .undo ? history.menu().undo : history.menu().redo,
+            ticket: ticket, refusal: nil, label: label,
             action: entry.action, nameTaken: questions.nameTaken.map(\.name),
             changed: questions.changed.map {
                 UndoQuestion.ChangedItem(name: $0.name, putBack: $0.putBack, replaced: $0.replaced)
@@ -126,7 +131,9 @@ extension WriteCoordinator {
         let withinMs = options.undoCheckWithinMs
         return try await prepareWithReservedSlot { () async throws -> UndoQuestions? in
             let units = try entryAsked().entry.units
-            return await Self.answerWithin(withinMs) { UndoPlan.findQuestions(fileSystem, units) }
+            return await Self.answerWithin(withinMs) { progress in
+                UndoPlan.findQuestions(fileSystem, units, progress: progress)
+            }
         } then: { now, reservation in
             let started = try entryAsked()
             guard let now else {
@@ -224,6 +231,12 @@ extension WriteCoordinator {
             removedItems: run.removedItems)
     }
 
+    /// `undoOvertaken`: why an Undo (or Redo) was refused when another operation changed the history while it looked at
+    /// its items.
+    nonisolated static func undoOvertaken(_ direction: UndoDirection) -> String {
+        "Something changed while \(direction.command) looked at its items. Choose \(direction.command) again."
+    }
+
     /// `undoNotAnswered`: why an Undo (or Redo) was refused when a disk didn't answer its look at the items.
     nonisolated static func undoNotAnswered(_ direction: UndoDirection) -> String {
         let command = direction.command
@@ -254,10 +267,11 @@ extension WriteCoordinator {
 
     /// `answerWithin`: what `work` gives, on a disk thread of its own, or nil when it takes longer than
     /// `milliseconds`. A disk that doesn't answer keeps that thread; nothing waits for it.
-    nonisolated static func answerWithin<T: Sendable>(_ milliseconds: Double, _ work: @escaping @Sendable () -> T)
-        async -> T?
-    {
-        await withCheckedContinuation { (continuation: CheckedContinuation<T?, Never>) in
+    nonisolated static func answerWithin<T: Sendable>(
+        _ milliseconds: Double, _ work: @escaping @Sendable (AnswerProgress) -> T
+    ) async -> T? {
+        let progress = AnswerProgress()
+        return await withCheckedContinuation { (continuation: CheckedContinuation<T?, Never>) in
             let answered = OSAllocatedUnfairLock(initialState: false)
             let answer: @Sendable (T?) -> Void = { value in
                 let first = answered.withLock { done -> Bool in
@@ -266,10 +280,43 @@ extension WriteCoordinator {
                 }
                 if first { continuation.resume(returning: value) }
             }
-            DispatchQueue.global(qos: .userInitiated).async { answer(work()) }
-            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + milliseconds / 1000) {
+            DispatchQueue.global(qos: .userInitiated).async { answer(work(progress)) }
+            waitForAnswers(progress, milliseconds, answered: { answered.withLock { $0 } }) {
+                progress.abandon()
                 answer(nil)
             }
         }
     }
+
+    /// Gives up (`giveUp`) once `milliseconds` pass without an answer: the time runs from the last one, so a look at
+    /// many items on a slow disk that answers each read is never given up on, and one that stops answering is.
+    private nonisolated static func waitForAnswers(
+        _ progress: AnswerProgress, _ milliseconds: Double, answered: @escaping @Sendable () -> Bool,
+        giveUp: @escaping @Sendable () -> Void
+    ) {
+        let due = progress.lastAnswer + .nanoseconds(Int(milliseconds * 1_000_000))
+        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: due) {
+            if answered() { return }
+            if progress.lastAnswer + .nanoseconds(Int(milliseconds * 1_000_000)) <= .now() {
+                giveUp()
+            } else {
+                waitForAnswers(progress, milliseconds, answered: answered, giveUp: giveUp)
+            }
+        }
+    }
+}
+
+/// How a look at the disks is getting on, for the wait on it (`answerWithin`): when it last got an answer, and
+/// whether the wait gave up on it, so it stops.
+public final class AnswerProgress: Sendable {
+    private let state = OSAllocatedUnfairLock(initialState: (last: DispatchTime.now(), abandoned: false))
+
+    public init() {}
+
+    /// The look got an answer (a unit of an Undo was looked at).
+    public func answered() { state.withLock { $0.last = .now() } }
+    /// The wait gave up: what is left needn't be looked at.
+    public var abandoned: Bool { state.withLock { $0.abandoned } }
+    var lastAnswer: DispatchTime { state.withLock { $0.last } }
+    func abandon() { state.withLock { $0.abandoned = true } }
 }

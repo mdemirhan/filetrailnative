@@ -48,6 +48,29 @@ struct UndoNamesLockedTests {
         }
     }
 
+    // Chosen as "notes.txt" while the disk keeps "Notes.txt" (a listing not yet read again after a rename in Finder,
+    // or a path from another app): Undo puts each item back under its own name.
+    @Test(arguments: ["trash", "rename", "cut"])
+    func putsAnItemChosenUnderAnotherSpellingBackUnderItsOwnName(_ operation: String) async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.mkdir("\(root)/src")
+            try UndoDisk.mkdir("\(root)/dst")
+            try UndoDisk.write("\(root)/src/Notes.txt", "n")
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let chosen = "\(root)/src/notes.txt"
+            switch operation {
+            case "trash": try await t.trash(chosen)
+            case "rename": try await t.rename(chosen, "other.txt")
+            default: try await t.paste(.cut, [chosen], into: "\(root)/dst")
+            }
+            #expect(!UndoDisk.names("\(root)/src").contains("Notes.txt"))
+            #expect(try await t.undo().status == .completed)
+            #expect(UndoDisk.names("\(root)/src") == ["Notes.txt"])
+            #expect(try UndoDisk.read("\(root)/src/Notes.txt") == "n")
+            await t.shutDown()
+        }
+    }
+
     @Test func renamesAnItemWithoutAUsableIdBackAskingNothing() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/notes.txt", "")
@@ -254,6 +277,7 @@ struct UndoNamesLockedTests {
             #expect(
                 items(ended).first?.error
                     == "“a copy.txt” was moved, but its lock or permissions couldn't be put back. Set them in Finder's Get Info."
+                    + " “a copy.txt” is in the Trash, but the Trash didn't say where, so Redo can't bring it back."
             )
             await t.shutDown()
         }

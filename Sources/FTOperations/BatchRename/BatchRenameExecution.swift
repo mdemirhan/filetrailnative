@@ -453,8 +453,8 @@ public enum BatchRenameExecution {
         if onlyCaseChanges && isCaseSensitive(item.folder) == false {
             return true
         }
-        let entries = fileSystem.readFolder.flatMap { read in try? read(item.folder) }
-        return !(entries?.contains { sameText($0, item.destinationName) } ?? false)
+        guard let entries = fileSystem.readFolder.flatMap({ read in try? read(item.folder) }) else { return true }
+        return !UndoPlan.listsTwoItems(entries, item.sourceName, item.destinationName)
     }
 
     /// `numberedName`: "Lisbon 2.jpg": the number before the extension, or at the end of a folder's name.

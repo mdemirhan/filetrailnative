@@ -1,4 +1,5 @@
 import AppKit
+import FTOperations
 import Testing
 
 @testable import FTAppKit
@@ -29,6 +30,17 @@ import Testing
         #expect(QuitWhileBusy.describe(.trash)?.message == "Items are still being moved to the Trash.")
         #expect(QuitWhileBusy.describe(.delete)?.detail.contains("can't be recovered") == true)
         #expect(QuitWhileBusy.describe(.undo)?.message == "An Undo is still in progress.")
+        #expect(QuitWhileBusy.describe(.redo)?.message == "A Redo is still in progress.")
+        #expect(QuitWhileBusy.describe(.redo)?.detail.hasSuffix("What was already redone stays redone.") == true)
+    }
+
+    // A Redo is named as a Redo, not an Undo, and every kind the write coordinator reports has its question.
+    @Test func namesEachRunningOperationAsTheCoordinatorReportsIt() {
+        #expect(WriteOperationKind(.redo) == .redo)
+        #expect(WriteOperationKind(.undo) == .undo)
+        for kind in WriteOperationKind.allCases {
+            #expect(BusyOperationKind(rawValue: kind.rawValue) != nil, "\(kind)")
+        }
     }
 
     @Test func doesntAskAboutARenameOrANewFolderWhichAreOverInAMoment() {
