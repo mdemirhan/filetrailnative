@@ -31,6 +31,23 @@ public struct NameOrder: Sendable {
                 right, options: [.numeric, .caseInsensitive, .diacriticInsensitive], range: nil, locale: locale))
     }
 
+    /// Two names the order holds equal ("file1" and "file01", "a.ts" and "A.ts", or one name stored composed and
+    /// decomposed) told apart by their text, byte by byte, so they come in the same order whatever order they were read
+    /// in. A descending sort reverses it with the rest.
+    public static func compareText(_ left: String, _ right: String) -> Int {
+        var leftBytes = left.utf8.makeIterator()
+        var rightBytes = right.utf8.makeIterator()
+        while true {
+            switch (leftBytes.next(), rightBytes.next()) {
+            case (nil, nil): return 0
+            case (nil, _): return -1
+            case (_, nil): return 1
+            case (let l?, let r?) where l != r: return l < r ? -1 : 1
+            default: continue
+            }
+        }
+    }
+
     /// Words in the same alphabet, for what is not a name (a kind, an extension): digits one by one, and texts that
     /// differ only in case or accents are not equal, a lowercase letter coming before its capital.
     public func compareWords(_ left: String, _ right: String) -> Int {

@@ -61,7 +61,6 @@ We decided against it for now, because it:
 
 Found by reading the code and confirmed there; not fixed yet.
 
-- **Names that differ only in case or accents keep the order they were read in.** `a.ts` and `A.ts`, or `Résumé.pdf` and `résumé.pdf`, compare equal in the user's language, so their order in a folder or in search results is the order the disk gave them, and can change between reads. A fixed tie-break by the names' text was tried: it changes 38 of the 300 cases of `listing-sort.json` and 15 of the 267 of the search-sort golden, so it waits for the owner's word on those goldens.
 - **A read that never answers keeps a thread.** Listings, details and item lookups run on the shared pool (`Listing/DirectoryService.swift`); a disk that hangs for good holds one of its threads per read, and enough of them (16 here) would stop every listing. Blocking reads on a queue of their own would end that.
 - **A tab added unread with the Info panel open asks for its item.** Merge All Windows and the tabs brought back at launch wait unread until they are shown; with the Info panel open, each still asks the disk for its folder's details as it is added.
 - **A moved folder that can't be read once its items are gone is taken for gone.** After a move to another disk, the emptied original is looked at before it is removed (`tryRemoveEmptySourceDirectory`, `Execution/ExecutionMoves.swift`); one that can't be read just then is left where it is without a word.

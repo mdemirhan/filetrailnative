@@ -1268,7 +1268,7 @@
             "isExecutable": false
           },
           {
-            "name": "1",
+            "name": "001",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1276,7 +1276,7 @@
             "isExecutable": false
           },
           {
-            "name": "001",
+            "name": "1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1300,7 +1300,7 @@
             "isExecutable": false
           },
           {
-            "name": "2",
+            "name": "02",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1308,7 +1308,7 @@
             "isExecutable": false
           },
           {
-            "name": "02",
+            "name": "2",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1388,14 +1388,6 @@
             "isExecutable": false
           },
           {
-            "name": "a-b",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "A-B",
             "extension": "",
             "kind": "file",
@@ -1404,7 +1396,15 @@
             "isExecutable": false
           },
           {
-            "name": "a1",
+            "name": "a-b",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "A1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1420,7 +1420,7 @@
             "isExecutable": false
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1452,6 +1452,14 @@
             "isExecutable": false
           },
           {
+            "name": "aeble",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
             "name": "Æble",
             "extension": "",
             "kind": "file",
@@ -1460,7 +1468,7 @@
             "isExecutable": false
           },
           {
-            "name": "aeble",
+            "name": "ALPHA",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1484,7 +1492,7 @@
             "isExecutable": false
           },
           {
-            "name": "ALPHA",
+            "name": "angstrom",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1493,14 +1501,6 @@
           },
           {
             "name": "Ångström",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
-            "name": "angstrom",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1530,7 +1530,7 @@
             "isExecutable": false
           },
           {
-            "name": "beta",
+            "name": "Beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1538,7 +1538,7 @@
             "isExecutable": false
           },
           {
-            "name": "Beta",
+            "name": "beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1562,14 +1562,14 @@
             "isExecutable": false
           },
           {
-            "name": "data.json",
+            "name": "data.JSON",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "data.JSON",
+            "name": "data.json",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
@@ -1592,7 +1592,7 @@
             "isExecutable": false
           },
           {
-            "name": "docs",
+            "name": "Docs",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1600,7 +1600,7 @@
             "isExecutable": false
           },
           {
-            "name": "Docs",
+            "name": "docs",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1616,14 +1616,6 @@
           },
           {
             "name": "ǅ",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
-            "name": "école",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1647,14 +1639,7 @@
             "isExecutable": false
           },
           {
-            "name": "ext.appex",
-            "extension": "appex",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "name": "ﬁle",
+            "name": "école",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1662,7 +1647,22 @@
             "isExecutable": false
           },
           {
+            "name": "ext.appex",
+            "extension": "appex",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "file",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "ﬁle",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1685,14 +1685,6 @@
             "isSymlink": false
           },
           {
-            "name": "file 2",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "File 02",
             "extension": "",
             "kind": "file",
@@ -1701,14 +1693,22 @@
             "isExecutable": false
           },
           {
-            "name": "file 2.txt",
+            "name": "file 2",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "File 02.TXT",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "File 02.TXT",
+            "name": "file 2.txt",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
@@ -1730,7 +1730,7 @@
             "isSymlink": false
           },
           {
-            "name": "folder",
+            "name": "FOLDER",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1746,19 +1746,12 @@
             "isExecutable": false
           },
           {
-            "name": "FOLDER",
+            "name": "folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "gamma.txt",
-            "extension": "txt",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
           },
           {
             "name": "Gamma.TXT",
@@ -1768,7 +1761,14 @@
             "isSymlink": false
           },
           {
-            "name": "İstanbul",
+            "name": "gamma.txt",
+            "extension": "txt",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
+            "name": "istanbul",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1776,7 +1776,7 @@
             "isExecutable": false
           },
           {
-            "name": "istanbul",
+            "name": "İstanbul",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1806,7 +1806,7 @@
             "isSymlink": false
           },
           {
-            "name": "naïve",
+            "name": "naive",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1814,7 +1814,7 @@
             "isExecutable": false
           },
           {
-            "name": "naive",
+            "name": "naïve",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1837,7 +1837,7 @@
             "isSymlink": false
           },
           {
-            "name": "ø",
+            "name": "o",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1845,7 +1845,7 @@
             "isExecutable": false
           },
           {
-            "name": "o",
+            "name": "ø",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -1917,14 +1917,14 @@
             "isExecutable": false
           },
           {
-            "name": "readme.md",
+            "name": "README.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "README.md",
+            "name": "readme.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
@@ -1952,6 +1952,13 @@
             "isSymlink": false
           },
           {
+            "name": "Resume.pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
@@ -1960,13 +1967,6 @@
           },
           {
             "name": "resume.pdf",
-            "extension": "pdf",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "name": "Resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -1995,14 +1995,6 @@
             "isSymlink": false
           },
           {
-            "name": "src",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "Src",
             "extension": "",
             "kind": "file",
@@ -2011,7 +2003,7 @@
             "isExecutable": false
           },
           {
-            "name": "straße",
+            "name": "src",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -2027,14 +2019,7 @@
             "isExecutable": false
           },
           {
-            "name": "svc.xpc",
-            "extension": "xpc",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "name": "temp",
+            "name": "straße",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -2042,7 +2027,22 @@
             "isExecutable": false
           },
           {
+            "name": "svc.xpc",
+            "extension": "xpc",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "TEMP",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "temp",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -2073,7 +2073,7 @@
             "isSymlink": false
           },
           {
-            "name": "über",
+            "name": "Uber",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -2081,7 +2081,7 @@
             "isExecutable": false
           },
           {
-            "name": "Uber",
+            "name": "über",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -2183,7 +2183,7 @@
             "isExecutable": false
           },
           {
-            "name": "z10",
+            "name": "Z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -2191,7 +2191,7 @@
             "isExecutable": false
           },
           {
-            "name": "Z10",
+            "name": "z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -3576,14 +3576,14 @@
             "isExecutable": false
           },
           {
-            "name": "Résumé.pdf",
+            "name": "resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "resume.pdf",
+            "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -3661,14 +3661,14 @@
             "isSymlink": false
           },
           {
-            "name": "photo 003.jpg",
+            "name": "photo 3.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "photo 3.jpg",
+            "name": "photo 003.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
@@ -3910,7 +3910,7 @@
             "isExecutable": false
           },
           {
-            "name": "Ecole",
+            "name": "ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -3918,7 +3918,7 @@
             "isExecutable": false
           },
           {
-            "name": "ecole",
+            "name": "Ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -4057,7 +4057,7 @@
             "isExecutable": false
           },
           {
-            "name": "Alpha",
+            "name": "alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -4065,7 +4065,7 @@
             "isExecutable": false
           },
           {
-            "name": "alpha",
+            "name": "Alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -4217,7 +4217,7 @@
             "isExecutable": false
           },
           {
-            "name": "007",
+            "name": "7",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -4225,7 +4225,7 @@
             "isExecutable": false
           },
           {
-            "name": "7",
+            "name": "007",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -4281,7 +4281,7 @@
             "isExecutable": false
           },
           {
-            "name": "0",
+            "name": "00",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -4289,7 +4289,7 @@
             "isExecutable": false
           },
           {
-            "name": "00",
+            "name": "0",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5750,7 +5750,7 @@
             "isExecutable": false
           },
           {
-            "name": "1",
+            "name": "001",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5758,7 +5758,7 @@
             "isExecutable": false
           },
           {
-            "name": "001",
+            "name": "1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5782,7 +5782,7 @@
             "isExecutable": false
           },
           {
-            "name": "2",
+            "name": "02",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5790,7 +5790,7 @@
             "isExecutable": false
           },
           {
-            "name": "02",
+            "name": "2",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5870,14 +5870,6 @@
             "isExecutable": false
           },
           {
-            "name": "a-b",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "A-B",
             "extension": "",
             "kind": "file",
@@ -5886,7 +5878,15 @@
             "isExecutable": false
           },
           {
-            "name": "a1",
+            "name": "a-b",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "A1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5902,7 +5902,7 @@
             "isExecutable": false
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5934,6 +5934,14 @@
             "isExecutable": false
           },
           {
+            "name": "aeble",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
             "name": "Æble",
             "extension": "",
             "kind": "file",
@@ -5942,7 +5950,7 @@
             "isExecutable": false
           },
           {
-            "name": "aeble",
+            "name": "ALPHA",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5966,7 +5974,7 @@
             "isExecutable": false
           },
           {
-            "name": "ALPHA",
+            "name": "angstrom",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -5975,14 +5983,6 @@
           },
           {
             "name": "Ångström",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
-            "name": "angstrom",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6012,7 +6012,7 @@
             "isExecutable": false
           },
           {
-            "name": "beta",
+            "name": "Beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6020,7 +6020,7 @@
             "isExecutable": false
           },
           {
-            "name": "Beta",
+            "name": "beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6044,14 +6044,14 @@
             "isExecutable": false
           },
           {
-            "name": "data.json",
+            "name": "data.JSON",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "data.JSON",
+            "name": "data.json",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
@@ -6074,7 +6074,7 @@
             "isExecutable": false
           },
           {
-            "name": "docs",
+            "name": "Docs",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6082,7 +6082,7 @@
             "isExecutable": false
           },
           {
-            "name": "Docs",
+            "name": "docs",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6098,14 +6098,6 @@
           },
           {
             "name": "ǅ",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
-            "name": "école",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6129,14 +6121,7 @@
             "isExecutable": false
           },
           {
-            "name": "ext.appex",
-            "extension": "appex",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "name": "ﬁle",
+            "name": "école",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6144,7 +6129,22 @@
             "isExecutable": false
           },
           {
+            "name": "ext.appex",
+            "extension": "appex",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "file",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "ﬁle",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6167,14 +6167,6 @@
             "isSymlink": false
           },
           {
-            "name": "file 2",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "File 02",
             "extension": "",
             "kind": "file",
@@ -6183,14 +6175,22 @@
             "isExecutable": false
           },
           {
-            "name": "file 2.txt",
+            "name": "file 2",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "File 02.TXT",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "File 02.TXT",
+            "name": "file 2.txt",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
@@ -6212,7 +6212,7 @@
             "isSymlink": false
           },
           {
-            "name": "folder",
+            "name": "FOLDER",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6228,19 +6228,12 @@
             "isExecutable": false
           },
           {
-            "name": "FOLDER",
+            "name": "folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "gamma.txt",
-            "extension": "txt",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
           },
           {
             "name": "Gamma.TXT",
@@ -6250,7 +6243,14 @@
             "isSymlink": false
           },
           {
-            "name": "İstanbul",
+            "name": "gamma.txt",
+            "extension": "txt",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
+            "name": "istanbul",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6258,7 +6258,7 @@
             "isExecutable": false
           },
           {
-            "name": "istanbul",
+            "name": "İstanbul",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6288,7 +6288,7 @@
             "isSymlink": false
           },
           {
-            "name": "naïve",
+            "name": "naive",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6296,7 +6296,7 @@
             "isExecutable": false
           },
           {
-            "name": "naive",
+            "name": "naïve",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6319,7 +6319,7 @@
             "isSymlink": false
           },
           {
-            "name": "ø",
+            "name": "o",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6327,7 +6327,7 @@
             "isExecutable": false
           },
           {
-            "name": "o",
+            "name": "ø",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6399,14 +6399,14 @@
             "isExecutable": false
           },
           {
-            "name": "readme.md",
+            "name": "README.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "README.md",
+            "name": "readme.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
@@ -6434,6 +6434,13 @@
             "isSymlink": false
           },
           {
+            "name": "Resume.pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
@@ -6442,13 +6449,6 @@
           },
           {
             "name": "resume.pdf",
-            "extension": "pdf",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "name": "Resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -6477,14 +6477,6 @@
             "isSymlink": false
           },
           {
-            "name": "src",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "Src",
             "extension": "",
             "kind": "file",
@@ -6493,7 +6485,7 @@
             "isExecutable": false
           },
           {
-            "name": "straße",
+            "name": "src",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6509,14 +6501,7 @@
             "isExecutable": false
           },
           {
-            "name": "svc.xpc",
-            "extension": "xpc",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "name": "temp",
+            "name": "straße",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6524,7 +6509,22 @@
             "isExecutable": false
           },
           {
+            "name": "svc.xpc",
+            "extension": "xpc",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "TEMP",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "temp",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6555,7 +6555,7 @@
             "isSymlink": false
           },
           {
-            "name": "über",
+            "name": "Uber",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6563,7 +6563,7 @@
             "isExecutable": false
           },
           {
-            "name": "Uber",
+            "name": "über",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6665,7 +6665,7 @@
             "isExecutable": false
           },
           {
-            "name": "z10",
+            "name": "Z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -6673,7 +6673,7 @@
             "isExecutable": false
           },
           {
-            "name": "Z10",
+            "name": "z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8058,14 +8058,14 @@
             "isExecutable": false
           },
           {
-            "name": "Résumé.pdf",
+            "name": "resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "resume.pdf",
+            "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -8143,14 +8143,14 @@
             "isSymlink": false
           },
           {
-            "name": "photo 003.jpg",
+            "name": "photo 3.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "photo 3.jpg",
+            "name": "photo 003.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
@@ -8392,7 +8392,7 @@
             "isExecutable": false
           },
           {
-            "name": "Ecole",
+            "name": "ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8400,7 +8400,7 @@
             "isExecutable": false
           },
           {
-            "name": "ecole",
+            "name": "Ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8539,7 +8539,7 @@
             "isExecutable": false
           },
           {
-            "name": "Alpha",
+            "name": "alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8547,7 +8547,7 @@
             "isExecutable": false
           },
           {
-            "name": "alpha",
+            "name": "Alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8699,7 +8699,7 @@
             "isExecutable": false
           },
           {
-            "name": "007",
+            "name": "7",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8707,7 +8707,7 @@
             "isExecutable": false
           },
           {
-            "name": "7",
+            "name": "007",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8763,7 +8763,7 @@
             "isExecutable": false
           },
           {
-            "name": "0",
+            "name": "00",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -8771,7 +8771,7 @@
             "isExecutable": false
           },
           {
-            "name": "00",
+            "name": "0",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10253,7 +10253,7 @@
             "isExecutable": false
           },
           {
-            "name": "1",
+            "name": "001",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10261,7 +10261,7 @@
             "isExecutable": false
           },
           {
-            "name": "001",
+            "name": "1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10285,7 +10285,7 @@
             "isExecutable": false
           },
           {
-            "name": "2",
+            "name": "02",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10293,7 +10293,7 @@
             "isExecutable": false
           },
           {
-            "name": "02",
+            "name": "2",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10373,14 +10373,6 @@
             "isExecutable": false
           },
           {
-            "name": "a-b",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "A-B",
             "extension": "",
             "kind": "file",
@@ -10389,7 +10381,15 @@
             "isExecutable": false
           },
           {
-            "name": "a1",
+            "name": "a-b",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "A1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10405,7 +10405,7 @@
             "isExecutable": false
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10437,6 +10437,14 @@
             "isExecutable": false
           },
           {
+            "name": "aeble",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
             "name": "Æble",
             "extension": "",
             "kind": "file",
@@ -10445,7 +10453,7 @@
             "isExecutable": false
           },
           {
-            "name": "aeble",
+            "name": "ALPHA",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10469,7 +10477,7 @@
             "isExecutable": false
           },
           {
-            "name": "ALPHA",
+            "name": "angstrom",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10485,14 +10493,6 @@
             "isExecutable": false
           },
           {
-            "name": "angstrom",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "B",
             "extension": "",
             "kind": "file",
@@ -10501,7 +10501,7 @@
             "isExecutable": false
           },
           {
-            "name": "beta",
+            "name": "Beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10509,7 +10509,7 @@
             "isExecutable": false
           },
           {
-            "name": "Beta",
+            "name": "beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10549,14 +10549,6 @@
             "isExecutable": false
           },
           {
-            "name": "docs",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "Docs",
             "extension": "",
             "kind": "file",
@@ -10565,7 +10557,7 @@
             "isExecutable": false
           },
           {
-            "name": "ǅ",
+            "name": "docs",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10573,7 +10565,7 @@
             "isExecutable": false
           },
           {
-            "name": "école",
+            "name": "ǅ",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10597,7 +10589,7 @@
             "isExecutable": false
           },
           {
-            "name": "ﬁle",
+            "name": "école",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10613,7 +10605,7 @@
             "isExecutable": false
           },
           {
-            "name": "file 1",
+            "name": "ﬁle",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10621,7 +10613,7 @@
             "isExecutable": false
           },
           {
-            "name": "file 2",
+            "name": "file 1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10637,23 +10629,15 @@
             "isExecutable": false
           },
           {
+            "name": "file 2",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
             "name": "file 10",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
-            "name": "folder",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
-            "name": "Folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10669,7 +10653,15 @@
             "isExecutable": false
           },
           {
-            "name": "İstanbul",
+            "name": "Folder",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10685,7 +10677,7 @@
             "isExecutable": false
           },
           {
-            "name": "Makefile",
+            "name": "İstanbul",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10693,7 +10685,7 @@
             "isExecutable": false
           },
           {
-            "name": "naïve",
+            "name": "Makefile",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10709,6 +10701,14 @@
             "isExecutable": false
           },
           {
+            "name": "naïve",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
             "name": "node_modules",
             "extension": "",
             "kind": "file",
@@ -10717,7 +10717,7 @@
             "isExecutable": false
           },
           {
-            "name": "ø",
+            "name": "o",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10725,7 +10725,7 @@
             "isExecutable": false
           },
           {
-            "name": "o",
+            "name": "ø",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10749,14 +10749,6 @@
             "isExecutable": false
           },
           {
-            "name": "src",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "Src",
             "extension": "",
             "kind": "file",
@@ -10765,7 +10757,7 @@
             "isExecutable": false
           },
           {
-            "name": "straße",
+            "name": "src",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10781,7 +10773,7 @@
             "isExecutable": false
           },
           {
-            "name": "temp",
+            "name": "straße",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10790,6 +10782,14 @@
           },
           {
             "name": "TEMP",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
+          },
+          {
+            "name": "temp",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10813,7 +10813,7 @@
             "isExecutable": false
           },
           {
-            "name": "über",
+            "name": "Uber",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10821,7 +10821,7 @@
             "isExecutable": false
           },
           {
-            "name": "Uber",
+            "name": "über",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10909,7 +10909,7 @@
             "isExecutable": false
           },
           {
-            "name": "z10",
+            "name": "Z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -10917,7 +10917,7 @@
             "isExecutable": false
           },
           {
-            "name": "Z10",
+            "name": "z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -11006,14 +11006,14 @@
             "isSymlink": false
           },
           {
-            "name": "data.json",
+            "name": "data.JSON",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "data.JSON",
+            "name": "data.json",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
@@ -11027,14 +11027,14 @@
             "isSymlink": false
           },
           {
-            "name": "readme.md",
+            "name": "README.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "README.md",
+            "name": "readme.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
@@ -11062,6 +11062,13 @@
             "isSymlink": false
           },
           {
+            "name": "Resume.pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
@@ -11070,13 +11077,6 @@
           },
           {
             "name": "resume.pdf",
-            "extension": "pdf",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
-            "name": "Resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -11125,14 +11125,14 @@
             "isSymlink": false
           },
           {
-            "name": "file 2.txt",
+            "name": "File 02.TXT",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "File 02.TXT",
+            "name": "file 2.txt",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
@@ -11146,14 +11146,14 @@
             "isSymlink": false
           },
           {
-            "name": "gamma.txt",
+            "name": "Gamma.TXT",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "Gamma.TXT",
+            "name": "gamma.txt",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
@@ -12394,14 +12394,14 @@
             "isSymlink": false
           },
           {
-            "name": "Résumé.pdf",
+            "name": "resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "resume.pdf",
+            "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -12478,14 +12478,14 @@
             "isSymlink": false
           },
           {
-            "name": "photo 003.jpg",
+            "name": "photo 3.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "photo 3.jpg",
+            "name": "photo 003.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
@@ -12888,7 +12888,7 @@
             "isExecutable": false
           },
           {
-            "name": "Ecole",
+            "name": "ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -12896,7 +12896,7 @@
             "isExecutable": false
           },
           {
-            "name": "ecole",
+            "name": "Ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -13000,7 +13000,7 @@
             "isExecutable": false
           },
           {
-            "name": "Alpha",
+            "name": "alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -13008,7 +13008,7 @@
             "isExecutable": false
           },
           {
-            "name": "alpha",
+            "name": "Alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -13160,7 +13160,7 @@
             "isExecutable": false
           },
           {
-            "name": "007",
+            "name": "7",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -13168,7 +13168,7 @@
             "isExecutable": false
           },
           {
-            "name": "7",
+            "name": "007",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -13224,7 +13224,7 @@
             "isExecutable": false
           },
           {
-            "name": "0",
+            "name": "00",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -13232,7 +13232,7 @@
             "isExecutable": false
           },
           {
-            "name": "00",
+            "name": "0",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14739,7 +14739,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "1",
+            "name": "001",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14748,7 +14748,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "001",
+            "name": "1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14775,7 +14775,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "2",
+            "name": "02",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14784,7 +14784,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "02",
+            "name": "2",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14874,15 +14874,6 @@
             "sizeBytes": 5
           },
           {
-            "name": "a-b",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false,
-            "sizeBytes": 5
-          },
-          {
             "name": "A-B",
             "extension": "",
             "kind": "file",
@@ -14892,7 +14883,16 @@
             "sizeBytes": 5
           },
           {
-            "name": "a1",
+            "name": "a-b",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false,
+            "sizeBytes": 5
+          },
+          {
+            "name": "A1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14910,7 +14910,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14946,6 +14946,15 @@
             "sizeBytes": 5
           },
           {
+            "name": "aeble",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false,
+            "sizeBytes": 5
+          },
+          {
             "name": "Æble",
             "extension": "",
             "kind": "file",
@@ -14955,7 +14964,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "aeble",
+            "name": "ALPHA",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14982,7 +14991,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "ALPHA",
+            "name": "angstrom",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -14992,15 +15001,6 @@
           },
           {
             "name": "Ångström",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false,
-            "sizeBytes": 5
-          },
-          {
-            "name": "angstrom",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15034,7 +15034,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "beta",
+            "name": "Beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15043,7 +15043,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "Beta",
+            "name": "beta",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15070,7 +15070,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "data.json",
+            "name": "data.JSON",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
@@ -15078,7 +15078,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "data.JSON",
+            "name": "data.json",
             "extension": "json",
             "kind": "file",
             "isHidden": false,
@@ -15104,7 +15104,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "docs",
+            "name": "Docs",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15113,7 +15113,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "Docs",
+            "name": "docs",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15131,15 +15131,6 @@
           },
           {
             "name": "ǅ",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false,
-            "sizeBytes": 5
-          },
-          {
-            "name": "école",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15166,15 +15157,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "ext.appex",
-            "extension": "appex",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "sizeBytes": 5
-          },
-          {
-            "name": "ﬁle",
+            "name": "école",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15183,7 +15166,24 @@
             "sizeBytes": 5
           },
           {
+            "name": "ext.appex",
+            "extension": "appex",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "sizeBytes": 5
+          },
+          {
             "name": "file",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false,
+            "sizeBytes": 5
+          },
+          {
+            "name": "ﬁle",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15209,15 +15209,6 @@
             "sizeBytes": 5
           },
           {
-            "name": "file 2",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false,
-            "sizeBytes": 5
-          },
-          {
             "name": "File 02",
             "extension": "",
             "kind": "file",
@@ -15227,7 +15218,16 @@
             "sizeBytes": 5
           },
           {
-            "name": "file 2.txt",
+            "name": "file 2",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false,
+            "sizeBytes": 5
+          },
+          {
+            "name": "File 02.TXT",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
@@ -15235,7 +15235,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "File 02.TXT",
+            "name": "file 2.txt",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
@@ -15260,7 +15260,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "folder",
+            "name": "FOLDER",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15278,20 +15278,12 @@
             "sizeBytes": 5
           },
           {
-            "name": "FOLDER",
+            "name": "folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false,
-            "sizeBytes": 5
-          },
-          {
-            "name": "gamma.txt",
-            "extension": "txt",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
             "sizeBytes": 5
           },
           {
@@ -15303,7 +15295,15 @@
             "sizeBytes": 5
           },
           {
-            "name": "İstanbul",
+            "name": "gamma.txt",
+            "extension": "txt",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "sizeBytes": 5
+          },
+          {
+            "name": "istanbul",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15312,7 +15312,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "istanbul",
+            "name": "İstanbul",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15346,7 +15346,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "naïve",
+            "name": "naive",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15355,7 +15355,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "naive",
+            "name": "naïve",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15381,7 +15381,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "ø",
+            "name": "o",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15390,7 +15390,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "o",
+            "name": "ø",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15472,7 +15472,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "readme.md",
+            "name": "README.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
@@ -15480,7 +15480,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "README.md",
+            "name": "readme.md",
             "extension": "md",
             "kind": "file",
             "isHidden": false,
@@ -15512,6 +15512,14 @@
             "sizeBytes": 5
           },
           {
+            "name": "Resume.pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "sizeBytes": 5
+          },
+          {
             "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
@@ -15521,14 +15529,6 @@
           },
           {
             "name": "resume.pdf",
-            "extension": "pdf",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "sizeBytes": 5
-          },
-          {
-            "name": "Resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -15561,15 +15561,6 @@
             "sizeBytes": 5
           },
           {
-            "name": "src",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false,
-            "sizeBytes": 5
-          },
-          {
             "name": "Src",
             "extension": "",
             "kind": "file",
@@ -15579,7 +15570,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "straße",
+            "name": "src",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15597,15 +15588,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "svc.xpc",
-            "extension": "xpc",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "sizeBytes": 5
-          },
-          {
-            "name": "temp",
+            "name": "straße",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15614,7 +15597,24 @@
             "sizeBytes": 5
           },
           {
+            "name": "svc.xpc",
+            "extension": "xpc",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "sizeBytes": 5
+          },
+          {
             "name": "TEMP",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false,
+            "sizeBytes": 5
+          },
+          {
+            "name": "temp",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15649,7 +15649,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "über",
+            "name": "Uber",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15658,7 +15658,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "Uber",
+            "name": "über",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15773,7 +15773,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "z10",
+            "name": "Z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -15782,7 +15782,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "Z10",
+            "name": "z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -17207,7 +17207,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "Résumé.pdf",
+            "name": "resume.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -17215,7 +17215,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "resume.pdf",
+            "name": "Résumé.pdf",
             "extension": "pdf",
             "kind": "file",
             "isHidden": false,
@@ -17304,7 +17304,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "photo 003.jpg",
+            "name": "photo 3.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
@@ -17312,7 +17312,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "photo 3.jpg",
+            "name": "photo 003.jpg",
             "extension": "jpg",
             "kind": "file",
             "isHidden": false,
@@ -17586,7 +17586,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "Ecole",
+            "name": "ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -17595,7 +17595,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "ecole",
+            "name": "Ecole",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -17752,7 +17752,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "Alpha",
+            "name": "alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -17761,7 +17761,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "alpha",
+            "name": "Alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -17932,7 +17932,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "007",
+            "name": "7",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -17941,7 +17941,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "7",
+            "name": "007",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -18004,7 +18004,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "0",
+            "name": "00",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -18013,7 +18013,7 @@
             "sizeBytes": 5
           },
           {
-            "name": "00",
+            "name": "0",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -18845,14 +18845,14 @@
             "isSymlink": false
           },
           {
-            "name": "a1",
+            "name": "A1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -19355,11 +19355,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -20073,19 +20073,19 @@
             "isExecutable": false
           },
           {
+            "name": "02",
+            "extension": "",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false
+          },
+          {
             "name": "2",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "02",
-            "extension": "",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
           },
           {
             "name": "007",
@@ -20140,14 +20140,14 @@
             "isSymlink": false
           },
           {
-            "name": "a1",
+            "name": "A1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -20170,19 +20170,19 @@
             "isExecutable": false
           },
           {
-            "name": "Alpha",
-            "extension": "",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
             "name": "ALPHA",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
+          },
+          {
+            "name": "Alpha",
+            "extension": "",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false
           },
           {
             "name": "angstrom",
@@ -20388,16 +20388,16 @@
             "isSymlink": false
           },
           {
-            "name": "Résumé.pdf",
+            "name": "Resume.pdf",
             "extension": "pdf",
-            "kind": "directory",
+            "kind": "file",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "Resume.pdf",
+            "name": "Résumé.pdf",
             "extension": "pdf",
-            "kind": "file",
+            "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
@@ -20578,11 +20578,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -21801,11 +21801,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -23024,11 +23024,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -24247,11 +24247,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -25470,11 +25470,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -26693,11 +26693,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -27916,11 +27916,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -28629,14 +28629,14 @@
             "isSymlink": false
           },
           {
-            "name": "a1",
+            "name": "A1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -29139,11 +29139,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -30082,14 +30082,14 @@
             "isSymlink": false
           },
           {
-            "name": "a1",
+            "name": "A1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -30362,11 +30362,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -31585,11 +31585,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -32808,11 +32808,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -33531,7 +33531,7 @@
             "sizeBytes": null
           },
           {
-            "name": "a1",
+            "name": "A1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -33539,7 +33539,7 @@
             "sizeBytes": null
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -34104,11 +34104,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -35142,7 +35142,7 @@
             "sizeBytes": null
           },
           {
-            "name": "a1",
+            "name": "A1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -35150,7 +35150,7 @@
             "sizeBytes": null
           },
           {
-            "name": "A1",
+            "name": "a1",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -35400,11 +35400,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -36696,11 +36696,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -37992,11 +37992,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -38673,7 +38673,7 @@
             "isSymlink": true
           },
           {
-            "name": "Z10",
+            "name": "z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -38681,7 +38681,7 @@
             "isExecutable": false
           },
           {
-            "name": "z10",
+            "name": "Z10",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -42863,19 +42863,19 @@
             "isSymlink": false
           },
           {
-            "name": "1",
-            "extension": "",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
             "name": "001",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": true
+          },
+          {
+            "name": "1",
+            "extension": "",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false
           },
           {
             "name": "001 69",
@@ -51897,7 +51897,7 @@
             "isExecutable": false
           },
           {
-            "name": "Folder",
+            "name": "FOLDER",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -51905,7 +51905,7 @@
             "isExecutable": false
           },
           {
-            "name": "FOLDER",
+            "name": "Folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -52783,11 +52783,11 @@
             "kind": "directory"
           },
           {
-            "name": "a1",
+            "name": "A1",
             "kind": "directory"
           },
           {
-            "name": "A1",
+            "name": "a1",
             "kind": "directory"
           },
           {
@@ -66213,7 +66213,7 @@
             "isSymlink": true
           },
           {
-            "name": "FOLDER",
+            "name": "folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -66221,7 +66221,7 @@
             "isExecutable": false
           },
           {
-            "name": "folder",
+            "name": "FOLDER",
             "extension": "",
             "kind": "file",
             "isHidden": false,
@@ -66236,19 +66236,19 @@
             "isSymlink": false
           },
           {
-            "name": "file",
-            "extension": "",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          },
-          {
             "name": "ﬁle",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
+          },
+          {
+            "name": "file",
+            "extension": "",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false
           },
           {
             "name": "delta",
@@ -75412,14 +75412,14 @@
             "isSymlink": false
           },
           {
-            "name": "straße",
+            "name": "STRASSE",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "STRASSE",
+            "name": "straße",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -75533,11 +75533,11 @@
             "kind": "directory"
           },
           {
-            "name": "straße",
+            "name": "STRASSE",
             "kind": "directory"
           },
           {
-            "name": "STRASSE",
+            "name": "straße",
             "kind": "directory"
           },
           {
@@ -76398,19 +76398,19 @@
             "sizeBytes": 1
           },
           {
-            "name": "file 2.txt",
-            "extension": "txt",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true,
-            "sizeBytes": 1
-          },
-          {
             "name": "File 02.TXT",
             "extension": "txt",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
+            "sizeBytes": 1
+          },
+          {
+            "name": "file 2.txt",
+            "extension": "txt",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true,
             "sizeBytes": 1
           },
           {
@@ -76584,12 +76584,12 @@
             "kind": "directory"
           },
           {
-            "name": "ﬁle",
-            "kind": "symlink_directory"
-          },
-          {
             "name": "file",
             "kind": "directory"
+          },
+          {
+            "name": "ﬁle",
+            "kind": "symlink_directory"
           },
           {
             "name": "x  y",
@@ -91670,14 +91670,14 @@
             "isSymlink": false
           },
           {
-            "name": "File 02.TXT",
+            "name": "file 2.txt",
             "extension": "txt",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "file 2.txt",
+            "name": "File 02.TXT",
             "extension": "txt",
             "kind": "directory",
             "isHidden": false,
@@ -96648,20 +96648,20 @@
             "isSymlink": false
           },
           {
-            "name": "ALPHA",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "alpha",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": true
+          },
+          {
+            "name": "ALPHA",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
           },
           {
             "name": "0",
@@ -102437,14 +102437,14 @@
             "isSymlink": false
           },
           {
-            "name": "File 02",
+            "name": "file 2",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "file 2",
+            "name": "File 02",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
@@ -105681,19 +105681,19 @@
             "isExecutable": false
           },
           {
+            "name": "Alpha",
+            "extension": "",
+            "kind": "symlink_file",
+            "isHidden": false,
+            "isSymlink": true
+          },
+          {
             "name": "ALPHA",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": false
-          },
-          {
-            "name": "Alpha",
-            "extension": "",
-            "kind": "symlink_file",
-            "isHidden": false,
-            "isSymlink": true
           },
           {
             "name": "ab",
@@ -106717,20 +106717,20 @@
             "isExecutable": false
           },
           {
-            "name": "Folder",
-            "extension": "",
-            "kind": "file",
-            "isHidden": false,
-            "isSymlink": false,
-            "isExecutable": false
-          },
-          {
             "name": "folder",
             "extension": "",
             "kind": "file",
             "isHidden": false,
             "isSymlink": false,
             "isExecutable": true
+          },
+          {
+            "name": "Folder",
+            "extension": "",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "isExecutable": false
           },
           {
             "name": "école",
@@ -108578,12 +108578,12 @@
             "kind": "directory"
           },
           {
-            "name": "Alpha",
-            "kind": "directory"
-          },
-          {
             "name": "ALPHA",
             "kind": "symlink_directory"
+          },
+          {
+            "name": "Alpha",
+            "kind": "directory"
           },
           {
             "name": "angstrom",
@@ -121630,14 +121630,14 @@
             "isSymlink": false
           },
           {
-            "name": "02",
+            "name": "2",
             "extension": "",
             "kind": "directory",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "name": "2",
+            "name": "02",
             "extension": "",
             "kind": "directory",
             "isHidden": false,

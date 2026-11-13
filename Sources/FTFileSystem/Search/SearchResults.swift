@@ -78,7 +78,7 @@ public enum SearchResults {
         sortedIndexes(items, by: sortBy, direction: direction, order: order).map { items[$0] }
     }
 
-    /// The positions of `items` in sorted order; equal items keep their places.
+    /// The positions of `items` in sorted order; items of the very same path keep their places.
     public static func sortedIndexes(
         _ items: [SearchResultItem], by sortBy: SearchResultsSortByPreference, direction: SortDirectionPreference,
         order: NameOrder = .current
@@ -115,22 +115,23 @@ public enum SearchResults {
         return merged
     }
 
-    // Path is the deterministic tie-breaker so sort output stays stable across repeated runs.
+    // The path is the tie-breaker, as the language orders it and then by its text, so the order is the same every time.
     private static func compare(
         _ left: SearchResultItem, _ right: SearchResultItem, by sortBy: SearchResultsSortByPreference,
         order: NameOrder
     ) -> Int {
+        // Names and paths the order holds equal are told apart by their text, so equal ones come in a fixed order.
+        let byName = firstNonZero(order.compare(left.name, right.name), order.compare(left.path, right.path))
+        let byText = NameOrder.compareText(left.path, right.path)
         switch sortBy {
         case .name:
-            return firstNonZero(order.compare(left.name, right.name), order.compare(left.path, right.path))
+            return firstNonZero(byName, byText)
         case .kind:
             // Kind is told from the extension, which every result has at once (the kind's name loads only for the rows
             // on screen): folders first, then files by extension, those without one last, each group by name.
-            return firstNonZero(
-                compareKindKeys(kindKey(left), kindKey(right), order: order),
-                order.compare(left.name, right.name), order.compare(left.path, right.path))
+            return firstNonZero(compareKindKeys(kindKey(left), kindKey(right), order: order), byName, byText)
         case .path:
-            return order.compare(left.path, right.path)
+            return firstNonZero(order.compare(left.path, right.path), byText)
         }
     }
 

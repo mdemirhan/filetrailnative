@@ -90,12 +90,16 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(merged.map(\.name) == ["apa", "zebra", "åsna"])
     }
 
-    @Test func keepsTheOrderOfEqualItems() {
-        let first = result("/a/x.ts")
-        let second = result("/a/X.ts")
-        // Same name, same path ignoring case: the list's own order stands, whichever way it is sorted.
-        #expect(SearchResults.sort([first, second], by: .path, direction: .asc) == [first, second])
-        #expect(SearchResults.sort([first, second], by: .path, direction: .desc) == [first, second])
+    @Test func ordersItemsTheLanguageHoldsEqualByTheirText() {
+        let lower = result("/a/x.ts")
+        let upper = result("/a/X.ts")
+        // Same name and path ignoring case: byte by byte, "X" comes first, whatever order they arrive in; a descending
+        // sort reverses it with the rest.
+        for sortBy: SearchResultsSortByPreference in [.name, .path, .kind] {
+            #expect(SearchResults.sort([lower, upper], by: sortBy, direction: .asc) == [upper, lower])
+            #expect(SearchResults.sort([upper, lower], by: sortBy, direction: .asc) == [upper, lower])
+            #expect(SearchResults.sort([upper, lower], by: sortBy, direction: .desc) == [lower, upper])
+        }
     }
 }
 

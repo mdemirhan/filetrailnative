@@ -29,7 +29,7 @@ struct NameKeys {
     }
 
     /// Compares names for sorting; the closure given to `body` takes the positions of two names and answers
-    /// negative, zero or positive.
+    /// negative, zero or positive. Names the order holds equal are told apart by their text (`NameOrder.compareText`).
     func withComparator<R>(_ body: (_ compare: (Int, Int) -> Int) -> R) -> R {
         let total = Int32(bytes.count)
         return bytes.withUnsafeBufferPointer { bytes in
@@ -49,9 +49,11 @@ struct NameKeys {
                                     let result = memcmp(base + leftStart, base + rightStart, common)
                                     if result != 0 { return result < 0 ? -1 : 1 }
                                 }
-                                return leftLength == rightLength ? 0 : (leftLength < rightLength ? -1 : 1)
+                                if leftLength != rightLength { return leftLength < rightLength ? -1 : 1 }
+                                return NameOrder.compareText(names[left], names[right])
                             }
-                            return order.compare(names[left], names[right])
+                            let compared = order.compare(names[left], names[right])
+                            return compared != 0 ? compared : NameOrder.compareText(names[left], names[right])
                         }
                     }
                 }
@@ -59,7 +61,7 @@ struct NameKeys {
         }
     }
 
-    /// The positions of the names in order, equal names in the order given.
+    /// The positions of the names in order; names of the very same text in the order given.
     func sortedPositions() -> [Int] {
         withComparator { compare in
             var order = Array(0..<count)
