@@ -156,57 +156,17 @@ struct RowsPerColumnTests {
         layout.rowsPerColumn(containerHeight: height)
     }
 
-    @Test func computesRowsForAStandardViewport() {
-        // 500 - 10 - 4 + 4 = 490; floor(490 / 44) = 11.
-        #expect(Self.rows(500) == 11)
-    }
-
-    @Test func computesRowsWhenScrollbarHasAlreadyReducedClientHeight() {
-        #expect(Self.rows(492) == 10)
-    }
-
-    @Test func returns1ForZeroOrNegativeContainerHeight() {
-        #expect(Self.rows(0) == 1)
-        #expect(Self.rows(-10) == 1)
-    }
-
-    @Test func handlesExactFitWithNoRemainder() {
-        #expect(Self.rows(494) == 11)
-    }
-
-    @Test func dropsARowWhen1pxShortOfExactFit() {
-        #expect(Self.rows(493) == 10)
-    }
-
-    @Test func handlesTheScrollbarBoundaryCorrectly() {
-        #expect(Self.rows(494) == 11)
-        #expect(Self.rows(486) == 10)
-    }
-
-    @Test func worksWithCompactLayout() {
-        #expect(Self.rows(500, Self.compact) == 13)
-    }
-
-    @Test func worksWithCompactLayoutReducedByScrollbar() {
-        #expect(Self.rows(492, Self.compact) == 13)
-        #expect(Self.rows(472, Self.compact) == 12)
-    }
-
-    @Test func handlesVerySmallContainerGracefully() {
-        #expect(Self.rows(50) == 1)
-    }
-
-    @Test func handlesContainerSmallerThanASingleRow() {
-        #expect(Self.rows(20) == 1)
-    }
-
-    @Test func handlesARangeOfHeightsMatchingExpectedRowCounts() {
-        #expect(Self.rows(230) == 5)
-        #expect(Self.rows(229) == 4)
-        #expect(Self.rows(450) == 10)
-        #expect(Self.rows(449) == 9)
-        #expect(Self.rows(670) == 15)
-        #expect(Self.rows(669) == 14)
+    // Rows fit inside the padding, a row gap between each: 500 - 10 - 4 + 4 = 490, floor(490 / 44) = 11. A height the
+    // scroll bar has already taken from, an exact fit and one point short of it, and a container smaller than a row
+    // (or of no height) that still has one.
+    @Test func fitsTheRowsOfAColumnInTheHeight() {
+        let normal: [(height: Double, rows: Int)] = [
+            (500, 11), (492, 10), (494, 11), (493, 10), (486, 10), (0, 1), (-10, 1), (50, 1), (20, 1), (230, 5),
+            (229, 4), (450, 10), (449, 9), (670, 15), (669, 14),
+        ]
+        for fit in normal { #expect(Self.rows(fit.height) == fit.rows, "\(fit.height)") }
+        let compact: [(height: Double, rows: Int)] = [(500, 13), (492, 13), (472, 12)]
+        for fit in compact { #expect(Self.rows(fit.height, Self.compact) == fit.rows, "compact \(fit.height)") }
     }
 }
 

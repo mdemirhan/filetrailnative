@@ -212,41 +212,11 @@ extension ExplorerWindowlessTests {
 
         // MARK: Calculate Size of the menus
 
-        // One item is measured again, past a size already known.
-        @Test func aRowsCalculateSizeMeasuresAgain() async throws {
-            let window = try await open()
-            let alpha = path(window, "Alpha")
-            let before = try await measured(window, alpha)
-            try choose("Calculate Size", in: try contentMenu(window, ["Alpha"]))
-            #expect(await waitUntil { (window.tab.folderSizes.readySize(alpha) ?? 0) > before })
-            #expect(!window.tab.panels.propertiesOpen)
-            await window.close()
-        }
-
-        // So is the folder on screen, from empty space.
-        @Test func theBackgroundsCalculateSizeMeasuresTheFolderOnScreenAgain() async throws {
-            let window = try await open()
-            let folder = window.tab.shownFolderPath
-            let before = try await measured(window, folder)
-            try choose("Calculate Size", in: try backgroundMenu(window))
-            #expect(await waitUntil { (window.tab.folderSizes.readySize(folder) ?? 0) > before })
-            #expect(!window.tab.panels.propertiesOpen)
-            await window.close()
-        }
-
-        // A sidebar folder in the Size column is measured again and leaves the panel closed.
-        @Test func aSidebarFolderInTheSizeColumnMeasuresAgainWithThePanelClosed() async throws {
-            let window = try await open()
-            let beta = path(window, "Beta")
-            let before = try await measured(window, beta)
-            try choose("Calculate Size", in: try treeMenu(window, "Beta"))
-            #expect(await waitUntil { (window.tab.folderSizes.readySize(beta) ?? 0) > before })
-            #expect(!window.tab.panels.propertiesOpen)
-            await window.close()
-        }
-
-        // The sidebar's folder on screen shows in the status bar: the panel stays closed.
-        @Test func theSidebarsFolderOnScreenLeavesThePanelClosed() async throws {
+        // Each menu's Calculate Size, in one window. The sidebar's folder on screen shows in the status bar, and the
+        // panel stays closed; a row's item, a sidebar folder in the Size column and the folder on screen from empty
+        // space are measured again, past a size already known, and leave the panel closed; a sidebar folder nothing
+        // else on screen shows opens the Info panel on it.
+        @Test func eachMenusCalculateSizeMeasures() async throws {
             let window = try await open()
             let folder = window.tab.shownFolderPath
             let request = SidebarContextMenuRequest(
@@ -254,15 +224,32 @@ extension ExplorerWindowlessTests {
                     id: .filesystem(folder), kind: .filesystem, label: "Here", depth: 0, path: folder, parentID: nil,
                     expanded: true, canExpand: true),
                 subview: .tree, kind: .treeFolder)
+            #expect(window.tab.folderSizes.readySize(folder) == nil)
             try choose("Calculate Size", in: try #require(window.tab.contextMenus.sidebarMenu(for: request)))
             #expect(await waitUntil { window.tab.folderSizes.readySize(folder) != nil })
             #expect(!window.tab.panels.propertiesOpen)
-            await window.close()
-        }
 
-        // A sidebar folder nothing else on screen shows opens the Info panel on it.
-        @Test func aSidebarFolderNothingElseShowsOpensTheInfoPanelOnIt() async throws {
-            let window = try await open()
+            // A row's.
+            let alpha = path(window, "Alpha")
+            let alphaBefore = try await measured(window, alpha)
+            try choose("Calculate Size", in: try contentMenu(window, ["Alpha"]))
+            #expect(await waitUntil { (window.tab.folderSizes.readySize(alpha) ?? 0) > alphaBefore })
+            #expect(!window.tab.panels.propertiesOpen)
+
+            // A sidebar folder in the Size column.
+            let beta = path(window, "Beta")
+            let betaBefore = try await measured(window, beta)
+            try choose("Calculate Size", in: try treeMenu(window, "Beta"))
+            #expect(await waitUntil { (window.tab.folderSizes.readySize(beta) ?? 0) > betaBefore })
+            #expect(!window.tab.panels.propertiesOpen)
+
+            // Empty space's: the folder on screen.
+            let folderBefore = try await measured(window, folder)
+            try choose("Calculate Size", in: try backgroundMenu(window))
+            #expect(await waitUntil { (window.tab.folderSizes.readySize(folder) ?? 0) > folderBefore })
+            #expect(!window.tab.panels.propertiesOpen)
+
+            // A favorite inside a folder.
             let info = try #require(window.tab.infoController)
             let inner = window.folder.appendingPathComponent("Alpha/Inner").path
             try FileManager.default.createDirectory(atPath: inner, withIntermediateDirectories: true)

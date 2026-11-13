@@ -420,51 +420,37 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The keyboard goes to the pane the tab had it in, and each tab keeps its own.
-        @Test func aNewTabOpenedFromTheTreeKeepsTheKeyboardInTheTree() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.perform(.focusTreePane)
-
-            tab.perform(.newTab)
-            let new = try await opened(tab, after: 1)
-
-            #expect(new.focusedPane == .tree)
-            new.perform(.focusContentPane)
-            #expect(new.focusedPane == .content)
-            #expect(tab.focusedPane == .tree)
-            await harness.close()
-        }
-
-        // Opening a folder in a new tab and `duplicateTab` keep the pane too.
-        @Test func openingAFolderOrDuplicatingFromTheTreeKeepsTheKeyboardInTheTree() async throws {
+        // The keyboard goes to the pane the tab had it in, and each tab keeps its own: a new tab, a folder opened in
+        // a new tab and `duplicateTab` from the tree keep it in the tree, and a new tab from the list keeps it there.
+        @Test func aTabOpenedFromATabKeepsTheKeyboardInItsPane() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.perform(.focusTreePane)
             let group = try #require(tab.group)
 
+            tab.perform(.newTab)
+            let new = try await opened(tab, after: 1)
+            #expect(new.focusedPane == .tree)
+            new.perform(.focusContentPane)
+            #expect(new.focusedPane == .content)
+            #expect(tab.focusedPane == .tree)
+
             group.openTab(path: real(harness, "Alpha"), from: tab)
-            let path = try await opened(tab, after: 1)
+            let path = try await opened(tab, after: 2)
             #expect(path.focusedPane == .tree)
             // A tab opened on a folder starts from the other tab's tree, with the folder's own row selected.
             #expect(path.sidebarController.model.selected == .filesystem(real(harness, "Alpha")))
 
             path.perform(.focusTreePane)
             group.duplicateTab(path)
-            let copy = try await opened(path, after: 2)
+            let copy = try await opened(path, after: 3)
             #expect(copy.focusedPane == .tree)
-            await harness.close()
-        }
 
-        @Test func aNewTabWithTheKeyboardInTheListKeepsItThere() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.perform(.focusContentPane)
-
-            tab.perform(.newTab)
-            let new = try await opened(tab, after: 1)
-
+            // From the list.
             #expect(new.focusedPane == .content)
+            new.perform(.newTab)
+            let fromList = try await opened(new, after: 4)
+            #expect(fromList.focusedPane == .content)
             await harness.close()
         }
 
@@ -491,14 +477,18 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // With a favorite's row selected the tree isn't touched.
-        @Test func refreshLeavesTheTreeAloneWithAFavoriteRowSelected() async throws {
+        // With a favorite's row selected the tree isn't touched by a refresh. A sort change, `toggleFoldersFirst` and
+        // `toggleHiddenFiles` take one path here, `viewChanged`, and hidden files adds to it: the favorite's row and
+        // the tree stay where they are.
+        @Test func refreshingOrChangingTheViewKeepsAFavoriteRowAndTheTreeWhereItIs() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = URL(fileURLWithPath: real(harness, "Alpha"))
-            let tab = try await harness.open()
+            let tab = try await harness.open(real(harness, "Beta"))
             let model = tab.sidebarController.model
             model.selectItem(.favorite(alpha.path))
             #expect(await waitUntil { tab.shownFolderPath == alpha.path })
+            // The favorite's own opening brought the tree along: that is over before the view changes.
+            #expect(await waitUntil { model.nodes[alpha.path] != nil && model.selected == .favorite(alpha.path) })
             #expect(await waitUntil { model.nodes[real(harness, "")]?.loaded == true })
             await arrived(tab)
 
@@ -509,22 +499,7 @@ extension ExplorerWindowlessTests {
 
             #expect(model.nodes[real(harness, "")]?.childPaths.contains(added.path) != true)
             #expect(model.selected == .favorite(alpha.path))
-            await harness.close()
-        }
 
-        // MARK: A new order, Folders First and hidden files
-
-        // A sort change, `toggleFoldersFirst` and `toggleHiddenFiles` take one path here, `viewChanged`, and hidden
-        // files adds to it.
-        @Test func changingTheViewKeepsAFavoriteRowAndTheTreeWhereItIs() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let alpha = URL(fileURLWithPath: real(harness, "Alpha"))
-            let tab = try await harness.open(real(harness, "Beta"))
-            let model = tab.sidebarController.model
-            model.selectItem(.favorite(alpha.path))
-            #expect(await waitUntil { tab.shownFolderPath == alpha.path })
-            // The favorite's own opening brought the tree along: that is over before the view changes.
-            #expect(await waitUntil { model.nodes[alpha.path] != nil && model.selected == .favorite(alpha.path) })
             await arrived(tab)
             let root = model.rootPath
             let nodes = model.nodes[alpha.path]
@@ -540,7 +515,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        @Test func changingTheViewKeepsALinkRow() async throws {
+        // A link's row stays on a change of the view, and a folder's on a new order.
+        @Test func changingTheViewKeepsALinkRowAndANewOrderAFolderRow() async throws {
             let harness = try ExplorerHarness.windowless()
             let link = URL(fileURLWithPath: real(harness, "")).appending(path: "Link")
             try FileManager.default.createSymbolicLink(at: link, withDestinationURL: harness.folder.appending("Beta"))
@@ -558,15 +534,11 @@ extension ExplorerWindowlessTests {
             try? await Task.sleep(for: .milliseconds(100))
 
             #expect(model.selected == .filesystem(link.path))
-            await harness.close()
-        }
 
-        @Test func aNewOrderKeepsAFolderRowOnTheFolder() async throws {
-            let harness = try ExplorerHarness.windowless()
             let alpha = real(harness, "Alpha")
-            let tab = try await harness.open(alpha)
-            let model = tab.sidebarController.model
-
+            await tab.navigate(to: URL(fileURLWithPath: alpha))
+            await arrived(tab)
+            #expect(model.selected == .filesystem(alpha))
             tab.setSort(.size, .desc)
             #expect(await waitUntil { !tab.isNavigating })
             await arrived(tab)

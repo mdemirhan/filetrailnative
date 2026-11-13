@@ -123,41 +123,10 @@ extension ExplorerWindowlessTests {
 
         // MARK: Dimming
 
-        // Every command that can't run is dimmed, from the same state as the toolbar's.
-        @Test func theMenuDimsWhatCantRun() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, _) = try await harness.openList()
-            let menu = RealMenu(harness, tab)
-            tab.content.select(paths: [])
-            tab.content.focusList()
-            menu.report()
-            for id in ["trashSelection", "renameSelection", "copyPath", "clearClipboard", "showClipboard"] {
-                #expect(!menu.isEnabled(id), "\(id)")
-            }
-            #expect(menu.isEnabled("newTab"))
-            try select(["note.txt"], tab)
-            menu.report()
-            for id in ["trashSelection", "renameSelection", "copyPath"] { #expect(menu.isEnabled(id), "\(id)") }
-            await harness.close()
-        }
-
-        // The state comes from the window at the moment the menu is asked: a dialog that just came up dims it all.
-        @Test func theMenuReadsTheWindowWhenAsked() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, _) = try await harness.openList()
-            let menu = RealMenu(harness, tab)
-            try select(["note.txt"], tab)
-            menu.report()
-            #expect(menu.isEnabled("trashSelection"))
-            tab.openLocationSheet()
-            #expect(tab.goToBox != nil)
-            #expect(!menu.isEnabled("trashSelection"))
-            #expect(!menu.isEnabled("newTab"))
-            await harness.close()
-        }
-
-        // The state goes to the menu whenever the selection changes it.
-        @Test func favoritesFollowTheSelection() async throws {
+        // Every command that can't run is dimmed, from the same state as the toolbar's. The state goes to the menu
+        // whenever the selection changes it, and comes from the window at the moment the menu is asked: a dialog that
+        // just came up dims it all.
+        @Test func theMenuDimsWhatCantRunAsTheWindowIsWhenAsked() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
             let menu = RealMenu(harness, tab)
@@ -166,9 +135,25 @@ extension ExplorerWindowlessTests {
             tab.content.select(paths: [])
             tab.content.focusList()
             menu.report()
+            for id in ["trashSelection", "renameSelection", "copyPath", "clearClipboard", "showClipboard"] {
+                #expect(!menu.isEnabled(id), "\(id)")
+            }
+            #expect(menu.isEnabled("newTab"))
             #expect(menu.item("toggleFavorite").title == "Add to Favorites")
+            try select(["note.txt"], tab)
+            menu.report()
+            for id in ["trashSelection", "renameSelection", "copyPath"] { #expect(menu.isEnabled(id), "\(id)") }
+
+            // Favorites follow the selection.
             try select(["Alpha"], tab)
             #expect(await waitUntil { menu.item("toggleFavorite").title == "Remove from Favorites" })
+
+            menu.report()
+            #expect(menu.isEnabled("trashSelection"))
+            tab.openLocationSheet()
+            #expect(tab.goToBox != nil)
+            #expect(!menu.isEnabled("trashSelection"))
+            #expect(!menu.isEnabled("newTab"))
             await harness.close()
         }
 

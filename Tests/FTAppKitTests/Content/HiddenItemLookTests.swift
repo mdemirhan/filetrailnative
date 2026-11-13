@@ -9,50 +9,46 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct HiddenItemLookTests: ListTesting {
-        /// Hidden files shown in a folder with a hidden file and the plain ones.
-        private func showHidden(
-            _ harness: ExplorerHarness, _ tab: MainWindowController, _ probe: GridProbe?
-        ) async throws -> DirectoryEntry {
+        // Each view fades a hidden item's icon and not its name; in the Icons view a cut one looks cut. One window,
+        // its view switched.
+        @Test func eachViewFadesAHiddenItemsIconAndNotItsName() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            tab.perform(.viewAsDetails)
+            #expect(await waitUntil { !tab.content.entries.isEmpty })
+            // Hidden files shown in a folder with a hidden file and the plain ones.
             let folder = try #require(tab.content.entries.first).url.deletingLastPathComponent()
             try Data().write(to: folder.appendingPathComponent(".secret.txt"))
             tab.perform(.toggleHiddenFiles)
             #expect(await waitUntil { tab.content.entries.contains { $0.name == ".secret.txt" } })
             harness.layout(tab)
-            probe?.layout()
-            return try #require(tab.content.entries.first { $0.name == ".secret.txt" })
-        }
+            let entry = try #require(tab.content.entries.first { $0.name == ".secret.txt" })
 
-        @Test func theDetailsViewFadesAHiddenItemsIconAndNotItsName() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.perform(.viewAsDetails)
-            _ = await waitUntil { !tab.content.entries.isEmpty }
-            _ = try await showHidden(harness, tab, nil)
+            // The List.
             let rows = bars(tab)
-            let hidden = try #require(rows.first { $0.entry?.name == ".secret.txt" })
-            let plain = try #require(rows.first { $0.entry?.name == "note.txt" })
-            #expect(hidden.nameCell.iconView.alphaValue == CGFloat(HiddenItemLook.iconAlpha))
-            #expect(hidden.nameLabel.alphaValue == 1)
-            #expect(plain.nameCell.iconView.alphaValue == 1)
-            await harness.close()
-        }
+            let hiddenRow = try #require(rows.first { $0.entry?.name == ".secret.txt" })
+            let plainRow = try #require(rows.first { $0.entry?.name == "note.txt" })
+            #expect(hiddenRow.nameCell.iconView.alphaValue == CGFloat(HiddenItemLook.iconAlpha))
+            #expect(hiddenRow.nameLabel.alphaValue == 1)
+            #expect(plainRow.nameCell.iconView.alphaValue == 1)
 
-        @Test func theCompactListFadesAHiddenItemsIconAndNotItsName() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, probe) = try await harness.openGrid(.viewAsList)
-            _ = try await showHidden(harness, tab, probe)
-            let hidden = try #require(probe.compactItems[".secret.txt"])
-            let plain = try #require(probe.compactItems["note.txt"])
-            #expect(hidden.iconView.alphaValue == CGFloat(HiddenItemLook.iconAlpha))
-            #expect(hidden.label.alphaValue == 1)
-            #expect(plain.iconView.alphaValue == 1)
-            await harness.close()
-        }
+            // The Compact List.
+            let probe = GridProbe(tab: tab)
+            tab.perform(.viewAsList)
+            #expect(await waitUntil { probe.compact != nil })
+            harness.layout(tab)
+            probe.layout()
+            let hiddenColumn = try #require(probe.compactItems[".secret.txt"])
+            let plainColumn = try #require(probe.compactItems["note.txt"])
+            #expect(hiddenColumn.iconView.alphaValue == CGFloat(HiddenItemLook.iconAlpha))
+            #expect(hiddenColumn.label.alphaValue == 1)
+            #expect(plainColumn.iconView.alphaValue == 1)
 
-        @Test func theIconsViewFadesAHiddenItemsIconAndACutOneLooksCut() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, probe) = try await harness.openGrid(.viewAsIcons)
-            let entry = try await showHidden(harness, tab, probe)
+            // The Icons view, and a cut item there.
+            tab.perform(.viewAsIcons)
+            #expect(await waitUntil { probe.icons != nil })
+            harness.layout(tab)
+            probe.layout()
             let hidden = try #require(probe.iconItems[".secret.txt"])
             #expect(hidden.iconBox.alphaValue == CGFloat(HiddenItemLook.iconAlpha))
             #expect(hidden.label.alphaValue == 1)

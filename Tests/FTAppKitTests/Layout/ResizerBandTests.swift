@@ -32,8 +32,9 @@ extension ExplorerWindowlessTests {
                     eventNumber: 0, trackingNumber: 0, userData: nil))
         }
 
-        // At rest the tree's resizer paints nothing, beside the band or under it: the sidebar's material shows through.
-        @Test func theSidebarsEdgeIsOneStraightLine() async throws {
+        // The window at rest, on one window. The tree's resizer paints nothing, beside the band or under it: the
+        // sidebar's material shows through.
+        @Test func theChromeAtRest() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             harness.layout(tab)
@@ -56,6 +57,22 @@ extension ExplorerWindowlessTests {
             #expect(workspace.frame(of: workspace.mainCell).minX == column.maxX)
             // The rows that used to reach the hairline stop at the edge instead of notching the sidebar.
             #expect(workspace.mainCell.layer?.masksToBounds == true)
+
+            // The content's background is the system's content material, Finder's, under both columns from the
+            // window's top: in dark mode it takes the desktop's tint as Finder's does. The panes paint nothing over it.
+            for backdrop in [workspace.contentColumn.backdrop, workspace.inspectorColumn.backdrop] {
+                #expect(backdrop.material == .contentBackground && backdrop.blendingMode == .behindWindow)
+                #expect(backdrop.state == .followsWindowActiveState)
+            }
+            #expect(workspace.contentColumn.subviews.first === workspace.contentColumn.backdrop)
+            #expect(workspace.inspectorColumn.subviews.first === workspace.inspectorColumn.backdrop)
+            #expect(workspace.mainCell.layer?.backgroundColor == nil)
+
+            // The dialog's extra dim covers the sidebar, up to its edge.
+            tab.perform(.openLocationSheet)
+            tab.window?.contentView?.layoutSubtreeIfNeeded()
+            let scrim = try #require(tab.dialogs.first)
+            #expect(scrim.sidebarRect?.minX == 0 && scrim.sidebarRect?.maxX == column.maxX)
             await harness.close()
         }
 
@@ -230,23 +247,6 @@ extension ExplorerWindowlessTests {
             #expect(dark.redComponent == 1 && abs(dark.alphaComponent - key.alphaComponent) < 0.01)
         }
 
-        // The content's background is the system's content material, Finder's, under both columns from the window's top:
-        // in dark mode it takes the desktop's tint as Finder's does. The panes paint nothing over it.
-        @Test func theContentsBackgroundIsTheSystemsMaterial() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let workspace = tab.workspace
-            harness.layout(tab)
-            for backdrop in [workspace.contentColumn.backdrop, workspace.inspectorColumn.backdrop] {
-                #expect(backdrop.material == .contentBackground && backdrop.blendingMode == .behindWindow)
-                #expect(backdrop.state == .followsWindowActiveState)
-            }
-            #expect(workspace.contentColumn.subviews.first === workspace.contentColumn.backdrop)
-            #expect(workspace.inspectorColumn.subviews.first === workspace.inspectorColumn.backdrop)
-            #expect(workspace.mainCell.layer?.backgroundColor == nil)
-            await harness.close()
-        }
-
         // What lies over scrolling content holds the same material under its own views, so it is opaque and the same
         // color as the columns; the path bar is lifted as Finder's in dark mode, and nothing else is.
         @Test func thePanesOverTheContentHoldTheMaterial() throws {
@@ -290,19 +290,6 @@ extension ExplorerWindowlessTests {
             #expect(workspace.frame(of: close).midY == 26)
             let back = try #require(tab.explorerToolbar.item(.back)?.view)
             #expect(workspace.frame(of: back).midY == 26)
-            await harness.close()
-        }
-
-        // The dialog's extra dim covers the sidebar, up to its edge.
-        @Test func theScrimsSidebarIsTheWholeColumn() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            harness.layout(tab)
-            tab.perform(.openLocationSheet)
-            tab.window?.contentView?.layoutSubtreeIfNeeded()
-            let scrim = try #require(tab.dialogs.first)
-            let column = tab.workspace.frame(of: tab.workspace.sidebarColumn)
-            #expect(scrim.sidebarRect?.minX == 0 && scrim.sidebarRect?.maxX == column.maxX)
             await harness.close()
         }
     }

@@ -19,43 +19,11 @@ extension ExplorerWindowlessTests {
             view.map { String(describing: type(of: $0)) } ?? "nil"
         }
 
-        // A menu opened in the band stands over the title bar for a scenario and takes its presses.
-        @Test func aMenuOpenedInTheBandTakesPressesThere() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            harness.layout(tab)
-            let window = try #require(tab.window)
-            let workspace = tab.workspace
-            let menu = AppMenu(
-                items: [AppMenuItem(title: "Customize Toolbar…", checked: false, action: {})],
-                identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item")
-            AppMenuPresenter.shared.show(menu, in: window, at: NSPoint(x: 500, y: 20), owner: nil)
-            let hit = try Self.hit(NSPoint(x: 520, y: 30), in: workspace, window: window)
-            #expect(hit is AppMenuStandInRow, "hit \(Self.name(hit))")
-            AppMenuPresenter.shared.close()
-            await harness.close()
-        }
-
-        // A toolbar button's tooltip is the system's: there while it can be used, quiet while its menu is open.
-        @Test func aToolbarButtonsTooltipIsTheSystemsWhileItCanBeUsed() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let button = try #require(tab.explorerToolbar.button(.sort))
-            button.isEnabled = true
-            button.tooltip = "Sort"
-            #expect(button.toolTip == "Sort")
-            button.menuOpen = true
-            #expect(button.toolTip == nil)
-            button.menuOpen = false
-            #expect(button.toolTip == "Sort")
-            button.isEnabled = false
-            #expect(button.toolTip == nil)
-            await harness.close()
-        }
-
         // The top layer leaves the band alone: its presses are the system toolbar's (its own right-click menu, the
-        // window's drag), the items' and the traffic lights'.
-        @Test func theBandIsTheSystemsWithNoMenuOverIt() async throws {
+        // window's drag), the items' and the traffic lights'. A toolbar button's tooltip is the system's: there while
+        // it can be used, quiet while its menu is open. A menu opened in the band stands over the title bar for a
+        // scenario and takes its presses.
+        @Test func theBandIsTheSystemsUntilAMenuOpensInIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             harness.layout(tab)
@@ -74,6 +42,29 @@ extension ExplorerWindowlessTests {
             let center = workspace.convert(NSPoint(x: close.bounds.midX, y: close.bounds.midY), from: close)
             let hit = try Self.hit(center, in: workspace, window: window)
             #expect(hit?.isDescendant(of: close) == true, "close hit \(Self.name(hit))")
+
+            // The tooltip.
+            let button = try #require(tab.explorerToolbar.button(.sort))
+            let wasEnabled = button.isEnabled
+            button.isEnabled = true
+            button.tooltip = "Sort"
+            #expect(button.toolTip == "Sort")
+            button.menuOpen = true
+            #expect(button.toolTip == nil)
+            button.menuOpen = false
+            #expect(button.toolTip == "Sort")
+            button.isEnabled = false
+            #expect(button.toolTip == nil)
+            button.isEnabled = wasEnabled
+
+            // A menu in the band.
+            let menu = AppMenu(
+                items: [AppMenuItem(title: "Customize Toolbar…", checked: false, action: {})],
+                identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item")
+            AppMenuPresenter.shared.show(menu, in: window, at: NSPoint(x: 500, y: 20), owner: nil)
+            let inMenu = try Self.hit(NSPoint(x: 520, y: 30), in: workspace, window: window)
+            #expect(inMenu is AppMenuStandInRow, "hit \(Self.name(inMenu))")
+            AppMenuPresenter.shared.close()
             await harness.close()
         }
     }

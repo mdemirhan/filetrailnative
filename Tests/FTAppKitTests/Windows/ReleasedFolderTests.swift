@@ -10,29 +10,50 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ReleasedFolderTests {
-        // A drag from elsewhere has no folder to go to, over or on the pane.
-        @Test func aFileDragFromElsewhereIsNotTaken() async throws {
+        // Nothing acts on the folder let go of: a drag from elsewhere has no folder to go to, over or on the pane;
+        // there is no folder to paste into, by the keys or the menu; empty space has no menu; a search needs a folder
+        // to start from (`startSearch`); `goEnclosingFolder` from the keys and the menu does nothing; and a write
+        // that ends with no folder on screen reads none.
+        @Test func nothingActsOnTheFolderLetGoOf() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(harness.folder.appending("Alpha").path)
             let window = try #require(tab.window)
             let info = AutomationDraggingInfo(
                 urls: [harness.folder.appending("note.txt")], location: .zero, window: window)
             defer { info.draggingPasteboard.releaseGlobally() }
+            let engine = FakeSearchEngine()
+            let timers = ManualTimers()
+            tab.search.session.engine = engine
+            tab.search.session.timers = timers
+            engine.finds = { _ in (["note.txt"], false, false) }
             #expect(tab.dragDrop.contentDragUpdated(info, entry: nil) != [])
+            #expect(tab.pasteDestinationPath != nil)
+            #expect(tab.contextMenus.contentMenu(for: nil) != nil)
+
             tab.sidebarController.model.clearSelection()
+
+            #expect(tab.shownFolderPath.isEmpty)
             #expect(tab.dragDrop.contentDragUpdated(info, entry: nil) == [])
             #expect(tab.dragDrop.contentPerformDrop(info, entry: nil) == false)
-            await harness.close()
-        }
-
-        // No folder to paste into, by the keys or the menu.
-        @Test func pasteHasNoDestination() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            #expect(tab.pasteDestinationPath != nil)
-            tab.sidebarController.model.clearSelection()
-            #expect(tab.shownFolderPath.isEmpty)
             #expect(tab.pasteDestinationPath == nil)
+            #expect(tab.contextMenus.contentMenu(for: nil) == nil)
+
+            let field = try #require(tab.searchField)
+            field.stringValue = "no"
+            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            timers.advance(0.4)
+            await settle()
+            #expect(tab.searchRootPath == nil)
+
+            tab.goToEnclosingFolder(nil)
+            await settle()
+            #expect(tab.shownFolderPath.isEmpty)
+            #expect(tab.canPerform(.goEnclosingFolder) == false)
+
+            tab.applyWriteEnd(WriteEndRefresh(path: "", selecting: nil, treeSelectionPath: nil, treeReloadPaths: []))
+            await settle()
+            #expect(tab.shownFolderPath.isEmpty)
+            #expect(tab.content.entries.isEmpty)
             await harness.close()
         }
 
@@ -55,35 +76,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `startSearch`: a search needs a folder to start from.
-        @Test func searchDoesNotStart() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let engine = FakeSearchEngine()
-            let timers = ManualTimers()
-            tab.search.session.engine = engine
-            tab.search.session.timers = timers
-            engine.finds = { _ in (["note.txt"], false, false) }
-            tab.sidebarController.model.clearSelection()
-            let field = try #require(tab.searchField)
-            field.stringValue = "no"
-            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
-            timers.advance(0.4)
-            await settle()
-            #expect(tab.searchRootPath == nil)
-            await harness.close()
-        }
-
-        // Empty space has no menu without a folder.
-        @Test func emptySpaceHasNoMenu() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            #expect(tab.contextMenus.contentMenu(for: nil) != nil)
-            tab.sidebarController.model.clearSelection()
-            #expect(tab.contextMenus.contentMenu(for: nil) == nil)
-            await harness.close()
-        }
-
         // The folder let go of is not the tab's any more, only its tree root counts.
         @Test func aDiskUnderAReleasedFolderLeavesTheTab() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -103,18 +95,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `goEnclosingFolder` from the keys and the menu: nothing without a folder.
-        @Test func goEnclosingFromContentDoesNothing() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.sidebarController.model.clearSelection()
-            tab.goToEnclosingFolder(nil)
-            await settle()
-            #expect(tab.shownFolderPath.isEmpty)
-            #expect(tab.canPerform(.goEnclosingFolder) == false)
-            await harness.close()
-        }
-
         // The toolbar's button: `parentDirectoryPath("")` is the top of the disk.
         @Test func theToolbarsEnclosingFolderOpensTheTopOfTheDisk() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -127,18 +107,6 @@ extension ExplorerWindowlessTests {
             #expect(up.isEnabled)
             _ = up.accessibilityPerformPress()
             #expect(await waitUntil { tab.shownFolderPath == "/" })
-            await harness.close()
-        }
-
-        // A write that ends with no folder on screen reads none.
-        @Test func aWriteEndingReadsNoFolder() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.sidebarController.model.clearSelection()
-            tab.applyWriteEnd(WriteEndRefresh(path: "", selecting: nil, treeSelectionPath: nil, treeReloadPaths: []))
-            await settle()
-            #expect(tab.shownFolderPath.isEmpty)
-            #expect(tab.content.entries.isEmpty)
             await harness.close()
         }
     }

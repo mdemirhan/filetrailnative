@@ -34,6 +34,10 @@ extension ExplorerWindowlessTests {
             let first = try #require(tab.explorerToolbar.button(.folderTree))
             let frame = workspace.frame(of: first)
             #expect(frame.minX >= 288 && frame.maxY <= 52, "\(frame)")
+            // The scrollers are the system's overlay scrollers.
+            let scrolls = Views.all(NSScrollView.self, in: workspace)
+            #expect(!scrolls.isEmpty)
+            for scroll in scrolls { #expect(scroll.autohidesScrollers) }
 
             tab.perform(.toggleFolderTree)
             harness.layout(tab)
@@ -247,15 +251,6 @@ extension ExplorerWindowlessTests {
             workspace.treeResizer.keyDown(with: event)
             #expect(workspace.panes.treeWidth == 508)
             #expect(tab.panels.treeWidth == 508)
-            await harness.close()
-        }
-
-        @Test func leavesTheScrollersToTheSystemsOverlayScrollers() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let scrolls = Views.all(NSScrollView.self, in: tab.workspace)
-            #expect(!scrolls.isEmpty)
-            for scroll in scrolls { #expect(scroll.autohidesScrollers) }
             await harness.close()
         }
     }
