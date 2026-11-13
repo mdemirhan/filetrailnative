@@ -39,10 +39,13 @@ class ToolbarButton: NSButton {
     /// and its menu isn't open.
     var tooltip = "" {
         didSet {
+            tooltipWrites += 1
             setAccessibilityHelp(tooltip)
             syncToolTip()
         }
     }
+    /// How many times the tooltip was set: a test seam.
+    private(set) var tooltipWrites = 0
     /// The buttons that open a menu tell accessibility they are menu buttons; a dimmed history button doesn't.
     private let opensMenu: Bool
     private var takingKeyboard = false

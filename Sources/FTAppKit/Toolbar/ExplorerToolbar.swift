@@ -248,7 +248,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         let view = context.viewState
         let panels = context.panels
         if let button = views[id] as? ToolbarButton {
-            button.tooltip = Tooltips.toolbarItemTooltip(itemID: id, state: tooltipState, shortcuts: shortcuts)
+            // Set once: the items whose tooltip says their state set it below.
+            if ![.sort, .viewOptions, .theme, .clipboard].contains(id) {
+                button.tooltip = Tooltips.toolbarItemTooltip(itemID: id, state: tooltipState, shortcuts: shortcuts)
+            }
             switch id {
             case .back: button.isEnabled = context.canGoBack
             case .forward: button.isEnabled = context.canGoForward

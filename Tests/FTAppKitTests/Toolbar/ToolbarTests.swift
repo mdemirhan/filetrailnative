@@ -100,6 +100,26 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A refresh sets each button's tooltip once, those that say their state (Sort, Theme, the clipboard) too.
+        @Test func aRefreshSetsEachTooltipOnce() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let toolbar = tab.explorerToolbar
+            setItems(tab, ToolbarItems.defaultTopItems + [.theme, .clipboard], harness)
+            tab.services.clipboard.set(
+                .ready(mode: .copy, sourcePaths: ["/a", "/b"], sourceEntries: [:], capturedAt: "1"), from: nil)
+            toolbar.reload()
+            for id: ToolbarItemID in [.sort, .theme, .clipboard, .viewOptions, .back] {
+                let button = try #require(toolbar.button(id), "no \(id)")
+                let before = button.tooltipWrites
+                toolbar.refreshStates()
+                #expect(button.tooltipWrites == before + 1, "\(id)")
+            }
+            #expect(toolbar.button(.sort)?.tooltip.hasPrefix("Sort By: Name") == true)
+            tab.services.clipboard.set(.empty, from: nil)
+            await harness.close()
+        }
+
         // A space at the start, right after another or at the end divides nothing, so it
         // isn't drawn; the saved order keeps it until the user changes the toolbar.
         @Test func dropsTheSpacesThatDivideNothing() async throws {
