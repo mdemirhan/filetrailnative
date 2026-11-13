@@ -82,6 +82,23 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The same folder put in another order, or shown with hidden files, stays where it was scrolled sideways.
+        @Test func aNewOrderKeepsTheOffset() async throws {
+            let (harness, tab, list) = try await openNarrow()
+            try "x".write(to: harness.folder.url.appendingPathComponent(".hidden"), atomically: true, encoding: .utf8)
+            scrollSideways(list, to: 120)
+            let first = tab.content.entries.first?.name
+            tab.setSort(.name, .desc)
+            #expect(await waitUntil { tab.content.entries.first?.name != first && !tab.isNavigating })
+            harness.layout(tab)
+            #expect(list.scroll.contentView.bounds.minX == 120)
+            tab.perform(.toggleHiddenFiles)
+            #expect(await waitUntil { tab.content.entries.contains { $0.name == ".hidden" } && !tab.isNavigating })
+            harness.layout(tab)
+            #expect(list.scroll.contentView.bounds.minX == 120)
+            await harness.close()
+        }
+
         // A divider dragged past the pane's edge scrolls the list; dragged back, it stays under the pointer.
         @Test func aDividerFollowsThePointerAfterTheListScrolled() async throws {
             let (harness, tab, list) = try await openNarrow()

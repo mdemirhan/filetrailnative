@@ -438,7 +438,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             // The same rows in the same order: only the rows of the items that changed are drawn again.
             pane?.reloadRows(paths: Set(kept.changedPaths).union(customIconPaths))
         } else if !unchanged || !keepingScroll {
+            // The same folder in another order (a sort, Folders First, hidden files) starts at its top, and the List
+            // stays where it was scrolled sideways: the column whose header was clicked stays in view.
+            let keptLeft = sameFolder && !keepingScroll && pane is ListViewController ? pane?.scrollPosition.left : nil
             pane?.reload(scrollToTop: !keepingScroll)
+            if let keptLeft, let top = pane?.scrollPosition.top { pane?.scrollPosition = (top, keptLeft) }
         } else {
             pane?.refresh(paths: changedPaths.map(Set.init))
             if !customIconPaths.isEmpty { pane?.reloadRows(paths: customIconPaths) }
