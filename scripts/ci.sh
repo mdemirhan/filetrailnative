@@ -175,7 +175,15 @@ if [ "$full" = 1 ] && ! swift package clean; then
     cat "$out"
     exit 1
 fi
-WARN_FAILS=1 step build 'error:|warning:' swift build --build-tests
+# The library the test processes load so that they play no alert sounds: a test that presses a key nothing handles beeps
+# as the app would (tools/silent-alerts).
+silent_alerts="$PWD/build/silent-alerts.dylib"
+build_all() {
+    swift build --build-tests &&
+        xcrun clang -Wall -Wextra -fblocks -dynamiclib -framework AudioToolbox \
+            -o "$silent_alerts" tools/silent-alerts/silent-alerts.c
+}
+WARN_FAILS=1 step build 'error:|warning:' build_all
 build_failed="$failed"
 
 # The windowless explorer suites (FTAppKitTests' ExplorerWindowlessTests) spread over this many processes in a full
@@ -226,10 +234,16 @@ run_bundle() {
     local target="$1" platform
     shift
     platform="$(xcrun --show-sdk-platform-path)/Developer"
-    DYLD_LIBRARY_PATH="$PWD/.build/debug:$platform/usr/lib" \
+    DYLD_INSERT_LIBRARIES="$silent_alerts" DYLD_LIBRARY_PATH="$PWD/.build/debug:$platform/usr/lib" \
         DYLD_FRAMEWORK_PATH="$platform/Library/Frameworks:$platform/Library/PrivateFrameworks" \
         "$(dirname "$(xcrun --find swift)")/../libexec/swift/pm/swiftpm-testing-helper" \
         --test-bundle-path ".build/debug/$target.xctest/Contents/MacOS/$target" --testing-library swift-testing "$@"
+}
+
+# A --scope run: `swift test` from the toolchain itself, as /usr/bin/swift is one of the system's programs, which drop
+# the DYLD_ variables.
+scoped_tests() {
+    DYLD_INSERT_LIBRARIES="$silent_alerts" "$(xcrun --find swift)" test --filter "$scope"
 }
 
 # A full run, or `bundles` if some are named: the test bundles side by side, each in its own process, and the windowless
@@ -334,14 +348,14 @@ if [ "$build_failed" = 1 ]; then
 elif [ -n "$scope" ]; then
     rm -f "$logs/test.log"
     follow_tests "$logs/test.log"
-    step test "$test_failures" swift test --filter "$scope"
+    step test "$test_failures" scoped_tests
     stop_following
 elif [ "$bundles" = none ]; then
     rm -rf "$logs/bundles"
     : >"$logs/test.log"
     echo "PASS test (nothing affected)" >>"$out"
 else
-    export logs windowless_processes windowless_times bundles
+    export logs windowless_processes windowless_times bundles silent_alerts
     export -f full_tests run_bundle windowless_groups record_windowless_times test_lines follow_tests stop_following
     step test "$test_failures" bash -c full_tests
 fi
