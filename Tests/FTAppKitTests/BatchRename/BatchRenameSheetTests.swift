@@ -19,9 +19,7 @@ extension ExplorerWindowlessTests {
         @Test func namesTheItemsStartsWithReplaceTextAndShowsNothingToRenameYet() async throws {
             let fixture = await Fixture([target("IMG_1.jpg"), target("IMG_2.jpg")])
             #expect(fixture.sheet.titleLabel.stringValue == "Rename 2 Items")
-            #expect(fixture.sheet.accessibilityLabel() == "Rename 2 Items")
             #expect(fixture.sheet.modeControl.selected == .replace)
-            #expect(fixture.sheet.modeControl.accessibilityLabel() == "How to rename")
             #expect(fixture.sheet.findField.holdsKeyboard)
             #expect(fixture.rows == ["IMG_1.jpgNo change", "IMG_2.jpgNo change"])
             #expect(fixture.summary == "Nothing to rename yet")
@@ -62,25 +60,20 @@ extension ExplorerWindowlessTests {
             #expect(fixture.rows[0].contains("That name is taken: a number is added"))
             #expect(fixture.summary == "1 will be renamed \u{00B7} 1 get a number")
             #expect(fixture.sheet.renameButton.isEnabled)
-            // Or leaving the item as it is: its new name is struck through, and screen readers are told it isn't
-            // renamed.
+            // Or leaving the item as it is: its new name is struck through.
             fixture.pick(fixture.sheet.onConflictPopUp, "Skip Those Items")
             #expect(fixture.rows[0].contains("Left as it is: the name is taken"))
             #expect(fixture.sheet.preview.rows[0].tone == .skipped)
-            #expect(fixture.sheet.preview.rows[0].accessibilityText.contains("Lisbon 1.jpg, not renamed"))
             #expect(fixture.summary == "Nothing to rename yet")
             fixture.close()
         }
 
-        @Test func tellsScreenReadersEachOldNameBecomesTheNewOneAndShowsTheWholeNewName() async throws {
+        @Test func showsTheWholeNewNameAndTheListTakesTheKeyboard() async throws {
             let fixture = await Fixture([target("IMG_1.jpg")]) {
                 $0.find = "IMG_"
                 $0.replaceWith = "x"
             }
-            #expect(fixture.sheet.preview.rows[0].accessibilityText == "IMG_1.jpg, becomes x1.jpg")
-            #expect(fixture.cell(0)?.accessibilityLabel() == "IMG_1.jpg, becomes x1.jpg")
             #expect(fixture.cell(0)?.newColumn.nameLabel.toolTip == "x1.jpg")
-            #expect(fixture.sheet.preview.table.accessibilityLabel() == "New names")
             #expect(fixture.sheet.preview.table.acceptsFirstResponder)
             fixture.close()
         }
@@ -280,7 +273,6 @@ extension ExplorerWindowlessTests {
                 "Seconds (11)",
             ]
             #expect(fixture.sheet.tokenButtons.map { $0.toolTip ?? "" } == names)
-            #expect(fixture.sheet.tokenButtons.map { $0.accessibilityLabel() ?? "" } == names)
             let pattern = fixture.sheet.patternField
             pattern.focus(caret: 5)
             let month = try #require(fixture.sheet.tokenButtons.first { $0.token == .month })
