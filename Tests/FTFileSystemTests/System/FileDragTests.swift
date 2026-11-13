@@ -107,13 +107,33 @@ struct FileDragTests {
         let folder = try TemporaryDirectory(prefix: "filetrail-drag-many")
         defer { folder.remove() }
         let paths = (0..<2000).map { folder.appending("\($0)").path }
+        var ended = false
         #expect(
             FileDrag.start(
                 from: view, event: mouseDown(in: window), paths: paths, directories: paths.map { _ in false },
                 images: (0..<9).map(image(index:)), buttonDown: true
-            ) { _, _ in })
+            ) { _, _ in ended = true })
         let dragged = NSPasteboard(name: .drag).readObjects(forClasses: [NSURL.self], options: nil) as? [URL] ?? []
         #expect(dragged.map(\.path) == paths)
+
+        // The drag is a real one: AppKit runs it the next time the main run loop turns, and until the button comes up
+        // it holds the Mac's mouse and keyboard. It is ended here with the button-up it waits for, so no later wait on
+        // the main thread starts it. Posting an event stops the run of the main run loop under way, so the button-up
+        // is posted from a run of the test's own, never from the one the tests run in, which would end the process.
+        let windowNumber = window.windowNumber
+        CFRunLoopPerformBlock(CFRunLoopGetMain(), CFRunLoopMode.commonModes.rawValue) {
+            MainActor.assumeIsolated {
+                let up = NSEvent.mouseEvent(
+                    with: .leftMouseUp, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: windowNumber,
+                    context: nil, eventNumber: 0, clickCount: 1, pressure: 0)!
+                NSApplication.shared.postEvent(up, atStart: false)
+            }
+        }
+        let deadline = Date(timeIntervalSinceNow: 5)
+        while !ended && Date() < deadline {
+            CFRunLoopRunInMode(.defaultMode, 0.05, false)
+        }
+        #expect(ended)
     }
 
     // The first picture is at the stack's top left, however many there are, and the others step down and to the right.

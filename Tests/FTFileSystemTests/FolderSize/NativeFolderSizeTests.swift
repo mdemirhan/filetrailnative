@@ -667,9 +667,13 @@ enum FileLimitChild {
         let pipe = Pipe()
         process.standardOutput = pipe
         process.standardError = pipe
+        // Waited for without turning the main run loop, which waitUntilExit does: what an earlier test left waiting
+        // for it, such as a drag, would run in the middle of this one.
+        let exited = DispatchSemaphore(value: 0)
+        process.terminationHandler = { _ in exited.signal() }
         try process.run()
         let output = String(decoding: pipe.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
-        process.waitUntilExit()
+        exited.wait()
         return (process.terminationStatus, output)
     }
 }
