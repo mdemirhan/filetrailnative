@@ -145,25 +145,30 @@ final class CompactListViewController: ItemGridPane {
     // MARK: Resizing the columns
 
     /// A new column width (the status bar's slider) resizes the columns in place, the column at the left of the view
-    /// keeping its left edge where it is, then the lead brought back into view if it was in view; a new density lays
-    /// the list out again.
+    /// keeping its left edge where it is, then the lead brought back into view if it was in view, and an item out of
+    /// view left there; a new density lays the list out again, the lead kept in view as well.
     override func columnsChanged() {
-        guard (host?.columnState.density ?? .standard) == density else {
+        guard let restoreScroll = scrollAnchor() else {
             super.columnsChanged()
             return
         }
-        let startWidth = layout.itemWidth
-        let clip = scroll.contentView
-        let startScroll = Double(clip.bounds.origin.x)
-        let column = layout.column(atScrollLeft: startScroll)
+        let leadWasInView = leadIsInView
         guard metricsChanged() else { return }
         placeItems()
-        let maxLeft = max(0, Double(collection.frame.width - clip.bounds.width))
-        let left = layout.anchoredScrollLeft(column: column, startWidth: startWidth, startScrollLeft: startScroll)
-        clip.scroll(to: NSPoint(x: min(maxLeft, max(0, left)), y: clip.bounds.origin.y))
-        scroll.reflectScrolledClipView(clip)
+        restoreScroll()
         positionRenameField()
-        keepInView(.layout)
+        keepInViewAfterStep(leadWasInView)
+    }
+
+    override func scrollAnchor() -> (() -> Void)? {
+        guard (host?.columnState.density ?? .standard) == density else { return nil }
+        let startWidth = layout.itemWidth
+        let startScroll = Double(scroll.contentView.bounds.origin.x)
+        let column = layout.column(atScrollLeft: startScroll)
+        return { [self] in
+            let left = layout.anchoredScrollLeft(column: column, startWidth: startWidth, startScrollLeft: startScroll)
+            scrollClamped(to: NSPoint(x: left, y: scroll.contentView.bounds.origin.y))
+        }
     }
 
     // MARK: Keeping the selection in view

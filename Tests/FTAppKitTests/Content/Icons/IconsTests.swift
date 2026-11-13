@@ -292,6 +292,55 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A new icon size keeps the item at the top left of the view where it was on screen; the rows before it move.
+        @Test func keepsTheItemAtTheTopLeftInPlaceWhenTheIconSizeChanges() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsIcons, files: 400)
+            let icons = try #require(probe.icons)
+            let clip = icons.scroll.contentView
+            icons.scrollPosition = (top: 10 + 7 * 116 + 30, left: 0)
+            let anchor = 7 * icons.columns
+            let onScreen = { icons.itemFrame(at: anchor, viewport: icons.viewport).minY - clip.bounds.minY }
+            let before = onScreen()
+            for step in [ViewSize.Change.bigger, .bigger, .smaller] {
+                tab.content.stepViewSize(step)
+                probe.layout()
+                #expect(onScreen() == before)
+                #expect(icons.items(in: clip.bounds, viewport: icons.viewport).contains(anchor))
+            }
+            await harness.close()
+        }
+
+        // A size step keeps a selected item that was in view in view, and leaves one out of view where it is, step
+        // after step.
+        @Test func aSizeStepKeepsTheLeadInViewOnlyWhenItWasInView() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsIcons, files: 400)
+            let icons = try #require(probe.icons)
+            let rows = Int((Double(icons.viewport.height) - 10) / 116)
+            let lead = max(0, rows * icons.columns - 1)
+            tab.content.select(paths: [tab.content.entries[lead].path])
+            probe.layout()
+            #expect(icons.isWhollyInView(index: lead))
+            tab.content.stepViewSize(.bigger)
+            probe.layout()
+            #expect(icons.isWhollyInView(index: lead))
+            tab.content.stepViewSize(.bigger)
+            probe.layout()
+            #expect(icons.isWhollyInView(index: lead))
+            // Scrolled away from it: steps leave it out of view.
+            icons.scrollPosition = (top: 10 + 60 * 116, left: 0)
+            #expect(!icons.isInView(index: lead))
+            for step in [ViewSize.Change.smaller, .smaller, .bigger] {
+                let top = icons.scroll.contentView.bounds.minY
+                tab.content.stepViewSize(step)
+                probe.layout()
+                #expect(!icons.isInView(index: lead))
+                #expect(icons.scroll.contentView.bounds.minY != top || step == .bigger)
+            }
+            await harness.close()
+        }
+
         // The Icons view doesn't read the details of the items on screen; only the List shows them.
         @Test func doesNotReadTheDetailsOfTheItemsOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()

@@ -37,6 +37,21 @@ final class IconViewController: ItemGridPane {
         return true
     }
 
+    /// A new icon size or density keeps the item at the top left of the view where it is on screen: the rows before
+    /// it grow or shrink, and its own row may hold more or fewer items.
+    override func scrollAnchor() -> (() -> Void)? {
+        guard !entries.isEmpty else { return nil }
+        let clip = scroll.contentView
+        let top = Double(clip.bounds.origin.y)
+        let row = layout.row(atScrollTop: top)
+        let index = min(row * columns, entries.count - 1)
+        let offset = layout.paddingTop + Double(row) * layout.rowHeight - top
+        return { [self] in
+            let next = layout.anchoredScrollTop(index: index, columns: columns, offset: offset)
+            scrollClamped(to: NSPoint(x: clip.bounds.origin.x, y: next))
+        }
+    }
+
     override func configure(_ item: NSCollectionViewItem, entry: DirectoryEntry, index: Int) {
         (item as? IconItem)?.configure(entry: entry, pane: self)
     }

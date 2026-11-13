@@ -138,6 +138,21 @@ extension IconGridLayout {
         return (first * columnCount)..<min(itemCount, (last + 1) * columnCount)
     }
 
+    // MARK: Resizing the icons
+
+    /// The row at the top of a view scrolled to `scrollTop`: the one that holds it.
+    public func row(atScrollTop scrollTop: Double) -> Int {
+        let row = ((scrollTop - paddingTop) / rowHeight).rounded(.down)
+        guard row.isFinite, row > 0 else { return 0 }
+        return Int(min(row, 1e9))
+    }
+
+    /// The scroll offset that puts the row of the item at `index` `offset` below the view's top, as it was before the
+    /// grid changed to this one of `columns` columns.
+    public func anchoredScrollTop(index: Int, columns: Int, offset: Double) -> Double {
+        paddingTop + Double(max(0, index) / max(1, columns)) * rowHeight - offset
+    }
+
     /// How many rows a page holds: rows of `rowHeight` in the viewport's height.
     public var lineExtent: Double { rowHeight }
 }

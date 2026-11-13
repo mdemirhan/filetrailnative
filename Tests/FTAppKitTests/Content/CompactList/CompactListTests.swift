@@ -239,6 +239,35 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A new column width keeps a selected item that was in view in view, and leaves one out of view where it is,
+        // step after step.
+        @Test func aWidthStepKeepsTheLeadInViewOnlyWhenItWasInView() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsList, files: 600)
+            let compact = try #require(probe.compact)
+            // Far to the right: selecting it scrolls the list to it.
+            let lead = 20 * compact.rowsPerColumn
+            tab.content.select(paths: [tab.content.entries[lead].path])
+            probe.layout()
+            #expect(compact.isWhollyInView(index: lead))
+            #expect(compact.scroll.contentView.bounds.minX > 0)
+            for _ in 0..<2 {
+                tab.content.stepViewSize(.bigger)
+                probe.layout()
+                #expect(compact.isWhollyInView(index: lead))
+            }
+            // Scrolled back to the start: steps leave it out of view, and the list where it is.
+            compact.scrollPosition = (top: 0, left: 0)
+            #expect(!compact.isInView(index: lead))
+            for _ in 0..<2 {
+                tab.content.stepViewSize(.smaller)
+                probe.layout()
+                #expect(!compact.isInView(index: lead))
+                #expect(compact.scroll.contentView.bounds.minX == 0)
+            }
+            await harness.close()
+        }
+
         // The Compact List doesn't read the details of the items on screen; only the List shows them.
         @Test func doesNotReadTheDetailsOfTheItemsOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()

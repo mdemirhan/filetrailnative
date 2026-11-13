@@ -14,7 +14,9 @@ protocol RevealScroller: AnyObject {
 /// when it becomes the one to show, when it shows up in the list, when another order is chosen, and when asked again
 /// (a refused name). When only the list changed around it, it is kept in view if it was in view, and otherwise the list
 /// stays where it was scrolled. When the layout changed, it is kept in view unless the list was scrolled since: Back and
-/// a tab coming back put back where the list was scrolled.
+/// a tab coming back put back where the list was scrolled. A size step (bigger icons, wider columns) keeps it in view if
+/// it was in view just before, and otherwise leaves the list where the step put it, as later layouts do until it is
+/// shown again.
 @MainActor
 final class RevealKeeper {
     /// What asks for the item to be shown.
@@ -34,6 +36,8 @@ final class RevealKeeper {
         /// Where the item stood when last found in the list; nil while it never was.
         var index: Int?
         var scroll: NSPoint
+        /// A size step left it out of view on purpose: a layout doesn't bring it back.
+        var heldOutOfView = false
     }
 
     private var seen: Seen?
@@ -45,6 +49,7 @@ final class RevealKeeper {
     func keepInView(_ change: Change, ask: Ask, index: Int?, scroller: some RevealScroller) {
         if change == .ask, seen?.ask == ask { return }
         let sameAsk = seen?.ask == ask
+        var held = sameAsk && seen?.heldOutOfView == true
         if let index {
             let reveal: Bool
             if let seen, sameAsk, let seenIndex = seen.index {
@@ -52,14 +57,28 @@ final class RevealKeeper {
                     reveal = seenIndex != index && scroller.isInView(index: seenIndex)
                 } else {
                     let origin = scroller.scrollOrigin
-                    reveal = abs(origin.x - seen.scroll.x) <= 1 && abs(origin.y - seen.scroll.y) <= 1
+                    reveal =
+                        !seen.heldOutOfView && abs(origin.x - seen.scroll.x) <= 1 && abs(origin.y - seen.scroll.y) <= 1
                 }
             } else {
                 reveal = true
             }
-            if reveal { scroller.bringIntoView(index: index) }
+            if reveal {
+                scroller.bringIntoView(index: index)
+                held = false
+            }
         }
-        seen = Seen(ask: ask, index: index ?? (sameAsk ? seen?.index : nil), scroll: scroller.scrollOrigin)
+        seen = Seen(
+            ask: ask, index: index ?? (sameAsk ? seen?.index : nil), scroll: scroller.scrollOrigin, heldOutOfView: held)
+    }
+
+    /// A size step: the item is brought back into view when `wasInView` (it was in view just before the step), and
+    /// otherwise left where the step put it.
+    func keepInViewAfterStep(wasInView: Bool, ask: Ask, index: Int?, scroller: some RevealScroller) {
+        if wasInView, let index { scroller.bringIntoView(index: index) }
+        seen = Seen(
+            ask: ask, index: index ?? (seen?.ask == ask ? seen?.index : nil), scroll: scroller.scrollOrigin,
+            heldOutOfView: !wasInView && index != nil)
     }
 }
 

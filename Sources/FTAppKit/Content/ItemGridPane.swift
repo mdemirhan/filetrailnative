@@ -228,12 +228,31 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         refresh(paths: nil)
     }
 
+    /// The icon size, the column width or the density changed: the items are placed again, the view keeps its place
+    /// (`scrollAnchor`), and the lead is kept in view if it was.
     func columnsChanged() {
+        let leadWasInView = leadIsInView
+        let restoreScroll = scrollAnchor()
         guard metricsChanged() else { return }
         collection.reloadData()
         placeItems()
-        keepInView(.layout)
+        restoreScroll?()
+        keepInViewAfterStep(leadWasInView)
         syncRename()
+    }
+
+    /// Before the items are placed again for another size: what puts the view back where it was on screen once they
+    /// are, or nil to leave it.
+    func scrollAnchor() -> (() -> Void)? { nil }
+
+    /// Scrolls to `origin`, kept inside the content.
+    func scrollClamped(to origin: NSPoint) {
+        let clip = scroll.contentView
+        let document = collection.frame.size
+        let maxX = max(0, document.width - clip.bounds.width)
+        let maxY = max(0, document.height - clip.bounds.height)
+        clip.scroll(to: NSPoint(x: min(maxX, max(0, origin.x)), y: min(maxY, max(0, origin.y))))
+        scroll.reflectScrolledClipView(clip)
     }
 
     func reveal(index: Int) {
@@ -255,6 +274,22 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         guard let host else { return }
         let ask = host.revealAsk(followingRename: keepsRenameInView)
         revealKeeper.keepInView(change, ask: ask, index: ask.path.flatMap { indexByPath[$0] }, scroller: self)
+    }
+
+    /// Whether the item `keepInView` follows is in view now.
+    var leadIsInView: Bool {
+        guard let host, let path = host.revealAsk(followingRename: keepsRenameInView).path,
+            let index = indexByPath[path]
+        else { return false }
+        return isInView(index: index)
+    }
+
+    /// `keepInView` after a size step, as `RevealKeeper.keepInViewAfterStep` says.
+    func keepInViewAfterStep(_ wasInView: Bool) {
+        guard let host else { return }
+        let ask = host.revealAsk(followingRename: keepsRenameInView)
+        revealKeeper.keepInViewAfterStep(
+            wasInView: wasInView, ask: ask, index: ask.path.flatMap { indexByPath[$0] }, scroller: self)
     }
 
     var scrollOrigin: NSPoint { scroll.contentView.bounds.origin }
