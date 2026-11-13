@@ -4,6 +4,8 @@
 # --full is the check before a release: it builds from clean, and builds the release app as well.
 set -uo pipefail
 cd "$(dirname "$0")/.."
+# shellcheck source=lib/test-runs.sh
+source scripts/lib/test-runs.sh
 
 scope=""
 affected=0
@@ -301,8 +303,9 @@ format_out="$logs/.ci-format-summary"
     out="$format_out"
     : >"$out"
     failed=0
-    if [ -n "$scope" ] || [ "$affected" = 1 ]; then
-        # A scoped or affected run lints only the Swift files changed on this branch; a full run lints everything.
+    if { [ -n "$scope" ] || [ "$affected" = 1 ]; } && ! changed_files | grep -qx '.swift-format'; then
+        # A scoped or affected run lints only the Swift files the last commit changed and those changed since, new ones
+        # included (`changed_files`); a full run, or a change to the lint's rules in .swift-format, lints everything.
         changed=()
         while IFS= read -r f; do [ -f "$f" ] && changed+=("$f"); done < <(
             changed_files | grep -E '^((Sources|Tests|tools)/.*\.swift|Package\.swift)$'
@@ -353,7 +356,12 @@ if [ -z "$scope" ] && [ -d "$logs/bundles" ]; then
 fi
 [ "$bundles" = none ] && expected_summaries=0
 [ "$build_failed" = 1 ] && expected_summaries=0
-if [ "$summaries" -lt "$expected_summaries" ] && grep -q '^PASS test ' "$out"; then
+# A filter that matches no test passes with nothing checked: that is a failure too.
+if [ -n "$scope" ] && ! ran_some_tests "$logs/test.log" && grep -q '^PASS test ' "$out"; then
+    failed=1
+    sed -i '' 's/^PASS test /FAIL test /' "$out"
+    echo "no test matches --scope $scope" >>"$out"
+elif [ "$summaries" -lt "$expected_summaries" ] && grep -q '^PASS test ' "$out"; then
     failed=1
     sed -i '' 's/^PASS test /FAIL test /' "$out"
     echo "the test processes ended with $summaries \"Test run with\" summaries, $expected_summaries expected: one stopped silently" >>"$out"
