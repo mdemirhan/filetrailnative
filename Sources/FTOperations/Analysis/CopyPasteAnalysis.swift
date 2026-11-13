@@ -19,7 +19,24 @@ public func buildCopyPasteAnalysisReport(
     analysisId: String, request: CopyPasteAnalysisRequest, fileSystem: some AnalysisFileSystem,
     signal: StopSignal? = nil
 ) throws -> CopyPasteAnalysisReport {
-    try ReportBuilder(request: request, fileSystem: fileSystem, signal: signal).build(analysisId: analysisId)
+    var request = request
+    request.sourcePaths = withoutPickedAppleDoubleFiles(request.sourcePaths, fileSystem)
+    return try ReportBuilder(request: request, fileSystem: fileSystem, signal: signal).build(analysisId: analysisId)
+}
+
+/// The picked items without the AppleDouble files of other picked items: on FAT, exFAT and SMB disks "._name" beside
+/// "name" holds "name"'s attributes, and with hidden files shown both can be picked (Select All). "name" carries them
+/// along; "._name" moved as an item of its own, before "name", would take them away from it. As for the items in a
+/// pasted folder (`withoutAppleDoubleFiles`). Only a name that starts with "._" is looked at on disk.
+func withoutPickedAppleDoubleFiles(_ sourcePaths: [String], _ fileSystem: some AnalysisFileSystem) -> [String] {
+    let picked = Set(sourcePaths.map(NameKeys.Exact.init))
+    return sourcePaths.filter { path in
+        let folder = NodePath.dirname(path)
+        let isCompanion = CopyPasteNames.isAppleDoubleCompanionName(NodePath.basename(path)) { sibling in
+            picked.contains(NameKeys.Exact(joinChildPath(folder, sibling)))
+        }
+        return !(isCompanion && fileSystem.isAppleDouble(path))
+    }
 }
 
 /// Reads one item again from disk, as the review would read it now: used when the item changed after the review

@@ -191,4 +191,34 @@ struct EmptyFilesOnFATTests {
             }
         }
     }
+
+    // With hidden files shown, Select All picks an item's "._name" file with it. Moved as an item of its own, before
+    // the item, it would take the item's attributes away from it.
+    @Test(.tags(.diskImage), .diskImages, arguments: [CopyPasteMode.cut, .copy])
+    func movesAnItemPickedWithItsAppleDoubleFileWithItsAttributes(mode: CopyPasteMode) async throws {
+        try await withTemporaryDirectory { root in
+            try await DiskImage.withSharedVolume(.exfat) { stick in
+                try Disk.write(stick.path + "/foo.txt", "foo")
+                try Disk.write(stick.path + "/bar.txt", "bar")
+                try Attributes.write(stick.path + "/foo.txt", "com.filetrail.test", "kept")
+                try Attributes.write(stick.path + "/bar.txt", "com.filetrail.test", "too")
+                // A "._" file with no item beside it is an item like any other.
+                try Disk.write(stick.path + "/._alone", "someone's")
+                let picked = ["._alone", "._bar.txt", "._foo.txt", "bar.txt", "foo.txt"]
+                #expect(Disk.list(stick.path).filter { !$0.hasPrefix(".") || $0.hasPrefix("._") } == picked)
+
+                let run = try await runPaste(
+                    mode: mode, sources: picked.map { stick.path + "/" + $0 }, into: root.path)
+
+                #expect(run.report.summary.totalNodeCount == 3)
+                #expect(run.result?.status == .completed)
+                #expect(Disk.list(root.path) == ["._alone", "bar.txt", "foo.txt"])
+                #expect(Attributes.read(root.path + "/foo.txt", "com.filetrail.test") == "kept")
+                #expect(Attributes.read(root.path + "/bar.txt", "com.filetrail.test") == "too")
+                if mode == .cut {
+                    #expect(Disk.list(stick.path).filter { !$0.hasPrefix(".") || $0.hasPrefix("._") } == [])
+                }
+            }
+        }
+    }
 }
