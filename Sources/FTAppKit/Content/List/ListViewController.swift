@@ -264,7 +264,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         isSyncing = false
         applySelection()
         if scrollToTop {
-            if !entries.isEmpty { table.scrollRowToVisible(0) }
+            // At the top and at the left: a folder opened afresh starts at its first column, an empty one too.
+            scrollPosition = (top: 0, left: 0)
             revealKeeper.forget()
         }
         keepInView(change)

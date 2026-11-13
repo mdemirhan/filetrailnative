@@ -274,6 +274,10 @@ extension ListViewController {
             renamingPath = state.path
             table.addSubview(field)
             field.frame = renameFrame(row: row)
+            // Name scrolled out of view to the left: the list goes back to it, so the field opens where it is seen.
+            if field.frame.minX < scroll.contentView.bounds.minX {
+                scrollPosition = (top: scrollPosition.top, left: 0)
+            }
             setRenaming(true, row: row)
             keepInView(.ask)
             field.beginEditing()

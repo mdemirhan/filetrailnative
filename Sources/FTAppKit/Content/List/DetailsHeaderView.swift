@@ -115,7 +115,7 @@ final class ColumnSeparatorView: NSView {
             return
         }
         let start = onBegin(column)
-        dragStartX = event.locationInWindow.x
+        dragStartX = headerX(event)
         dragStartWidth = start.width
         dragStartWidths = start.saved
         isDragging = true
@@ -123,7 +123,15 @@ final class ColumnSeparatorView: NSView {
 
     override func mouseDragged(with event: NSEvent) {
         guard isDragging else { return }
-        onDrag(column, dragStartWidth + (event.locationInWindow.x - dragStartX), dragStartWidths)
+        onDrag(column, dragStartWidth + (headerX(event) - dragStartX), dragStartWidths)
+    }
+
+    /// Where the pointer is along the header, which moves with the rows: a drag that scrolls the list sideways keeps
+    /// the divider under the pointer.
+    private func headerX(_ event: NSEvent) -> CGFloat {
+        var header: NSView? = superview
+        while let view = header, !(view is DetailsHeaderView) { header = view.superview }
+        return (header ?? self).convert(event.locationInWindow, from: nil).x
     }
 
     override func mouseUp(with event: NSEvent) {
