@@ -2,6 +2,7 @@ import AppKit
 import FTTestSupport
 import Foundation
 import Testing
+import os
 
 @testable import FTFileSystem
 
@@ -294,8 +295,14 @@ private func entry(
     @Test func waitsBeforeAskingWhenDeferredSoItemsPassedQuicklyAreNeverAskedFor() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
-            let store = makeStore(source: source, samples: directory)
-            #expect(FileIconStore.deferredLoadDelay == .milliseconds(80))
+            // The wait, at once, as a sleep taken back throws.
+            let asked = OSAllocatedUnfairLock(initialState: [Duration]())
+            let store = FileIconStore(
+                source: source, samples: IconSamples(root: directory.appending("samples")),
+                sleep: { delay in
+                    asked.withLock { $0.append(delay) }
+                    try Task.checkCancellation()
+                })
 
             // The selection moves on before the delay is up: each earlier request is taken back.
             var handle: LoadHandle?
@@ -308,8 +315,9 @@ private func entry(
             handle?.cancel()
             let landed = await fetch(store, IconRequest(entry: entry("/usr/bin/landed")), deferLoad: true)
             #expect(landed != nil)
-            // Let any wrongly kept request run before checking.
-            try await Task.sleep(for: .milliseconds(200))
+            #expect(asked.withLock { $0 }.allSatisfy { $0 == FileIconStore.deferredLoadDelay })
+            // The requests taken back ran before the one that landed, in turn on the main actor: one wrongly kept
+            // would have asked for its icon first.
             #expect(source.paths == ["/usr/bin/landed"])
         }
     }

@@ -186,20 +186,34 @@ struct TrashFoldersWatchTests {
                 onChange: { name in told.append(FolderChange(path: other, changedPaths: name.map { [$0] })) },
                 onFail: {})
             defer { stop() }
-            try await Task.sleep(for: .milliseconds(300))
-            // Its Trash is made by the first item trashed on the disk, after the watch began.
-            try FileManager.default.createDirectory(atPath: other, withIntermediateDirectories: true)
-            try Data().write(to: URL(fileURLWithPath: other + "/item"))
-            let deadline = ContinuousClock.now + .seconds(8)
-            while !told.contains(where: { $0.changedPaths == ["item"] }) && ContinuousClock.now < deadline {
-                try await Task.sleep(for: .milliseconds(25))
+            func waitUntilTold(_ seconds: Double, _ changedPaths: [String]?) async throws -> Bool {
+                let deadline = ContinuousClock.now + .seconds(seconds)
+                while !told.contains(where: { $0.changedPaths == changedPaths }) && ContinuousClock.now < deadline {
+                    try await Task.sleep(for: .milliseconds(25))
+                }
+                return told.contains { $0.changedPaths == changedPaths }
             }
-            #expect(told.contains { $0.changedPaths == ["item"] })
-            // What else happens on the disk is not.
+            // Its Trash is made by the first item trashed on the disk, after the watch began. The stream starts off
+            // the main actor, in its own time: the Trash is made again every 250 ms until it is told of, so it was
+            // made with the stream running.
+            var made = false
+            let deadline = ContinuousClock.now + .seconds(8)
+            repeat {
+                try? FileManager.default.removeItem(atPath: other)
+                try FileManager.default.createDirectory(atPath: other, withIntermediateDirectories: true)
+                made = try await waitUntilTold(0.25, ["501"])
+            } while !made && ContinuousClock.now < deadline
+            #expect(made)
+            try Data().write(to: URL(fileURLWithPath: other + "/item"))
+            #expect(try await waitUntilTold(8, ["item"]))
+            // What else happens on the disk is not: by the time a change in the Trash made after it is told, it would
+            // have been.
             told = []
             try Data().write(to: URL(fileURLWithPath: home + "/elsewhere"))
-            try await Task.sleep(for: .milliseconds(600))
-            #expect(told.isEmpty)
+            try Data().write(to: URL(fileURLWithPath: other + "/after"))
+            #expect(try await waitUntilTold(8, ["after"]))
+            // (The item's own events may come in more than one go.)
+            #expect(told.allSatisfy { $0.changedPaths == ["after"] || $0.changedPaths == ["item"] })
         }
     }
 }

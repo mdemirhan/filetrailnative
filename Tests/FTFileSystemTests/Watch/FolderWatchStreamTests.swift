@@ -12,10 +12,6 @@ private final class Told {
 
 @MainActor
 struct FolderWatchStreamTests {
-    /// How long a change that should not be told is waited for: FSEvents hands events over after 0.25 s
-    /// (`FSEventsFolderWatcher.latencySeconds`), then the main actor is told.
-    private static let quietWait = Duration.milliseconds(500)
-
     /// Waits up to `seconds` for `condition`.
     private func wait(seconds: Double = 8, until condition: @MainActor () -> Bool) async -> Bool {
         let deadline = ContinuousClock.now + .seconds(seconds)
@@ -23,6 +19,19 @@ struct FolderWatchStreamTests {
             try? await Task.sleep(for: .milliseconds(25))
         }
         return condition()
+    }
+
+    /// Writes `path` every 250 ms until `told`, for up to 8 s. A watch's stream is started off the main actor, in its
+    /// own time, and a change made before it runs is never told: once one is told, the stream runs.
+    private func probe(_ path: String, until told: @MainActor () -> Bool) async throws -> Bool {
+        let deadline = ContinuousClock.now + .seconds(8)
+        var attempt = 0
+        repeat {
+            try "probe \(attempt)".write(toFile: path, atomically: false, encoding: .utf8)
+            attempt += 1
+            if await wait(seconds: 0.25, until: told) { return true }
+        } while ContinuousClock.now < deadline
+        return told()
     }
 
     @Test func tellsOfATagOrCustomizationSetOnAnItemWithNothingElseChanged() async throws {
@@ -34,17 +43,17 @@ struct FolderWatchStreamTests {
             let watches = FolderWatches(.app(cache: ResponseCache()) { _, change in told.changes.append(change) })
             watches.watch(windowID: 1, path: root)
             defer { watches.stopAll() }
-            try await Task.sleep(for: .milliseconds(500))
+            // Once the stream runs, what was told before (the item being made, had it been) is over with.
+            #expect(
+                try await probe(root + "/probe") {
+                    told.changes.contains { $0.changedPaths?.contains(root + "/probe") == true }
+                })
             told.changes = []
-            // FSEvents can start late on a busy machine, so the attribute is set again until it is told.
-            var heard = false
-            for attempt in 0..<4 where !heard {
-                try FinderTags.write([FinderTag(name: "Tag\(attempt)", color: .red)], to: item)
-                heard = await wait(seconds: 4) {
+            try FinderTags.write([FinderTag(name: "Tag", color: .red)], to: item)
+            #expect(
+                await wait {
                     told.changes.contains { $0.changedPaths?.contains(item) == true || $0.changedPaths == nil }
-                }
-            }
-            #expect(heard)
+                })
         }
     }
 
@@ -57,20 +66,12 @@ struct FolderWatchStreamTests {
             let watches = FolderWatches(.app(cache: cache) { _, change in told.changes.append(change) })
             watches.watch(windowID: 1, path: directory.path)
             defer { watches.stopAll() }
-            // Let the stream start before changing anything.
-            try await Task.sleep(for: .milliseconds(300))
 
             let real = try NativeFileSystem().realpath(directory.path)
-            // FSEvents can start late on a busy machine and miss the first write, so touch the file again until it is told of.
-            try "x".write(toFile: real + "/made.txt", atomically: false, encoding: .utf8)
-            var madeTold = false
-            for attempt in 0..<4 where !madeTold {
-                madeTold = await wait(seconds: 4) {
+            #expect(
+                try await probe(real + "/made.txt") {
                     told.changes.contains { $0.changedPaths?.contains(root + "/made.txt") == true }
-                }
-                if !madeTold { try "x\(attempt)".write(toFile: real + "/made.txt", atomically: false, encoding: .utf8) }
-            }
-            #expect(madeTold)
+                })
 
             try FileManager.default.moveItem(atPath: real + "/made.txt", toPath: real + "/renamed.txt")
             #expect(
@@ -93,13 +94,16 @@ struct FolderWatchStreamTests {
             let watches = FolderWatches(.app(cache: ResponseCache()) { _, change in told.changes.append(change) })
             watches.watch(windowID: 1, path: directory.path)
             defer { watches.stopAll() }
-            try await Task.sleep(for: .milliseconds(300))
-
-            try "x".write(toFile: directory.path + "/inner/deep.txt", atomically: false, encoding: .utf8)
-            try await Task.sleep(for: Self.quietWait)
             let root = directory.path
-            let named = told.changes.compactMap(\.changedPaths).flatMap { $0 }
-            #expect(!named.contains(root + "/inner/deep.txt"))
+            @MainActor func named() -> [String] { told.changes.compactMap(\.changedPaths).flatMap { $0 } }
+            #expect(try await probe(root + "/probe") { named().contains(root + "/probe") })
+
+            try "x".write(toFile: root + "/inner/deep.txt", atomically: false, encoding: .utf8)
+            // A change that is told, made after: had the deeper one been told, it would have been by then.
+            try "x".write(toFile: root + "/after.txt", atomically: false, encoding: .utf8)
+            #expect(await wait { named().contains(root + "/after.txt") })
+            // Told, it would be by its leaf name: the watch names what it hears as children of the folder.
+            #expect(!named().contains { $0.hasSuffix("/deep.txt") })
         }
     }
 
@@ -119,9 +123,7 @@ struct FolderWatchStreamTests {
                 })
             watches.watch(windowID: 1, path: directory.path)
             defer { watches.stopAll() }
-            try await Task.sleep(for: .milliseconds(300))
-            try "x".write(toFile: directory.path + "/new.txt", atomically: false, encoding: .utf8)
-            #expect(await wait { !sizesWhenTold.changes.isEmpty })
+            #expect(try await probe(directory.path + "/new.txt") { !sizesWhenTold.changes.isEmpty })
             #expect(sizeSeen == 0)
         }
     }
@@ -136,11 +138,12 @@ struct FolderWatchStreamTests {
     }
 
     // A watch stopped once its stream runs (twice: the second does nothing), and one stopped before its stream is
-    // started, on one folder: neither is told of a change made afterwards.
+    // started, on one folder: neither is told of a change made afterwards. A third watch, left running, is.
     @Test func stopsWatchingWhenAskedAlsoBeforeTheStreamIsStarted() async throws {
         try await withTemporaryDirectory { directory in
             let told = Told()
             let toldEarly = Told()
+            var toldRunning: [String?] = []
             let stopEarly = FSEventsFolderWatcher.watchFolder(
                 path: directory.path,
                 onChange: { _ in toldEarly.changes.append(FolderChange(path: "", changedPaths: nil)) }, onFail: {})
@@ -148,13 +151,19 @@ struct FolderWatchStreamTests {
             let stop = FSEventsFolderWatcher.watchFolder(
                 path: directory.path, onChange: { _ in told.changes.append(FolderChange(path: "", changedPaths: nil)) },
                 onFail: {})
-            // Long enough for both streams to start, had the first not been stopped.
-            try await Task.sleep(for: .milliseconds(300))
+            let stopRunning = FSEventsFolderWatcher.watchFolder(
+                path: directory.path, onChange: { toldRunning.append($0) }, onFail: {})
+            defer { stopRunning() }
+            // Both streams run, as the first's would have had it not been stopped.
+            #expect(
+                try await probe(directory.path + "/probe") {
+                    !told.changes.isEmpty && toldRunning.contains("probe")
+                })
             stop()
             stop()
             let before = told.changes.count
             try "x".write(toFile: directory.path + "/late.txt", atomically: false, encoding: .utf8)
-            try await Task.sleep(for: Self.quietWait)
+            #expect(await wait { toldRunning.contains("late.txt") })
             #expect(told.changes.count == before)
             #expect(toldEarly.changes.isEmpty)
         }
@@ -167,7 +176,8 @@ struct FolderWatchStreamTests {
         let watches = FolderWatches(.app(cache: ResponseCache()) { _, change in told.changes.append(change) })
         watches.watch(windowID: 1, path: directory.path)
         defer { watches.stopAll() }
-        try await Task.sleep(for: .milliseconds(300))
+        #expect(try await probe(directory.path + "/probe") { !told.changes.isEmpty })
+        told.changes = []
         try FileManager.default.removeItem(atPath: directory.path)
         #expect(await wait { told.changes.contains { $0.changedPaths == nil } })
     }

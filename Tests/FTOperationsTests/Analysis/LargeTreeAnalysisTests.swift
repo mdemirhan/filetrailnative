@@ -1,6 +1,7 @@
 // The review of very large and very deep trees:
 // 150,000 items, and a tree as deep as a path goes, both reviewed by the write service off the caller's thread.
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 import os
@@ -135,26 +136,25 @@ struct LargeTreeAnalysisSpeedTests {
         }
         let request = CopyPasteAnalysisRequest(
             mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target")
-        let clock = ContinuousClock()
-        // The quickest of three runs of each, so a busy machine slows neither one alone.
-        var lookups = Duration.seconds(1_000)
-        var review = Duration.seconds(1_000)
+        // The CPU time of the quickest of three runs of each.
+        var lookups = Double.infinity
+        var review = Double.infinity
         for _ in 0..<3 {
             lookups = min(
                 lookups,
-                clock.measure {
+                CPUTime.measureThread {
                     for name in names {
                         _ = try? fileSystem.lstat("/source/project/files/" + name)
                         _ = try? fileSystem.lstat("/target/project/files/" + name)
                     }
-                })
+                }.seconds)
             review = min(
                 review,
-                try clock.measure {
+                try CPUTime.measureThread {
                     let report = try buildCopyPasteAnalysisReport(
                         analysisId: "analysis-1", request: request, fileSystem: fileSystem)
                     #expect(report.summary.totalNodeCount == Self.fileCount + 2)
-                })
+                }.seconds)
         }
 
         #expect(review < lookups * 12, "review \(review), lookups \(lookups)")

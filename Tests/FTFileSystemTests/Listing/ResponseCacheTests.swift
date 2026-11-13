@@ -1,3 +1,4 @@
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -206,15 +207,16 @@ struct ResponseCacheTests {
             _ = await cache.metadata(for: paths) { $0.map(detail) }
         }
         for _ in 0..<10 { await batch() }
-        // The quickest batch, not the total: a batch that waited for a turn on a busy machine says nothing, and
-        // the quickest still pays for any look through all those kept. A few ms on a laptop in a debug build.
+        // The CPU time of the quickest batch: the quickest still pays for any look through all those kept. A few ms
+        // on a laptop in a debug build. Nothing in a batch waits, so it runs on one thread; a batch that moved to
+        // another thread anyway isn't counted.
         var quickest = Double.infinity
         for _ in 0..<200 {
-            let start = ContinuousClock.now
+            let thread = pthread_self()
+            let start = CPUTime.thread()
             await batch()
-            let elapsed = start.duration(to: .now)
-            quickest = min(
-                quickest, Double(elapsed.components.seconds) * 1000 + Double(elapsed.components.attoseconds) / 1e15)
+            guard pthread_equal(thread, pthread_self()) != 0 else { continue }
+            quickest = min(quickest, (CPUTime.thread() - start) * 1000)
         }
         #expect(quickest < 10)
         #expect(cache.sizes.directoryMetadata == 5_000)
