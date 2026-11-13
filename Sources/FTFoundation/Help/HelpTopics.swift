@@ -182,7 +182,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Copy, cut, paste",
                             description:
-                                "Paste and New Folder go into the folder you are browsing, whatever is selected. To paste into another folder, or make a folder inside it, right-click that folder."
+                                "Paste and New Folder go into the folder you are browsing, whatever is selected. To paste into another folder, or make a folder inside it, right-click that folder. Files you copy or cut here paste only in File Trail, not in Finder or other apps, and files copied in Finder don't paste here: drag them between apps instead."
                         ),
                         HelpRow(
                             label: "From the folder tree",
@@ -434,7 +434,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Search elsewhere",
                             description:
-                                "The bar above the results switches between this folder, Home, the disk it is on, and Macintosh HD."
+                                "The bar above the results switches between this folder, Home, the disk it is on, and the startup disk."
                         ),
                         HelpRow(
                             label: "Filter",
@@ -474,6 +474,11 @@ extension HelpContent {
                             label: "Icon size and column width",
                             description:
                                 "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Sizes → Match Finder keeps sizes of its own."
+                        ),
+                        HelpRow(
+                            label: "Columns in List view",
+                            description:
+                                "Each column keeps the width you give it. Drag the divider at the right of a column’s heading to make it wider or narrower, or double-click the divider to fit the column to its widest value. When the columns are wider than the pane (a narrow window, or the Info panel open), the list scrolls sideways."
                         ),
                         HelpRow(
                             label: "Sort",
