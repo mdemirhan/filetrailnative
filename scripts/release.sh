@@ -1,7 +1,8 @@
 #!/bin/bash
 # Scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]
 #
-# From a clean main that is already on GitHub, it checks the commit (scripts/ci.sh --full with the large-file tests), tags it vX.Y.Z (the version
+# From a clean main that is already on GitHub, it checks the commit (scripts/ci.sh --full with the large-file tests, the
+# release-only tests and the fuzz tests at more cases from a seed of the day), tags it vX.Y.Z (the version
 # comes from the tag, see scripts/version.sh), builds the signed and notarized app, pushes the tag, and makes a draft GitHub
 # release with the disk image and the ZIP. The notes start as a list of the commits since the last release: rewrite them,
 # then publish the release on GitHub. Nothing is published by this script.
@@ -166,8 +167,13 @@ if [[ "${YES}" == 0 ]]; then
     fi
 fi
 
-run "Clean build with zero warnings, every test including the large-file ones, format lint, and the release app" \
-    env FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --full
+# The fuzz tests draw many more cases than a commit's check, from a seed of the day: a failure names the seed that makes
+# it again.
+FUZZ_SEED="$(date +%Y%m%d)"
+printf '\nThe fuzz tests start at seed %s (UNDO_FUZZ_SEED, BATCH_RENAME_FUZZ_SEED).\n' "${FUZZ_SEED}"
+run "Clean build with zero warnings, every test including the large-file and release-only ones, format lint, and the release app" \
+    env FILETRAIL_LARGE_FILE_TESTS=1 FILETRAIL_RELEASE_TESTS=1 UNDO_FUZZ_CASES=1000 UNDO_FUZZ_SEED="${FUZZ_SEED}" \
+    BATCH_RENAME_FUZZ_CASES=4000 BATCH_RENAME_FUZZ_SEED="${FUZZ_SEED}" scripts/ci.sh --full
 
 # The tests that put windows, menus and a disk on screen: the only tests of real windows, so a release runs them.
 run "The tests that drive real windows" env FILETRAIL_GUI_TESTS=1 swift test --filter GUITests

@@ -317,8 +317,10 @@ extension RealWalks {
 
         // An app from the Dock may open 256 files at once. A folder waiting its turn holds no descriptor, so a folder
         // with more subfolders than that is measured whole. The limit is lowered for the whole test process, so it
-        // leaves room above what is open now for the tests running beside this one.
-        @Test func measuresAFolderWithMoreSubfoldersThanTheAppMayOpenFilesAtOnce() async throws {
+        // leaves room above what is open now for the tests running beside this one; making the 15,600 folders takes
+        // seconds. Only a release runs it.
+        @Test(.enabled(if: ReleaseTests.enabled))
+        func measuresAFolderWithMoreSubfoldersThanTheAppMayOpenFilesAtOnce() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-many") { directory in
                 let root = directory.path
                 // 1,200 folders of 3 holding 3 each: every folder the walk lists hands it more to queue, so the queue

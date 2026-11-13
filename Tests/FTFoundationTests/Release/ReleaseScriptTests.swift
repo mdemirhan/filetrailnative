@@ -23,9 +23,13 @@ import Testing
         process.arguments = arguments
         if let folder { process.currentDirectoryURL = URL(fileURLWithPath: folder) }
         // Git's own variables, set when this runs inside a git hook, would point it at the real repository.
-        // The large-file switch too: a run under a release has it set, and what the script itself sets is under test.
+        // The release's switches too: a run under a release has them set, and what the script itself sets is under test.
+        let releaseSwitches: Set = [
+            "FILETRAIL_LARGE_FILE_TESTS", "FILETRAIL_RELEASE_TESTS", "UNDO_FUZZ_CASES", "UNDO_FUZZ_SEED",
+            "BATCH_RENAME_FUZZ_CASES", "BATCH_RENAME_FUZZ_SEED",
+        ]
         var environment = ProcessInfo.processInfo.environment.filter {
-            !$0.key.hasPrefix("GIT_") && $0.key != "FILETRAIL_LARGE_FILE_TESTS"
+            !$0.key.hasPrefix("GIT_") && !releaseSwitches.contains($0.key)
         }
         if let path { environment["PATH"] = path + ":" + (environment["PATH"] ?? "") }
         if let devCache { environment["FILETRAIL_DEV_CACHE"] = devCache }
@@ -272,15 +276,17 @@ import Testing
     }
 
     // The release's check is the full one (a clean build, the release app) and includes the tests that write large
-    // files. A stand-in for scripts/ci.sh records what it was given and fails, so the release stops there: nothing is
-    // tagged or pushed.
-    @Test func theReleaseCheckIncludesTheLargeFileTests() throws {
+    // files and those only a release runs, with the fuzz tests at more cases from the day's seed. A stand-in for
+    // scripts/ci.sh records what it was given and fails, so the release stops there: nothing is tagged or pushed.
+    @Test func theReleaseCheckIncludesTheLargeFileAndReleaseOnlyTests() throws {
         try withCheckout { checkout throws in
             let seen = checkout.root.appendingPathComponent("ci-saw")
             let stub = checkout.path + "/scripts/ci.sh"
             let body = """
                 #!/bin/bash
-                echo "large=${FILETRAIL_LARGE_FILE_TESTS:-} args=$*" >"\(seen.path)"
+                echo "large=${FILETRAIL_LARGE_FILE_TESTS:-} release=${FILETRAIL_RELEASE_TESTS:-}" \\
+                    "undo=${UNDO_FUZZ_CASES:-}@${UNDO_FUZZ_SEED:-}" \\
+                    "rename=${BATCH_RENAME_FUZZ_CASES:-}@${BATCH_RENAME_FUZZ_SEED:-} args=$*" >"\(seen.path)"
                 exit 1
                 """
             try body.write(toFile: stub, atomically: true, encoding: .utf8)
@@ -293,7 +299,11 @@ import Testing
 
             let outcome = try checkout.release("0.3.0", "--yes")
             #expect(!outcome.succeeded)
-            #expect(try String(contentsOf: seen, encoding: .utf8) == "large=1 args=--full\n")
+            let seed = try #require(
+                try String(contentsOf: seen, encoding: .utf8).firstMatch(of: #/undo=1000@(\d{8}) /#)?.1)
+            #expect(
+                try String(contentsOf: seen, encoding: .utf8)
+                    == "large=1 release=1 undo=1000@\(seed) rename=4000@\(seed) args=--full\n")
             try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
         }
     }

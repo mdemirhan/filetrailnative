@@ -5,9 +5,12 @@ import Testing
 @testable import FTOperations
 
 // Random folders and random renames, with random failures and stops: whatever happens, no item is lost or replaced,
-// and every result says where its item really is. The cases come from seeds 1 to 400.
-private let firstSeed = 1
-private let cases = 400
+// and every result says where its item really is. The cases come from seeds 1 to 400, or from those
+// BATCH_RENAME_FUZZ_SEED and BATCH_RENAME_FUZZ_CASES give (a release runs more of them, from a seed of its own).
+private let firstSeed = Int(ProcessInfo.processInfo.environment["BATCH_RENAME_FUZZ_SEED"] ?? "") ?? 1
+private let cases = Int(ProcessInfo.processInfo.environment["BATCH_RENAME_FUZZ_CASES"] ?? "") ?? 400
+/// Seeds 1 to 400, which reach every outcome.
+private let everyOutcomeIsReached = firstSeed <= 1 && firstSeed + cases >= 401
 
 private let nfcE = "\u{E9}"
 private let nfdE = "e\u{301}"
@@ -241,8 +244,11 @@ private func fuzz(nested: Bool) -> (failure: String?, outcomes: Set<String>) {
         if !found.isEmpty {
             let calls = fuzzCase.disk.calls.filter { !$0.hasPrefix("lstat") }.joined(separator: ", ")
             return (
-                (["Seed \(seed) failed.", "Disk before: \(Array(before.pathByIno.values))", "Calls: \(calls)"] + found)
-                    .joined(separator: "\n"), outcomes
+                ([
+                    "Seed \(seed) failed: BATCH_RENAME_FUZZ_SEED=\(seed) BATCH_RENAME_FUZZ_CASES=1 runs it again.",
+                    "Disk before: \(Array(before.pathByIno.values))", "Calls: \(calls)",
+                ] + found)
+                .joined(separator: "\n"), outcomes
             )
         }
         for result in run.items {
@@ -267,13 +273,13 @@ private let everyOutcome: Set<String> = [
     @Test func neverLosesAnItemAndSaysWhereEachOneIsForItemsInFoldersSideBySide() {
         let (failure, outcomes) = fuzz(nested: false)
         #expect(failure == nil, Comment(rawValue: failure ?? ""))
-        #expect(outcomes == everyOutcome)
+        if everyOutcomeIsReached { #expect(outcomes == everyOutcome) }
     }
 
     @Test func neverLosesAnItemAndSaysWhereEachOneIsWhenFoldersAreRenamedWithItemsInsideThem() {
         let (failure, outcomes) = fuzz(nested: true)
         #expect(failure == nil, Comment(rawValue: failure ?? ""))
-        #expect(outcomes == everyOutcome)
+        if everyOutcomeIsReached { #expect(outcomes == everyOutcome) }
     }
 
     // A folder that can't take its new name and is put back under another one takes the paths of the items inside it

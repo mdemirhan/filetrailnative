@@ -3,7 +3,8 @@ import FTTestSupport
 import Foundation
 import Testing
 
-@Suite struct DiskImageSlotsTests {
+/// A test helper's own tests: only a release runs them.
+@Suite(.enabled(if: ReleaseTests.enabled)) struct DiskImageSlotsTests {
     /// The descriptor `acquire` returns within `seconds`; nil when it was still waiting.
     private func acquire(_ kind: String, slots: Int, in folder: URL, within seconds: Double) async throws -> Int32? {
         try await withThrowingTaskGroup(of: Int32?.self) { group in

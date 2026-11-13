@@ -5,7 +5,9 @@ import Testing
 @testable import FTTestSupport
 
 /// Self-tests of the disk image helper: each kind mounts, takes a file and reports its case rule. They are here, in one
-/// bundle, not in FTTestSupport: that is linked into every test bundle, which would run them once in each.
+/// bundle, not in FTTestSupport: that is linked into every test bundle, which would run them once in each. Every disk
+/// format is mounted by a real test anyway, so only a release runs them.
+@Suite(.enabled(if: ReleaseTests.enabled))
 struct DiskImageSelfTests {
     @Test(.tags(.diskImage), .diskImages, arguments: DiskImage.Kind.allCases)
     func mountsWritesAndDetaches(kind: DiskImage.Kind) async throws {

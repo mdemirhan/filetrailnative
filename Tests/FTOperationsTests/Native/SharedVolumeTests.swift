@@ -12,10 +12,9 @@ private func mountPoint(of path: String) -> String? {
 }
 
 struct SharedVolumeTests {
-    // Tests using a kind at the same time get folders of their own on one volume, which goes once the last is done.
-    // HFS+, which no other test of this target uses, so nothing else keeps it mounted.
-    @Test(.tags(.diskImage), .diskImages)
-    func lendsAFolderEachOnOneVolumeAndDetachesItAfterTheLastUser() async throws {
+    // Tests using a kind get folders of their own on one volume, which stays mounted for the tests after them.
+    @Test(.tags(.diskImage), .diskImages, .enabled(if: ReleaseTests.enabled))
+    func lendsAFolderEachOnOneVolumeAndKeepsItForTheNext() async throws {
         var volume: String?
         try await DiskImage.withSharedVolume(.hfs) { first in
             let firstMount = try #require(mountPoint(of: first.path))
@@ -31,6 +30,10 @@ struct SharedVolumeTests {
             #expect(names == [first.lastPathComponent])
             #expect(mountPoint(of: first.path) == firstMount)
         }
-        #expect(!FileManager.default.fileExists(atPath: try #require(volume)))
+        let kept = try #require(volume)
+        #expect(try FileManager.default.contentsOfDirectory(atPath: kept).filter { !$0.hasPrefix(".") }.isEmpty)
+        try await DiskImage.withSharedVolume(.hfs) { next in
+            #expect(mountPoint(of: next.path) == kept)
+        }
     }
 }

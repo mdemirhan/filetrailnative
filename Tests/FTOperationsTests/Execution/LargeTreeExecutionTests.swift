@@ -179,8 +179,8 @@ struct LargeTreeExecutionTests {
     private static func fileName(_ index: Int) -> String { LargeFolder.fileName(index) }
 
     // The folder is reviewed through the write service, as LargeTreeAnalysisTests' review is, and pasted on the
-    // disk it was reviewed on.
-    @Test func analyzesAndCopiesEveryItem() async throws {
+    // disk it was reviewed on. Only a release runs it.
+    @Test(.enabled(if: ReleaseTests.enabled)) func analyzesAndCopiesEveryItem() async throws {
         let reviewed = try await LargeFolder.reviewed.value
         let fileSystem = reviewed.fileSystem
         let report = try #require(reviewed.report, Comment(rawValue: reviewed.error ?? ""))

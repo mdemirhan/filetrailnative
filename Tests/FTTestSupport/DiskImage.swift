@@ -114,8 +114,10 @@ public enum DiskImage {
     }
 
     /// Runs `body` with a fresh folder of its own on a volume of `kind` that the tests of this process
-    /// running at the same time share, and removes the folder afterwards. The first of them mounts the
-    /// volume (in a folder of its own), and the last one to finish detaches it.
+    /// share, and removes the folder afterwards. The first of them mounts the volume (in a folder of its
+    /// own), and it stays mounted until the process exits, as `ExecDiskImages`' do: tests that don't
+    /// overlap don't mount it again. Each mount counts towards the ones after which the Trash fails
+    /// until a restart (`NativeTestSupport`).
     ///
     /// For tests that need a real volume of a kind but not a whole one: nothing of the volume's own (its
     /// root, free space, Trash, mounting or ejecting) and nothing another test does in a folder of its own.
@@ -132,9 +134,6 @@ public enum DiskImage {
             result = .failure(error)
         }
         await offCallersActor { removeAll(at: folder) }
-        if let last = await SharedVolumes.shared.leave(kind) {
-            await offCallersActor { last.close() }
-        }
         return try result.get()
     }
 
@@ -195,6 +194,12 @@ public enum DiskImage {
             }
         }
 
+        /// Lets go of its slot while the image stays attached: a shared volume, kept until the process
+        /// exits, would otherwise hold one of its kind's few slots for the whole run. Not closed after.
+        func letGoOfSlot() {
+            DiskImageSlots.release(lock)
+        }
+
         /// Detaches the image, deletes it and releases its slot. An image that wouldn't detach is
         /// kept, with its folder, for the process's exit to try again (and the next run after that).
         func close() {
@@ -248,45 +253,32 @@ public enum DiskImage {
         }
     }
 
-    /// The volumes `withSharedVolume` lends, one per kind, with how many tests are using each.
+    /// The volume of each kind the tests of this process share, mounted by the first of them. It is never
+    /// closed: the exit hook (`StillAttached`) detaches it.
     private actor SharedVolumes {
         static let shared = SharedVolumes()
 
-        private struct Entry {
-            var users: Int
-            let mounting: Task<Mounted, any Error>
-        }
-
-        private var entries: [Kind: Entry] = [:]
+        private var mounting: [Kind: Task<Mounted, any Error>] = [:]
 
         func join(_ kind: Kind) async throws -> URL {
-            let mounting: Task<Mounted, any Error>
-            if var entry = entries[kind] {
-                entry.users += 1
-                entries[kind] = entry
-                mounting = entry.mounting
+            let task: Task<Mounted, any Error>
+            if let running = mounting[kind] {
+                task = running
             } else {
-                mounting = Task { try await Mounted.make(kind, ownMountPoint: true) }
-                entries[kind] = Entry(users: 1, mounting: mounting)
+                task = Task {
+                    let mounted = try await Mounted.make(kind, ownMountPoint: true)
+                    mounted.letGoOfSlot()
+                    return mounted
+                }
+                mounting[kind] = task
             }
             do {
-                return try await mounting.value.mount
+                return try await task.value.mount
             } catch {
-                _ = await leave(kind)
+                // The next test tries again.
+                if mounting[kind] == task { mounting[kind] = nil }
                 throw error
             }
-        }
-
-        /// The volume for the caller to close when it was its last user.
-        func leave(_ kind: Kind) async -> Mounted? {
-            guard var entry = entries[kind] else { return nil }
-            entry.users -= 1
-            guard entry.users == 0 else {
-                entries[kind] = entry
-                return nil
-            }
-            entries[kind] = nil
-            return try? await entry.mounting.value
         }
     }
 

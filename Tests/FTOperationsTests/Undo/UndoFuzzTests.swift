@@ -406,10 +406,14 @@ struct UndoFuzzTests {
         )
     }
 
-    /// Runs `body` for each seed, each case in a fresh folder; the first failure names its seed.
-    private func eachCase(_ body: (Int, UndoFuzzCase) async throws -> Void) async throws {
+    /// How far apart the seeds of the tests that draw the same scripts start, so each draws scripts of its own.
+    static let seedsApart = 1_000_000
+
+    /// Runs `body` for each seed, each case in a fresh folder; the first failure names its seed, the one
+    /// `UNDO_FUZZ_SEED` takes to run it again. `offset` (a multiple of `seedsApart`) moves the scripts drawn.
+    private func eachCase(offset: Int = 0, _ body: (Int, UndoFuzzCase) async throws -> Void) async throws {
         for seed in Self.firstSeed..<(Self.firstSeed + Self.cases) {
-            let testCase = try UndoFuzzCase(seed: seed)
+            let testCase = try UndoFuzzCase(seed: seed + offset)
             do {
                 try await body(seed, testCase)
             } catch let failure as Failure {
@@ -510,7 +514,8 @@ struct UndoFuzzTests {
     @Test func getsBackToTheStartAndRedoToTheEndThroughFailedWritesAndStops() async throws {
         var failed = 0
         var stopped = 0
-        try await eachCase { seed, testCase in
+        // Seeds of its own: the first test draws the scripts of the first ones.
+        try await eachCase(offset: Self.seedsApart) { seed, testCase in
             let start = testCase.snapshot()
             for _ in 0..<testCase.random.integer(1, 6) { _ = try await testCase.operate() }
             let end = testCase.snapshot()
@@ -572,7 +577,8 @@ struct UndoFuzzTests {
     }
 
     @Test func losesAndReplacesNothingWhenWritesFailAsIfThingsChangedOutside() async throws {
-        try await eachCase { seed, testCase in
+        // Seeds of its own, as the third test's are.
+        try await eachCase(offset: 2 * Self.seedsApart) { seed, testCase in
             for _ in 0..<testCase.random.integer(1, 6) { _ = try await testCase.operate() }
             let before = testCase.ids()
             testCase.setFailures(

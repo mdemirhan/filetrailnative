@@ -1,5 +1,6 @@
 import AppKit
 import FTFileSystem
+import FTTestSupport
 import Testing
 
 @testable import FTAppKit
@@ -32,8 +33,8 @@ import Testing
     }
 
     // A second launch: the running app brings its window forward, or opens one with none; not while
-    // quitting. The announcement goes through the system's distributed notifications.
-    @Test func aSecondLaunchBringsAWindowForward() async {
+    // quitting. The announcement goes through the system's distributed notifications, so only a release runs it.
+    @Test(.enabled(if: ReleaseTests.enabled)) func aSecondLaunchBringsAWindowForward() async {
         let host = FakeWindowHost()
         SecondInstance.arrived(shutdownInProgress: true, host: host)
         #expect(host.calls.isEmpty)
