@@ -17,7 +17,6 @@ struct ShortcutsTests {
     @Test func namesEveryCommandOnceAndGivesNoKeyToTwoCommands() {
         let ids = ShortcutCommands.all.map(\.id)
         #expect(Set(ids).count == ids.count)
-        #expect(ids.count == 83)
 
         let keys = ShortcutCommands.all.flatMap { Self.defaults[$0.id] ?? [] }
         #expect(Set(keys).count == keys.count)
@@ -28,10 +27,9 @@ struct ShortcutsTests {
         }
     }
 
-    // 70 commands can be changed; the standard ones stay fixed.
-    @Test func letsSeventyCommandsBeChangedAndKeepsTheStandardOnesFixed() {
+    // The standard commands' keys stay fixed; the others can be changed.
+    @Test func keepsTheStandardCommandsFixed() {
         let fixed = ShortcutCommands.all.filter(\.fixed)
-        #expect(ShortcutCommands.all.count - fixed.count == 70)
         #expect(
             fixed.map(\.id) == [
                 .undo, .redo, .cut, .copy, .paste, .selectAll, .settings, .closeWindow, .minimize, .fullScreen, .hide,

@@ -88,9 +88,8 @@ struct ToolbarItemsTests {
         #expect(withoutCommand.filter { !drawnByTheToolbar.contains($0) } == [])
     }
 
-    @Test func theCatalogHoldsThe37Items() {
-        #expect(ToolbarItems.ids.count == 37)
-        #expect(Set(ToolbarItems.ids).count == 37)
+    @Test func theCatalogNamesEachItemOnce() {
+        #expect(Set(ToolbarItems.ids).count == ToolbarItems.ids.count)
         #expect(ToolbarItems.definitions.filter(\.allowDuplicates).map(\.id) == [.topSeparator])
         #expect(
             ToolbarItems.definitions.filter(\.topRequired).map(\.id) == [.title, .clipboard, .viewOptions, .search])

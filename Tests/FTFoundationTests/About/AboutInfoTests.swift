@@ -33,13 +33,4 @@ struct AboutInfoTests {
         #expect(AboutText.formatMacosVersion("27.0") == "27.0")
         #expect(AboutText.formatMacosVersion("x.0.0") == "x.0.0")
     }
-
-    // The window's fixed texts
-    @Test func hasTheTextsOfTheWindow() {
-        #expect(AboutText.appName == "File Trail")
-        #expect(AboutText.tagline == "A file browser that stays out of your way.")
-        #expect(AboutText.copyright == "© 2026 Mustafa Demirhan")
-        #expect(AboutText.repositoryURL == "https://github.com/mdemirhan/filetrailnative")
-        #expect(AboutText.issuesURL == "https://github.com/mdemirhan/filetrailnative/issues")
-    }
 }

@@ -99,19 +99,6 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.filter { $0.tagColors == nil }.count == 3)
     }
 
-    @Test func readsRealFileProperties() async throws {
-        try await withTemporaryDirectory { directory in
-            let path = directory.path + "/notes.txt"
-            try "hello world".write(toFile: path, atomically: true, encoding: .utf8)
-            let service = DirectoryService(kinds: KindLabeler(describer: nil))
-            let item = await service.itemProperties(path: path)
-            #expect(item.kind == .file)
-            #expect(item.sizeBytes == 11)
-            #expect(item.kindLabel == "TXT File")
-            #expect(item.permissionMode != nil)
-        }
-    }
-
     @Test func readsThePropertiesOfTheRootFolderNamedMacintoshHD() async {
         let item = await DirectoryService().itemProperties(path: "/")
         #expect(item.path == "/")
@@ -636,12 +623,15 @@ struct ExplorerServiceFixtureTests {
         try await withTemporaryDirectory { directory in
             try makeFolder(directory.path + "/Folder")
             try write("hello world", to: directory.path + "/notes.txt")
-            let service = DirectoryService()
+            let service = DirectoryService(kinds: KindLabeler(describer: nil))
             let folder = await service.itemProperties(path: directory.path + "/Folder")
             let file = await service.itemProperties(path: directory.path + "/notes.txt")
             #expect(folder.sizeStatus == .deferred)
             #expect(file.sizeStatus == .ready)
+            #expect(file.kind == .file)
             #expect(file.sizeBytes == 11)
+            #expect(file.kindLabel == "TXT File")
+            #expect(file.permissionMode != nil)
         }
     }
 

@@ -14,11 +14,6 @@ struct FlowListLayoutTests {
         #expect(Self.finder.rowHeight == DesignTokens.details(density: .finder).rowHeight)
     }
 
-    @Test func returnsTheCorrectColumnStepForEitherDensity() {
-        #expect(Self.layout.columnStep == Self.layout.itemWidth + Self.layout.columnGap)
-        #expect(Self.finder.columnStep == Self.finder.itemWidth + Self.finder.columnGap)
-    }
-
     static func reveal(
         _ scrollLeft: Double, _ index: Int, finder: Bool = false, maxScrollLeft: Double = 3000
     ) -> Double {

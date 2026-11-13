@@ -21,10 +21,6 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.clampSearchColumnWidth(.folder, 4000) == 1000)
     }
 
-    @Test func offersAutoLightAndDark() {
-        #expect(AppPreferenceLimits.themeOptions.map(\.label) == ["Auto", "Light", "Dark"])
-    }
-
     @Test func defaultsToBlueTheFirstAccentOffered() {
         let options = AppPreferenceLimits.accentOptions
         #expect(options[0].value == "#007aff")

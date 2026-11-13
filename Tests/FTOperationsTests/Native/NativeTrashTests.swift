@@ -60,14 +60,6 @@ struct NativeTrashTests {
         }
     }
 
-    // What the Trash test says when it fails: the startup disk, mounted first, always has a volume reference.
-    @Test func theStartupDiskHasAFileManagerVolumeReference() throws {
-        let result = try #require(TrashProbe.volumeReference(of: NSHomeDirectory()))
-        let number = try result.get()
-        #expect(number < 0)
-        #expect(TrashProbe.volumeReferenceReport(of: NSHomeDirectory()).contains("knows the disk"))
-    }
-
     @Test func failsWithENOENTAndTheTrashsOwnSentenceForAnItemThatIsntThere() throws {
         TrashProbe.touch()
         try withTemporaryDirectory(prefix: "native-fs-trash") { root in

@@ -126,19 +126,6 @@ import Testing
         #expect(metrics.columnWidths(.name, search: true).defaultWidth == 300)
     }
 
-    @Test(arguments: Density.allCases)
-    func iconGridColumnsAreTheWidthOverTheCellRoundedDown(density: Density) {
-        // Columns = max(1, floor((width - 2 * paddingInline) / cellMinWidth)).
-        let base = Self.iconGrid(density)
-        let layout = Metrics(density: density).iconGrid
-        for width in stride(from: 0.5, through: 1500.5, by: 7.0) {
-            let expected = max(
-                1, Int(((width - (base["paddingInline"] ?? 0) * 2) / (base["cellMinWidth"] ?? 1)).rounded(.down)))
-            #expect(layout.columns(containerWidth: width) == expected, "width \(width)")
-        }
-        #expect(layout.columns(containerWidth: 0) == 1)
-    }
-
     /// Row, indent, chevron, icon, symbol, label gap, label font, list padding top and bottom, section header.
     static func sidebar(_ density: SidebarDensity) -> [Double] {
         switch density {

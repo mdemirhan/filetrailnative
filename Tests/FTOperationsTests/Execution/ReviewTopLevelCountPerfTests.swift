@@ -34,7 +34,6 @@ struct ReviewTopLevelCountPerfTests {
                     operationId: "op", report: report, mode: .copy, startedAt: Date(), finishedAt: Date(),
                     completedByteCount: 0, totalBytes: 0, items: items, status: .completed, error: nil)
             }
-            print("createOperationResult \(count) same-length picked items: \(seconds) s")
             #expect(result.summary.topLevelItemCount == count)
             #expect(seconds < 1)
         }

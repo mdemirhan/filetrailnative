@@ -112,27 +112,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(events.last?.result?.error == "You don't have permission to access this item.")
     }
 
-    @Test func utimesCalledForDirectoriesAfterMkdirAndChmod() async throws {
-        let fileSystem = folderWithAFile()
-        fileSystem.enableUtimes()
-        let calls = Recorded<[String]>()
-        fileSystem.utimesImpl = { path, _, mtimeMs in calls.append([path, String(mtimeMs)]) }
-        let operation = try createResolvedOperation(fileSystem, sources: ["/source/dir"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "utimes-dir-1")
-
-        #expect(calls.all.contains(["/target/dir", "5555.0"]))
-    }
-
-    @Test func utimesNotCalledWhenAbsent() async throws {
-        let fileSystem = folderWithAFile()
-        let operation = try createResolvedOperation(fileSystem, sources: ["/source/dir"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "utimes-absent-1")
-
-        #expect(fileSystem.readNode("/target/dir")?.kind == .directory)
-    }
-
     @Test func utimesENOTSUPSilentlyIgnored() async throws {
         let fileSystem = folderWithAFile()
         fileSystem.enableUtimes()

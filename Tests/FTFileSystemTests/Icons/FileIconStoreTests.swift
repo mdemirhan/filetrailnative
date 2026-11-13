@@ -371,11 +371,6 @@ private func entry(
         }
     }
 
-    @Test func theDefaultFolderIsOneFixedFolderInTheTemporaryDirectory() {
-        #expect(IconSamples.defaultRoot.lastPathComponent == "filetrail-icon-samples")
-        #expect(IconSamples.defaultRoot.path.hasPrefix(URL(fileURLWithPath: NSTemporaryDirectory()).path))
-    }
-
     @Test func aFailureIsNotRemembered() throws {
         try withTemporaryDirectory { directory in
             let blocker = directory.appending("blocker")

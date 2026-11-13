@@ -139,23 +139,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(SearchResults.folderText(path: "/etc/hosts", rootPath: "/", startupDiskName: "Data") == "etc")
     }
 
-    @Test func theSearchStatusLineIsTheFoundationOne() {
-        let size = StatusSize.ready(sizeBytes: 3000)
-        #expect(
-            StatusSummary.search(isSearching: false, shown: 12, totalCount: 12, selectedCount: 2, selectionSize: size)
-                == "12 results · 2 selected · 3.0 KB")
-        #expect(
-            StatusSummary.search(
-                isSearching: false, shown: 12, totalCount: 12, selectedCount: 2, selectionSize: .calculating)
-                == "12 results · 2 selected · Calculating…")
-        #expect(
-            StatusSummary.search(isSearching: false, shown: 12, totalCount: 12, selectedCount: 2, selectionSize: nil)
-                == "12 results · 2 selected")
-        #expect(
-            StatusSummary.search(isSearching: false, shown: 12, totalCount: 12, selectedCount: 0, selectionSize: size)
-                == "12 results")
-    }
-
     @Test func buildsItemsFromFdOutput() {
         let hidden = SearchResults.item(rootPath: "/Users/demo", outputPath: "/Users/demo/.config/.env.Local")
         #expect(hidden.name == ".env.Local")

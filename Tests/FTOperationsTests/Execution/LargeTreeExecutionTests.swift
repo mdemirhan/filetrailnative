@@ -186,13 +186,8 @@ struct LargeTreeExecutionTests {
         let report = try #require(reviewed.report, Comment(rawValue: reviewed.error ?? ""))
         #expect(report.summary.totalNodeCount == Self.fileCount + 2)
         let resolvedNodes = try resolveAnalysisWithPolicy(report: report, policy: addMissing, fileSystem: fileSystem)
-        let clock = ContinuousClock()
-        let started = clock.now
-
         let events = await execute(fileSystem, (report, resolvedNodes), operationId: "copy-large")
 
-        let elapsed = clock.now - started
-        print("copyPasteLargeTree: \(Self.fileCount) files pasted in \(elapsed)")
         let result = events.last?.result
         #expect(result?.status == .completed)
         // The folder, then each file in it.

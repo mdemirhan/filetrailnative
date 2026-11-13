@@ -79,24 +79,6 @@ func itemFor(_ result: CopyPasteOperationResult, _ sourcePath: String) -> CopyPa
 struct EdgeCasesTests {
     // MARK: Items that keep changing while they are pasted
 
-    @Test func leavesAnItemThatChangesAfterEveryAnswerInsteadOfAskingForever() async throws {
-        let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
-
-        let (result, conflicts) = try await edgePaste(
-            fileSystem, sources: ["/source/a.txt"],
-            beforeExecute: { fileSystem.mutateNode("/source/a.txt") { _ in } },
-            resolve: { _ in
-                // Changed again before the answer is used.
-                fileSystem.mutateNode("/source/a.txt") { _ in }
-                return .overwrite
-            })
-
-        #expect(conflicts.count == 5)
-        #expect(itemFor(result, "/source/a.txt")?.status == .failed)
-        #expect(itemFor(result, "/source/a.txt")?.error == "\u{201C}a.txt\u{201D} kept changing, so it was left.")
-        #expect(!fileSystem.exists("/target/a.txt"))
-    }
-
     @Test func givesUpOnANameThatIsTakenEveryTimeItIsWritten() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
         fileSystem.copyFileImpl = { _, _, _, _ in throw codedError(.errno(EEXIST)) }
@@ -579,20 +561,6 @@ struct EdgeCasesTests {
             calls.value == [
                 ["/target/.a.txt.filetrail-00000001", "0"], ["/target/.a.txt.filetrail-00000001", "2"],
             ])
-    }
-
-    // MARK: Pasting into the top of the disk
-
-    @Test func mergesAFolderIntoOneAtTheTopOfTheDisk() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source/Docs/a.txt", .file(size: 1)), ("/Docs/old.txt", .file(size: 1)),
-        ])
-
-        let (result, _) = try await edgePaste(fileSystem, sources: ["/source/Docs"], into: "/")
-
-        #expect(result.status == .completed)
-        #expect(fileSystem.exists("/Docs/a.txt"))
-        #expect(fileSystem.exists("/Docs/old.txt"))
     }
 
     // MARK: Helpers

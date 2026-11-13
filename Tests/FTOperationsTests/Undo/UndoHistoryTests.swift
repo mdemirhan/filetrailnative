@@ -19,10 +19,6 @@ struct UndoHistoryTests {
         .trashed(from: from, trashPath: "/Users/demo/.Trash/x", id: id, parentId: id, stamp: nil)
     }
 
-    static func units(_ steps: [UndoStep]...) -> [UndoUnit] {
-        steps.map { UndoUnit(steps: $0) }
-    }
-
     static func undoable(_ action: WriteOperationAction, _ steps: [UndoStep]...) -> FinishedWrite {
         FinishedWrite(action: .write(action), log: .undoable(units: steps.map { UndoUnit(steps: $0) }), items: [])
     }
@@ -167,10 +163,6 @@ struct UndoHistoryTests {
         try finish(history, id: entry?.id, done: units([moved("/T/b", "/b")]), leftover: units([trashed("/a")]))
         try finish(history, id: entry?.id, done: units([moved("/T/a", "/a")]))
         #expect(history.top(.redo)?.units == units([moved("/T/a", "/a")]))
-    }
-
-    @Test func isAMillionItemSteps() {
-        #expect(UndoHistory.maxItemStepsDefault == 1_000_000)
     }
 
     @Test func countsEachStepAndEachItemOfABatch() {

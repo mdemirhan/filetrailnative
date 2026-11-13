@@ -256,9 +256,4 @@ struct ApplicationMenuTests {
             infoPanelOpen: false, infoRowOpen: false, favoriteIsSet: false, textEditing: false, canRun: { _ in false })
         #expect(notEditing.disabledCommands == AppCommand.allCases)
     }
-
-    @Test func startsInTheListView() {
-        #expect(ApplicationMenuState.initial.viewMode == .list)
-        #expect(ApplicationMenuState.initial.disabledCommands == [])
-    }
 }

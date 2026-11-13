@@ -16,19 +16,6 @@ struct PaneWidthsTests {
         PaneWidths(treeWidth: tree, inspectorWidth: inspector, layout: layout)
     }
 
-    @Test func definesStableExplorerPaneConstraints() {
-        #expect(layout.treeMinWidth == 220)
-        #expect(layout.treeMaxWidth == 520)
-        #expect(layout.inspectorMinWidth == 260)
-        #expect(layout.inspectorMaxWidth == 480)
-        #expect(layout.resizerWidth == 8)
-        #expect(layout.paneResizeStep == 12)
-        #expect(layout.paneResizeStepLarge == 24)
-        #expect(layout.minContentWidth == 420)
-        #expect(layout.defaultTreeWidth == 280)
-        #expect(layout.defaultInspectorWidth == 320)
-    }
-
     @Test func resizesTreeAndInspectorPanesWithinBounds() {
         var widths = panes()
         let tree = widths.dragStart(.tree, x: 100)

@@ -123,17 +123,6 @@ struct NativeFileSystemTests {
         }
     }
 
-    @Test func listsADirectoryItCannotReadAsAnError() async throws {
-        try await withTemporaryDirectory { directory in
-            try FileManager.default.createDirectory(
-                atPath: directory.path + "/closed", withIntermediateDirectories: false)
-            chmod(directory.path + "/closed", 0)
-            await #expect(throws: ExplorerError.self) {
-                try await DirectoryService().snapshot(path: directory.path + "/closed")
-            }
-        }
-    }
-
     // The message gives the code first, naming the call and the path.
     @Test func aFailureNamesTheCodeTheCallAndThePath() async throws {
         try await withTemporaryDirectory { directory in

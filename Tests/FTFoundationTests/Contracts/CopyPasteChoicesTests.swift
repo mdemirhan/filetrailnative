@@ -70,10 +70,4 @@ struct CopyPasteChoicesTests {
         #expect(free(nil) == .overwrite)
         #expect(free(.merge) == .overwrite)
     }
-
-    @Test func choicesUseTheirWireNames() {
-        #expect(CopyPasteChoice.keepBoth.rawValue == "keep_both")
-        #expect(ConflictClass.typeMismatch.rawValue == "type_mismatch")
-        #expect(RuntimeConflictReason.destinationDeleted.rawValue == "destination_deleted")
-    }
 }

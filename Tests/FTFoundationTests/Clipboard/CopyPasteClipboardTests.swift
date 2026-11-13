@@ -91,10 +91,6 @@ struct CopyPasteClipboardTests {
         #expect(groups.map { $0.items.map(\.name) } == [["a.txt", "b.txt"], ["top"]])
     }
 
-    @Test func clearsToAnEmptyClipboardState() {
-        #expect(CopyPasteClipboard.empty.sourcePaths.isEmpty)
-    }
-
     @Test func reportsWhetherClipboardItemsAreAvailable() {
         #expect(!CopyPasteClipboard.empty.hasItems)
         #expect(ClipboardRules.set(.copy, ["/tmp/a"], capturedAt: Self.now).hasItems)

@@ -37,9 +37,4 @@ struct DirectoryListingDiffTests {
         #expect(reordered.entries == [two, one])
         #expect(reordered.keptPaths == ["/a/one.txt", "/a/two.txt"] && reordered.changedPaths.isEmpty)
     }
-
-    private final class Details {
-        let size: Int
-        init(size: Int) { self.size = size }
-    }
 }

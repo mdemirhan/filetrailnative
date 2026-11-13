@@ -425,11 +425,6 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         locked { get(existingKey(path)) }
     }
 
-    /// Drops an item (and what is in it) from the tree.
-    func remove(_ path: String) {
-        locked { deleteTree(existingKey(path)) }
-    }
-
     /// Drops the entry at `path` alone, leaving what was stored under it.
     @discardableResult
     func deleteNode(_ path: String) -> Bool {

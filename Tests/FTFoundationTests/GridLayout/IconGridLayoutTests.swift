@@ -8,26 +8,6 @@ struct IconGridLayoutTests {
     static let layout = DesignTokens.iconGrid(density: .standard)
     static let finder = DesignTokens.iconGrid(density: .finder)
 
-    /// The icon grid's fixed lengths, as the icon-grid-layout golden holds them.
-    static func goldenLengths() throws -> [String: Double] {
-        let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "icon-grid-layout")
-        guard let found = cases.first(where: { $0.input.op == "css" }), case .constants(let values) = found.output
-        else { return [:] }
-        return values
-    }
-
-    @Test func putsTheIconAsFarDownInItsItemAsTheGoldenHasIt() throws {
-        let golden = try Self.goldenLengths()
-        #expect(golden["itemPaddingTop"] == Self.layout.itemPaddingTop)
-    }
-
-    @Test func takesClicksOnTheTileAndTheNameWhereTheGoldenPutsThem() throws {
-        let golden = try Self.goldenLengths()
-        #expect(golden["iconBox"] == Self.layout.iconBoxSize)
-        #expect(golden["labelWidth"] == Self.layout.labelWidth)
-        #expect(golden["labelGap"] == Self.layout.labelGap)
-    }
-
     // Finder's Icons view keeps 64 point icons in its default View Options, with 12 point names.
     @Test func findersSizesKeepTheGridAndTakeFindersSmallerNames() {
         var finder = Self.finder

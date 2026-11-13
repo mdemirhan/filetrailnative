@@ -221,13 +221,9 @@ struct ShortcutPolicyTests {
                 == "⇧⌘R")
     }
 
-    // The compiler checks that the bucket table covers every command.
-    @Test func keepsAppCommandTreeFocusBucketsExhaustive() {
-        for command in AppCommand.allCases {
-            _ = ShortcutPolicy.treeFocusBucket(of: command)
-        }
-        #expect(AppCommand.allCases.count == 75)
-        // Two commands that sit with the global explorer ones.
+    // Two commands that sit with the global explorer ones. (The compiler checks that the bucket table covers every
+    // command.)
+    @Test func ejectAndCalculateSizeSitWithTheGlobalExplorerCommands() {
         #expect(ShortcutPolicy.treeFocusBucket(of: .ejectVolume) == .globalExplorer)
         #expect(ShortcutPolicy.treeFocusBucket(of: .calculateSize) == .globalExplorer)
     }

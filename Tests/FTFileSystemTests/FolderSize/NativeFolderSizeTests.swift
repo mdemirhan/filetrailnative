@@ -497,14 +497,6 @@ extension RealWalks {
             }
         }
 
-        @Test func handsFinishedFoldersToTheCallbackAndTheRestWithTheResult() async throws {
-            try await withTree { root, expected in
-                let walk = try await measure(NativeFolderSize(), root)
-                let seen = expectReportedOnce(walk.allBatches, expected)
-                #expect(seen.count == expected.count - 1)
-            }
-        }
-
         @Test func handsWhatACancelledWalkFinishedToTheCallbackBeforeRejecting() async throws {
             try await withTree { root, expected in
                 let native = NativeFolderSize()

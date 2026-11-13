@@ -11,17 +11,13 @@ import Testing
 final class DiskGate: @unchecked Sendable {
     private let group = DispatchGroup()
     private let lock = NSLock()
-    private var waiting = 0
     private var isOpen = false
 
     init() {
         group.enter()
     }
 
-    var hasWaiters: Bool { lock.withLock { waiting > 0 } }
-
     func wait() {
-        lock.withLock { waiting += 1 }
         group.wait()
     }
 

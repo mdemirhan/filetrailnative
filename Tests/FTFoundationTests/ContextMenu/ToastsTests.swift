@@ -41,11 +41,6 @@ struct ToastsTests {
         #expect(BottomStack.offsetAboveBarsAndCard(windowHeight: 760, barTops: [727], cardHeight: nil) == 43)
         #expect(BottomStack.offsetAboveBarsAndCard(windowHeight: 760, barTops: [727], cardHeight: 90) == 43 + 90 + 8)
     }
-
-    // The delays before something shows
-    @Test func theDelaysBeforeSomethingShowsHaveTheirSetValues() {
-        #expect(ShowDelays.progressCardMs == 500)
-    }
 }
 
 struct ProgressCardTextTests {

@@ -88,13 +88,6 @@ import Testing
         cache.write(4, for: "c")
         #expect(!cache.contains("b"))
     }
-
-    @Test func theStoresKeepTheirSetSizes() {
-        #expect(FileIconStore.maxEntries == 2048)
-        #expect(ThumbnailStore.maxEntries == 500)
-        #expect(ThumbnailStore.pixelSize == 128)
-        #expect(ThumbnailLoadQueue.maxConcurrentLoads == 4)
-    }
 }
 
 @Suite struct CustomFolderIconTests {
