@@ -4,7 +4,9 @@ import Testing
 
 @testable import FTFileSystem
 
-/// A walker the test drives by hand: the walk under way finishes folders, resolves or rejects when told.
+/// A walker the test drives by hand: the walk under way finishes folders, resolves or rejects when told. As the real
+/// walker, it takes one walk at a time: one started while another hasn't settled fails the test (the real walker's
+/// check of it is a debug assert).
 @MainActor
 private final class MockNative: FolderSizeNative {
     @MainActor private final class Gate {
@@ -40,6 +42,9 @@ private final class MockNative: FolderSizeNative {
         _ path: String, background: Bool, onFinished: @escaping @MainActor (FinishedFolders) -> Void
     ) -> Task<FolderSizeResult, any Error> {
         calls.append((path, background))
+        if gate != nil {
+            Issue.record("a folder size walk of \(path) started while another was under way")
+        }
         let gate = Gate()
         self.gate = gate
         finishedActive = onFinished

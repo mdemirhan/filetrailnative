@@ -342,17 +342,15 @@ extension RealWalks {
         }
 
         // An app from the Dock may open 256 files at once. A folder waiting its turn holds no descriptor, so a folder
-        // with more subfolders than that is measured whole. The limit is lowered for the whole test process, so it
-        // leaves room above what is open now for the tests running beside this one; making the 15,600 folders takes
-        // seconds. Only a release runs it.
-        @Test(.enabled(if: ReleaseTests.enabled))
-        func measuresAFolderWithMoreSubfoldersThanTheAppMayOpenFilesAtOnce() async throws {
-            try await withTemporaryDirectory(prefix: "native-fs-many") { directory in
+        // with more subfolders than that is measured whole. The limit is lowered in a test process of its own, so the
+        // tests running beside this one keep theirs; making the 15,600 folders takes seconds. Only a release runs it.
+        @Test(.enabled(if: ReleaseTests.enabled && !FileLimitChild.isChild))
+        func measuresAFolderWithMoreSubfoldersThanTheAppMayOpenFilesAtOnce() throws {
+            try withTemporaryDirectory(prefix: "native-fs-many") { directory in
                 let root = directory.path
                 // 1,200 folders of 3 holding 3 each: every folder the walk lists hands it more to queue, so the queue
                 // grows faster than four threads empty it. Each folder is made once, after the one holding it.
-                let count = 1_200
-                for index in 0..<count {
+                for index in 0..<FileLimitChild.folderCount {
                     let top = "\(root)/f\(index)"
                     try makeOneFolder(top)
                     for middle in 0..<3 {
@@ -362,20 +360,26 @@ extension RealWalks {
                         }
                     }
                 }
-                let openNow = (try? FileManager.default.contentsOfDirectory(atPath: "/dev/fd").count) ?? 0
-                var saved = rlimit()
-                #expect(getrlimit(RLIMIT_NOFILE, &saved) == 0)
-                var lowered = saved
-                lowered.rlim_cur = rlim_t(max(256, openNow + 512))
-                try #require(lowered.rlim_cur < rlim_t(count))
-                #expect(setrlimit(RLIMIT_NOFILE, &lowered) == 0)
-                defer { _ = setrlimit(RLIMIT_NOFILE, &saved) }
-
-                let walk = try await measure(NativeFolderSize(), root)
-
-                #expect(walk.result.folderCount == count * 13)
-                #expect(walk.dirs.count == count * 13)
+                let run = try FileLimitChild.run(
+                    test: "measuresTheManySubfoldersWithTheLimitLowered", root: root, openFiles: 256)
+                #expect(run.status == 0, "\(run.output)")
+                #expect(run.output.contains("measuresTheManySubfoldersWithTheLimitLowered() passed"), "\(run.output)")
             }
+        }
+
+        // The walk of that folder, in the process the test above starts with fewer files allowed open than it has
+        // folders.
+        @Test(.enabled(if: FileLimitChild.isChild))
+        func measuresTheManySubfoldersWithTheLimitLowered() async throws {
+            let root = try #require(ProcessInfo.processInfo.environment[FileLimitChild.rootKey])
+            var limit = rlimit()
+            #expect(getrlimit(RLIMIT_NOFILE, &limit) == 0)
+            try #require(limit.rlim_cur < rlim_t(FileLimitChild.folderCount))
+
+            let walk = try await measure(NativeFolderSize(), root)
+
+            #expect(walk.result.folderCount == FileLimitChild.folderCount * 13)
+            #expect(walk.dirs.count == FileLimitChild.folderCount * 13)
         }
     }
 }
@@ -604,4 +608,42 @@ private enum VanishingFolder {
 private func removeVanishingFolder(_ path: UnsafePointer<CChar>?) {
     guard let path, String(cString: path) == VanishingFolder.path.withLock({ $0 }) else { return }
     try? FileManager.default.removeItem(atPath: String(cString: path))
+}
+
+/// The test process the file-limit test starts: this test bundle again, running one test, with fewer files allowed open.
+enum FileLimitChild {
+    static let folderCount = 1_200
+    static let rootKey = "FILETRAIL_FILE_LIMIT_ROOT"
+    private static let childKey = "FILETRAIL_FILE_LIMIT_CHILD"
+
+    static var isChild: Bool { ProcessInfo.processInfo.environment[childKey] == "1" }
+
+    /// Runs `test` of this bundle in a process of its own, at most `openFiles` files open, on the folder `root`; its
+    /// exit status and what it printed.
+    static func run(test: String, root: String, openFiles: Int) throws -> (status: Int32, output: String) {
+        let arguments = ProcessInfo.processInfo.arguments
+        let bundle = try #require(
+            arguments.firstIndex(of: "--test-bundle-path").map { arguments[$0 + 1] },
+            "no --test-bundle-path in \(arguments)")
+        var environment = ProcessInfo.processInfo.environment
+        // The system's shell starts without the DYLD_ variables that find the testing libraries: it sets them again.
+        let exports = environment.keys.filter { $0.hasPrefix("DYLD_") }.sorted().map { key in
+            "export \(key)='\(environment[key, default: ""].replacingOccurrences(of: "'", with: "'\\''"))'; "
+        }.joined()
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/sh")
+        process.arguments =
+            ["-c", exports + "ulimit -n \"$0\" && exec \"$@\"", String(openFiles), arguments[0]]
+            + ["--test-bundle-path", bundle, "--testing-library", "swift-testing", "--filter", test]
+        environment[childKey] = "1"
+        environment[rootKey] = root
+        process.environment = environment
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
+        try process.run()
+        let output = String(decoding: pipe.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
+        process.waitUntilExit()
+        return (process.terminationStatus, output)
+    }
 }
