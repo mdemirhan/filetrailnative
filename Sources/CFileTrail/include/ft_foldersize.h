@@ -63,6 +63,13 @@ ft_folder_walk_result ft_folder_walk_get_result(const ft_folder_walk *walk);
 /// Frees the walk and what it still holds. Not while it runs.
 void ft_folder_walk_destroy(ft_folder_walk *walk);
 
+/// Called with a queued sub-folder's path just before a walk opens it.
+typedef void (*ft_folder_walk_open_hook)(const char *path);
+
+/// For tests: `hook` is called before every walk opens each queued sub-folder (NULL for none), so a test can change the
+/// folder at that moment.
+void ft_folder_walk_set_open_hook(ft_folder_walk_open_hook hook);
+
 typedef enum { FT_ITEM_OTHER = 0, FT_ITEM_FILE = 1, FT_ITEM_FOLDER = 2 } ft_item_kind;
 
 typedef struct {

@@ -2,6 +2,7 @@ import CFileTrail
 import FTTestSupport
 import Foundation
 import Testing
+import os
 
 @testable import FTFileSystem
 
@@ -208,6 +209,31 @@ extension RealWalks {
                 #expect(walk.dirs[locked] == nil)
                 let sub = try #require(walk.dirs["\(root)/sub"])
                 #expect(sub.sizeBytes == 105 && sub.fileCount == 2 && sub.folderCount == 2)
+            }
+        }
+
+        // A sub-folder removed between its folder's listing and its own opening: the folders holding it changed while
+        // they were walked, so none of them is reported whole and the walk fails, rather than a size being kept
+        // that leaves out what it held.
+        @Test func aSubfolderGoneBeforeItIsOpenedLeavesTheFoldersHoldingItIncomplete() async throws {
+            try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
+                let root = directory.path
+                try makeTree(root)
+                let gone = "\(root)/sub/gone"
+                try makeFolder(gone)
+                try write("\(gone)/big.bin", 50_000)
+                VanishingFolder.path.withLock { $0 = gone }
+                ft_folder_walk_set_open_hook(removeVanishingFolder)
+                defer { ft_folder_walk_set_open_hook(nil) }
+                var batches: [FinishedFolders] = []
+                let walk = NativeFolderSize().getFolderSize(root, background: false) { batches.append($0) }
+
+                let error = await #expect(throws: FolderSizeError.self) { try await walk.value }
+                #expect(error?.errnum == ENOENT)
+                let finished = Set(batches.flatMap { $0.dirs.map(\.path) })
+                #expect(!finished.contains(root) && !finished.contains("\(root)/sub"))
+                // A folder beside it is whole.
+                #expect(finished.contains("\(root)/sub/deep"))
             }
         }
 
@@ -567,4 +593,15 @@ extension RealWalks {
             }
         }
     }
+}
+
+/// The folder the walk's open hook removes, for the test that removes one as it is about to be opened.
+private enum VanishingFolder {
+    static let path = OSAllocatedUnfairLock(initialState: "")
+}
+
+/// The walk's open hook for that test: called on the walk's threads, it removes the folder about to be opened.
+private func removeVanishingFolder(_ path: UnsafePointer<CChar>?) {
+    guard let path, String(cString: path) == VanishingFolder.path.withLock({ $0 }) else { return }
+    try? FileManager.default.removeItem(atPath: String(cString: path))
 }

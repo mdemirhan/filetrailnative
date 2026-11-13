@@ -18,8 +18,10 @@
 //
 // A folder whose listing fails part way (EIO, say), or that holds a sub-folder that couldn't be opened
 // for a reason other than having no access to it, is incomplete: it and the folders holding it are
-// never reported finished, and a walk whose root is incomplete fails with the error. A sub-folder the
-// walk has no access to is counted as a folder with nothing in it, as Finder does.
+// never reported finished, and a walk whose root is incomplete fails with the error. A sub-folder gone or
+// replaced since it was listed makes its folder incomplete too: the folder changed while it was walked,
+// and what was counted of it is no longer its size. A sub-folder the walk has no access to is counted as
+// a folder with nothing in it, as Finder does.
 //
 // Each folder is finished as soon as everything inside it has been walked: it counts its own listing
 // and each sub-folder not finished yet, and whichever thread brings that count to zero adds the
@@ -192,12 +194,14 @@ static void mark_incomplete(work_queue_t *wq, walk_dir_t *dir, int errnum) {
 }
 
 /* Whether a sub-folder that couldn't be opened for `errnum` is simply left out, as one
-   the walk has no access to, or one gone or replaced since it was listed; anything else
-   (no file descriptors left, an I/O error) leaves its folder incomplete. */
-static int is_skippable_open_error(int errnum) {
-  return errnum == EACCES || errnum == EPERM || errnum == ENOENT || errnum == ENOTDIR ||
-         errnum == ELOOP;
-}
+   the walk has no access to; anything else (gone or replaced since it was listed, no file
+   descriptors left, an I/O error) leaves its folder incomplete. */
+static int is_skippable_open_error(int errnum) { return errnum == EACCES || errnum == EPERM; }
+
+/* For tests: called with each queued sub-folder's path just before it is opened. */
+static _Atomic(ft_folder_walk_open_hook) open_hook = NULL;
+
+void ft_folder_walk_set_open_hook(ft_folder_walk_open_hook hook) { atomic_store(&open_hook, hook); }
 
 /* Abort the walk: all workers stop at the next cancelled/failed check. */
 static void wq_fail(work_queue_t *wq) {
@@ -527,11 +531,13 @@ static int open_dir_path(const char *path) {
   return fd;
 }
 
-/* Opens a queued sub-folder, or -1 when it isn't walked. One the walk has no access to,
-   gone or replaced since it was listed, or on another disk (an open can cross onto one,
-   as an automount does) is skipped; one that couldn't be opened for another reason
+/* Opens a queued sub-folder, or -1 when it isn't walked. One the walk has no access to, or
+   on another disk (an open can cross onto one, as an automount does), is skipped; one that
+   couldn't be opened for another reason (gone or replaced since it was listed, among them)
    leaves it incomplete. */
 static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
+  ft_folder_walk_open_hook hook = atomic_load(&open_hook);
+  if (hook != NULL) hook(dir->path);
   int fd = open_dir_path(dir->path);
   if (fd < 0) {
     int errnum = errno;
