@@ -158,7 +158,7 @@ struct PartialFileTests {
             }
             try fileSystem.removeDirectly(path, recursive: recursive, force: force)
         }
-        copyPartThen(fileSystem) { destination, _ in throw MockWriteServiceFileSystem.error(ENOSPC, destination) }
+        copyPartThen(fileSystem) { destination, _ in throw MockWriteServiceFileSystem.error(EIO, destination) }
 
         let run = try await paste(fileSystem, mode)
 

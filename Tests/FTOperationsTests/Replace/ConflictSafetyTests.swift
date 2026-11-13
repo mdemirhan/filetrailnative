@@ -418,9 +418,9 @@ struct ConflictSafetyTests {
             let trashed = Locked<[String]>([])
             let fileSystem = TestFileSystem(withTrash(trashDir))
             fileSystem.copyFileImpl = { _, destination, _, _ in
-                // The disk fills up half way through.
+                // A write fails half way through.
                 try Disk.write(destination, "new no")
-                throw NativeError(message: "ENOSPC: no space left on device", code: .errno(ENOSPC))
+                throw NativeError(message: "EIO: input/output error", code: .errno(EIO))
             }
             let trash = trashInto(trashDir)
             fileSystem.trashImpl = { path in
@@ -432,7 +432,7 @@ struct ConflictSafetyTests {
                 .run(fileSystem)
 
             #expect(run.result?.items.first?.status == .failed)
-            #expect(run.result?.items.first?.error == "There isn't enough free space on the destination disk.")
+            #expect(run.result?.items.first?.error == "A disk error occurred.")
             #expect(trashed.value == [])
             #expect(Disk.read(target + "/notes.txt") == "old notes")
             #expect(Disk.list(target) == ["notes.txt"])

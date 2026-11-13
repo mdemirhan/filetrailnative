@@ -263,7 +263,7 @@ struct WholeFolderTests {
             let fileSystem = f.withoutRenameAtAll()
             let base = fileSystem.base
             fileSystem.copyFileImpl = { _, _, _, _ in
-                throw codedError(.errno(ENOSPC), "ENOSPC: no space left on device")
+                throw codedError(.errno(EIO), "EIO: input/output error")
             }
             fileSystem.rmImpl = { path, recursive, force in
                 if path.contains(".F.filetrail-") {
@@ -413,7 +413,7 @@ struct LargeFileBeingCopiedTests {
             let journal = MemoryJournal()
             let fileSystem = TestFileSystem()
             fileSystem.copyFileImpl = { _, _, _, _ in
-                throw codedError(.errno(ENOSPC), "ENOSPC: no space left on device")
+                throw codedError(.errno(EIO), "EIO: input/output error")
             }
 
             let run = try await runPaste(
