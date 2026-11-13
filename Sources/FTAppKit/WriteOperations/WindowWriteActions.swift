@@ -106,8 +106,10 @@ final class WindowWriteActions {
         session.applyCard(
             WriteOperationCardState(
                 action: action, stage: .analyzing, targetPath: destination, currentSourcePath: sources.first))
-        // Cancel in "Preparing to Paste…" stops the review itself.
+        // Cancel in "Preparing to Paste…", and Stop on the card, stop the review itself.
         let signal = StopSignal()
+        session.reviewStop = signal
+        defer { if session.reviewStop === signal { session.reviewStop = nil } }
         var preparing: PreparingDialog?
         let outcome: Result<CopyPasteAnalysisReport, any Error>
         do {
@@ -210,11 +212,15 @@ final class WindowWriteActions {
         }
     }
 
-    /// Stop (`cancelWriteOperation`): stops this window's operation. False when there is none, or it couldn't be
-    /// stopped.
+    /// Stop (`cancelWriteOperation`): stops this window's operation, or the review of one that hasn't started yet.
+    /// False when there is neither, or it couldn't be stopped.
     @discardableResult
     func cancel() -> Bool {
-        guard let operationId = session.activeOperationId else { return false }
+        guard let operationId = session.activeOperationId else {
+            guard let review = session.reviewStop, !review.isStopped else { return false }
+            review.stop()
+            return true
+        }
         return coordinator.cancel(operationId, window: session)
     }
 

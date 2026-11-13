@@ -78,6 +78,8 @@ final class ExplorerWriteSession: WriteOperationWindow {
     private(set) var foreign: ForeignWriteOperation?
     /// Set from the moment a write starts here until its end.
     private(set) var card: WriteOperationCardState?
+    /// Stops the review of a write under way here, before the write has started: Stop on the card.
+    var reviewStop: StopSignal?
     let early = EarlyWriteOperationEvents()
     // The operations this window took over from one that closed.
     private var adoptedOperationIds: Set<String> = []

@@ -264,6 +264,25 @@ private final class Finishing {
         keep()
     }
 
+    // Stop on the card while the check runs stops the check, from the window's actions as the card reaches them.
+    @Test func stopOnTheCardStopsTheCheck() async throws {
+        let service = HeldAnalysisService()
+        let (actions, keep) = makeActions(service)
+        let run = Task { @MainActor in
+            await actions.copyTo(["/Users/demo/a.txt"], destination: "/Users/demo/Folder")
+        }
+        let reviewing = await waitUntil { service.reviews > 0 }
+        #expect(reviewing)
+        #expect(actions.session.card?.stage == .analyzing)
+        let fromTheCard = WindowWriteActions(session: actions.session, tab: nil, dialogs: WriteDialogs())
+        #expect(fromTheCard.cancel())
+        #expect(service.stops == 1)
+        #expect(await run.value == .cancelled)
+        #expect(actions.session.card == nil)
+        #expect(!fromTheCard.cancel())
+        keep()
+    }
+
     // A check that ended while the dialog stays up doesn't start the write once Cancel was pressed.
     @Test func cancelWhileTheDialogStaysUpEndsTheFlow() async throws {
         let service = HeldAnalysisService()
