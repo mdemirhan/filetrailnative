@@ -69,3 +69,14 @@ What the original locations look like, from trashing test files on a disk image:
 - **Stale records**: they stay after the item leaves the Trash, and are matched by name alone. A file then moved in by `mv` under the same name picked up the old location.
 
 Reading is simple, about 40 lines of script for the B-tree in `.DS_Store`, and restoring could start from Undo's `PlannedMove(putBack: true)`, which also requires the original parent's id. Not checked: the home folder's Trash, which needs Full Disk Access to read and may spell its paths differently; whether Finder offers Put Back for `trashItem`'s items; and what Finder does when the original folder is gone or a record is stale.
+
+## "._" files on FAT, exFAT and some network disks
+
+These disks can't keep a file's extra attributes (Finder tags, the downloaded-from-the-internet mark, a custom icon, a resource fork), so macOS keeps them in a hidden companion beside each item: `._name` beside `name`, in AppleDouble format. Finder neither lists nor counts these; File Trail does:
+
+- **Folder sizes count them**: a companion usually takes a 4 KB block, so a folder of small files measures far more than in Finder. A folder holding a 5-byte and a 3-byte file, with a subfolder, measured 12,296 bytes in 5 files here and 8 bytes in Finder's Info window.
+- **With hidden files shown**, the list, the tree and Go To's suggestions show them.
+
+Copy, Cut and Paste already treat them as part of their item, so nothing is lost or left behind.
+
+If this is picked up: the disk says whether it keeps attributes this way (`getattrlist`, `VOL_CAP_INT_EXTENDED_ATTR`, as `NativeFS.usesAppleDouble` asks), and there a `._x` beside `x` holds `x`'s attributes. A listing can match that against the names it already read, with no extra disk call per file. The folder-size walker needs one lookup per `._` entry, and should ask about the disk once per walk. The paste engine's check also reads each file's AppleDouble header; a listing shouldn't, as that would be one small read per file on a slow USB stick.
