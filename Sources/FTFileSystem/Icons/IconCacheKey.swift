@@ -80,9 +80,9 @@ public struct IconRequest: Sendable, Equatable {
     /// and ordinary folders one for holding something and one for holding nothing; apps, bundles, symlinks,
     /// volumes and special folders have their own.
     ///
-    /// A special folder or a disk is drawn by NSWorkspace, not Quick Look: its picture doesn't change with what it
-    /// holds, and Quick Look looks inside, which for Desktop, Documents and Downloads makes macOS ask for permission
-    /// though the folder was only shown.
+    /// A special folder (by its path) or a disk is drawn by NSWorkspace, not Quick Look: its picture doesn't change
+    /// with what it holds, and Quick Look looks inside, which for Desktop, Documents and Downloads makes macOS ask for
+    /// permission though the folder was only shown.
     public init(entry: IconEntry) {
         let key = IconCacheKey.key(for: entry)
         let tint = entry.tagColor.flatMap {
@@ -115,21 +115,23 @@ public struct IconRequest: Sendable, Equatable {
 }
 
 public enum IconCacheKey {
-    /// Folders macOS draws with their own icon.
-    static let specialFolderNames: Set<String> = [
-        "Applications", "Desktop", "Developer", "Documents", "Downloads", "Library", "Movies", "Music",
-        "Pictures", "Public", "System", "Users",
-    ]
+    /// The folders macOS draws with their own icon, by path: the startup disk's and the home folder's. A folder of one
+    /// of these names anywhere else is an ordinary folder, drawn with its tag color.
+    static func specialFolderPaths(homePath: String) -> Set<String> {
+        let home = homePath.hasSuffix("/") ? String(homePath.dropLast()) : homePath
+        let system = ["/Applications", "/Developer", "/Library", "/System", "/Users"]
+        let own = [
+            "Applications", "Desktop", "Documents", "Downloads", "Library", "Movies", "Music", "Pictures", "Public",
+        ]
+        return Set(system + own.map { home + "/" + $0 })
+    }
+
+    private static let specialFolders = specialFolderPaths(homePath: NSHomeDirectory())
 
     /// A special folder or a disk's top folder, which is drawn as the disk: a drive, a disk image, a network share.
     static func isDrawnBySystem(_ entry: IconEntry) -> Bool {
-        VolumePaths.isVolumeRootPath(entry.path) || specialFolderNames.contains(folderName(entry))
-    }
-
-    private static func folderName(_ entry: IconEntry) -> String {
-        entry.name.isEmpty
-            ? (entry.path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? "")
-            : entry.name
+        let path = entry.path.count > 1 && entry.path.hasSuffix("/") ? String(entry.path.dropLast()) : entry.path
+        return VolumePaths.isVolumeRootPath(entry.path) || specialFolders.contains(path)
     }
 
     public static func key(for entry: IconEntry) -> String {

@@ -31,16 +31,32 @@ import Testing
     }
 
     @Test func ordinaryFoldersShareOneIconAndSpecialOnesHaveTheirOwn() {
+        let home = NSHomeDirectory()
         #expect(key("/a/Projects", name: "Projects", kind: .directory) == "kind:directory")
-        #expect(key("/Users/me/Documents", name: "Documents", kind: .directory) == "path:/Users/me/Documents")
-        #expect(key("/Users/me/Library", name: "Library", kind: .directory) == "path:/Users/me/Library")
+        #expect(key(home + "/Documents", name: "Documents", kind: .directory) == "path:\(home)/Documents")
+        #expect(key(home + "/Library", name: "Library", kind: .directory) == "path:\(home)/Library")
         #expect(key("/Applications", name: "Applications", kind: .directory) == "path:/Applications")
-        // Names are matched exactly.
-        #expect(key("/a/documents", name: "documents", kind: .directory) == "kind:directory")
+        #expect(key("/Library", name: "Library", kind: .directory) == "path:/Library")
+        // Paths are matched exactly.
+        #expect(key(home + "/documents", name: "documents", kind: .directory) == "kind:directory")
     }
 
-    @Test func aFolderWithoutANameTakesItFromItsPath() {
-        #expect(key("/Users/me/Downloads/", kind: .directory) == "path:/Users/me/Downloads/")
+    // Only the real special folders: a "Documents" or a "Library" anywhere else is an ordinary folder, and keeps its
+    // tag color.
+    @Test func aFolderNamedAsASpecialOneElsewhereIsOrdinary() {
+        #expect(key("/a/Documents", name: "Documents", kind: .directory) == "kind:directory")
+        #expect(key("/Volumes/Backup/Library", name: "Library", kind: .directory) == "kind:directory")
+        let tagged = IconRequest(
+            entry: IconEntry(path: "/a/Documents", name: "Documents", kind: .directory, tagColor: .red))
+        #expect(tagged.tint == .red)
+        #expect(
+            IconCacheKey.specialFolderPaths(homePath: "/Users/u/").isSuperset(of: ["/Users/u/Desktop", "/Applications"])
+        )
+    }
+
+    @Test func aFolderWithAClosingSlashIsKnownByItsPath() {
+        let home = NSHomeDirectory()
+        #expect(key(home + "/Downloads/", kind: .directory) == "path:\(home)/Downloads/")
         #expect(key("/a/plain/", kind: .directory) == "kind:directory")
     }
 
@@ -111,7 +127,8 @@ import Testing
         #expect(custom.tint == nil)
         // A special folder keeps the system's picture.
         let special = IconRequest(
-            entry: IconEntry(path: "/a/Documents", name: "Documents", kind: .directory, tagColor: .red))
+            entry: IconEntry(
+                path: NSHomeDirectory() + "/Documents", name: "Documents", kind: .directory, tagColor: .red))
         #expect(special.tint == nil)
     }
 
@@ -136,12 +153,13 @@ import Testing
 
     /// Quick Look looks inside a folder to draw it, which makes macOS ask for Desktop, Documents and Downloads.
     @Test func specialFoldersAndDisksAreNotDrawnByQuickLook() {
+        let home = NSHomeDirectory()
         for name in ["Desktop", "Documents", "Downloads"] {
-            let special = IconRequest(entry: IconEntry(path: "/Users/u/\(name)", name: name, kind: .directory))
-            #expect(special.cacheKey == "path:/Users/u/\(name)")
+            let special = IconRequest(entry: IconEntry(path: "\(home)/\(name)", name: name, kind: .directory))
+            #expect(special.cacheKey == "path:\(home)/\(name)")
             #expect(!special.isFolder)
             let customized = IconRequest(
-                entry: IconEntry(path: "/Users/u/\(name)", name: name, kind: .directory, hasCustomIcon: true))
+                entry: IconEntry(path: "\(home)/\(name)", name: name, kind: .directory, hasCustomIcon: true))
             #expect(!customized.isFolder)
         }
         let disk = IconRequest(entry: IconEntry(path: "/Volumes/Backup", name: "Backup", kind: .directory))
