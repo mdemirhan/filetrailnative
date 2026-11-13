@@ -539,9 +539,12 @@ public enum BatchRenameExecution {
     /// Puts back the items a crash left under hidden names in a rename of several: under the
     /// old name when it is free, else the new one asked for, else the old one with a number. Never replaces
     /// anything, and moves only what has this app's hidden naming.
-    public static func recover(_ entry: BatchRenameJournalEntry, _ fileSystem: some BatchRenameFileSystem)
-        -> BatchRenameRecovery
-    {
+    /// An item whose folder is gone from its disk, which is connected (`folderIsGoneForGood`), has nothing left to
+    /// put back; one whose disk may be away stays to be tried again.
+    public static func recover(
+        _ entry: BatchRenameJournalEntry, _ fileSystem: some BatchRenameFileSystem,
+        diskId: (String) -> String? = { NativeFS.diskId(of: $0) }
+    ) -> BatchRenameRecovery {
         var recovery = BatchRenameRecovery()
         for written in entry.items {
             if !isTemporaryName(NodePath.basename(written.temporaryPath)) {
@@ -553,7 +556,9 @@ public enum BatchRenameExecution {
             } catch {
                 // Gone: it took its name before the crash. Unreadable: its disk may be away.
                 let folderThere = (try? fileSystem.lstat(NodePath.dirname(written.temporaryPath)).isDirectory) ?? false
-                if errorCode(error) != .errno(ENOENT) || !folderThere {
+                let goneForGood = folderIsGoneForGood(
+                    { try fileSystem.lstat($0) }, written.temporaryPath, disk: entry.disk, diskId)
+                if errorCode(error) != .errno(ENOENT) || !(folderThere || goneForGood) {
                     recovery.remaining.append(written)
                 }
                 continue

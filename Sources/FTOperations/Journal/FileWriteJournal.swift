@@ -13,6 +13,9 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     }
 
     private let filePath: String
+    /// What tells the disk holding a path from every other, written into each entry (`WriteJournalEntry.disk`);
+    /// nil for a journal that doesn't keep it (the tests', whose files must read the same on every Mac).
+    private let diskId: (@Sendable (String) -> String?)?
     /// `(path, contents, flush)`.
     private let writeFile: (String, String, Bool) throws -> Void
     // Held while the file is written, so one write happens at a time and an older list never lands over a newer
@@ -20,8 +23,10 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     private let state: OSAllocatedUnfairLock<State>
 
     private init(
-        filePath: String, entries: [WriteJournalEntry], writeFile: @escaping (String, String, Bool) throws -> Void
+        filePath: String, entries: [WriteJournalEntry], diskId: (@Sendable (String) -> String?)? = nil,
+        writeFile: @escaping (String, String, Bool) throws -> Void
     ) {
+        self.diskId = diskId
         self.filePath = filePath
         self.writeFile = writeFile
         var state = State()
@@ -39,6 +44,13 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     /// empty.
     public static func open(_ filePath: String) -> FileWriteJournal {
         open(filePath, writeFileFlushing: writeWhole)
+    }
+
+    /// The app's journal: each entry also says which disk its hidden item is on (`diskId`: `NativeFS.diskId`), so
+    /// recovery tells a folder gone from a disk that is connected from a disk that is away.
+    public static func open(_ filePath: String, diskId: @escaping @Sendable (String) -> String?) -> FileWriteJournal {
+        FileWriteJournal(
+            filePath: filePath, entries: readEntries(filePath), diskId: diskId, writeFile: writeWhole)
     }
 
     /// `open` writing the file with `writeFile(path, contents)`: a test's, that fails as a full disk does.
@@ -67,6 +79,8 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     }
 
     private func add(_ entry: WriteJournalEntry, flush: Bool) throws {
+        // The disk of the hidden item, for recovery to know it again: read once, when the entry is first added.
+        let entry = withDisk(entry)
         try state.withLock { state in
             if state.entries[entry.id] == nil {
                 state.order.append(entry.id)
@@ -74,6 +88,15 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
             state.entries[entry.id] = entry
             try save(state, flush: flush)
         }
+    }
+
+    private func withDisk(_ entry: WriteJournalEntry) -> WriteJournalEntry {
+        guard let diskId, entry.disk == nil else { return entry }
+        var known = entry
+        known.disk =
+            state.withLock { $0.entries[entry.id]?.disk }
+            ?? entry.hiddenPath.flatMap { diskId(($0 as NSString).deletingLastPathComponent) }
+        return known
     }
 
     public func remove(_ id: String) throws {

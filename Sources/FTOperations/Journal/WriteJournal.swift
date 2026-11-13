@@ -5,6 +5,10 @@ import Foundation
 /// source itself was moved there (a move on the same volume), so the staged item is the only copy of it.
 /// `staged` means the item at `stagingPath` is complete. What is at `stagingPath`, a random hidden name made for
 /// it, is the paste's own. It is written without a kind; the other entries name theirs.
+///
+/// `disk`, on every kind of entry, is the disk the hidden item is on (`NativeFS.diskId`), written by the journal's
+/// file when the entry is added; nil when the disk has none, and in entries written before it was kept. With it, a
+/// folder that is gone from a disk that is connected is told from a disk that is away, or another one of its name.
 public struct ReplaceJournalEntry: Equatable, Sendable {
     public var id: String
     public var stagingPath: String
@@ -15,11 +19,13 @@ public struct ReplaceJournalEntry: Equatable, Sendable {
     /// A move to another disk (a folder copied, then its original removed), kept until the originals are gone:
     /// put in place by recovery, or found in place, with its original still there too, the person is told.
     public var movingCopy: Bool
+    public var disk: String?
 
     public init(
         id: String, stagingPath: String, finalPath: String, sourcePath: String, moved: Bool, staged: Bool,
-        movingCopy: Bool = false
+        movingCopy: Bool = false, disk: String? = nil
     ) {
+        self.disk = disk
         self.id = id
         self.stagingPath = stagingPath
         self.finalPath = finalPath
@@ -37,8 +43,10 @@ public struct PartialFileJournalEntry: Equatable, Sendable {
     public var id: String
     public var partialPath: String
     public var finalPath: String
+    public var disk: String?
 
-    public init(id: String, partialPath: String, finalPath: String) {
+    public init(id: String, partialPath: String, finalPath: String, disk: String? = nil) {
+        self.disk = disk
         self.id = id
         self.partialPath = partialPath
         self.finalPath = finalPath
@@ -63,8 +71,10 @@ public struct BatchRenameJournalEntry: Equatable, Sendable {
 
     public var id: String
     public var items: [Item]
+    public var disk: String?
 
-    public init(id: String, items: [Item]) {
+    public init(id: String, items: [Item], disk: String? = nil) {
+        self.disk = disk
         self.id = id
         self.items = items
     }
@@ -80,6 +90,39 @@ public enum WriteJournalEntry: Equatable, Sendable {
         case .replace(let entry): entry.id
         case .partialFile(let entry): entry.id
         case .batchRename(let entry): entry.id
+        }
+    }
+
+    /// The disk the entry's hidden item is on, when it was written down.
+    public var disk: String? {
+        get {
+            switch self {
+            case .replace(let entry): entry.disk
+            case .partialFile(let entry): entry.disk
+            case .batchRename(let entry): entry.disk
+            }
+        }
+        set {
+            switch self {
+            case .replace(var entry):
+                entry.disk = newValue
+                self = .replace(entry)
+            case .partialFile(var entry):
+                entry.disk = newValue
+                self = .partialFile(entry)
+            case .batchRename(var entry):
+                entry.disk = newValue
+                self = .batchRename(entry)
+            }
+        }
+    }
+
+    /// The hidden item the entry guards (the first, for a rename of several).
+    public var hiddenPath: String? {
+        switch self {
+        case .replace(let entry): entry.stagingPath
+        case .partialFile(let entry): entry.partialPath
+        case .batchRename(let entry): entry.items.first?.temporaryPath
         }
     }
 }
@@ -107,6 +150,14 @@ extension WriteJournal {
 extension WriteJournalEntry {
     /// The entry as JSON: its keys in a fixed order, optional ones left out.
     var jsonObject: [(String, Any)] {
+        var object = jsonObjectWithoutDisk
+        if let disk {
+            object.append(("disk", disk))
+        }
+        return object
+    }
+
+    private var jsonObjectWithoutDisk: [(String, Any)] {
         switch self {
         case .replace(let entry):
             var object: [(String, Any)] = [
@@ -151,13 +202,15 @@ extension WriteJournalEntry {
                 else { return nil }
                 parsed.append(.init(temporaryPath: temporaryPath, originalPath: originalPath, newPath: newPath))
             }
-            self = .batchRename(BatchRenameJournalEntry(id: id, items: parsed))
+            self = .batchRename(BatchRenameJournalEntry(id: id, items: parsed, disk: entry["disk"] as? String))
             return
         }
         guard let finalPath = entry["finalPath"] as? String else { return nil }
         if let kind = kind as? String, kind == "partial_file" {
             guard let partialPath = entry["partialPath"] as? String else { return nil }
-            self = .partialFile(PartialFileJournalEntry(id: id, partialPath: partialPath, finalPath: finalPath))
+            self = .partialFile(
+                PartialFileJournalEntry(
+                    id: id, partialPath: partialPath, finalPath: finalPath, disk: entry["disk"] as? String))
             return
         }
         // A kind this build doesn't know: the entry is left out.
@@ -170,7 +223,8 @@ extension WriteJournalEntry {
         self = .replace(
             ReplaceJournalEntry(
                 id: id, stagingPath: stagingPath, finalPath: finalPath, sourcePath: sourcePath,
-                moved: moved, staged: staged, movingCopy: Self.bool(entry["movingCopy"]) == true))
+                moved: moved, staged: staged, movingCopy: Self.bool(entry["movingCopy"]) == true,
+                disk: entry["disk"] as? String))
     }
 
     /// A JSON `true` or `false`, never a number, though Foundation reads both as an `NSNumber`.

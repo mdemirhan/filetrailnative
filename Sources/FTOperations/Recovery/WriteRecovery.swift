@@ -116,7 +116,10 @@ private func putBackRenamedItems(
         }
     }
     let disk = RecoveryBatchRenameFileSystem(disk: fileSystem)
-    guard let recovery = runAlone(options.runWriteAlone, { BatchRenameExecution.recover(entry, disk) }) else {
+    let recovered = runAlone(options.runWriteAlone) {
+        BatchRenameExecution.recover(entry, disk, diskId: options.diskId)
+    }
+    guard let recovery = recovered else {
         return
     }
     if !recovery.restored.isEmpty {
@@ -240,6 +243,11 @@ private func recoverReplaces(
                 )
             }
             continue
+        case .folderGone:
+            // The item was the only one, and nothing is left to wait for: said once, and the entry is let go of.
+            report.notices.append(
+                "\u{201C}\(name)\u{201D} was being moved into \u{201C}\(basenameOf(dirnameOf(entry.stagingPath)))\u{201D} when File Trail stopped, and that folder is no longer where it was. If the folder was moved or renamed, \u{201C}\(name)\u{201D} is in it under the hidden name \u{201C}\(basenameOf(entry.stagingPath))\u{201D}."
+            )
         case .nothingLeft, .finished, .restored, .keptVisible, .foundInPlace, .removedCopy:
             break
         }
@@ -279,6 +287,7 @@ private func outcomeName(_ outcome: ReplaceRecoveryOutcome) -> String {
     case .keptVisible: "kept_visible"
     case .foundInPlace: "found_in_place"
     case .removedCopy: "removed_copy"
+    case .folderGone: "folder_gone"
     case .unreachable: "unreachable"
     case .deferred: "deferred"
     case .failed: "failed"

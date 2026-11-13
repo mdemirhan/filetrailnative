@@ -41,7 +41,8 @@ final class AppWriteOperations {
         let fileSystem = NativeWriteFileSystem(trash: { try trashItem($0) })
         self.fileSystem = fileSystem
         self.windows = windows
-        let journal = FileWriteJournal.open(userData.appendingPathComponent("replace-journal.json").path)
+        let journal = FileWriteJournal.open(
+            userData.appendingPathComponent("replace-journal.json").path, diskId: { NativeFS.diskId(of: $0) })
         self.journal = journal
         let cache = directoryService.cache
         let recoveryCaches = RecoveryCaches(

@@ -17,6 +17,9 @@ public enum ReplaceRecoveryOutcome: Equatable, Sendable {
     case foundInPlace(path: String)
     /// An unfinished copy was removed; the original is untouched.
     case removedCopy
+    /// A moved item's folder is gone from its disk, which is connected: the item went with it (renamed, moved or
+    /// removed), so there is nothing to put in place, and the person is told.
+    case folderGone
     /// The hidden item couldn't be reached (its disk isn't connected, or it can't be read): it may still be
     /// there, so the entry is kept for the next start.
     case unreachable(error: String)
@@ -73,10 +76,16 @@ public struct RecoveryOptions: Sendable {
     /// other operation. Whether the disk answers is found out first, outside it: that can take seconds and
     /// changes nothing.
     public var runWriteAlone: RunWriteAlone?
+    /// What tells the disk holding a path from every other (`NativeFS.diskId`).
+    public var diskId: @Sendable (String) -> String?
 
-    public init(answerWithinMs: Int? = nil, runWriteAlone: RunWriteAlone? = nil) {
+    public init(
+        answerWithinMs: Int? = nil, runWriteAlone: RunWriteAlone? = nil,
+        diskId: @escaping @Sendable (String) -> String? = { NativeFS.diskId(of: $0) }
+    ) {
         self.answerWithinMs = answerWithinMs
         self.runWriteAlone = runWriteAlone
+        self.diskId = diskId
     }
 }
 
@@ -95,7 +104,7 @@ public func recoverInterruptedReplaces(
         }
         let outcome = runAlone(options.runWriteAlone) { () -> ReplaceRecoveryOutcome in
             do {
-                return try recoverEntry(entry, fileSystem)
+                return try recoverEntry(entry, fileSystem, options)
             } catch {
                 return .failed(error: describeCopyPasteError(error))
             }
@@ -119,7 +128,7 @@ public func recoverPartialFiles(
         }
         let outcome = runAlone(options.runWriteAlone) { () -> PartialFileRecoveryOutcome in
             do {
-                return try removePartialFile(entry, fileSystem)
+                return try removePartialFile(entry, fileSystem, options)
             } catch {
                 return .failed(error: describeCopyPasteError(error))
             }
@@ -137,14 +146,17 @@ func runAlone<T>(_ runWriteAlone: RunWriteAlone?, _ write: () -> T) -> T? {
     return ran ? value : nil
 }
 
-private func removePartialFile(_ entry: PartialFileJournalEntry, _ fileSystem: some WriteServiceFileSystem) throws
-    -> PartialFileRecoveryOutcome
-{
+private func removePartialFile(
+    _ entry: PartialFileJournalEntry, _ fileSystem: some WriteServiceFileSystem, _ options: RecoveryOptions
+) throws -> PartialFileRecoveryOutcome {
     let path = entry.partialPath
     do {
         _ = try fileSystem.lstat(path)
     } catch {
-        if errorCode(error) == .errno(ENOENT) && folderIsThere(fileSystem, path) {
+        if errorCode(error) == .errno(ENOENT)
+            && (folderIsThere(fileSystem, path)
+                || folderIsGoneForGood({ try fileSystem.lstat($0) }, path, disk: entry.disk, options.diskId))
+        {
             return .nothingLeft
         }
         return .unreachable(error: describeCopyPasteError(error))
@@ -211,7 +223,9 @@ private func lookUp(_ fileSystem: some IdentityFileSystem, _ path: String) -> Di
     return answered
 }
 
-private func recoverEntry(_ entry: ReplaceJournalEntry, _ fileSystem: some WriteServiceFileSystem) throws
+private func recoverEntry(
+    _ entry: ReplaceJournalEntry, _ fileSystem: some WriteServiceFileSystem, _ options: RecoveryOptions
+) throws
     -> ReplaceRecoveryOutcome
 {
     // Only an item that is really gone counts as gone. A disk that isn't connected, or a folder that can't be
@@ -250,6 +264,12 @@ private func recoverEntry(_ entry: ReplaceJournalEntry, _ fileSystem: some Write
                 }
             }
             return .nothingLeft
+        }
+        if errorCode(error) == .errno(ENOENT),
+            folderIsGoneForGood({ try fileSystem.lstat($0) }, entry.stagingPath, disk: entry.disk, options.diskId)
+        {
+            // A copy went with its folder, and its original is where it was. A moved item was the only one.
+            return entry.moved ? .folderGone : .nothingLeft
         }
         return .unreachable(error: describeCopyPasteError(error))
     }
@@ -290,6 +310,30 @@ private func recoverEntry(_ entry: ReplaceJournalEntry, _ fileSystem: some Write
 
 private func folderIsThere(_ fileSystem: some IdentityFileSystem, _ path: String) -> Bool {
     (try? fileSystem.lstat(dirnameOf(path)).isDirectory) ?? false
+}
+
+/// Whether the folder that held the hidden item at `path` is gone though its disk is connected: nothing is at the
+/// folder's path, and the nearest folder above it that is still there is on the very disk the entry was written
+/// for (`disk`). Then the item isn't waiting for a disk to come back, and the entry has nothing left to do. Not so
+/// when the disk isn't known (an entry from before it was kept, a disk without an id), when another disk of the
+/// same name is in its place, or when a disk mounted somewhere of its own is away (what is found there is then on
+/// the disk around it).
+func folderIsGoneForGood(
+    _ lstat: (String) throws -> WriteServiceStats, _ path: String, disk: String?, _ diskId: (String) -> String?
+) -> Bool {
+    guard let disk else { return false }
+    var folder = dirnameOf(path)
+    while true {
+        do {
+            // The first one looked at is the item's own folder: there, the item is only gone from it.
+            guard try lstat(folder).isDirectory, !sameText(folder, dirnameOf(path)) else { return false }
+            return diskId(folder) == disk
+        } catch {
+            let above = dirnameOf(folder)
+            guard errorCode(error) == .errno(ENOENT), !sameText(above, folder) else { return false }
+            folder = above
+        }
+    }
 }
 
 /// A copy of a locked item is locked, and a locked item can't be renamed: unlocked for the move and locked again
