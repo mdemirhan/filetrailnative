@@ -1,20 +1,25 @@
 #!/bin/bash
-# Scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]
+# Scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file> [--yes] [--dry-run]
 #
 # From a clean main that is already on GitHub, it checks the commit (scripts/ci.sh --full with the large-file tests, the
 # release-only tests and the fuzz tests at more cases from a seed of the day, then the tests of real windows with the frame
 # times of scrolling), adds those frame times to docs/frame-timings.json in a commit of their own, tags that commit vX.Y.Z
 # (the version comes from the tag, see scripts/version.sh), builds the signed and notarized app, pushes main and the tag,
 # and makes a draft GitHub release with the disk image and the ZIP. The frame times are shown against the last release
-# made on the same Mac model, and a clear slowdown stops the release (scripts/lib/frame-timing-limits.sh). The notes start
-# as a list of the commits since the last release: rewrite them, then publish the release on GitHub. Nothing is published
-# by this script.
+# made on the same Mac model, and a clear slowdown stops the release (scripts/lib/frame-timing-limits.sh). Nothing is
+# published by this script: publish the draft on GitHub.
+#
+# The notes are written for people before the release starts, in Markdown, in a file outside the checkout (or under
+# build/, which git ignores). They are the draft release's text and the tag's message after its "File Trail X.Y.Z" line,
+# so the tag keeps them. The file is read when the commit is tagged: an edit made on GitHub later isn't in the tag.
 #
 # The first release is asked for by exact version: there is no release yet for major, minor or patch to count from.
 #
 # --dry-run stops after saying what it would release. --yes skips the question before the release starts.
 set -Eeuo pipefail
 
+# A relative path to the notes is from where the script was started.
+CALLER_DIR="${PWD}"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 # shellcheck source=lib/release-lib.sh
@@ -23,7 +28,7 @@ source scripts/lib/release-lib.sh
 OUT_DIR="build/release"
 APP_BUNDLE="${OUT_DIR}/File Trail.app"
 SHARE_FILES=("${OUT_DIR}/FileTrail-arm64.dmg" "${OUT_DIR}/FileTrail-arm64.zip")
-USAGE="Usage: scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]"
+USAGE="Usage: scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file> [--yes] [--dry-run]"
 
 die() {
     echo "$1" >&2
@@ -50,17 +55,26 @@ assert_unchanged_since() {
 }
 
 REQUEST=""
+NOTES=""
 YES=0
 DRY_RUN=0
-for arg in "$@"; do
-    case "${arg}" in
+while [[ $# -gt 0 ]]; do
+    case "$1" in
         --yes) YES=1 ;;
         --dry-run) DRY_RUN=1 ;;
+        --notes)
+            [[ $# -ge 2 && -n "$2" ]] || die "${USAGE}"
+            NOTES="$2"
+            shift
+            ;;
+        --notes=*) NOTES="${1#--notes=}" ;;
         --*) die "${USAGE}" ;;
-        *) [[ -n "${REQUEST}" ]] || REQUEST="${arg}" ;;
+        *) [[ -n "${REQUEST}" ]] || REQUEST="$1" ;;
     esac
+    shift
 done
 [[ -n "${REQUEST}" ]] || die "${USAGE}"
+[[ -z "${NOTES}" || "${NOTES}" == /* ]] || NOTES="${CALLER_DIR}/${NOTES}"
 
 # What stands in the way of releasing this commit, one a line; nothing when it can be released.
 PROBLEMS=""
@@ -68,6 +82,14 @@ add_problem() {
     PROBLEMS+="$1"$'\n'
 }
 
+# The notes are the draft's text and the tag's message, so they are written before anything is checked or tagged.
+if [[ -z "${NOTES}" ]]; then
+    add_problem "There are no release notes: write them for people in a file and name it with --notes <file>."
+elif [[ ! -f "${NOTES}" || ! -r "${NOTES}" ]]; then
+    add_problem "The release notes ${NOTES} can't be read."
+elif ! grep -q '[^[:space:]]' "${NOTES}"; then
+    add_problem "The release notes ${NOTES} are empty."
+fi
 if [[ "$(git rev-parse --abbrev-ref HEAD)" != main ]]; then
     add_problem "Releases are made from main: switch to it first."
 fi
@@ -161,6 +183,7 @@ else
 fi
 COMMIT_COUNT="$(grep -c . <<<"${SUBJECTS}" || true)"
 printf '\nFile Trail %s%s, from %s, %s commits.\n' "${VERSION}" "${AFTER}" "$(git log -1 --format='%h %s')" "${COMMIT_COUNT}"
+[[ -z "${NOTES}" ]] || printf 'The notes: %s\n' "${NOTES}"
 
 if [[ "${DRY_RUN}" == 1 ]]; then
     while IFS= read -r problem; do
@@ -257,9 +280,14 @@ then
     die "The commit to tag isn't the checked one with the frame times alone added."
 fi
 
-run "Tagging ${TAG}" git tag -a "${TAG}" -m "File Trail ${VERSION}" "${RELEASE_COMMIT}"
-TAGGED=1
+# The tag's message is the release's name and its notes, word for word: a Markdown heading starts with #, which git
+# would otherwise take for a comment and drop. The draft gets the same notes, from the same copy.
 NOTES_DIR="$(mktemp -d -t filetrail-release)"
+cp "${NOTES}" "${NOTES_DIR}/notes.md" || die "The release notes ${NOTES} couldn't be read."
+{ printf 'File Trail %s\n\n' "${VERSION}"; cat "${NOTES_DIR}/notes.md"; } >"${NOTES_DIR}/tag-message.txt"
+run "Tagging ${TAG} with the release notes" \
+    git tag -a --cleanup=verbatim -F "${NOTES_DIR}/tag-message.txt" "${TAG}" "${RELEASE_COMMIT}"
+TAGGED=1
 
 run "Building, signing and notarizing the app" scripts/make-release-app.sh --notarize
 PLIST="${APP_BUNDLE}/Contents/Info.plist"
@@ -278,7 +306,6 @@ assert_unchanged_since "${RELEASE_COMMIT}" "the build"
 run "Pushing main and ${TAG} to GitHub" git push --atomic origin main "${TAG}"
 PUSHED=1
 
-draft_release_notes <<<"${SUBJECTS}" >"${NOTES_DIR}/notes.md"
 run "Making a draft release on GitHub" gh release create "${TAG}" --draft --verify-tag --title "${TAG}" \
     --notes-file "${NOTES_DIR}/notes.md" "${SHARE_FILES[@]}"
 DRAFTED=1
@@ -286,4 +313,4 @@ DRAFTED=1
 URL="$(gh release view "${TAG}" --json url --jq .url || true)"
 printf '\nDraft release %s is ready: %s\n\n' "${TAG}" "${URL:-see the releases page on GitHub}"
 frame_timings_report "${FRAME_TIMINGS}" "${PREVIOUS}" "${MACHINE}" || true
-printf '\nRewrite the notes for people, then press Publish release.\n'
+printf '\nRead the draft over, then press Publish release.\n'

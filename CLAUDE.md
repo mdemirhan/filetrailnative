@@ -9,7 +9,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 - Large-file tests: set `FILETRAIL_LARGE_FILE_TESTS=1`. A release runs them.
 - Release-only tests (the test helpers' own tests, the 150,000-file paste, the file-limit walk, a second launch): set `FILETRAIL_RELEASE_TESTS=1`. A release runs them, and the fuzz tests at more cases from a seed of the day: `UNDO_FUZZ_CASES`/`UNDO_FUZZ_SEED` and `BATCH_RENAME_FUZZ_CASES`/`BATCH_RENAME_FUZZ_SEED` run a seed again.
 - App: `scripts/build-app.sh`, then `open "build/File Trail.app"`.
-- Release: `scripts/release.sh <major|minor|patch|X.Y.Z>` makes a draft GitHub release; publishing stays manual. It measures the frame times of scrolling, shows them against the last release on the same Mac model, stops on a clear slowdown, and keeps them in `docs/frame-timings.json` in the commit it tags. A release run by an agent shows the owner that table once the draft is made, and is published only with the owner's explicit yes.
+- Release: `scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file>` makes a draft GitHub release; publishing stays manual. The notes are written for people before it starts and become the draft's text and the tag's message. It measures the frame times of scrolling, shows them against the last release on the same Mac model, stops on a clear slowdown, and keeps them in `docs/frame-timings.json` in the commit it tags. A release run by an agent shows the owner that table once the draft is made, and is published only with the owner's explicit yes.
 - README screenshots: `scripts/readme-screenshots.sh`.
 
 ## Test data

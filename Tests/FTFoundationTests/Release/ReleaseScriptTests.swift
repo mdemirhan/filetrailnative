@@ -71,28 +71,6 @@ import Testing
         return output.split(separator: "\n").map(String.init)
     }
 
-    @Test func listsTheCommitsSinceTheLastReleaseUnderWhatsNew() throws {
-        let subjects = """
-            Spring into folders in the content pane under a held drag
-            Merge branch 'claude/spring-loaded-folders'
-
-            Gather dragged items into a stack under the pointer
-
-            """
-        #expect(
-            try Self.call("draft_release_notes", input: subjects).output == """
-                <!-- Draft: one line per commit since the last release. Rewrite it for people, then publish. -->
-                ### What's new
-                - Spring into folders in the content pane under a held drag
-                - Gather dragged items into a stack under the pointer
-
-                """)
-    }
-
-    @Test func leavesALineToFillInWhenThereIsNothingToList() throws {
-        #expect(try Self.call("draft_release_notes", input: "\n").output.contains("### What's new\n- \n"))
-    }
-
     @Test func hasNothingToSayWhenEveryReleaseTagIsOnGitHubAndReleased() throws {
         #expect(
             try Self.unfinished(
@@ -284,13 +262,18 @@ import Testing
     // MARK: - scripts/release.sh --dry-run
 
     /// A repository with a local bare `origin`, holding a copy of the script, with a stand-in for `gh` on the path that
-    /// answers from a file and records how it was called. Nothing here can reach GitHub.
+    /// answers from a file, records how it was called and keeps the notes it was given. Nothing here can reach GitHub.
     private struct Checkout {
         let root: URL
         var path: String { root.appendingPathComponent("work").path }
         var bin: String { root.appendingPathComponent("bin").path }
         var ghState: URL { root.appendingPathComponent("gh-state") }
         var ghCalls: URL { root.appendingPathComponent("gh-calls") }
+        /// The notes the draft release was made with.
+        var ghNotes: URL { root.appendingPathComponent("gh-notes") }
+        /// The release notes every run is given unless it says otherwise, outside the checkout.
+        var notes: URL { root.appendingPathComponent("notes.md") }
+        static let notesText = "## Faster\n\n- Scrolling is smoother.\n\n# Kept as written\n"
         /// The checkout's own fixture cache, with every tree marked built, so what is built on this Mac doesn't count.
         var devCache: URL { root.appendingPathComponent("dev-cache") }
 
@@ -320,10 +303,16 @@ import Testing
                 try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
                 try "1".write(to: folder.appendingPathComponent(".fixture-version"), atomically: true, encoding: .utf8)
             }
+            try Self.notesText.write(to: notes, atomically: true, encoding: .utf8)
             try FileManager.default.createDirectory(atPath: bin, withIntermediateDirectories: true)
             let gh = """
                 #!/bin/bash
                 echo "$*" >>"\(ghCalls.path)"
+                previous=""
+                for argument in "$@"; do
+                    [ "$previous" = --notes-file ] && cp "$argument" "\(ghNotes.path)"
+                    previous="$argument"
+                done
                 if [ "$(cat "\(ghState.path)" 2>/dev/null)" = signed-out ]; then
                     echo "To get started with GitHub CLI, please run:  gh auth login" >&2
                     exit 4
@@ -358,9 +347,14 @@ import Testing
             try git("commit", "-q", "--allow-empty", "-m", message)
         }
 
-        func release(_ arguments: String..., extra: [String: String] = [:]) throws -> Outcome {
+        /// Runs the script from the checkout, or from `folder`, with `--notes` naming the notes file unless
+        /// `withNotes` is false.
+        func release(
+            _ arguments: String..., withNotes: Bool = true, from folder: String? = nil, extra: [String: String] = [:]
+        ) throws -> Outcome {
             try ReleaseScriptTests.run(
-                path + "/scripts/release.sh", arguments, in: path, path: bin, devCache: devCache.path,
+                path + "/scripts/release.sh", arguments + (withNotes ? ["--notes", notes.path] : []),
+                in: folder ?? path, path: bin, devCache: devCache.path,
                 extra: ["FILETRAIL_MACHINE_MODEL": "Mac16,5"].merging(extra) { $1 })
         }
 
@@ -667,7 +661,7 @@ import Testing
             #expect(history.contains("\"machine\": \"Mac16,5\""))
             let afterDraft = try #require(outcome.output.components(separatedBy: "Draft release v0.3.0 is ready").last)
             #expect(afterDraft.contains("list     default   6.00 ms"))
-            #expect(afterDraft.contains("Rewrite the notes for people, then press Publish release."))
+            #expect(afterDraft.contains("Read the draft over, then press Publish release."))
         }
     }
 
@@ -692,12 +686,56 @@ import Testing
         }
     }
 
+    // The notes are written before the release starts: without them, or with a file that is missing or empty, it says so
+    // and stops before anything is checked or tagged.
+    @Test func aReleaseNeedsItsNotes() throws {
+        try withCheckout { checkout throws in
+            let tags = try checkout.git("tag", "--list")
+            let remote = try checkout.git("ls-remote", "origin")
+
+            let none = try checkout.release("0.3.0", "--dry-run", withNotes: false)
+            #expect(none.output.contains("Would stop: There are no release notes: write them for people in a file"))
+            let missing = checkout.root.appendingPathComponent("elsewhere.md").path
+            #expect(
+                try checkout.release("0.3.0", "--dry-run", "--notes", missing, withNotes: false).output.contains(
+                    "Would stop: The release notes \(missing) can't be read."))
+            try " \n\n".write(to: checkout.notes, atomically: true, encoding: .utf8)
+            #expect(try checkout.release("0.3.0", "--dry-run").output.contains("are empty."))
+
+            let outcome = try checkout.release("0.3.0", "--yes", withNotes: false)
+            #expect(!outcome.succeeded)
+            #expect(outcome.output.contains("There are no release notes"))
+            try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
+        }
+    }
+
+    // The notes are the tag's message after the release's name and the draft's text, word for word: a Markdown heading
+    // stays in the tag. A relative path is taken from where the script was started.
+    @Test func aReleaseKeepsItsNotesInTheTagAndTheDraft() throws {
+        try withCheckout { checkout throws in
+            try checkout.passingChecks(timings: Self.timings(list: 6, icons: 5))
+
+            let outcome = try checkout.release(
+                "0.3.0", "--yes", "--notes=notes.md", withNotes: false, from: checkout.root.path)
+            #expect(outcome.succeeded, "\(outcome.output)")
+            // The temporary folder may be named through /private, as the shell's PWD has it.
+            #expect(outcome.output.contains("\(checkout.root.lastPathComponent)/notes.md\n"))
+            #expect(
+                try checkout.git("tag", "--list", "--format=%(contents)", "v0.3.0")
+                    == "File Trail 0.3.0\n\n" + Checkout.notesText + "\n")
+            #expect(try String(contentsOf: checkout.ghNotes, encoding: .utf8) == Checkout.notesText)
+        }
+    }
+
     @Test func refusesAnythingElseOnTheCommandLine() throws {
         try withCheckout { checkout throws in
             #expect(try checkout.release("--dry-run").output.contains("Usage: scripts/release.sh"))
             #expect(try !checkout.release("--dry-run").succeeded)
             #expect(
                 try checkout.release("0.1.0", "--dry-run", "--publish").output.contains("Usage: scripts/release.sh"))
+            #expect(
+                try checkout.release("0.1.0", "--dry-run", "--notes", withNotes: false).output.contains(
+                    "Usage: scripts/release.sh"))
             #expect(try checkout.release("soon", "--dry-run").output.contains("not major, minor, patch"))
         }
     }

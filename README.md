@@ -12,8 +12,10 @@ A Mac file browser with fast search, a real folder tree and true cut and paste. 
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
 - **Cut and paste files.** ⌘X and ⌘V to move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
 - **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that match.
-- **Your keys.** Every command can have a keyboard shortcut, two keys per command, and you choose them. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.
+- **Keyboard first, with your keys.** Everything can be done from the keyboard, and every command can have a shortcut, two keys per command, that you choose. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.
 - **See what's taking the space.** Sort by size and every folder gets a bar, so the big ones stand out at a glance.
+- **Fast in big folders, and never stuck.** Scrolling stays smooth with thousands of files, and a slow or unresponsive disk never freezes the window.
+- **Free, open source and private.** MIT licensed, with no accounts, no analytics and nothing sent anywhere.
 
 Switching costs nothing. File Trail keeps most of Finder's shortcuts, Quick Look on Space, drag and drop with other apps, tabs, and the sidebar's Locations.
 
@@ -60,9 +62,14 @@ In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothi
 - **Back and Forward** remember more than one step. Hold either button to pick from the folders it leads to.
 - **The Go menu** has Home, Documents, Desktop, Downloads, Library, Macintosh HD, Applications and the Trash, like Finder's, each on a shortcut you choose.
 
-## Your keys, your toolbar
+## Keyboard first
 
-Every command can be on a keyboard shortcut, shown in the menus and listed in the built-in Help. In Finder, changing one means System Settings, App Shortcuts and the menu item's exact name; in File Trail, it is a list in Settings, with two keys per command and a warning before one is taken from another command.
+Everything File Trail does can be done from the keyboard, and the keys are yours to choose.
+
+- **Move around without the mouse.** Tab switches between the folder tree and the files, ⌘↑ goes up a folder and ⌘↓ opens what is selected, and Control-D and Control-U move half a page.
+- **Get back what you just left.** ⌘⇧T reopens the tab closed last, and ⌘⇧F shows the last search results again.
+- **Choose your own shortcuts.** Every command can be on a shortcut, shown in the menus. In Finder, changing one means System Settings, App Shortcuts and the menu item's exact name; in File Trail, it is a list in Settings, with two keys per command and a warning before one is taken from another command.
+- **Help knows your keys.** The built-in Help lists every shortcut, the ones you changed included, and finds one as you type.
 
 <table>
   <tr>
@@ -109,15 +116,23 @@ Every tab has its own folder, history, folder tree, view and search, and every w
 
 File Trail follows the macOS Light and Dark setting, or stays in the one you pick. You choose the accent color, and Settings covers the everyday choices: which app edits text files and which terminal opens, what double-click and Return do, whether disk images open in a new window or a new tab, which columns List view and search results show, what search starts with, and whether your tabs and last folder come back at launch.
 
+## Fast, private and open source
+
+- **Built for big folders.** Scrolling stays smooth with thousands of files, in Icons, List and Compact List alike, and every release is measured to keep it that way. A disk or network drive that is slow or stops answering never freezes the window: File Trail waits for it in the background.
+- **Nothing leaves your Mac.** There are no accounts and no analytics, and File Trail makes no network connections of its own. It is a native app of about 11 MB.
+- **Free and open source**, under the [MIT License](LICENSE). The code is here to read, build and change.
+
 ## Also in the box
 
 - Favorites in the sidebar, with an icon of your choice for each, in the order you drag them to
-- Open in Terminal and Copy Path on a key, and Open With for the apps you choose
+- Open in Terminal, Copy Path and Edit in your text editor on a key, and Open With for the apps you choose
 - Duplicate, Move To, New Folder and Move to Trash, with the Info panel and Quick Look a key away
 - Drag items in from Finder or other apps, and out to Finder, the desktop or any app, as from Finder
 - Eject disks from the sidebar, and open disk images in File Trail instead of a Finder window
 - The folder on screen stays current: what other apps add, rename or remove there shows up as it happens
 - Hidden files on a key (⇧⌘.), and folders kept first when you want them
+- Your tabs and last folder back when you open File Trail again, if you want them
+- Names sorted the way your language sorts them, with numbers in order (`file2` before `file10`), and documents such as Keynote files shown as one item, not a folder
 - Dates that read the way you would say them ("24 min ago", "Yesterday, 6:03 PM"), and the icons macOS itself draws for each file
 
 ## Install
@@ -128,7 +143,7 @@ File Trail is a signed and notarized app. Get the latest from the [releases page
 2. Move `File Trail.app` into your Applications folder.
 3. Open it.
 
-File Trail runs on Apple Silicon Macs with macOS 26 Tahoe or later.
+File Trail runs on Apple Silicon Macs with macOS 26 Tahoe or later. It doesn't check for updates: new versions are posted on the releases page.
 
 ## Build from source
 
@@ -171,10 +186,12 @@ Signing uses the Developer ID Application certificate in `~/Documents/Apple Deve
 A version comes from git: a release is a commit tagged `vX.Y.Z`, and any other build is named after the last release before it, with how many commits it is past it (`0.1.0+dev.4`). To make a release:
 
 ```bash
-scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]
+scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file> [--yes] [--dry-run]
 ```
 
-From a clean `main` that is already on GitHub, with the test fixtures built, it runs `scripts/ci.sh --full` with the large-file tests and then the tests of real windows, tags the commit, builds the notarized app, checks that the built version is the tag and that nothing moved meanwhile, pushes the tag, and makes a draft GitHub release with the disk image, the ZIP and the commit subjects as notes. A failure before the push removes the tag. It stops if an earlier release was left unfinished, and it never publishes: rewrite the notes for people, then press Publish release on GitHub. The first release is asked for by exact version, as there is nothing yet for `major`, `minor` or `patch` to count from. `--dry-run` only says what it would release and what would stop it.
+From a clean `main` that is already on GitHub, with the test fixtures built, it runs `scripts/ci.sh --full` with the large-file tests and then the tests of real windows, tags the commit, builds the notarized app, checks that the built version is the tag and that nothing moved meanwhile, pushes the tag, and makes a draft GitHub release with the disk image and the ZIP. A failure before the push removes the tag. It stops if an earlier release was left unfinished, and it never publishes: read the draft over, then press Publish release on GitHub.
+
+The notes are written for people before the release starts, in a Markdown file outside the checkout (or under `build/`), and named with `--notes <file>`. They become both the draft's text and the tag's message, so `git show vX.Y.Z` keeps them. The tag gets the file as it is when the commit is tagged: change the notes in the file, not on GitHub, or the tag and the release page will differ. The first release is asked for by exact version, as there is nothing yet for `major`, `minor` or `patch` to count from. `--dry-run` only says what it would release and what would stop it.
 
 The screenshots on this page come from `scripts/readme-screenshots.sh`, which shows the demo project in a throwaway home folder.
 
@@ -192,3 +209,7 @@ Sources/FTFileSystem  Listing, search, folder sizes, app state and other system 
 Sources/FTFoundation  The logic that touches neither the disk nor the screen
 Sources/CFileTrail    The C helpers
 ```
+
+## License
+
+File Trail is free and open source under the [MIT License](LICENSE). The bundled `fd` keeps its own license (MIT or Apache 2.0), shown in the app's Acknowledgements.

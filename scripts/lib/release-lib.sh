@@ -72,19 +72,6 @@ find_unfinished_releases() {
     fi
 }
 
-# draft_release_notes: a first draft of a release's notes from the commit subjects on stdin: a "What's new" list with one
-# line per commit since the last release, to be rewritten for people before the release is published.
-draft_release_notes() {
-    local items
-    items="$(sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//' |
-        { grep -Ev '^$|^Merge (branch|pull request)([^[:alnum:]_]|$)' || true; } |
-        sed 's/^/- /')"
-    echo "<!-- Draft: one line per commit since the last release. Rewrite it for people, then publish. -->"
-    echo "### What's new"
-    echo "${items:-- }"
-}
-
-
 # MARK: Frame times of scrolling
 #
 # A release's frame times (FrameTimeGUITests' file): {"timings": [{"view", "size", "medianMs", "lateShare",
