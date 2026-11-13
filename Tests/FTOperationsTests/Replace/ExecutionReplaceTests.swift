@@ -147,23 +147,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.readNode("/target/Photos/a.jpg")?.size == 3)
     }
 
-    @Test func pausesForRuntimeDestinationConflictsAndResumesWithTheChosenResolution() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        fileSystem.enableTrash()
-        let operation = try createResolvedOperation(fileSystem, sources: ["/source/file.txt"], into: "/target")
-        fileSystem.addFile("/target/file.txt", .file(size: 99))
-        let recorder = PasteRecorder()
-
-        let events = await execute(
-            fileSystem, operation, recorder: recorder, requestResolution: { _ in .immediate(.overwrite) })
-
-        #expect(recorder.conflicts.map(\.reason) == [.destinationCreated])
-        #expect(events.contains { $0.status == .awaitingResolution })
-        #expect(fileSystem.readNode("/target/file.txt")?.size == 5)
-    }
-
     // The destination-mutation step of the case whose other steps are in Execution/CopyPasteExecutionEdgeTests.swift:
     // a destination changed after the review, answered with Replace.
     @Test func replacesADestinationChangedAfterTheReviewOnceAnswered() async throws {

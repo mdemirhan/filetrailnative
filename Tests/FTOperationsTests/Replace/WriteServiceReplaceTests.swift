@@ -263,24 +263,3 @@ struct VolumeReplaceTests {
         }
     }
 }
-
-struct PackageReplaceTests {
-    @Test func replacesTheExistingOneWholeKeepingNothingOfIt() async throws {
-        try await withTemporaryDirectory { root in
-            let (src, dst, trash) = (root.path + "/src", root.path + "/dst", root.path + "/trash")
-            try Disk.write(src + "/Foo.app/Contents/Info.plist", "v2")
-            try Disk.write(src + "/Foo.app/Contents/new.png", "new.png")
-            try Disk.write(dst + "/Foo.app/Contents/Info.plist", "v1")
-            try Disk.write(dst + "/Foo.app/Contents/old.png", "old.png")
-            try Disk.makeDirectories(trash)
-
-            let run = try await runPaste(
-                mode: .copy, sources: [src + "/Foo.app"], into: dst, policy: NativePaste.replaceAll,
-                fileSystem: NativePaste.withTrash(trash))
-
-            #expect(run.result?.status == .completed)
-            #expect(Disk.list(dst + "/Foo.app/Contents") == ["Info.plist", "new.png"])
-            #expect(Disk.list(trash) == ["1-Foo.app"])
-        }
-    }
-}

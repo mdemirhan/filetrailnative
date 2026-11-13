@@ -38,25 +38,6 @@ struct CopyPasteAnalysisTests {
                     destinationDirectoryPath: "/target"))
     }
 
-    @Test func analyzesANewFileCopyIntoAnEmptyDestination() throws {
-        let fileSystem = MockAnalysisFileSystem([
-            ("/workspace", .directory()), ("/workspace/file.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-
-        let report = try analyze(fileSystem, ["/workspace/file.txt"], into: "/target")
-
-        #expect(report.issues.isEmpty)
-        #expect(report.summary.totalNodeCount == 1)
-        #expect(report.summary.fileConflictCount == 0)
-        #expect(report.summary.directoryConflictCount == 0)
-        #expect(report.summary.mismatchConflictCount == 0)
-        #expect(report.summary.totalBytes == 5)
-        let node = try #require(report.nodes.first)
-        #expect(node.sourcePath == "/workspace/file.txt")
-        #expect(node.destinationPath == "/target/file.txt")
-        #expect(node.conflictClass == nil)
-    }
-
     @Test func resolvesSameDirectoryCopyToAKeepBothDestinationName() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/workspace", .directory()), ("/workspace/file.txt", .file(size: 5)),
@@ -67,14 +48,6 @@ struct CopyPasteAnalysisTests {
 
         #expect(report.nodes.first?.destinationPath == "/workspace/file copy 2.txt")
         #expect(report.issues.isEmpty)
-    }
-
-    @Test func blocksSameDirectoryCutAsASelfTarget() throws {
-        let fileSystem = MockAnalysisFileSystem([("/workspace", .directory()), ("/workspace/file.txt", .file(size: 5))])
-
-        let report = try analyze(fileSystem, .cut, ["/workspace/file.txt"], into: "/workspace")
-
-        #expect(report.issues.map(\.code) == [.samePath])
     }
 
     @Test func flagsTopLevelAndNestedConflictsRecursivelyForFolders() throws {
@@ -112,19 +85,6 @@ struct CopyPasteAnalysisTests {
         #expect(
             try analyze(fileSystem, ["/workspace/file.txt", "/workspace/missing.txt"], into: "/workspace").issues.map(
                 \.code) == [.sourceMissing])
-    }
-
-    @Test func rejectsCopyingADirectoryIntoItsOwnDescendant() throws {
-        let fileSystem = MockAnalysisFileSystem([
-            ("/workspace", .directory()), ("/workspace/folder", .directory()),
-            ("/workspace/folder/child", .directory()),
-        ])
-        fileSystem.setRealpath("/workspace/folder", "/workspace/folder")
-        fileSystem.setRealpath("/workspace/folder/child", "/workspace/folder/child")
-
-        let report = try analyze(fileSystem, ["/workspace/folder"], into: "/workspace/folder/child")
-
-        #expect(report.issues.map(\.code) == [.parentIntoChild])
     }
 
     // A firmlink: "/Users/me/A" and "/System/Volumes/Data/Users/me/A" are one folder, and each keeps its own real

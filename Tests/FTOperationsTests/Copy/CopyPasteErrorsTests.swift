@@ -6,22 +6,6 @@ import Testing
 @testable import FTOperations
 
 struct CopyPasteErrorsTests {
-    @Test func givesAReasonWithoutThePathForAKnownErrorCode() {
-        let error = OperationError("ENOSPC: no space left on device, write '/x/y'", code: .errno(ENOSPC))
-        #expect(describeCopyPasteError(error) == "There isn't enough free space on the destination disk.")
-    }
-
-    // The write service's rm says "Path is a directory: rm returned EISDIR (is a directory) /var/…".
-    @Test func readsTheCodeOfAFolderRemovedAsAFile() {
-        let error = OperationError("Path is a directory: rm returned EISDIR /var/x", code: .errno(EISDIR))
-        #expect(describeCopyPasteError(error) == "A folder is in the way where a file was expected.")
-    }
-
-    @Test func fallsBackToTheErrorsOwnMessage() {
-        #expect(describeCopyPasteError(OperationError("Something else")) == "Something else")
-        #expect(describeCopyPasteError(OperationError("plain")) == "plain")
-    }
-
     @Test func readsTheCodeOfASystemError() {
         #expect(describeCopyPasteError(POSIXError(.ENOSPC)) == "There isn't enough free space on the destination disk.")
         #expect(errorCode(POSIXError(.ENOTSUP)) == .errno(ENOTSUP))

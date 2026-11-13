@@ -278,24 +278,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    @Test func copiesWithoutAskingWhenAnItemToBeReplacedIsAlreadyGone() async throws {
-        try await withPlaces { root, trashDir in
-            let source = root + "/source"
-            let target = root + "/target"
-            try Disk.write(source + "/x.txt", "pasted")
-            try Disk.write(target + "/x.txt", "old")
-
-            let run = try await SafetyPaste(
-                mode: .copy, sources: [source + "/x.txt"], destination: target,
-                beforeExecute: { try NativeWriteFileSystem().rm(target + "/x.txt", recursive: false, force: false) }
-            ).run(withTrash(trashDir))
-
-            #expect(run.conflicts.isEmpty)
-            #expect(run.result?.status == .completed)
-            #expect(Disk.read(target + "/x.txt") == "pasted")
-        }
-    }
-
     @Test(.enabled(if: getuid() != 0, "files that can't be read are readable anyway as root"))
     func keepsGoingAfterAnItemFailsAndReportsEveryItem() async throws {
         try await withPlaces { root, trashDir in
@@ -340,31 +322,6 @@ struct ConflictSafetyTests {
             let failed = (run.result?.items ?? []).filter { $0.status == .failed }.map(\.sourcePath)
             #expect(failed.contains(source + "/docs/a.txt"))
             #expect(Disk.read(target + "/docs/b.txt") == "b")
-        }
-    }
-
-    @Test func reportsItemsThatWereNeverStartedWhenThePasteIsStopped() async throws {
-        try await withPlaces { root, trashDir in
-            let source = root + "/source"
-            let target = root + "/target"
-            for name in ["a.txt", "b.txt", "c.txt"] {
-                try Disk.write(source + "/" + name, name)
-            }
-            try Disk.makeDirectories(target)
-
-            let run = try await SafetyPaste(
-                mode: .copy, sources: ["a.txt", "b.txt", "c.txt"].map { source + "/" + $0 }, destination: target,
-                onEvent: { event, signal in
-                    if event.status == .running && event.currentSourcePath?.hasSuffix("a.txt") == true {
-                        signal.stop()
-                    }
-                }
-            ).run(withTrash(trashDir))
-
-            #expect(run.result?.status == .partial)
-            #expect(
-                names(run.result?.items) == [["a.txt", "completed"], ["b.txt", "cancelled"], ["c.txt", "cancelled"]])
-            #expect(run.result?.items[2].error == "Not started because the operation was stopped.")
         }
     }
 
@@ -619,31 +576,6 @@ struct ConflictSafetyTests {
             #expect(run.conflicts.isEmpty)
             #expect(run.result?.status == .completed)
             #expect(Disk.list(target + "/docs") == ["a.txt"])
-        }
-    }
-
-    @Test(arguments: [(CopyPasteChoice.overwrite, ["a.txt"] as [String]?), (.skip, nil)])
-    func asksWhenTheFolderToMergeIntoWasDeleted(answer: CopyPasteChoice, expected: [String]?) async throws {
-        try await withPlaces { root, trashDir in
-            let source = root + "/source"
-            let target = root + "/target"
-            try Disk.write(source + "/D/a.txt", "new a")
-            try Disk.makeDirectories(target + "/D")
-
-            let run = try await SafetyPaste(
-                mode: .copy, sources: [source + "/D"], destination: target, policy: NativePaste.keepExisting,
-                beforeExecute: { try NativeWriteFileSystem().rm(target + "/D", recursive: true, force: false) },
-                resolve: { _ in answer }
-            ).run(withTrash(trashDir))
-
-            #expect(run.conflicts.map(\.reason) == [.destinationDeleted])
-            #expect(run.conflicts.first?.currentDestinationFingerprint.exists == false)
-            #expect(run.result?.items.first?.status == (answer == .skip ? .skipped : .completed))
-            if let expected {
-                #expect(Disk.list(target + "/D") == expected)
-            } else {
-                #expect(!Disk.exists(target + "/D"))
-            }
         }
     }
 

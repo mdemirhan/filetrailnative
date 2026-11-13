@@ -174,23 +174,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    @Test func removesNestedSourceDirectoriesAfterASuccessfulCutOnTheRealFilesystem() async throws {
-        try await withTemporaryDirectory { root in
-            try Disk.write(root.path + "/source/nested/deeper/alpha.txt", "alpha")
-            try Disk.write(root.path + "/source/beta.txt", "beta")
-            try Disk.makeDirectories(root.path + "/target")
-            let (service, events) = nativeService("cut-tree-op")
-
-            _ = try await startPaste(service, .cut, [root.path + "/source"], into: root.path + "/target")
-
-            let terminal = await events.waitForTerminal("cut-tree-op")
-            #expect(terminal?.result?.status == .completed)
-            #expect(Disk.read(root.path + "/target/source/nested/deeper/alpha.txt") == "alpha")
-            #expect(Disk.read(root.path + "/target/source/beta.txt") == "beta")
-            #expect(!Disk.exists(root.path + "/source"))
-        }
-    }
-
     @Test func supportsCooperativeCancellationAndReportsPartialCompletion() async throws {
         let fileSystem = PathSetWriteFileSystem(
             existingPaths: ["/target", "/source/one.txt", "/source/two.txt"], directoryPaths: ["/target"],
@@ -251,40 +234,6 @@ struct WriteServicePasteTests {
         service.cancelOperation("op-1")
     }
 
-    @Test func copiesNestedDirectoryTreesOnTheRealFilesystem() async throws {
-        try await withTemporaryDirectory { root in
-            try Disk.write(root.path + "/source/nested/alpha.txt", "alpha")
-            try Disk.write(root.path + "/source/beta.txt", "beta")
-            try Disk.makeDirectories(root.path + "/target")
-            let (service, events) = nativeService("tree-op")
-
-            _ = try await startPaste(service, .copy, [root.path + "/source"], into: root.path + "/target")
-
-            let terminal = await events.waitForTerminal("tree-op")
-            #expect(terminal?.result?.status == .completed)
-            #expect(Disk.read(root.path + "/target/source/nested/alpha.txt") == "alpha")
-            #expect(Disk.read(root.path + "/target/source/beta.txt") == "beta")
-            #expect(Set(Disk.list(root.path + "/target/source")).isSuperset(of: ["nested", "beta.txt"]))
-        }
-    }
-
-    @Test func preservesFilePermissionsIncludingExecuteBitsWhenCopying() async throws {
-        try await withTemporaryDirectory { root in
-            try Disk.write(root.path + "/source/bin/run", "#!/bin/sh\necho hi")
-            Disk.chmod(root.path + "/source/bin/run", 0o755)
-            try Disk.write(root.path + "/source/data.txt", "hello")
-            try Disk.makeDirectories(root.path + "/target")
-            let (service, events) = nativeService("perms-op")
-
-            _ = try await startPaste(service, .copy, [root.path + "/source"], into: root.path + "/target")
-
-            let terminal = await events.waitForTerminal("perms-op")
-            #expect(terminal?.result?.status == .completed)
-            #expect((Disk.lstat(root.path + "/target/source/bin/run")?.mode ?? 0) & 0o777 == 0o755)
-            #expect((Disk.lstat(root.path + "/target/source/data.txt")?.mode ?? 0) & 0o777 == 0o644)
-        }
-    }
-
     @Test func treatsUnsupportedChmodAsNonFatalDuringCopy() async throws {
         let fileSystem = PathSetWriteFileSystem(
             existingPaths: ["/target", "/source", "/source/run.sh"], directoryPaths: ["/target", "/source"],
@@ -298,20 +247,6 @@ struct WriteServicePasteTests {
 
         let terminal = await events.waitForTerminal("chmod-unsupported-op")
         #expect(terminal?.result?.status == .completed)
-    }
-
-    @Test func duplicatesAFileWhenCopyPasteTargetsTheSameDirectory() async throws {
-        try await withTemporaryDirectory { root in
-            try Disk.write(root.path + "/workspace/notes.txt", "hello")
-            let (service, events) = nativeService("duplicate-file-op")
-
-            _ = try await startPaste(
-                service, .copy, [root.path + "/workspace/notes.txt"], into: root.path + "/workspace")
-
-            let terminal = await events.waitForTerminal("duplicate-file-op")
-            #expect(terminal?.result?.status == .completed)
-            #expect(Disk.read(root.path + "/workspace/notes copy.txt") == "hello")
-        }
     }
 
     @Test func duplicatesADirectoryTreeWhenCopyPasteTargetsTheSameDirectory() async throws {

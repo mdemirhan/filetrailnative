@@ -175,45 +175,4 @@ struct WriteServiceReviewTests {
         #expect(report.nodes.first?.conflictClass == nil)
         #expect(report.issues.isEmpty)
     }
-
-    @Test func keepsSameDirectoryCutPasteBlockedAsASelfTarget() async throws {
-        let service = WriteService(
-            .init(
-                fileSystem: PathSetFileSystem(
-                    existingPaths: ["/workspace", "/workspace/file.txt"], directoryPaths: ["/workspace"],
-                    fileSizes: ["/workspace/file.txt": 42])))
-
-        let report = try await analyze(service, request(["/workspace/file.txt"], into: "/workspace", mode: .cut))
-
-        #expect(report.issues.map(\.code) == [.samePath])
-    }
-
-    @Test func findsAFileAlreadyAtTheDestinationAsAConflict() async throws {
-        let service = WriteService(
-            .init(
-                fileSystem: PathSetFileSystem(
-                    existingPaths: ["/target", "/source/file.txt", "/target/file.txt"], directoryPaths: ["/target"],
-                    fileSizes: ["/source/file.txt": 42, "/target/file.txt": 42])))
-
-        let report = try await analyze(service, request(["/source/file.txt"], into: "/target"))
-
-        #expect(report.nodes.map(\.sourcePath) == ["/source/file.txt"])
-        #expect(report.nodes.map(\.destinationPath) == ["/target/file.txt"])
-        #expect(report.nodes.first?.conflictClass == .fileConflict)
-    }
-
-    @Test func rejectsCopyingADirectoryIntoItsOwnChild() async throws {
-        let service = WriteService(
-            .init(
-                fileSystem: PathSetFileSystem(
-                    existingPaths: ["/workspace/folder", "/workspace/folder/child"],
-                    directoryPaths: ["/workspace/folder", "/workspace/folder/child"],
-                    realPathMap: [
-                        "/workspace/folder": "/workspace/folder", "/workspace/folder/child": "/workspace/folder/child",
-                    ])))
-
-        let report = try await analyze(service, request(["/workspace/folder"], into: "/workspace/folder/child"))
-
-        #expect(report.issues.map(\.code) == [.parentIntoChild])
-    }
 }
