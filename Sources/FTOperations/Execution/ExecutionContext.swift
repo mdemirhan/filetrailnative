@@ -264,10 +264,11 @@ final class ExecutionContext: @unchecked Sendable {
 // MARK: Errors
 
 /// Part of an item being built under a hidden name couldn't be cleared away (an incomplete package inside it):
-/// the whole hidden copy is given up, never put in place.
+/// the whole hidden copy is given up, never put in place. It carries the code of the error that started it, so a
+/// full disk still ends the paste.
 struct StagingCleanupError: CodedError {
     let original: any Error
-    var code: ErrorCode? { nil }
+    var code: ErrorCode? { errorCode(original) }
     var message: String { describeCopyPasteError(original) }
 }
 

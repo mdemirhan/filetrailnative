@@ -267,6 +267,91 @@ struct EdgeCasesTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
+    // The file cut short by the full disk couldn't be cleared away either: the folder isn't put in place, and the
+    // paste still ends there, as for any full disk.
+    @Test func endsThePasteWhenTheFileTheFullDiskCutShortCantBeClearedAway() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/Docs/a.txt", .file(size: 1)), ("/source/Docs/b.txt", .file(size: 1)),
+            ("/source/z.txt", .file(size: 1)), ("/target", .directory()),
+        ])
+        let attempts = Locked(0)
+        fileSystem.copyFileImpl = { source, destination, stop, _ in
+            attempts.mutate { $0 += 1 }
+            if attempts.value >= 2 {
+                // Part of it was written before the disk filled up.
+                fileSystem.addFile(destination)
+                throw MockWriteServiceFileSystem.error(ENOSPC, destination)
+            }
+            try fileSystem.copyDirectly(source, destination, stop: stop)
+        }
+        fileSystem.rmImpl = { path, recursive, force in
+            if path.hasSuffix("/b.txt") { throw MockWriteServiceFileSystem.error(EIO, path) }
+            try fileSystem.removeDirectly(path, recursive: recursive, force: force)
+        }
+
+        let (result, _) = try await edgePaste(fileSystem, sources: ["/source/Docs", "/source/z.txt"])
+
+        #expect(attempts.value == 2)
+        #expect(result.status == .failed)
+        #expect(result.error == "There isn't enough free space on the destination disk.")
+        #expect(itemFor(result, "/source/z.txt")?.status == .cancelled)
+        #expect(itemFor(result, "/source/z.txt")?.error == "Not started because the destination disk is full.")
+    }
+
+    // A move to another disk that fills it: the paste ends there, and every original stays where it was.
+    @Test func endsAMoveAtTheFirstItemThatFindsTheDiskFullAndKeepsTheOriginals() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/a.txt", .file(size: 1, dev: 1)), ("/source/b.txt", .file(size: 1, dev: 1)),
+            ("/source/c.txt", .file(size: 1, dev: 1)), ("/target", .directory(dev: 2)),
+        ])
+        let attempts = Locked(0)
+        fileSystem.copyFileImpl = { source, destination, stop, _ in
+            attempts.mutate { $0 += 1 }
+            if attempts.value >= 2 {
+                throw MockWriteServiceFileSystem.error(ENOSPC, destination)
+            }
+            try fileSystem.copyDirectly(source, destination, stop: stop)
+        }
+
+        let (result, _) = try await edgePaste(
+            fileSystem, mode: .cut, sources: ["/source/a.txt", "/source/b.txt", "/source/c.txt"])
+
+        #expect(attempts.value == 2)
+        #expect(result.status == .partial)
+        #expect(result.items.map(\.status) == [.completed, .failed, .cancelled])
+        #expect(itemFor(result, "/source/b.txt")?.error == "There isn't enough free space on the destination disk.")
+        #expect(itemFor(result, "/source/c.txt")?.error == "Not started because the destination disk is full.")
+        #expect(try fileSystem.readdir("/target") == ["a.txt"])
+        #expect(try fileSystem.readdir("/source") == ["b.txt", "c.txt"])
+    }
+
+    // A folder merged into one already there isn't built under a hidden name: what fitted stays, nothing more of it is
+    // tried, and nothing after it starts.
+    @Test func endsAMergeIntoAFolderWhenTheDiskFillsUpAndStartsNothingAfterIt() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/Docs/a.txt", .file(size: 1)), ("/source/Docs/b.txt", .file(size: 1)),
+            ("/source/Docs/c.txt", .file(size: 1)), ("/source/z.txt", .file(size: 1)),
+            ("/target/Docs/keep.txt", .file(size: 1)),
+        ])
+        let attempts = Locked(0)
+        fileSystem.copyFileImpl = { source, destination, stop, _ in
+            attempts.mutate { $0 += 1 }
+            if attempts.value >= 2 {
+                throw MockWriteServiceFileSystem.error(ENOSPC, destination)
+            }
+            try fileSystem.copyDirectly(source, destination, stop: stop)
+        }
+
+        let (result, _) = try await edgePaste(fileSystem, sources: ["/source/Docs", "/source/z.txt"])
+
+        #expect(attempts.value == 2)
+        #expect(result.status == .partial)
+        #expect(itemFor(result, "/source/z.txt")?.status == .cancelled)
+        #expect(itemFor(result, "/source/z.txt")?.error == "Not started because the destination disk is full.")
+        #expect(try fileSystem.readdir("/target/Docs") == ["a.txt", "keep.txt"])
+        #expect(try fileSystem.readdir("/target") == ["Docs"])
+    }
+
     // MARK: The last step of a Replace
 
     private func replaceSetup() -> MockWriteServiceFileSystem {
