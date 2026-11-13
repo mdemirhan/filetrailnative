@@ -24,6 +24,11 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+# The bundled fd is built for Apple silicon, and so is the app.
+if [ "$(uname -m)" != arm64 ]; then
+    echo "File Trail builds on Apple silicon only; this Mac is $(uname -m)." >&2
+    exit 1
+fi
 mkdir -p build/logs "$out"
 log=build/logs/build-app.log
 # With --verbose, SwiftPM's output as it comes. Otherwise, in a terminal, its latest [done/total] line, rewritten in
@@ -71,8 +76,12 @@ fi
 # SwiftPM stamps the deployment target as the SDK too, and macOS gives an app built for an old SDK the old look. Stamp
 # the SDK the app was built with (Liquid Glass); the minimum stays Info.plist's. The app is signed again below.
 minimum="$(/usr/libexec/PlistBuddy -c "Print :LSMinimumSystemVersion" "$app/Contents/Info.plist")"
-vtool -set-build-version macos "$minimum" "$(xcrun --show-sdk-version)" -replace \
-    -output "$app/Contents/MacOS/FileTrail" "$app/Contents/MacOS/FileTrail" 2>>"$log"
+if ! stamped="$(vtool -set-build-version macos "$minimum" "$(xcrun --show-sdk-version)" -replace \
+    -output "$app/Contents/MacOS/FileTrail" "$app/Contents/MacOS/FileTrail" 2>&1)"; then
+    echo "$stamped" >&2
+    echo "vtool couldn't stamp the SDK on the app's binary" >&2
+    exit 1
+fi
 # The bundled fd (search): the helper is signed first, then the app seals it. Its licences are shown from
 # Resources/Acknowledgements/fd.txt.
 mkdir -p "$app/Contents/Helpers"
