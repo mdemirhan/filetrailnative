@@ -8,6 +8,40 @@ import Testing
 
 @testable import FTAppKit
 
+/// The disk as it is, but a look at `held` waits until the test lets it go, and says when it began.
+private final class HeldDestination: ExplorerFileSystem, @unchecked Sendable {
+    let held: String
+    let began = DispatchSemaphore(value: 0)
+    let release = DispatchSemaphore(value: 0)
+    private let real = NativeFileSystem()
+    private let lock = NSLock()
+    private var waited = false
+
+    init(held: String) { self.held = held }
+
+    private func hold(_ path: String) {
+        guard path == held,
+            lock.withLock({ () -> Bool in
+                defer { waited = true }
+                return !waited
+            })
+        else { return }
+        began.signal()
+        release.wait()
+    }
+
+    func readDirectory(_ path: String) throws -> [DirectoryRecord] { try real.readDirectory(path) }
+    func stat(_ path: String) throws -> FileStats {
+        hold(path)
+        return try real.stat(path)
+    }
+    func lstat(_ path: String) throws -> FileStats {
+        hold(path)
+        return try real.lstat(path)
+    }
+    func realpath(_ path: String) throws -> String { try real.realpath(path) }
+}
+
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct DragDropEachDragTests {
@@ -374,6 +408,62 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { broughtForward == 1 })
             #expect(!window.recorder.shown.isEmpty)
             let actions = try #require(window.tab.writeActions)
+            #expect(actions.session.pendingTreeSelectionPath == nil)
+            await window.close()
+        }
+
+        // A drop that waits for its destination to be looked at, while a write starts in the window: it says the window
+        // is busy, and leaves that write's card alone.
+        @Test func aDropThatWaitsOnItsDestinationLeavesAWriteStartedMeanwhileAlone() async throws {
+            let window = try await WritingWindow.open()
+            let beta = path(window, "Beta")
+            let disk = HeldDestination(held: beta)
+            var services = window.tab.services
+            services.directoryService = DirectoryService(fileSystem: disk)
+            window.tab.servicesOverride = services
+            let target = TabDragDrop.Target(surface: .content, path: beta, supportsMove: true)
+            #expect(
+                window.tab.dragDrop.drop(
+                    session: external([path(window, "note.txt")]), target: target, offersMove: true,
+                    modifiers: [.option], sequence: 21))
+            await withCheckedContinuation { began in
+                DispatchQueue.global().async {
+                    disk.began.wait()
+                    began.resume()
+                }
+            }
+            let actions = try #require(window.tab.writeActions)
+            let meanwhile = WriteOperationCardState(action: .copyTo, stage: .running, targetPath: "/elsewhere")
+            actions.session.applyCard(meanwhile)
+            disk.release.signal()
+            #expect(await waitUntil { !window.recorder.shown.isEmpty })
+            #expect(window.recorder.shown.first?.message == WriteDialogs.busyMessage)
+            #expect(actions.session.card == meanwhile)
+            #expect(!window.exists("Beta/note.txt"))
+            actions.session.applyCard(nil)
+            await window.close()
+        }
+
+        // A drop on a folder of the tree whose review is cancelled leaves the tree nothing to select when the next
+        // write ends.
+        @Test func aTreeDropWhoseReviewIsCancelledLeavesNothingToSelect() async throws {
+            let window = try await WritingWindow.open()
+            let saved = TabDragDrop.bringForward
+            TabDragDrop.bringForward = { _ in }
+            defer { TabDragDrop.bringForward = saved }
+            try "old".write(
+                to: window.folder.appendingPathComponent("Beta/note.txt"), atomically: true, encoding: .utf8)
+            let target = TabDragDrop.Target(
+                surface: .tree, path: path(window, "Beta"), supportsMove: true, selectsInTree: true)
+            #expect(
+                window.tab.dragDrop.drop(
+                    session: external([path(window, "note.txt")]), target: target, offersMove: true,
+                    modifiers: [.option], sequence: 22))
+            #expect(await waitUntil { CopyPasteDialogs.isOpen(in: window.tab.window) })
+            let actions = try #require(window.tab.writeActions)
+            #expect(actions.session.pendingTreeSelectionPath == path(window, "Beta"))
+            DialogKeys.press(53, "\u{1b}", in: window.tab.window)
+            #expect(!CopyPasteDialogs.isOpen(in: window.tab.window))
             #expect(actions.session.pendingTreeSelectionPath == nil)
             await window.close()
         }

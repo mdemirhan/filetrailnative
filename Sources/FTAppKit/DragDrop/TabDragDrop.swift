@@ -612,9 +612,10 @@ final class TabDragDrop {
             outcome = .blocked(message: message)
         } else {
             if target.selectsInTree { actions.session.pendingTreeSelectionPath = target.path }
+            // Asked again: a write may have started here while the destination was looked at.
             outcome = await actions.copyLike(
                 mode: operation == .copy ? .copy : .cut, sources: session.facts.sourcePaths,
-                destination: target.path, action: action, initiator: .dragDrop, checksBusy: false,
+                destination: target.path, action: action, initiator: .dragDrop,
                 moveFromSearchResults: action == .moveTo && session.sourceSurface == .search)
             // A drop that didn't start leaves the tree nothing to select when the next write ends.
             switch outcome {

@@ -26,6 +26,9 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
             let copyLike = CopyLikeAction(action)
         else { return }
         let model = ReviewSheetModel(report: report, action: copyLike, policy: policy, now: now())
+        // A review that goes without starting its write leaves the tree nothing to select when the next one ends.
+        let session = actions.session
+        let wentWithoutStarting: () -> Void = { [weak session] in session?.pendingTreeSelectionPath = nil }
         let start: (CopyPastePolicy, [CopyPasteNodeOverride]) async -> Bool = { [weak self] in
             guard let self else { return false }
             return await self.start(
@@ -33,9 +36,10 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
                 actions: actions)
         }
         if let node = ReviewSheetText.singleConflict(model.review, summary: model.summary) {
-            presentAlert(node, model: model, on: tab, in: window, start: start)
+            presentAlert(
+                node, model: model, on: tab, in: window, start: start, wentWithoutStarting: wentWithoutStarting)
         } else {
-            presentSheet(model, on: tab, in: window, start: start)
+            presentSheet(model, on: tab, in: window, start: start, wentWithoutStarting: wentWithoutStarting)
         }
     }
 
@@ -57,7 +61,8 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
 
     private func presentSheet(
         _ model: ReviewSheetModel, on tab: MainWindowController, in window: NSWindow,
-        start: @escaping (CopyPastePolicy, [CopyPasteNodeOverride]) async -> Bool
+        start: @escaping (CopyPastePolicy, [CopyPasteNodeOverride]) async -> Bool,
+        wentWithoutStarting: @escaping () -> Void
     ) {
         let sheet = CopyPasteReviewSheet(model: model)
         let scrim = CopyPasteDialogs.present(sheet, placement: .sheet, on: tab, in: window)
@@ -66,7 +71,10 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         // takes it itself, and one that fails once the review has gone lets go of it.
         let analysisId = model.report.analysisId
         scrim.alsoOnDismiss { [weak sheet] in
-            if sheet?.starting != true { TabDragDrop.externalDropAnalyses.remove(analysisId) }
+            if sheet?.starting != true {
+                TabDragDrop.externalDropAnalyses.remove(analysisId)
+                wentWithoutStarting()
+            }
         }
         sheet.onClose = { [weak scrim] in scrim?.dismiss() }
         sheet.onStart = { [weak sheet, weak scrim] in
@@ -90,7 +98,8 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
     /// Keep Both as the default. Return is Keep Both, Escape is Cancel.
     private func presentAlert(
         _ node: ReviewNode, model: ReviewSheetModel, on tab: MainWindowController, in window: NSWindow,
-        start: @escaping (CopyPastePolicy, [CopyPasteNodeOverride]) async -> Bool
+        start: @escaping (CopyPastePolicy, [CopyPasteNodeOverride]) async -> Bool,
+        wentWithoutStarting: @escaping () -> Void
     ) {
         var scrim: DialogScrim?
         var starting = false
@@ -131,7 +140,12 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         shown.alsoOnDismiss { scrim = nil }
         // A drop from another app whose review goes without starting it is forgotten with it; a start under way takes
         // it itself.
-        shown.alsoOnDismiss { if !starting { TabDragDrop.externalDropAnalyses.remove(analysisId) } }
+        shown.alsoOnDismiss {
+            if !starting {
+                TabDragDrop.externalDropAnalyses.remove(analysisId)
+                wentWithoutStarting()
+            }
+        }
         alert = shown.panel as? AlertCard
     }
 }
