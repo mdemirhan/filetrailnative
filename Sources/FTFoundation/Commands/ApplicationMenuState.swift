@@ -197,7 +197,9 @@ public enum ApplicationMenu {
             case .redo: textUndo ? "Redo" : window.undoLabels?.redo ?? "Redo"
             case .toggleFavorite: state.favoriteIsSet ? "Remove from Favorites" : "Add to Favorites"
             case .toggleFolderTree: state.folderTreeOpen ? "Hide Folder Tree" : "Show Folder Tree"
-            case .increaseSize, .decreaseSize, .resetSize: ApplicationMenu.sizeTitle(type, viewMode: state.viewMode)
+            // With no explorer window to act on, no view is named.
+            case .increaseSize, .decreaseSize, .resetSize:
+                ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)
             default: nil
             }
         }

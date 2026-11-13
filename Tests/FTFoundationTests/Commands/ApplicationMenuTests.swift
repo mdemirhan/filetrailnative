@@ -111,6 +111,13 @@ struct ApplicationMenuTests {
         #expect(titles(state) == ["Make Columns Wider", "Make Columns Narrower", "Default Column Width"])
         state.viewMode = .details
         #expect(titles(state) == ["Make Bigger", "Make Smaller", "Default Size"])
+        // With no explorer window to act on, they name no view.
+        let none = Window(explorerFocused: false, explorerWindowCount: 0, otherWindowFocused: false)
+        #expect(
+            [AppCommand.increaseSize, .decreaseSize, .resetSize].map {
+                Self.stateOf($0.rawValue, Self.initial, none).title
+            }
+                == ["Make Bigger", "Make Smaller", "Default Size"])
     }
 
     @Test func turnsTheFilesUndoAndRedoOnOnlyWhenThereIsSomethingToDo() {
