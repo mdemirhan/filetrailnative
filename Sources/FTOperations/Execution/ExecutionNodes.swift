@@ -90,9 +90,15 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
     }
     // Whether the record says the hidden copy is complete, which the next start puts in place.
     var recordedComplete = false
+    // What the progress counted as done before this folder: what its hidden copy adds goes when the copy does, or a
+    // folder asked again would be counted twice.
+    let countedItems = context.shared.completedItemCount
+    let countedBytes = context.shared.completedByteCount
     // Its record goes only once it is gone: one that can't be removed now (its disk went away) is removed at the
     // next start.
     func discard() {
+        context.shared.completedItemCount = countedItems
+        context.shared.completedByteCount = countedBytes
         guard recordIncomplete(journal, journalEntry, recordedComplete) else { return }
         recordedComplete = false
         do {

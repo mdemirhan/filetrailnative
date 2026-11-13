@@ -324,6 +324,33 @@ struct EdgeCasesTests {
         #expect(last.completedItemCount == last.totalItemCount)
     }
 
+    // A folder built under a hidden name whose name was taken as it was put in place: what its hidden copy counted as
+    // done goes with it, and the folder is counted once, as what the answer makes.
+    @Test func countsAFolderThatIsAskedAgainOnce() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/F", .directory()), ("/source/F/a.txt", .file(size: 2)), ("/target", .directory()),
+        ])
+        let sneaked = Locked(false)
+        fileSystem.renameImpl = { from, to in
+            if to == "/target/F" && !sneaked.value {
+                sneaked.mutate { $0 = true }
+                fileSystem.addDirectory("/target/F")
+                throw codedError(.errno(EEXIST))
+            }
+            try fileSystem.renameDirectly(from, to)
+        }
+        let operation = try createResolvedOperation(fileSystem, sources: ["/source/F"], into: "/target")
+
+        let events = await execute(fileSystem, operation, requestResolution: { _ in .immediate(.keepBoth) })
+
+        let last = try #require(events.last)
+        #expect(last.status == .completed)
+        #expect(events.allSatisfy { $0.completedItemCount <= $0.totalItemCount })
+        #expect(events.allSatisfy { $0.totalBytes == nil || $0.completedByteCount <= $0.totalBytes! })
+        #expect(last.completedItemCount == last.totalItemCount)
+        #expect(last.completedByteCount == 2)
+    }
+
     @Test func leavesTheNewItemToTheNextStartWhenNoNameCanBeGivenToIt() async throws {
         let fileSystem = replaceSetup()
         fileSystem.renameImpl = { from, to in
