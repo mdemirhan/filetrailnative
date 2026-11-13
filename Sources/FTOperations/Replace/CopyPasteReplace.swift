@@ -78,6 +78,9 @@ func executeReplace(
             temporaryPath = try reserveStagingFolder(fileSystem, finalPath)
             stagingIsOurs = true
             journalEntry.stagingPath = temporaryPath
+            // A folder moved by copying keeps its record until the originals are gone: a crash in between leaves
+            // it in both places, and the next start says so.
+            journalEntry.movingCopy = context.mode == .cut
         }
         do {
             try journal?.add(.replace(journalEntry))
@@ -261,8 +264,6 @@ func executeReplace(
         }
         throw errorCode(error) == .errno(EEXIST) ? DestinationTakenError(original: error) : error
     }
-    try? journal?.remove(journalEntry.id)
-
     var ownError: String?
     var childItems = stagedChildItems
     if context.mode == .cut && !movedByRename {
@@ -270,6 +271,8 @@ func executeReplace(
         ownError = cleanup.error
         childItems = cleanup.childItems
     }
+    // Its record goes only once a move's originals are gone (see journalEntry.movingCopy).
+    try? journal?.remove(journalEntry.id)
     if appMovedByCopy {
         recordAppMovedByCopy(context, currentNode, finalPath)
     }

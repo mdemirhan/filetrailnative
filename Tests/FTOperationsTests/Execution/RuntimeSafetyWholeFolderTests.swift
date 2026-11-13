@@ -374,6 +374,50 @@ struct WholeFolderTests {
     }
 }
 
+extension WholeFolderTests {
+    // As above, for a folder that replaces one of its name: the Replace's record stays until the originals are gone,
+    // and the next start says the folder is in both places.
+    @Test func aReplaceByAMoveToAnotherDiskKilledWhileItsOriginalsGoIsToldAtTheNextStart() async throws {
+        try await withSafetyFolders { f in
+            try Disk.write(f.src + "/F/a.txt", "a")
+            try Disk.write(f.dst + "/F/old.txt", "old")
+            let fileSystem = NativePaste.asOnAnotherDisk(f.src, f.withTrash())
+            let base = fileSystem.base
+            let journal = MemoryJournal()
+            let left = Locked<[WriteJournalEntry]?>(nil)
+            fileSystem.rmImpl = { path, recursive, force in
+                guard path.hasPrefix(f.src + "/") else {
+                    return try base.rm(path, recursive: recursive, force: force)
+                }
+                if left.value == nil {
+                    left.mutate { $0 = journal.entries }
+                }
+                throw codedError(.errno(ECANCELED), "ECANCELED: the process was killed")
+            }
+
+            _ = try await runPaste(
+                mode: .cut, sources: [f.src + "/F"], into: f.dst, policy: NativePaste.replaceAll,
+                fileSystem: fileSystem, writeJournal: journal)
+
+            #expect(Disk.read(f.dst + "/F/a.txt") == "a")
+            #expect(Disk.read(f.src + "/F/a.txt") == "a")
+            let file = FileWriteJournal.open(f.root + "/replace-journal.json")
+            for entry in try #require(left.value) {
+                try file.add(entry)
+            }
+            let report = recoverWrites(file, NativeWriteFileSystem(), logger: RecordingLogger().logger)
+
+            #expect(
+                report.notices == [
+                    "\u{201C}F\u{201D} was being moved when File Trail stopped. It is in \u{201C}dst\u{201D} now, and what was left of the original is still in \u{201C}src\u{201D}, perhaps not all of it."
+                ])
+            #expect(file.entries().isEmpty)
+            // Once the move ends, its record goes.
+            #expect(journal.entries.isEmpty)
+        }
+    }
+}
+
 /// A large file being copied: a crash part way would leave the part copied under a hidden name: it is written down
 /// first, and let go of once the file has its name, or once the copy failed.
 struct LargeFileBeingCopiedTests {

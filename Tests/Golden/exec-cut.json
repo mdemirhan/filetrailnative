@@ -2988,6 +2988,7 @@
                 "finalPath": "$ROOT/destination/f",
                 "id": "journal-1",
                 "moved": false,
+                "movingCopy": true,
                 "sourcePath": "$ROOT/source/f",
                 "staged": false,
                 "stagingPath": "$ROOT/destination/.f.filetrail-~1"
@@ -3030,6 +3031,7 @@
                 "finalPath": "$ROOT/destination/f",
                 "id": "journal-1",
                 "moved": false,
+                "movingCopy": true,
                 "sourcePath": "$ROOT/source/f",
                 "staged": true,
                 "stagingPath": "$ROOT/destination/.f.filetrail-~1"
