@@ -142,6 +142,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
     private let fdBinaryPath: String
     private let spawn: SearchSpawn
     private let hasHiddenFlag: @Sendable (String) -> Bool
+    private let realPath: @Sendable (String) throws -> String
     private let lock = NSLock()
     private var jobs: [String: Job] = [:]
     private var finishedJobs: [String: FinishedJob] = [:]
@@ -152,25 +153,26 @@ public final class FdSearchRuntime: @unchecked Sendable {
         fdBinaryPath: String, spawn: @escaping SearchSpawn = FdProcess.spawn,
         hasHiddenFlag: @escaping @Sendable (String) -> Bool = {
             (try? NativeFileSystem().lstat($0))?.hasHiddenFlag == true
-        }
+        },
+        realPath: @escaping @Sendable (String) throws -> String = MountTable.realPath
     ) {
         self.fdBinaryPath = fdBinaryPath
         self.spawn = spawn
         self.hasHiddenFlag = hasHiddenFlag
+        self.realPath = realPath
     }
 
     public func startSearch(_ request: SearchRequest) -> SearchStartResponse {
         let rootPath = NodePath.resolve(request.rootPath)
         var resolved = request
         resolved.rootPath = rootPath
+        // Looked up before the lock is taken: a disk slow to answer mustn't hold up the window's questions.
+        let filter = HiddenFilter(
+            rootPath: rootPath, realRootPath: try? realPath(rootPath), hasHiddenFlag: hasHiddenFlag)
         let jobId = lock.withLock {
             sequence += 1
             let id = "search-\(sequence)"
-            jobs[id] = Job(
-                rootPath: rootPath, includeHidden: request.includeHidden,
-                filter: HiddenFilter(
-                    rootPath: rootPath, realRootPath: try? MountTable.realPath(rootPath),
-                    hasHiddenFlag: hasHiddenFlag))
+            jobs[id] = Job(rootPath: rootPath, includeHidden: request.includeHidden, filter: filter)
             return id
         }
         let events = SearchProcessEvents(

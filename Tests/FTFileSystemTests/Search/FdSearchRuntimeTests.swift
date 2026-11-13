@@ -149,6 +149,24 @@ private final class AskedWhileLooking: @unchecked Sendable {
         #expect(try paths(runtime, job).map(\.name) == ["a.txt", "b.txt"])
     }
 
+    // The search's folder is followed to its real path as the search starts: a disk slow to answer then doesn't hold
+    // up the window asking how another search is doing.
+    @Test func followsItsFolderWithoutHoldingUpTheQuestionsOfTheWindow() throws {
+        let process = MockSearchProcess()
+        let asked = AskedWhileLooking()
+        let runtime = FdSearchRuntime(
+            fdBinaryPath: "/tmp/fd", spawn: process.spawn, hasHiddenFlag: { _ in false },
+            realPath: { path in
+                asked.ask()
+                return path
+            })
+        let first = runtime.startSearch(demo()).jobId
+        asked.watch(runtime, first)
+        _ = runtime.startSearch(demo())
+        #expect(asked.answered.count == 2)
+        #expect(asked.answered.last == true)
+    }
+
     @Test func whatIsDroppedDoesNotCountTowardsTheLimit() throws {
         let root = "/Users/demo/project"
         let (runtime, process, _) = make(flagged: [root + "/hidden"])
