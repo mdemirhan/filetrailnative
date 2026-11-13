@@ -35,6 +35,23 @@ struct JSMatch: Equatable {
 ///   loop that matched the empty string (`(a*)*`, `(|a)+`) can differ; a ligature such as "ﬁ" inside a class also
 ///   finds "fi".
 public struct JSRegExp: @unchecked Sendable {
+    /// How long a pattern may take over one name. A name is 255 units at most, which any ordinary pattern is through
+    /// in microseconds; one that backtracks without end (`(a+)+$`) would otherwise keep the Rename sheet from
+    /// answering for minutes.
+    public static let timePerName: DispatchTimeInterval = .milliseconds(50)
+
+    /// Set once a name took the pattern too long: no more names are matched, as the next would likely take as long.
+    private final class TookTooLong: @unchecked Sendable {
+        private let lock = NSLock()
+        private var value = false
+        var isSet: Bool { lock.withLock { value } }
+        func set() { lock.withLock { value = true } }
+    }
+
+    private let gaveUp = TookTooLong()
+    /// Whether the pattern took longer than `timePerName` over a name: what it matched since is not to be relied on.
+    public var tookTooLong: Bool { gaveUp.isSet }
+
     let regex: NSRegularExpression
     /// The name of each capture group, in order (nil for an unnamed one).
     let groupNames: [String?]
@@ -67,10 +84,24 @@ public struct JSRegExp: @unchecked Sendable {
         self.groupNames = groupNames
     }
 
-    /// Every match in `text`, from the left, none overlapping.
+    /// Every match in `text`, from the left, none overlapping; none once the pattern took too long (`tookTooLong`).
     func matches(in text: String) -> [JSMatch] {
+        guard !gaveUp.isSet else { return [] }
         let string = text as NSString
-        let found = regex.matches(in: text, options: [], range: NSRange(location: 0, length: string.length))
+        var found: [NSTextCheckingResult] = []
+        let deadline = DispatchTime.now() + Self.timePerName
+        // The block is called with each match, and now and then while a long one is looked for.
+        regex.enumerateMatches(
+            in: text, options: [.reportProgress], range: NSRange(location: 0, length: string.length)
+        ) { result, _, stop in
+            if let result {
+                found.append(result)
+            } else if DispatchTime.now() > deadline {
+                gaveUp.set()
+                stop.pointee = true
+            }
+        }
+        guard !gaveUp.isSet else { return [] }
         let hasNames = groupNames.contains { $0 != nil }
         return found.map { result in
             let groups: [String?] = (0..<result.numberOfRanges).map { index in

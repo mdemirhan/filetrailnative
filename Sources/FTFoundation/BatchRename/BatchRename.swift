@@ -35,8 +35,14 @@ public enum BatchRename {
                 name: name, segments: mergeSegments(trimmed), usedCreatedForTaken: result.usedCreatedForTaken,
                 emptyName: result.emptyName)
         }
+        if pattern?.tookTooLong == true {
+            return ProposedNames(settingsError: patternTakesTooLong, names: items.map { _ in .unchanged })
+        }
         return ProposedNames(settingsError: nil, names: names)
     }
+
+    /// Said under the pattern when it took too long over a name (`JSRegExp.timePerName`): nothing is renamed by it.
+    public static let patternTakesTooLong = "This pattern takes too long on these names. Try a simpler one."
 
     /// What is wrong with the settings as typed, or nil.
     public static func settingsError(_ settings: BatchRenameSettings) -> String? {

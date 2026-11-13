@@ -175,6 +175,30 @@ struct ReplaceTextTests {
     }
 }
 
+struct PatternTimeLimitTests {
+    // A pattern that backtracks without end would keep the Rename sheet from answering for minutes: it gets a moment
+    // per name, then nothing is renamed by it and the sheet says why.
+    @Test func givesUpOnAPatternThatTakesTooLongAndSaysSo() {
+        let settings = BatchRenameSettings(find: "(a+)+$", replaceWith: "x", useRegex: true)
+        let stubborn = String(repeating: "a", count: 40) + "!.txt"
+        let started = Date()
+        let result = proposed(settings, [item("plain.txt"), item(stubborn), item("aaa"), item("baa")])
+        #expect(Date().timeIntervalSince(started) < 5)
+        #expect(result.settingsError == BatchRename.patternTakesTooLong)
+        #expect(result.names == [.unchanged, .unchanged, .unchanged, .unchanged])
+        let made = plan(settings, ["plain.txt", stubborn])
+        #expect(made.settingsError == BatchRename.patternTakesTooLong)
+        #expect(made.renameCount == 0)
+    }
+
+    // The same pattern on names it is quickly through with renames them as ever.
+    @Test func leavesAPatternThatIsQuickAlone() {
+        let settings = BatchRenameSettings(find: "(a+)+$", replaceWith: "x", useRegex: true)
+        #expect(names(settings, ["baa", "b.txt"]) == ["bx", nil])
+        #expect(proposed(settings, [item("baa")]).settingsError == nil)
+    }
+}
+
 struct ExpandReplacementTests {
     private func match(_ pattern: String, _ subject: String) throws -> JSMatch {
         try #require(try JSRegExp(source: pattern, ignoreCase: false).matches(in: subject).first)
