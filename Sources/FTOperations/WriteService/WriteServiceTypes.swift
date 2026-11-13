@@ -355,7 +355,8 @@ public struct CopyPasteOperationHandle: Codable, Equatable, Sendable {
 
 public enum WriteServiceMessages {
     public static let writeOperationBusy = "Another write operation is already running."
-    public static let analysisBusy = "Another copy/paste analysis is already running."
+    /// A copy, move or drop refused while another window's is still being checked.
+    public static let analysisBusy = "Another window is checking items to copy or move. Try again when it has finished."
 }
 
 extension CopyPastePolicy {

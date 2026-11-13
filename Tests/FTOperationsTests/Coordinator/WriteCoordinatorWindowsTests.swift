@@ -318,7 +318,9 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             let busy = await #expect(throws: WriteCoordinatorError.self) {
                 try await Coordinators.analyze(coordinator, second, sources: [source], destination: root.path)
             }
-            #expect(busy?.message == WriteServiceMessages.analysisBusy)
+            #expect(
+                busy?.message
+                    == "Another window is checking items to copy or move. Try again when it has finished.")
 
             coordinator.windowClosed(first)
 
