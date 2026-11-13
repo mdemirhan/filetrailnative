@@ -60,7 +60,7 @@ extension ExplorerWindowlessTests {
         }
 
         // Tab goes round the conflict alert's controls, "Do the same for similar changes" and Stop included, and
-        // stays inside it: from Keep Both it wraps to the checkbox, and ⇧Tab comes back.
+        // stays inside it: from Keep Both it wraps to the checkbox, which Space checks, and ⇧Tab comes back.
         @Test func tabStaysInsideTheRuntimeConflictAlert() async throws {
             let (harness, tab, operations) = try await open()
             let session = try #require(tab.writeActions?.session)
@@ -81,6 +81,11 @@ extension ExplorerWindowlessTests {
             #expect(window.firstResponder === alert.defaultButton)
             pressTab(window)
             #expect(window.firstResponder === checkbox)
+            // Space checks the focused box and unchecks it again.
+            DialogKeys.press(49, " ", in: window)
+            #expect(checkbox.state == .on)
+            DialogKeys.press(49, " ", in: window)
+            #expect(checkbox.state == .off)
             DialogKeys.press(48, "\t", modifiers: .shift, in: window)
             #expect(window.firstResponder === alert.defaultButton)
             var seen: [String] = []

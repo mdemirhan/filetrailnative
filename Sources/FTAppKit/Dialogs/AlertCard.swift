@@ -145,12 +145,16 @@ final class AlertCard: DialogPanelView {
         let plain = event.modifierFlags.intersection([.command, .control, .option]).isEmpty
         guard KeyCode.isReturn(event), plain else {
             // The keys typed while an alert without a field is up go nowhere; Space presses the focused
-            // button.
+            // button, or checks the focused checkbox.
             guard plain, !(content.accessory is TextPromptAccessory) else { return false }
-            if event.charactersIgnoringModifiers == " ", let button = window?.firstResponder as? SystemButton,
+            if event.charactersIgnoringModifiers == " ", let button = window?.firstResponder as? NSButton,
                 button.isDescendant(of: self)
             {
-                button.perform()
+                if let system = button as? SystemButton {
+                    system.perform()
+                } else if button.isEnabled {
+                    button.performClick(nil)
+                }
             }
             return true
         }
