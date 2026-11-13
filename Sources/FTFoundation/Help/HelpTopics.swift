@@ -515,7 +515,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder sizes",
                             description:
-                                "With the Info panel or the Info Row open, a folder you select in your home folder, or an app, is measured by itself (turn it off with Calculate folder sizes automatically in Settings → General). Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. Right-click empty space to size the folder on screen. With several items selected it sizes the folders among them. The path bar's right end shows the size of the selection, or of the folder on screen when nothing is selected, once every size in it is known. Sizing a folder also sizes every folder inside it."
+                                "With the Info panel or the Info Row open, the folder they show is measured by itself when it is your home folder, a folder in it, or an app: the one you select, or with nothing selected the folder on screen, however you got there (turn it off with Calculate folder sizes automatically in Settings → General). Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. Right-click empty space to size the folder on screen. With several items selected it sizes the folders among them. The path bar's right end shows the size of the selection, or of the folder on screen when nothing is selected, once every size in it is known. Sizing a folder also sizes every folder inside it."
                         ),
                         HelpRow(
                             label: "What takes the space",

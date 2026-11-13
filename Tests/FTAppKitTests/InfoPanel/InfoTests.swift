@@ -335,6 +335,27 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // With nothing selected the panel and the row describe the folder on screen, and measure it however it was
+        // opened: here an app opened as a folder, and then gone up to from inside it.
+        @Test func theFolderOnScreenIsMeasuredWithNothingSelected() async throws {
+            let harness = try ExplorerHarness.windowless()
+            try FileManager.default.createDirectory(
+                at: harness.folder.appending("Tool.app/Contents"), withIntermediateDirectories: true)
+            let app = harness.folder.appending("Tool.app").path
+            let tab = try await harness.open(app)
+            tab.perform(.toggleInfoRow)
+            #expect(tab.content.selection.paths.isEmpty)
+            #expect(await waitUntil { (tab.folderSizes.cachedEntry(app) ?? .idle) != .idle })
+            tab.folderSizes.cancel(app)
+            tab.go(to: URL(fileURLWithPath: app + "/Contents"))
+            #expect(await waitUntil { tab.shownFolderPath.hasSuffix("/Contents") })
+            tab.goToParentFolder()
+            #expect(await waitUntil { tab.shownFolderPath == app })
+            tab.content.select(paths: [])
+            #expect(await waitUntil { (tab.folderSizes.cachedEntry(app) ?? .idle) != .idle })
+            await harness.close()
+        }
+
         // Calculate Size measures the selected folders; with nothing
         // selected, the folder on screen.
         @Test func calculateSizeMeasuresTheSelectedFolders() async throws {

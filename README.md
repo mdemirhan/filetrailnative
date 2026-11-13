@@ -88,7 +88,7 @@ The toolbar is customized the way Finder's is: choose View > Customize Toolbar, 
 
 Ask for a folder's size and File Trail measures it, and every folder inside it, in one pass. Sort the List view by Size and each row gets a bar, so the heavy folders stand out before you read a number.
 
-Sizes are worked out for the folder you select or ask about, never for everything you pass while browsing, so opening a large folder stays instant. With the Info panel open, a folder you select in your home folder is measured by itself; Settings can turn that off.
+Sizes are worked out for the folder you select or ask about, never for everything you pass while browsing, so opening a large folder stays instant. With the Info panel or the Info Row open, the folder they show is measured by itself when it is your home folder or in it; Settings can turn that off.
 
 ## Rename many files at once
 

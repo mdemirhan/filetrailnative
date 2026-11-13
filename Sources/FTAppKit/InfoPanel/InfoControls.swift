@@ -160,16 +160,32 @@ final class InfoIconButton: NSView {
     }
 }
 
-/// `.spinner`: a ring with its head in the accent, turning once in 700 ms.
+/// `.spinner`: a ring with its head in the accent, turning once in 700 ms about its center.
+///
+/// What turns is a layer of its own, centered in the view at each layout. The view's own layer is AppKit's: it sets
+/// that layer's anchor and position again whenever the frame changes, and a ring turned there went round a corner,
+/// away from where it was put.
 final class InfoSpinnerView: NSView {
     var diameter: Double
     var lineWidth: Double
+    /// The turning layer, the track and the head under it.
+    private let ring = CALayer()
+    private let track = CAShapeLayer()
+    private let head = CAShapeLayer()
 
     init(diameter: Double = 12, lineWidth: Double = 2) {
         self.diameter = diameter
         self.lineWidth = lineWidth
         super.init(frame: NSRect(x: 0, y: 0, width: diameter, height: diameter))
         wantsLayer = true
+        for shape in [track, head] {
+            shape.fillColor = nil
+            shape.lineWidth = lineWidth
+            ring.addSublayer(shape)
+        }
+        head.lineCap = .butt
+        layer?.addSublayer(ring)
+        applyColors()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -177,34 +193,62 @@ final class InfoSpinnerView: NSView {
     override var isFlipped: Bool { true }
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 
-    override func draw(_ dirtyRect: NSRect) {
-        let theme = infoTheme
-        let rect = bounds.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
-        let ring = NSBezierPath(ovalIn: rect)
-        ring.lineWidth = lineWidth
-        NSColor(theme.palette.textPrimary.withAlpha(0.15)).setStroke()
-        ring.stroke()
-        let head = NSBezierPath()
-        head.appendArc(
-            withCenter: NSPoint(x: bounds.midX, y: bounds.midY), radius: rect.width / 2, startAngle: 180, endAngle: 270)
-        head.lineWidth = lineWidth
-        NSColor(theme.accent.solid).setStroke()
-        head.stroke()
+    /// The turning layer's center: a test seam.
+    var ringCenter: CGPoint { ring.position }
+
+    override func layout() {
+        super.layout()
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        ring.bounds = CGRect(origin: .zero, size: bounds.size)
+        ring.position = CGPoint(x: bounds.midX, y: bounds.midY)
+        let rect = ring.bounds.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
+        track.frame = ring.bounds
+        head.frame = ring.bounds
+        track.path = CGPath(ellipseIn: rect, transform: nil)
+        // A quarter of the ring, from the left to the top.
+        let arc = CGMutablePath()
+        arc.addArc(
+            center: CGPoint(x: rect.midX, y: rect.midY), radius: rect.width / 2, startAngle: .pi,
+            endAngle: .pi * 1.5, clockwise: false)
+        head.path = arc
+        CATransaction.commit()
+    }
+
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
     }
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
-        layer?.removeAnimation(forKey: "spin")
-        guard window != nil, let layer else { return }
-        // Turn about the center.
-        layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        layer.position = CGPoint(x: frame.midX, y: frame.midY)
+        ring.removeAnimation(forKey: "spin")
+        guard window != nil else { return }
+        needsLayout = true
         let spin = CABasicAnimation(keyPath: "transform.rotation.z")
         spin.fromValue = 0
         spin.toValue = -2 * Double.pi
         spin.duration = DesignTokens.motion.spin / 1000
         spin.repeatCount = .infinity
-        layer.add(spin, forKey: "spin")
+        ring.add(spin, forKey: "spin")
+    }
+
+    // The colors are read again whenever the view is to be drawn again, as on a new accent or appearance.
+    override var wantsUpdateLayer: Bool { true }
+
+    override func updateLayer() {
+        applyColors()
+    }
+
+    private func applyColors() {
+        let theme = infoTheme
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            track.strokeColor = NSColor(theme.palette.textPrimary.withAlpha(0.15)).cgColor
+            head.strokeColor = NSColor(theme.accent.solid).cgColor
+        }
+        CATransaction.commit()
     }
 
     override func viewDidChangeEffectiveAppearance() {

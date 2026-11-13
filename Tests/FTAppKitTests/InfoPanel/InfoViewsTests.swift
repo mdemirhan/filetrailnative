@@ -46,6 +46,31 @@ struct FolderSizeCellTests {
         #expect(!link.isHidden)
     }
 
+    // A spinner turns in place: about its own center, wherever it is put and however often, and never by the view's
+    // own layer, whose anchor and position AppKit sets again with each new frame.
+    @Test func aSpinnerTurnsAboutItsOwnCenterWhereverItIsPut() throws {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 200, height: 200), styleMask: [.borderless], backing: .buffered,
+            defer: true)
+        window.isReleasedWhenClosed = false
+        let host = try #require(window.contentView)
+        let spinner = InfoSpinnerView()
+        host.addSubview(spinner)
+        for frame in [
+            NSRect(x: 40, y: 60, width: 12, height: 12), NSRect(x: 120, y: 10, width: 12, height: 12),
+            NSRect(x: 5, y: 150, width: 20, height: 20),
+        ] {
+            spinner.frame = frame
+            host.layoutSubtreeIfNeeded()
+            #expect(spinner.ringCenter == CGPoint(x: frame.width / 2, y: frame.height / 2))
+            let layer = try #require(spinner.layer)
+            #expect(layer.animationKeys()?.isEmpty ?? true)
+            #expect(CATransform3DIsIdentity(layer.transform))
+            #expect(layer.sublayers?.contains { $0.animation(forKey: "spin") != nil } == true)
+        }
+        window.close()
+    }
+
     // Nothing shows for the first 300 ms, then a spinner and Stop.
     @Test func aCalculationShowsASpinnerOnlyOnceItTakesAMoment() async throws {
         let view = cell(.panel)

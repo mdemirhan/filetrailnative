@@ -145,7 +145,8 @@ final class SettingsPageView: NSView {
             \.markClipboardItems)
         toggle(
             behavior, "Calculate folder sizes automatically",
-            "In the Info panel and Info Row, for a folder in your home folder or an app.", \.autoCalculateFolderSizes)
+            "In the Info panel and Info Row, for your home folder, a folder in it, or an app.",
+            \.autoCalculateFolderSizes)
     }
 
     @objc private func restoreAppearance(_ sender: Any?) {

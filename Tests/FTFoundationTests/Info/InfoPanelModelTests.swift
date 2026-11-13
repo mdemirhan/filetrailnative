@@ -227,7 +227,7 @@ struct InfoPanelModelTests {
         #expect(foreign.kind == "MD File")
     }
 
-    @Test func onlyAFolderInsideHomeIsMeasuredAutomatically() {
+    @Test func onlyTheHomeFolderOrAFolderInsideItIsMeasuredAutomatically() {
         func path(open: Bool = true, selected: [String], kind: EntryKind = .directory, home: String = "/Users/demo")
             -> String?
         {
@@ -240,7 +240,8 @@ struct InfoPanelModelTests {
         #expect(path(open: false, selected: ["/Users/demo/Projects"]) == nil)
         #expect(path(selected: ["/Users/demo/Projects", "/Users/demo/Other"]) == nil)
         #expect(path(selected: []) == nil)
-        #expect(path(selected: ["/Users/demo"]) == nil)
+        #expect(path(selected: ["/Users/demo"]) == "/Users/demo")
+        #expect(path(selected: ["/Users"]) == nil)
         #expect(path(selected: ["/Users/demonstration/x"]) == nil)
         #expect(path(selected: ["/Applications"]) == nil)
         #expect(path(selected: ["/Volumes/Disk/x"]) == nil)
@@ -271,6 +272,32 @@ struct InfoPanelModelTests {
         // With both open, the panel's item.
         #expect(path(panel: true, showInfo: shown.path, item: shown) == shown.path)
         #expect(path(row: false) == nil)
+    }
+
+    // With nothing selected, the folder on screen, however it was opened (the tree, Go Up, Back, a path).
+    @Test func measuresTheFolderOnScreenWithNothingSelected() {
+        func path(
+            panel: Bool = true, row: Bool = false, selected: [String] = [], folder: String = "/Users/demo",
+            kind: EntryKind = .directory, showInfo: String? = nil, item: (path: String, kind: EntryKind)? = nil
+        ) -> String? {
+            AutoFolderSize.path(
+                infoPanelOpen: panel, infoRowOpen: row, selectedPaths: selected,
+                selected: selected.first.map { ($0, .directory) }, shownFolder: (folder, kind), showInfoPath: showInfo,
+                infoItem: item, homePath: autoHome)
+        }
+        #expect(path() == "/Users/demo")
+        #expect(path(folder: autoFolder.path) == autoFolder.path)
+        #expect(path(panel: false, row: true, folder: autoFolder.path) == autoFolder.path)
+        #expect(path(panel: false, row: false) == nil)
+        #expect(path(folder: "/Applications") == nil)
+        #expect(path(folder: "/Applications/Keynote.app", kind: .bundle) == "/Applications/Keynote.app")
+        // A selection, or Show Info's item in the panel, goes first.
+        #expect(path(selected: ["/Users/demo/Music"]) == "/Users/demo/Music")
+        #expect(path(selected: ["/Users/demo/Music", "/Users/demo/Movies"]) == nil)
+        let shown = (path: "/Users/demo/Music", kind: EntryKind.directory)
+        #expect(path(showInfo: shown.path, item: shown) == shown.path)
+        // The row alone shows the folder on screen, whatever Show Info put in the closed panel.
+        #expect(path(panel: false, row: true, showInfo: shown.path, item: shown) == "/Users/demo")
     }
 
     @Test func measuresAnAppOutsideTheHomeFolder() {

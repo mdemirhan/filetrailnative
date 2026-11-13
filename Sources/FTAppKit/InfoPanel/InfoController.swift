@@ -522,13 +522,20 @@ final class InfoController {
         if let entry = content.selectedEntries.first, content.selection.paths.count == 1 {
             selected = (entry.path, FTFoundation.EntryKind(rawValue: entry.kind.rawValue) ?? .other)
         }
+        // With nothing selected both describe the folder on screen, however it was opened: its kind is the one the
+        // panel has for it once its properties are in (a bundle opened as a folder), else a folder's.
+        var folder: (path: String, kind: FTFoundation.EntryKind)?
+        if content.selection.paths.isEmpty, !folderPath.isEmpty {
+            let item = resolved?.item
+            folder = (folderPath, item?.path == folderPath ? item?.kind ?? .directory : .directory)
+        }
         let measures = preferences.autoCalculateFolderSizes
         let shown = targetOverride == nil ? nil : resolved?.item
         auto.setPath(
             AutoFolderSize.path(
                 infoPanelOpen: measures && panelOpen, infoRowOpen: measures && rowOpen,
-                selectedPaths: content.selection.paths, selected: selected, showInfoPath: targetOverride,
-                infoItem: shown.map { ($0.path, $0.kind) }, homePath: homePath))
+                selectedPaths: content.selection.paths, selected: selected, shownFolder: folder,
+                showInfoPath: targetOverride, infoItem: shown.map { ($0.path, $0.kind) }, homePath: homePath))
     }
 
     // MARK: Quick actions and Open With
