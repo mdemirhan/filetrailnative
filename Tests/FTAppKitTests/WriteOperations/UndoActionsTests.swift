@@ -160,6 +160,50 @@ private final class UndoFixture {
         await fixture.close()
     }
 
+    /// The stages of the cards shown since event `start` (nil: taken down).
+    private func cardStages(_ fixture: UndoFixture, since start: Int) -> [WriteOperationStage?] {
+        fixture.events[start...].compactMap { event -> WriteOperationStage?? in
+            if case .card(let card) = event { return .some(card?.stage) }
+            return nil
+        }
+    }
+
+    // The look at what an Undo would ask reads the disks, which takes a while on a slow one: a card says so
+    // meanwhile, and is down again before anything is asked or the Undo's own card goes up.
+    @Test func showsACardWhileAnUndoIsLookedAtOnceThatTakesAWhile() async throws {
+        let fixture = try UndoFixture()
+        try fixture.write("a.txt")
+        try await fixture.rename("a.txt", to: "b.txt")
+        let actions = fixture.actions
+        actions.undoLookCardAfter = .zero
+        let start = fixture.events.count
+        _ = await actions.undo()
+        try await fixture.waitForEnds(2)
+        #expect(Array(cardStages(fixture, since: start).prefix(3)) == [.analyzing, nil, .starting])
+        #expect(fixture.exists("a.txt") && !fixture.exists("b.txt"))
+        #expect(!fixture.session.isWriteLocked)
+        #expect(fixture.session.reviewStop == nil)
+
+        // A look that is over at once shows none.
+        let quick = fixture.events.count
+        _ = await fixture.actions.redo()
+        try await fixture.waitForEnds(3)
+        #expect(cardStages(fixture, since: quick).first == .some(.starting))
+        await fixture.close()
+    }
+
+    // A question cancelled leaves nothing kept of the look that asked it.
+    @Test func letsGoOfTheLookWhenItsQuestionIsCancelled() async throws {
+        let fixture = try UndoFixture()
+        try fixture.write("a.txt", "a")
+        try await fixture.rename("a.txt", to: "b.txt")
+        try fixture.write("a.txt", "someone else's")
+        fixture.answers = [false]
+        #expect(await fixture.actions.undo() == .cancelled)
+        #expect(fixture.coordinator.undo.asked.isEmpty)
+        await fixture.close()
+    }
+
     @Test func redoesWhatWasUndone() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt")

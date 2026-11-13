@@ -424,14 +424,18 @@ public enum UndoPlan {
     }
 
     /// `checkBatch`: each item of a batch on its own. Items of the batch make way for each other (a swap), so a name
-    /// held by another item of it isn't taken.
-    public static func checkBatch(_ fileSystem: some IdentityFileSystem, _ items: [BatchRenamedItem])
-        -> [BatchItemCheck]
-    {
+    /// held by another item of it isn't taken. `progress` is told of each item looked at, so a batch of many items on
+    /// a slow disk is given time for each; once its wait gives up, the items left aren't looked at (and nothing is
+    /// answered: the look is thrown away).
+    public static func checkBatch(
+        _ fileSystem: some IdentityFileSystem, _ items: [BatchRenamedItem], progress: AnswerProgress? = nil
+    ) -> [BatchItemCheck] {
         // Each item first as it is now: one refused stays where it is, holding its name, so only the items that go
         // back make way for the others.
         var sources: [BatchSource] = []
         for item in items {
+            if progress?.abandoned == true { return [] }
+            defer { progress?.answered() }
             switch lookUp(item.from, { try fileSystem.lstat($0) }) {
             case .unreadable(let refusal):
                 sources.append(
@@ -454,24 +458,33 @@ public enum UndoPlan {
             if case .going(let item, _) = source { return item }
             return nil
         }
-        // Places the batch's own items leave, compared as the disk compares names, and the items themselves: on a
-        // disk that ignores case, "B" finds the batch's own item now at "b".
+        // Places the batch's own items leave, as they are spelled, and the items themselves: on a disk that ignores
+        // case, "B" finds the batch's own item now at "b".
         let vacated = Set(goingBack.map { NameKeys.Exact($0.from) })
         // Each item of the batch by id, with where it is: found under another spelling of that place it is the item
         // itself; elsewhere (a hard link to it) it is another entry.
         var ownPlaces: [ItemId: NameKeys.Exact] = [:]
+        // An item without an id (FAT, exFAT) goes by its place alone, with how it is spelled there.
+        var placesWithoutId: [NameKeys.Exact: String] = [:]
         for item in goingBack {
-            if let id = item.id { ownPlaces[id] = placeKey(item.from) }
+            if let id = item.id {
+                ownPlaces[id] = placeKey(item.from)
+            } else {
+                placesWithoutId[placeKey(item.from)] = item.from
+            }
         }
+        let own = OwnItems(places: ownPlaces, placesWithoutId: placesWithoutId)
         var checks: [BatchItemCheck] = []
         for source in sources {
             guard case .going(let item, let stats) = source else {
                 if case .checked(let check) = source { checks.append(check) }
                 continue
             }
+            if progress?.abandoned == true { return [] }
+            defer { progress?.answered() }
             // The name it goes back to, in the folder it is in now (its folder may be renamed back in the same batch,
             // after it).
-            let target = "\(NodePath.dirname(item.from))/\(NodePath.basename(item.to))"
+            let target = NodePath.join(NodePath.dirname(item.from), NodePath.basename(item.to))
             var there: WriteServiceStats?
             if !vacated.contains(NameKeys.Exact(target)) {
                 switch lookUp(target, { try fileSystem.lstat($0) }) {
@@ -484,7 +497,7 @@ public enum UndoPlan {
             }
             checks.append(
                 BatchItemCheck(
-                    item: item, refusal: nil, nameTaken: there.map { !isOwn($0, target, ownPlaces) } ?? false,
+                    item: item, refusal: nil, nameTaken: there.map { !isOwn(fileSystem, $0, target, own) } ?? false,
                     isFolder: kindOfStats(stats) == .directory))
         }
         return checks
@@ -495,13 +508,25 @@ public enum UndoPlan {
         case going(BatchRenamedItem, WriteServiceStats)
     }
 
+    /// The items of a batch that go back, by where they are now: by id, and by place for those without one.
+    private struct OwnItems {
+        var places: [ItemId: NameKeys.Exact]
+        var placesWithoutId: [NameKeys.Exact: String]
+    }
+
     /// `isOwn`: whether the item found where a batch item goes back is the batch's own: the item itself, or another
-    /// of its items (which makes way for it). The same id elsewhere is a hard link to it, another entry.
-    private static func isOwn(_ there: WriteServiceStats, _ target: String, _ ownPlaces: [ItemId: NameKeys.Exact])
-        -> Bool
-    {
-        guard let thereId = itemIdOf(there) else { return false }
-        return ownPlaces[thereId] == placeKey(target)
+    /// of its items (which makes way for it). The same id elsewhere is a hard link to it, another entry. Without an
+    /// id to go by (FAT, exFAT), it is the batch's item at that place under another spelling, unless the folder lists
+    /// both spellings as two items (as `findsItself` takes a single rename).
+    private static func isOwn(
+        _ fileSystem: some IdentityFileSystem, _ there: WriteServiceStats, _ target: String, _ own: OwnItems
+    ) -> Bool {
+        if let thereId = itemIdOf(there) {
+            return own.places[thereId] == placeKey(target)
+        }
+        guard let from = own.placesWithoutId[placeKey(target)] else { return false }
+        guard let entries = try? fileSystem.readdir(NodePath.dirname(target)) else { return true }
+        return !listsTwoItems(entries, NodePath.basename(from), NodePath.basename(target))
     }
 
     // MARK: Questions
@@ -510,7 +535,8 @@ public enum UndoPlan {
     /// the items that would go to the Trash though they changed since. Checked as things will be by then: a step
     /// after one that can't be done isn't looked at, a place a step before it empties counts as free, and one a step
     /// before it fills as taken. It reads the disk: call it off the main actor.
-    /// `progress` is told of each unit looked at; once its wait gives up, the units left aren't looked at.
+    /// `progress` is told of each step looked at, and of each item of a batch; once its wait gives up, what is left
+    /// isn't looked at.
     public static func findQuestions(
         _ fileSystem: some IdentityFileSystem, _ units: [UndoUnit], progress: AnswerProgress? = nil
     ) -> UndoQuestions {
@@ -518,9 +544,7 @@ public enum UndoPlan {
         // otherwise wait for each item's disk reads in turn.
         let perUnit = mapAtMost(questionChecksAtOnce, Array(units.reversed())) { unit -> UndoQuestions in
             if progress?.abandoned == true { return UndoQuestions() }
-            let questions = unitQuestions(fileSystem, unit)
-            progress?.answered()
-            return questions
+            return unitQuestions(fileSystem, unit, progress)
         }
         return UndoQuestions(
             nameTaken: perUnit.flatMap(\.nameTaken), changed: perUnit.flatMap(\.changed))
@@ -528,37 +552,49 @@ public enum UndoPlan {
 
     /// `mapAtMost`: `run` for each of `items`, at most `limit` at a time, on threads of their own; the results in the
     /// items' order.
-    static func mapAtMost<T: Sendable, R: Sendable>(_ limit: Int, _ items: [T], _ run: @Sendable (T) -> R) -> [R] {
+    static func mapAtMost<T: Sendable, R: Sendable>(
+        _ limit: Int, _ items: [T], _ run: @escaping @Sendable (T) -> R
+    ) -> [R] {
         guard !items.isEmpty else { return [] }
+        if items.count == 1 { return [run(items[0])] }
         let next = OSAllocatedUnfairLock(initialState: 0)
         let results = OSAllocatedUnfairLock(initialState: [R?](repeating: nil, count: items.count))
-        // Workers of their own, not `concurrentPerform`, which runs them one after another on a busy machine: a disk
-        // that is slow to answer must not hold up the looks at the others.
+        // Threads of their own, not the shared pool's: a disk that is slow to answer must not hold up the looks at the
+        // others, and one that never answers must not keep the pool's threads from the rest of the app's disk work.
         let workers = DispatchGroup()
-        withoutActuallyEscaping(run) { run in
-            for _ in 0..<min(limit, items.count) {
-                DispatchQueue.global(qos: .userInitiated).async(group: workers) {
-                    while true {
-                        let index = next.withLock { value -> Int in
-                            defer { value += 1 }
-                            return value
-                        }
-                        guard index < items.count else { return }
-                        let result = run(items[index])
-                        results.withLock { $0[index] = result }
+        for _ in 0..<min(limit, items.count) {
+            workers.enter()
+            let worker = Thread {
+                defer { workers.leave() }
+                while true {
+                    let index = next.withLock { value -> Int in
+                        defer { value += 1 }
+                        return value
                     }
+                    guard index < items.count else { return }
+                    let result = run(items[index])
+                    results.withLock { $0[index] = result }
                 }
             }
-            workers.wait()
+            worker.qualityOfService = .userInitiated
+            worker.start()
         }
+        workers.wait()
         return results.withLock { $0.compactMap { $0 } }
     }
 
-    private static func unitQuestions(_ fileSystem: some IdentityFileSystem, _ unit: UndoUnit) -> UndoQuestions {
+    /// `progress` is told of each step looked at, and of each item of a batch: the wait on the look runs from the last
+    /// one, whatever the units hold.
+    private static func unitQuestions(
+        _ fileSystem: some IdentityFileSystem, _ unit: UndoUnit, _ progress: AnswerProgress?
+    ) -> UndoQuestions {
         var questions = UndoQuestions()
         var changes = UnitChanges()
         let unitIds = idsOf(unit)
+        // Also for a unit whose first step can't be done: it was looked at.
+        defer { progress?.answered() }
         steps: for step in unit.steps.reversed() {
+            defer { progress?.answered() }
             switch PlannedStep(reversing: step) {
             case .move(let planned):
                 switch checkMove(fileSystem, planned, changes, unitIds: unitIds) {
@@ -592,7 +628,7 @@ public enum UndoPlan {
                     changes.noteMovedAway(planned.path, id)
                 }
             case .batch(let items):
-                for check in checkBatch(fileSystem, items) where check.nameTaken {
+                for check in checkBatch(fileSystem, items, progress: progress) where check.nameTaken {
                     let target = NodePath.join(
                         NodePath.dirname(check.item.from), NodePath.basename(check.item.to))
                     questions.nameTaken.append(TakenName(name: NodePath.basename(target), path: target))

@@ -21,6 +21,8 @@ struct UndoState {
     var ticketCount = 0
     /// An Undo (or Redo) being looked at: ⌘Z pressed again meanwhile does nothing more.
     var preparing = false
+    /// The looks given up on whose disk still hasn't answered.
+    let stuckLooks = StuckLooks()
     /// What runs an Undo on the disk (tests make it fail as nothing else can).
     var run: @Sendable ([UndoUnit], UndoRunOptions) throws -> UndoRun = { UndoExecution.runUndo($0, $1) }
 }
@@ -67,8 +69,9 @@ extension WriteCoordinator {
     public nonisolated static let undoCheckWithinMs: Double = 10_000
 
     /// What undoing (or redoing) the last operation would ask, without changing anything. It doesn't
-    /// take the write slot.
-    public func prepareUndo(_ direction: UndoDirection) async throws -> UndoPrepared {
+    /// take the write slot. `stop` ends the look (Stop on the card that is up while it lasts): nothing is undone then,
+    /// as when there is nothing to undo.
+    public func prepareUndo(_ direction: UndoDirection, stop: StopSignal? = nil) async throws -> UndoPrepared {
         let history = options.undoHistory
         if closing || slotHolder != nil {
             return .refused(.busy)
@@ -79,6 +82,11 @@ extension WriteCoordinator {
         guard let history, let entry = history.top(direction) else {
             return .refused(direction == .undo && history?.menu().cantUndo == true ? .cantUndo : .nothing)
         }
+        // Each look given up on keeps its threads until its disk answers: no more are started on top of them.
+        let stuckLooks = undo.stuckLooks
+        if stuckLooks.tooMany {
+            throw WriteCoordinatorError(Self.undoNotAnswered(direction))
+        }
         let fileSystem = self.fileSystem
         let generation = history.generation
         undo.ticketCount += 1
@@ -87,10 +95,13 @@ extension WriteCoordinator {
         let units = entry.units
         // Named now, after the entry looked at: another window's operation may end while the disks are read.
         let label = direction == .undo ? history.menu().undo : history.menu().redo
-        let questions = await Self.answerWithin(options.undoCheckWithinMs) { progress in
+        let questions = await Self.answerWithin(options.undoCheckWithinMs, stuck: stuckLooks, stop: stop) { progress in
             UndoPlan.findQuestions(fileSystem, units, progress: progress)
         }
         undo.preparing = false
+        if stop?.isStopped == true {
+            return .refused(.nothing)
+        }
         guard let questions else {
             throw WriteCoordinatorError(Self.undoNotAnswered(direction))
         }
@@ -112,15 +123,19 @@ extension WriteCoordinator {
     /// Runs what `prepareUndo` looked at, once what would be asked now was asked then.
     @discardableResult
     public func startUndo(ticket: String, window: any WriteOperationWindow) async throws -> WriteOperationHandle {
-        let look = undo.asked[ticket]
+        // A ticket is started once: what it asked is let go of here, whether or not it starts.
+        let look = undo.asked.removeValue(forKey: ticket)
         let history = options.undoHistory
+        // A ticket no longer known still says which command it was for.
+        let chosen =
+            look?.direction ?? UndoDirection(rawValue: String(ticket.prefix { $0 != ":" })) ?? .undo
         // Another operation, or another Undo, came in between: what was asked about may not be what would be done
         // now.
         func entryAsked() throws -> (history: UndoHistory, look: UndoLook, entry: UndoEntry) {
             guard let history, let look, let entry = history.top(look.direction), entry.id == look.entryId,
                 history.generation == look.generation
             else {
-                throw WriteCoordinatorError("Something changed since Undo was chosen. Choose it again.")
+                throw WriteCoordinatorError("Something changed since \(chosen.command) was chosen. Choose it again.")
             }
             return (history, look, entry)
         }
@@ -129,9 +144,12 @@ extension WriteCoordinator {
         let asked = try entryAsked().look.questions
         let fileSystem = self.fileSystem
         let withinMs = options.undoCheckWithinMs
+        let stuckLooks = undo.stuckLooks
         return try await prepareWithReservedSlot { () async throws -> UndoQuestions? in
             let units = try entryAsked().entry.units
-            return await Self.answerWithin(withinMs) { progress in
+            // As in `prepareUndo`: not answered.
+            if stuckLooks.tooMany { return nil }
+            return await Self.answerWithin(withinMs, stuck: stuckLooks) { progress in
                 UndoPlan.findQuestions(fileSystem, units, progress: progress)
             }
         } then: { now, reservation in
@@ -152,6 +170,12 @@ extension WriteCoordinator {
                     started.history, direction, entry, changedAgreed: changedAgreed, operation, fileSystem)
             }
         }
+    }
+
+    /// `forgetUndo`: the Undo (or Redo) `prepareUndo` looked at won't be started (its question was cancelled): what
+    /// it asked is let go of.
+    public func forgetUndo(ticket: String) {
+        undo.asked[ticket] = nil
     }
 
     func executeUndo(
@@ -265,28 +289,62 @@ extension WriteCoordinator {
         return nil
     }
 
-    /// `answerWithin`: what `work` gives, on a disk thread of its own, or nil when it takes longer than
-    /// `milliseconds`. A disk that doesn't answer keeps that thread; nothing waits for it.
+    /// `answerWithin`: what `work` gives, on a thread of its own, or nil when it takes longer than `milliseconds`
+    /// without an answer. A disk that doesn't answer keeps that thread; nothing waits for it, and `stuck` counts it
+    /// until it returns. What a look gives once it was given up on is never taken: it was cut short. `stop` gives up
+    /// on it at once.
     nonisolated static func answerWithin<T: Sendable>(
-        _ milliseconds: Double, _ work: @escaping @Sendable (AnswerProgress) -> T
+        _ milliseconds: Double, stuck: StuckLooks? = nil, stop: StopSignal? = nil,
+        _ work: @escaping @Sendable (AnswerProgress) -> T
     ) async -> T? {
         let progress = AnswerProgress()
         return await withCheckedContinuation { (continuation: CheckedContinuation<T?, Never>) in
-            let answered = OSAllocatedUnfairLock(initialState: false)
-            let answer: @Sendable (T?) -> Void = { value in
-                let first = answered.withLock { done -> Bool in
-                    defer { done = true }
-                    return !done
+            let look = OSAllocatedUnfairLock(initialState: LookEnd.waitedFor)
+            // A thread of its own, not one of the shared pool's: a disk that never answers would keep it from the
+            // rest of the app's disk work.
+            let thread = Thread {
+                let value = work(progress)
+                let was = look.withLock { end -> LookEnd in
+                    defer { if end == .waitedFor { end = .answered } }
+                    return end
                 }
-                if first { continuation.resume(returning: value) }
+                switch was {
+                case .waitedFor: continuation.resume(returning: value)
+                case .givenUp: stuck?.returned()
+                case .answered: break
+                }
             }
-            DispatchQueue.global(qos: .userInitiated).async { answer(work(progress)) }
-            waitForAnswers(progress, milliseconds, answered: { answered.withLock { $0 } }) {
-                progress.abandon()
-                answer(nil)
+            thread.qualityOfService = .userInitiated
+            thread.start()
+            let giveUp: @Sendable () -> Void = {
+                // Given up first, then the look is told: what it gives from here on is not an answer.
+                let first = look.withLock { end -> Bool in
+                    guard end == .waitedFor else { return false }
+                    end = .givenUp
+                    stuck?.gaveUp()
+                    return true
+                }
+                if first {
+                    progress.abandon()
+                    continuation.resume(returning: nil)
+                }
+            }
+            waitForAnswers(progress, milliseconds, answered: { look.withLock { $0 != .waitedFor } }, giveUp: giveUp)
+            if let stop, stop.onStop(giveUp) == nil {
+                // Stopped already.
+                giveUp()
             }
         }
     }
+
+    /// How a look ended (`answerWithin`).
+    private enum LookEnd: Sendable {
+        case waitedFor, answered, givenUp
+    }
+
+    /// Where the wait on a look runs: a queue of its own, so that it gives up in time however many threads of the
+    /// shared pool are kept by disks that don't answer.
+    private nonisolated static let lookWaits = DispatchQueue(label: "filetrail.undo-look-wait", qos: .userInitiated)
 
     /// Gives up (`giveUp`) once `milliseconds` pass without an answer: the time runs from the last one, so a look at
     /// many items on a slow disk that answers each read is never given up on, and one that stops answering is.
@@ -295,7 +353,7 @@ extension WriteCoordinator {
         giveUp: @escaping @Sendable () -> Void
     ) {
         let due = progress.lastAnswer + .nanoseconds(Int(milliseconds * 1_000_000))
-        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: due) {
+        lookWaits.asyncAfter(deadline: due) {
             if answered() { return }
             if progress.lastAnswer + .nanoseconds(Int(milliseconds * 1_000_000)) <= .now() {
                 giveUp()
@@ -304,6 +362,18 @@ extension WriteCoordinator {
             }
         }
     }
+}
+
+/// The looks that were given up on and haven't returned (`answerWithin`): each keeps up to 17 threads waiting for its
+/// disk. Past `atMost` of them an Undo is refused at once instead of starting another.
+final class StuckLooks: Sendable {
+    static let atMost = 4
+    private let stuck = OSAllocatedUnfairLock(initialState: 0)
+
+    var count: Int { stuck.withLock { $0 } }
+    var tooMany: Bool { count >= Self.atMost }
+    func gaveUp() { stuck.withLock { $0 += 1 } }
+    func returned() { stuck.withLock { $0 -= 1 } }
 }
 
 /// How a look at the disks is getting on, for the wait on it (`answerWithin`): when it last got an answer, and

@@ -28,6 +28,8 @@ final class WindowWriteActions {
     let dialogs: WriteDialogs
     /// The timers of "Preparing to Paste…".
     var preparingTimers: any TimerScheduling = TaskTimerScheduler()
+    /// How long an Undo may be looked at before its card says so.
+    var undoLookCardAfter: Duration = .milliseconds(500)
     /// Puts up "Preparing to Paste…".
     var presentPreparing: @MainActor (WriteOperationAction, NSWindow?, @escaping () -> Void) -> (() -> Void)? =
         PreparingSheet.show
@@ -557,10 +559,28 @@ final class WindowWriteActions {
     func startUndo(_ direction: UndoDirection) async -> CopyLikeOutcome {
         let action: WriteOperationAction = direction == .undo ? .undo : .redo
         if refuseWhileBusy(.operation(action)) { return .cancelled }
+        // The look at what it would ask reads the disks, which takes a while on a slow one: once it has, the card
+        // says so, and Stop on it ends the look. The card comes down before anything is asked.
+        let signal = StopSignal()
+        session.reviewStop = signal
+        let lookCard = UndoLookCard()
+        let showsCard = Task { @MainActor [session, undoLookCardAfter] in
+            if undoLookCardAfter > .zero { try? await Task.sleep(for: undoLookCardAfter) }
+            guard !Task.isCancelled, session.card == nil else { return }
+            lookCard.isUp = true
+            session.applyCard(WriteOperationCardState(action: action, stage: .analyzing))
+        }
+        func lookEnded() {
+            showsCard.cancel()
+            if session.reviewStop === signal { session.reviewStop = nil }
+            if lookCard.isUp { session.applyCard(nil) }
+        }
         let prepared: UndoPrepared
         do {
-            prepared = try await coordinator.prepareUndo(direction)
+            prepared = try await coordinator.prepareUndo(direction, stop: signal)
+            lookEnded()
         } catch {
+            lookEnded()
             let message = errorMessage(error)
             dialogs.showRefusal(.operation(action), message: message, in: window)
             return .error(message: message)
@@ -577,15 +597,20 @@ final class WindowWriteActions {
             await !dialogs.confirm(
                 Self.undoQuestion(.nameTaken(names: prepared.nameTaken), direction, prepared.action), window)
         {
+            coordinator.forgetUndo(ticket: ticket)
             return .cancelled
         }
         if !prepared.changed.isEmpty,
             await !dialogs.confirm(
                 Self.undoQuestion(.changed(items: prepared.changed), direction, prepared.action), window)
         {
+            coordinator.forgetUndo(ticket: ticket)
             return .cancelled
         }
-        if refuseWhileBusy(.operation(action)) { return .cancelled }
+        if refuseWhileBusy(.operation(action)) {
+            coordinator.forgetUndo(ticket: ticket)
+            return .cancelled
+        }
         let card = WriteOperationCardState(action: action, stage: .starting)
         session.applyCard(card)
         session.runningUndoLabel = prepared.label
@@ -605,6 +630,12 @@ final class WindowWriteActions {
             session.runningUndoLabel = nil
             return refused(.operation(action), error)
         }
+    }
+
+    /// Whether the card of an Undo still being looked at is up (`startUndo`).
+    @MainActor
+    private final class UndoLookCard {
+        var isUp = false
     }
 
     /// The undo question in the words of what it undoes, as the alert asks it: going ahead

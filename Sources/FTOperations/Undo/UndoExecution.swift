@@ -102,14 +102,40 @@ public enum UndoExecution {
         }
     }
 
-    /// What each step of a run is given: the run's options, and the id of a folder an item is taken out of, read once
-    /// per run.
+    /// What each step of a run is given: the run's options, the id of a folder an item is taken out of, read once
+    /// per run, and the places the run's items still go back to.
     final class RunContext: Sendable {
         let options: UndoRunOptions
         private let folderIds = OSAllocatedUnfairLock(initialState: [NameKeys.Exact: ItemId?]())
+        /// The places items of this run are still to be moved back to, with how many go to each: an item put back
+        /// with a number never takes one, or the item that goes there would find its own name taken by it.
+        private let awaited: OSAllocatedUnfairLock<[NameKeys.Exact: Int]>
 
-        init(_ options: UndoRunOptions) {
+        init(_ options: UndoRunOptions, units: [UndoUnit] = []) {
             self.options = options
+            var places: [NameKeys.Exact: Int] = [:]
+            for unit in units {
+                for step in unit.steps {
+                    if case .move(let move) = PlannedStep(reversing: step) {
+                        places[UndoPlan.placeKey(move.to), default: 0] += 1
+                    }
+                }
+            }
+            awaited = OSAllocatedUnfairLock(initialState: places)
+        }
+
+        /// Whether an item of the run is still to go back to `path`.
+        func isAwaited(at path: String) -> Bool {
+            awaited.withLock { $0[UndoPlan.placeKey(path)] != nil }
+        }
+
+        /// The step that goes back to `path` is over: done, or dropped.
+        func noLongerAwaited(at path: String) {
+            awaited.withLock { places in
+                let key = UndoPlan.placeKey(path)
+                guard let count = places[key] else { return }
+                places[key] = count > 1 ? count - 1 : nil
+            }
         }
 
         var fileSystem: any UndoFileSystem { options.fileSystem }
@@ -129,7 +155,7 @@ public enum UndoExecution {
     /// `runUndo`: reads and writes the disk, one step at a time; call it off the main actor.
     public static func runUndo(_ units: [UndoUnit], _ options: UndoRunOptions) -> UndoRun {
         var run = UndoRun()
-        let context = RunContext(options)
+        let context = RunContext(options, units: units)
         // What a stop didn't reach, and the units whose write failed, newest first.
         var notReached: [UndoUnit] = []
         var failed: [UndoUnit] = []
@@ -149,6 +175,7 @@ public enum UndoExecution {
                 let planned = PlannedStep(reversing: step)
                 if blocked {
                     run.items.append(contentsOf: blockedItems(planned, options.direction))
+                    noLongerAwaited(planned, context)
                     continue
                 }
                 if options.signal.isStopped {
@@ -185,8 +212,10 @@ public enum UndoExecution {
                     continue eachUnit
                 case .done(_, _, let removed):
                     if let removed { run.removedItems.append(removed) }
+                    noLongerAwaited(planned, context)
                 case .skipped(_, let missing):
                     if !missing { blocked = true }
+                    noLongerAwaited(planned, context)
                 }
             }
             pushDone(&run, doneSteps, unrecorded)
@@ -199,6 +228,14 @@ public enum UndoExecution {
     private static func pushDone(_ run: inout UndoRun, _ steps: [UndoStep], _ unrecorded: Bool) {
         if !steps.isEmpty && !unrecorded {
             run.done.append(UndoUnit(steps: steps))
+        }
+    }
+
+    /// The place a move step went back to is free for a numbered name again. One that failed, or that a stop didn't
+    /// reach, keeps it: the next Undo moves its item there.
+    private static func noLongerAwaited(_ planned: PlannedStep, _ context: RunContext) {
+        if case .move(let move) = planned {
+            context.noLongerAwaited(at: move.to)
         }
     }
 
@@ -501,7 +538,7 @@ public enum UndoExecution {
             if nameTaken || attempt > 1 {
                 let asFolder = numberedAsFolder ?? numbersAsFolder(fileSystem, planned.from, isFolder)
                 numberedAsFolder = asFolder
-                target = freeNumberedPath(fileSystem, planned.to, asFolder)
+                target = freeNumberedPath(context, planned.to, asFolder)
             }
             do {
                 if renamesItself && sameText(target, planned.to) {
@@ -533,17 +570,17 @@ public enum UndoExecution {
         return !(isPackage ?? CopyPasteNames.isPackageName(NodePath.basename(path)))
     }
 
-    /// `freeNumberedPath`: "a 2.txt", "a 3.txt"… next to `path`: the first name that is free.
-    private static func freeNumberedPath(_ fileSystem: some UndoFileSystem, _ path: String, _ numberedAsFolder: Bool)
-        -> String
-    {
+    /// `freeNumberedPath`: "a 2.txt", "a 3.txt"… next to `path`: the first name that is free, and that no other item
+    /// of the run is still to go back to.
+    private static func freeNumberedPath(_ context: RunContext, _ path: String, _ numberedAsFolder: Bool) -> String {
+        let fileSystem = context.fileSystem
         let folder = NodePath.dirname(path)
         let name = NodePath.basename(path)
         for number in 2...maxAddedNumber {
             let candidate = NodePath.join(
                 folder,
                 NumberedNames.addNumberToName(name, isFolder: numberedAsFolder, separator: " ", number: number).name)
-            if (try? fileSystem.lstat(candidate)) == nil {
+            if !context.isAwaited(at: candidate), (try? fileSystem.lstat(candidate)) == nil {
                 return candidate
             }
         }
