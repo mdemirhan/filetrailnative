@@ -149,7 +149,7 @@ struct AppStateReaderTests {
         #expect(reloaded.accent == "#007aff")
         #expect(reloaded.sortBy == .name)
         #expect(reloaded.sortDirection == .asc)
-        #expect(reloaded.topToolbarItems == [.back, .search, .title, .clipboard, .viewOptions])
+        #expect(reloaded.topToolbarItems == [.back, .search, .title, .viewOptions])
         #expect(reloaded.treeWidth == 220)
         #expect(reloaded.inspectorWidth == 480)
         // Settings that no longer exist are dropped when loading.

@@ -256,6 +256,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }()
     /// The clipboard's marks, button list and paste, and the drags out of and onto the tab.
     lazy var clipboardUI = TabClipboard(tab: self)
+    /// The Undo History list under its toolbar button.
+    lazy var undoHistoryUI = TabUndoHistory(tab: self)
     lazy var dragDrop = TabDragDrop(tab: self)
     private let infoPanel = InfoPanelView()
     /// What the Info panel and the Info Row describe.
@@ -1993,6 +1995,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         searchStore?.session.close()
         group?.tabWillClose(self)
         visitTracker.dispose()
+        // An open clipboard or Undo History list goes with the tab, and so does what it listens to.
+        clipboardUI.close()
+        undoHistoryUI.close()
         if let window { WindowEventRouting.forget(window) }
         FolderSizeService.shared.forget(windowID: windowID)
         onClose?()

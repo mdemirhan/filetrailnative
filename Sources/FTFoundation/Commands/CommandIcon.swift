@@ -14,6 +14,8 @@ public enum CommandIcon: String, CaseIterable, Sendable, Hashable {
     case cut, copy, paste, copyPath, move, rename, duplicate, newFolder, favorite
     // Removing
     case trash, deleteImmediately, emptyTrash, eject
+    // Undo
+    case undo, redo, undoHistory
     // The app
     case theme, settings, help
 }

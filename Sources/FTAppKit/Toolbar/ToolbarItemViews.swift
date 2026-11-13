@@ -179,8 +179,9 @@ final class ToolbarViewSwitch: NSSegmentedControl {
 }
 
 /// The clipboard button: the copy or cut icon and how many items wait to be pasted, in the
-/// accent color. The button's own title, in no color, keeps the room the system's bezel measures;
-/// the count is a label of its own over that room, as the scenarios read it.
+/// accent color. To the system it is an icon-only button, made wider for the count: one with a title gets a glass
+/// capsule of its own, so it would never share one with the buttons beside it. The icon keeps to the leading side
+/// (`LeadingIconCell`), and the count is a label of its own after it, as the scenarios read it.
 final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     let count = FlushTextField(labelWithString: "")
     private static let countFont = NSFont.monospacedDigitSystemFont(
@@ -192,6 +193,14 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
         formatter.locale = Locale(identifier: "en_US")
         return formatter
     }()
+    /// With a count: 12 at each side, 2 between the icon and the count, as the system lays out an icon and a title.
+    static let countPadding = 12.0
+    static let countGap = 2.0
+
+    override class var cellClass: AnyClass? {
+        get { LeadingIconCell.self }
+        set {}
+    }
 
     var styleTextField: NSTextField? { count }
     /// The focus ring the keyboard brings: a click leaves the keyboard on the button, and the first key after it (the
@@ -209,25 +218,41 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
+    /// Whether the count shows: the icon then keeps to the leading side.
+    var showsCount: Bool { !count.isHidden }
+
     func set(count value: Int, cut: Bool) {
         iconName = cut ? .cut : .copy
         let text = Self.countFormatter.string(from: NSNumber(value: value)) ?? String(value)
+        let changed = count.stringValue != text || count.isHidden != (value == 0)
         count.stringValue = text
         count.isHidden = value == 0
-        imagePosition = value == 0 ? .imageOnly : .imageLeading
-        attributedTitle = NSAttributedString(
-            string: value == 0 ? "" : text, attributes: [.font: Self.countFont, .foregroundColor: NSColor.clear])
+        if changed { invalidateIntrinsicContentSize() }
         needsLayout = true
+        needsDisplay = true
+    }
+
+    /// The icon's width, as an icon-only button lays it out.
+    private var iconWidth: Double {
+        guard let cell = cell as? LeadingIconCell else { return 0 }
+        return cell.centeredImageRect(forBounds: NSRect(x: 0, y: 0, width: Self.iconOnlyWidth, height: 36)).width
+    }
+
+    override var intrinsicContentSize: NSSize {
+        let size = super.intrinsicContentSize
+        guard showsCount else { return size }
+        let width =
+            Self.countPadding + iconWidth + Self.countGap + count.intrinsicContentSize.width + Self.countPadding
+        return NSSize(width: max(Self.iconOnlyWidth, width), height: size.height)
     }
 
     override func layout() {
         super.layout()
-        guard !count.isHidden, let cell else { return }
-        let room = cell.titleRect(forBounds: bounds)
+        guard showsCount, let cell else { return }
+        let icon = cell.imageRect(forBounds: bounds)
         let size = count.intrinsicContentSize
         count.frame = NSRect(
-            x: room.minX, y: (bounds.height - size.height) / 2, width: max(room.width, size.width),
-            height: size.height)
+            x: icon.maxX + Self.countGap, y: (bounds.height - size.height) / 2, width: size.width, height: size.height)
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -242,6 +267,30 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
         ring.lineWidth = width
         ChromeColors.color(accent.focusRing.color).setStroke()
         ring.stroke()
+    }
+}
+
+/// The clipboard button's cell: while the count shows, the icon sits `countPadding` in from the leading edge rather
+/// than in the middle of the wider button.
+final class LeadingIconCell: NSButtonCell {
+    /// Where the system puts the icon: the middle of `rect`.
+    func centeredImageRect(forBounds rect: NSRect) -> NSRect {
+        super.imageRect(forBounds: rect)
+    }
+
+    private func leading(_ rect: NSRect) -> NSRect {
+        guard let button = controlView as? ToolbarClipboardButton, button.showsCount else { return rect }
+        var moved = rect
+        moved.origin.x = button.bounds.minX + ToolbarClipboardButton.countPadding
+        return moved
+    }
+
+    override func imageRect(forBounds rect: NSRect) -> NSRect {
+        leading(super.imageRect(forBounds: rect))
+    }
+
+    override func drawImage(_ image: NSImage, withFrame frame: NSRect, in controlView: NSView) {
+        super.drawImage(image, withFrame: leading(frame), in: controlView)
     }
 }
 

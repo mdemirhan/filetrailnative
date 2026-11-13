@@ -6862,7 +6862,6 @@
             "topSeparator",
             "topSeparator",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -7055,7 +7054,6 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -8161,7 +8159,6 @@
             "duplicateSelection",
             "calculateSize",
             "forward",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -9516,7 +9513,6 @@
             "calculateSize",
             "folderTree",
             "openInTerminal",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -10473,7 +10469,6 @@
             "editSelection",
             "newFolder",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -12802,7 +12797,6 @@
             "openSelection",
             "copySelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -13053,7 +13047,6 @@
             "sort",
             "help",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -14722,7 +14715,6 @@
             "renameSelection",
             "revealInFolder",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -15631,7 +15623,6 @@
             "infoRow",
             "theme",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -16181,7 +16172,6 @@
             "pasteSelection",
             "back",
             "copyPath",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -16475,7 +16465,6 @@
             "revealInFolder",
             "search",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -16921,7 +16910,6 @@
             "folderTree",
             "pasteSelection",
             "copySelection",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -17402,7 +17390,6 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -17645,7 +17632,6 @@
             "sort",
             "topSeparator",
             "topSeparator",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -18085,7 +18071,6 @@
             "showInFinder",
             "back",
             "topSeparator",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -18638,7 +18623,6 @@
             "renameSelection",
             "up",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": {
@@ -18908,7 +18892,6 @@
             "foldersFirst",
             "sort",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -19164,7 +19147,6 @@
             "search",
             "copySelection",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -19718,7 +19700,6 @@
             "revealInFolder",
             "calculateSize",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -20533,7 +20514,6 @@
             "revealInFolder",
             "trashSelection",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -20747,8 +20727,7 @@
             "showInFinder",
             "calculateSize",
             "copySelection",
-            "title",
-            "clipboard"
+            "title"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -21320,7 +21299,6 @@
             "refresh",
             "openInTerminal",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -22177,7 +22155,6 @@
           "detailRowOpen": true,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -22439,7 +22416,6 @@
           "topToolbarItems": [
             "trashSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -23017,7 +22993,6 @@
             "moveSelection",
             "hidden",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -23288,7 +23263,6 @@
             "cutSelection",
             "folderTree",
             "forward",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -24363,7 +24337,6 @@
             "hidden",
             "up",
             "showInFinder",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": {
@@ -24626,7 +24599,6 @@
             "newFolder",
             "quickLook",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -25158,7 +25130,6 @@
             "openSelection",
             "help",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -25420,7 +25391,6 @@
             "infoRow",
             "newFolder",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -26379,7 +26349,6 @@
             "calculateSize",
             "help",
             "topSeparator",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -26722,7 +26691,6 @@
             "pasteSelection",
             "view",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -27089,7 +27057,6 @@
             "newTab",
             "back",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -27528,7 +27495,6 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -27711,7 +27677,6 @@
             "infoRow",
             "quickLook",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -29268,7 +29233,6 @@
             "hidden",
             "pasteSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -29603,7 +29567,6 @@
             "back",
             "newFolder",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -30023,7 +29986,6 @@
             "renameSelection",
             "settings",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": {
@@ -30674,7 +30636,6 @@
             "revealInFolder",
             "search",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -30892,7 +30853,6 @@
           "detailRowOpen": true,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -31411,7 +31371,6 @@
             "newFolder",
             "showInFinder",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -32739,7 +32698,6 @@
             "viewOptions",
             "up",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": {
@@ -32991,7 +32949,6 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -34051,7 +34008,6 @@
             "forward",
             "openInTerminal",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -34629,7 +34585,6 @@
             "showInFinder",
             "pasteSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -35059,7 +35014,6 @@
             "copySelection",
             "refresh",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -35291,7 +35245,6 @@
             "openSelection",
             "goToFolder",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -37010,7 +36963,6 @@
             "back",
             "quickLook",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -37491,7 +37443,6 @@
             "duplicateSelection",
             "cutSelection",
             "viewOptions",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -37794,7 +37745,6 @@
             "hidden",
             "infoRow",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -39330,7 +39280,6 @@
             "theme",
             "infoPanel",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -39729,7 +39678,6 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -40164,7 +40112,6 @@
             "sort",
             "quickLook",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -40920,7 +40867,6 @@
             "forward",
             "goToFolder",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -41136,8 +41082,7 @@
             "duplicateSelection",
             "viewOptions",
             "openInTerminal",
-            "search",
-            "clipboard"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -41442,7 +41387,6 @@
             "view",
             "renameSelection",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -41818,7 +41762,6 @@
           "topToolbarItems": [
             "openInTerminal",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -43019,7 +42962,6 @@
             "back",
             "infoRow",
             "refresh",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -43544,7 +43486,6 @@
             "folderTree",
             "back",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -43782,7 +43723,6 @@
             "pasteSelection",
             "openInTerminal",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -44167,7 +44107,6 @@
             "moveSelection",
             "pasteSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -44503,7 +44442,6 @@
             "folderTree",
             "infoRow",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -44771,8 +44709,7 @@
             "pasteSelection",
             "up",
             "refresh",
-            "calculateSize",
-            "clipboard"
+            "calculateSize"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -46006,8 +45943,7 @@
             "settings",
             "folderTree",
             "topSeparator",
-            "copySelection",
-            "clipboard"
+            "copySelection"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -46288,7 +46224,6 @@
           "topToolbarItems": [
             "moveSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -46534,7 +46469,6 @@
             "calculateSize",
             "forward",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -47437,7 +47371,6 @@
             "folderTree",
             "refresh",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -48175,7 +48108,6 @@
             "theme",
             "folderTree",
             "calculateSize",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -48882,7 +48814,6 @@
             "foldersFirst",
             "settings",
             "renameSelection",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -49088,7 +49019,6 @@
           "topToolbarItems": [
             "infoPanel",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -49392,7 +49322,6 @@
             "openInTerminal",
             "copyPath",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -50053,7 +49982,6 @@
             "help",
             "forward",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -50601,7 +50529,6 @@
             "back",
             "copyPath",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -51963,7 +51890,6 @@
             "title",
             "theme",
             "moveSelection",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -53254,7 +53180,6 @@
             "hidden",
             "copySelection",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -54026,7 +53951,6 @@
             "moveSelection",
             "revealInFolder",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": {
@@ -56815,7 +56739,6 @@
             "hidden",
             "help",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -58047,8 +57970,7 @@
             "newTab",
             "revealInFolder",
             "infoRow",
-            "foldersFirst",
-            "clipboard"
+            "foldersFirst"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -58741,8 +58663,7 @@
             "newFolder",
             "cutSelection",
             "copySelection",
-            "title",
-            "clipboard"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -59057,7 +58978,6 @@
             "theme",
             "revealInFolder",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -59272,7 +59192,6 @@
             "editSelection",
             "quickLook",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -60198,7 +60117,6 @@
             "help",
             "editSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -61087,7 +61005,6 @@
             "viewOptions",
             "openSelection",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -61686,7 +61603,6 @@
             "calculateSize",
             "editSelection",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -61976,7 +61892,6 @@
             "pasteSelection",
             "title",
             "foldersFirst",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -62212,7 +62127,6 @@
             "quickLook",
             "calculateSize",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -63179,8 +63093,7 @@
             "editSelection",
             "theme",
             "search",
-            "title",
-            "clipboard"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -63640,7 +63553,6 @@
             "renameSelection",
             "hidden",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": {
@@ -64120,7 +64032,6 @@
             "theme",
             "copySelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -65933,7 +65844,6 @@
             "sort",
             "calculateSize",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -66396,7 +66306,6 @@
             "moveSelection",
             "calculateSize",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -66919,7 +66828,6 @@
             "copySelection",
             "viewOptions",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -67206,7 +67114,6 @@
             "copyPath",
             "revealInFolder",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -67756,7 +67663,6 @@
             "duplicateSelection",
             "newFolder",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -68315,7 +68221,6 @@
             "hidden",
             "search",
             "forward",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -68575,7 +68480,6 @@
             "view",
             "renameSelection",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -69071,8 +68975,7 @@
             "copySelection",
             "showInFinder",
             "infoRow",
-            "viewOptions",
-            "clipboard"
+            "viewOptions"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -69827,7 +69730,6 @@
             "quickLook",
             "title",
             "calculateSize",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -70846,7 +70748,6 @@
             "infoPanel",
             "topSeparator",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -71419,7 +71320,6 @@
             "editSelection",
             "foldersFirst",
             "back",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -72057,7 +71957,6 @@
           "topToolbarItems": [
             "title",
             "infoRow",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -72732,7 +72631,6 @@
             "help",
             "infoPanel",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -73418,7 +73316,6 @@
           "topToolbarItems": [
             "pasteSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -73719,7 +73616,6 @@
             "showInFinder",
             "trashSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -73956,7 +73852,6 @@
             "copyPath",
             "duplicateSelection",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -74166,7 +74061,6 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -75538,7 +75432,6 @@
             "infoRow",
             "sort",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,
@@ -76680,7 +76573,6 @@
             "openSelection",
             "foldersFirst",
             "title",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -78186,7 +78078,6 @@
             "viewOptions",
             "topSeparator",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": {
@@ -78739,7 +78630,6 @@
             "theme",
             "sort",
             "up",
-            "clipboard",
             "search",
             "viewOptions"
           ],
@@ -79279,7 +79169,6 @@
             "viewOptions",
             "trashSelection",
             "title",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -79455,7 +79344,6 @@
             "newFolder",
             "revealInFolder",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": {
@@ -79678,7 +79566,6 @@
             "folderTree",
             "settings",
             "goToFolder",
-            "clipboard",
             "search"
           ],
           "terminalApp": null,
@@ -80403,7 +80290,6 @@
             "theme",
             "settings",
             "title",
-            "clipboard",
             "viewOptions"
           ],
           "terminalApp": null,

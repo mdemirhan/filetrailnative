@@ -36,6 +36,22 @@ import Testing
         }
     }
 
+    // Reading the tags of the home folder's Desktop, Documents or Downloads makes macOS ask for permission, so
+    // showing the home folder leaves them unread; the folders inside them, and the others, are read.
+    @Test func leavesTheFoldersMacOSAsksAboutUnread() {
+        let home = "/Users/demo"
+        for name in ["Desktop", "Documents", "Downloads"] {
+            #expect(FinderTags.asksPermission("\(home)/\(name)", homePath: home), "\(name)")
+            #expect(FinderTags.asksPermission("\(home)/\(name)/", homePath: home + "/"), "\(name)")
+            #expect(!FinderTags.asksPermission("\(home)/\(name)/inner", homePath: home), "\(name)")
+        }
+        #expect(!FinderTags.asksPermission(home, homePath: home))
+        #expect(!FinderTags.asksPermission("\(home)/Pictures", homePath: home))
+        #expect(!FinderTags.asksPermission("\(home)/Desktops", homePath: home))
+        #expect(!FinderTags.asksPermission("/Users/other/Desktop", homePath: home))
+        #expect(FinderTags.colors(NSHomeDirectory() + "/Desktop") == [])
+    }
+
     @Test func macOSReadsWhatIsWrittenWithTheLastColorAsTheLabel() throws {
         try withFile { path in
             try FinderTags.write(

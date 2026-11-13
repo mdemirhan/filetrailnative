@@ -28,12 +28,32 @@ struct ToolbarItemsTests {
     }
 
     @Test func putsAFixedItemThatAListIsMissingAtTheEnd() {
+        #expect(Self.sanitized(["search", "back", "title"]) == ["search", "back", "title", "viewOptions"])
+        #expect(Self.sanitized(["back", "view"]) == ["back", "view", "title", "search", "viewOptions"])
+        #expect(ToolbarItems.sanitizeTopItems(.null).map(\.rawValue) == ["title", "search", "viewOptions"])
+    }
+
+    // The clipboard and Undo History buttons can be taken off, and stay off; a new toolbar has the clipboard's only,
+    // and the Undo History button is one to add.
+    @Test func letsTheClipboardAndUndoHistoryButtonsBeTakenOff() {
         #expect(
-            Self.sanitized(["search", "back", "title"]) == ["search", "back", "title", "clipboard", "viewOptions"])
+            Self.sanitized(["back", "title", "search", "viewOptions"]) == ["back", "title", "search", "viewOptions"])
         #expect(
-            Self.sanitized(["back", "view"]) == ["back", "view", "title", "clipboard", "search", "viewOptions"])
-        #expect(
-            ToolbarItems.sanitizeTopItems(.null).map(\.rawValue) == ["title", "clipboard", "search", "viewOptions"])
+            Self.sanitized(["title", "undoHistory", "search", "viewOptions"]) == [
+                "title", "undoHistory", "search", "viewOptions",
+            ])
+        #expect(Self.defaults.contains(.clipboard))
+        #expect(!Self.defaults.contains(.undoHistory))
+        let palette = ToolbarItems.paletteItems(excluding: [.title, .search, .viewOptions])
+        for id in [ToolbarItemID.clipboard, .undoHistory, .undo, .redo] {
+            #expect(palette.contains(id), "\(id)")
+        }
+    }
+
+    // While the toolbar is short of room, these stay as long as the items that can't be taken off.
+    @Test func keepsTheClipboardAndUndoHistoryButtonsWhileRoomIsShort() {
+        let high = ToolbarItems.definitions.filter(\.highPriority).map(\.id)
+        #expect(high == [.title, .clipboard, .undoHistory, .viewOptions, .search])
     }
 
     @Test func preservesRepeatableSeparatorItemsWhileStillDedupingNormalItems() {
@@ -55,7 +75,7 @@ struct ToolbarItemsTests {
 
     @Test func offersEveryItemThatCanBeTakenOffSoEachCanBePutBack() {
         let palette = ToolbarItems.paletteItems(excluding: [])
-        let alwaysThere: Set<ToolbarItemID> = [.title, .clipboard, .search, .viewOptions]
+        let alwaysThere: Set<ToolbarItemID> = [.title, .search, .viewOptions]
         for id in ToolbarItems.ids where !alwaysThere.contains(id) {
             #expect(palette.contains(id), "\(id)")
         }
@@ -81,7 +101,8 @@ struct ToolbarItemsTests {
 
     @Test func givesEveryButtonACommandToRunApartFromTheOnesTheToolbarDrawsItself() {
         let drawnByTheToolbar: Set<ToolbarItemID> = [
-            .back, .forward, .up, .view, .sort, .title, .clipboard, .viewOptions, .search, .foldersFirst, .hidden,
+            .back, .forward, .up, .view, .sort, .title, .clipboard, .undoHistory, .viewOptions, .search, .foldersFirst,
+            .hidden,
             .infoPanel, .infoRow, .theme, .topSeparator,
         ]
         let withoutCommand = ToolbarItems.ids.filter { ToolbarItems.definition($0).commandType == nil }
@@ -91,8 +112,9 @@ struct ToolbarItemsTests {
     @Test func theCatalogNamesEachItemOnce() {
         #expect(Set(ToolbarItems.ids).count == ToolbarItems.ids.count)
         #expect(ToolbarItems.definitions.filter(\.allowDuplicates).map(\.id) == [.topSeparator])
-        #expect(
-            ToolbarItems.definitions.filter(\.topRequired).map(\.id) == [.title, .clipboard, .viewOptions, .search])
+        #expect(ToolbarItems.definitions.filter(\.topRequired).map(\.id) == [.title, .viewOptions, .search])
+        #expect(ToolbarItems.definition(.undo).shortcutCommand == .undo)
+        #expect(ToolbarItems.definition(.redo).commandType == .redo)
         #expect(ToolbarItems.definition(.editSelection).tooltipLabel == "Edit in Text Editor")
         #expect(ToolbarItems.definition(.help).tooltipLabel == "File Trail Help")
         #expect(ToolbarItems.definition(.trashSelection).shortcutCommand == .trashSelection)

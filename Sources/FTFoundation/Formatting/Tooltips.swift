@@ -9,10 +9,14 @@ public struct ToolbarTooltipState: Equatable, Sendable {
     public var infoPanelOpen: Bool?
     public var infoRowOpen: Bool?
     public var textEditorName: String?
+    /// What the Edit menu's Undo and Redo say: "Undo Move of “a.txt”", "Can’t Undo".
+    public var undoLabel: String?
+    public var redoLabel: String?
 
     public init(
         foldersFirst: Bool? = nil, hiddenFilesShown: Bool? = nil, folderTreeOpen: Bool? = nil,
-        infoPanelOpen: Bool? = nil, infoRowOpen: Bool? = nil, textEditorName: String? = nil
+        infoPanelOpen: Bool? = nil, infoRowOpen: Bool? = nil, textEditorName: String? = nil, undoLabel: String? = nil,
+        redoLabel: String? = nil
     ) {
         self.foldersFirst = foldersFirst
         self.hiddenFilesShown = hiddenFilesShown
@@ -20,6 +24,8 @@ public struct ToolbarTooltipState: Equatable, Sendable {
         self.infoPanelOpen = infoPanelOpen
         self.infoRowOpen = infoRowOpen
         self.textEditorName = textEditorName
+        self.undoLabel = undoLabel
+        self.redoLabel = redoLabel
     }
 }
 
@@ -79,6 +85,10 @@ public enum Tooltips {
             if let name = state.textEditorName, !name.isEmpty {
                 return "Edit in \(name)"
             }
+        case .undo:
+            if let label = state.undoLabel, !label.isEmpty { return label }
+        case .redo:
+            if let label = state.redoLabel, !label.isEmpty { return label }
         default:
             break
         }

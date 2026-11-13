@@ -8,6 +8,9 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
     public var commandType: AppCommand?
     /// Always in the toolbar: it can be moved there, but not taken off.
     public var topRequired: Bool
+    /// Kept in the toolbar while it is short of room, as the items that can't be taken off are, before the others go
+    /// to the » menu.
+    public var highPriority: Bool
     /// The command whose shortcut the tooltip shows.
     public var shortcutCommand: ShortcutCommandID?
     /// The command's full name, where the label is a shorter one for the Settings tiles.
@@ -16,14 +19,15 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
 
     init(
         id: ToolbarItemID, label: String, icon: CommandIcon?, commandType: AppCommand? = nil,
-        topRequired: Bool = false, shortcutCommand: ShortcutCommandID? = nil, tooltipLabel: String? = nil,
-        allowDuplicates: Bool = false
+        topRequired: Bool = false, highPriority: Bool = false, shortcutCommand: ShortcutCommandID? = nil,
+        tooltipLabel: String? = nil, allowDuplicates: Bool = false
     ) {
         self.id = id
         self.label = label
         self.icon = icon
         self.commandType = commandType
         self.topRequired = topRequired
+        self.highPriority = topRequired || highPriority
         self.shortcutCommand = shortcutCommand
         self.tooltipLabel = tooltipLabel
         self.allowDuplicates = allowDuplicates
@@ -63,10 +67,10 @@ public enum ToolbarItems {
         definition(id).topRequired
     }
 
-    /// The four items every top toolbar holds, in the default's order.
+    /// The three items every top toolbar holds, in the default's order.
     private static let requiredTopItems = defaultTopItems.filter(isRequiredTopItem)
 
-    /// Every top toolbar holds the title, the clipboard button, search and View Options;
+    /// Every top toolbar holds the title, search and View Options;
     /// a list without one of them gets it at the end.
     public static func sanitizeTopItems(_ value: JSONNode?) -> [ToolbarItemID] {
         let next = sanitizeItemList(value)

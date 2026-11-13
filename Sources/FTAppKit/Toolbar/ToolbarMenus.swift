@@ -192,6 +192,19 @@ extension ExplorerToolbar {
                 else { return }
                 tab.clipboardUI.toggle(from: button)
             }
+        case .undoHistory:
+            return overflowItem(ToolbarItems.definition(id).label) { [weak self] in
+                guard let self, let button = self.undoHistoryButton, let tab = self.context as? MainWindowController
+                else { return }
+                tab.undoHistoryUI.toggle(from: button)
+            }
+        case .undo, .redo:
+            let command: AppCommand = id == .undo ? .undo : .redo
+            return overflowItem(
+                Tooltips.toolbarItemLabel(itemID: id, state: tooltipState),
+                enabled: (canPerform ?? context.commandAvailability())(command)
+                    && hasUndo(id == .undo ? .undo : .redo)
+            ) { [weak self] in self?.performFileUndo(command) }
         case .back:
             return overflowItem("Back", enabled: context.canGoBack, run: run(.goBack))
         case .forward:

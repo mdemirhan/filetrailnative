@@ -11,13 +11,9 @@ final class TabClipboard {
     private weak var tab: MainWindowController?
     private var flash = ClipboardFlashTracker()
     private(set) var menu: ClipboardMenuView?
-    private var popover: AnchoredPopover?
-    private var popoverKeys: Any?
-    private weak var anchor: NSView?
+    private var list: ToolbarListPopover?
     /// The list was opened by a click on the button: a key typed then shows the button's keyboard ring.
     private var openedByClick = false
-    private var keys: Int?
-    private var observers: [any NSObjectProtocol] = []
 
     init(tab: MainWindowController) {
         self.tab = tab
@@ -43,7 +39,7 @@ final class TabClipboard {
         if let menu {
             if let summary = ClipboardRules.describe(contents) {
                 menu.update(summary)
-                popover?.setSize(menu.fittingSize(viewportWidth: Double(tab.window?.contentView?.bounds.width ?? 0)))
+                list?.setSize(menu.fittingSize(viewportWidth: Double(tab.window?.contentView?.bounds.width ?? 0)))
             } else {
                 close()
             }
@@ -64,16 +60,18 @@ final class TabClipboard {
         }
     }
 
-    /// Show Clipboard: only while the clipboard holds something.
+    /// Show Clipboard: only while the clipboard holds something. With the button taken off the toolbar, the list
+    /// opens under the top right of the window.
     func show() {
-        guard let tab, !isOpen, let button = tab.explorerToolbar.clipboardButton else { return }
-        open(from: button)
+        guard let tab, !isOpen else { return }
+        open(from: tab.explorerToolbar.button(.clipboard) ?? NSView())
     }
 
     private func open(from button: NSView) {
         guard let tab, let window = tab.window, let host = window.contentView,
             let summary = ClipboardRules.describe(tab.services.clipboard.contents)
         else { return }
+        tab.undoHistoryUI.close()
         AppMenuPresenter.shared.close()
         let display = ShortcutDisplay(
             shortcuts: ShortcutCommands.resolve(tab.preferences.shortcutOverrides),
@@ -88,97 +86,58 @@ final class TabClipboard {
         view.onRemove = { [weak self] path in self?.remove(path) }
         view.onClear = { [weak self] in self?.tab?.clearClipboard() }
         menu = view
-        anchor = button
-        let popover = AnchoredPopover(content: view, size: view.fittingSize(viewportWidth: Double(host.bounds.width)))
-        self.popover = popover
-        popover.show(from: button, in: window)
-        (button as? ToolbarButton)?.isOn = true
-        keys = WindowEventRouting.add(window) { [weak self] event in self?.intercept(event) ?? false }
-        // A click inside can give the popover the keyboard, though the window stays the main one: the keys still go here.
-        popoverKeys = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            nonisolated(unsafe) var passed: NSEvent? = event
-            MainActor.assumeIsolated {
-                guard let self, let shown = self.popover?.window, event.window === shown else { return }
-                passed = self.popoverKey(event)
-            }
-            return passed
-        }
-        // Not when the window only stops being key: that happens for a click in the popover too.
-        if NSApp.isActive {
-            observers.append(
-                NotificationCenter.default.addObserver(
-                    forName: NSWindow.didResignMainNotification, object: window, queue: .main
-                ) { [weak self] _ in MainActor.assumeIsolated { self?.close() } })
-        }
+        let list = ToolbarListPopover(
+            content: view, size: view.fittingSize(viewportWidth: Double(host.bounds.width)),
+            key: { [weak self] event in self?.key(event) ?? false }, dismiss: { [weak self] in self?.close() })
+        self.list = list
+        list.show(from: button, in: window)
     }
 
     func close() {
-        guard let menu else { return }
-        self.menu = nil
-        popover?.close()
-        popover = nil
-        if let popoverKeys { NSEvent.removeMonitor(popoverKeys) }
-        popoverKeys = nil
-        menu.removeFromSuperview()
-        (anchor as? ToolbarButton)?.isOn = false
-        (anchor as? ToolbarClipboardButton)?.showsKeyboardRing = false
+        guard menu != nil else { return }
+        menu = nil
+        (list?.anchor as? ToolbarClipboardButton)?.showsKeyboardRing = false
+        list?.close()
+        list = nil
         openedByClick = false
-        anchor = nil
-        if let keys, let window = tab?.window { WindowEventRouting.remove(keys, from: window) }
-        keys = nil
-        for observer in observers { NotificationCenter.default.removeObserver(observer) }
-        observers = []
     }
 
-    /// A key the popover has: the list takes it, or, closed by it, lets it go on as a key of the window, whose shortcuts
-    /// and menu bar it is for. The popover's own window is gone by then.
+    /// A key the popover has: the list takes it, or lets it go on as a key of the window.
     func popoverKey(_ event: NSEvent) -> NSEvent? {
-        if intercept(event) { return nil }
-        guard let window = tab?.window else { return event }
-        return NSEvent.keyEvent(
-            with: event.type, location: event.locationInWindow, modifierFlags: event.modifierFlags,
-            timestamp: event.timestamp, windowNumber: window.windowNumber, context: nil,
-            characters: event.characters ?? "", charactersIgnoringModifiers: event.charactersIgnoringModifiers ?? "",
-            isARepeat: event.isARepeat, keyCode: event.keyCode) ?? event
+        guard let list else { return event }
+        return list.popoverKey(event)
     }
 
     /// The window's events while the list is open: its keys go to it first, and a press outside it (and its button)
     /// closes it.
     func intercept(_ event: NSEvent) -> Bool {
+        list?.intercept(event) ?? false
+    }
+
+    /// What a key does to the open list; true when the list took it.
+    private func key(_ event: NSEvent) -> Bool {
         guard let menu else { return false }
-        switch event.type {
-        case .leftMouseDown, .rightMouseDown, .otherMouseDown:
-            if event.window === menu.window, menu.bounds.contains(menu.convert(event.locationInWindow, from: nil)) {
-                return false
-            }
-            if let anchor, anchor.bounds.contains(anchor.convert(event.locationInWindow, from: nil)) { return false }
+        if openedByClick, event.modifierFlags.isDisjoint(with: [.command, .option, .control]) {
+            (list?.anchor as? ToolbarClipboardButton)?.showsKeyboardRing = true
+        }
+        switch menu.key(event) {
+        case .handled: return true
+        case .close:
+            close()
+            return true
+        case .closeAndPass:
             close()
             return false
-        case .keyDown:
-            if openedByClick, event.modifierFlags.isDisjoint(with: [.command, .option, .control]) {
-                (anchor as? ToolbarClipboardButton)?.showsKeyboardRing = true
-            }
-            switch menu.key(event) {
-            case .handled: return true
-            case .close:
-                close()
-                return true
-            case .closeAndPass:
-                close()
-                return false
-            case .reveal(let path):
-                close()
-                tab?.revealClipboardItem(path)
-                return true
-            case .remove(let path):
-                remove(path)
-                return true
-            case .clear:
-                tab?.clearClipboard()
-                return true
-            }
-        default:
-            return false
+        case .reveal(let path):
+            close()
+            tab?.revealClipboardItem(path)
+            return true
+        case .remove(let path):
+            remove(path)
+            return true
+        case .clear:
+            tab?.clearClipboard()
+            return true
         }
     }
 

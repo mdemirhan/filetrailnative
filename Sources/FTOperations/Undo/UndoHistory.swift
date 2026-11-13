@@ -11,6 +11,16 @@ public struct UndoEntry: Equatable, Sendable {
     public var moves: Bool
     /// How many item steps it holds (`itemStepCount`), for keeping the history's size.
     public var size: Int
+    /// When it was done or, on the Redo list, undone: what the history's list shows.
+    public var date: Date
+}
+
+/// The operation that couldn't be undone: the history starts after it.
+public struct UndoBarrier: Equatable, Sendable {
+    public var action: FinishedWrite.Action
+    /// Why it can't be undone; nil for emptying the Trash.
+    public var reason: CantUndoReason?
+    public var date: Date
 }
 
 /// What the Edit menu shows after "Undo " and "Redo " ("Move of “a.txt”"), or nil when there is nothing; `cantUndo`
@@ -47,18 +57,23 @@ public final class UndoHistory {
     public static let maxItemStepsDefault = 1_000_000
 
     private let maxItemSteps: Int
+    private let clock: () -> Date
     private var undoList: [UndoEntry] = []
     private var redoList: [UndoEntry] = []
     // Set by an operation that can't be undone, until the next one that can.
     private var cantUndo = false
+    /// The last operation that couldn't be undone, while the Undo list goes back to it: let go of once the oldest
+    /// operations after it are.
+    public private(set) var barrier: UndoBarrier?
     private var nextId = 1
     /// Goes up with every change, so an Undo prepared before one is refused.
     public private(set) var generation = 0
     private var listeners: [Int: @MainActor () -> Void] = [:]
     private var nextListener = 0
 
-    public init(maxItemSteps: Int = UndoHistory.maxItemStepsDefault) {
+    public init(maxItemSteps: Int = UndoHistory.maxItemStepsDefault, clock: @escaping () -> Date = { AppClock.now }) {
         self.maxItemSteps = maxItemSteps
+        self.clock = clock
     }
 
     private func changed() {
@@ -70,7 +85,8 @@ public final class UndoHistory {
 
     private func entryOf(_ units: [UndoUnit], _ action: WriteOperationAction, _ moves: Bool) -> UndoEntry {
         defer { nextId += 1 }
-        return UndoEntry(id: nextId, action: action, units: units, moves: moves, size: Self.itemStepCount(units))
+        return UndoEntry(
+            id: nextId, action: action, units: units, moves: moves, size: Self.itemStepCount(units), date: clock())
     }
 
     /// Lets go of the oldest operations, the bottom of the Undo list first, while the two lists hold more than they
@@ -79,6 +95,7 @@ public final class UndoHistory {
         var size = undoList.reduce(0) { $0 + $1.size } + redoList.reduce(0) { $0 + $1.size }
         while size > maxItemSteps, let first = undoList.first, !keep.contains(first.id) {
             size -= undoList.removeFirst().size
+            barrier = nil
         }
         while size > maxItemSteps, let first = redoList.first, !keep.contains(first.id) {
             size -= redoList.removeFirst().size
@@ -97,6 +114,9 @@ public final class UndoHistory {
         guard case .write(let action) = finished.action, case .undoable(let units) = finished.log else {
             undoList.removeAll()
             cantUndo = true
+            var reason: CantUndoReason?
+            if case .notUndoable(let why) = finished.log { reason = why }
+            barrier = UndoBarrier(action: finished.action, reason: reason, date: clock())
             changed()
             return
         }
@@ -109,6 +129,11 @@ public final class UndoHistory {
 
     public func top(_ direction: UndoDirection) -> UndoEntry? {
         direction == .undo ? undoList.last : redoList.last
+    }
+
+    /// `entries`: the operations of one list, oldest first, the one Undo or Redo takes next last.
+    public func entries(_ direction: UndoDirection) -> [UndoEntry] {
+        direction == .undo ? undoList : redoList
     }
 
     /// `finish`: an Undo or Redo of `entryId` ended. `done` is what it did, in the order it did it, which is what the

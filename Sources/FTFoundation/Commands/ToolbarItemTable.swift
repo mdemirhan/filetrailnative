@@ -12,6 +12,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case sort
     case title
     case clipboard
+    case undoHistory
     case viewOptions
     case search
     case goToFolder
@@ -32,6 +33,8 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case copySelection
     case cutSelection
     case pasteSelection
+    case undo
+    case redo
     case openInTerminal
     case showInFinder
     case revealInFolder
@@ -58,7 +61,8 @@ extension ToolbarItems {
         ToolbarItemDefinition(id: .view, label: "View Mode", icon: nil),
         ToolbarItemDefinition(id: .sort, label: "Sort", icon: .sortBy),
         ToolbarItemDefinition(id: .title, label: "Title", icon: nil, topRequired: true),
-        ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, topRequired: true),
+        ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, highPriority: true),
+        ToolbarItemDefinition(id: .undoHistory, label: "Undo History", icon: .undoHistory, highPriority: true),
         ToolbarItemDefinition(id: .viewOptions, label: "View Options", icon: .viewOptions, topRequired: true),
         ToolbarItemDefinition(id: .search, label: "Search", icon: .search, topRequired: true),
         ToolbarItemDefinition(
@@ -113,6 +117,8 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .pasteSelection, label: "Paste", icon: .paste, commandType: .pasteSelection,
             shortcutCommand: .paste),
+        ToolbarItemDefinition(id: .undo, label: "Undo", icon: .undo, commandType: .undo, shortcutCommand: .undo),
+        ToolbarItemDefinition(id: .redo, label: "Redo", icon: .redo, commandType: .redo, shortcutCommand: .redo),
         ToolbarItemDefinition(
             id: .openInTerminal, label: "Open in Terminal", icon: .terminal,
             commandType: .openInTerminal, shortcutCommand: .openInTerminal),
@@ -137,7 +143,8 @@ extension ToolbarItems {
             tooltipLabel: "File Trail Help"),
     ]
 
-    /// The toolbar's items before it is customized.
+    /// The toolbar's items before it is customized. The Undo History button isn't one of them: it is there once it is
+    /// added while customizing.
     public static let defaultTopItems: [ToolbarItemID] = [
         .folderTree,
         .topSeparator,
@@ -173,9 +180,13 @@ extension ToolbarItems {
         .openSelection,
         .quickLook,
         .editSelection,
+        .clipboard,
         .copySelection,
         .cutSelection,
         .pasteSelection,
+        .undoHistory,
+        .undo,
+        .redo,
         .renameSelection,
         .moveSelection,
         .duplicateSelection,

@@ -1,5 +1,6 @@
 import AppKit
 import FTFoundation
+import FTOperations
 
 /// The window's system toolbar, in the unified style Finder uses: a sidebar tracking separator, so the items start
 /// over the content column, then one `NSToolbarItem` per item of the user's saved order. The system draws the band
@@ -31,6 +32,9 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     private var observation: ExplorerWindowObservation?
     private var identifiersObservation: NSKeyValueObservation?
     private var sheetObservers: [NSObjectProtocol] = []
+    private var historyObserver: NSObjectProtocol?
+    /// The app's file undo history, which Undo, Redo and the Undo History button follow; a test hands its own.
+    var undoHistory: () -> UndoHistory? = { AppWriteOperations.current?.undoHistory }
     /// The search field's width: made once, as the field is, however many times its item is made.
     private lazy var searchFieldWidths: [NSLayoutConstraint] = {
         // A field while there is room at all (`searchWidth`, `searchMinWidth`): the title gives way first.
@@ -56,6 +60,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
 
     isolated deinit {
         for observer in sheetObservers { NotificationCenter.default.removeObserver(observer) }
+        if let historyObserver { NotificationCenter.default.removeObserver(historyObserver) }
     }
 
     init(identifier: String) {
@@ -98,6 +103,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                     })
             }
         }
+        // Undo and Redo, and the Undo History button, follow the history.
+        historyObserver = NotificationCenter.default.addObserver(
+            forName: UndoHistoryMenu.changed, object: nil, queue: .main
+        ) { [weak self] _ in MainActor.assumeIsolated { self?.refreshStates() } }
         reload()
     }
 
@@ -209,10 +218,32 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         guard let context else { return ToolbarTooltipState() }
         let panels = context.panels
         let view = context.viewState
+        let labels = undoHistory().map { history in
+            let menu = history.menu()
+            return ApplicationMenu.undoLabels(undo: menu.undo, redo: menu.redo, cantUndo: menu.cantUndo)
+        }
         return ToolbarTooltipState(
             foldersFirst: view.foldersFirst, hiddenFilesShown: view.includeHidden,
             folderTreeOpen: panels.folderTreeOpen, infoPanelOpen: panels.propertiesOpen,
-            infoRowOpen: panels.detailRowOpen, textEditorName: context.preferences.defaultTextEditor.appName)
+            infoRowOpen: panels.detailRowOpen, textEditorName: context.preferences.defaultTextEditor.appName,
+            undoLabel: labels?.undo, redoLabel: labels?.redo)
+    }
+
+    /// Whether the history has an operation for Undo (or Redo) to take.
+    func hasUndo(_ direction: UndoDirection) -> Bool {
+        undoHistory()?.top(direction) != nil
+    }
+
+    /// Whether the Undo History button has anything to list: it shows only then.
+    var hasUndoHistory: Bool { hasUndo(.undo) || hasUndo(.redo) }
+
+    /// The toolbar's Undo or Redo: the files', even while a text field has the keyboard.
+    func performFileUndo(_ command: AppCommand) {
+        if let tab = context as? MainWindowController {
+            tab.performFileUndo(command)
+        } else {
+            context?.perform(command)
+        }
     }
 
     /// Reads the order, the clipboard and every item's state from the window.
@@ -279,9 +310,19 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                     button.tooltip = clipboardSummary?.label ?? ""
                     if let summary = clipboardSummary { button.setAccessibilityLabel(summary.accessibilityLabel) }
                 }
-                // Only while something is copied. The sheet still offers it, so it can be moved.
-                if clipboardCount == 0 { button.letKeyboardGo() }
-                item.isHidden = clipboardCount == 0
+                // Only while something is copied, or the toolbar is being customized: it can then be moved, put beside
+                // other buttons or taken off like any other.
+                let hidden = clipboardCount == 0 && !isCustomizing
+                if hidden { button.letKeyboardGo() }
+                item.isHidden = hidden
+            case .undo, .redo:
+                let undo = id == .undo
+                button.isEnabled = canPerform(undo ? .undo : .redo) && hasUndo(undo ? .undo : .redo)
+            case .undoHistory:
+                // Only while there is something to undo or redo, or the toolbar is being customized, as the clipboard's.
+                let hidden = !hasUndoHistory && !isCustomizing
+                if hidden { button.letKeyboardGo() }
+                item.isHidden = hidden
             default:
                 if let command = ToolbarItems.definition(id).commandType {
                     button.isEnabled = canPerform(command)
@@ -327,13 +368,15 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     var viewSwitch: ToolbarViewSwitch? { item(.view) == nil ? nil : views[.view] as? ToolbarViewSwitch }
     var titleView: ToolbarTitleView? { views[.title] as? ToolbarTitleView }
     var clipboardButton: ToolbarClipboardButton? { views[.clipboard] as? ToolbarClipboardButton }
+    var undoHistoryButton: ToolbarButton? { views[.undoHistory] as? ToolbarButton }
     var searchItem: NSSearchToolbarItem? { item(.search) as? NSSearchToolbarItem }
 
-    /// The keys of the items on the toolbar, in order: the clipboard button only while it shows.
+    /// The keys of the items on the toolbar, in order: the clipboard and Undo History buttons only while they show.
     var rowKeys: [String] {
         toolbar.items.compactMap { item in
             guard let id = Self.itemID(item.itemIdentifier) else { return nil }
-            if id == .clipboard, clipboardCount == 0 { return nil }
+            if id == .clipboard, clipboardCount == 0, !isCustomizing { return nil }
+            if id == .undoHistory, !hasUndoHistory, !isCustomizing { return nil }
             return id.rawValue
         }
     }
@@ -419,8 +462,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         item.label = definition.label
         item.paletteLabel = definition.label
         item.autovalidates = false
-        // The removable items go to the » menu first; the required ones last.
-        item.visibilityPriority = definition.topRequired ? .high : .standard
+        // The other items go to the » menu first; the required ones, the clipboard and Undo History last.
+        item.visibilityPriority = definition.highPriority ? .high : .standard
         if flag, let context { refresh(item, id, context.commandAvailability()) }
         return item
     }
@@ -531,6 +574,13 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             button.onClick = { [weak self, weak button] in
                 guard let self, let button else { return }
                 self.toggleMenu(from: button) { self.themeMenu(anchor: button) }
+            }
+        case .undo: button.onClick = { [weak self] in self?.performFileUndo(.undo) }
+        case .redo: button.onClick = { [weak self] in self?.performFileUndo(.redo) }
+        case .undoHistory:
+            button.onClick = { [weak self, weak button] in
+                guard let button, let tab = self?.context as? MainWindowController else { return }
+                tab.undoHistoryUI.toggle(from: button)
             }
         case .up: button.onClick = { [weak self] in self?.context?.goToParentFolder() }
         case .foldersFirst: button.onClick = { [weak self] in self?.context?.perform(.toggleFoldersFirst) }

@@ -1,6 +1,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTOperations
 import FTTestSupport
 import Foundation
 import Testing
@@ -177,6 +178,39 @@ extension ExplorerWindowlessTests {
                 [.back, .forward], [.up], [.view], [.sort, .refresh], [.search], [.viewOptions, .hidden],
             ]
             #expect(Set(held) == expected)
+            await harness.close()
+        }
+
+        // The clipboard button, with its count, shares a capsule with the buttons beside it, as the Undo History button
+        // does: the system gives a button with a title a capsule of its own, so the count is not its title. The icon
+        // keeps to the leading side, the count 2 after it.
+        @Test func theClipboardAndHistoryButtonsShareTheirNeighboursCapsule() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let window = try #require(tab.window)
+            window.setContentSize(NSSize(width: 1400, height: 500))
+            let history = UndoHistory()
+            history.record(UndoToolbarTests.rename("/p/a", "/p/b"))
+            tab.explorerToolbar.undoHistory = { history }
+            tab.services.clipboard.set(
+                .ready(mode: .copy, sourcePaths: ["/a", "/b"], sourceEntries: [:], capturedAt: "1"), from: nil)
+            setItems(tab, [.back, .title, .undo, .clipboard, .undoHistory, .redo, .search], harness)
+            let toolbar = tab.explorerToolbar
+            let frameView = try #require(window.contentView?.superview)
+            frameView.layoutSubtreeIfNeeded()
+            let platters = Views.all(NSView.self, in: frameView).filter {
+                String(describing: type(of: $0)) == "NSToolbarPlatterView" && !$0.isHidden
+            }
+            let held = platters.map { platter in
+                Set(ToolbarItemID.allCases.filter { toolbar.button($0)?.isDescendant(of: platter) == true })
+            }
+            #expect(held.contains([.undo, .clipboard, .undoHistory, .redo]))
+            let clipboard = try #require(toolbar.clipboardButton)
+            let icon = try #require(clipboard.cell?.imageRect(forBounds: clipboard.bounds))
+            #expect(abs(icon.minX - ToolbarClipboardButton.countPadding) < 0.01)
+            #expect(abs(clipboard.count.frame.minX - icon.maxX - ToolbarClipboardButton.countGap) < 0.01)
+            #expect(clipboard.bounds.width > ToolbarButton.iconOnlyWidth)
+            tab.services.clipboard.set(.empty, from: nil)
             await harness.close()
         }
 

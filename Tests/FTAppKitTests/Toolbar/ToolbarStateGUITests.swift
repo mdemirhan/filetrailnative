@@ -1,6 +1,7 @@
 // Real mouse events through the window, and the system's customizing sheet
 import AppKit
 import FTFoundation
+import FTOperations
 import Testing
 
 @testable import FTAppKit
@@ -63,18 +64,25 @@ extension ExplorerWindowGUITests {
 
 extension ExplorerWindowGUITests.ToolbarGUITests {
     // Customize Toolbar… opens the system's sheet on the window, and the items wait under it, as under
-    // any sheet. Ending the sheet lets them go.
+    // any sheet. Ending the sheet lets them go. The empty clipboard and Undo History buttons show while it is up, so
+    // they can be moved beside other buttons, and go again after.
     @Test func customizesInTheSystemsSheetAndTheItemsWaitUnderIt() async throws {
         let harness = try ExplorerHarness()
         let tab = try await harness.open()
         let window = try #require(tab.window)
-        setItems(tab, ToolbarItems.defaultTopItems + [.newTab], harness)
         let toolbar = tab.explorerToolbar
+        let history = UndoHistory()
+        toolbar.undoHistory = { history }
+        setItems(tab, ToolbarItems.defaultTopItems + [.undoHistory, .newTab], harness)
+        #expect(toolbar.item(.clipboard)?.isHidden == true)
+        #expect(toolbar.item(.undoHistory)?.isHidden == true)
         let switcher = try #require(toolbar.viewSwitch)
         #expect(switcher.isEnabled && toolbar.button(.sort)?.isEnabled == true)
         tab.perform(.customizeToolbar)
         #expect(await waitUntil { window.attachedSheet != nil })
         #expect(toolbar.isCustomizing && tab.isCustomizingToolbar)
+        #expect(await waitUntil { toolbar.item(.clipboard)?.isHidden == false })
+        #expect(toolbar.item(.undoHistory)?.isHidden == false)
         #expect(!switcher.isEnabled)
         #expect(toolbar.button(.sort)?.isEnabled == false)
         #expect(toolbar.button(.newTab)?.isEnabled == false)
@@ -93,6 +101,8 @@ extension ExplorerWindowGUITests.ToolbarGUITests {
         #expect(await waitUntil { switcher.isEnabled })
         #expect(toolbar.button(.sort)?.isEnabled == true)
         #expect(toolbar.button(.newTab)?.isEnabled == true)
+        #expect(await waitUntil { toolbar.item(.clipboard)?.isHidden == true })
+        #expect(toolbar.item(.undoHistory)?.isHidden == true)
         await harness.close()
     }
 

@@ -63,10 +63,25 @@ public enum FinderTags {
         return stored.map(FinderTag.init(stored:))
     }
 
-    /// The colors of an item's tags in their order, each once; none for an item that can't be read.
+    /// The colors of an item's tags in their order, each once; none for an item that can't be read. The home folder's
+    /// Desktop, Documents and Downloads aren't read (`asksPermission`): their colors show as none.
     public static func colors(_ path: String) -> [FinderTagColor] {
+        guard !asksPermission(path) else { return [] }
         var seen = Set<FinderTagColor>()
         return ((try? read(path)) ?? []).compactMap(\.color).filter { seen.insert($0).inserted }
+    }
+
+    /// The folders macOS asks the person about before an app reads them: the home folder's Desktop, Documents and
+    /// Downloads. Reading even a folder's own tags counts, so drawing their tag colors in the home folder asked for
+    /// permission at every start of an app not yet allowed, though nothing was opened.
+    static func asksPermission(_ path: String, homePath: String = NSHomeDirectory()) -> Bool {
+        var path = path
+        while path.count > 1, path.hasSuffix("/") { path.removeLast() }
+        var home = homePath
+        while home.count > 1, home.hasSuffix("/") { home.removeLast() }
+        guard path.utf8.count > home.utf8.count + 1, path.utf8.starts(with: (home + "/").utf8) else { return false }
+        let name = String(decoding: path.utf8.dropFirst(home.utf8.count + 1), as: UTF8.self)
+        return ["Desktop", "Documents", "Downloads"].contains { name.utf8.elementsEqual($0.utf8) }
     }
 
     /// Writes an item's tags. The item's label, which `labelNumber` and older apps read, goes with them: the last
