@@ -32,14 +32,8 @@ struct ListColumnState: Equatable {
     static let standard = ListColumnState(preferences: .defaults())
 }
 
-/// Where the drag and drop package plugs in: rows and the pane's background adopt the automation seams and
-/// call these.
+/// Where the drag and drop package plugs in: the views of the folder call these.
 struct ContentDragHooks {
-    /// The files a drag of these entries carries (nil: the entries' own).
-    var itemsToDrag: (([DirectoryEntry]) -> [URL])?
-    /// Takes a drop of files on the folder under the pointer, or on the folder on screen (nil entry); answers whether
-    /// it was taken.
-    var acceptDrop: (([URL], DirectoryEntry?, NSDragOperation) -> Bool)?
     /// Starts a drag of the entries from a press on one of them, once the pointer has moved; answers whether a drag
     /// session began (a press that began one is not a click). The view hands the press, and the view it was in.
     var beginDrag: (([DirectoryEntry], NSEvent, NSView) -> Bool)?

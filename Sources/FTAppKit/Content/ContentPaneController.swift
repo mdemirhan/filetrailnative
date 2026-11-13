@@ -43,7 +43,6 @@ final class ContentContainerView: NSView {
         didSet { needsLayout = true }
     }
     var backgroundMenu: () -> NSMenu? = { nil }
-    var backgroundDrop: (([URL], NSDragOperation) -> Bool)?
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -78,14 +77,6 @@ final class ContentContainerView: NSView {
 
     override func menu(for event: NSEvent) -> NSMenu? { backgroundMenu() }
 }
-
-#if DEBUG
-    extension ContentContainerView: AutomationDropTarget {
-        func automationDrop(_ items: [URL], at point: NSPoint, allowed: NSDragOperation) -> Bool {
-            backgroundDrop?(items, allowed) ?? false
-        }
-    }
-#endif
 
 /// The content side of the window: the current view of the folder, the states, and the status line.
 final class ContentPaneController: NSViewController, ContentPaneHost {
@@ -250,9 +241,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     override func loadView() {
         shell.list = container
         container.backgroundMenu = { [weak self] in self?.contextMenu(for: nil) }
-        container.backgroundDrop = { [weak self] urls, allowed in
-            self?.dragHooks.acceptDrop?(urls, nil, allowed) ?? false
-        }
         container.stateView.onOpenPrivacySettings = { [weak self] in self?.loaders.openPrivacySettings() }
         // The pill's ✕ brings the list back as Esc does; the list keeps the keyboard.
         container.filterPill.onClear = { [weak self] in self?.clearFilter() }

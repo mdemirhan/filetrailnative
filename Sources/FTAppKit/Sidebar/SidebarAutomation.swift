@@ -73,10 +73,7 @@
         }
     }
 
-    extension SidebarOutlineView: AutomationDragSource, AutomationDropTarget, AutomationPasteboardDragSource {
-        /// No row carries files: a favorite's goes on the pasteboard, and the other rows are not dragged.
-        func automationDragItems(at point: NSPoint) -> [URL] { [] }
-
+    extension SidebarOutlineView: AutomationPasteboardDragSource {
         /// A favorite's row carries what its real drag writes.
         func automationPasteboardDrag(at point: NSPoint) -> AutomationPasteboardDrag? {
             guard let list, list.reordersFavorites else { return nil }
@@ -91,12 +88,5 @@
             }
         }
 
-        /// Files dropped on a row go to the drop hook.
-        func automationDrop(_ items: [URL], at point: NSPoint, allowed: NSDragOperation) -> Bool {
-            guard let list else { return false }
-            let index = row(at: point)
-            guard index >= 0, case .item(let state)? = list.row(at: index) else { return false }
-            return list.fileDropURLs?(list, state, items, allowed) ?? false
-        }
     }
 #endif

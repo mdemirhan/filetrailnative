@@ -323,23 +323,3 @@ extension ItemGridPane {
         return true
     }
 }
-
-#if DEBUG
-    extension ItemGridView: AutomationDragSource, AutomationDropTarget {
-        func automationDragItems(at point: NSPoint) -> [URL] {
-            guard let pane else { return [] }
-            let entries: [DirectoryEntry]
-            if let hit = pane.entry(at: point), !pane.selectedEntries.contains(where: { $0.path == hit.path }) {
-                entries = [hit]
-            } else {
-                entries = pane.selectedEntries
-            }
-            return pane.host?.dragHooks.itemsToDrag?(entries) ?? entries.map(\.url)
-        }
-
-        func automationDrop(_ items: [URL], at point: NSPoint, allowed: NSDragOperation) -> Bool {
-            guard let pane, let accept = pane.host?.dragHooks.acceptDrop else { return false }
-            return accept(items, pane.entry(at: point), allowed)
-        }
-    }
-#endif

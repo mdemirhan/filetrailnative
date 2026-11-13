@@ -1,22 +1,9 @@
 #if DEBUG
     import AppKit
 
-    /// Debug seams for drags. A drag of files starts a native `NSDraggingSession`, which the window server
-    /// runs and synthesized mouse events can't drive. A view that starts one adopts `AutomationDragSource`,
-    /// and a view that takes drops adopts `AutomationDropTarget`, which is handed the items straight.
-    @MainActor
-    protocol AutomationDragSource: AnyObject {
-        /// The items a drag starting at `point` (in the view's coordinates) would carry.
-        func automationDragItems(at point: NSPoint) -> [URL]
-    }
-
-    @MainActor
-    protocol AutomationDropTarget: AnyObject {
-        /// Takes a drop of `items` at `point` (in the view's coordinates). `allowed` is what the drag
-        /// offers, as the modifier keys held set it. Answers whether the drop was taken.
-        func automationDrop(_ items: [URL], at point: NSPoint, allowed: NSDragOperation) -> Bool
-    }
-
+    /// Debug seams for drags: a native `NSDraggingSession` is run by the window server, and synthesized mouse events
+    /// can't drive it.
+    ///
     /// A drag inside the app that isn't files: what its drag session would write, and what the source does at its end.
     struct AutomationPasteboardDrag {
         var item: NSPasteboardItem

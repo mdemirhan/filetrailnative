@@ -645,9 +645,6 @@ private final class Fixture {
         #expect(fixture.ends.first?.action == .batchRename)
         #expect(fixture.ends.first?.status == .completed)
         #expect(fixture.exists("a.txt") && fixture.exists("b.txt") && fixture.exists("Day 1"))
-        // Which items were folders, for the sheet to open again on those that weren't renamed.
-        #expect(actions.batchRenameFolders[fixture.path("sub")] == true)
-        #expect(actions.batchRenameFolders[fixture.path("a.txt")] == false)
         await fixture.close()
     }
 

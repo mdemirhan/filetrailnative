@@ -26,9 +26,6 @@ final class WindowWriteActions {
     let session: ExplorerWriteSession
     weak var tab: MainWindowController?
     let dialogs: WriteDialogs
-    /// Which items of the last batch rename were folders, by the path asked for: the Rename sheet opens again on the
-    /// items that weren't renamed, numbering each as it was.
-    private(set) var batchRenameFolders: [String: Bool] = [:]
     /// The timers of "Preparing to Paste…".
     var preparingTimers: any TimerScheduling = TaskTimerScheduler()
     /// Puts up "Preparing to Paste…".
@@ -621,13 +618,10 @@ final class WindowWriteActions {
     // MARK: Batch rename
 
     /// Renames the items the Rename sheet settled. Like every write, it waits for no other: one
-    /// that is running is said, and the sheet stays closed. Which items were folders is kept, for the sheet to open
-    /// again on those that weren't renamed.
+    /// that is running is said, and the sheet stays closed.
     func batchRename(_ request: BatchRenameRequest) async -> CopyLikeOutcome {
         let first = request.items.first?.sourcePath
         if refuseWhileBusy(.operation(.batchRename)) { return .cancelled }
-        batchRenameFolders = Dictionary(
-            request.items.map { ($0.sourcePath, $0.isFolder) }, uniquingKeysWith: { _, last in last })
         return await startLocal(
             .batchRename,
             card: WriteOperationCardState(
