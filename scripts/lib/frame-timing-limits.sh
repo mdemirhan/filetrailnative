@@ -14,7 +14,8 @@
 # of late frames (over 8.3 ms) more than this many points above it.
 FRAME_MEDIAN_SLOWER_SHARE=0.6
 FRAME_LATE_SHARE_RISE=0.3
-# With no earlier release from this Mac model: only these ceilings apply, about twice the highest measured (8.0 ms and
-# 33% late).
+# Whatever came before, nothing passes these ceilings, about twice the highest measured (8.0 ms and 33% late): several
+# releases each a little slower than the last don't add up unseen. With no earlier release from this Mac model, or for a
+# view and size the earlier record lacks, they are all that applies.
 FRAME_MEDIAN_CEILING_MS=16
 FRAME_LATE_SHARE_CEILING=0.65

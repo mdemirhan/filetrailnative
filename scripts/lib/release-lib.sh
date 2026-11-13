@@ -145,15 +145,17 @@ frame_timings_table() {
 # frame_timings_report <timings file> <previous record or ""> <machine model>: says what the timings are compared with,
 # the table, and what is too slow, one a line; fails when anything is. Against a record from the same Mac model, a
 # median more than FRAME_MEDIAN_SLOWER_SHARE slower or a share of late frames more than FRAME_LATE_SHARE_RISE above it
-# fails; with none, only the ceilings apply. The slowest frame is shown, and fails nothing.
+# fails; the ceilings apply either way, and are all that applies with no such record or to a view and size it lacks.
+# Timings that can't be read fail too. The slowest frame is shown, and fails nothing.
 frame_timings_report() {
     local timings="$1" previous="$2" machine="$3" failures
     if [[ -n "${previous}" ]]; then
         printf 'Frame times of scrolling, against %s (%s) on the same Mac model (%s).\n' \
             "$(jq -r .version <<<"${previous}")" "$(jq -r .date <<<"${previous}")" "${machine}"
-        printf 'Too slow: a median over %.0f%% slower, or late frames up more than %.0f points.\n' \
-            "$(awk -v s="${FRAME_MEDIAN_SLOWER_SHARE}" 'BEGIN { print s * 100 }')" \
-            "$(awk -v s="${FRAME_LATE_SHARE_RISE}" 'BEGIN { print s * 100 }')"
+        printf 'Too slow: a median over %.0f%% slower or over %s ms, or late frames up more than %.0f points or over %.0f%%.\n' \
+            "$(awk -v s="${FRAME_MEDIAN_SLOWER_SHARE}" 'BEGIN { print s * 100 }')" "${FRAME_MEDIAN_CEILING_MS}" \
+            "$(awk -v s="${FRAME_LATE_SHARE_RISE}" 'BEGIN { print s * 100 }')" \
+            "$(awk -v s="${FRAME_LATE_SHARE_CEILING}" 'BEGIN { print s * 100 }')"
     else
         printf 'Frame times of scrolling. No earlier release was measured on this Mac model (%s): only the ceilings apply.\n' \
             "${machine}"
@@ -162,25 +164,33 @@ frame_timings_report() {
     fi
     echo "Each is the median of three scrolls; late is over 8.3 ms, a frame at 120 Hz."
     frame_timings_table "${timings}" "${previous}"
-    failures="$(jq -r --argjson previous "${previous:-null}" \
+    # A record that can't be read (a timing without its numbers, no timings at all) fails: nothing passes unchecked.
+    if ! failures="$(jq -r --argjson previous "${previous:-null}" \
         --argjson share "${FRAME_MEDIAN_SLOWER_SHARE}" --argjson rise "${FRAME_LATE_SHARE_RISE}" \
         --argjson ceiling "${FRAME_MEDIAN_CEILING_MS}" --argjson lateCeiling "${FRAME_LATE_SHARE_CEILING}" '
-        .timings[] as $now
+        def numbers($of): ($of.medianMs | type) == "number" and ($of.lateShare | type) == "number";
+        (.timings | if type == "array" and length > 0 then . else error("no frame times were measured") end)[] as $now
         | "\($now.view) at the \($now.size) size" as $name
-        | if $previous == null then
-            (if $now.medianMs > $ceiling then "\($name): the median frame took \($now.medianMs) ms" else empty end),
-            (if $now.lateShare > $lateCeiling then "\($name): \($now.lateShare * 100) % of frames were late"
-             else empty end)
-          else
-            ($previous.timings | map(select(.view == $now.view and .size == $now.size)) | first) as $was
-            | if $was == null then empty else
+        | (if numbers($now) then . else error("\($name) has no numbers") end)
+        | (if $now.medianMs > $ceiling then "\($name): the median frame took \($now.medianMs) ms" else empty end),
+          (if $now.lateShare > $lateCeiling then "\($name): \($now.lateShare * 100) % of frames were late"
+           else empty end),
+          (if $previous == null then empty else
+            ($previous.timings | if type == "array" then . else error("the earlier record has no timings") end
+                | map(select(.view == $now.view and .size == $now.size)) | first) as $was
+            | if $was == null then empty
+              elif numbers($was) | not then error("\($name) has no numbers in the earlier record")
+              else
                 (if $now.medianMs > $was.medianMs * (1 + $share)
                  then "\($name): the median frame took \($now.medianMs) ms, \($was.medianMs) ms before" else empty end),
                 (if $now.lateShare > $was.lateShare + $rise
                  then "\($name): \($now.lateShare * 100) % of frames were late, \($was.lateShare * 100) % before"
                  else empty end)
               end
-          end' "${timings}")"
+          end)' "${timings}")"; then
+        echo "The frame times couldn't be compared, so nothing is known of them."
+        return 1
+    fi
     if [[ -n "${failures}" ]]; then
         echo "Scrolling got slower:"
         sed 's/^/  /' <<<"${failures}"

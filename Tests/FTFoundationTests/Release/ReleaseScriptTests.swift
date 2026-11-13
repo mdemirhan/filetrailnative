@@ -230,6 +230,43 @@ import Testing
         #expect(late.output.contains("50 % of frames were late, 10 % before"))
     }
 
+    // The ceilings hold against an earlier record too, and for a view and size that record lacks: releases each a
+    // little slower than the last don't pass for ever, and a new view isn't left unchecked.
+    @Test func theCeilingsApplyWithAnEarlierRecordToo() throws {
+        let creeping = Self.history([("0.16.0", "Mac16,5", Self.timings(list: 14, icons: 5.0))])
+        let over = try Self.report(Self.timings(list: 17, icons: 5.0), history: creeping)
+        #expect(!over.succeeded)
+        #expect(over.output.contains("list at the default size: the median frame took 17 ms"))
+        let renamed = Self.history([
+            (
+                "0.16.0", "Mac16,5",
+                Self.timings(list: 6, icons: 5).replacingOccurrences(of: "\"list\"", with: "\"rows\"")
+            )
+        ])
+        let unmatched = try Self.report(Self.timings(list: 40, icons: 5.0), history: renamed)
+        #expect(!unmatched.succeeded)
+        #expect(unmatched.output.contains("list at the default size: the median frame took 40 ms"))
+    }
+
+    // Timings or an earlier record that can't be read stop the release instead of passing unchecked.
+    @Test func framesThatCantBeComparedFail() throws {
+        let noNumbers = Self.history([
+            ("0.16.0", "Mac16,5", Self.timings(list: 6, icons: 5).replacingOccurrences(of: "medianMs", with: "median"))
+        ])
+        let earlier = try Self.report(Self.timings(list: 40, icons: 5.0), history: noNumbers)
+        #expect(!earlier.succeeded)
+        #expect(earlier.output.contains("couldn't be compared"))
+        let noTimings = """
+            {"releases": [{"version": "0.16.0", "date": "2026-11-01", "machine": "Mac16,5"}]}
+            """
+        #expect(try Self.report(Self.timings(list: 6, icons: 5.0), history: noTimings).succeeded == false)
+        #expect(try Self.report("{\"timings\": []}", history: nil).succeeded == false)
+        let noNumbersNow = """
+            {"timings": [{"view": "list", "size": "default"}]}
+            """
+        #expect(try Self.report(noNumbersNow, history: nil).succeeded == false)
+    }
+
     // scripts/ci.sh --scope and the release's tests of real windows: a run that matched no test fails.
     @Test func aTestRunThatRanNothingIsTold() throws {
         try withTemporaryDirectory(prefix: "filetrail-runs") { folder throws in
