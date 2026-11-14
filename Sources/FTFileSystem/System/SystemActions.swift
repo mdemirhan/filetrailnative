@@ -52,7 +52,7 @@ public struct SystemOpener: Sendable {
         },
         openWithApplication: { applicationPath, paths in
             let appURL = URL(fileURLWithPath: applicationPath)
-            guard FileManager.default.fileExists(atPath: applicationPath) else {
+            guard await BlockingWork.run({ FileManager.default.fileExists(atPath: applicationPath) }) else {
                 throw Failure(
                     message: "Unable to find application named '\(ApplicationPaths.displayName(applicationPath))'")
             }
@@ -61,7 +61,7 @@ public struct SystemOpener: Sendable {
                 configuration: NSWorkspace.OpenConfiguration())
         },
         reveal: { paths in
-            if let failure = revealFailure(paths) { throw Failure(message: failure) }
+            if let failure = await BlockingWork.run({ revealFailure(paths) }) { throw Failure(message: failure) }
             await MainActor.run {
                 NSWorkspace.shared.activateFileViewerSelecting(paths.map { URL(fileURLWithPath: $0) })
             }
@@ -118,20 +118,22 @@ public enum SystemActions {
     public static func openWithApplications(
         paths: [String], pinnedAppPaths: [String],
         lookUp: @Sendable ([String], [String]) async throws -> LaunchServicesAnswer = { paths, appPaths in
-            await Task.detached { OpenWithCatalog.shared.lookup(paths: paths, appPaths: appPaths) }.value
+            await BlockingWork.run { OpenWithCatalog.shared.lookup(paths: paths, appPaths: appPaths) }
         },
-        exists: @Sendable (String) -> Bool = { FileManager.default.fileExists(atPath: $0) }
+        exists: @escaping @Sendable (String) -> Bool = { FileManager.default.fileExists(atPath: $0) }
     ) async -> OpenWithLookup {
         do {
             let result = try await lookUp(paths, pinnedAppPaths)
             return OpenWithLookup(
                 defaultApp: result.defaultApp, apps: result.apps, kinds: result.kinds, pinnedApps: result.appInfo)
         } catch {
-            return OpenWithLookup(
-                pinnedApps: pinnedAppPaths.map { path in
+            let pinnedApps = await BlockingWork.run {
+                pinnedAppPaths.map { path in
                     ApplicationPaths.isValidBundlePath(path) && exists(path)
                         ? ApplicationInfo(path: path, name: ApplicationPaths.displayName(path)) : nil
-                })
+                }
+            }
+            return OpenWithLookup(pinnedApps: pinnedApps)
         }
     }
 
@@ -170,7 +172,7 @@ public enum SystemActions {
     ) async -> TerminalResult {
         let terminalName = terminalApplicationName(terminalApp)
         let launchApplicationPath = terminalApp.map { ApplicationPaths.trimmed($0.appPath) } ?? ""
-        let targetPath = terminalTargetPath(path)
+        let targetPath = await BlockingWork.run { terminalTargetPath(path) }
         if !launchApplicationPath.isEmpty && !ApplicationPaths.isValidBundlePath(launchApplicationPath) {
             return TerminalResult(
                 ok: false, error: ApplicationPaths.invalidPathMessage(launchApplicationPath), targetPath: targetPath,

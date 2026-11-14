@@ -20,7 +20,8 @@ public enum FSEventsFolderWatcher {
         onFail: @escaping @MainActor () -> Void
     ) -> @Sendable () -> Void {
         let start = DeferredStart()
-        Task.detached(priority: .utility) {
+        // Finding the folder's real path reads the disk, which may not answer.
+        DispatchQueue.global(qos: .utility).async {
             if let stop = openStream(path: path, onDisk: disk, onChange: onChange, onFail: onFail) {
                 start.attach(stop)
             } else if !start.isCancelled {

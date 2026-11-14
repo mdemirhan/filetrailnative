@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
@@ -5,10 +6,10 @@ import UniformTypeIdentifiers
 /// When photos were taken, for renaming by date.
 public enum DatesTaken {
     /// One answer per path, in order: "2026-05-14T18:02:11" on the clock of this Mac, or nil when the item has no
-    /// such date (it isn't a photo, has no metadata, or can't be read). Reading many files takes a while, so it
-    /// runs off the caller's thread.
+    /// such date (it isn't a photo, has no metadata, or can't be read). Reading many files takes a while, and a disk
+    /// may stop answering, so it runs as `BlockingWork`.
     public static func read(_ paths: [String]) async -> [String?] {
-        await Task.detached(priority: .userInitiated) { paths.map(dateTaken) }.value
+        await BlockingWork.run { paths.map(dateTaken) }
     }
 
     /// "2026:05:14 18:02:11" (EXIF) becomes "2026-05-14T18:02:11"; nil for anything else.

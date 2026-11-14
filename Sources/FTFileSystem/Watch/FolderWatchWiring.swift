@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 extension FolderWatches.Dependencies {
@@ -25,14 +26,14 @@ extension FolderWatches.Dependencies {
                 }
             },
             readModifiedTime: { path in
-                // A disk read, off the main actor.
-                await Task.detached(priority: .utility) {
+                // A disk read, which may wait on its disk.
+                await BlockingWork.run(qos: .utility) {
                     guard let time = (try? fileSystem.stat(path))?.mtimeMs else { return nil }
                     // Added up with the Trash's other folders: a change to any of them changes the total.
                     return trash.listedWith(path).reduce(Double(time)) { total, other in
                         total + Double((try? fileSystem.stat(other))?.mtimeMs ?? 0)
                     }
-                }.value
+                }
             },
             onFolderChanged: onFolderChanged,
             forgetCachedListings: { path, changedPaths in

@@ -1,4 +1,5 @@
 import Darwin
+import FTFoundation
 import Foundation
 
 public enum TrashState {
@@ -64,10 +65,10 @@ public enum TrashState {
         public init(message: String) { self.message = message }
     }
 
-    /// In-process `NSAppleScript`, so the Apple Events prompt names File Trail. Run off the main thread: Finder may
-    /// take long.
+    /// In-process `NSAppleScript`, so the Apple Events prompt names File Trail. Run as `BlockingWork`: the script waits
+    /// for Finder, which may take long.
     public static let runAppleScript: ScriptRunner = { source in
-        try await Task.detached {
+        try await BlockingWork.run { () throws(AppleScriptFailure) in
             guard let script = NSAppleScript(source: source) else {
                 throw AppleScriptFailure(message: "execution error: the script could not be made.")
             }
@@ -79,7 +80,7 @@ public enum TrashState {
                 throw AppleScriptFailure(
                     message: "execution error: \(message)" + (number.map { " (\($0))" } ?? ""))
             }
-        }.value
+        }
     }
 
     /// Empties the Trash through Finder. What is reported is the script engine's own error line, not the script that

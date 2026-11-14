@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 import os
 
@@ -64,7 +65,7 @@ public final class OpenFileEntryPoint {
     @discardableResult
     public func open(_ paths: [String]) -> Task<[OpenRequest], Never> {
         let before = lastTaken
-        let looked = Task.detached { [describe] in paths.compactMap(describe) }
+        let looked = Task.detached { [describe] in await BlockingWork.run { paths.compactMap(describe) } }
         let taken = Task { [waitedLongEnough] in
             if let before {
                 await Self.firstOf({ _ = await before.value }, waitedLongEnough)
