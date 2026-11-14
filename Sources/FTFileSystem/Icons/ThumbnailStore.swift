@@ -39,10 +39,43 @@ public final class ThumbnailStore {
         var loadNumber: Int
     }
 
-    /// A load under way, told when its file may have changed after it was read.
+    /// A load under way, told when its file may have changed after it was read. Another request for the file at no
+    /// larger size and for the same listing waits for it rather than asking again.
     @MainActor
     private final class PendingLoad {
         var fileChanged = false
+        /// The size it asks for, and the listing it checks the file for.
+        let size: Int
+        let listing: AnyObject
+        /// Its job's number in the queue; whether it was taken out of the queue before it started.
+        var job = 0
+        var isRemoved = false
+        /// Whether it is wanted only ahead of need: the next page of the Previews view.
+        var isAhead: Bool
+        /// Those waiting for it, each with its own handle.
+        var waiters: [Waiter] = []
+
+        init(size: Int, listing: AnyObject, isAhead: Bool) {
+            self.size = size
+            self.listing = listing
+            self.isAhead = isAhead
+        }
+
+        /// Whether a request at `size` for `listing` is answered by this load.
+        func serves(size: Int, listing: AnyObject) -> Bool {
+            !isRemoved && !fileChanged && self.size >= size && self.listing === listing
+        }
+    }
+
+    /// One request waiting for a load.
+    @MainActor
+    private final class Waiter {
+        let completion: @MainActor (ThumbnailPicture?) -> Void
+        var cancelled = false
+
+        init(_ completion: @escaping @MainActor (ThumbnailPicture?) -> Void) {
+            self.completion = completion
+        }
     }
 
     private struct WeakLoad {
@@ -166,10 +199,31 @@ public final class ThumbnailStore {
     /// gets a new preview the next time its folder is read, or once `markChanged` names it. One cached at a smaller
     /// `size` is given at once too, and asked for again at this size; a file with no preview at a larger size is asked
     /// for again at this one. `listing` stands for one reading of the folder:
-    /// any object that changes when the list of items does.
+    /// any object that changes when the list of items does. A load of the file under way that serves the request is
+    /// waited for rather than asked again, and moves up the queue if it was asked for ahead of need.
     @discardableResult
     public func load(
         path: String, kind: IconEntryKind, size: Int = ThumbnailStore.pixelSize, listing: AnyObject,
+        completion: @escaping @MainActor (ThumbnailPicture?) -> Void
+    ) -> LoadHandle {
+        load(path: path, kind: kind, size: size, listing: listing, ahead: false, completion: completion)
+    }
+
+    /// Asks for the file's preview ahead of need, as `load` would, so that it is cached once it is wanted: it waits
+    /// behind every preview wanted now. The handle takes it back if it has not started.
+    @discardableResult
+    public func prefetch(path: String, kind: IconEntryKind, size: Int, listing: AnyObject) -> LoadHandle {
+        load(path: path, kind: kind, size: size, listing: listing, ahead: true) { _ in }
+    }
+
+    /// Whether a preview of the file, or the answer that it has none, is kept: one not kept yet is being loaded or
+    /// will be.
+    public func isKept(path: String) -> Bool {
+        cache.peek(path) != nil
+    }
+
+    private func load(
+        path: String, kind: IconEntryKind, size: Int, listing: AnyObject, ahead: Bool,
         completion: @escaping @MainActor (ThumbnailPicture?) -> Void
     ) -> LoadHandle {
         guard Self.canHaveThumbnail(kind) else {
@@ -185,13 +239,23 @@ public final class ThumbnailStore {
         // larger size.
         let knownVersion = cached.flatMap { $0.covers(size) ? $0.version : nil }
         let wanted = cached?.picture != nil ? max(size, cached?.size ?? 0) : size
-        let cancelled = CancelFlag()
+        let waiter = Waiter(completion)
+        let loads = pending[path]?.lazy.compactMap(\.load)
+        if let running = loads?.first(where: { $0.serves(size: wanted, listing: listing) }) {
+            running.waiters.append(waiter)
+            if !ahead, running.isAhead {
+                running.isAhead = false
+                queue.wantNow(running.job)
+            }
+            return handle(waiter, of: running)
+        }
         let provider = self.provider
         loadCount += 1
         let number = loadCount
-        let load = PendingLoad()
+        let load = PendingLoad(size: wanted, listing: listing, isAhead: ahead)
+        load.waiters = [waiter]
         started(load, path: path)
-        let queued = queue.enqueue { [weak self] in
+        load.job = queue.add(ahead: ahead) { [weak self] in
             let response = await provider.response(
                 path: path, size: wanted, knownVersion: knownVersion)
             guard let self else { return }
@@ -227,18 +291,20 @@ public final class ThumbnailStore {
             } else {
                 self.keep(thumbnail, for: path)
             }
-            if !cancelled.value {
-                completion(thumbnail.picture)
+            for waiter in load.waiters where !waiter.cancelled {
+                waiter.completion(thumbnail.picture)
             }
         }
-        return LoadHandle {
-            cancelled.value = true
-            queued.cancel()
+        return handle(waiter, of: load)
+    }
+
+    /// Takes the waiter's request back, and the load out of the queue once no one waits for it.
+    private func handle(_ waiter: Waiter, of load: PendingLoad) -> LoadHandle {
+        LoadHandle { [weak self, weak load] in
+            waiter.cancelled = true
+            guard let self, let load, load.waiters.allSatisfy(\.cancelled) else { return }
+            // One already started goes on, and keeps what it makes.
+            load.isRemoved = self.queue.remove(load.job)
         }
     }
-}
-
-@MainActor
-private final class CancelFlag {
-    var value = false
 }

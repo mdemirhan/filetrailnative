@@ -28,9 +28,10 @@ extension ExplorerWindowlessTests {
             #expect(CGImageDestinationFinalize(destination))
         }
 
-        /// A window on a folder of pictures `width` by `height`, in the Previews view, each showing its preview.
+        /// A window on a folder of pictures `width` by `height`, in the Previews view, each showing its preview: the
+        /// first `shown` of them, when the others are out of view.
         private func openPictures(
-            _ harness: ExplorerHarness, _ names: [String], width: Int, height: Int
+            _ harness: ExplorerHarness, _ names: [String], width: Int, height: Int, shown: Int? = nil
         ) async throws -> (MainWindowController, GridProbe, PreviewsViewController) {
             let folder = try harness.makeFolder(named: "Pictures", files: 0)
             for name in names { try writePicture(folder.appendingPathComponent(name), width: width, height: height) }
@@ -43,7 +44,7 @@ extension ExplorerWindowlessTests {
             let previews = try #require(probe.pane as? PreviewsViewController)
             #expect(
                 await waitUntil {
-                    names.allSatisfy { probe.iconItems[$0]?.thumbnail.image != nil }
+                    names.prefix(shown ?? names.count).allSatisfy { probe.iconItems[$0]?.thumbnail.image != nil }
                 })
             probe.layout()
             return (tab, probe, previews)
@@ -200,6 +201,57 @@ extension ExplorerWindowlessTests {
             }
             await harness.close()
             #expect(before == 0, "a pane of an earlier test still counts as showing the Previews view")
+        }
+
+        // MARK: Waiting for the previews
+
+        // The previews of the page below the one on screen are asked for ahead of need: scrolled to, they show in
+        // their first frame. Then the page below that one is asked for, and the one above, already kept.
+        @Test func theNextPageIsAskedForAheadOfNeed() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let names = "abcdefghijkl".map { "\($0).png" }
+            // Four at a time, two by two.
+            let (tab, probe, previews) = try await openPictures(harness, names, width: 300, height: 200, shown: 4)
+            #expect(previews.count == 4 && previews.columns == 2)
+            let paths = try names.map { try path(tab, $0) }
+            let store = PreviewThumbnails.store
+            #expect(await waitUntil { previews.prefetchedPaths == Set(paths[4..<8]) })
+            #expect(await waitUntil { paths[4..<8].allSatisfy { store.loadedPicture(forPath: $0) != nil } })
+            #expect(paths[8...].allSatisfy { store.loadedPicture(forPath: $0) == nil })
+
+            previews.scrollPosition = (top: previews.layout.rowHeight * 2, left: 0)
+            probe.layout()
+            for name in names[4..<8] {
+                let item = try #require(probe.iconItems[name])
+                #expect(item.thumbnail.image != nil && !item.isWaitingForPicture && item.iconView.isHidden)
+            }
+            #expect(await waitUntil { previews.prefetchedPaths == Set(paths[8...] + paths[..<4]) })
+            #expect(await waitUntil { paths[8...].allSatisfy { store.loadedPicture(forPath: $0) != nil } })
+            await harness.close()
+        }
+
+        // A preview not known yet is waited for with nothing drawn in its place, and drawn there when it comes: the
+        // icon never shows before it.
+        @Test func aPreviewNotKnownYetIsWaitedForWithoutTheIcon() async throws {
+            let wait = PreviewsViewController.iconWait
+            defer { PreviewsViewController.iconWait = wait }
+            PreviewsViewController.iconWait = 30
+            let harness = try ExplorerHarness.windowless()
+            let folder = try harness.makeFolder(named: "Pictures", files: 0)
+            try writePicture(folder.appendingPathComponent("a.png"), width: 300, height: 200)
+            let tab = try await harness.open(folder.path)
+            tab.perform(.viewAsPreviews)
+            let probe = GridProbe(tab: tab)
+            #expect(await waitUntil { tab.content.entries.count == 1 && probe.pane != nil })
+            harness.layout(tab)
+            probe.layout()
+            let item = try #require(probe.iconItems["a.png"])
+            if item.thumbnail.image == nil {
+                #expect(item.isWaitingForPicture && item.iconView.isHidden && item.thumbnail.isHidden)
+            }
+            #expect(await waitUntil { item.thumbnail.image != nil })
+            #expect(!item.isWaitingForPicture && item.iconView.isHidden && !item.thumbnail.isHidden)
+            await harness.close()
         }
 
         // MARK: The screen

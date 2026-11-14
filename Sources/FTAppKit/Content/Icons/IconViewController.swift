@@ -27,6 +27,10 @@ class IconViewController: ItemGridPane {
     /// otherwise it sits in a square box of the icon's size.
     var picturesFillTheirPlace: Bool { false }
 
+    /// How long an item whose preview isn't known yet draws nothing before it shows the icon: none, as an icon's
+    /// small preview is no larger than the icon it replaces.
+    var iconWait: TimeInterval { 0 }
+
     /// What shows when the pointer rests on an item: its whole name, for one shortened in the middle.
     func toolTip(for entry: DirectoryEntry) -> String { entry.name }
 

@@ -295,6 +295,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         // A preview not loaded yet is dropped from the queue when its item is reused.
         thumbnailRequest?.cancel()
         thumbnailRequest = nil
+        iconWait?.cancel()
+        iconWait = nil
         path = nil
     }
 
@@ -342,28 +344,88 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
 
     private var labelTextWidth = 0.0
 
+    /// Asks for the file's preview. The answer the store has at once is shown at once; when it has none yet, the
+    /// picture this item drew of the same file stays until the new one comes, and the pane's `iconWait` passes with
+    /// nothing drawn before the icon shows, so a preview that comes quickly isn't drawn over the icon a moment after it.
     func loadThumbnail(_ entry: DirectoryEntry, pane: IconViewController) {
         thumbnailRequest?.cancel()
         thumbnailRequest = nil
+        iconWait?.cancel()
+        iconWait = nil
         let theme = pane.host?.theme ?? AppearanceModel.shared.theme
         let style = pane.style
-        thumbnailRequest = pane.thumbnailStore.load(
-            path: entry.path, kind: entry.iconEntry.kind, size: pane.thumbnailPixelSize, listing: pane.listing
+        let store = pane.thumbnailStore
+        let kind = entry.iconEntry.kind
+        // Not known yet: the store is asking for it, and answers again once it has it.
+        let unknown = ThumbnailStore.canHaveThumbnail(kind) && !store.isKept(path: entry.path)
+        let keepsPicture = unknown && hasThumbnail && thumbnailPath == entry.path
+        let wait = unknown ? pane.iconWait : 0
+        let atOnce = Flag(true)
+        thumbnailRequest = store.load(
+            path: entry.path, kind: kind, size: pane.thumbnailPixelSize, listing: pane.listing
         ) { [weak self] picture in
             guard let self, self.path == entry.path else { return }
             if let picture {
-                self.hasThumbnail = true
-                self.thumbnail.show(picture, theme: theme, style: style)
-                self.thumbnailSize = picture.image.size
+                self.showPicture(picture, of: entry.path, theme: theme, style: style)
+            } else if atOnce.value, keepsPicture {
+                return
+            } else if atOnce.value, wait > 0 {
+                self.waitForPicture(of: entry.path, for: wait)
             } else {
-                self.hasThumbnail = false
-                self.thumbnail.setAccessibilityIdentifier("")
+                self.showIcon()
             }
-            self.thumbnail.isHidden = !self.hasThumbnail
-            self.iconView.isHidden = self.hasThumbnail
-            self.layoutParts()
         }
+        atOnce.value = false
     }
+
+    /// The path of the picture drawn.
+    private var thumbnailPath: String?
+    /// Shows the icon once the preview has been waited for long enough.
+    private var iconWait: DispatchWorkItem?
+
+    private func showPicture(_ picture: ThumbnailPicture, of path: String, theme: Theme, style: IconItemStyle) {
+        iconWait?.cancel()
+        iconWait = nil
+        hasThumbnail = true
+        thumbnailPath = path
+        thumbnail.show(picture, theme: theme, style: style)
+        thumbnailSize = picture.image.size
+        thumbnail.isHidden = false
+        iconView.isHidden = true
+        layoutParts()
+    }
+
+    private func showIcon() {
+        iconWait?.cancel()
+        iconWait = nil
+        hasThumbnail = false
+        thumbnailPath = nil
+        thumbnail.setAccessibilityIdentifier("")
+        thumbnail.isHidden = true
+        iconView.isHidden = false
+        layoutParts()
+    }
+
+    /// Draws nothing in the picture's place for `delay`, then the icon unless the preview came.
+    private func waitForPicture(of path: String, for delay: TimeInterval) {
+        hasThumbnail = false
+        thumbnailPath = nil
+        thumbnail.setAccessibilityIdentifier("")
+        thumbnail.isHidden = true
+        iconView.isHidden = true
+        layoutParts()
+        let work = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self, self.path == path, !self.hasThumbnail else { return }
+                self.showIcon()
+            }
+        }
+        iconWait = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
+    }
+
+    /// Whether the item waits for its preview with nothing drawn, for a test.
+    var isWaitingForPicture: Bool { iconWait != nil }
 
     private var thumbnailSize = NSSize.zero
 
@@ -518,4 +580,11 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
     var measuredSize: DragSelectionSize? {
         DragSelectionSize(width: Double(label.frame.width), height: Double(label.frame.height))
     }
+}
+
+/// Whether a store's answer came while it was asked.
+@MainActor
+private final class Flag {
+    var value: Bool
+    init(_ value: Bool) { self.value = value }
 }

@@ -106,7 +106,12 @@ final class PreviewsViewController: IconViewController {
         let anchor = scrollAnchor()
         guard metricsChanged() else { return }
         collection.reloadData()
-        DispatchQueue.main.async { anchor?() }
+        // The previews come at another size now.
+        dropPrefetches()
+        DispatchQueue.main.async { [weak self] in
+            anchor?()
+            self?.prefetchSoon()
+        }
     }
 
     /// The places follow the pane's width and its height.
@@ -210,6 +215,10 @@ final class PreviewsViewController: IconViewController {
     private func scrolled() {
         let top = Double(scroll.contentView.bounds.origin.y)
         defer { lastTop = top }
+        if top != lastTop {
+            wentUp = top < lastTop
+            prefetchSoon()
+        }
         guard !isLiveScrolling, !isSnapping, top != lastTop else { return }
         if scrollStart == nil { scrollStart = lastTop }
         settleAfterRest()
@@ -236,13 +245,86 @@ final class PreviewsViewController: IconViewController {
         snapToRow(share: PreviewGrid.wheelShare)
     }
 
+    // MARK: The next page
+
+    /// The previews asked for ahead of need, by path.
+    private var prefetched: [String: LoadHandle] = [:]
+    private var prefetchWaits = false
+    /// Whether the pane last scrolled up: the page above is then asked for first.
+    private var wentUp = false
+
+    /// The paths whose previews are asked for ahead of need, for a test.
+    var prefetchedPaths: Set<String> { Set(prefetched.keys) }
+
+    /// Asks for the page past the one on screen once the items on screen have asked for theirs, so that it shows its
+    /// previews as soon as it comes into view.
+    private func prefetchSoon() {
+        guard !prefetchWaits else { return }
+        prefetchWaits = true
+        DispatchQueue.main.async { [weak self] in
+            MainActor.assumeIsolated {
+                self?.prefetchWaits = false
+                self?.prefetchNextPages()
+            }
+        }
+    }
+
+    /// The previews of the page after the one on screen, the way the pane last went, then of the page before, are
+    /// asked for ahead of need: behind every preview on screen, so they never hold one up. Those no longer a page
+    /// away are taken back if they have not started.
+    func prefetchNextPages() {
+        let clip = scroll.contentView.bounds
+        var wanted: [Int] = []
+        if view.window != nil, !entries.isEmpty, clip.height > 0, layout.rowHeight > 0 {
+            let shown = items(in: clip, viewport: clip.size)
+            let rows = max(1, Int((Double(clip.height) / layout.rowHeight).rounded()))
+            let page = rows * max(1, columns)
+            let below = Array(shown.upperBound..<min(entries.count, shown.upperBound + page))
+            let above = Array(max(0, shown.lowerBound - page)..<shown.lowerBound).reversed()
+            wanted = wentUp ? Array(above) + below : below + Array(above)
+        }
+        let paths = Set(wanted.map { entries[$0].path })
+        for (path, handle) in prefetched where !paths.contains(path) { handle.cancel() }
+        prefetched = prefetched.filter { paths.contains($0.key) }
+        let size = thumbnailPixelSize
+        for index in wanted where prefetched[entries[index].path] == nil {
+            let entry = entries[index]
+            prefetched[entry.path] = thumbnailStore.prefetch(
+                path: entry.path, kind: entry.iconEntry.kind, size: size, listing: listing)
+        }
+    }
+
+    /// The next pages' previews are checked again too.
+    override func filesChanged(paths: Set<String>?) {
+        super.filesChanged(paths: paths)
+        dropPrefetches()
+        prefetchSoon()
+    }
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        prefetchSoon()
+    }
+
+    /// Takes back every preview asked for ahead of need: the pane shows other items, or other sizes of them.
+    private func dropPrefetches() {
+        for handle in prefetched.values { handle.cancel() }
+        prefetched = [:]
+    }
+
     isolated deinit {
         for observer in observers { NotificationCenter.default.removeObserver(observer) }
         settle?.cancel()
+        for handle in prefetched.values { handle.cancel() }
         if isCounted { PreviewThumbnails.panes.disappeared() }
     }
 
     override var picturesFillTheirPlace: Bool { true }
+
+    /// Most previews come within this; one that does is drawn in a place left empty until then, rather than over the
+    /// icon a moment after it.
+    static var iconWait: TimeInterval = 0.2
+    override var iconWait: TimeInterval { Self.iconWait }
     override var thumbnailStore: ThumbnailStore { PreviewThumbnails.store }
 
     /// A screen's scale and longer side in points, in place of the window's own: a test's.
@@ -266,6 +348,8 @@ final class PreviewsViewController: IconViewController {
         forEachVisibleItem { item, entry in
             (item as? IconItem)?.loadThumbnail(entry, pane: self)
         }
+        dropPrefetches()
+        prefetchSoon()
     }
 
     /// The shapes of the pictures seen, by path: a drag-to-select goes by where each picture really is, for those
@@ -285,6 +369,8 @@ final class PreviewsViewController: IconViewController {
 
     override func reload(scrollToTop: Bool) {
         super.reload(scrollToTop: scrollToTop)
+        dropPrefetches()
+        prefetchSoon()
         let listed = indexByPath
         pictureShapes = pictureShapes.filter { listed[$0.key] != nil }
     }

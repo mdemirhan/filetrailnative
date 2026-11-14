@@ -597,6 +597,111 @@ private func request(
         #expect(first.last?.image === newer.image)
     }
 
+    // MARK: Loads shared, and asked for ahead of need
+
+    // A second request for a file being loaded, at no larger size and for the same reading of the folder, waits for
+    // that load: Quick Look is asked once, and both are answered. One at a larger size asks again.
+    @Test func aRequestForAFileBeingLoadedWaitsForThatLoad() async {
+        let provider = ScriptedProvider()
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let first = Receiver()
+        let second = Receiver()
+        _ = store.load(path: "/a.png", kind: .file, size: 512, listing: listing) { first.answers.append($0) }
+        _ = store.load(path: "/a.png", kind: .file, size: 256, listing: listing) { second.answers.append($0) }
+        await pollUntil { provider.calls.count == 1 }
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(provider.calls.count == 1)
+        #expect(first.last != nil && second.last?.image === first.last?.image)
+
+        _ = store.load(path: "/b.png", kind: .file, size: 256, listing: listing) { _ in }
+        _ = store.load(path: "/b.png", kind: .file, size: 512, listing: listing) { _ in }
+        await pollUntil { provider.calls.count == 3 }
+        // The two run at once, in no fixed order.
+        #expect(provider.calls.suffix(2).map(\.size).sorted() == [256, 512])
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await idle(queue)
+    }
+
+    // A load several wait for stays in the queue until the last of them takes its request back.
+    @Test func aSharedLoadLeavesTheQueueOnceNoOneWaitsForIt() async {
+        let provider = ScriptedProvider()
+        // One load at a time: the second file's waits in the queue.
+        let queue = ThumbnailLoadQueue(maxConcurrent: 1)
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        _ = store.load(path: "/a.png", kind: .file, size: 256, listing: listing) { _ in }
+        let shown = Receiver()
+        let one = store.load(path: "/b.png", kind: .file, size: 256, listing: listing) { _ in }
+        let other = store.load(path: "/b.png", kind: .file, size: 256, listing: listing) { shown.answers.append($0) }
+        await pollUntil { provider.calls.count == 1 }
+        #expect(queue.queuedCount == 1)
+        one.cancel()
+        #expect(queue.queuedCount == 1)
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await pollUntil { provider.calls.count == 2 }
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(shown.last != nil)
+
+        _ = store.load(path: "/c.png", kind: .file, size: 256, listing: listing) { _ in }
+        let first = store.load(path: "/d.png", kind: .file, size: 256, listing: listing) { _ in }
+        let second = store.load(path: "/d.png", kind: .file, size: 256, listing: listing) { _ in }
+        await pollUntil { provider.calls.count == 3 }
+        first.cancel()
+        second.cancel()
+        #expect(queue.queuedCount == 0)
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(provider.calls.count == 3)
+        // Taken back before it started, it is asked for anew.
+        _ = store.load(path: "/d.png", kind: .file, size: 256, listing: listing) { _ in }
+        await pollUntil { provider.calls.count == 4 }
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await idle(queue)
+    }
+
+    // Previews asked for ahead of need wait behind every one wanted now and leave a load free for one, and the
+    // preview is kept for when it is wanted; one wanted now while it waits moves up and is not asked again.
+    @Test func aPrefetchWaitsBehindPreviewsWantedNow() async {
+        let provider = ScriptedProvider()
+        let queue = ThumbnailLoadQueue(maxConcurrent: 2)
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        for name in ["n1", "n2", "n3"] {
+            store.prefetch(path: "/\(name).png", kind: .file, size: 256, listing: listing)
+        }
+        // One load is left free: one of those ahead of need starts.
+        await pollUntil { provider.calls.count == 1 }
+        #expect(queue.activeCount == 1 && queue.queuedAheadCount == 2)
+        let now = Receiver()
+        _ = store.load(path: "/shown.png", kind: .file, size: 256, listing: listing) { now.answers.append($0) }
+        await pollUntil { provider.calls.count == 2 }
+        #expect(provider.calls.map(\.path) == ["/n1.png", "/shown.png"])
+        // The third one ahead of need is wanted now: it goes before the second.
+        let wanted = Receiver()
+        _ = store.load(path: "/n3.png", kind: .file, size: 256, listing: listing) { wanted.answers.append($0) }
+        #expect(queue.queuedAheadCount == 1 && queue.queuedCount == 2)
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await pollUntil { provider.calls.count == 3 }
+        #expect(provider.calls.last?.path == "/n3.png")
+        // The second one ahead of need starts once nothing else runs.
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await pollUntil { provider.calls.count == 4 }
+        await pollUntil { queue.activeCount == 1 && queue.queuedCount == 0 }
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(provider.calls.map(\.path).sorted() == ["/n1.png", "/n2.png", "/n3.png", "/shown.png"])
+        #expect(now.last != nil && wanted.last != nil)
+        // What was asked for ahead of need is given at once and not asked again.
+        let later = Receiver()
+        _ = store.load(path: "/n2.png", kind: .file, size: 256, listing: listing) { later.answers.append($0) }
+        #expect(later.answers.count == 1 && later.last != nil)
+        #expect(provider.calls.count == 4)
+    }
+
     @Test func keepsTheMostRecentlyUsedFiveHundred() async {
         let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()) }
         let queue = ThumbnailLoadQueue()
