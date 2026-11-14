@@ -421,7 +421,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         explorerToolbar.attach(self)
         connectSearchField()
         installBatchRename()
-        onFolderUsed = { [weak self] in self?.visitTracker.use() }
+        // What is done in the folders is done in the active pane's.
+        onFolderUsed = { [weak self] in self?.activePane.visitTracker.use() }
         #if DEBUG
             AutomationLayoutPrefs.registerOnce()
             AutomationSidebarPrefs.registerOnce()
@@ -726,9 +727,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// Another tab came to the front. The window's one tracker hears of a folder on screen changing (`showing`), so the
-    /// folder this tab was still being decided on was only passed through; each tab here has a tracker of its own.
+    /// folders this tab's panes were still being decided on were only passed through; each pane here has a tracker of
+    /// its own.
     func wentToTheBack(for other: MainWindowController) {
-        visitTracker.showing(other.shownFolderPath)
+        for pane in panes { pane.visitTracker.showing(other.shownFolderPath) }
         for pane in panes where pane.dropWaitingReadAgain() { treeOutOfDate = true }
     }
 
@@ -809,11 +811,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func comeBack(to place: TabPlace) async { await activePane.comeBack(to: place) }
 
     // MARK: Opening items
-
-    /// The folder visits the Go To box counts.
-    lazy var visitTracker = FolderVisitTracker { path, kind in
-        MainWindowController.visitStore()?.recordFolderVisit(path, kind: kind)
-    }
 
     /// What the plan of the items to open needs of the entries on screen.
     private func commandEntries(_ entries: [DirectoryEntry]) -> [CommandEntry] {
@@ -1574,7 +1571,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         // Closing a tab stops its searches.
         for pane in panes { pane.searchStore?.session.close() }
         group?.tabWillClose(self)
-        visitTracker.dispose()
+        for pane in panes { pane.visitTracker.dispose() }
         // An open clipboard or Undo History list goes with the tab, and so does what it listens to.
         clipboardUI.close()
         undoHistoryUI.close()

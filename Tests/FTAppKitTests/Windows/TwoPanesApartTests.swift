@@ -88,5 +88,87 @@ extension ExplorerWindowlessTests {
             tab.activePane.go(to: URL(fileURLWithPath: real(harness, "Beta")))
             #expect(await waitUntil { info.targetOverride == nil })
         }
+
+        // MARK: The visits Go To counts
+
+        /// Whether the Go To box counts a visit of `path`.
+        private func visited(_ store: AppStateStore, _ path: String) -> Bool {
+            store.folders().contains { samePath($0.path, path) && !$0.visits.isEmpty }
+        }
+
+        /// The panes' visits are decided on by hand: no folder stays on screen long enough to count by itself, however
+        /// busy the Mac is.
+        private func visitsByHand(_ panes: BrowserPane...) {
+            for pane in panes {
+                pane.visitTracker = FolderVisitTracker(scheduler: ManualTimers()) { path, kind in
+                    MainWindowController.visitStore()?.recordFolderVisit(path, kind: kind)
+                }
+            }
+        }
+
+        /// `pane` opens `name` and shows it.
+        private func open(_ pane: BrowserPane, _ harness: ExplorerHarness, _ name: String) async {
+            pane.go(to: URL(fileURLWithPath: real(harness, name)))
+            #expect(await waitUntil { pane.shownFolderPath == real(harness, name) && !pane.isNavigating })
+        }
+
+        // A folder opened in the other pane (⌥-click in the tree) doesn't make the active pane's folder a pass-through,
+        // and what is then done in the active pane's folder counts for it, not for the other pane's.
+        @Test func aFolderOpenedInTheOtherPaneLeavesTheActivePanesVisitAlone() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let store = harness.store
+            MainWindowController.visitStore = { store }
+            defer { MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Gamma")
+            visitsByHand(left, right)
+            await open(left, harness, "Alpha")
+            await open(right, harness, "Beta")
+
+            tab.onFolderUsed?()
+            #expect(visited(store, real(harness, "Alpha")))
+            #expect(!visited(store, real(harness, "Beta")))
+        }
+
+        // The other pane's folder is decided on by its own use: made active, a use counts for its folder.
+        @Test func eachPaneDecidesOnItsOwnFolder() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let store = harness.store
+            MainWindowController.visitStore = { store }
+            defer { MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Gamma")
+            visitsByHand(left, right)
+            await open(left, harness, "Alpha")
+            await open(right, harness, "Beta")
+
+            tab.activate(right)
+            tab.onFolderUsed?()
+            #expect(visited(store, real(harness, "Beta")))
+            #expect(!visited(store, real(harness, "Alpha")))
+            // Swapped, each pane keeps its own: the one that was on the left, active again, still decides on Alpha.
+            tab.swapPanes()
+            tab.activate(left)
+            tab.onFolderUsed?()
+            #expect(visited(store, real(harness, "Alpha")))
+        }
+
+        // A folder the closed pane was still being decided on was only passed through: nothing done later counts for
+        // it.
+        @Test func closingTheOtherPanePassesThroughItsFolder() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let store = harness.store
+            MainWindowController.visitStore = { store }
+            defer { MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Gamma")
+            visitsByHand(left, right)
+            await open(right, harness, "Beta")
+
+            tab.closeOtherPane()
+            right.visitTracker.use()
+            tab.onFolderUsed?()
+            #expect(!visited(store, real(harness, "Beta")))
+        }
     }
 }

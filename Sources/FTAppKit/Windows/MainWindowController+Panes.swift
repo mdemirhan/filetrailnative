@@ -102,6 +102,8 @@ extension MainWindowController {
         closedPaneWatchID = gone.watchID
         gone.searchStore?.session.close()
         gone.searchStore?.disconnect()
+        // A folder the closed pane was still being decided on was only passed through.
+        gone.visitTracker.dispose()
         // The cells let go of their views first, so the kept pane's view moves into the left cell without being taken out
         // again.
         workspace.showSecondPane(nil, status: nil)

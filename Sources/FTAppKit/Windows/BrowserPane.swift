@@ -56,6 +56,11 @@ final class BrowserPane {
     var pendingChange: FolderChangeGate.Pending? { folderChanges.pending }
     /// A change from outside is being taken in: Show Info's item stays.
     private(set) var isTakingInOutsideChange = false
+    /// The folder visits the Go To box counts, of this pane's folders: each pane decides on the folders it opens, so
+    /// one opened in the other pane never makes this pane's folder a pass-through, nor takes its use.
+    lazy var visitTracker = FolderVisitTracker { path, kind in
+        MainWindowController.visitStore()?.recordFolderVisit(path, kind: kind)
+    }
     /// Where the first read of the pane's folder stands. A tab brought back, or merged in, waits unread until it is
     /// first shown, or first sent somewhere.
     private enum FirstRead {
@@ -712,7 +717,7 @@ final class BrowserPane {
         }
 
         // A folder is added to the history only after its listing has arrived and been applied.
-        let visits = tab.visitTracker
+        let visits = visitTracker
         switch move {
         case .push:
             navigationHistory.record(shown.path, mode: .push)
