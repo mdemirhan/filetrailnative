@@ -41,10 +41,13 @@ public struct ContextMenuWorld: Equatable, Sendable {
     public var canPaste: Bool
     /// Where Paste would go for an item's menu (`pasteDestinationPath`), nil when nowhere.
     public var hasPasteDestination: Bool
+    /// The tab shows two panes: the Other Pane submenu shows.
+    public var showsTwoPanes: Bool
 
     public init(
         homePath: String, currentPath: String = "", isSearchMode: Bool = false, favoritePaths: [String] = [],
-        trashIsEmpty: Bool? = nil, writeLocked: Bool = false, canPaste: Bool = false, hasPasteDestination: Bool = false
+        trashIsEmpty: Bool? = nil, writeLocked: Bool = false, canPaste: Bool = false, hasPasteDestination: Bool = false,
+        showsTwoPanes: Bool = false
     ) {
         self.homePath = homePath
         self.currentPath = currentPath
@@ -54,6 +57,7 @@ public struct ContextMenuWorld: Equatable, Sendable {
         self.writeLocked = writeLocked
         self.canPaste = canPaste
         self.hasPasteDestination = hasPasteDestination
+        self.showsTwoPanes = showsTwoPanes
     }
 }
 
@@ -138,6 +142,8 @@ public enum ContextMenuRules {
         let entries = subject.entries
         let isItemListSurface = surface == .content || surface == .search || surface == .trash
         // Nothing in the Trash to empty.
+        // With one pane there is no other pane to act on.
+        if !world.showsTwoPanes { hidden.insert(.otherPane) }
         if world.trashIsEmpty == true { hidden.insert(.emptyTrash) }
         // One file operation at a time: while one runs, the others are left out.
         if world.writeLocked {

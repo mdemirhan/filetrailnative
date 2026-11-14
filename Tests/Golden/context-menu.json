@@ -24,6 +24,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -165,6 +171,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -310,6 +322,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -451,6 +469,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -596,6 +620,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -737,6 +767,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -883,6 +919,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -1033,6 +1075,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -1187,6 +1235,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -1337,6 +1391,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -1491,6 +1551,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -1643,6 +1709,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -1793,6 +1865,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -1950,6 +2028,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -2095,6 +2179,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "rootTreeHere",
           "label": "Use as Tree Root",
           "icon": "rootTreeHere"
@@ -2225,6 +2315,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "rootTreeHere",
@@ -2359,6 +2455,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "rootTreeHere",
           "label": "Use as Tree Root",
           "icon": "rootTreeHere"
@@ -2489,6 +2591,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "rootTreeHere",
@@ -2623,6 +2731,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "rootTreeHere",
           "label": "Use as Tree Root",
           "icon": "rootTreeHere"
@@ -2753,6 +2867,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "rootTreeHere",
@@ -2890,6 +3010,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "rootTreeHere",
           "label": "Use as Tree Root",
           "icon": "rootTreeHere"
@@ -3020,6 +3146,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "revealInTree",
           "label": "Reveal in Tree",
           "icon": "revealInTree"
@@ -3129,6 +3261,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "revealInTree",
@@ -3242,6 +3380,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "revealInTree",
           "label": "Reveal in Tree",
           "icon": "revealInTree"
@@ -3351,6 +3495,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "revealInTree",
@@ -3464,6 +3614,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "revealInTree",
           "label": "Reveal in Tree",
           "icon": "revealInTree"
@@ -3573,6 +3729,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "revealInTree",
@@ -3689,6 +3851,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "revealInTree",
           "label": "Reveal in Tree",
           "icon": "revealInTree"
@@ -3792,6 +3960,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -3943,6 +4117,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -4090,6 +4270,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -4241,6 +4427,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -4390,6 +4582,12 @@
           "icon": "openInNewWindow"
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "id": "openWith",
           "label": "Open With",
           "icon": "openWith",
@@ -4537,6 +4735,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -4689,6 +4893,12 @@
           "id": "openInNewWindow",
           "label": "Open in New Window",
           "icon": "openInNewWindow"
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
         },
         {
           "id": "openWith",
@@ -4872,6 +5082,12 @@
           "hasSubmenu": true
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "type": "separator",
           "key": "separator-background-view"
         },
@@ -4954,6 +5170,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
           "hasSubmenu": true
         },
         {
@@ -5042,6 +5264,12 @@
           "hasSubmenu": true
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "type": "separator",
           "key": "separator-background-view"
         },
@@ -5124,6 +5352,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
           "hasSubmenu": true
         },
         {
@@ -5212,6 +5446,12 @@
           "hasSubmenu": true
         },
         {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
+          "hasSubmenu": true
+        },
+        {
           "type": "separator",
           "key": "separator-background-view"
         },
@@ -5294,6 +5534,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
           "hasSubmenu": true
         },
         {
@@ -5382,6 +5628,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "otherPane",
+          "label": "Other Pane",
+          "icon": "twoPanes",
           "hasSubmenu": true
         },
         {

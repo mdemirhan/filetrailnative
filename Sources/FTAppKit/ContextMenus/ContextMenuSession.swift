@@ -13,6 +13,16 @@ struct ContextMenuRequest {
     var pinnedApps: [OpenWithApplication]
     var viewMode: ExplorerViewMode
     var sortBy: SortByPreference
+    /// What the Other Pane submenu offers, while the tab shows two panes.
+    var otherPane: [OtherPaneMenuItem] = []
+}
+
+/// One item of the Other Pane submenu: the pane command it runs, whether it can now, and its key.
+struct OtherPaneMenuItem {
+    var title: String
+    var command: AppCommand
+    var enabled: Bool
+    var key: MenuKeyEquivalent?
 }
 
 /// What a chosen item does: the window carries these out.
@@ -25,6 +35,8 @@ protocol ContextMenuResponder: AnyObject {
     func contextMenu(toggleTag color: FinderTagColor, paths: [String])
     func contextMenu(setViewMode mode: ExplorerViewMode)
     func contextMenu(sortBy field: SortByPreference)
+    /// An item of the Other Pane submenu was chosen, for the items the menu is for.
+    func contextMenu(otherPane command: AppCommand, subject: ContextMenuSubject)
     func contextMenuDidOpen()
     func contextMenuDidClose()
 }
@@ -181,9 +193,29 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 submenu.addItem(item)
             }
             entry.submenu = submenu
+        case .otherPane:
+            let submenu = NSMenu(title: entry.title)
+            submenu.autoenablesItems = false
+            for choice in request.otherPane {
+                let item = NSMenuItem(title: choice.title, action: #selector(chooseOtherPane(_:)), keyEquivalent: "")
+                item.target = self
+                item.representedObject = choice.command.rawValue
+                item.isEnabled = choice.enabled
+                if let key = choice.key {
+                    item.keyEquivalent = key.key
+                    item.keyEquivalentModifierMask = key.modifiers
+                }
+                submenu.addItem(item)
+            }
+            entry.submenu = submenu
         default:
             break
         }
+    }
+
+    @objc private func chooseOtherPane(_ item: NSMenuItem) {
+        guard let raw = item.representedObject as? String, let command = AppCommand(rawValue: raw) else { return }
+        responder?.contextMenu(otherPane: command, subject: request.subject)
     }
 
     /// The shortcut beside an item, only where pressing the key would do the same now (`ShortcutPolicy`).

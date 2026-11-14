@@ -92,7 +92,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         var world = ContextMenuWorld(
             homePath: home, currentPath: tab.shownFolderPath, isSearchMode: tab.searchRootPath != nil,
             favoritePaths: tab.sidebarController.model.favorites.map(\.path),
-            writeLocked: isWriteOperationLocked)
+            writeLocked: isWriteOperationLocked, showsTwoPanes: tab.showsTwoPanes)
         let destination = ContextMenuRules.pasteDestination(
             subject, world, clipboardSourcePaths: clipboardSourcePaths())
         world.hasPasteDestination = destination != nil
@@ -110,7 +110,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             focusedPane: isTree ? .tree : .content,
             selectedTreeTargetKind: isTree ? (subject.surface == .favorite ? .favorite : .filesystemFolder) : nil)
         shortcutContext.mainView = .explorer
-        let request = ContextMenuRequest(
+        var request = ContextMenuRequest(
             subject: subject, world: world, shortcutContext: shortcutContext,
             shortcuts: ShortcutDisplay(
                 shortcuts: ShortcutCommands.resolve(preferences.shortcutOverrides),
@@ -118,6 +118,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             textEditorName: preferences.defaultTextEditor.appName,
             pinnedApps: preferences.openWithApplications,
             viewMode: tab.searchRootPath != nil ? tab.searchViewMode : tab.viewMode, sortBy: tab.sortBy)
+        if tab.showsTwoPanes { request.otherPane = otherPaneItems(subject, request.shortcuts) }
         let session = ContextMenuSession(request: request, responder: self)
         current = session
         return session.menu
@@ -162,6 +163,53 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     func contextMenu(sortBy field: SortByPreference) {
         tab.sort(by: field)
+    }
+
+    /// The Other Pane submenu for what the menu is for: Open for a folder, Copy and Move for items of the list, and for
+    /// the list's background Show This Folder and Go to Its Folder. What can't run now is dimmed, so the submenu keeps
+    /// its shape.
+    private func otherPaneItems(_ subject: ContextMenuSubject, _ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
+        func key(_ command: AppCommand) -> MenuKeyEquivalent? {
+            ShortcutCommandID(rawValue: command.rawValue).flatMap { shortcuts.written($0) }
+                .flatMap(MenuKeyEquivalent.parse)
+        }
+        func item(_ title: String, _ command: AppCommand, _ enabled: Bool) -> OtherPaneMenuItem {
+            OtherPaneMenuItem(title: title, command: command, enabled: enabled, key: key(command))
+        }
+        let other = tab.otherPane
+        switch subject.surface {
+        case .background:
+            let folder = tab.shownFolderPath
+            let otherFolder = other?.shownFolderPath ?? ""
+            return [
+                item("Show This Folder", .showFolderInOtherPane, !folder.isEmpty),
+                item("Go to Its Folder", .goToOtherPaneFolder, !otherFolder.isEmpty && otherFolder != folder),
+            ]
+        case .treeFolder, .favorite:
+            return [item("Open", .openSelectionInOtherPane, subject.targetPath != nil)]
+        case .content, .search, .trash:
+            let oneFolder = subject.entries.count == 1 && subject.entries[0].kind.isDirectoryLike
+            // Into the folder the other pane shows: not when it shows none, search results, or this list's folder.
+            let destination = other.flatMap { $0.searchRootPath == nil ? $0.shownFolderPath : nil } ?? ""
+            let fromHere = tab.searchRootPath != nil || destination != tab.shownFolderPath
+            let canSend = !subject.paths.isEmpty && !destination.isEmpty && fromHere && !isWriteOperationLocked
+            return [
+                item("Open", .openSelectionInOtherPane, oneFolder),
+                item("Copy", .copyToOtherPane, canSend),
+                item("Move", .moveToOtherPane, canSend),
+            ]
+        }
+    }
+
+    func contextMenu(otherPane command: AppCommand, subject: ContextMenuSubject) {
+        switch command {
+        case .openSelectionInOtherPane:
+            if let target = subject.targetPath ?? subject.paths.first { tab.openSecondPane(at: target) }
+        case .copyToOtherPane, .moveToOtherPane:
+            tab.sendToOtherPane(subject.paths, copying: command == .copyToOtherPane)
+        default:
+            tab.perform(command)
+        }
     }
 
     func contextMenu(open paths: [String], with choice: OpenWithAction, kind: OpenWithKind?) {
@@ -230,7 +278,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if let target = subject.targetPath ?? subject.paths.first { tab.sidebarController.eject(target) }
         case .cut, .copy, .paste, .move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash:
             fileOperation(action, subject)
-        case .openWith, .viewAs, .sortBy:
+        case .openWith, .viewAs, .sortBy, .otherPane:
             break
         }
     }

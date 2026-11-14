@@ -206,7 +206,7 @@ extension ExplorerWindowlessTests {
         @Test func copyAndMoveToOtherPaneSendTheSelectionIntoTheOtherPanesFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
-            let (tab, left, _) = try await twoPanes(harness, right: "Gamma")
+            let (tab, left, right) = try await twoPanes(harness, right: "Gamma")
             let operations = writes(harness)
             defer { withExtendedLifetime(operations) {} }
             let note = real(harness, "note.txt")
@@ -219,6 +219,9 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { FileManager.default.fileExists(atPath: copied) })
             #expect(FileManager.default.fileExists(atPath: note))
             #expect(tab.activePane === left)
+            // The other pane shows what arrived, selected, without waiting for a folder watch.
+            #expect(await waitUntil { right.content.selection.paths == [copied] })
+            #expect(right.content.listed.contains { $0.path == copied })
 
             try FileManager.default.removeItem(atPath: copied)
             #expect(await waitUntil { !tab.isWriteLocked })
@@ -226,6 +229,9 @@ extension ExplorerWindowlessTests {
             tab.perform(.moveToOtherPane)
             #expect(await waitUntil { FileManager.default.fileExists(atPath: copied) })
             #expect(await waitUntil { !FileManager.default.fileExists(atPath: note) })
+            #expect(await waitUntil { right.content.selection.paths == [copied] })
+            // The pane it left lets go of it at once.
+            #expect(await waitUntil { !left.content.listed.contains { $0.path == note } })
         }
 
         @Test func copyAndMoveToOtherPaneWaitForASecondPaneOnAnotherFolder() async throws {
@@ -403,6 +409,49 @@ extension ExplorerWindowlessTests {
             tab.perform(.toggleTwoPanes)
             #expect(tab.panes.count == 1)
             #expect(tab.paneWithKeyboard === other)
+        }
+        // The right-click menus have the Other Pane submenu only while the tab shows two panes.
+        @Test func theRightClickMenusOfferTheOtherPaneOnlyWithTwoPanes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let operations = writes(harness)
+            defer { withExtendedLifetime(operations) {} }
+            let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
+            let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
+            func submenu(_ menu: NSMenu?) -> NSMenu? {
+                menu?.items.first { $0.identifier?.rawValue == "otherPane" }?.submenu
+            }
+            #expect(submenu(tab.contextMenus.contentMenu(for: [note])) == nil)
+            #expect(submenu(tab.contextMenus.contentMenu(for: nil)) == nil)
+
+            let right = tab.openSecondPane(at: real(harness, "Beta"))
+            await arrived(right)
+            let files = try #require(submenu(tab.contextMenus.contentMenu(for: [note])))
+            #expect(files.items.map(\.title) == ["Open", "Copy", "Move"])
+            #expect(files.items.map(\.isEnabled) == [false, true, true])
+            #expect(files.items[1].keyEquivalent == String(Character(UnicodeScalar(UInt32(NSF5FunctionKey))!)))
+            let folder = try #require(submenu(tab.contextMenus.contentMenu(for: [alpha])))
+            #expect(folder.items.map(\.isEnabled) == [true, true, true])
+            let background = try #require(submenu(tab.contextMenus.contentMenu(for: nil)))
+            #expect(background.items.map(\.title) == ["Show This Folder", "Go to Its Folder"])
+
+            // Copy acts on the items right-clicked.
+            tab.contextMenus.contextMenu(
+                otherPane: .copyToOtherPane,
+                subject: ContextMenuSubject(
+                    surface: .content, scope: .selection, paths: [note.path], targetPath: note.path,
+                    entries: [ContextMenuCoordinator.commandEntry(note)]))
+            let copied = real(harness, "Beta") + "/note.txt"
+            #expect(await waitUntil { FileManager.default.fileExists(atPath: copied) })
+            #expect(await waitUntil { right.content.listed.contains { $0.path == copied } })
+
+            tab.contextMenus.contextMenu(
+                otherPane: .openSelectionInOtherPane,
+                subject: ContextMenuSubject(
+                    surface: .content, scope: .selection, paths: [alpha.path], targetPath: alpha.path,
+                    entries: [ContextMenuCoordinator.commandEntry(alpha)]))
+            #expect(await waitUntil { right.shownFolderPath == real(harness, "Alpha") })
         }
     }
 }

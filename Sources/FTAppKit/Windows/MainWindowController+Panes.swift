@@ -165,9 +165,13 @@ extension MainWindowController {
     /// Copy or Move to Other Pane: the selection goes into the other pane's folder through the paste's flow, so what is
     /// there already is reviewed first, and Undo takes it back. The active pane stays active.
     func sendSelectionToOtherPane(copying: Bool) {
+        sendToOtherPane(selectedPaths, copying: copying)
+    }
+
+    /// `paths` of the active pane go into the other pane's folder (the right-click menu's Copy and Move).
+    func sendToOtherPane(_ sources: [String], copying: Bool) {
         guard let other = otherPane, other.searchRootPath == nil, let actions = writeActions else { return }
         let destination = other.shownFolderPath
-        let sources = selectedPaths
         let fromSearchResults = searchRootPath != nil
         guard !sources.isEmpty, !destination.isEmpty else { return }
         let action: WriteOperationAction = copying ? .copyTo : .moveTo

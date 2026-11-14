@@ -15,9 +15,11 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, move, rename, duplicate, newFolder
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, rootTreeHere, trash
     case deleteImmediately, emptyTrash, eject
+    /// The submenu of what can be done with the tab's other pane, while it shows two.
+    case otherPane
 
     /// The items that open a submenu rather than act.
-    public var isSubmenu: Bool { self == .openWith || self == .viewAs || self == .sortBy }
+    public var isSubmenu: Bool { self == .openWith || self == .viewAs || self == .sortBy || self == .otherPane }
 }
 
 public enum ContextMenuItem: Equatable, Sendable {
@@ -88,6 +90,7 @@ public enum ContextMenuItems {
                 item(.newFolder, "New Folder", .newFolder), line("separator-tree-new"),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
+                item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 item(.rootTreeHere, "Use as Tree Root", .rootTreeHere), line("separator-tree-open"),
                 item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-tree-info"),
@@ -110,6 +113,7 @@ public enum ContextMenuItems {
                 item(.paste, "Paste", .paste), item(.copyPath, "Copy Path", .copyPath),
                 line("separator-background-clipboard"),
                 item(.viewAs, "View As", .viewAs, submenu: true), item(.sortBy, "Sort By", .sortBy, submenu: true),
+                item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 line("separator-background-view"),
                 item(.terminal, "Open in Terminal", .terminal), item(.showInFinder, "Show in Finder", .showInFinder),
                 // Only in the Trash (the others are hidden by the caller).
@@ -121,6 +125,7 @@ public enum ContextMenuItems {
                 item(.newFolder, "New Folder", .newFolder), line("separator-favorite-new"),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
+                item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 item(.revealInTree, "Reveal in Tree", .revealInTree),
                 item(.rootTreeHere, "Use as Tree Root", .rootTreeHere),
                 // Only for a disk that can be ejected (hidden by the caller for the others).
@@ -141,6 +146,7 @@ public enum ContextMenuItems {
                 item(.open, "Open", options.targetsFolder ? .open : .openFile),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
+                item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 item(.openWith, "Open With", .openWith, submenu: true),
                 item(.quickLook, "Quick Look", .quickLook),
                 item(.edit, "Edit in \(textEditorName)", .edit),
