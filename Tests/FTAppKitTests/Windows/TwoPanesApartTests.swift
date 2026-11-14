@@ -170,5 +170,60 @@ extension ExplorerWindowlessTests {
             tab.onFolderUsed?()
             #expect(!visited(store, real(harness, "Beta")))
         }
+
+        // MARK: Closing the other pane
+
+        /// The harness's folder watches, which watch nothing on disk.
+        private func watches(_ harness: ExplorerHarness) -> FolderWatches {
+            let watches = FolderWatches(
+                FolderWatches.Dependencies(
+                    watchFolder: { _, _, _ in {} }, readModifiedTime: { _ in nil }, onFolderChanged: { _, _ in },
+                    forgetCachedListings: { _, _ in }))
+            harness.windows.folderWatches = watches
+            return watches
+        }
+
+        /// The pane closes with its list, and its folder is no longer watched.
+        private func closesWhole(
+            _ tab: MainWindowController, _ harness: ExplorerHarness, _ watches: FolderWatches, closing: () -> Void
+        ) async throws {
+            weak var gone: BrowserPane?
+            weak var list: ContentPaneController?
+            var watchID = 0
+            do {
+                let other = try #require(tab.otherPane)
+                gone = other
+                list = other.content
+                watchID = other.watchID
+            }
+            harness.windows.tabNavigated(tab)
+            #expect(watches.watchedPaths[watchID] != nil)
+            closing()
+            #expect(tab.panes.count == 1)
+            #expect(watches.watchedPaths[watchID] == nil)
+            #expect(watches.watchedPaths[tab.activePane.watchID] != nil)
+            await settle()
+            #expect(await waitUntil { gone == nil && list == nil })
+        }
+
+        @Test func theClosedPaneAndItsListAreFreedAndItsFolderNoLongerWatched() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let watches = watches(harness)
+            let (tab, _, _) = try await twoPanes(harness, right: "Gamma")
+            try await closesWhole(tab, harness, watches) { tab.perform(.toggleTwoPanes) }
+        }
+
+        // So is the pane that started on the left, closed after Swap Panes.
+        @Test func aPaneClosedAfterSwapPanesIsFreedAndNoLongerWatched() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let watches = watches(harness)
+            let (tab, _, right) = try await twoPanes(harness, right: "Gamma")
+            tab.swapPanes()
+            tab.activate(right)
+            #expect(tab.panes.first === right)
+            try await closesWhole(tab, harness, watches) { tab.closeOtherPane() }
+        }
     }
 }
