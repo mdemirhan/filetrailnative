@@ -145,6 +145,8 @@ final class SettingsView: ThemedView {
     /// Builds a tab's page; nil until the preferences are loaded.
     var makePage: ((SettingsTab) -> SettingsPageView)?
     private var scrollObserver: (any NSObjectProtocol)?
+    /// Where the page was scrolled to when its bounds last changed: a change that moved it is a scroll.
+    private var scrollOrigin = NSPoint.zero
     /// Places the open pop-up again as the page scrolls.
     var onScroll: () -> Void = {}
 
@@ -194,6 +196,11 @@ final class SettingsView: ThemedView {
             MainActor.assumeIsolated {
                 guard let self else { return }
                 self.isScrolled = self.scroll.contentView.bounds.minY > 0
+                let origin = self.scroll.contentView.bounds.origin
+                if origin != self.scrollOrigin {
+                    self.scrollOrigin = origin
+                    self.page?.shortcuts?.scrolled()
+                }
                 self.onScroll()
             }
         }

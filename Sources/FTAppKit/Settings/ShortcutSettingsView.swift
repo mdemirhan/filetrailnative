@@ -432,8 +432,30 @@ final class ShortcutRowView: ThemedView {
         trackingArea = area
     }
 
-    override func mouseEntered(with event: NSEvent) { hovered = true }
+    /// The pointer came onto the row; it is on no other row.
+    override func mouseEntered(with event: NSEvent) {
+        hovered = true
+        owner?.rowEntered(self)
+    }
+
     override func mouseExited(with event: NSEvent) { hovered = false }
+
+    /// Hovers the row and its keys by where the pointer is (in the window's coordinates; nil, nowhere on them).
+    func hover(at point: NSPoint?) {
+        func contains(_ view: NSView) -> Bool {
+            guard let point else { return false }
+            return view.bounds.contains(view.convert(point, from: nil))
+        }
+        hovered = contains(self)
+        for slot in slots { slot.isHovering = hovered && contains(slot) }
+    }
+
+    /// Leaves the row: another row has the pointer.
+    func unhover() {
+        guard hovered else { return }
+        hovered = false
+        for slot in slots { slot.isHovering = false }
+    }
 }
 
 /// A key of a Standard command: written, with no button (`.shortcut-slot-key.fixed`).
@@ -544,6 +566,8 @@ final class ShortcutSettingsView: ThemedView, SettingsBlock {
     /// The page's height changed (a note came or went, the search changed the rows).
     var onLayoutChange: () -> Void = {}
     private var shownCommands: [ShortcutCommandID] = []
+    /// Where the pointer is in the window, while the window has the keyboard (the rows' hover goes with it).
+    var pointerLocation: () -> NSPoint? = { nil }
 
     static var hintStyle: TextStyle {
         SettingsStyle.style(DesignTokens.typeScale.small, lineHeight: SettingsMetrics.noteLineHeight) {
@@ -576,6 +600,10 @@ final class ShortcutSettingsView: ThemedView, SettingsBlock {
         setAccessibilityIdentifier("settings.shortcuts")
         addSubview(intro)
         addSubview(restoreAllButton)
+        pointerLocation = { [weak self] in
+            guard let window = self?.window, window.isKeyWindow else { return nil }
+            return window.mouseLocationOutsideOfEventStream
+        }
         rebuild()
     }
 
@@ -675,6 +703,10 @@ final class ShortcutSettingsView: ThemedView, SettingsBlock {
 
     func removeKey(_ slot: ShortcutSlot) { save(model.remove(slot)) }
 
+    func rowEntered(_ entered: ShortcutRowView) {
+        for row in rows where row !== entered { row.unhover() }
+    }
+
     func resetCommand(_ id: ShortcutCommandID) { save(model.reset(id)) }
 
     func reassign(_ slot: ShortcutSlot, _ shortcut: String) { save(model.give(slot, shortcut)) }
@@ -697,6 +729,19 @@ final class ShortcutSettingsView: ThemedView, SettingsBlock {
     func setQuery(_ text: String) {
         searchField.text = text
         search(text)
+    }
+
+    // MARK: Pointer
+
+    /// The page scrolled: a scroll moves the rows, not the pointer, and the rows' own enter and exit miss a row
+    /// scrolled away from under it. The row under the pointer is hovered again, and no other.
+    func scrolled() {
+        // A pointer over the page's part scrolled out of sight is on none of its rows.
+        let point = pointerLocation().flatMap { point -> NSPoint? in
+            guard let clip = enclosingScrollView?.contentView else { return point }
+            return clip.bounds.contains(clip.convert(point, from: nil)) ? point : nil
+        }
+        for row in rows { row.hover(at: point) }
     }
 
     // MARK: Layout

@@ -265,12 +265,80 @@ import Testing
             place.cacheDisplay(in: place.bounds, to: bitmap)
             return try #require(bitmap.colorAt(x: bitmap.pixelsWide / 4, y: bitmap.pixelsHigh / 2)).alphaComponent
         }
+        // The pointer on the row's name, then on the place; the page scrolls the place in sight as it draws.
+        var under: NSView = row.labelText
+        view.pointerLocation = { under.convert(NSPoint(x: under.bounds.midX, y: under.bounds.midY), to: nil) }
         row.mouseEntered(with: entered)
         #expect(!row.clearButtons[0].isHidden)
         #expect(row.clearButtons[1].isHidden)
         #expect(try fillAlpha() == 0)
+        under = place
         place.mouseEntered(with: entered)
         #expect(try fillAlpha() > 0)
+    }
+
+    // A scroll moves the rows under a pointer that stays put: the row scrolled away from under it hides its badges
+    // and its key's fill, the row scrolled under it shows them, and a pointer off the window leaves none hovered.
+    @Test func aScrollUnderAStillPointerMovesTheHoverToTheRowUnderIt() throws {
+        let (controller, _, view) = try make()
+        let window = try #require(controller.window)
+        let scroll = controller.settingsView.scroll
+        let document = try #require(scroll.documentView)
+        // The first row on screen with a key.
+        let first = try #require(
+            view.rows.first {
+                $0.slots.first?.shortcut != nil
+                    && scroll.contentView.bounds.contains($0.convert($0.bounds, to: document))
+            })
+        func center(_ slot: ShortcutSlotView) -> NSPoint {
+            slot.convert(NSPoint(x: slot.bounds.midX, y: slot.bounds.midY), to: document)
+        }
+        // A row further down whose first key sits under the same x.
+        let rows = view.rows
+        let start = try #require(rows.firstIndex { $0 === first })
+        let second = try #require(
+            rows[(start + 1)...].first {
+                $0.slots.first?.shortcut != nil && abs(center($0.slots[0]).x - center(first.slots[0]).x) < 1
+            })
+        var pointer: NSPoint? = first.slots[0].convert(
+            NSPoint(x: first.slots[0].bounds.midX, y: first.slots[0].bounds.midY), to: nil)
+        view.pointerLocation = { pointer }
+        let entered = try #require(
+            NSEvent.enterExitEvent(
+                with: .mouseEntered, location: pointer ?? .zero, modifierFlags: [], timestamp: 0,
+                windowNumber: window.windowNumber, context: nil, eventNumber: 0, trackingNumber: 0, userData: nil))
+        first.mouseEntered(with: entered)
+        first.slots[0].mouseEntered(with: entered)
+        #expect(!first.clearButtons[0].isHidden)
+        #expect(second.clearButtons[0].isHidden)
+
+        func scrollPage(by delta: CGFloat) {
+            scroll.contentView.scroll(to: NSPoint(x: 0, y: scroll.contentView.bounds.minY + delta))
+            scroll.reflectScrolledClipView(scroll.contentView)
+        }
+        let delta = center(second.slots[0]).y - center(first.slots[0]).y
+        scrollPage(by: delta)
+        #expect(first.clearButtons[0].isHidden)
+        #expect(!first.slots[0].isHovering)
+        #expect(!second.clearButtons[0].isHidden)
+        #expect(second.slots[0].isHovering)
+        #expect(rows.filter { !$0.clearButtons.allSatisfy(\.isHidden) }.map(\.command.id) == [second.command.id])
+
+        // A row the scroll passed over that was told the pointer came, and was told no more: the next row the
+        // pointer comes onto takes the hover from it.
+        first.mouseEntered(with: entered)
+        #expect(!first.clearButtons[0].isHidden)
+        second.mouseEntered(with: entered)
+        #expect(first.clearButtons[0].isHidden)
+        #expect(!second.clearButtons[0].isHidden)
+
+        scrollPage(by: -delta)
+        #expect(!first.clearButtons[0].isHidden)
+        #expect(second.clearButtons[0].isHidden)
+
+        pointer = nil
+        scrollPage(by: 1)
+        #expect(rows.allSatisfy { $0.clearButtons.allSatisfy(\.isHidden) && !$0.slots.contains(where: \.isHovering) })
     }
 
     // A place's remove badge comes with the keyboard, with no pointer on the row, and goes with it.
