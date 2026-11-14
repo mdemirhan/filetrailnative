@@ -35,6 +35,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     var directoryService: () -> DirectoryService = { ExplorerServices.current.directoryService }
     /// The folder is opened in a new tab (⌘-click).
     var openInNewTab: (String) -> Void = { _ in }
+    /// ⌥-click or ⌥Return on a row: its folder opens in the tab's other pane.
+    var openInOtherPane: ((String) -> Void)?
     /// The keyboard goes to the file list (Tab).
     var focusContent: () -> Void = {}
     /// The sidebar's tree root, selection or sections changed: the tab's state is saved.

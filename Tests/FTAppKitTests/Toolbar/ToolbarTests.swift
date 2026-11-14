@@ -72,7 +72,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 toolbar.rowKeys == [
                     "folderTree", "topSeparator", "back", "forward", "title", "view", "sort", "search", "viewOptions",
-                    "infoPanel",
+                    "twoPanes", "infoPanel",
                 ])
             // One system item per command; a space is the system's.
             #expect(toolbar.toolbar.items.first?.itemIdentifier == .sidebarTrackingSeparator)

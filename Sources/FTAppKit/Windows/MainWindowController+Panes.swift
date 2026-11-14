@@ -124,6 +124,51 @@ extension MainWindowController {
         pane.refreshColumns()
     }
 
+    // MARK: Across the panes
+
+    /// Copy or Move to Other Pane: the selection goes into the other pane's folder through the paste's flow, so what is
+    /// there already is reviewed first, and Undo takes it back. The active pane stays active.
+    func sendSelectionToOtherPane(copying: Bool) {
+        guard let other = otherPane, other.searchRootPath == nil, let actions = writeActions else { return }
+        let destination = other.shownFolderPath
+        let sources = selectedPaths
+        let fromSearchResults = searchRootPath != nil
+        guard !sources.isEmpty, !destination.isEmpty else { return }
+        let action: WriteOperationAction = copying ? .copyTo : .moveTo
+        if actions.refuseWhileBusy(.operation(action)) { return }
+        Task {
+            if let message = await TabDragDrop.destinationRefusal(destination, services.directoryService) {
+                actions.dialogs.showRefusal(.operation(action), message: message, in: window)
+                return
+            }
+            let outcome = await actions.copyLike(
+                mode: copying ? .copy : .cut, sources: sources, destination: destination, action: action,
+                initiator: .otherPane, moveFromSearchResults: !copying && fromSearchResults)
+            actions.reviewIfAsked(outcome, action: action)
+        }
+    }
+
+    /// Swap Panes: the panes change places, each keeping its folder, history and view; the active one stays active,
+    /// on the other side.
+    func swapPanes() {
+        guard showsTwoPanes else { return }
+        let keyboard = paneWithKeyboard
+        workspace.showSecondPane(nil, status: nil)
+        panes.reverse()
+        workspace.mainCell.content = panes[0].content.view
+        workspace.statusCell.content = panes[0].content.contentShell.pathBarRow
+        workspace.showSecondPane(panes[1].content.view, status: panes[1].content.contentShell.pathBarRow)
+        activePaneIndex = activePaneIndex == 0 ? 1 : 0
+        // A view taken out of the window lets go of the keyboard: it goes back to the list that had it.
+        keyboard?.content.focusList()
+        panesChanged()
+    }
+
+    /// Make Panes Equal Width, and a double-click on the divider.
+    func equalizePanes() {
+        workspace.setPaneSplit(PaneSplit.even)
+    }
+
     // MARK: The active pane
 
     /// Makes `pane` the active one: the toolbar, the tree, the Info panel and the commands follow it.

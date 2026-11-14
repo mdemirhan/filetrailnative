@@ -5,6 +5,8 @@ import FTOperations
 /// Who asked for a copy-like write (`initiator`): what may be left out of it depends on it.
 enum CopyLikeInitiator: Equatable, Sendable {
     case clipboard, dragDrop, moveDialog
+    /// Copy or Move to Other Pane.
+    case otherPane
 }
 
 /// The review's seam: a paste whose items already exist at the destination is reviewed before anything is written;

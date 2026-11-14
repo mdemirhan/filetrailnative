@@ -19,6 +19,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case foldersFirst
     case hidden
     case folderTree
+    case twoPanes
     case infoPanel
     case infoRow
     case newTab
@@ -76,6 +77,9 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .folderTree, label: "Folder Tree", icon: .folderTree, commandType: .toggleFolderTree,
             shortcutCommand: .toggleFolderTree),
+        ToolbarItemDefinition(
+            id: .twoPanes, label: "Two Panes", icon: .twoPanes, commandType: .toggleTwoPanes,
+            shortcutCommand: .toggleTwoPanes),
         ToolbarItemDefinition(
             id: .infoPanel, label: "Info Panel", icon: .infoPanel, commandType: .toggleInfoPanel,
             shortcutCommand: .toggleInfoPanel),
@@ -156,6 +160,7 @@ extension ToolbarItems {
         .sort,
         .search,
         .viewOptions,
+        .twoPanes,
         .infoPanel,
     ]
 
@@ -174,6 +179,7 @@ extension ToolbarItems {
         .foldersFirst,
         .hidden,
         .folderTree,
+        .twoPanes,
         .infoPanel,
         .infoRow,
         .calculateSize,

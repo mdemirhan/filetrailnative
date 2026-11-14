@@ -51,6 +51,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var tabCount: Int?
     /// How many panes the tab shows.
     public var paneCount: Int?
+    /// The folder the other pane shows, while the tab shows two: empty while it shows none or search results.
+    public var otherPanePath: String?
     /// Trash is never added to Favorites; it is offered for removal only when it is one.
     public var trashPath: String?
     /// The Trash is among the favorites, so File ▸ Remove from Favorites can take it out.
@@ -70,7 +72,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         selectedEntry: CommandEntry? = nil, selectedTreeTargetPath: String? = nil, clipboardHasItems: Bool = false,
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
-        hasCachedSearch: Bool? = nil, tabCount: Int? = nil, paneCount: Int? = nil, trashPath: String? = nil,
+        hasCachedSearch: Bool? = nil, tabCount: Int? = nil, paneCount: Int? = nil, otherPanePath: String? = nil,
+        trashPath: String? = nil,
         homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
         viewSizeSteps: ViewSize.Steps? = nil
@@ -91,6 +94,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.hasCachedSearch = hasCachedSearch
         self.tabCount = tabCount
         self.paneCount = paneCount
+        self.otherPanePath = otherPanePath
         self.trashPath = trashPath
         self.homePath = homePath
         self.trashIsEmpty = trashIsEmpty
@@ -106,7 +110,7 @@ public enum CommandAvailability {
     /// a clipboard, so they stay available.
     private static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .moveSelection, .renameSelection, .duplicateSelection, .newFolder,
-        .trashSelection, .emptyTrash,
+        .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane,
     ]
 
     // MARK: Helpers
@@ -360,8 +364,19 @@ public enum CommandAvailability {
             return !context.currentPath.isEmpty && parentDirectoryPath(context.currentPath) != nil
         case .selectNextTab, .selectPreviousTab, .moveTabToNewWindow:
             return context.tabCount.map { $0 > 1 } ?? true
-        case .switchToOtherPane:
+        case .switchToOtherPane, .swapPanes, .equalizePanes:
             return context.paneCount.map { $0 > 1 } ?? true
+        case .openSelectionInOtherPane:
+            return newTabTargetPath(target) != nil
+        case .showFolderInOtherPane:
+            return !context.currentPath.isEmpty && !context.isSearchMode
+        case .goToOtherPaneFolder:
+            guard let other = context.otherPanePath else { return context.paneCount == nil }
+            return !other.isEmpty && other != context.currentPath
+        case .copyToOtherPane, .moveToOtherPane:
+            // Into the folder the other pane shows, from the list: not when both show one folder.
+            guard let other = context.otherPanePath else { return context.paneCount == nil && selectedCount > 0 }
+            return selectedCount > 0 && !other.isEmpty && (context.isSearchMode || other != context.currentPath)
         case .increaseSize, .decreaseSize, .resetSize:
             // The Icons view's icon size and the Compact List's column width, short of their ends; the List has none.
             guard let change = ViewSize.Change(command) else { return true }

@@ -2,7 +2,7 @@
 public enum WriteStartingShortcuts {
     private static let names: Set<String> = [
         "pasteSelection", "duplicateSelection", "trashSelection", "renameSelection", "moveSelection", "newFolder",
-        "emptyTrash", "ejectVolume",
+        "emptyTrash", "ejectVolume", "copyToOtherPane", "moveToOtherPane",
         // ⌘V is the Edit menu's Paste.
         "editPaste",
     ]

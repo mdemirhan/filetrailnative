@@ -65,6 +65,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.openSelection, "Open"))
             menu.addItem(context.command(.openSelectionInNewTab, "Open in New Tab"))
             menu.addItem(context.command(.openSelectionInNewWindow, "Open in New Window"))
+            menu.addItem(context.command(.openSelectionInOtherPane, "Open in Other Pane"))
             menu.addItem(context.command(.editSelection, "Edit in \(options.textEditorName ?? "Text Editor")"))
             menu.addItem(context.command(.quickLookSelection, "Quick Look"))
             // Search results only, as Finder's Show in Enclosing Folder.
@@ -101,6 +102,10 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.editCut, "Cut", fixed: .cut))
             menu.addItem(context.command(.editCopy, "Copy", fixed: .copy))
             menu.addItem(context.command(.editPaste, "Paste", fixed: .paste))
+            // After Cut and Copy: AppKit lets an item with ⇧ take the press of the same key without it, so ⌘C and ⌘X
+            // must meet their own items first.
+            menu.addItem(context.command(.copyToOtherPane, "Copy to Other Pane"))
+            menu.addItem(context.command(.moveToOtherPane, "Move to Other Pane"))
             menu.addItem(context.command(.copyPath, "Copy Path"))
             menu.addItem(context.command(.editSelectAll, "Select All", fixed: .selectAll))
             menu.addItem(.separator())
@@ -139,6 +144,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.toggleInfoRow, "Info Row"))
             menu.addItem(.separator())
             menu.addItem(context.command(.toggleTwoPanes, "Two Panes"))
+            menu.addItem(context.command(.swapPanes, "Swap Panes"))
+            menu.addItem(context.command(.equalizePanes, "Make Panes Equal Width"))
             menu.addItem(.separator())
             menu.addItem(context.command(.customizeToolbar, "Customize Toolbar…"))
             // No Zoom In, Zoom Out or Actual Size of the whole window, and no hidden full screen item: AppKit adds its
@@ -161,6 +168,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.goTrash, "Trash"))
             menu.addItem(.separator())
             menu.addItem(context.command(.openLocationSheet, "Go to Folder…"))
+            menu.addItem(context.command(.showFolderInOtherPane, "Show This Folder in Other Pane"))
+            menu.addItem(context.command(.goToOtherPaneFolder, "Go to Other Pane's Folder"))
             menu.addItem(.separator())
             menu.addItem(context.command(.rootTreeAtSelection, "Use as Tree Root"))
         }

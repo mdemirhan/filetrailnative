@@ -95,6 +95,7 @@ struct TooltipsTests {
             "selectAll", "selectNextTab", "selectPreviousTab", "settings", "showClipboard", "showInFinder",
             "showLastSearchResults", "sortByKind", "sortByModified", "sortByName", "sortBySize", "toggleFavorite",
             "toggleFolderTree", "toggleFoldersFirst", "toggleHiddenFiles", "toggleInfoPanel", "toggleInfoRow",
+            "toggleTwoPanes",
             "trashSelection", "undo", "viewAsDetails", "viewAsIcons", "viewAsList",
         ]
         for item in ToolbarItems.definitions {

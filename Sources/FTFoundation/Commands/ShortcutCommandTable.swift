@@ -57,6 +57,13 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case mergeAllWindows
     case toggleTwoPanes
     case switchToOtherPane
+    case openSelectionInOtherPane
+    case copyToOtherPane
+    case moveToOtherPane
+    case swapPanes
+    case showFolderInOtherPane
+    case goToOtherPaneFolder
+    case equalizePanes
     case openSelection
     case openSelectedItem
     case editSelection
@@ -191,6 +198,26 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .switchToOtherPane, label: "Switch to Other Pane", group: .tabs, defaults: [],
             menuPath: "Window > Switch to Other Pane"),
+        ShortcutCommandDefinition(
+            id: .openSelectionInOtherPane, label: "Open in Other Pane", group: .tabs, defaults: ["Cmd+Option+Down"],
+            menuPath: "File > Open in Other Pane"),
+        ShortcutCommandDefinition(
+            id: .copyToOtherPane, label: "Copy to Other Pane", group: .tabs, defaults: ["Cmd+Shift+C", "F5"],
+            menuPath: "Edit > Copy to Other Pane"),
+        ShortcutCommandDefinition(
+            id: .moveToOtherPane, label: "Move to Other Pane", group: .tabs, defaults: ["Cmd+Shift+X", "F6"],
+            menuPath: "Edit > Move to Other Pane"),
+        ShortcutCommandDefinition(
+            id: .swapPanes, label: "Swap Panes", group: .tabs, defaults: ["Cmd+U"], menuPath: "View > Swap Panes"),
+        ShortcutCommandDefinition(
+            id: .showFolderInOtherPane, label: "Show This Folder in Other Pane", group: .tabs, defaults: [],
+            menuPath: "Go > Show This Folder in Other Pane"),
+        ShortcutCommandDefinition(
+            id: .goToOtherPaneFolder, label: "Go to Other Pane's Folder", group: .tabs, defaults: [],
+            menuPath: "Go > Go to Other Pane's Folder"),
+        ShortcutCommandDefinition(
+            id: .equalizePanes, label: "Make Panes Equal Width", group: .tabs, defaults: [],
+            menuPath: "View > Make Panes Equal Width"),
         ShortcutCommandDefinition(
             id: .openSelection, label: "Open", group: .files, defaults: ["Cmd+O"], menuPath: "File > Open"),
         ShortcutCommandDefinition(

@@ -118,6 +118,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -1037,6 +1057,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -2079,6 +2114,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -2998,6 +3053,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -4046,6 +4116,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -4955,6 +5045,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+N",
                   "description": "New window, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -5998,6 +6103,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -6917,6 +7042,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -7976,6 +8116,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Shift+W",
             "description": "Close the window"
           },
@@ -8612,7 +8772,23 @@
                   "Type in the folder tree"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                }
+              ]
             },
             {
               "topic": "files",
@@ -9509,6 +9685,26 @@
             "group": "navigation",
             "shortcut": "Cmd+\\",
             "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
           },
           {
             "group": "navigation",
@@ -10436,6 +10632,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -11494,6 +11705,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -12393,6 +12624,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -13433,6 +13679,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -14342,6 +14608,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -15411,6 +15692,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -16290,6 +16591,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 }
               ]
             },
@@ -17305,6 +17621,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -18229,6 +18565,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+Y",
                   "description": "Open the selected folder in a new tab (Cmd+Up also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -19294,6 +19645,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -20185,6 +20556,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -21238,6 +21624,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -22147,6 +22553,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -23174,6 +23595,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -24098,6 +24539,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -25145,6 +25601,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -26076,6 +26552,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -27126,6 +27617,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -28029,6 +28540,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -29066,6 +29592,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -29980,6 +30526,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -31047,6 +31608,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -31990,6 +32571,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+N",
                   "description": "New window, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -33042,6 +33638,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -33961,6 +34577,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -35008,6 +35639,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -35890,6 +36541,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -36941,6 +37607,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Ctrl+Cmd+S",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -37855,6 +38541,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -38907,6 +39608,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -39806,6 +40527,21 @@
                   "group": "navigation",
                   "shortcut": "F5",
                   "description": "Open the selected folder in a new window (Cmd+K also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -40865,6 +41601,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -41774,6 +42530,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -42816,6 +43587,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -43725,6 +44516,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 }
               ]
             },
@@ -44769,6 +45575,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -45695,6 +46521,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -46743,6 +47584,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -47642,6 +48503,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
                   "description": "Root the folder tree at the selected folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -48650,6 +49526,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -49559,6 +50455,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -50620,6 +51531,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -51556,6 +52487,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+=",
                   "description": "Open the selected folder in a new tab (Cmd+K also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -52601,6 +53547,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -53515,6 +54481,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",
@@ -54573,6 +55554,26 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+Down",
+            "description": "Open the selected folder in the other pane"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+Shift+X",
+            "description": "Move the selected items into the other pane's folder (F6 also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Cmd+U",
+            "description": "Swap the two panes"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -55487,6 +56488,21 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "New tab, on the same folder"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Option+Down",
+                  "description": "Open the selected folder in the other pane"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+C",
+                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                },
+                {
+                  "group": "navigation",
+                  "shortcut": "Cmd+Shift+X",
+                  "description": "Move the selected items into the other pane's folder (F6 also works)"
                 },
                 {
                   "group": "navigation",

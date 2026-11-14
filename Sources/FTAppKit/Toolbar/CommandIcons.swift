@@ -22,6 +22,7 @@ extension CommandIcon {
         case .search: "magnifyingglass"
         case .folderTree, .revealInTree: "sidebar.leading"
         case .infoPanel: "sidebar.trailing"
+        case .twoPanes: "rectangle.split.2x1"
         case .infoRow: "rectangle.bottomthird.inset.filled"
         case .open, .openFile: "arrow.up.forward.app"
         case .openInNewWindow: "macwindow.badge.plus"

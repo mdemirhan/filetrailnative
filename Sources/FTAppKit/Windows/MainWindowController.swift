@@ -778,6 +778,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             switch place {
             case .tab: self.group?.openTab(path: path, from: self)
             case .window: self.group?.openNewWindow(from: self, path: path)
+            case .otherPane: self.openSecondPane(at: path)
             }
         }
         guard content.entries.first(where: { $0.path == folder.path })?.kind == .symlinkDirectory else {
@@ -789,7 +790,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    private enum SelectedFolderPlace { case tab, window }
+    private enum SelectedFolderPlace { case tab, window, otherPane }
 
     private func openFolderInNewTab(_ entry: DirectoryEntry) {
         if entry.kind == .symlinkDirectory {
@@ -1023,7 +1024,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// The folder Open in New Tab and Open in New Window open: the one folder selected, or with the sidebar focused its
     /// selected folder.
-    private var selectedFolder: URL? {
+    var selectedFolder: URL? {
         if focusedPane == .tree { return sidebar.selectedTreeTargetPath.map { URL(fileURLWithPath: $0) } }
         return selectedContentFolder
     }
@@ -1255,6 +1256,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             self.group?.openTab(path: path, from: self)
         }
         sidebar.focusContent = { [weak self] in self?.tabKeyPressedInTree() }
+        sidebar.openInOtherPane = { [weak self] path in self?.openSecondPane(at: path) }
         sidebar.stateChanged = { [weak self] in
             guard let self else { return }
             self.group?.tabChanged(self)
@@ -1662,6 +1664,15 @@ extension MainWindowController: ExplorerWindowHandle {
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
         case .toggleTwoPanes: toggleTwoPanes()
         case .switchToOtherPane: switchToOtherPane()
+        case .openSelectionInOtherPane:
+            if let target = selectedFolder { openSelectedFolder(target, place: .otherPane) }
+        case .copyToOtherPane: sendSelectionToOtherPane(copying: true)
+        case .moveToOtherPane: sendSelectionToOtherPane(copying: false)
+        case .swapPanes: swapPanes()
+        case .showFolderInOtherPane: openSecondPane(at: shownFolderPath)
+        case .goToOtherPaneFolder:
+            if let other = otherPane, !other.shownFolderPath.isEmpty { go(to: other.folder) }
+        case .equalizePanes: equalizePanes()
         case .toggleFolderTree: updatePanels { $0.folderTreeOpen.toggle() }
         case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
         case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
@@ -1805,6 +1816,7 @@ extension MainWindowController: ExplorerWindowContext {
             writeOperationLocked: isWriteLocked, canGoBack: canGoBack,
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,
             tabCount: group?.tabs.count ?? 1, paneCount: panes.count,
+            otherPanePath: otherPane.map { $0.searchRootPath == nil ? $0.shownFolderPath : "" },
             trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),

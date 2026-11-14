@@ -42,6 +42,11 @@ extension SidebarViewController {
             openInNewTab(path)
             return
         }
+        // ⌥-click opens the folder in the tab's other pane, and the pane the tree drives stays as it is.
+        if event.modifierFlags.contains(.option), let path = item.path, let openInOtherPane {
+            if clickCount <= 1 { openInOtherPane(path) }
+            return
+        }
         // A click opens the folder at once; the second click of a double-click only opens or closes its branch.
         guard clickCount <= 1 else { return }
         activate(state, expandFirst: model.singleClickExpand)
@@ -172,6 +177,11 @@ extension SidebarViewController {
             focusContent()
             return true
         case .returnKey:
+            if flags == .option, let path = currentRowState()?.item.path, let openInOtherPane {
+                model.clearTypeahead()
+                openInOtherPane(path)
+                return true
+            }
             guard flags.isEmpty else { break }
             model.clearTypeahead()
             return model.openSelected() || true

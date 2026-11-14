@@ -247,6 +247,9 @@ extension ExplorerToolbar {
             return overflowItem("Folder Tree", checked: panels.folderTreeOpen, run: run(.toggleFolderTree))
         case .infoPanel:
             return overflowItem("Info Panel", checked: panels.propertiesOpen, run: run(.toggleInfoPanel))
+        case .twoPanes:
+            let shown = (context as? MainWindowController)?.showsTwoPanes == true
+            return overflowItem("Two Panes", checked: shown, run: run(.toggleTwoPanes))
         case .infoRow:
             return overflowItem("Info Row", checked: panels.detailRowOpen, run: run(.toggleInfoRow))
         case .theme:

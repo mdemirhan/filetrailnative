@@ -26,26 +26,30 @@ import Testing
         #expect(
             titles(submenu(main, "File")) == [
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "-", "Open", "Open in New Tab",
-                "Open in New Window", "Edit in Text Editor", "Quick Look", "Reveal in Folder", "-", "Calculate Size",
-                "-", "Rename", "Duplicate", "Move to…", "Add to Favorites", "-",
+                "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Quick Look", "Reveal in Folder",
+                "-",
+                "Calculate Size", "-", "Rename", "Duplicate", "Move to…", "Add to Favorites", "-",
                 "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-", "Reopen Closed Tab",
                 "Close Tab", "Close Window",
             ])
         #expect(
             titles(submenu(main, "Edit")) == [
-                "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Copy Path", "Select All", "-",
+                "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Copy to Other Pane", "Move to Other Pane", "Copy Path",
+                "Select All", "-",
                 "Show Clipboard", "Clear Clipboard", "-", "Find Files…", "Show Last Search Results",
             ])
         #expect(
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "-", "Make Bigger", "Make Smaller", "Default Size", "-",
                 "Sort By", "Folders First", "Hidden Files", "Refresh",
-                "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "-", "Customize Toolbar…",
+                "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Swap Panes",
+                "Make Panes Equal Width", "-", "Customize Toolbar…",
             ])
         #expect(
             titles(submenu(main, "Go")) == [
                 "Back", "Forward", "Enclosing Folder", "-", "Documents", "Desktop", "Downloads", "Home", "Library",
-                "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "-", "Use as Tree Root",
+                "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "Show This Folder in Other Pane",
+                "Go to Other Pane's Folder", "-", "Use as Tree Root",
             ])
         #expect(
             titles(submenu(main, "Window")) == [

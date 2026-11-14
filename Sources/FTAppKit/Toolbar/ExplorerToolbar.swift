@@ -293,6 +293,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 button.iconName = view.includeHidden ? .hiddenShown : .hidden
             case .folderTree: button.isOn = panels.folderTreeOpen
             case .infoPanel: button.isOn = panels.propertiesOpen
+            case .twoPanes: button.isOn = (context as? MainWindowController)?.showsTwoPanes == true
             case .infoRow: button.isOn = panels.detailRowOpen
             case .sort:
                 button.isEnabled = canPerform(.sortByName)
@@ -587,6 +588,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         case .hidden: button.onClick = { [weak self] in self?.context?.perform(.toggleHiddenFiles) }
         case .folderTree: button.onClick = { [weak self] in self?.context?.perform(.toggleFolderTree) }
         case .infoPanel: button.onClick = { [weak self] in self?.context?.perform(.toggleInfoPanel) }
+        case .twoPanes: button.onClick = { [weak self] in self?.context?.perform(.toggleTwoPanes) }
         case .infoRow: button.onClick = { [weak self] in self?.context?.perform(.toggleInfoRow) }
         default:
             if let command = ToolbarItems.definition(id).commandType {
@@ -615,6 +617,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         case .hidden: "Hidden Files"
         case .folderTree: "Folder Tree"
         case .infoPanel: "Info Panel"
+        case .twoPanes: "Two Panes"
         case .infoRow: "Info Row"
         case .theme: "Choose theme"
         default: ToolbarItems.definition(id).label

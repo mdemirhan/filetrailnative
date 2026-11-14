@@ -584,6 +584,13 @@ extension HelpContent {
             "Show a second pane beside this one, or close the pane you aren't in"),
         HelpShortcutItem(group: .navigation, .command(.switchToOtherPane), "Move the keyboard to the other pane"),
         HelpShortcutItem(
+            group: .navigation, .command(.openSelectionInOtherPane), "Open the selected folder in the other pane"),
+        HelpShortcutItem(
+            group: .navigation, .command(.copyToOtherPane), "Copy the selected items into the other pane's folder"),
+        HelpShortcutItem(
+            group: .navigation, .command(.moveToOtherPane), "Move the selected items into the other pane's folder"),
+        HelpShortcutItem(group: .navigation, .command(.swapPanes), "Swap the two panes"),
+        HelpShortcutItem(
             group: .navigation, .command(.closeTab), "Close the tab (the window, when it is the last tab)"),
         HelpShortcutItem(group: .navigation, .command(.selectNextTab), "Next tab"),
         HelpShortcutItem(group: .navigation, .command(.selectPreviousTab), "Previous tab"),

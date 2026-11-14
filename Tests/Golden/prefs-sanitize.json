@@ -89,6 +89,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -289,6 +290,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -531,6 +533,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -731,6 +734,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -932,6 +936,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -1133,6 +1138,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -1364,6 +1370,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -1565,6 +1572,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -1792,6 +1800,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -2055,6 +2064,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -4558,6 +4568,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -5411,6 +5422,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -5666,6 +5678,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -5867,6 +5880,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -6068,6 +6082,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -6269,6 +6284,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -6475,6 +6491,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -6685,6 +6702,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -7275,6 +7293,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -7291,6 +7310,7 @@
               "Cmd+R"
             ],
             "refreshOrApplySearchSort": [],
+            "swapPanes": [],
             "newTab": [
               "Cmd+Y",
               "Cmd+U"
@@ -7488,6 +7508,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -7689,6 +7710,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -7890,6 +7912,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -8426,6 +8449,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -9344,6 +9368,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -9838,6 +9863,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -10811,6 +10837,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -11012,6 +11039,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -11511,6 +11539,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -11871,6 +11900,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -12083,6 +12113,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [
               "F5"
             ],
@@ -12579,6 +12612,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -13513,6 +13547,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -13525,12 +13560,16 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "F5"
             ],
             "refreshOrApplySearchSort": [
               "Cmd+U"
             ],
+            "swapPanes": [],
             "newTab": []
           },
           "openItemLimit": 1,
@@ -13749,6 +13788,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -14333,6 +14373,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -15199,6 +15240,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -15485,6 +15527,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -15927,6 +15970,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -16541,7 +16585,8 @@
           "shortcutOverrides": {
             "goBack": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 7,
           "includeHidden": true,
@@ -16751,6 +16796,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "quickLookSelection": [
               "F5"
             ]
@@ -17231,6 +17279,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -17917,6 +17966,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -18717,7 +18767,8 @@
             "goForward": [],
             "quickLookSelection": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 50,
           "includeHidden": true,
@@ -19793,7 +19844,8 @@
             "newTab": [],
             "quickLookSelection": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 7,
           "includeHidden": true,
@@ -19984,6 +20036,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -19999,6 +20052,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "Cmd+Y",
               "F5"
@@ -20392,6 +20448,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -21122,6 +21179,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -21605,6 +21663,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -21806,6 +21865,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -22743,6 +22803,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [],
             "refreshOrApplySearchSort": [],
             "newTab": [
@@ -23583,6 +23646,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -23920,6 +23984,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -24147,7 +24212,8 @@
             "goForward": [
               "Cmd+Shift+K",
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 1,
           "includeHidden": true,
@@ -24914,6 +24980,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -24935,7 +25002,8 @@
             "goForward": [
               "Cmd+U"
             ],
-            "refreshOrApplySearchSort": []
+            "refreshOrApplySearchSort": [],
+            "swapPanes": []
           },
           "openItemLimit": 11,
           "includeHidden": false,
@@ -25931,6 +25999,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -26473,6 +26542,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [
               "F5"
             ],
@@ -27182,6 +27254,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "refreshOrApplySearchSort": [
               "F5"
             ],
@@ -27622,6 +27697,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "refreshOrApplySearchSort": [
               "F5"
             ],
@@ -28177,6 +28255,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "newTab": [
               "F5"
             ]
@@ -28746,6 +28827,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -28764,7 +28846,8 @@
             "goBack": [],
             "refreshOrApplySearchSort": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 5,
           "includeHidden": true,
@@ -29097,6 +29180,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -29114,7 +29198,8 @@
             ],
             "quickLookSelection": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 50,
           "includeHidden": false,
@@ -29369,6 +29454,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [
               "F5"
             ],
@@ -29901,6 +29989,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -30324,6 +30413,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -30993,6 +31083,7 @@
           "returnKeyAction": "rename",
           "shortcutOverrides": {
             "refreshOrApplySearchSort": [],
+            "swapPanes": [],
             "newTab": [
               "Cmd+U"
             ]
@@ -31199,6 +31290,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -31958,11 +32050,15 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [],
             "refreshOrApplySearchSort": [
               "Cmd+U",
               "F5"
             ],
+            "swapPanes": [],
             "quickLookSelection": []
           },
           "openItemLimit": 50,
@@ -33306,6 +33402,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -33535,6 +33632,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -33891,6 +33989,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -34360,6 +34459,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -34375,6 +34475,7 @@
             "refreshOrApplySearchSort": [
               "Cmd+Shift+K"
             ],
+            "swapPanes": [],
             "quickLookSelection": [
               "Cmd+U"
             ]
@@ -34546,7 +34647,8 @@
           "shortcutOverrides": {
             "goForward": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 1,
           "includeHidden": false,
@@ -34957,6 +35059,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -34969,6 +35072,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "F5"
             ]
@@ -35673,6 +35779,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -36250,6 +36357,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -36262,6 +36370,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "F5"
             ],
@@ -36472,6 +36583,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -36673,6 +36785,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -36874,6 +36987,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -37130,6 +37244,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "Cmd+Y"
             ],
@@ -37390,6 +37507,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -37611,6 +37729,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [],
             "refreshOrApplySearchSort": [
               "F5"
@@ -38311,6 +38432,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -39242,6 +39364,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -39861,6 +39984,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "refreshOrApplySearchSort": [
               "Cmd+Y",
               "F5"
@@ -40075,6 +40201,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -40293,7 +40420,8 @@
           "shortcutOverrides": {
             "goBack": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 5,
           "includeHidden": false,
@@ -40626,6 +40754,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -40827,6 +40956,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -41048,6 +41178,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [
               "F5",
               "Cmd+Y"
@@ -42159,6 +42292,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -42747,6 +42881,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -43391,6 +43526,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -43690,6 +43826,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "newTab": [
               "Cmd+Y",
               "F5"
@@ -45613,6 +45752,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -47368,6 +47508,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -48046,6 +48187,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -48323,6 +48465,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "F5",
               "Cmd+Y"
@@ -48783,6 +48928,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -48795,6 +48941,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [],
             "quickLookSelection": [
               "F5",
@@ -49241,6 +49390,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "quickLookSelection": [
               "F5"
             ]
@@ -49739,6 +49891,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -51588,6 +51741,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -51790,6 +51944,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -52121,6 +52276,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [
               "F5"
             ]
@@ -52609,6 +52767,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -52810,6 +52969,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -53018,6 +53178,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -53972,6 +54133,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -54198,6 +54360,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [],
             "newTab": [
               "F5"
@@ -54423,6 +54588,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "Cmd+Y"
             ],
@@ -54770,6 +54938,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -54971,6 +55140,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -55405,6 +55575,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -55606,6 +55777,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -56337,6 +56509,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -56352,6 +56525,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "F5"
             ],
@@ -57840,6 +58016,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -58228,6 +58405,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [],
             "goForward": [
               "F5"
@@ -58450,6 +58630,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -59747,6 +59928,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -59960,6 +60142,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -60161,6 +60344,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -62571,6 +62755,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -63076,6 +63261,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -63098,6 +63284,7 @@
               "Cmd+U",
               "Cmd+Y"
             ],
+            "swapPanes": [],
             "newTab": [
               "Cmd+Shift+K"
             ],
@@ -63564,6 +63751,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -64537,7 +64725,8 @@
             "goBack": [],
             "refreshOrApplySearchSort": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 7,
           "includeHidden": false,
@@ -65068,7 +65257,8 @@
           "shortcutOverrides": {
             "newTab": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 5,
           "includeHidden": true,
@@ -65346,6 +65536,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -65548,6 +65739,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -65767,10 +65959,14 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "refreshOrApplySearchSort": [
               "Cmd+U",
               "F5"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 5,
           "includeHidden": false,
@@ -66137,7 +66333,8 @@
             "goForward": [
               "Cmd+U"
             ],
-            "newTab": []
+            "newTab": [],
+            "swapPanes": []
           },
           "openItemLimit": 1,
           "includeHidden": false,
@@ -66594,6 +66791,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "Cmd+Y"
             ],
@@ -66602,7 +66802,8 @@
               "Cmd+U"
             ],
             "newTab": [],
-            "quickLookSelection": []
+            "quickLookSelection": [],
+            "swapPanes": []
           },
           "openItemLimit": 50,
           "includeHidden": true,
@@ -66888,6 +67089,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goForward": [
               "Cmd+Y",
               "F5"
@@ -67744,6 +67948,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -68148,6 +68353,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -69035,6 +69241,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -69717,6 +69924,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -70276,6 +70484,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -70479,6 +70688,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -70726,6 +70936,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -70740,7 +70951,8 @@
           "shortcutOverrides": {
             "goForward": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 7,
           "includeHidden": true,
@@ -71058,6 +71270,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "goBack": [
               "Cmd+Y"
             ],
@@ -71831,6 +72046,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -73306,6 +73522,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -74177,7 +74394,8 @@
           "shortcutOverrides": {
             "newTab": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 11,
           "includeHidden": true,
@@ -74385,6 +74603,9 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "newTab": [
               "F5"
             ]
@@ -74584,6 +74805,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -74976,6 +75198,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -75327,6 +75550,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -75982,6 +76206,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -76183,6 +76408,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -76696,6 +76922,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -77109,6 +77336,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -77128,6 +77356,7 @@
               "Cmd+Shift+K",
               "Cmd+U"
             ],
+            "swapPanes": [],
             "newTab": [],
             "quickLookSelection": []
           },
@@ -77327,7 +77556,8 @@
             "newTab": [
               "Cmd+U"
             ],
-            "quickLookSelection": []
+            "quickLookSelection": [],
+            "swapPanes": []
           },
           "openItemLimit": 5,
           "includeHidden": true,
@@ -77748,6 +77978,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -78017,6 +78248,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": {
@@ -78419,6 +78651,9 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
+            "copyToOtherPane": [
+              "Cmd+Shift+C"
+            ],
             "newTab": [
               "F5"
             ]
@@ -79232,6 +79467,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -80248,6 +80484,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -80908,6 +81145,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -81270,7 +81508,8 @@
           "shortcutOverrides": {
             "goBack": [
               "Cmd+U"
-            ]
+            ],
+            "swapPanes": []
           },
           "openItemLimit": 50,
           "includeHidden": false,
@@ -81490,6 +81729,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,
@@ -81691,6 +81931,7 @@
             "sort",
             "search",
             "viewOptions",
+            "twoPanes",
             "infoPanel"
           ],
           "terminalApp": null,

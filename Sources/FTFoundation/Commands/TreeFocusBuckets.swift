@@ -15,7 +15,9 @@ extension ShortcutPolicy {
             .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash, .rootTreeAtSelection,
             .newWindow, .newTab, .duplicateTab, .reopenClosedTab, .closeTab, .selectNextTab, .selectPreviousTab,
             .moveTabToNewWindow,
-            .mergeAllWindows, .toggleTwoPanes, .switchToOtherPane, .calculateSize, .toggleFavorite, .showInFinder,
+            .mergeAllWindows, .toggleTwoPanes, .switchToOtherPane, .openSelectionInOtherPane, .swapPanes,
+            .showFolderInOtherPane, .goToOtherPaneFolder, .equalizePanes, .calculateSize, .toggleFavorite,
+            .showInFinder,
             .showLastSearchResults, .viewAsIcons,
             .viewAsList, .viewAsDetails, .increaseSize, .decreaseSize, .resetSize, .sortByName, .sortByModified,
             .sortBySize, .sortByKind, .toggleFoldersFirst,
@@ -24,7 +26,8 @@ extension ShortcutPolicy {
             .globalExplorer
         case .openSelection, .editSelection, .openInTerminal, .moveSelection, .renameSelection, .duplicateSelection,
             .newFolder, .trashSelection, .copySelection, .cutSelection, .pasteSelection, .copyPath,
-            .openSelectionInNewTab, .openSelectionInNewWindow, .quickLookSelection, .revealInFolder:
+            .openSelectionInNewTab, .openSelectionInNewWindow, .quickLookSelection, .revealInFolder, .copyToOtherPane,
+            .moveToOtherPane:
             .contentOnly
         }
     }

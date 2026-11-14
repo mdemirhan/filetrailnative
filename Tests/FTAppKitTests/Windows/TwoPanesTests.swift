@@ -5,6 +5,7 @@ import Foundation
 import Testing
 
 @testable import FTAppKit
+@testable import FTOperations
 
 extension ExplorerWindowlessTests {
     @MainActor
@@ -187,6 +188,126 @@ extension ExplorerWindowlessTests {
                 windowID: right.watchID, FolderChange(path: real(harness, "Alpha"), changedPaths: [made]))
             #expect(await waitUntil { right.content.listed.contains { $0.path == made } })
             #expect(!left.content.listed.contains { $0.path == made })
+        }
+        // MARK: Across the panes
+
+        /// The app's file operations for the harness's windows, with nothing asked or shown.
+        private func writes(_ harness: ExplorerHarness) -> AppWriteOperations {
+            let operations = AppWriteOperations(
+                userData: harness.folder.url, directoryService: harness.services.directoryService,
+                windows: harness.windows, trash: .standIn, emptyTrash: { (true, nil) }, log: { _ in })
+            operations.dialogs.show = { _, _, _ in }
+            operations.dialogs.confirm = { _, _ in false }
+            return operations
+        }
+
+        @Test func copyAndMoveToOtherPaneSendTheSelectionIntoTheOtherPanesFolder() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, _) = try await twoPanes(harness, right: "Gamma")
+            let operations = writes(harness)
+            defer { withExtendedLifetime(operations) {} }
+            let note = real(harness, "note.txt")
+            left.content.focusList()
+            left.content.select(paths: [note])
+            #expect(tab.canPerform(.copyToOtherPane))
+
+            tab.perform(.copyToOtherPane)
+            let copied = real(harness, "Gamma") + "/note.txt"
+            #expect(await waitUntil { FileManager.default.fileExists(atPath: copied) })
+            #expect(FileManager.default.fileExists(atPath: note))
+            #expect(tab.activePane === left)
+
+            try FileManager.default.removeItem(atPath: copied)
+            #expect(await waitUntil { !tab.isWriteLocked })
+            left.content.select(paths: [note])
+            tab.perform(.moveToOtherPane)
+            #expect(await waitUntil { FileManager.default.fileExists(atPath: copied) })
+            #expect(await waitUntil { !FileManager.default.fileExists(atPath: note) })
+        }
+
+        @Test func copyAndMoveToOtherPaneWaitForASecondPaneOnAnotherFolder() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.content.focusList()
+            tab.content.select(paths: [real(harness, "note.txt")])
+            #expect(!tab.canPerform(.copyToOtherPane))
+            #expect(!tab.canPerform(.moveToOtherPane))
+            let second = tab.openSecondPane()
+            await arrived(second)
+            // Both panes show one folder.
+            #expect(!tab.canPerform(.copyToOtherPane))
+            await second.navigate(to: URL(fileURLWithPath: real(harness, "Beta")))
+            #expect(tab.canPerform(.copyToOtherPane))
+            #expect(tab.canPerform(.moveToOtherPane))
+        }
+
+        @Test func openInOtherPaneOpensTheSelectedFolderThereAndOpensThePaneFirstIfNeeded() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.content.focusList()
+            tab.content.select(paths: [real(harness, "Alpha")])
+            #expect(tab.canPerform(.openSelectionInOtherPane))
+
+            tab.perform(.openSelectionInOtherPane)
+            let other = try #require(tab.otherPane)
+            #expect(await waitUntil { other.shownFolderPath == real(harness, "Alpha") })
+            #expect(tab.activePane === tab.panes[0])
+
+            tab.content.select(paths: [real(harness, "Beta")])
+            tab.perform(.openSelectionInOtherPane)
+            #expect(await waitUntil { other.shownFolderPath == real(harness, "Beta") })
+            #expect(other.navigationHistory.paths == [real(harness, "Alpha"), real(harness, "Beta")])
+        }
+
+        @Test func swapPanesTradesThePlacesOfThePanesAndTheActiveOneStaysActive() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Beta")
+            left.content.focusList()
+
+            tab.perform(.swapPanes)
+            #expect(tab.panes.first === right)
+            #expect(tab.panes.last === left)
+            #expect(tab.activePane === left)
+            #expect(tab.workspace.activePane == 1)
+            #expect(tab.workspace.mainCell.content === right.content.view)
+            #expect(tab.workspace.secondCell.content === left.content.view)
+            #expect(tab.paneWithKeyboard === left)
+            let name = (real(harness) as NSString).lastPathComponent
+            #expect(tab.twoPaneLabel == "Beta | \(name)")
+        }
+
+        @Test func theGoCommandsShowOnePanesFolderInTheOther() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Gamma")
+            #expect(tab.canPerform(.goToOtherPaneFolder))
+
+            tab.perform(.goToOtherPaneFolder)
+            await arrived(left)
+            #expect(left.shownFolderPath == real(harness, "Gamma"))
+            #expect(!tab.canPerform(.goToOtherPaneFolder))
+
+            await left.navigate(to: URL(fileURLWithPath: real(harness, "Alpha")))
+            tab.perform(.showFolderInOtherPane)
+            #expect(await waitUntil { right.shownFolderPath == real(harness, "Alpha") })
+            #expect(tab.activePane === left)
+        }
+
+        @Test func makePanesEqualWidthSharesTheRoomEvenly() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, _, _) = try await twoPanes(harness)
+            tab.workspace.setPaneSplit(0.7)
+            harness.layout(tab)
+            #expect(tab.workspace.mainCell.frame.width > tab.workspace.secondCell.frame.width + 50)
+
+            tab.perform(.equalizePanes)
+            harness.layout(tab)
+            #expect(abs(tab.workspace.mainCell.frame.width - tab.workspace.secondCell.frame.width) <= 1)
         }
     }
 }
