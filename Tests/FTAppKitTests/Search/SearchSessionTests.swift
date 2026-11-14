@@ -231,12 +231,13 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.count == 1)
     }
 
-    // Keystrokes that narrow 50,000 results beyond ASCII, and polls that bring more, judge only what they have to:
+    // Keystrokes that narrow 10,000 results beyond ASCII, and polls that bring more, judge only what they have to:
     // the names folded once, the results already judged for the text not judged again. Judging all of them again
-    // with names folded afresh took about a second each time in an unoptimized build, eight seconds in all; now about a
-    // quarter of a second in all.
-    @Test func narrowingFiftyThousandResultsBeyondASCIIJudgesOnlyWhatItHasToEvenUnoptimized() {
-        let names = (0..<50_000).map { "Soci\u{E9}t\u{E9} \($0) r\u{E9}sum\u{E9}.txt" }
+    // with names folded afresh took about a fifth of a second each time in an unoptimized build, a second and a half in
+    // all; now a few hundredths in all. Not 50,000, the most a search finds: the session is the main actor's, which
+    // every suite of this bundle shares, and that many held it for seconds.
+    @Test func narrowingTenThousandResultsBeyondASCIIJudgesOnlyWhatItHasToEvenUnoptimized() {
+        let names = (0..<10_000).map { "Soci\u{E9}t\u{E9} \($0) r\u{E9}sum\u{E9}.txt" }
         engine.finds = { _ in (names, true, false) }
         let search = session()
         search.updateDraft("so")
@@ -255,7 +256,7 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(search.committedQuery == "soci\u{E9}t\u{E9}")
         #expect(search.shownResults.count == names.count + 400)
         #expect(engine.starts.count == 1)
-        #expect(seconds < 1, "\(seconds)")
+        #expect(seconds < 0.3, "\(seconds)")
     }
 
     // Results found with other options than those set now (Settings changed them, which runs nothing again) are not

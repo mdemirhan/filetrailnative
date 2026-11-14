@@ -106,8 +106,10 @@ private final class UndoFixture {
         events.compactMap { if case .ended(let event, _) = $0 { event } else { nil } }
     }
 
+    /// Bounded only to stop a hang: the end is told on the main actor, which every suite of this bundle shares, so a
+    /// test waits its turn there for most of the bundle's run.
     func waitForEnds(_ count: Int) async throws {
-        let deadline = Date().addingTimeInterval(20)
+        let deadline = Date().addingTimeInterval(60)
         while ends.count < count {
             if Date() >= deadline { throw OperationError("Timed out waiting for the operation to end.") }
             try await Task.sleep(nanoseconds: 2_000_000)

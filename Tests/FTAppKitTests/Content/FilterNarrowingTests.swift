@@ -7,6 +7,8 @@ import Testing
 
 @testable import FTAppKit
 
+/// The filter's speed over large lists is guarded in `ListFilterTests`, off the main actor: run here, the guards held
+/// the main thread every suite of this bundle shares for seconds at a time.
 @MainActor
 struct FilterNarrowingTests {
     private static let names =
@@ -101,51 +103,6 @@ struct FilterNarrowingTests {
         content.applyFilterKey(.type("r"))
         content.applyFilterKey(.type("m"))
         #expect(content.entries.isEmpty)
-    }
-
-    // One keystroke over 50,000 search results, by name or by folder, the names beyond ASCII folded once.
-    @Test func filtersFiftyThousandResultsWithinAFewHundredMillisecondsEvenUnoptimized() {
-        struct Result: ListFilterSearchResult {
-            var name: String
-            var relativeParentPath: String
-        }
-        let results = (0..<50_000).map {
-            Result(
-                name: $0 % 10 == 0 ? "Résumé \($0).pdf" : "IMG_\($0) holiday photo copy.jpg",
-                relativeParentPath: "Photos/2026/Trip \($0 % 40)/Day \($0 % 7)")
-        }
-        let cache = FoldedNameCache()
-        _ = ListFilter.filterSearchResults(results, query: "r", mode: .fuzzy, cache: cache)
-        // CPU time of this thread, not wall time, so a busy machine does not fail it.
-        let (_, seconds) = CPUTime.measureThread {
-            let matches = ListFilter.filterSearchResults(results, query: "rsm", mode: .fuzzy, cache: cache)
-            _ = ListFilter.selection(in: matches, query: "rsm", mode: .fuzzy)
-        }
-        #expect(seconds < 0.4)
-    }
-
-    // Choosing what a keystroke selects among 150,000 matches when no name starts with the text or holds it as a run,
-    // so every name is weighed for how well its letters fit: all plain names, then every other one beyond ASCII.
-    // Folding each name again and a table asked for per name took several seconds of an unoptimized build.
-    @Test(arguments: [0, 2])
-    func picksTheBestFitAmongAHundredAndFiftyThousandMatchesEvenUnoptimized(_ beyondASCIIEvery: Int) {
-        struct Entry: ListFilterEntry {
-            var name: String
-        }
-        let entries = (0..<150_000).map {
-            Entry(
-                name: beyondASCIIEvery > 0 && $0 % beyondASCIIEvery == 0
-                    ? "Été \($0) holiday photo copié.jpg" : "IMG_\($0) holiday photo copy.jpg")
-        }
-        // As large as a pane makes it for a list this long.
-        let cache = FoldedNameCache(limit: entries.count * 2)
-        let matches = ListFilter.filterByName(entries, query: "hpc", mode: .fuzzy, cache: cache)
-        #expect(matches.count == entries.count)
-        let (picked, seconds) = CPUTime.measureThread {
-            ListFilter.selection(in: matches, query: "hpc", mode: .fuzzy, cache: cache)
-        }
-        #expect(picked?.name == entries[0].name)
-        #expect(seconds < 2.5)
     }
 
     // The names the filter folded are for the list on screen: they go with the folder or the search results, and no

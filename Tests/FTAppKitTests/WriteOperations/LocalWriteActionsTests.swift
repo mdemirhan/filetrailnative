@@ -146,9 +146,11 @@ private final class Fixture {
         events.compactMap { if case .ended(let event, _) = $0 { event } else { nil } }
     }
 
-    /// Bounded by time, not by a number of turns: the other suites share the main actor.
+    /// Bounded by time, not by a number of turns: the other suites share the main actor, where the end is told. The
+    /// bound only stops a hang, as nothing here is timed: the whole bundle's run takes about 25 s, and a test waits its
+    /// turn on that main actor for most of it.
     func waitForEnds(_ count: Int) async throws {
-        let deadline = Date().addingTimeInterval(20)
+        let deadline = Date().addingTimeInterval(60)
         while ends.count < count {
             if Date() >= deadline { throw OperationError("Timed out waiting for the operation to end.") }
             try await Task.sleep(nanoseconds: 2_000_000)
