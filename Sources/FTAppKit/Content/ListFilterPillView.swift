@@ -391,14 +391,34 @@ final class ListFilterPinButton: NSControl {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     private func applyLook() {
-        let symbol = isPinned ? "pin.fill" : "pin"
-        image.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?
-            .withSymbolConfiguration(.init(pointSize: CGFloat(SelectionLayout.FilterPill.symbolSize), weight: .medium))
+        image.image = Self.tilted(isPinned ? "pin.fill" : "pin")
         let palette = theme.palette
         image.contentTintColor =
             NSColor(isPinned ? theme.accent.solid : isHovering ? palette.textPrimary : palette.textSecondary)
         setAccessibilityLabel(isPinned ? "Unpin filter" : "Pin filter")
         toolTip = isPinned ? "Unpin Filter: typing changes it again" : "Pin Filter: keep it in other folders"
+    }
+
+    /// The symbol leaning 45° to the right, as a pin stuck in a board, still tinted as a template.
+    private static func tilted(_ name: String) -> NSImage? {
+        guard
+            let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+                .withSymbolConfiguration(
+                    .init(pointSize: CGFloat(SelectionLayout.FilterPill.symbolSize), weight: .medium))
+        else { return nil }
+        let side = size
+        let image = NSImage(size: NSSize(width: side, height: side), flipped: false) { rect in
+            let transform = NSAffineTransform()
+            transform.translateX(by: rect.midX, yBy: rect.midY)
+            transform.rotate(byDegrees: -45)
+            transform.concat()
+            let drawn = symbol.size
+            symbol.draw(
+                in: NSRect(x: -drawn.width / 2, y: -drawn.height / 2, width: drawn.width, height: drawn.height))
+            return true
+        }
+        image.isTemplate = true
+        return image
     }
 
     override func layout() {
