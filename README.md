@@ -40,6 +40,10 @@ Finder's sidebar holds shortcuts, not a tree. File Trail keeps a folder tree bes
 - Your favorites and Locations sit above the tree: Home, Macintosh HD, other disks with an Eject button, and the Trash.
 - Hide the tree when you want the room.
 
+## Two folders side by side
+
+Press ⌘\\ and the tab shows a second pane beside the first, each with its own folder, history, view and search. Tab moves between the tree and the two panes, ⇧⌘C and ⇧⌘X copy or move what is selected into the other pane's folder (F5 and F6 too), and a drag from one pane to the other does the same. ⌘U swaps the panes, the tree marks the folder each one shows, and the tab keeps both when you quit and come back.
+
 ## Cut, copy and paste, with a clipboard you can see
 
 <p align="center">
