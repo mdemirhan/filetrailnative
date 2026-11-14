@@ -97,6 +97,8 @@ public enum WriteEndNotices {
                     && (write.completedItemCount > 0 || write.failedItemCount > 0 || write.skippedItemCount > 0))
         }
         if write.status == .failed { return true }
+        // Items an archive held that were left out are told of, even when the rest went well.
+        if write.action == .compress || write.action == .extract, write.items.contains(where: \.note) { return true }
         if write.action == .batchRename, write.skippedItemCount > 0 { return true }
         if write.status == .partial { return !isExpectedPlannedSkip(write) }
         guard write.status == .cancelled else { return false }
@@ -135,7 +137,17 @@ public enum WriteEndNotices {
                 kind: .success, title: write.action == .undo ? "Undone" : "Redone",
                 message: undoLabel?.isEmpty == false ? undoLabel : nil)
         }
-        if [.newFolder, .pasteAsFile, .rename, .batchRename, .duplicate].contains(write.action) { return nil }
+        if [.newFolder, .pasteAsFile, .rename, .batchRename, .duplicate, .compress].contains(write.action) {
+            return nil
+        }
+        // What was extracted is selected where it went; only another folder than the one on screen is told of.
+        if write.action == .extract {
+            guard write.status == .completed, let target = write.targetPath, !isSearchMode,
+                !JSString.equals(target, currentPath)
+            else { return nil }
+            return WriteEndToast(
+                kind: .success, title: "Extracted into \(PathText.leafName(target))", message: itemSummary(write))
+        }
         let summary = itemSummary(write)
         let target = write.targetPath.map(PathText.leafName)
         let completedTitle: String =

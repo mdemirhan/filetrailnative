@@ -117,7 +117,8 @@ public enum CommandAvailability {
     /// a clipboard, so they stay available.
     private static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
-        .newFolder, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane,
+        .newFolder, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane, .compressSelection,
+        .extractSelection, .extractSelectionTo,
     ]
 
     // MARK: Helpers
@@ -271,6 +272,16 @@ public enum CommandAvailability {
         return context.isSearchMode || context.currentPath.isEmpty ? [] : [context.currentPath]
     }
 
+    /// A file (or a link to one) whose name is an archive's Extract takes apart.
+    static func isArchive(_ entry: CommandEntry) -> Bool {
+        entry.kind.isEditableFile && ArchiveNames.isArchive(NodePath.basename(entry.path))
+    }
+
+    private static func selectionIsInOneFolder(_ context: CommandAvailabilityContext) -> Bool {
+        !context.isSearchMode
+            || Set(context.selectedPathsInViewOrder.map { parentDirectoryPath($0).map { Array($0.utf8) } }).count == 1
+    }
+
     private static func selectionIsInTrash(_ context: CommandAvailabilityContext) -> Bool {
         let homePath = context.homePath ?? ""
         return context.selectedPathsInViewOrder.contains { Paths.isInsideTrash($0, homePath: homePath) }
@@ -321,6 +332,15 @@ public enum CommandAvailability {
         case .renameSelection:
             // One item in its row; several in the Rename sheet.
             return selectedCount > 0
+        case .compressSelection:
+            // The zip goes next to its items: search results from several folders have no one folder for it. Nothing
+            // is made in the Trash.
+            return selectedCount > 0 && !selectionIsInTrash(context) && selectionIsInOneFolder(context)
+        case .extractSelection, .extractSelectionTo:
+            // Archives only. Extract puts what they hold next to them, never in the Trash; Extract To anywhere else.
+            let selected = entries(at: context.selectedPathsInViewOrder, in: context.activeContentEntries)
+            return selectedCount > 0 && selected.count == selectedCount && selected.allSatisfy(isArchive)
+                && (command == .extractSelectionTo || !selectionIsInTrash(context))
         case .emptyTrash:
             return context.trashIsEmpty != true
         case .ejectVolume:

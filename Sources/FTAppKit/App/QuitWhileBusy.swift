@@ -11,6 +11,7 @@ public enum BusyOperationKind: String, Sendable, CaseIterable {
     case batchRename = "batch_rename"
     case newFolder = "new_folder"
     case newFile = "new_file"
+    case compress, extract
     case undo
     case redo
     case emptyTrash = "empty_trash"
@@ -97,6 +98,16 @@ public enum QuitWhileBusy {
                     "The Trash is still being emptied.",
                     "Finder goes on emptying it after File Trail quits."
                 ) : nil
+        case .compress, .extract:
+            // Nothing half made is left: the zip, or what an archive held, is put in place only once it is whole.
+            let now =
+                trigger == .quit ? "If you quit now, it stops at once" : "If you close the window now, it stops at once"
+            return kind == .compress
+                ? ("A zip is still being made.", "\(now), and no zip is left.")
+                : (
+                    "An archive is still being extracted.",
+                    "\(now). Archives already extracted stay; nothing of the one being extracted is left."
+                )
         case .rename, .newFolder, .newFile:
             return nil
         }

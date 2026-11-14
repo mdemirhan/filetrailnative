@@ -69,11 +69,15 @@ public enum ContextMenuRules {
     /// only fill a clipboard, so they stay available.
     public static let writeLockedActions: [ContextMenuActionID] = [
         .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash,
+        .compress, .extract, .extractTo,
     ]
 
-    /// What the menus leave out in the Trash: nothing is pasted, made or duplicated there, and what is in it is in
-    /// the Trash already (Delete Immediately is offered instead).
-    public static let trashHiddenActions: [ContextMenuActionID] = [.paste, .newFolder, .duplicate, .trash]
+    /// What the menus leave out in the Trash: nothing is pasted, made, duplicated, compressed or extracted there, and
+    /// what is in it is in the Trash already (Delete Immediately is offered instead). Extract To takes an archive's
+    /// items elsewhere.
+    public static let trashHiddenActions: [ContextMenuActionID] = [
+        .paste, .newFolder, .duplicate, .trash, .compress, .extract,
+    ]
 
     /// Background-menu actions that act on the folder on screen rather than on a selection.
     public static let backgroundFolderActions: [ContextMenuActionID] = [
@@ -118,7 +122,9 @@ public enum ContextMenuRules {
             renameLabel: subject.entries.count > 1 ? "Rename \(groupedCount(subject.entries.count)) Items…" : nil,
             ejectLabel: subject.ejectableDiskName.map { "Eject “\($0)”" } ?? ejectLabel,
             pasteAsFileLabel: PasteAsFile.menuTitle(world.pasteAsFileKind),
-            copyContentsLabel: CopyContents.menuTitle(copyContentsGuess(subject)))
+            copyContentsLabel: CopyContents.menuTitle(copyContentsGuess(subject)),
+            compressLabel: ArchiveNames.compressTitle(
+                count: subject.paths.count, firstName: subject.paths.first.map(NodePath.basename)))
     }
 
     /// What Copy Contents would copy of the one file a menu is for; nil when it is for anything else.
@@ -182,6 +188,13 @@ public enum ContextMenuRules {
         }
         // Copy Contents is for one image or text file, or one whose kind isn't known.
         if !(copyContentsGuess(subject)?.isOffered ?? false) { hidden.insert(.copyContents) }
+        // Extract and Extract To are for archives, every item of the menu one.
+        if entries.isEmpty || entries.count != subject.paths.count
+            || !entries.allSatisfy(CommandAvailability.isArchive)
+        {
+            hidden.insert(.extract)
+            hidden.insert(.extractTo)
+        }
         // Edit is for text files.
         if entries.isEmpty || entries.count != subject.paths.count || !entries.allSatisfy({ $0.kind.isEditableFile }) {
             hidden.insert(.edit)
@@ -234,9 +247,12 @@ public enum ContextMenuRules {
             hidden.insert(.toggleFavorite)
             // New Folder goes into the folder on screen, and search results show none.
             hidden.insert(.newFolder)
-            // A duplicate goes next to its original: several results from different folders have no one folder for
-            // theirs.
-            if duplicateFolder(of: subject.paths) == nil { hidden.insert(.duplicate) }
+            // A duplicate goes next to its original, and a zip next to its items: several results from different
+            // folders have no one folder for theirs.
+            if duplicateFolder(of: subject.paths) == nil {
+                hidden.insert(.duplicate)
+                hidden.insert(.compress)
+            }
         case .content:
             break
         }

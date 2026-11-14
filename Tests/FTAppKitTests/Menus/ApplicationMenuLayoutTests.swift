@@ -28,7 +28,8 @@ import Testing
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "-", "Open", "Open in New Tab",
                 "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Quick Look", "Reveal in Folder",
                 "-",
-                "Calculate Size", "-", "Rename", "Duplicate", "Move to…", "Add to Favorites", "-",
+                "Calculate Size", "-", "Rename", "Duplicate", "Move to…", "Compress", "Extract", "Extract To…",
+                "Add to Favorites", "-",
                 "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-", "Reopen Closed Tab",
                 "Close Tab", "Close Window",
             ])

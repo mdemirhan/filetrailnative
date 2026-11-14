@@ -204,6 +204,10 @@ public final class UndoHistory {
             return "New Folder"
         case .pasteAsFile:
             return "Paste as File"
+        case .compress:
+            return "Compress"
+        case .extract:
+            return "Extract"
         case .trash:
             return "Move to Trash of \(itemsName(units))"
         case .duplicate:

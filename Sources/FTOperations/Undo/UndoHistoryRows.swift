@@ -270,6 +270,8 @@ public enum UndoHistoryRows {
         case .rename, .batchRename: .rename
         case .newFolder: .newFolder
         case .pasteAsFile: .pasteAsFile
+        case .compress: .compress
+        case .extract: .extract
         case .trash: .trash
         case .deleteImmediately: .deleteImmediately
         case .duplicate: .duplicate
@@ -297,6 +299,8 @@ public enum UndoHistoryRows {
             case .rename, .batchRename: name = "Rename"
             case .newFolder: name = "New Folder"
             case .pasteAsFile: name = "Paste as File"
+            case .compress: name = "Compress"
+            case .extract: name = "Extract"
             case .undo: name = "Undo"
             case .redo: name = "Redo"
             }

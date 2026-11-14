@@ -14,6 +14,9 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case openSettings
     case openInTerminal
     case moveSelection
+    case compressSelection
+    case extractSelection
+    case extractSelectionTo
     case renameSelection
     case duplicateSelection
     case newFolder

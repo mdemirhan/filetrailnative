@@ -13,7 +13,7 @@ public enum ContextMenuScope: String, Sendable, Codable {
 public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codable {
     case revealInFolder, revealInTree, open, openInNewTab, openInNewWindow, openWith, quickLook
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
-    case newFolder
+    case newFolder, compress, extract, extractTo
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, copyContents, rootTreeHere, trash
     case deleteImmediately, emptyTrash, eject
     /// The submenu of what can be done with the tab's other pane, while it shows two.
@@ -54,11 +54,13 @@ public struct ContextMenuOptions: Equatable, Sendable {
     public var pasteAsFileLabel: String?
     /// Copy Contents' label, naming what it would copy: "Copy Image".
     public var copyContentsLabel: String?
+    /// Compress's label, naming what it makes a zip of: Compress “Photos”, Compress 3 Items.
+    public var compressLabel: String?
 
     public init(
         favoriteToggleLabel: String? = nil, textEditorName: String? = nil, targetsFolder: Bool = false,
         renameLabel: String? = nil, ejectLabel: String? = nil, pasteAsFileLabel: String? = nil,
-        copyContentsLabel: String? = nil
+        copyContentsLabel: String? = nil, compressLabel: String? = nil
     ) {
         self.favoriteToggleLabel = favoriteToggleLabel
         self.textEditorName = textEditorName
@@ -67,6 +69,7 @@ public struct ContextMenuOptions: Equatable, Sendable {
         self.ejectLabel = ejectLabel
         self.pasteAsFileLabel = pasteAsFileLabel
         self.copyContentsLabel = copyContentsLabel
+        self.compressLabel = compressLabel
     }
 }
 
@@ -171,7 +174,11 @@ public enum ContextMenuItems {
                 item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
                 line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
-                item(.move, "Move to…", .move), item(.newFolder, "New Folder", .newFolder),
+                item(.move, "Move to…", .move),
+                // Compress for any items of one folder; Extract and Extract To for archives (hidden otherwise).
+                item(.compress, options.compressLabel ?? "Compress", .compress),
+                item(.extract, "Extract", .extract), item(.extractTo, "Extract To…", .extract),
+                item(.newFolder, "New Folder", .newFolder),
                 line("separator-organize"),
                 item(.toggleFavorite, favoriteToggleLabel, .favorite), line("separator-favorite"),
                 item(.terminal, "Open in Terminal", .terminal), item(.showInFinder, "Show in Finder", .showInFinder),

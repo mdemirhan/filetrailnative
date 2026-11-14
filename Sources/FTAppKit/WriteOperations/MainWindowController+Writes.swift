@@ -8,6 +8,7 @@ extension MainWindowController {
     static let writeCommands: Set<AppCommand> = [
         .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .pasteAsFile, .trashSelection, .emptyTrash,
         .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut, .editCopy, .editPaste,
+        .compressSelection, .extractSelection, .extractSelectionTo,
     ]
 
     /// This tab's file operations; nil until the app has started them.
@@ -86,6 +87,19 @@ extension MainWindowController {
         case .renameSelection:
             // One item in its row; several in the Rename sheet.
             renameSelected()
+        case .compressSelection:
+            let paths = selectedPaths
+            guard !paths.isEmpty else { return true }
+            Task { _ = await actions.compress(paths) }
+        case .extractSelection:
+            let paths = selectedPaths
+            guard !paths.isEmpty else { return true }
+            Task { _ = await actions.extract(paths) }
+        case .extractSelectionTo:
+            // Says so as soon as pressed, not after a folder was chosen.
+            let paths = selectedPaths
+            guard !paths.isEmpty, !actions.refuseWhileBusy(.operation(.extract)) else { return true }
+            openExtractToDialog(paths, actions)
         case .newFolder:
             // From the keyboard or the menu bar: in the folder on screen, whatever is selected.
             guard
@@ -188,6 +202,16 @@ extension MainWindowController {
             openMoveDialog(paths, actions)
         case .duplicate:
             duplicateFromMenu(subject, actions)
+        case .compress:
+            guard !paths.isEmpty else { return }
+            Task { _ = await actions.compress(paths) }
+        case .extract:
+            guard !paths.isEmpty else { return }
+            Task { _ = await actions.extract(paths) }
+        case .extractTo:
+            // Says so as soon as chosen, not after a folder was chosen.
+            guard !paths.isEmpty, !actions.refuseWhileBusy(.operation(.extract)) else { return }
+            openExtractToDialog(paths, actions)
         default: break
         }
     }

@@ -5,7 +5,10 @@ let package = Package(
     name: "FileTrail",
     platforms: [.macOS("26.0")],
     targets: [
-        .target(name: "CFileTrail", path: "Sources/CFileTrail"),
+        // libarchive is the system's; its headers aren't in the SDK, so they are kept in libarchive/.
+        .target(
+            name: "CFileTrail", path: "Sources/CFileTrail", cSettings: [.headerSearchPath("libarchive")],
+            linkerSettings: [.linkedLibrary("archive")]),
         .target(name: "FTFoundation", path: "Sources/FTFoundation"),
         .target(name: "FTFileSystem", dependencies: ["FTFoundation", "CFileTrail"], path: "Sources/FTFileSystem"),
         .target(

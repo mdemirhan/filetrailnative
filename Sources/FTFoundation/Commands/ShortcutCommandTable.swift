@@ -83,6 +83,9 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case renameSelection
     case duplicateSelection
     case moveSelection
+    case compressSelection
+    case extractSelection
+    case extractSelectionTo
     case newFolder
     case pasteAsFile
     case trashSelection
@@ -288,6 +291,14 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .moveSelection, label: "Move to…", group: .files, defaults: ["Cmd+Shift+M"], menuPath: "File > Move to…"
         ),
+        // No keys of their own, as in Finder; one can be given in Settings.
+        ShortcutCommandDefinition(
+            id: .compressSelection, label: "Compress", group: .files, defaults: [], menuPath: "File > Compress"),
+        ShortcutCommandDefinition(
+            id: .extractSelection, label: "Extract", group: .files, defaults: [], menuPath: "File > Extract"),
+        ShortcutCommandDefinition(
+            id: .extractSelectionTo, label: "Extract To…", group: .files, defaults: [],
+            menuPath: "File > Extract To…"),
         ShortcutCommandDefinition(
             id: .newFolder, label: "New Folder", group: .files, defaults: ["Cmd+Shift+N"], menuPath: "File > New Folder"
         ),

@@ -113,6 +113,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -265,6 +280,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -421,6 +451,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -573,6 +618,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -729,6 +789,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -881,6 +956,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -1038,6 +1128,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -1199,6 +1304,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -1364,6 +1484,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -1525,6 +1660,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -1690,6 +1840,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -1853,6 +2018,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -2014,6 +2194,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -2180,6 +2375,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -4121,6 +4331,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -4279,6 +4504,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -4441,6 +4681,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -4599,6 +4854,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -4761,6 +5031,21 @@
           "icon": "move"
         },
         {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
+        },
+        {
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
@@ -4919,6 +5204,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",
@@ -5082,6 +5382,21 @@
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "compress",
+          "label": "Compress",
+          "icon": "compress"
+        },
+        {
+          "id": "extract",
+          "label": "Extract",
+          "icon": "extract"
+        },
+        {
+          "id": "extractTo",
+          "label": "Extract To…",
+          "icon": "extract"
         },
         {
           "id": "newFolder",

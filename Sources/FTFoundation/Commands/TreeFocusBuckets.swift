@@ -30,7 +30,7 @@ extension ShortcutPolicy {
         case .openSelection, .editSelection, .openInTerminal, .moveSelection, .renameSelection, .duplicateSelection,
             .newFolder, .trashSelection, .copySelection, .cutSelection, .pasteSelection, .copyPath, .copyContents,
             .openSelectionInNewTab, .openSelectionInNewWindow, .quickLookSelection, .revealInFolder, .copyToOtherPane,
-            .moveToOtherPane:
+            .moveToOtherPane, .compressSelection, .extractSelection, .extractSelectionTo:
             .contentOnly
         }
     }

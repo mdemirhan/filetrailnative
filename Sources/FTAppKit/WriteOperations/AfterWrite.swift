@@ -17,11 +17,13 @@ enum AfterWrite {
     }
 
     /// The folder the items a write made are selected in: a rename's,
-    /// a new folder's or file's or an Undo's is the folder of the first; a paste's is where it pasted.
+    /// a new folder's or file's, a zip's, what an archive gave or an Undo's is the folder of the first; a paste's is
+    /// where it pasted.
     static func selectionDirectoryPath(_ result: WriteOperationResult, selectedPaths: [String]) -> String? {
         guard let first = selectedPaths.first, !first.isEmpty else { return nil }
         if result.action == .rename || result.action == .batchRename || result.action == .newFolder
-            || result.action == .pasteAsFile || isUndoOrRedo(result.action)
+            || result.action == .pasteAsFile || result.action == .compress || result.action == .extract
+            || isUndoOrRedo(result.action)
         {
             return ExplorerTabs.parentDirectoryPath(first)
         }

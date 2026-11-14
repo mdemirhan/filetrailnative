@@ -84,6 +84,10 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.renameSelection, "Rename"))
             menu.addItem(context.command(.duplicateSelection, "Duplicate"))
             menu.addItem(context.command(.moveSelection, "Move to…"))
+            // Names what it makes a zip of once the menu is synced: Compress “Photos”, Compress 3 Items.
+            menu.addItem(context.command(.compressSelection, "Compress"))
+            menu.addItem(context.command(.extractSelection, "Extract"))
+            menu.addItem(context.command(.extractSelectionTo, "Extract To…"))
             // "Remove from Favorites" while the folder is one.
             menu.addItem(context.command(.toggleFavorite, "Add to Favorites"))
             menu.addItem(.separator())

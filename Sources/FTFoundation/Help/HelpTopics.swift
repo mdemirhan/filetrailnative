@@ -255,6 +255,28 @@ extension HelpContent {
                         ),
                     ]),
                 HelpSection(
+                    title: "Archives",
+                    rows: [
+                        HelpRow(
+                            label: "Compress",
+                            description:
+                                "File › Compress, or right-click, makes a zip of the selected items next to them, as Finder’s Compress does: “Photos.zip” for one item, “Archive.zip” for several. Extended attributes and resource forks go into the zip’s __MACOSX folder, so a Mac that opens it gets them back. Undo moves the zip to the Trash."
+                        ),
+                        HelpRow(
+                            label: "Extract",
+                            description:
+                                "File › Extract, or right-click, takes the selected archives apart next to themselves: zip, tar (also .tar.gz, .tgz, .tar.bz2 and .tar.xz), 7z, RAR and xar, and single files compressed with gzip, bzip2 or xz. An archive holding one item gives that item; one holding several gives a folder named after the archive. A name already taken gets the next number, so nothing is replaced. What comes out of a downloaded archive is checked by macOS as the archive would be. Undo moves what was made to the Trash."
+                        ),
+                        HelpRow(
+                            label: "Extract To",
+                            description: "File › Extract To… takes the archives apart in a folder you choose."),
+                        HelpRow(
+                            label: "What isn’t extracted",
+                            description:
+                                "An archive protected with a password can’t be opened yet; Archive Utility can. Items whose names would reach outside the folder are left out, and File Trail says how many."
+                        ),
+                    ]),
+                HelpSection(
                     title: "Undo and Redo",
                     rows: [
                         HelpRow(
@@ -270,7 +292,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What you can undo",
                             description:
-                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, and replacing an item when you paste."
+                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Compress, Extract, and replacing an item when you paste."
                         ),
                         HelpRow(
                             label: "Nothing is deleted",

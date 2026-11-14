@@ -10,6 +10,7 @@ public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
     case rename
     case newFolder = "new_folder"
     case pasteAsFile = "paste_as_file"
+    case compress, extract
     case batchRename = "batch_rename"
     case undo, redo
 }
@@ -71,6 +72,8 @@ public struct ProgressCardText: Equatable, Sendable {
         case .rename, .batchRename: pair = ("Renaming…", "Rename")
         case .newFolder: pair = ("Creating Folder…", "New Folder")
         case .pasteAsFile: pair = ("Saving File…", "Paste as File")
+        case .compress: pair = ("Compressing…", "Compress")
+        case .extract: pair = ("Extracting…", "Extract")
         case .undo: pair = ("Undoing…", "Undo")
         case .redo: pair = ("Redoing…", "Redo")
         case .paste: pair = ("Pasting…", "Paste")

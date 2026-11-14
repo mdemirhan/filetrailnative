@@ -56,6 +56,7 @@ public enum WriteOperationKind: String, Sendable, CaseIterable {
     case batchRename = "batch_rename"
     case newFolder = "new_folder"
     case newFile = "new_file"
+    case compress, extract
     case undo
     case redo
     case emptyTrash = "empty_trash"
@@ -68,6 +69,8 @@ public enum WriteOperationKind: String, Sendable, CaseIterable {
         case .batchRename: self = .batchRename
         case .newFolder: self = .newFolder
         case .pasteAsFile: self = .newFile
+        case .compress: self = .compress
+        case .extract: self = .extract
         case .undo: self = .undo
         case .redo: self = .redo
         default: self = .copy

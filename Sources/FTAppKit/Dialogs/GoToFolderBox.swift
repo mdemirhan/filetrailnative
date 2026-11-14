@@ -20,6 +20,14 @@ struct GoToBoxOptions {
             title: "Move To", fieldLabel: "Destination folder", submitLabel: "Move", selectFirstPlace: false,
             browse: browse, currentPath: currentPath)
     }
+
+    static func extractTo(currentPath: String, browse: @escaping @MainActor (String) async -> String?)
+        -> GoToBoxOptions
+    {
+        GoToBoxOptions(
+            title: "Extract To", fieldLabel: "Destination folder", submitLabel: "Extract", selectFirstPlace: false,
+            browse: browse, currentPath: currentPath)
+    }
 }
 
 /// The Go To box (⌘K, ⇧⌘G) and the Move To box: a panel dropped below the toolbar with a field, the folders that match

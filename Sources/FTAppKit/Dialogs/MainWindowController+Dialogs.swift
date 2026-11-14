@@ -184,6 +184,52 @@ extension MainWindowController {
             reportsRefusals: false)
     }
 
+    // MARK: Extract To
+
+    /// The Extract To box, on the folder shown now: the archives are taken apart into the folder chosen. The busy
+    /// notice was said before it opens.
+    func openExtractToDialog(_ paths: [String], _ actions: WindowWriteActions) {
+        guard !paths.isEmpty, let window, !isDialogOpen else { return }
+        AppMenuPresenter.shared.close()
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let options = GoToBoxOptions.extractTo(currentPath: shownFolderPath) { [weak window] path in
+            await Self.pickDirectory(path.isEmpty ? nil : PathText2.expandHome(path, homePath: home), window)
+        }
+        let box = presentGoToBox(options, in: window)
+        box.onSubmit = { [weak self, weak box] typed in
+            guard let self, let box else { return }
+            let destination = PathText2.expandHome(GoToBoxState.trim(typed), homePath: home)
+            box.setError(nil)
+            box.setSubmitting(true)
+            Task { @MainActor [weak self, weak box] in
+                guard let self else { return }
+                let outcome = await self.startExtractFromDialog(paths, to: destination, actions)
+                guard let box else { return }
+                switch outcome {
+                case .queued, .review:
+                    box.onClose()
+                case .cancelled:
+                    box.setSubmitting(false)
+                case .blocked(let message), .error(let message):
+                    box.setSubmitting(false)
+                    box.setError(message)
+                }
+            }
+        }
+    }
+
+    /// An extract from the Extract To box, its destination checked first.
+    private func startExtractFromDialog(_ paths: [String], to destination: String, _ actions: WindowWriteActions)
+        async -> CopyLikeOutcome
+    {
+        if paths.isEmpty || destination.isEmpty { return .blocked(message: "Choose a destination folder.") }
+        if actions.session.isWriteLocked { return .blocked(message: WriteDialogs.busyMessage) }
+        if let refusal = await TabDragDrop.destinationRefusal(destination, services.directoryService) {
+            return .blocked(message: refusal)
+        }
+        return await actions.extract(paths, into: destination, reportsRefusals: false)
+    }
+
     // MARK: Alerts
 
     /// A notice with one OK over the tab's window, its detail list under the message.

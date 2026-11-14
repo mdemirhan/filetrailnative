@@ -439,6 +439,35 @@ final class WindowWriteActions {
         return outcome
     }
 
+    // MARK: Compress and Extract
+
+    /// One zip of `paths`, items of one folder, next to them; it is selected once listed.
+    func compress(_ paths: [String]) async -> CopyLikeOutcome {
+        guard let first = paths.first else { return .cancelled }
+        return await startLocal(
+            .compress,
+            card: WriteOperationCardState(
+                action: .compress, stage: .starting, targetPath: NodePath.dirname(first), totalItemCount: paths.count),
+            showsRefusal: true, beforeAdopting: { [weak self] _ in self?.session.pendingTreeSelectionPath = nil },
+            start: { [coordinator, session] in try await coordinator.compress(paths, window: session) })
+    }
+
+    /// The archives `paths` taken apart, each next to itself, or into `folder` (Extract To); what they gave is
+    /// selected once listed.
+    func extract(_ paths: [String], into folder: String? = nil, reportsRefusals: Bool = true) async -> CopyLikeOutcome {
+        guard let first = paths.first else { return .cancelled }
+        return await startLocal(
+            .extract,
+            card: WriteOperationCardState(
+                action: .extract, stage: .starting, targetPath: folder ?? NodePath.dirname(first),
+                totalItemCount: paths.count),
+            showsRefusal: reportsRefusals,
+            beforeAdopting: { [weak self] _ in self?.session.pendingTreeSelectionPath = nil },
+            start: { [coordinator, session] in
+                try await coordinator.extractArchives(paths, into: folder, window: session)
+            })
+    }
+
     // MARK: Trash and Delete Immediately
 
     /// Moves items to the Trash; a folder of the tree asks first. Their disk having no Trash, the items

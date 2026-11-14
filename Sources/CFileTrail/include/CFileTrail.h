@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "ft_archive.h"
 #include "ft_copyfile.h"
 #include "ft_foldersize.h"
 

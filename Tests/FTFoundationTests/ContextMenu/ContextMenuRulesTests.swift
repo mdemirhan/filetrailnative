@@ -143,7 +143,8 @@ struct ContextMenuRulesTests {
         #expect(
             menu == [
                 "Open", "Open With", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy", "Copy Path",
-                "Copy Text", "Rename", "Duplicate", "Move to…", "Open in Terminal", "Show in Finder", "Move to Trash",
+                "Copy Text", "Rename", "Duplicate", "Move to…", "Compress \u{201C}b.txt\u{201D}", "Open in Terminal",
+                "Show in Finder", "Move to Trash",
             ])
         let folder = labels(
             subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))
@@ -151,8 +152,26 @@ struct ContextMenuRulesTests {
             folder == [
                 "Open", "Open in New Tab", "Open in New Window", "Open With", "Quick Look", "Show Info",
                 "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Rename", "Duplicate", "Move to…",
-                "New Folder", "Remove from Favorites", "Open in Terminal", "Show in Finder", "Move to Trash",
+                "Compress \u{201C}F\u{201D}", "New Folder", "Remove from Favorites", "Open in Terminal",
+                "Show in Finder",
+                "Move to Trash",
             ])
+    }
+
+    @Test func archivesAloneOfferExtractAndExtractTo() {
+        let archive = labels(subject(.content, [("/a/Photos.zip", .file)]), world())
+        #expect(archive.contains("Extract") && archive.contains("Extract To…"))
+        #expect(archive.contains("Compress \u{201C}Photos.zip\u{201D}"))
+        let mixed = labels(subject(.content, [("/a/Photos.zip", .file), ("/a/b.txt", .file)]), world())
+        #expect(!mixed.contains("Extract") && !mixed.contains("Extract To…"))
+        #expect(mixed.contains("Compress 2 Items"))
+        // A folder named like an archive isn't one.
+        let folder = labels(subject(.content, [("/a/Old.zip", .directory)]), world())
+        #expect(!folder.contains("Extract"))
+        // Nothing is made in the Trash; Extract To takes an archive's items elsewhere.
+        let trashed = labels(subject(.trash, [("\(Self.home)/.Trash/Photos.zip", .file)]), world())
+        #expect(!trashed.contains("Extract") && trashed.contains("Extract To…"))
+        #expect(!trashed.contains { $0.hasPrefix("Compress") })
     }
 
     @Test func searchResultsStartWithRevealInFolderAndLeaveOutNewFolderAndFavorites() {
