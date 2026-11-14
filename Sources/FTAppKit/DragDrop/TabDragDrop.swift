@@ -627,7 +627,8 @@ final class TabDragDrop {
                     DragRules.validate(
                         session: session, blocked: self.isBlocked, targetSurface: target.surface,
                         targetPath: target.path, targetSupportsMove: target.supportsMove,
-                        targetIsSelected: target.isSelected, operation: operation) == nil
+                        targetIsSelected: target.isSelected, operation: operation,
+                        targetIsAnotherList: target.isAnotherList) == nil
                 else { return }
             }
             await self.start(session, target: target, operation: operation)

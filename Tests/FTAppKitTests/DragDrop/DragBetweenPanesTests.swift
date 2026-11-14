@@ -6,8 +6,29 @@ import FTFoundation
 import FTOperations
 import Foundation
 import Testing
+import os
 
 @testable import FTAppKit
+
+/// The disks of a test's drop, held from answering until it lets them.
+private final class HeldDisks: Sendable {
+    private let state = OSAllocatedUnfairLock(initialState: (released: false, asked: 0))
+    /// The id each path's disk gives once let go.
+    private let id: @Sendable (String) -> Int64?
+
+    init(id: @escaping @Sendable (String) -> Int64? = { _ in 1 }) { self.id = id }
+
+    var asked: Int { state.withLock { $0.asked } }
+
+    func release() { state.withLock { $0.released = true } }
+
+    /// What the drop asks the disks: it waits, off the main thread, until the test lets them answer.
+    func read(_ paths: [String]) -> [Int64?] {
+        state.withLock { $0.asked += 1 }
+        while !state.withLock({ $0.released }) { usleep(5_000) }
+        return paths.map(id)
+    }
+}
 
 extension ExplorerWindowlessTests {
     @MainActor
@@ -77,6 +98,84 @@ extension ExplorerWindowlessTests {
             _ = drags.automationDragStarted([try entry(left, "note.txt")])
             drags.paneUnderDrag = right
             #expect(!drags.automationDrop(dragged, entry: nil, allowed: [.move]))
+            #expect(window.exists("note.txt"))
+            await window.close()
+        }
+
+        /// The disks answer only when the test lets them, until `restore`.
+        private func holdDisks(id: @escaping @Sendable (String) -> Int64? = { _ in 1 }) -> (
+            disks: HeldDisks, restore: () -> Void
+        ) {
+            let disks = HeldDisks(id: id)
+            let saved = TabDragDrop.readDiskIds
+            let savedWait = TabDragDrop.diskAnswerWaitMs
+            TabDragDrop.readDiskIds = { disks.read($0) }
+            // The drop waits for them as long as the test holds them, however busy the Mac is.
+            TabDragDrop.diskAnswerWaitMs = 60_000
+            return (
+                disks,
+                {
+                    disks.release()
+                    TabDragDrop.readDiskIds = saved
+                    TabDragDrop.diskAnswerWaitMs = savedWait
+                }
+            )
+        }
+
+        /// A drag of search results from the tab's active pane.
+        private func searchDrag(_ tab: MainWindowController, _ path: String) -> DragSession {
+            let session = DragSession(
+                sourceSurface: .search, sourceItems: [DragItem(path: path, kind: .file)], leadPath: path,
+                leadKind: .file)
+            TabDragDrop.ownDrag = TabDragDrop.OwnDrag(
+                session: session, windowNumber: tab.window?.windowNumber ?? 0, tab: tab, pane: tab.activePane)
+            return session
+        }
+
+        // A search result dropped on the other pane's background with no key held, before the disks have answered,
+        // waits for them and then moves into the folder that pane shows.
+        @Test func aSearchResultDroppedBeforeTheDisksAnswerMovesIntoTheOtherPanesFolder() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let right = try await twoPanes(window, right: "Gamma")
+            let (disks, restore) = holdDisks()
+            defer {
+                restore()
+                TabDragDrop.ownDrag = nil
+            }
+            let session = searchDrag(tab, url(window, "note.txt").path)
+            let drags = tab.dragDrop
+            drags.paneUnderDrag = right
+            let target = try #require(drags.contentTarget(session, entry: nil))
+            #expect(target.isAnotherList)
+
+            #expect(drags.drop(session: session, target: target, offersMove: true, modifiers: [], sequence: 41))
+            #expect(await waitUntil { disks.asked > 0 })
+            #expect(window.exists("note.txt") && !window.exists("Gamma/note.txt"))
+            disks.release()
+            #expect(await waitUntil { window.exists("Gamma/note.txt") && !window.exists("note.txt") })
+            #expect(window.recorder.shown.isEmpty)
+            await window.close()
+        }
+
+        // Dropped on a folder of the other pane while the disks haven't answered, items of another disk are copied.
+        @Test func aDropOnTheOtherPaneBeforeTheDisksAnswerCopiesFromAnotherDisk() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let left = tab.activePane
+            let right = try await twoPanes(window, right: "Beta")
+            let inner = url(window, "Beta/Inner").path
+            let (disks, restore) = holdDisks { samePath($0, inner) ? 2 : 1 }
+            defer { restore() }
+            let drags = tab.dragDrop
+            let dragged = drags.automationDragStarted([try entry(left, "note.txt")])
+
+            drags.paneUnderDrag = right
+            #expect(drags.automationDrop(dragged, entry: try entry(right, "Inner"), allowed: [.copy, .move, .generic]))
+            #expect(await waitUntil { disks.asked > 0 })
+            #expect(!window.exists("Beta/Inner/note.txt"))
+            disks.release()
+            #expect(await waitUntil { window.exists("Beta/Inner/note.txt") })
             #expect(window.exists("note.txt"))
             await window.close()
         }
