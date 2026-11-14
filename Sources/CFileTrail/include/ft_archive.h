@@ -29,6 +29,10 @@ void ft_archive_control_free(ft_archive_control *control);
 /// Asks the work to stop: it quits at its next block of data with ECANCELED.
 void ft_archive_control_stop(ft_archive_control *control);
 
+/// For tests: the destination is taken for a disk that keeps no extended attributes, as if it refused them with
+/// ENOTSUP.
+void ft_archive_control_take_disk_as_keeping_no_attributes(ft_archive_control *control);
+
 /// Bytes done so far: of the archive read, when extracting; of the items' data read, when compressing.
 int64_t ft_archive_control_done(const ft_archive_control *control);
 /// Bytes to do: the archive's size, or the items' data once they have been counted.
@@ -49,7 +53,8 @@ int64_t ft_archive_control_skipped(const ft_archive_control *control);
 /// are left their owner's to write, for the caller to remove. When `quarantine` is set, every item and
 /// `destination` itself get the archive's quarantine, read-only items too, so what came from the internet is
 /// checked as the archive would be; one that refuses it (a link aside) fails the archive with
-/// FT_ARCHIVE_NOT_QUARANTINED. Access rules (ACLs) the archive keeps are not put on. The process's umask is never changed. `raw_name`, for a single compressed
+/// FT_ARCHIVE_NOT_QUARANTINED. On a disk that keeps no extended attributes at all (`destination` refuses the
+/// quarantine with ENOTSUP), nothing is quarantined, as nothing could be. Access rules (ACLs) the archive keeps are not put on. The process's umask is never changed. `raw_name`, for a single compressed
 /// file (`.gz`, `.bz2`, `.xz` not holding a tar), is the name the file is written as. Returns 0, an errno
 /// (ECANCELED when stopped), or one of the FT_ARCHIVE_ codes.
 int ft_archive_extract(

@@ -157,6 +157,26 @@ import Testing
         #expect(try Self.names(plain) == ["first.txt", "second.txt"])
     }
 
+    /// A disk that keeps no extended attributes at all: what comes out goes without the quarantine, as nothing on it
+    /// can have one, rather than not at all.
+    @Test func onADiskThatKeepsNoAttributesItemsComeOutWithoutTheQuarantine() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        var tar = TarBuilder()
+        tar.add("first.txt", contents: "first")
+        tar.add("sub/second.txt", contents: "second")
+        try tar.write(to: folders.archive)
+        ArchiveOperationsTests.setAttribute(folders.archive, "com.apple.quarantine", Self.quarantine)
+        let control = NativeArchive.Control()
+        control.takeDiskAsKeepingNoAttributes()
+        try NativeArchive.extract(folders.archive, into: folders.out, rawName: nil, quarantine: true, control: control)
+        #expect(try Self.names(folders.out) == ["first.txt", "sub"])
+        for item in ["", "first.txt", "sub", "sub/second.txt"] {
+            let path = "\(folders.out)/\(item)"
+            #expect(ArchiveOperationsTests.attribute(path, "com.apple.quarantine") == nil, "\(item)")
+        }
+    }
+
     /// A quarantine longer than a kilobyte is read whole, and put on every item.
     @Test func aLongQuarantineIsKeptWhole() throws {
         let folders = try Folders()

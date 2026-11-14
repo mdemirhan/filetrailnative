@@ -31,6 +31,8 @@ struct ft_archive_control {
     _Atomic int64_t total;
     _Atomic int64_t items;
     _Atomic int64_t skipped;
+    /// The destination is taken for a disk that keeps no extended attributes (for tests).
+    _Atomic int32_t no_attributes;
 };
 
 ft_archive_control *ft_archive_control_create(void) {
@@ -41,6 +43,7 @@ ft_archive_control *ft_archive_control_create(void) {
         atomic_init(&control->total, 0);
         atomic_init(&control->items, 0);
         atomic_init(&control->skipped, 0);
+        atomic_init(&control->no_attributes, 0);
     }
     return control;
 }
@@ -61,6 +64,10 @@ int64_t ft_archive_control_total(const ft_archive_control *control) {
 
 int64_t ft_archive_control_items(const ft_archive_control *control) {
     return control == NULL ? 0 : atomic_load(&control->items);
+}
+
+void ft_archive_control_take_disk_as_keeping_no_attributes(ft_archive_control *control) {
+    if (control != NULL) atomic_store(&control->no_attributes, 1);
 }
 
 int64_t ft_archive_control_skipped(const ft_archive_control *control) {
@@ -701,6 +708,15 @@ static int pass_over(ft_archive_control *control, struct archive *reader) {
     return status == ARCHIVE_EOF || status >= ARCHIVE_WARN ? 0 : reader_error(reader);
 }
 
+/// Whether the destination's disk keeps no extended attributes: it refuses the quarantine as something it doesn't
+/// do (ENOTSUP), not as something its rules forbid.
+static int keeps_no_attributes(const struct extraction *extraction, ft_archive_control *control) {
+    if (control != NULL && atomic_load(&control->no_attributes)) return 1;
+    return fsetxattr(extraction->root, quarantine_name, extraction->quarantine, extraction->quarantine_length, 0, 0)
+               != 0
+        && errno == ENOTSUP;
+}
+
 /// The open archive's quarantine, in a buffer the caller frees: 0, with nothing when it has none, or
 /// FT_ARCHIVE_NOT_QUARANTINED when it can't be read, as what came out of a downloaded archive would then be run
 /// unchecked.
@@ -765,8 +781,16 @@ int ft_archive_extract(
         close(fd);
         return error;
     }
-    // The destination too: with several items at its top, it is the folder they are handed over in.
-    result = quarantine_item(&extraction, extraction.root);
+    // A disk that keeps no extended attributes at all (some network servers) takes the quarantine nowhere: what
+    // comes out goes without it, as Finder copies onto such a disk. That is decided once, by the folder the items
+    // are handed over in, before anything of the archive is read: no item can claim it for itself, and one that
+    // refuses the quarantine on a disk that keeps it fails the archive.
+    if (quarantine_length > 0 && keeps_no_attributes(&extraction, control)) {
+        extraction.quarantine_length = 0;
+    } else {
+        // The destination too: with several items at its top, it is the folder they are handed over in.
+        result = quarantine_item(&extraction, extraction.root);
+    }
 
     // When the destination refused the quarantine, nothing is read.
     struct archive *reader = result == 0 ? new_reader(raw_name != NULL) : NULL;

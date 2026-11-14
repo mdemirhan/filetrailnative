@@ -45,6 +45,8 @@ enum NativeArchive {
         deinit { ft_archive_control_free(pointer) }
 
         func stop() { ft_archive_control_stop(pointer) }
+        /// For tests: the destination is taken for a disk that keeps no extended attributes.
+        func takeDiskAsKeepingNoAttributes() { ft_archive_control_take_disk_as_keeping_no_attributes(pointer) }
         /// Bytes done: of the archive read, when extracting; of the items' data read, when compressing.
         var done: Int64 { ft_archive_control_done(pointer) }
         var total: Int64 { ft_archive_control_total(pointer) }
