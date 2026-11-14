@@ -64,7 +64,7 @@ struct WriteServiceAnalysisTests {
         let signal = StopSignal()
 
         let review = Task { try await service.analyze(request(["/source/folder"], into: "/target"), signal: signal) }
-        reading.wait()
+        await BlockingWork.run { reading.wait() }
         signal.stop()
 
         await #expect(throws: StopError.self) { try await review.value }

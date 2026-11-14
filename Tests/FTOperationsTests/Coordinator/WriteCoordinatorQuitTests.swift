@@ -248,13 +248,16 @@ import Testing
         let window = TestWindow()
         let writing = DispatchSemaphore(value: 0)
         let finish = DispatchSemaphore(value: 0)
+        // Both wait on threads of their own, not Swift's shared pool, which the rest of the test needs.
         let alone = Task.detached { [coordinator] in
-            coordinator.runWriteAlone {
-                writing.signal()
-                finish.wait()
-            } != nil
+            await BlockingWork.run {
+                coordinator.runWriteAlone {
+                    writing.signal()
+                    finish.wait()
+                } != nil
+            }
         }
-        await Task.detached { Self.block(writing) }.value
+        await BlockingWork.run { Self.block(writing) }
 
         #expect(throws: WriteCoordinatorError.busy) {
             try Coordinators.heldLocalOperation(coordinator, window, gate: TestGate(), action: .trash)

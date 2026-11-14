@@ -1,4 +1,5 @@
 import AppKit
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -145,7 +146,7 @@ struct SettingTheDefaultAppTests {
         defer { release.signal() }
         @Sendable func hang() { _ = release.wait(timeout: .now() + 10) }
         catalog.setDefaultInSystem = { _, _ in
-            hang()
+            await BlockingWork.run { hang() }
             answered.withLock { $0 = true }
         }
         catalog.setDefaultTimeLimit = .milliseconds(100)
