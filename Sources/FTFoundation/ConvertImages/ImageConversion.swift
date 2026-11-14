@@ -166,12 +166,11 @@ public enum ImageConversion {
         case .actual:
             return original
         case .fitWithin(let side):
-            return scaled(original, by: Double(max(side, 1)) / Double(max(width, height)))
+            return fitted(PixelSize(width: width, height: height), inside: max(side, 1), max(side, 1))
         case .scale(let percent):
             return scaled(original, by: Double(clampPercent(percent)) / 100)
         case .custom(let boxWidth, let boxHeight, .pixels, true):
-            return scaled(
-                original, by: min(Double(max(boxWidth, 1)) / Double(width), Double(max(boxHeight, 1)) / Double(height)))
+            return fitted(PixelSize(width: width, height: height), inside: max(boxWidth, 1), max(boxHeight, 1))
         case .custom(let exactWidth, let exactHeight, .pixels, false):
             guard exactWidth >= 1, exactHeight >= 1, exactWidth <= width, exactHeight <= height else { return nil }
             return PixelSize(width: exactWidth, height: exactHeight)
@@ -189,6 +188,24 @@ public enum ImageConversion {
         guard factor < 1 else { return original }
         return PixelSize(
             width: rounded(Double(original.width) * factor), height: rounded(Double(original.height) * factor))
+    }
+
+    /// `original` in its own shape inside a box, never larger than it was: the side that meets the box is the box's
+    /// exactly, the other the nearest whole pixel to the shape, at least one and never past the box. Worked out in
+    /// whole numbers, so no fraction a hair over a half rounds a side past the box.
+    private static func fitted(_ original: PixelSize, inside boxWidth: Int, _ boxHeight: Int) -> PixelSize {
+        let (width, height) = (original.width, original.height)
+        guard width > boxWidth || height > boxHeight else { return original }
+        // The width meets the box first when width / height is at least boxWidth / boxHeight.
+        if width * boxHeight >= height * boxWidth {
+            return PixelSize(width: boxWidth, height: min(boxHeight, nearest(height * boxWidth, over: width)))
+        }
+        return PixelSize(width: min(boxWidth, nearest(width * boxHeight, over: height)), height: boxHeight)
+    }
+
+    /// `numerator / denominator` to the nearest whole number, a half rounded up, at least one.
+    private static func nearest(_ numerator: Int, over denominator: Int) -> Int {
+        max(1, (2 * numerator + denominator) / (2 * denominator))
     }
 
     private static func rounded(_ value: Double) -> Int { max(1, Int(value.rounded())) }

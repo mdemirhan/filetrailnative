@@ -408,7 +408,7 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         for url in try Pictures.marked(in: folder) + [text] {
             for format in ImageFormat.allCases {
                 let asIs = try await Written(converted(url.path, ImageConversionOptions(format: format)))
-                for size in [ImageSize.scale(50), .fitWithin(40)] {
+                for size in [ImageSize.scale(50), .fitWithin(50)] {
                     let label = "\(url.lastPathComponent) to \(format) \(size)"
                     let written = try await Written(
                         converted(url.path, ImageConversionOptions(format: format, size: size)))
@@ -539,6 +539,39 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         #expect(written.exifDate == Pictures.exifDate)
         let exif = written.properties[kCGImagePropertyExifDictionary] as? [CFString: Any]
         #expect(exif?[kCGImagePropertyExifPixelXDimension] as? Int == 150)
+    }
+
+    // A picture comes out exactly the size worked out for it, though ImageIO's decoding rounds a side its own way: 60
+    // by 80 within 50 is 38 by 50, not 38 by 51; on its side, with an odd side, a side of one pixel, at a scale and at an
+    // exact size too.
+    @Test func aPictureComesOutExactlyTheSizeWorkedOutForIt() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let cases: [(width: Int, height: Int, orientation: Int, size: ImageSize, expected: PixelSize)] = [
+            (60, 80, 1, .fitWithin(50), PixelSize(width: 38, height: 50)),
+            (80, 60, 6, .fitWithin(50), PixelSize(width: 38, height: 50)),
+            (99, 37, 1, .fitWithin(13), PixelSize(width: 13, height: 5)),
+            (200, 1, 1, .fitWithin(50), PixelSize(width: 50, height: 1)),
+            (101, 37, 1, .scale(33), PixelSize(width: 33, height: 12)),
+            (
+                60, 80, 1, .custom(width: 30, height: 70, unit: .pixels, proportional: false),
+                PixelSize(width: 30, height: 70)
+            ),
+        ]
+        for (width, height, orientation, size, expected) in cases {
+            let label = "\(width)×\(height) (\(orientation)) \(size)"
+            let upright =
+                orientation == 6 ? PixelSize(width: height, height: width) : PixelSize(width: width, height: height)
+            #expect(ImageConversion.targetSize(upright, size) == expected, "\(label)")
+            let url = folder.appending("\(width)x\(height)-\(orientation).jpg")
+            try Pictures.write(
+                [Pictures.image(width: width, height: height)], as: .jpeg, to: url,
+                properties: [kCGImagePropertyOrientation: orientation])
+            let written = try await Written(
+                converted(url.path, ImageConversionOptions(format: .png, size: size, keepMetadata: false)))
+            #expect(written.size == expected, "\(label)")
+            #expect(written.orientation == 1, "\(label)")
+        }
     }
 
     @Test func anExactSizeOfAnotherShapeIsDrawnToThatSize() async throws {

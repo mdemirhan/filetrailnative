@@ -138,34 +138,40 @@ public enum ImageConverter {
 
     // MARK: The picture
 
-    /// The picture upright at `target`. ImageIO scales it as it decodes, keeping its shape; an exact size of another
-    /// shape is then drawn from a copy at least that large each way.
+    /// The picture upright at exactly `target`. ImageIO scales it as it decodes, keeping its shape, its longest side
+    /// at the size asked; when its other side doesn't round as `target`'s does, or `target` is of another shape, it is
+    /// drawn at `target` from a copy at least that large each way.
     private static func picture(
         _ source: CGImageSource, _ header: Header, upright: PixelSize, target: PixelSize, hdr: Bool
     ) throws(Failure) -> CGImage {
-        let factor = max(
-            Double(target.width) / Double(upright.width), Double(target.height) / Double(upright.height))
-        let side = min(upright.longestSide, Int((Double(upright.longestSide) * factor).rounded(.up)))
-        var options: [CFString: Any] = [
-            kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceThumbnailMaxPixelSize: max(side, 1), kCGImageSourceShouldCacheImmediately: true,
-        ]
-        if hdr { options[kCGImageSourceDecodeRequest] = kCGImageSourceDecodeToHDR }
-        guard let decoded = CGImageSourceCreateThumbnailAtIndex(source, header.index, options as CFDictionary)
-        else { throw .notAnImage }
-        // A pixel either way is the rounding of the shorter side: drawing again for it would only blur.
-        if abs(decoded.width - target.width) <= 1, abs(decoded.height - target.height) <= 1,
-            proportionalTo(upright, target)
-        {
-            return decoded
+        func decoded(longestSide: Int) throws(Failure) -> CGImage {
+            var options: [CFString: Any] = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceCreateThumbnailWithTransform: true,
+                kCGImageSourceThumbnailMaxPixelSize: max(longestSide, 1), kCGImageSourceShouldCacheImmediately: true,
+            ]
+            if hdr { options[kCGImageSourceDecodeRequest] = kCGImageSourceDecodeToHDR }
+            guard let image = CGImageSourceCreateThumbnailAtIndex(source, header.index, options as CFDictionary)
+            else { throw .notAnImage }
+            return image
         }
-        return try drawn(decoded, at: target)
-    }
-
-    private static func proportionalTo(_ upright: PixelSize, _ target: PixelSize) -> Bool {
-        let ratio = Double(upright.width) / Double(upright.height)
-        let targetRatio = Double(target.width) / Double(target.height)
-        return abs(ratio - targetRatio) * Double(max(target.width, target.height)) <= 1.5
+        let longest = upright.longestSide
+        func ceiling(_ numerator: Int, _ denominator: Int) -> Int { (numerator + denominator - 1) / denominator }
+        // `target`'s side along the picture's longest, and the longest side of the smallest copy each of whose sides
+        // is at least `target`'s.
+        let along = upright.width >= upright.height ? target.width : target.height
+        let covering = min(
+            longest,
+            max(ceiling(target.width * longest, upright.width), ceiling(target.height * longest, upright.height)))
+        var image = try decoded(longestSide: min(along, covering))
+        if image.width == target.width, image.height == target.height { return image }
+        // The shorter side rounded the other way, or another shape: drawn from a copy at least as large each way.
+        if image.width < target.width || image.height < target.height {
+            image = try decoded(longestSide: covering)
+        }
+        if image.width < target.width || image.height < target.height {
+            image = try decoded(longestSide: min(covering + 1, longest))
+        }
+        return try drawn(image, at: target)
     }
 
     /// The picture drawn at `size`, whatever its shape. A bitmap to draw in holds red, green and blue with
