@@ -74,6 +74,7 @@ final class FakeSearchHost: SearchSessionHost {
     var searchFolderEntryPaths = ["/demo/a.txt", "/demo/b.txt"]
     /// What the results' filter holds; the results shown are all of them.
     var searchResultsFilter = ""
+    var searchResultsFilterMode = NameMatchMode.fuzzy
     var searchResultsScroll: (top: Double, left: Double)?
     private(set) var restoredFilters: [String] = []
     private(set) var changes: [SearchSession.Change] = []
@@ -83,7 +84,7 @@ final class FakeSearchHost: SearchSessionHost {
     func searchSessionChanged(_ change: SearchSession.Change) { changes.append(change) }
     func applySearchSelection(_ selection: ContentSelection) { applied.append(selection) }
     func focusContentPaneForSearch() { focusedPane += 1 }
-    func restoreSearchResultsView(filter: String, scroll: (top: Double, left: Double)?) {
+    func restoreSearchResultsView(filter: String, mode: NameMatchMode, scroll: (top: Double, left: Double)?) {
         restoredFilters.append(filter)
     }
 }

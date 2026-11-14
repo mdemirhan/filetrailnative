@@ -181,26 +181,41 @@ extension ExplorerWindowlessTests {
             await place.harness.close()
         }
 
-        // Contains chosen while they were away: the filter comes back as typed and matches in the new way. The result
-        // opened stays selected though the filter now hides it, as when the mode is changed with them on screen.
-        @Test func aFilterBroughtBackMatchesInTheModeChosenSince() async throws {
+        // A filter keeps its mode: results filtered in Fuzzy come back in Fuzzy though the folder's chip made Contains
+        // the default meanwhile, with the same matches and the opened one selected. The default stays Contains.
+        @Test func resultsComeBackInTheModeTheirFilterHad() async throws {
             let place = try await start()
             place.engine.finds = { _ in (["Inner/", "index.txt"], false, false) }
             try searchInFolder(place)
             let content = place.tab.content
             #expect(await waitUntil { content.entries.count == 2 })
             content.setSearchFilter("inr")
+            #expect(content.entries.map(\.name) == ["Inner"])
             try await openResult(place)
-            place.tab.updatePreferences { $0.listFilterMatch = .contains }
+            // In the folder, a filter switched to Contains with its chip.
+            content.applyFilterKey(.type("x"))
+            #expect(content.container.filterPill.chip.accessibilityPerformPress())
+            #expect(place.tab.preferences.listFilterMatch == .contains)
+            #expect(content.filterMode == .contains)
 
             #expect(await back(place, to: place.searched))
+            expectResults(place, selected: place.found)
             #expect(content.filter == "inr")
-            #expect(content.entries.isEmpty)
-            #expect(content.selection.paths == [place.found])
-            // The filter emptied, every result is back and the opened one still selected.
-            content.setSearchFilter("")
+            #expect(content.filterMode == .fuzzy)
+            #expect(place.tab.search.header.filter.modeChip.mode == .fuzzy)
+            #expect(content.entries.map(\.name) == ["Inner"])
+            #expect(place.tab.preferences.listFilterMatch == .contains)
+            // The filter emptied, every result is back and the opened one still selected; the next filter starts in
+            // the default.
+            let filter = place.tab.search.header.filter
+            filter.input.stringValue = ""
+            filter.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: filter.input))
             #expect(content.selection.paths == [place.found])
             #expect(content.entryPaths.contains(place.found))
+            #expect(filter.modeChip.mode == .contains)
+            content.setSearchFilter("inr")
+            #expect(content.filterMode == .contains)
+            #expect(content.entries.isEmpty)
             await place.harness.close()
         }
 

@@ -16,12 +16,13 @@ protocol SearchSessionHost: AnyObject {
     var searchIncludeHidden: Bool { get }
     /// The paths of the folder's entries, to clean a selection against when the folder list comes back.
     var searchFolderEntryPaths: [String] { get }
-    /// What is typed in the results' filter while they show.
+    /// What is typed in the results' filter while they show, and the mode it matches in.
     var searchResultsFilter: String { get }
+    var searchResultsFilterMode: NameMatchMode { get }
     /// Where the results are scrolled while they show.
     var searchResultsScroll: (top: Double, left: Double)? { get }
-    /// The results come back as they were left: narrowed by `filter`, scrolled to `scroll`.
-    func restoreSearchResultsView(filter: String, scroll: (top: Double, left: Double)?)
+    /// The results come back as they were left: narrowed by `filter` in `mode`, scrolled to `scroll`.
+    func restoreSearchResultsView(filter: String, mode: NameMatchMode, scroll: (top: Double, left: Double)?)
     /// The session changed: the tab shows it again.
     func searchSessionChanged(_ change: SearchSession.Change)
     /// The selection of the list now on screen (the results, or the folder).
@@ -101,6 +102,7 @@ final class SearchSession {
     private(set) var cachedSearchSelection = ContentSelection.empty
     /// What the results' filter held when they were put away, and where they were scrolled: both come back with them.
     private(set) var cachedFilter = ""
+    private(set) var cachedFilterMode = NameMatchMode.fuzzy
     private(set) var cachedScroll: (top: Double, left: Double)?
     /// Answers from searches that are no longer the one on screen are dropped by this counter.
     private(set) var sessionCounter = 0
@@ -242,7 +244,9 @@ final class SearchSession {
         let wasVisible = resultsVisible
         resultsVisible = true
         emit(wasVisible ? .draft : [.draft, .visibility])
-        if !wasVisible { host.restoreSearchResultsView(filter: cachedFilter, scroll: cachedScroll) }
+        if !wasVisible {
+            host.restoreSearchResultsView(filter: cachedFilter, mode: cachedFilterMode, scroll: cachedScroll)
+        }
         // Checked against all the results: a selected one the filter hides stays selected, as it does whenever the
         // filter changes (the mode may have changed since they were left).
         let paths = shownResults.map(\.path)
@@ -258,6 +262,7 @@ final class SearchSession {
         self.returnPlace = returnPlace
         if resultsVisible {
             cachedFilter = host?.searchResultsFilter ?? ""
+            cachedFilterMode = host?.searchResultsFilterMode ?? .fuzzy
             cachedScroll = host?.searchResultsScroll
         }
         let restore = browseSelection

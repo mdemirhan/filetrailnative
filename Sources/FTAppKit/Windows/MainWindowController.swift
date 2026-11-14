@@ -579,6 +579,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         if let shown = content.captureFolderView() {
             view.contentSelection = shown.selection
             view.listFilterQuery = content.filter
+            view.listFilterMode = content.filter.isEmpty ? nil : content.filterMode
             view.contentScroll = CGPoint(x: shown.scrollLeft, y: shown.scrollTop)
         }
         return view
@@ -1037,7 +1038,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// What the folder just shown takes from the tab it was started with, besides what `content.show` restored.
     private func showCarried(_ carried: TabViewState, folderWasRead: Bool) {
-        content.setFilter(carried.listFilterQuery)
+        content.setFilter(carried.listFilterQuery, mode: carried.listFilterMode)
         // Something selected outside the filter shows the whole list again.
         if let lead = content.selection.leadPath, !content.filter.isEmpty,
             !content.entries.contains(where: { $0.path == lead }), content.listed.contains(where: { $0.path == lead })
@@ -1593,8 +1594,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             self?.renameNotice(title: WriteStartAction.operation(.rename).failureTitle, message: refusal)
         }
         content.onSearchSubfolders = { [weak self] in self?.focusFileSearch() }
+        // The chip switches the filter on screen and makes its mode the default for the filters to come.
         content.onToggleFilterMode = { [weak self] in
-            self?.updatePreferences { $0.listFilterMatch = $0.listFilterMatch.toggled }
+            guard let self else { return }
+            let mode = self.content.toggleFilterMode()
+            self.searchStore?.header.showFilterMode(self.content.filterMode)
+            self.updatePreferences { $0.listFilterMatch = mode }
         }
         content.onColumnWidthsChanged = { [weak self] widths in self?.saveColumnWidths(widths) }
         content.onCompactListWidthChanged = { [weak self] density, width in
@@ -1605,7 +1610,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
-        content.setFilterMode(preferences.listFilterMatch)
+        content.setDefaultFilterMode(preferences.listFilterMatch)
         content.sizeShortcuts = sizeShortcuts
         content.setColumns(ListColumnState(preferences: preferences))
         content.setMode(viewMode)
@@ -2069,8 +2074,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             if !edited.isEmpty { search.session.applyDefaults(preferences, keys: edited) }
         }
         sidebar.applyPreferences()
-        content.setFilterMode(preferences.listFilterMatch)
-        searchStore?.header.showFilterMode(preferences.listFilterMatch)
+        content.setDefaultFilterMode(preferences.listFilterMatch)
+        searchStore?.header.showFilterMode(content.filterMode)
         refreshColumns()
         notificationsSettingChanged()
         if change.keys.contains(.markClipboardItems) || change.keys.isEmpty { clipboardMarksChanged() }

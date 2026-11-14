@@ -160,8 +160,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var includeHidden = false
     private(set) var columnState = ListColumnState.standard
     private(set) var listFilter = ListFilterTyping()
-    /// How the typed filter finds names (Settings → Browsing).
-    private(set) var filterMode = NameMatchMode.fuzzy
+    /// How a filter starts finding names (Settings → Browsing), and how the one typed now does: a filter keeps the mode
+    /// it started with, or that its chip gave it, whatever the setting says since.
+    private(set) var defaultFilterMode = NameMatchMode.fuzzy
+    private var typedFilterMode = NameMatchMode.fuzzy
+    /// The typed filter's mode, or with none typed the one the next will start with.
+    var filterMode: NameMatchMode { filter.isEmpty ? defaultFilterMode : typedFilterMode }
     /// The filter as it finds names, and the marks it gave names, kept until the text or the mode changes.
     private var filterMatcher: NameMatcher?
     private var filterMarks: [String: [HighlightRange]] = [:]
@@ -545,11 +549,17 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         pane?.refreshLook()
     }
 
-    /// Sets the whole filter text at once (the toolbar's field, until the search is its own); the selection stays.
-    func setFilter(_ text: String) {
-        guard text != filter else { return }
+    /// Sets the whole filter text at once, with its mode (a tab started from this one); the selection stays.
+    func setFilter(_ text: String, mode: NameMatchMode? = nil) {
+        guard text != filter || (mode != nil && mode != filterMode) else { return }
+        startFilter(mode, ifEmpty: false)
         listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
         refilter(previousPaths: entryPaths)
+    }
+
+    /// A filter starting from nothing takes the default mode, or the one it is given.
+    private func startFilter(_ mode: NameMatchMode? = nil, ifEmpty: Bool = true) {
+        if !ifEmpty || filter.isEmpty { typedFilterMode = mode ?? defaultFilterMode }
     }
 
     /// Esc, the ✕, or leaving the folder: the whole list returns and the selection is kept, so something found by
@@ -580,6 +590,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             clearFilter()
             return
         case .type(let text):
+            startFilter()
             listFilter.type(text, at: now)
         case .erase:
             listFilter.eraseCharacter(at: now)
@@ -601,13 +612,20 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         updateStatus()
     }
 
-    /// Settings changed how the filter finds names: a filter typed narrows the list again, the selection kept.
-    func setFilterMode(_ mode: NameMatchMode) {
-        guard mode != filterMode else { return }
-        filterMode = mode
-        guard !filter.isEmpty else { return }
+    /// Settings changed how a filter starts finding names. A filter already typed keeps its own mode.
+    func setDefaultFilterMode(_ mode: NameMatchMode) {
+        defaultFilterMode = mode
+    }
+
+    /// The chip: the typed filter switches to the other mode and narrows the list again, the selection kept. Returns
+    /// the mode, which the caller makes the default for the filters to come.
+    func toggleFilterMode() -> NameMatchMode {
+        let next = filterMode.toggled
+        guard !filter.isEmpty else { return next }
+        typedFilterMode = next
         refilter(previousPaths: entryPaths)
         updateFilterPill()
+        return next
     }
 
     /// The letters to mark in a name: what the filter matched while one is typed, otherwise what the search matched.
@@ -946,6 +964,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// result the filter hid comes back selected.
     func setSearchFilter(_ text: String) {
         guard text != filter else { return }
+        startFilter()
         listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
         reorder()
         pane?.reload(scrollToTop: false)
@@ -961,11 +980,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         updateStatus()
     }
 
-    /// The results come back as they were left: narrowed by the filter's text and scrolled where they were. The
-    /// selection is left to whoever brings them back.
-    func restoreSearchView(filter text: String, scroll: (top: Double, left: Double)?) {
+    /// The results come back as they were left: narrowed by the filter's text in its own mode and scrolled where they
+    /// were. The selection is left to whoever brings them back.
+    func restoreSearchView(filter text: String, mode: NameMatchMode, scroll: (top: Double, left: Double)?) {
         guard searchDisplay != nil else { return }
-        if text != filter {
+        if text != filter || (!text.isEmpty && mode != filterMode) {
+            startFilter(mode, ifEmpty: false)
             listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
             onFilterChanged?(filter)
             reorder()

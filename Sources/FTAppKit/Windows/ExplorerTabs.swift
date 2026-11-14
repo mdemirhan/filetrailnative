@@ -11,6 +11,8 @@ public struct TabViewState: Equatable, Sendable {
     public var directoryError: FolderReadError?
     public var contentSelection = ContentSelection.empty
     public var listFilterQuery = ""
+    /// The typed filter's own mode, which a tab started from this one keeps; nil for none typed.
+    public var listFilterMode: NameMatchMode?
     public var contentScroll = CGPoint.zero
     public var treeScrollTop: Double = 0
     public var sidebarSectionsScrollTop: Double = 0
@@ -230,6 +232,7 @@ public enum ExplorerTabs {
         new.historyIndex = snapshot.currentPath.isEmpty ? -1 : 0
         new.view?.contentSelection = .empty
         new.view?.listFilterQuery = ""
+        new.view?.listFilterMode = nil
         new.view?.contentScroll = .zero
         new.view?.folderViewMemories = [:]
         return new

@@ -31,7 +31,7 @@ struct FilterNarrowingTests {
     @Test(arguments: NameMatchMode.allCases)
     func typingALetterAtATimeFindsWhatFilteringAfreshFinds(_ mode: NameMatchMode) {
         let content = pane()
-        content.setFilterMode(mode)
+        content.setDefaultFilterMode(mode)
         for letter in "re" + "sume" {
             content.applyFilterKey(.type(String(letter)))
             #expect(content.entries.map(\.name) == afresh(content), "\(content.filter)")
@@ -57,13 +57,32 @@ struct FilterNarrowingTests {
 
     @Test func anotherModeFiltersWhole() {
         let content = pane()
-        content.setFilterMode(.contains)
+        content.setDefaultFilterMode(.contains)
         content.applyFilterKey(.type("r"))
         content.applyFilterKey(.type("m"))
         #expect(content.entries.isEmpty)
-        content.setFilterMode(.fuzzy)
+        #expect(content.toggleFilterMode() == .fuzzy)
         #expect(content.entries.map(\.name) == afresh(content))
         #expect(!content.entries.isEmpty)
+    }
+
+    // A filter keeps the mode it started with: the default changed meanwhile (Settings, another window's chip) is for
+    // the filters to come. Cleared, the next one starts from the default.
+    @Test func aFilterKeepsItsModeWhenTheDefaultChanges() {
+        let content = pane()
+        content.setDefaultFilterMode(.fuzzy)
+        content.applyFilterKey(.type("r"))
+        content.applyFilterKey(.type("m"))
+        let found = content.entries.map(\.name)
+        #expect(!found.isEmpty)
+        content.setDefaultFilterMode(.contains)
+        #expect(content.filterMode == .fuzzy)
+        #expect(content.entries.map(\.name) == found)
+        content.applyFilterKey(.clear)
+        #expect(content.filterMode == .contains)
+        content.applyFilterKey(.type("r"))
+        content.applyFilterKey(.type("m"))
+        #expect(content.entries.isEmpty)
     }
 
     // One keystroke over 50,000 search results, by name or by folder, the names beyond ASCII folded once.

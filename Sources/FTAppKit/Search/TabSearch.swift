@@ -19,7 +19,12 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         super.init()
         session.host = self
         header.onScopeChange = { [weak self] path in self?.session.changeRoot(path) }
-        header.onFilterChange = { [weak self] text in self?.tab.content.setSearchFilter(text) }
+        header.onFilterChange = { [weak self] text in
+            guard let self else { return }
+            self.tab.content.setSearchFilter(text)
+            // A filter emptied shows the mode the next one starts with.
+            self.header.showFilterMode(self.tab.content.filterMode)
+        }
         header.onToggleFilterMode = { [weak self] in self?.tab.content.onToggleFilterMode?() }
         header.onFocusResults = { [weak self] in self?.tab.content.focusList() }
         header.onSwitchPane = { [weak self] in self?.tab.content.switchPane() }
@@ -33,7 +38,9 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             self?.saveSort()
         }
         content.onFilterChanged = { [weak self] text in
-            guard let self, self.showsResults, self.header.filter.text != text else { return }
+            guard let self, self.showsResults else { return }
+            self.header.showFilterMode(self.tab.content.filterMode)
+            guard self.header.filter.text != text else { return }
             self.header.filter.text = text
         }
     }
@@ -118,11 +125,14 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     var searchResultsFilter: String { showsResults ? tab.content.filter : "" }
 
+    var searchResultsFilterMode: NameMatchMode { tab.content.filterMode }
+
     var searchResultsScroll: (top: Double, left: Double)? { showsResults ? tab.content.pane?.scrollPosition : nil }
 
-    func restoreSearchResultsView(filter: String, scroll: (top: Double, left: Double)?) {
-        tab.content.restoreSearchView(filter: filter, scroll: scroll)
+    func restoreSearchResultsView(filter: String, mode: NameMatchMode, scroll: (top: Double, left: Double)?) {
+        tab.content.restoreSearchView(filter: filter, mode: mode, scroll: scroll)
         header.filter.text = tab.content.filter
+        header.showFilterMode(tab.content.filterMode)
     }
 
     // MARK: Showing the results
