@@ -78,6 +78,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case sortByKind
     case toggleFoldersFirst
     case toggleHiddenFiles
+    case togglePinFilter
     case goBack
     case goForward
     case goEnclosingFolder

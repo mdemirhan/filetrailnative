@@ -382,6 +382,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -2551,6 +2552,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -3020,6 +3022,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -3483,6 +3486,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -3953,6 +3957,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -4463,6 +4468,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -4930,6 +4936,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -5390,6 +5397,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -5862,6 +5870,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -6325,6 +6334,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -6796,6 +6806,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -7255,6 +7266,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -7710,6 +7722,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -8168,6 +8181,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -8634,6 +8648,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -9097,6 +9112,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -9554,6 +9570,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -10031,6 +10048,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -10640,6 +10658,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -11441,6 +11460,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -11985,6 +12005,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -12532,6 +12553,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -13037,6 +13059,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -13460,6 +13483,7 @@
           "toggleHiddenFiles": [
             "Cmd+Option+K"
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [],
           "goBack": [
             "Cmd+[",
@@ -14217,6 +14241,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -14786,6 +14811,7 @@
           "toggleHiddenFiles": [
             "F20"
           ],
+          "togglePinFilter": [],
           "openHelp": [
             "Cmd+I",
             "Cmd+Plus"
@@ -15799,6 +15825,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -16568,6 +16595,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -17100,6 +17128,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -17781,6 +17810,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -18422,6 +18452,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -19248,6 +19279,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -19770,6 +19802,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -20404,6 +20437,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -20963,6 +20997,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -21500,6 +21535,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -22047,6 +22083,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -22610,6 +22647,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -23170,6 +23208,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -23887,6 +23926,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -24412,6 +24452,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -25076,6 +25117,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -25667,6 +25709,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -26416,6 +26459,7 @@
             "Cmd+Plus"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+K",
             "Cmd+W"
@@ -27114,6 +27158,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -27747,6 +27792,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -28382,6 +28428,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -29162,6 +29209,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -29793,6 +29841,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -30519,6 +30568,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -32050,6 +32100,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -32689,6 +32740,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -33281,6 +33333,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -33945,6 +33998,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -34801,6 +34855,7 @@
             "Cmd+1",
             "Cmd+K"
           ],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -35483,6 +35538,7 @@
           "toggleHiddenFiles": [
             "Ctrl+Up"
           ],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -36387,6 +36443,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -37183,6 +37240,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -37992,6 +38050,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -38601,6 +38660,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -39237,6 +39297,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -39884,6 +39945,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -40628,6 +40690,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -41448,6 +41511,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
@@ -42817,6 +42881,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -43391,6 +43456,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -43978,6 +44044,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
           ],
@@ -44748,6 +44815,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -45347,6 +45415,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -45987,6 +46056,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -46500,6 +46570,7 @@
             "Cmd+Plus",
             "Cmd+F3"
           ],
+          "togglePinFilter": [],
           "customizeToolbar": [
             "Ctrl+F4",
             "Cmd+2"
@@ -47553,6 +47624,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -48126,6 +48198,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -48729,6 +48802,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -49651,6 +49725,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -50243,6 +50318,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -51098,6 +51174,7 @@
           "sortByModified": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "customizeToolbar": [],
           "openHelp": [
             "?"
@@ -51998,6 +52075,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -52751,6 +52829,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -54343,6 +54422,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -55470,6 +55550,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -55984,6 +56065,7 @@
             "Cmd+W"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Cmd+Right",
             "Cmd+Shift+R"
@@ -57097,6 +57179,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -57690,6 +57773,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -58342,6 +58426,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -58969,6 +59054,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -59738,6 +59824,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -60620,6 +60707,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -61323,6 +61411,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -62116,6 +62205,7 @@
           "toggleHiddenFiles": [
             "Cmd+F"
           ],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -63180,6 +63270,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -63805,6 +63896,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -64740,6 +64832,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -65444,6 +65537,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -66114,6 +66208,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -66835,6 +66930,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [],
           "customizeToolbar": [],
@@ -67590,6 +67686,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -68382,6 +68479,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -68961,6 +69059,7 @@
             "Cmd+[",
             "Cmd+N"
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+Shift+Backspace",
             "Cmd+Right"
@@ -70359,6 +70458,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -71002,6 +71102,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -71592,6 +71693,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -72008,6 +72110,7 @@
             "Cmd+T"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -72903,6 +73006,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoRow": [],
           "openHelp": [
@@ -73866,6 +73970,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -75426,6 +75531,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -76125,6 +76231,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -76785,6 +76892,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -77838,6 +77946,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -79237,6 +79346,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
@@ -79985,6 +80095,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -80489,6 +80600,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -81019,6 +81131,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -81631,6 +81744,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
           ],
@@ -82470,6 +82584,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -83218,6 +83333,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -83888,6 +84004,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -84661,6 +84778,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -85168,6 +85286,7 @@
             "Cmd+="
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+["
           ],
@@ -86474,6 +86593,7 @@
           "sortByKind": [],
           "sortByModified": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -87336,6 +87456,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -87957,6 +88078,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -88448,6 +88570,7 @@
             "Cmd+K"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleInfoRow": [
             "Cmd+Shift+."
           ],
@@ -89423,6 +89546,7 @@
             "Cmd+Shift+G"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "goBack": [],
           "goEnclosingFolder": [],
           "goHomeRootTree": [
@@ -90623,6 +90747,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -91205,6 +91330,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -91834,6 +91960,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -92441,6 +92568,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -93356,6 +93484,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -93916,6 +94045,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -94646,6 +94776,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -95259,6 +95390,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -95724,6 +95856,7 @@
           "toggleHiddenFiles": [
             "Ctrl+A"
           ],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -96449,6 +96582,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -97180,6 +97314,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -97834,6 +97969,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -98543,6 +98679,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -99226,6 +99363,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -100043,6 +100181,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -100617,6 +100756,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -101195,6 +101335,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -101785,6 +101926,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -102531,6 +102673,7 @@
             "Cmd+0"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "openHelp": [
             "Cmd+W",
             "Ctrl+Cmd+K"
@@ -103104,6 +103247,7 @@
             "Cmd+Option+K",
             "Cmd+Shift+N"
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+;",
             "Cmd+Shift+["
@@ -104079,6 +104223,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -104715,6 +104860,7 @@
           "sortByModified": [],
           "sortBySize": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -105303,6 +105449,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -105910,6 +106057,7 @@
             "Cmd+Option+J",
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoRow": [],
           "customizeToolbar": [],
           "openHelp": [
@@ -107114,6 +107262,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -107804,6 +107953,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -108591,6 +108741,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -109281,6 +109432,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -110046,6 +110198,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -110709,6 +110862,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -111391,6 +111545,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -111812,6 +111967,7 @@
             "Cmd+-"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "openHelp": [],
           "goBack": [
             "Cmd+[",
@@ -112645,6 +112801,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -113452,6 +113609,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
@@ -114467,6 +114625,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -114998,6 +115157,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -115589,6 +115749,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -116276,6 +116437,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -117048,6 +117210,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -117737,6 +117900,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -118617,6 +118781,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -119724,6 +119889,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -120381,6 +120547,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -120960,6 +121127,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -121687,6 +121855,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -122522,6 +122691,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -123134,6 +123304,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -123882,6 +124053,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -125385,6 +125557,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -125949,6 +126122,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -126551,6 +126725,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -127181,6 +127356,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -127779,6 +127955,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -128301,6 +128478,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -128980,6 +129158,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -129725,6 +129904,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -130404,6 +130584,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -130972,6 +131153,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -131664,6 +131846,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -132444,6 +132627,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -133286,6 +133470,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -133770,6 +133955,7 @@
             "F2",
             "Ctrl+A"
           ],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -134635,6 +134821,7 @@
           "sortByModified": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
           ],
@@ -135918,6 +136105,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -136566,6 +136754,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -137072,6 +137261,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -137649,6 +137839,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -138361,6 +138552,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -139031,6 +139223,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -139530,6 +139723,7 @@
           ],
           "sortBySize": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -140257,6 +140451,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -140846,6 +141041,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -141420,6 +141616,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -142069,6 +142266,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -142711,6 +142909,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -143470,6 +143669,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -144023,6 +144223,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -144490,6 +144691,7 @@
             "Cmd+K",
             "Cmd+Option+C"
           ],
+          "togglePinFilter": [],
           "goForward": [
             "Cmd+]",
             "Cmd+Right"
@@ -145207,6 +145409,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -145790,6 +145993,7 @@
           ],
           "sortBySize": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleInfoRow": [
             "Cmd+Shift+G"
           ],
@@ -146961,6 +147165,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -147686,6 +147891,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -148915,6 +149121,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -149421,6 +149628,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -149964,6 +150172,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -150565,6 +150774,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -151310,6 +151520,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
@@ -151919,6 +152130,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -152647,6 +152859,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [],
           "toggleInfoRow": [
@@ -153329,6 +153542,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -153930,6 +154144,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -154661,6 +154876,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -155329,6 +155545,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -155905,6 +156122,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -156678,6 +156896,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -157586,6 +157805,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -158341,6 +158561,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "customizeToolbar": [],
           "openHelp": [
@@ -159023,6 +159244,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -159848,6 +160070,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -160466,6 +160689,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -161063,6 +161287,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -161594,6 +161819,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -162180,6 +162406,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -162831,6 +163058,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -163581,6 +163809,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -164137,6 +164366,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -164823,6 +165053,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -165493,6 +165724,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -166154,6 +166386,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -166816,6 +167049,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -167424,6 +167658,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -168324,6 +168559,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -168888,6 +169124,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -169492,6 +169729,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -170285,6 +170523,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -170945,6 +171184,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -171725,6 +171965,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -172414,6 +172655,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -173133,6 +173375,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -173876,6 +174119,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -174535,6 +174779,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -175215,6 +175460,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -175826,6 +176072,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -176526,6 +176773,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -177258,6 +177506,7 @@
             "Cmd+E",
             "Cmd+="
           ],
+          "togglePinFilter": [],
           "openHelp": [
             "F11",
             "Cmd+Shift+N"
@@ -178380,6 +178629,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -179121,6 +179371,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -179800,6 +180051,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -180631,6 +180883,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -181267,6 +181520,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
           ],
@@ -181860,6 +182114,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -182565,6 +182820,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -183140,6 +183396,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -183844,6 +184101,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -184468,6 +184726,7 @@
           "toggleHiddenFiles": [
             "Cmd+O"
           ],
+          "togglePinFilter": [],
           "goForward": [
             "Cmd+Right"
           ],
@@ -185130,6 +185389,7 @@
           ],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Cmd+N",
             "PageUp"
@@ -185970,6 +186230,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -186655,6 +186916,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -187486,6 +187748,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -188062,6 +188325,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -188637,6 +188901,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -189284,6 +189549,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -189951,6 +190217,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -190566,6 +190833,7 @@
             "Cmd+0"
           ],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoRow": [],
           "goForward": [
@@ -191245,6 +191513,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -191939,6 +192208,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -192471,6 +192741,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -193094,6 +193365,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -193781,6 +194053,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -194361,6 +194634,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -195017,6 +195291,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -196497,6 +196772,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -197698,6 +197974,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -198267,6 +198544,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -198832,6 +199110,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -199491,6 +199770,7 @@
           "sortBySize": [],
           "toggleFoldersFirst": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -200143,6 +200423,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -200720,6 +201001,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -201375,6 +201657,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoRow": [
             "Cmd+Shift+I"
@@ -202148,6 +202431,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -202983,6 +203267,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -203681,6 +203966,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -204158,6 +204444,7 @@
           "equalizePanes": [],
           "showInFinder": [],
           "toggleHiddenFiles": [],
+          "togglePinFilter": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -205169,6 +205456,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleInfoPanel": [
             "Cmd+I"
           ],
@@ -206063,6 +206351,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -206690,6 +206979,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -207438,6 +207728,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -208096,6 +208387,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -208677,6 +208969,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [],
           "toggleInfoPanel": [
             "Cmd+I"
@@ -209666,6 +209959,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -210479,6 +210773,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -211081,6 +211376,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -211747,6 +212043,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -212414,6 +212711,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -213072,6 +213370,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],
@@ -214108,6 +214407,7 @@
           "toggleHiddenFiles": [
             "Cmd+Shift+."
           ],
+          "togglePinFilter": [],
           "toggleFolderTree": [
             "Ctrl+Cmd+S"
           ],

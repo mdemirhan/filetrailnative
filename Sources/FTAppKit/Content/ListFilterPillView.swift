@@ -4,15 +4,19 @@ import FTFoundation
 /// What has been typed to narrow the list above it, how it matches (a chip that switches Fuzzy and Contains), how much
 /// of the list is left, and a way to bring the rest back. It floats on glass over the foot of the list, so the first
 /// match, which is selected at the top, is never covered. It springs up when a filter starts and drops away when it is
-/// cleared; with Reduce Motion it only fades. Text that matches nothing turns its edge red, with a small shake.
+/// cleared; with Reduce Motion it only fades. Text that matches nothing turns its edge red, with a small shake. Its pin
+/// pins the filter to the pane, and shows filled while it is: the chip is then locked.
 final class ListFilterPillView: NSView, TextStyleSource {
     private let symbol = NSImageView()
     let chip = ListFilterModeChip()
     private let value = ListLabel()
     private let count = ListLabel()
+    let pin = ListFilterPinButton()
     private let clear = ClearButton()
     private var theme = AppearanceModel.shared.theme
     private var nothingMatches = false
+    /// The filter on show is pinned.
+    private(set) var isPinned = false
     /// Counts the pill's comings and goings, so a fade out finishing late doesn't hide a pill shown again since.
     private var showing = 0
     /// Whether the pill shows a filter, whatever an animation of it leaving is doing.
@@ -22,6 +26,8 @@ final class ListFilterPillView: NSView, TextStyleSource {
     var onClear: () -> Void = {}
     /// Told when the chip is pressed: the other mode is wanted.
     var onToggleMode: () -> Void = {}
+    /// Told when the pin is pressed: the filter is to be pinned, or unpinned.
+    var onTogglePin: () -> Void = {}
     /// Reduce Motion, asked each time: the pill then only fades.
     var reducesMotion: () -> Bool = { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
 
@@ -52,7 +58,10 @@ final class ListFilterPillView: NSView, TextStyleSource {
         clear.setAccessibilityIdentifier("listFilter.clear")
         clear.target = self
         clear.action = #selector(cleared(_:))
-        for view in [symbol, chip, value, count, clear] as [NSView] { addSubview(view) }
+        pin.setAccessibilityIdentifier("listFilter.pin")
+        pin.target = self
+        pin.action = #selector(toggledPin(_:))
+        for view in [symbol, chip, value, count, pin, clear] as [NSView] { addSubview(view) }
         setAccessibilityIdentifier("listFilter")
         setAccessibilityLabel("Filter")
         applyColors()
@@ -62,15 +71,25 @@ final class ListFilterPillView: NSView, TextStyleSource {
 
     @objc private func cleared(_ sender: Any?) { onClear() }
 
-    @objc private func toggledMode(_ sender: Any?) { onToggleMode() }
+    @objc private func toggledMode(_ sender: Any?) {
+        // A pinned filter keeps the mode it was pinned with.
+        guard !isPinned else { return }
+        onToggleMode()
+    }
+
+    @objc private func toggledPin(_ sender: Any?) { onTogglePin() }
 
     /// Shows the filter, or takes the pill away when there is none.
-    func show(query: String, mode: NameMatchMode, shown: Int, total: Int, theme: Theme) {
+    func show(query: String, mode: NameMatchMode, shown: Int, total: Int, theme: Theme, pinned: Bool = false) {
         self.theme = theme
         guard !query.isEmpty else {
             hide()
             return
         }
+        isPinned = pinned
+        pin.isPinned = pinned
+        chip.isLocked = pinned
+        clear.toolTip = pinned ? "Remove Filter" : "Clear Filter (Esc)"
         let wasShowing = isShowingFilter
         let matchedBefore = !nothingMatches
         nothingMatches = shown == 0 && total > 0
@@ -168,6 +187,7 @@ final class ListFilterPillView: NSView, TextStyleSource {
         value.textColor = NSColor(palette.textPrimary)
         count.textColor = NSColor(nothingMatches ? palette.dangerText : palette.textSecondary)
         chip.theme = theme
+        pin.theme = theme
         guard let layer else { return }
         layer.borderWidth = CGFloat(layout.borderWidth)
         layer.borderColor = NSColor(nothingMatches ? palette.danger : theme.accent.border).cgColor
@@ -188,10 +208,11 @@ final class ListFilterPillView: NSView, TextStyleSource {
         let fixed =
             CGFloat(layout.borderWidth) * 2 + CGFloat(layout.paddingLeft) + CGFloat(layout.paddingRight)
             + CGFloat(layout.symbolSize) + gap + chip.fittingWidth + gap + gap + count.textWidth + gap
-            + ClearButton.size
+            + ListFilterPinButton.size + gap + ClearButton.size
         let maxWidth = max(0, available - CGFloat(layout.maxWidthInset))
         let valueWidth = min(value.textWidth, max(0, maxWidth - fixed))
-        let inner = max(value.lineHeight, count.lineHeight, chip.fittingHeight, ClearButton.size)
+        let inner = max(
+            value.lineHeight, count.lineHeight, chip.fittingHeight, ClearButton.size, ListFilterPinButton.size)
         let height =
             CGFloat(layout.borderWidth) * 2 + CGFloat(layout.paddingTop) + inner + CGFloat(layout.paddingBottom)
         return NSSize(width: min(maxWidth, fixed + valueWidth), height: height.rounded(.up))
@@ -215,10 +236,13 @@ final class ListFilterPillView: NSView, TextStyleSource {
         x = place(symbol, x: x, width: CGFloat(layout.symbolSize), height: CGFloat(layout.symbolSize))
         x = place(chip, x: x, width: chip.fittingWidth, height: chip.fittingHeight)
         let countWidth = count.textWidth
-        let reserved = gap + countWidth + gap + ClearButton.size + CGFloat(layout.paddingRight) + border
+        let reserved =
+            gap + countWidth + gap + ListFilterPinButton.size + gap + ClearButton.size + CGFloat(layout.paddingRight)
+            + border
         let valueWidth = min(value.textWidth, max(0, bounds.width - x - reserved))
         x = place(value, x: x, width: valueWidth, height: value.lineHeight)
         x = place(count, x: x, width: countWidth, height: count.lineHeight)
+        x = place(pin, x: x, width: ListFilterPinButton.size, height: ListFilterPinButton.size)
         _ = place(clear, x: x, width: ClearButton.size, height: ClearButton.size)
     }
 
@@ -239,12 +263,28 @@ final class ListFilterModeChip: NSControl {
     var mode = NameMatchMode.fuzzy {
         didSet {
             label.stringValue = mode.label
-            toolTip =
-                mode == .fuzzy
-                ? "Fuzzy: names with the letters you type in that order. Click for Contains."
-                : "Contains: names with the letters you type side by side. Click for Fuzzy."
+            updateToolTip()
             needsLayout = true
             needsDisplay = true
+        }
+    }
+
+    /// The filter is pinned: the chip shows its mode and no longer switches it.
+    var isLocked = false {
+        didSet {
+            guard isLocked != oldValue else { return }
+            updateToolTip()
+            needsDisplay = true
+        }
+    }
+
+    private func updateToolTip() {
+        switch (mode, isLocked) {
+        case (.fuzzy, false): toolTip = "Fuzzy: names with the letters you type in that order. Click for Contains."
+        case (.contains, false): toolTip = "Contains: names with the letters you type side by side. Click for Fuzzy."
+        case (.fuzzy, true): toolTip = "Fuzzy: files with these letters in that order. Unpin the filter to change it."
+        case (.contains, true):
+            toolTip = "Contains: files with these letters side by side. Unpin the filter to change it."
         }
     }
 
@@ -291,9 +331,79 @@ final class ListFilterModeChip: NSControl {
 
     override func draw(_ dirtyRect: NSRect) {
         let layout = SelectionLayout.FilterPill.self
-        let alpha = isHovering ? layout.chipHoverFillAlpha : layout.chipFillAlpha
+        let alpha = isHovering && !isLocked ? layout.chipHoverFillAlpha : layout.chipFillAlpha
         NSColor(theme.accent.solid.withAlpha(alpha)).setFill()
         NSBezierPath(roundedRect: bounds, xRadius: bounds.height / 2, yRadius: bounds.height / 2).fill()
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let trackingArea { removeTrackingArea(trackingArea) }
+        let area = NSTrackingArea(
+            rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self)
+        addTrackingArea(area)
+        trackingArea = area
+    }
+
+    override func mouseEntered(with event: NSEvent) { isHovering = true }
+    override func mouseExited(with event: NSEvent) { isHovering = false }
+
+    override func mouseDown(with event: NSEvent) {
+        sendAction(action, to: target)
+    }
+
+    override func accessibilityPerformPress() -> Bool {
+        sendAction(action, to: target)
+    }
+}
+
+/// The pin in the filter pill: an outline while the filter is typed, filled in the accent while it is pinned. It never
+/// takes the keyboard, so typing goes on into the list.
+final class ListFilterPinButton: NSControl {
+    static let size = 16.0
+    private let image = NSImageView()
+    private var isHovering = false { didSet { applyLook() } }
+    private var trackingArea: NSTrackingArea?
+
+    var isPinned = false {
+        didSet {
+            guard isPinned != oldValue else { return }
+            applyLook()
+        }
+    }
+
+    var theme = AppearanceModel.shared.theme {
+        didSet { applyLook() }
+    }
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        image.imageScaling = .scaleProportionallyDown
+        addSubview(image)
+        setAccessibilityRole(.button)
+        applyLook()
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+    override var acceptsFirstResponder: Bool { false }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    private func applyLook() {
+        let symbol = isPinned ? "pin.fill" : "pin"
+        image.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?
+            .withSymbolConfiguration(.init(pointSize: CGFloat(SelectionLayout.FilterPill.symbolSize), weight: .medium))
+        let palette = theme.palette
+        image.contentTintColor =
+            NSColor(isPinned ? theme.accent.solid : isHovering ? palette.textPrimary : palette.textSecondary)
+        setAccessibilityLabel(isPinned ? "Unpin filter" : "Pin filter")
+        toolTip = isPinned ? "Unpin Filter: typing changes it again" : "Pin Filter: keep it in other folders"
+    }
+
+    override func layout() {
+        super.layout()
+        image.frame = bounds
     }
 
     override func updateTrackingAreas() {

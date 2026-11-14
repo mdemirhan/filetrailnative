@@ -73,11 +73,24 @@ struct ContentKeysTests {
     private func action(
         _ key: String, code: String = "", meta: Bool = false, ctrl: Bool = false, alt: Bool = false,
         shift: Bool = false, filter: ListFilterTyping = ListFilterTyping(), now: Double = 0, entries: Bool = true,
-        selected: Bool = true
+        selected: Bool = true, pinned: Bool = false
     ) -> ContentKeyAction? {
         ContentKeys.action(
             for: ShortcutKeyEvent(key: key, code: code, metaKey: meta, ctrlKey: ctrl, altKey: alt, shiftKey: shift),
-            shortcuts: shortcuts, filter: filter, now: now, hasEntries: entries, hasSelection: selected)
+            shortcuts: shortcuts, filter: filter, now: now, hasEntries: entries, hasSelection: selected, pinned: pinned)
+    }
+
+    @Test func withThePinTypingSelectsNamesAndLeavesTheFilterAlone() {
+        #expect(action("s", code: "KeyS", pinned: true) == .typeToSelect("s"))
+        #expect(action("S", code: "KeyS", shift: true, pinned: true) == .typeToSelect("S"))
+        // Esc lets go of the letters; Backspace and ⌥⌫ have nothing to take back.
+        #expect(action("Escape", code: "Escape", pinned: true) == .typeToSelect(nil))
+        #expect(action("Backspace", code: "Backspace", pinned: true) == nil)
+        #expect(action("Backspace", code: "Backspace", alt: true, pinned: true) == nil)
+        // Space stays Quick Look, the arrows move, and ⌘ with a letter is still its command.
+        #expect(action(" ", code: "Space", pinned: true) == .command(.quickLookSelection))
+        #expect(action("ArrowDown", code: "ArrowDown", pinned: true) == .move(.down, extend: false))
+        #expect(action("t", code: "KeyT", meta: true, pinned: true) == .command(.newTab))
     }
 
     @Test func arrowsHomeAndEndMoveTheSelectionAndShiftExtendsIt() {

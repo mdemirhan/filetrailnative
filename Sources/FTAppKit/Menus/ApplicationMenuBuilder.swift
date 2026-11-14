@@ -136,6 +136,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(sortBy)
             menu.addItem(context.command(.toggleFoldersFirst, "Folders First"))
             menu.addItem(context.command(.toggleHiddenFiles, "Hidden Files"))
+            menu.addItem(context.command(.togglePinFilter, "Pin Filter"))
             menu.addItem(context.command(.refreshOrApplySearchSort, "Refresh"))
             menu.addItem(.separator())
             // "Show Folder Tree" while the tree is hidden.

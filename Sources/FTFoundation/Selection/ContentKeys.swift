@@ -4,6 +4,9 @@ import Foundation
 public enum ContentKeyAction: Equatable, Sendable {
     /// Typing narrows the list, Backspace edits the text and Esc brings the list back.
     case filter(ListFilterKey)
+    /// With the filter pinned, a typed character selects the first name that starts with the letters typed so far; nil
+    /// (Esc) lets go of them.
+    case typeToSelect(String?)
     /// Page Up/Down, ⌃U/⌃D; with ⇧ the selection extends.
     case page(forward: Bool, size: SelectionNavigation.PageSize, extend: Bool)
     /// Arrows, Home and End; with ⇧ the selection extends.
@@ -48,9 +51,10 @@ public enum ContentKeys {
     ///   - event: the key (`key` is the character it types, or a name such as "ArrowDown").
     ///   - hasEntries: the list on screen has items (arrows do nothing, and are not taken, without).
     ///   - hasSelection: an item is selected (Return does nothing, and is not taken, without).
+    ///   - pinned: the list's filter is pinned: typing selects names and leaves the filter as it is.
     public static func action(
         for event: ShortcutKeyEvent, shortcuts: ResolvedShortcuts, filter: ListFilterTyping, now: TimeInterval,
-        hasEntries: Bool, hasSelection: Bool
+        hasEntries: Bool, hasSelection: Bool, pinned: Bool = false
     ) -> ContentKeyAction? {
         let pressed = Shortcuts.fromKeyboardEvent(event)
         let command = pressed.flatMap { shortcuts.command(pressed: $0) }
@@ -76,7 +80,9 @@ public enum ContentKeys {
         if event.key == "Backspace", event.altKey, !event.metaKey, !event.ctrlKey, filter.isActive {
             return .filter(.eraseWord)
         }
+        if pinned, plain, Typeahead.isCharacterKey(event.key) { return .typeToSelect(event.key) }
         if plain, let key = ListFilterKey.from(key: event.key, filter: filter, now: now) { return .filter(key) }
+        if pinned, plain, event.key == "Escape" { return .typeToSelect(nil) }
         if plain, hasEntries, let key = arrow(event.key) { return .move(key, extend: event.shiftKey) }
         if command == .quickLookSelection, hasSelection { return .command(.quickLookSelection) }
         if event.key == "Enter", !event.metaKey, hasSelection { return .enter }

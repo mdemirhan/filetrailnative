@@ -13,6 +13,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var infoRowOpen: Bool
     /// The tab shows two panes.
     public var twoPanesShown: Bool
+    /// The active pane's filter is pinned.
+    public var filterPinned: Bool
     /// Whether the folder the Favorites item acts on is a favorite already.
     public var favoriteIsSet: Bool
     /// A text field has the keyboard: Undo and Redo are its own, and always on.
@@ -22,7 +24,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
         foldersFirst: Bool = true, hiddenFilesShown: Bool = false, folderTreeOpen: Bool = true,
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
-        favoriteIsSet: Bool = false,
+        filterPinned: Bool = false, favoriteIsSet: Bool = false,
         textEditing: Bool = false
     ) {
         self.disabledCommands = disabledCommands
@@ -34,6 +36,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.infoPanelOpen = infoPanelOpen
         self.infoRowOpen = infoRowOpen
         self.twoPanesShown = twoPanesShown
+        self.filterPinned = filterPinned
         self.favoriteIsSet = favoriteIsSet
         self.textEditing = textEditing
     }
@@ -46,7 +49,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public static func build(
         viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
-        favoriteIsSet: Bool, textEditing: Bool, canRun: (AppCommand) -> Bool
+        filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool, canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
         // change its text.
@@ -56,7 +59,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
         return ApplicationMenuState(
             disabledCommands: disabled, viewMode: viewMode, sortBy: sortBy, foldersFirst: foldersFirst,
             hiddenFilesShown: hiddenFilesShown, folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen,
-            infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, favoriteIsSet: favoriteIsSet,
+            infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
+            favoriteIsSet: favoriteIsSet,
             textEditing: textEditing)
     }
 }
@@ -188,6 +192,7 @@ public enum ApplicationMenu {
             case .toggleInfoPanel: state.infoPanelOpen
             case .toggleInfoRow: state.infoRowOpen
             case .toggleTwoPanes: state.twoPanesShown
+            case .togglePinFilter: state.filterPinned
             default: nil
             }
         }

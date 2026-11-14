@@ -13,6 +13,8 @@ public struct TabViewState: Equatable, Sendable {
     public var listFilterQuery = ""
     /// The typed filter's own mode, which a tab started from this one keeps; nil for none typed.
     public var listFilterMode: NameMatchMode?
+    /// The pane's pinned filter, kept while the app runs (Duplicate Tab, a tab moved or merged); never saved.
+    public var pinnedListFilter: PinnedListFilter?
     public var contentScroll = CGPoint.zero
     public var treeScrollTop: Double = 0
     public var sidebarSectionsScrollTop: Double = 0
@@ -252,6 +254,7 @@ public enum ExplorerTabs {
         new.view?.contentSelection = .empty
         new.view?.listFilterQuery = ""
         new.view?.listFilterMode = nil
+        new.view?.pinnedListFilter = nil
         new.view?.contentScroll = .zero
         new.view?.folderViewMemories = [:]
         return new

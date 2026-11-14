@@ -1131,6 +1131,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             self?.renameNotice(title: WriteStartAction.operation(.rename).failureTitle, message: refusal)
         }
         content.onSearchSubfolders = { [weak self] in self?.focusFileSearch() }
+        // Pin Filter follows the filter typed, cleared or pinned.
+        content.onFilterStateChanged = { [weak self] in self?.notify(.commands) }
         // The chip switches the filter on screen and makes its mode the default for the filters to come.
         content.onToggleFilterMode = { [weak self, weak pane] in
             guard let self, let pane else { return }
@@ -1346,6 +1348,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             viewMode: shownViewMode, sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
+            filterPinned: content.pinnedFilter != nil,
             favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false,
             textEditing: isTextFieldEditing
         ) { CommandAvailability.canRun($0, context) }
@@ -1653,6 +1656,8 @@ extension MainWindowController: ExplorerWindowHandle {
                 foldersFirst.toggle()
                 viewChanged()
             }
+        case .togglePinFilter:
+            content.togglePin()
         case .toggleHiddenFiles:
             includeHidden.toggle()
             sidebar.hiddenFilesChanged(includeHidden)
@@ -1867,7 +1872,7 @@ extension MainWindowController: ExplorerWindowContext {
             trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),
-            viewSizeSteps: content.viewSize?.steps ?? .unavailable)
+            viewSizeSteps: content.viewSize?.steps ?? .unavailable, filterPinnable: content.canTogglePin)
     }
 
     /// The folders File > Calculate Size measures now.

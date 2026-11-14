@@ -8,6 +8,18 @@ public protocol ListFilterSearchResult: ListFilterEntry {
     var relativeParentPath: String { get }
 }
 
+/// A filter pinned to a pane: its text and mode are kept as typed, it holds through Esc, other folders and searches,
+/// and it leaves folders alone. Typing then selects a name instead of changing it.
+public struct PinnedListFilter: Equatable, Sendable {
+    public var query: String
+    public var mode: NameMatchMode
+
+    public init(query: String, mode: NameMatchMode) {
+        self.query = query
+        self.mode = mode
+    }
+}
+
 /// Typing in the file list (or the search results) narrows it to the names that match the text (`NameMatcher`).
 /// The filter stays until it is cleared; there is no timer.
 public enum ListFilter {
@@ -59,6 +71,15 @@ public enum ListFilter {
             if let best { return best.entry }
         }
         return matches.first
+    }
+
+    /// The entries a pinned filter keeps: every folder (so the pane can still be walked), and the files whose names
+    /// match the pin's text in its mode. No pin keeps everything.
+    public static func filterPinned<T: ListFilterEntry>(
+        _ entries: [T], pin: PinnedListFilter?, isFolder: (T) -> Bool, cache: FoldedNameCache? = nil
+    ) -> [T] {
+        guard let pin, let matcher = NameMatcher(pin.query, mode: pin.mode) else { return entries }
+        return entries.filter { isFolder($0) || matcher.matches($0.name, cache: cache) }
     }
 
     /// "240 items", or "3 of 240 items" while a filter hides some of them.

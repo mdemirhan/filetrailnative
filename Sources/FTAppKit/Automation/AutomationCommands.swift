@@ -20,8 +20,8 @@
             "calculateSize", "revealInFolder", "toggleFavorite", "showInFinder", "showLastSearchResults",
             "viewAsIcons", "viewAsList", "viewAsDetails", "increaseSize", "decreaseSize", "resetSize", "sortByName",
             "sortByModified", "sortBySize", "sortByKind",
-            "toggleFoldersFirst", "toggleHiddenFiles", "goBack", "goForward", "goEnclosingFolder", "focusTreePane",
-            "focusContentPane", "openHelp", "openKeyboardShortcuts",
+            "toggleFoldersFirst", "toggleHiddenFiles", "togglePinFilter", "goBack", "goForward", "goEnclosingFolder",
+            "focusTreePane", "focusContentPane", "openHelp", "openKeyboardShortcuts",
         ]
 
         /// The zoom commands, which this app leaves to the system.

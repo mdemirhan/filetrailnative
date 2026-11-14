@@ -101,11 +101,14 @@ final class ContentKeyboard {
             let action = ContentKeys.action(
                 for: Self.shortcutEvent(event), shortcuts: host.shortcuts, filter: host.listFilter,
                 now: ProcessInfo.processInfo.systemUptime, hasEntries: !paths.isEmpty,
-                hasSelection: !host.selection.isEmpty)
+                hasSelection: !host.selection.isEmpty, pinned: host.pinnedFilter != nil)
         else { return false }
         switch action {
         case .filter(let key):
             host.applyFilterKey(key)
+            return true
+        case .typeToSelect(let text):
+            host.typeToSelect(text)
             return true
         case .page(let forward, let size, let extend):
             return pagedMove(forward: forward, size: size, extend: extend, host: host, navigation: navigation)

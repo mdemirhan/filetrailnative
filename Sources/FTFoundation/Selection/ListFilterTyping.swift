@@ -54,6 +54,38 @@ public struct ListFilterTyping: Equatable, Sendable {
     }
 }
 
+/// Typing in a list whose filter is pinned: the letters typed in quick succession pick the first name that starts with
+/// them, as the sidebar's type-to-select does. Nothing of them shows; a pause starts over.
+public struct ListTypeToSelect: Equatable, Sendable {
+    /// A pause this long after a key starts the next one afresh.
+    public static let resetAfter: TimeInterval = 1
+
+    public private(set) var query = ""
+    private var lastInputAt: TimeInterval?
+
+    public init() {}
+
+    /// Adds `text` to the letters typed so far, or starts again after a pause; returns the letters to look for.
+    public mutating func type(_ text: String, at now: TimeInterval) -> String {
+        if let lastInputAt, now - lastInputAt >= Self.resetAfter { query = "" }
+        lastInputAt = now
+        query += text
+        return query
+    }
+
+    /// Esc, or the list changed under the letters.
+    public mutating func clear() {
+        query = ""
+        lastInputAt = nil
+    }
+
+    /// The first of `entries` whose name starts with `query`, ignoring case and accents.
+    public static func match<T: ListFilterEntry>(in entries: [T], query: String) -> T? {
+        guard let matcher = NameMatcher(JSString.trimmed(query), mode: .contains) else { return nil }
+        return entries.first { matcher.isPrefix(of: $0.name) }
+    }
+}
+
 /// What a key does in the file list while a filter is, or can be, typed.
 public enum ListFilterKey: Equatable, Sendable {
     case type(String)

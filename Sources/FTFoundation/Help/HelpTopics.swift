@@ -649,6 +649,9 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.toggleInfoPanel), "Show or hide the Info panel"),
         HelpShortcutItem(group: .views, .command(.toggleInfoRow), "Show or hide the Info row"),
         HelpShortcutItem(group: .views, .command(.toggleHiddenFiles), "Show or hide hidden files"),
+        HelpShortcutItem(
+            group: .views, .command(.togglePinFilter),
+            "Keep the filter typed in the list as you go to other folders, or let it go"),
         HelpShortcutItem(group: .views, .command(.viewAsIcons), "View as icons"),
         HelpShortcutItem(group: .views, .command(.viewAsDetails), "View as a list, with columns"),
         HelpShortcutItem(group: .views, .command(.viewAsList), "View as a compact list of names"),

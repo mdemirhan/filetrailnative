@@ -89,6 +89,11 @@ protocol ContentPaneHost: AnyObject {
     var listFilter: ListFilterTyping { get }
     /// Typing, Backspace or Esc in the list.
     func applyFilterKey(_ key: ListFilterKey)
+    /// The filter pinned to the pane, if one is: typing then selects names instead.
+    var pinnedFilter: PinnedListFilter? { get }
+    /// A character typed with the filter pinned selects the first name that starts with the letters typed so far; nil
+    /// (Esc) lets go of them.
+    func typeToSelect(_ text: String?)
     /// Return with an item selected: Open or Rename, as the Return key setting says.
     func pressedReturn()
     /// Tab: the keyboard goes to the other pane.

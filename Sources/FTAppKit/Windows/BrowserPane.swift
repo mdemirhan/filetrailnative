@@ -168,6 +168,7 @@ final class BrowserPane {
             view.contentSelection = shown.selection
             view.listFilterQuery = content.filter
             view.listFilterMode = content.filter.isEmpty ? nil : content.filterMode
+            view.pinnedListFilter = content.pinnedFilter
             view.contentScroll = CGPoint(x: shown.scrollLeft, y: shown.scrollTop)
         }
         return view
@@ -540,6 +541,7 @@ final class BrowserPane {
 
     /// What the folder just shown takes from the view the pane was started with, besides what `content.show` restored.
     private func showCarried(_ carried: TabViewState, folderWasRead: Bool) {
+        content.setPinnedFilter(carried.pinnedListFilter)
         content.setFilter(carried.listFilterQuery, mode: carried.listFilterMode)
         // Something selected outside the filter shows the whole list again.
         if let lead = content.selection.leadPath, !content.filter.isEmpty,

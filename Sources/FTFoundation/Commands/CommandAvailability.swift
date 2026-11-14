@@ -65,6 +65,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var ejectTargetPath: String?
     /// Which of View ▸ Make Bigger, Make Smaller and Default Size would change the view on screen (nil: all of them).
     public var viewSizeSteps: ViewSize.Steps?
+    /// View ▸ Pin Filter can act: a filter is typed in the folder, or one is pinned (nil: it can).
+    public var filterPinnable: Bool?
 
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
@@ -76,7 +78,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         trashPath: String? = nil,
         homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
-        viewSizeSteps: ViewSize.Steps? = nil
+        viewSizeSteps: ViewSize.Steps? = nil, filterPinnable: Bool? = nil
     ) {
         self.shortcutContext = shortcutContext
         self.currentPath = currentPath
@@ -101,6 +103,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.ejectTargetPath = ejectTargetPath
         self.trashIsFavorite = trashIsFavorite
         self.viewSizeSteps = viewSizeSteps
+        self.filterPinnable = filterPinnable
     }
 }
 
@@ -356,6 +359,8 @@ public enum CommandAvailability {
         case .sortByName, .sortByModified, .sortBySize, .sortByKind, .toggleFoldersFirst:
             // Search results have an order of their own, chosen in the List view's headers.
             return !context.isSearchMode
+        case .togglePinFilter:
+            return context.filterPinnable != false
         case .goBack:
             return context.canGoBack != false
         case .goForward:

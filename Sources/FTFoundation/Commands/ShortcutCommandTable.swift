@@ -97,6 +97,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case sortBySize
     case toggleFoldersFirst
     case toggleHiddenFiles
+    case togglePinFilter
     case toggleFolderTree
     case toggleInfoPanel
     case toggleInfoRow
@@ -304,6 +305,8 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .toggleHiddenFiles, label: "Hidden Files", group: .view, defaults: ["Cmd+Shift+."],
             menuPath: "View > Hidden Files"),
+        ShortcutCommandDefinition(
+            id: .togglePinFilter, label: "Pin Filter", group: .view, defaults: [], menuPath: "View > Pin Filter"),
         ShortcutCommandDefinition(
             id: .toggleFolderTree, label: "Folder Tree", group: .view, defaults: ["Ctrl+Cmd+S"],
             menuPath: "View > Hide Folder Tree"),

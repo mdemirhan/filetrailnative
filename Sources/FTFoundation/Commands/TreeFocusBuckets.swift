@@ -21,8 +21,8 @@ extension ShortcutPolicy {
             .showLastSearchResults, .viewAsIcons,
             .viewAsList, .viewAsDetails, .increaseSize, .decreaseSize, .resetSize, .sortByName, .sortByModified,
             .sortBySize, .sortByKind, .toggleFoldersFirst,
-            .toggleHiddenFiles, .goBack, .goForward, .goEnclosingFolder, .focusTreePane, .focusContentPane, .openHelp,
-            .openKeyboardShortcuts:
+            .toggleHiddenFiles, .togglePinFilter, .goBack, .goForward, .goEnclosingFolder, .focusTreePane,
+            .focusContentPane, .openHelp, .openKeyboardShortcuts:
             .globalExplorer
         case .openSelection, .editSelection, .openInTerminal, .moveSelection, .renameSelection, .duplicateSelection,
             .newFolder, .trashSelection, .copySelection, .cutSelection, .pasteSelection, .copyPath,
