@@ -73,7 +73,7 @@ We decided against it for now, because it:
 
 Found by reading the code and confirmed there; not fixed yet.
 
-- **A read that never answers keeps a thread.** Listings, details and item lookups run on the shared pool (`Listing/DirectoryService.swift`); a disk that hangs for good holds one of its threads per read, and enough of them (16 here) would stop every listing. Blocking reads on a queue of their own would end that.
+- **A read that never answers keeps a thread.** Listings, details and item lookups read the disk out of Swift's shared pool (`BlockingWork`, `Listing/DirectoryService.swift`), so a disk that hangs for good no longer stops the listings of other folders or the app's other work. Each read it holds still keeps one of the dispatch queues' threads, of which macOS gives an app about 64: that many reads held at once would hold up every read after them until the disk gives up.
 - **A tab added unread with the Info panel open asks for its item.** Merge All Windows and the tabs brought back at launch wait unread until they are shown; with the Info panel open, each still asks the disk for its folder's details as it is added.
 - **A moved folder that can't be read once its items are gone is taken for gone.** After a move to another disk, the emptied original is looked at before it is removed (`tryRemoveEmptySourceDirectory`, `Execution/ExecutionMoves.swift`); one that can't be read just then is left where it is without a word.
 - **A new folder inside a merge that a full disk ends has no line of its own in the result**, as with a Stop: its items are listed, not the folder.

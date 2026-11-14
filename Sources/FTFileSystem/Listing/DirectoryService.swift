@@ -6,8 +6,9 @@ import Foundation
 ///
 /// Folders are read in one call each (getattrlistbulk) and sorted off the main thread. Requests run side by side and
 /// share nothing but the cache, so a folder whose read stalls (a network share that stopped answering) holds up only
-/// those asking for it, not every window. Item details, which the window asks for as rows scroll into view, run at a
-/// lower priority and never hold up a listing.
+/// those asking for it, not every window. Each request reads the disk in one piece of `BlockingWork`, out of Swift's
+/// shared pool, so however many reads a disk holds, the app's other tasks still run. Item details, which the window
+/// asks for as rows scroll into view, run at a lower priority and never hold up a listing.
 public final class DirectoryService: Sendable {
     private let fileSystem: any ExplorerFileSystem
     private let kinds: KindLabeler
@@ -35,8 +36,10 @@ public final class DirectoryService: Sendable {
         let trash = trash
         let order = order
         return try await cache.treeChildren(TreeKey(path: path, includeHidden: includeHidden)) {
-            try ExplorerListing.treeChildren(
-                path: path, includeHidden: includeHidden, trash: trash, fileSystem, order: order)
+            try await BlockingWork.run {
+                try ExplorerListing.treeChildren(
+                    path: path, includeHidden: includeHidden, trash: trash, fileSystem, order: order)
+            }
         }
     }
 
@@ -58,10 +61,12 @@ public final class DirectoryService: Sendable {
                 path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
                 foldersFirst: foldersFirst)
             return try await cache.directorySnapshot(key) {
-                try ExplorerListing.snapshot(
-                    path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
-                    foldersFirst: foldersFirst, alsoListing: alsoListing, trash: trash, fileSystem, kinds: kinds,
-                    order: order)
+                try await BlockingWork.run {
+                    try ExplorerListing.snapshot(
+                        path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
+                        foldersFirst: foldersFirst, alsoListing: alsoListing, trash: trash, fileSystem, kinds: kinds,
+                        order: order)
+                }
             }
         }
         do {
@@ -78,11 +83,11 @@ public final class DirectoryService: Sendable {
         let fileSystem = fileSystem
         let kinds = kinds
         let items = try await cache.metadata(for: paths) { missing in
-            try await Task.detached(priority: .utility) {
+            try await BlockingWork.run(qos: .utility) {
                 try ExplorerListing.metadataBatch(
                     directoryPath: directoryPath, paths: missing, fileSystem, kinds: kinds
                 ).items
-            }.value
+            }
         }
         return MetadataBatch(directoryPath: directoryPath, items: items)
     }
@@ -90,21 +95,32 @@ public final class DirectoryService: Sendable {
     /// Whether the item itself has the flag that hides it, for telling a hidden folder from its path alone.
     @concurrent
     public func hasHiddenFlag(path: String) async -> Bool {
-        (try? fileSystem.lstat(path))?.hasHiddenFlag == true
+        let fileSystem = fileSystem
+        return await BlockingWork.run { (try? fileSystem.lstat(path))?.hasHiddenFlag == true }
     }
 
     @concurrent
     public func itemProperties(
         path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) async -> ItemProperties {
-        ExplorerListing.itemProperties(path: path, fileSystem, kinds: kinds, startupDiskName: startupDiskName)
+        let fileSystem = fileSystem
+        let kinds = kinds
+        return await BlockingWork.run {
+            ExplorerListing.itemProperties(path: path, fileSystem, kinds: kinds, startupDiskName: startupDiskName)
+        }
     }
 
     @concurrent
     public func pathSuggestions(inputPath: String, includeHidden: Bool = false, limit: Int = 12) async throws
         -> PathSuggestions
     {
-        try ExplorerListing.pathSuggestions(
-            inputPath: inputPath, includeHidden: includeHidden, limit: limit, trash: trash, fileSystem, order: order)
+        let fileSystem = fileSystem
+        let trash = trash
+        let order = order
+        return try await BlockingWork.run {
+            try ExplorerListing.pathSuggestions(
+                inputPath: inputPath, includeHidden: includeHidden, limit: limit, trash: trash, fileSystem,
+                order: order)
+        }
     }
 }

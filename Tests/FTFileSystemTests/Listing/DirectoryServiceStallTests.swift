@@ -25,6 +25,13 @@ private final class DiskGate: @unchecked Sendable {
         return held
     }
 
+    /// Whether the looks were let go.
+    var isOpen: Bool {
+        condition.lock()
+        defer { condition.unlock() }
+        return open
+    }
+
     func release() {
         condition.lock()
         open = true
@@ -122,6 +129,34 @@ struct DirectoryServiceStallTests {
         gate.release()
         await slow.value
         for (_, _, task) in others { await task.value }
+    }
+
+    @Test func moreHeldReadsThanTheAppHasCoresLeaveOtherFoldersAndOtherWorkFree() async {
+        // One more than Swift's shared pool has threads, and one for the test itself.
+        let count = ProcessInfo.processInfo.activeProcessorCount + 2
+        let gate = DiskGate()
+        let service = service(fileSystem(gate: gate, reads: CallCounter()))
+        // Reads held on the pool's threads would leave none to run this test: the disk answers after a while whatever
+        // happens, so such a run fails rather than stopping every test after it. A thread of its own lets it go, as
+        // with the pool's threads all blocked macOS starts none for a dispatch queue either.
+        Thread {
+            Thread.sleep(forTimeInterval: 5)
+            gate.release()
+        }.start()
+        let held = (0..<count).map { index in
+            Task { _ = try? await service.snapshot(path: "/slow/\(index)") }
+        }
+        await pollUntil(timeout: .seconds(5)) { gate.holding >= count }
+        #expect(gate.holding >= count)
+
+        let fast = try? await service.snapshot(path: "/fast")
+        let other = await Task.detached { 42 }.value
+        #expect(fast?.entries.map(\.name) == ["Sub", "a.txt"])
+        #expect(other == 42)
+        #expect(!gate.isOpen, "the other folder and the other work waited for the held reads")
+
+        gate.release()
+        for task in held { await task.value }
     }
 
     @Test func aListingAskedForAfterAWriteDoesNotTakeTheAnswerOfAReadFromBefore() async throws {
