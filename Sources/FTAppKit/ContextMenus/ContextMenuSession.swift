@@ -77,11 +77,16 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         menu.autoenablesItems = true
         menu.minimumWidth = DesignTokens.menu.minWidth
         let palette = ThemePalette.palette(for: NSApp.effectiveAppearance.isDark ? .dark : .light)
-        for item in ContextMenuItems.visibleItems(surface: subject.surface, options: options, hidden: hidden) {
+        let items = ContextMenuItems.visibleItems(surface: subject.surface, options: options, hidden: hidden)
+        // The colors come after everything that changes the items: after Compress and its group, or after Rename's
+        // when nothing of that group is offered and its line has gone with it.
+        let tagColorsSeparator =
+            items.contains(.separator(key: "separator-organize")) ? "separator-organize" : "separator-rename"
+        for item in items {
             switch item {
             case .separator(let key):
                 menu.addItem(.separator())
-                if key == "separator-organize", subject.surface == .content || subject.surface == .search {
+                if key == tagColorsSeparator, subject.surface == .content || subject.surface == .search {
                     addTagColors()
                     menu.addItem(.separator())
                 }

@@ -26,37 +26,36 @@ import Testing
         #expect(
             titles(submenu(main, "File")) == [
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "-", "Open", "Open in New Tab",
-                "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Quick Look", "Reveal in Folder",
-                "-",
-                "Calculate Size", "-", "Rename", "Duplicate", "Convert Images…", "Move to…", "Compress", "Extract",
-                "Extract To…",
-                "Add to Favorites", "-",
-                "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-", "Reopen Closed Tab",
+                "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Reveal in Folder", "-",
+                "Calculate Size", "Rename", "-", "Compress", "Extract", "Extract To…", "-",
+                "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-",
+                "Add to Favorites", "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-",
+                "Reopen Closed Tab",
                 "Close Tab", "Close Window",
             ])
         #expect(
             titles(submenu(main, "Edit")) == [
-                "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Paste as File", "Copy to Other Pane",
-                "Move to Other Pane", "Copy Path", "Copy Contents", "Select All", "-",
+                "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Select All", "-",
+                "Copy Path", "Copy Contents", "Paste as File", "-", "Copy to Other Pane", "Move to Other Pane", "-",
                 "Show Clipboard", "Clear Clipboard", "-", "Find Files…", "Show Last Search Results",
             ])
         #expect(
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "as Previews", "-", "Make Bigger", "Make Smaller",
-                "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "Pin Filter", "Refresh",
+                "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "-", "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…",
             ])
         #expect(
             titles(submenu(main, "Go")) == [
                 "Back", "Forward", "Enclosing Folder", "-", "Documents", "Desktop", "Downloads", "Home", "Library",
-                "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "Show This Folder in Other Pane",
+                "Macintosh HD", "Applications", "Trash", "-", "Go to Folder…", "-", "Show This Folder in Other Pane",
                 "Go to Other Pane's Folder", "-", "Use as Tree Root",
             ])
         #expect(
             titles(submenu(main, "Window")) == [
-                "Minimize", "Zoom", "-", "Show Previous Tab", "Show Next Tab", "Switch to Other Pane",
-                "Move Tab to New Window", "Merge All Windows", "-", "Workspaces", "-", "Bring All to Front",
+                "Minimize", "Zoom", "-", "Show Previous Tab", "Show Next Tab", "Move Tab to New Window",
+                "Merge All Windows", "-", "Switch to Other Pane", "-", "Workspaces", "-", "Bring All to Front",
             ])
         #expect(
             titles(item(submenu(main, "Window"), "Workspaces").submenu!) == [

@@ -75,6 +75,18 @@ extension ExplorerWindowlessTests {
             menu?.items.first { $0.title == title }
         }
 
+        /// The colors come after everything that changes the items: Rename's group, then Compress's.
+        @Test func theTagColorsComeAfterTheGroupOfCompress() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let menu = try #require(tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")]))
+            let ids = menu.items.map { $0.isSeparatorItem ? "-" : $0.identifier?.rawValue ?? "" }
+            let colors = try #require(ids.firstIndex(of: "tagColors"))
+            #expect(
+                Array(ids[(colors - 5)...colors]) == ["duplicate", "move", "-", "compress", "-", "tagColors"])
+            await harness.close()
+        }
+
         @Test func aFolderHasNewTabsAndPasteAndTheBackgroundHasTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)

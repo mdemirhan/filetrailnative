@@ -14,6 +14,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -27,12 +33,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -108,14 +108,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -133,9 +137,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -188,6 +192,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -201,12 +211,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -282,14 +286,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -307,9 +315,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -362,6 +370,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -375,12 +389,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -456,14 +464,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -481,9 +493,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -536,6 +548,12 @@
           "icon": "open"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -549,12 +567,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -630,14 +642,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -655,9 +671,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -710,6 +726,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -723,12 +745,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -804,14 +820,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -829,9 +849,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -884,6 +904,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -897,12 +923,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -978,14 +998,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -1003,9 +1027,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -1061,6 +1085,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -1074,12 +1104,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -1155,14 +1179,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -1180,9 +1208,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -1242,6 +1270,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -1255,12 +1289,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -1336,14 +1364,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -1361,9 +1393,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -1425,6 +1457,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -1438,12 +1476,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -1519,14 +1551,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -1544,9 +1580,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -1608,6 +1644,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -1621,12 +1663,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -1702,14 +1738,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -1727,9 +1767,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -1791,6 +1831,12 @@
           "icon": "open"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -1804,12 +1850,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -1885,14 +1925,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -1910,9 +1954,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -1974,6 +2018,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -1987,12 +2037,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -2068,14 +2112,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -2093,9 +2141,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -2157,6 +2205,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -2170,12 +2224,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -2251,14 +2299,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -2276,9 +2328,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -2343,6 +2395,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -2356,12 +2414,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -2437,14 +2489,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -2462,9 +2518,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -2529,10 +2585,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "rootTreeHere",
@@ -2667,10 +2722,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "rootTreeHere",
@@ -2805,10 +2859,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "rootTreeHere",
@@ -2943,10 +2996,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "rootTreeHere",
@@ -3081,10 +3133,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "rootTreeHere",
@@ -3219,10 +3270,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "rootTreeHere",
@@ -3360,10 +3410,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "rootTreeHere",
@@ -3496,10 +3545,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "revealInTree",
@@ -3613,10 +3661,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "revealInTree",
@@ -3730,10 +3777,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "revealInTree",
@@ -3847,10 +3893,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "revealInTree",
@@ -3964,10 +4009,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "revealInTree",
@@ -4081,10 +4125,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "revealInTree",
@@ -4201,10 +4244,9 @@
           "icon": "openInNewWindow"
         },
         {
-          "id": "otherPane",
-          "label": "Other Pane",
-          "icon": "twoPanes",
-          "hasSubmenu": true
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane",
+          "icon": "twoPanes"
         },
         {
           "id": "revealInTree",
@@ -4302,6 +4344,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -4315,12 +4363,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -4396,14 +4438,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -4421,9 +4467,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -4482,6 +4528,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -4495,12 +4547,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -4576,14 +4622,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -4601,9 +4651,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -4662,6 +4712,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -4675,12 +4731,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -4756,14 +4806,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -4781,9 +4835,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -4842,6 +4896,12 @@
           "icon": "open"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -4855,12 +4915,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -4936,14 +4990,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -4961,9 +5019,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -5022,6 +5080,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -5035,12 +5099,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -5116,14 +5174,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -5141,9 +5203,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -5202,6 +5264,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -5215,12 +5283,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -5296,14 +5358,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -5321,9 +5387,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",
@@ -5385,6 +5451,12 @@
           "icon": "openFile"
         },
         {
+          "id": "openWith",
+          "label": "Open With",
+          "icon": "openWith",
+          "hasSubmenu": true
+        },
+        {
           "id": "openInNewTab",
           "label": "Open in New Tab",
           "icon": "openInNewTab"
@@ -5398,12 +5470,6 @@
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
-          "hasSubmenu": true
-        },
-        {
-          "id": "openWith",
-          "label": "Open With",
-          "icon": "openWith",
           "hasSubmenu": true
         },
         {
@@ -5479,14 +5545,18 @@
           "icon": "duplicate"
         },
         {
-          "id": "convertImages",
-          "label": "Convert Images…",
-          "icon": "convertImages"
-        },
-        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
+        },
+        {
+          "id": "newFolder",
+          "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "type": "separator",
+          "key": "separator-rename"
         },
         {
           "id": "compress",
@@ -5504,9 +5574,9 @@
           "icon": "extract"
         },
         {
-          "id": "newFolder",
-          "label": "New Folder",
-          "icon": "newFolder"
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "type": "separator",

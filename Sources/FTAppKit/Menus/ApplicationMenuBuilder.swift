@@ -75,24 +75,27 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.openSelectionInNewWindow, "Open in New Window"))
             menu.addItem(context.command(.openSelectionInOtherPane, "Open in Other Pane"))
             menu.addItem(context.command(.editSelection, "Edit in \(options.textEditorName ?? "Text Editor")"))
-            menu.addItem(context.command(.quickLookSelection, "Quick Look"))
             // Search results only, as Finder's Show in Enclosing Folder.
             menu.addItem(context.command(.revealInFolder, "Reveal in Folder"))
             menu.addItem(.separator())
+            // From here down in Finder's order: Get Info and Rename, Compress, Duplicate and Quick Look, Add to
+            // Sidebar. What Finder doesn't have sits with the item of Finder's it is most like.
             menu.addItem(context.command(.calculateSize, "Calculate Size"))
-            menu.addItem(.separator())
             menu.addItem(context.command(.renameSelection, "Rename"))
-            menu.addItem(context.command(.duplicateSelection, "Duplicate"))
-            // "Convert 3 Images…" for the images selected.
-            menu.addItem(context.command(.convertImages, ConvertImagesText.commandLabel))
-            menu.addItem(context.command(.moveSelection, "Move to…"))
+            menu.addItem(.separator())
             // Names what it makes a zip of once the menu is synced: Compress “Photos”, Compress 3 Items.
             menu.addItem(context.command(.compressSelection, "Compress"))
             menu.addItem(context.command(.extractSelection, "Extract"))
             menu.addItem(context.command(.extractSelectionTo, "Extract To…"))
+            menu.addItem(.separator())
+            menu.addItem(context.command(.duplicateSelection, "Duplicate"))
+            menu.addItem(context.command(.moveSelection, "Move to…"))
+            // "Convert 3 Images…" for the images selected.
+            menu.addItem(context.command(.convertImages, ConvertImagesText.commandLabel))
+            menu.addItem(context.command(.quickLookSelection, "Quick Look"))
+            menu.addItem(.separator())
             // "Remove from Favorites" while the folder is one.
             menu.addItem(context.command(.toggleFavorite, "Add to Favorites"))
-            menu.addItem(.separator())
             menu.addItem(context.command(.openInTerminal, "Open in Terminal"))
             menu.addItem(context.command(.showInFinder, "Show in Finder"))
             menu.addItem(.separator())
@@ -113,19 +116,23 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.undo, "Undo", fixed: .undo))
             menu.addItem(context.command(.redo, "Redo", fixed: .redo))
             menu.addItem(.separator())
+            // Cut, Copy, Paste and Select All together, as in every app.
             menu.addItem(context.command(.editCut, "Cut", fixed: .cut))
             menu.addItem(context.command(.editCopy, "Copy", fixed: .copy))
             menu.addItem(context.command(.editPaste, "Paste", fixed: .paste))
-            // Names what it would write once the menu is synced: "Paste Image as File", "Paste Text as File".
-            menu.addItem(context.command(.pasteAsFile, PasteAsFile.commandLabel))
-            // F5 and F6 by default, which the window takes: the menu shows a key only if one with ⌘ is chosen. After Cut
-            // and Copy all the same, as AppKit lets an item with ⇧ take the press of the same key without it.
-            menu.addItem(context.command(.copyToOtherPane, "Copy to Other Pane"))
-            menu.addItem(context.command(.moveToOtherPane, "Move to Other Pane"))
+            menu.addItem(context.command(.editSelectAll, "Select All", fixed: .selectAll))
+            menu.addItem(.separator())
+            // What goes to and comes from the system's clipboard. After Copy and Paste, as AppKit lets an item with ⇧
+            // take the press of the same key without it.
             menu.addItem(context.command(.copyPath, "Copy Path"))
             // Names what it would copy once the menu is synced: "Copy Image", "Copy Text".
             menu.addItem(context.command(.copyContents, CopyContents.commandLabel))
-            menu.addItem(context.command(.editSelectAll, "Select All", fixed: .selectAll))
+            // Names what it would write once the menu is synced: "Paste Image as File", "Paste Text as File".
+            menu.addItem(context.command(.pasteAsFile, PasteAsFile.commandLabel))
+            menu.addItem(.separator())
+            // F5 and F6 by default, which the window takes: the menu shows a key only if one with ⌘ is chosen.
+            menu.addItem(context.command(.copyToOtherPane, "Copy to Other Pane"))
+            menu.addItem(context.command(.moveToOtherPane, "Move to Other Pane"))
             menu.addItem(.separator())
             menu.addItem(context.command(.showClipboard, "Show Clipboard"))
             menu.addItem(context.command(.clearClipboard, "Clear Clipboard"))
@@ -155,6 +162,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(sortBy)
             menu.addItem(context.command(.toggleFoldersFirst, "Folders First"))
             menu.addItem(context.command(.toggleHiddenFiles, "Hidden Files"))
+            menu.addItem(.separator())
             menu.addItem(context.command(.togglePinFilter, "Pin Filter"))
             menu.addItem(context.command(.refreshOrApplySearchSort, "Refresh"))
             menu.addItem(.separator())
@@ -188,6 +196,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.goTrash, "Trash"))
             menu.addItem(.separator())
             menu.addItem(context.command(.openLocationSheet, "Go to Folder…"))
+            menu.addItem(.separator())
             menu.addItem(context.command(.showFolderInOtherPane, "Show This Folder in Other Pane"))
             menu.addItem(context.command(.goToOtherPaneFolder, "Go to Other Pane's Folder"))
             menu.addItem(.separator())
@@ -200,10 +209,11 @@ enum ApplicationMenuBuilder {
             menu.addItem(.separator())
             menu.addItem(context.command(.selectPreviousTab, "Show Previous Tab"))
             menu.addItem(context.command(.selectNextTab, "Show Next Tab"))
-            // Tab does it too, from a pane's list; the menu can't show Tab.
-            menu.addItem(context.command(.switchToOtherPane, "Switch to Other Pane"))
             menu.addItem(context.command(.moveTabToNewWindow, "Move Tab to New Window"))
             menu.addItem(context.command(.mergeAllWindows, "Merge All Windows"))
+            menu.addItem(.separator())
+            // Tab does it too, from a pane's list; the menu can't show Tab.
+            menu.addItem(context.command(.switchToOtherPane, "Switch to Other Pane"))
             menu.addItem(.separator())
             let workspaces = NSMenuItem(title: "Workspaces", action: nil, keyEquivalent: "")
             workspaces.submenu = context.workspacesMenu()

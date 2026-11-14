@@ -858,6 +858,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -1097,6 +1105,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -1323,11 +1347,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -1372,6 +1400,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -1412,7 +1448,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -1624,6 +1660,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -1710,6 +1750,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -1793,11 +1845,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -1818,6 +1874,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -1971,6 +2031,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -3046,6 +3116,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -3285,6 +3363,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -3511,11 +3605,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -3560,6 +3658,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -3600,7 +3706,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -3811,6 +3917,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -3897,6 +4007,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -3980,11 +4102,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -4005,6 +4131,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -4158,6 +4288,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -5252,6 +5392,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -5472,6 +5620,22 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
                 ],
                 [
                   "Windows",
@@ -5695,11 +5859,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -5744,6 +5912,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -5784,7 +5960,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -5996,6 +6172,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -6076,6 +6256,18 @@
                 [
                   "Tabs",
                   "Closing"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
                 ],
                 [
                   "Windows",
@@ -6161,11 +6353,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -6186,6 +6382,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -6339,6 +6539,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -7419,6 +7629,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -7658,6 +7876,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -7884,11 +8118,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -7933,6 +8171,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -7973,7 +8219,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -8184,6 +8430,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -8270,6 +8520,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -8349,11 +8611,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -8374,6 +8640,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -8527,6 +8797,16 @@
                   "description": "Quick Look"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -9424,6 +9704,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -9615,6 +9903,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -9790,11 +10094,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -9833,6 +10141,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -9862,7 +10178,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -10056,6 +10372,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -10130,6 +10450,18 @@
                   "Open in New Tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "Workspaces"
                 ],
@@ -10187,7 +10519,15 @@
               "rows": [
                 [
                   "The list",
+                  "Icons, List, Compact List and Previews"
+                ],
+                [
+                  "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "Appearance",
@@ -10204,6 +10544,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -10331,6 +10675,16 @@
                 [
                   "Opening",
                   "Quick Look"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
                 ]
               ],
               "shortcuts": []
@@ -10492,13 +10846,13 @@
           ],
           [
             {
-              "rows": [],
               "topic": "views",
+              "rows": [],
               "shortcuts": [
                 {
                   "group": "views",
-                  "description": "View as large previews of the files",
-                  "shortcut": "Cmd+4"
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -11395,6 +11749,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -11634,6 +11996,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -11865,11 +12243,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -11914,6 +12296,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -11954,7 +12344,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -12176,6 +12566,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -12262,6 +12656,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -12345,11 +12751,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -12370,6 +12780,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -12523,6 +12937,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -13589,6 +14013,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -13828,6 +14260,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -14049,11 +14497,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -14098,6 +14550,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -14138,7 +14598,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -14350,6 +14810,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -14440,6 +14904,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -14519,11 +14995,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "Appearance",
@@ -14540,6 +15020,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -14687,6 +15171,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -15760,6 +16254,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -15999,6 +16501,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -16225,11 +16743,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -16274,6 +16796,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -16314,7 +16844,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -16525,6 +17055,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -16611,6 +17145,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -16694,11 +17240,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -16719,6 +17269,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -16878,6 +17432,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -17940,6 +18504,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -18179,6 +18751,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -18395,11 +18983,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -18436,6 +19028,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -18478,7 +19078,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -18683,6 +19283,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -18773,6 +19377,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -18848,11 +19464,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "Appearance",
@@ -18869,6 +19489,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -19016,6 +19640,16 @@
                   "description": "Quick Look"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -20096,6 +20730,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -20340,6 +20982,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -20566,11 +21224,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -20615,6 +21277,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -20655,7 +21325,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -20866,6 +21536,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -20952,6 +21626,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -21035,11 +21721,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -21060,6 +21750,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -21213,6 +21907,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -22279,6 +22983,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -22518,6 +23230,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -22739,11 +23467,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -22788,6 +23520,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -22828,7 +23568,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -23045,6 +23785,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -23131,6 +23875,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -23206,11 +23962,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -23231,6 +23991,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -23384,6 +24148,16 @@
                   "description": "Quick Look"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -24463,6 +25237,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -24702,6 +25484,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -24928,11 +25726,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -24969,6 +25771,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -25011,7 +25821,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -25216,6 +26026,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -25298,6 +26112,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -25377,11 +26203,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "Appearance",
@@ -25398,6 +26228,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -25551,6 +26385,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -26641,6 +27485,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -26880,6 +27732,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -27096,11 +27964,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -27145,6 +28017,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -27185,7 +28065,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -27397,6 +28277,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -27483,6 +28367,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -27566,11 +28462,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -27591,6 +28491,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -27744,6 +28648,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -28836,6 +29750,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -29075,6 +29997,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -29301,11 +30239,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -29350,6 +30292,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -29390,7 +30340,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -29601,6 +30551,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -29687,6 +30641,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -29770,11 +30736,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -29795,6 +30765,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -29948,6 +30922,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -31021,6 +32005,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -31260,6 +32252,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -31481,11 +32489,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -31522,6 +32534,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -31564,7 +32584,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -31769,6 +32789,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -31855,6 +32879,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -31938,11 +32974,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -31963,6 +33003,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -32122,6 +33166,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -33194,6 +34248,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -33433,6 +34495,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -33659,11 +34737,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -33708,6 +34790,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -33748,7 +34838,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -33960,6 +35050,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -34046,6 +35140,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -34129,11 +35235,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -34154,6 +35264,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -34307,6 +35421,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -35436,6 +36560,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -35670,6 +36802,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -35886,11 +37034,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -35933,6 +37085,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -35980,7 +37140,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -36191,6 +37351,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -36271,6 +37435,18 @@
                 [
                   "Tabs",
                   "Closing"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
                 ],
                 [
                   "Windows",
@@ -36356,11 +37532,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -36381,6 +37561,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -36534,6 +37718,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -37614,6 +38808,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -37858,6 +39060,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -38084,11 +39302,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -38125,6 +39347,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -38167,7 +39397,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -38372,6 +39602,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -38458,6 +39692,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -38541,11 +39787,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -38566,6 +39816,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -38719,6 +39973,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -39792,6 +41056,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -40019,6 +41291,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -40240,11 +41528,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -40294,6 +41586,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -40334,7 +41634,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -40551,6 +41851,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -40637,6 +41941,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -40720,11 +42036,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -40745,6 +42065,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -40898,6 +42222,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -41967,6 +43301,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -42206,6 +43548,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -42432,11 +43790,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -42473,6 +43835,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -42515,7 +43885,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -42720,6 +44090,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -42806,6 +44180,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -42889,11 +44275,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -42914,6 +44304,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -43067,6 +44461,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -44135,6 +45539,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -44379,6 +45791,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -44600,11 +46028,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -44654,6 +46086,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -44694,7 +46134,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -44906,6 +46346,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -44992,6 +46436,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -45071,11 +46527,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "Appearance",
@@ -45092,6 +46552,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -45239,6 +46703,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -46335,6 +47809,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -46569,6 +48051,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -46800,11 +48298,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -46841,6 +48343,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -46888,7 +48398,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -47104,6 +48614,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -47190,6 +48704,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -47269,11 +48795,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "Appearance",
@@ -47290,6 +48820,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -47437,6 +48971,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -48513,6 +50057,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -48752,6 +50304,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -48958,11 +50526,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -49007,6 +50579,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -49047,7 +50627,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -49259,6 +50839,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -49345,6 +50929,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "Workspaces"
                 ],
@@ -49420,11 +51016,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -49445,6 +51045,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -49604,6 +51208,16 @@
                   "description": "Quick Look"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -50700,6 +52314,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -50939,6 +52561,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -51160,11 +52798,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -51209,6 +52851,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -51244,7 +52894,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -51455,6 +53105,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -51541,6 +53195,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -51624,11 +53290,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -51649,6 +53319,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -51802,6 +53476,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -52884,6 +54568,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -53118,6 +54810,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -53334,11 +55042,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -53375,6 +55087,14 @@
                 [
                   "Tabs",
                   "Each tab"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
                 ],
                 [
                   "Windows",
@@ -53417,7 +55137,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": []
@@ -53623,6 +55343,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -53699,6 +55423,18 @@
                 [
                   "Tabs",
                   "Closing"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
                 ],
                 [
                   "Windows",
@@ -53780,11 +55516,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -53805,6 +55545,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -53958,6 +55702,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -55018,6 +56772,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -55252,6 +57014,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -55478,11 +57256,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -55527,6 +57309,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -55567,7 +57357,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -55779,6 +57569,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -55865,6 +57659,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -55948,11 +57754,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -55973,6 +57783,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -56126,6 +57940,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -57232,6 +59056,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -57471,6 +59303,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -57692,11 +59540,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -57741,6 +59593,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -57781,7 +59641,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -57992,6 +59852,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -58072,6 +59936,18 @@
                 [
                   "Tabs",
                   "Closing"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
                 ],
                 [
                   "Windows",
@@ -58157,11 +60033,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -58182,6 +60062,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -58335,6 +60219,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -59413,6 +61307,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -59652,6 +61554,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -59878,11 +61796,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -59927,6 +61849,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -59967,7 +61897,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -60178,6 +62108,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -60264,6 +62198,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -60347,11 +62293,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -60372,6 +62322,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -60525,6 +62479,16 @@
                   "description": "Quick Look (Space also works)"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -61612,6 +63576,14 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Next launch"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -61851,6 +63823,22 @@
                   "Next launch"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Copy and move across"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -62072,11 +64060,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Sort"
+                ],
+                [
+                  "The list",
+                  "Pin Filter"
                 ],
                 [
                   "Information",
@@ -62121,6 +64113,14 @@
                   "Each tab"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
                   "Windows",
                   "Each window"
                 ],
@@ -62161,7 +64161,7 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ]
               ],
               "shortcuts": [
@@ -62373,6 +64373,10 @@
                 ],
                 [
                   "Undo and Redo",
+                  "In the toolbar"
+                ],
+                [
+                  "Undo and Redo",
                   "What you can undo"
                 ],
                 [
@@ -62459,6 +64463,18 @@
                   "Closing"
                 ],
                 [
+                  "Two panes",
+                  "Two Panes"
+                ],
+                [
+                  "Two panes",
+                  "Moving between panes"
+                ],
+                [
+                  "Two panes",
+                  "Open in the other pane"
+                ],
+                [
                   "Windows",
                   "New window"
                 ],
@@ -62538,11 +64554,15 @@
               "rows": [
                 [
                   "The list",
-                  "Icons, List and Compact List"
+                  "Icons, List, Compact List and Previews"
                 ],
                 [
                   "The list",
                   "Icon size and column width"
+                ],
+                [
+                  "The list",
+                  "Previews"
                 ],
                 [
                   "The list",
@@ -62563,6 +64583,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Two panes",
+                  "Two Panes"
+                ],
                 [
                   "Windows",
                   "Each window"
@@ -62716,6 +64740,16 @@
                   "description": "Quick Look"
                 }
               ]
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Previews"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [

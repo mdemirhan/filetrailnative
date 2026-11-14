@@ -19,6 +19,8 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case deleteImmediately, emptyTrash, eject
     /// The submenu of what can be done with the tab's other pane, while it shows two.
     case otherPane
+    /// A folder of the tree or the favorites shown in the other pane: the one thing its menu does there.
+    case openInOtherPane
 
     /// The items that open a submenu rather than act.
     public var isSubmenu: Bool { self == .openWith || self == .viewAs || self == .sortBy || self == .otherPane }
@@ -105,7 +107,7 @@ public enum ContextMenuItems {
                 item(.newFolder, "New Folder", .newFolder), line("separator-tree-new"),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
-                item(.otherPane, "Other Pane", .twoPanes, submenu: true),
+                item(.openInOtherPane, "Open in Other Pane", .twoPanes),
                 item(.rootTreeHere, "Use as Tree Root", .rootTreeHere), line("separator-tree-open"),
                 item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-tree-info"),
@@ -142,7 +144,7 @@ public enum ContextMenuItems {
                 item(.newFolder, "New Folder", .newFolder), line("separator-favorite-new"),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
-                item(.otherPane, "Other Pane", .twoPanes, submenu: true),
+                item(.openInOtherPane, "Open in Other Pane", .twoPanes),
                 item(.revealInTree, "Reveal in Tree", .revealInTree),
                 item(.rootTreeHere, "Use as Tree Root", .rootTreeHere),
                 // Only for a disk that can be ejected (hidden by the caller for the others).
@@ -160,11 +162,12 @@ public enum ContextMenuItems {
             ]
         case .content:
             return [
+                // Open and Open With come first, as in Finder; then the other places the item can open.
                 item(.open, "Open", options.targetsFolder ? .open : .openFile),
+                item(.openWith, "Open With", .openWith, submenu: true),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),
-                item(.openWith, "Open With", .openWith, submenu: true),
                 item(.quickLook, "Quick Look", .quickLook),
                 item(.edit, "Edit in \(textEditorName)", .edit),
                 item(.showPackageContents, "Show Package Contents", .showPackageContents),
@@ -178,13 +181,13 @@ public enum ContextMenuItems {
                 item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
                 line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
-                // For images only, every one of them (hidden by the caller otherwise).
-                item(.convertImages, options.convertImagesLabel ?? ConvertImagesText.commandLabel, .convertImages),
-                item(.move, "Move to…", .move),
-                // Compress for any items of one folder; Extract and Extract To for archives (hidden otherwise).
+                item(.move, "Move to…", .move), item(.newFolder, "New Folder", .newFolder),
+                line("separator-rename"),
+                // What makes new files from the items. Compress for any items of one folder; Extract and Extract To
+                // for archives; Convert Images for images only, every one of them (hidden by the caller otherwise).
                 item(.compress, options.compressLabel ?? "Compress", .compress),
                 item(.extract, "Extract", .extract), item(.extractTo, "Extract To…", .extract),
-                item(.newFolder, "New Folder", .newFolder),
+                item(.convertImages, options.convertImagesLabel ?? ConvertImagesText.commandLabel, .convertImages),
                 line("separator-organize"),
                 item(.toggleFavorite, favoriteToggleLabel, .favorite), line("separator-favorite"),
                 item(.terminal, "Open in Terminal", .terminal), item(.showInFinder, "Show in Finder", .showInFinder),

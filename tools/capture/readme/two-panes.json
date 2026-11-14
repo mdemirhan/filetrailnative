@@ -1,0 +1,69 @@
+{
+  "name": "two-panes",
+  "description": "Two panes side by side, a list and icons",
+  "root": "/Users/Shared/Lighthouse",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "density": "standard",
+        "viewMode": "icons",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "design/screens"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "command",
+      "id": "toggleTwoPanes"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "command",
+      "id": "viewAsDetails"
+    },
+    {
+      "step": "wait",
+      "ms": 1200
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "two-panes"
+    }
+  ]
+}

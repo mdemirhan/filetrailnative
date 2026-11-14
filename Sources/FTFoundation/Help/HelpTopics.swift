@@ -83,6 +83,35 @@ extension HelpContent {
                         "Only one copy, move or delete runs at a time, whichever tab it was started from. While it runs, the other tabs can browse, search, copy and cut."
                 ),
                 HelpSection(
+                    title: "Two panes",
+                    rows: [
+                        HelpRow(
+                            label: "Two Panes",
+                            description:
+                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active."
+                        ),
+                        HelpRow(
+                            label: "Moving between panes",
+                            description:
+                                "Tab goes from the folder tree to the left pane and on to the right pane, and Shift-Tab back; a click in a pane makes it the active one. {swapPanes} swaps the two, and View > Make Panes Equal Width puts the divider in the middle."
+                        ),
+                        HelpRow(
+                            label: "Copy and move across",
+                            description:
+                                "{copyToOtherPane} copies the selected items into the folder the other pane shows, and {moveToOtherPane} moves them there. A drag from one pane onto the other does the same, and so does Other Pane in the right-click menu."
+                        ),
+                        HelpRow(
+                            label: "Open in the other pane",
+                            description:
+                                "{openSelectionInOtherPane} opens the selected folder in the other pane, as Option-click on a folder in the tree does. Go > Show This Folder in Other Pane and Go > Go to Other Pane’s Folder bring both panes to one folder."
+                        ),
+                        HelpRow(
+                            label: "Next launch",
+                            description:
+                                "A tab keeps both its panes, which one is active and where the divider sits. A new tab or window starts with one pane."
+                        ),
+                    ]),
+                HelpSection(
                     title: "Windows",
                     rows: [
                         HelpRow(
@@ -297,6 +326,11 @@ extension HelpContent {
                             label: "Redo",
                             description:
                                 "{redo} does again what you just took back. Once you do something new, there is nothing left to redo."
+                        ),
+                        HelpRow(
+                            label: "In the toolbar",
+                            description:
+                                "View > Customize Toolbar… has Undo, Redo and Undo History buttons to drag in. Undo History lists what Undo and Redo would do, in order."
                         ),
                         HelpRow(
                             label: "What you can undo",
@@ -520,14 +554,19 @@ extension HelpContent {
                     title: "The list",
                     rows: [
                         HelpRow(
-                            label: "Icons, List and Compact List",
+                            label: "Icons, List, Compact List and Previews",
                             description:
-                                "The three buttons in the toolbar, the View menu, or {viewAsIcons}, {viewAsDetails} and {viewAsList} switch between large icons with previews of photos, PDFs and other files, a list with columns for date, size and kind, and a compact list of names. Settings → Browsing chooses the columns, and Sizes → Match Finder uses Finder’s text and icon sizes in every view and the folder tree."
+                                "The four buttons in the toolbar, the View menu, or {viewAsIcons}, {viewAsDetails}, {viewAsList} and {viewAsPreviews} switch between large icons with previews of photos, PDFs and other files, a list with columns for date, size and kind, a compact list of names, and large previews of the files. Settings → Browsing chooses the columns, and Sizes → Match Finder uses Finder’s text and icon sizes in every view and the folder tree."
                         ),
                         HelpRow(
                             label: "Icon size and column width",
                             description:
                                 "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Sizes → Match Finder keeps sizes of its own."
+                        ),
+                        HelpRow(
+                            label: "Previews",
+                            description:
+                                "Shows 9, 4, 2 or 1 files at a time as large Quick Look previews, each in its own proportions with its name under it. The View menu, {increaseSize} and {decreaseSize}, or the slider in the status bar choose how many, and a scroll settles on a whole row. Everything else works as in the Icons view."
                         ),
                         HelpRow(
                             label: "Columns in List view",
@@ -543,6 +582,11 @@ extension HelpContent {
                             label: "Hidden files",
                             description:
                                 "Files whose names start with a dot, and items macOS marks as hidden, as Finder hides them. {toggleHiddenFiles} shows them in the tab on screen, with their icons faded; search follows this setting too."
+                        ),
+                        HelpRow(
+                            label: "Pin Filter",
+                            description:
+                                "View > Pin Filter, or the pin in the filter’s pill, keeps the filter you typed while the pane goes to other folders and searches. A pinned filter narrows files only, so folders always show, and typing selects a name instead of changing it. Choose Pin Filter again or click the pin to unpin it; the ✕ in the pill removes the filter."
                         ),
                         HelpRow(
                             label: "Dates",

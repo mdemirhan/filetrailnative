@@ -161,9 +161,12 @@ public enum ContextMenuRules {
         let surface = subject.surface
         let entries = subject.entries
         let isItemListSurface = surface == .content || surface == .search || surface == .trash
-        // Nothing in the Trash to empty.
         // With one pane there is no other pane to act on.
-        if !world.showsTwoPanes { hidden.insert(.otherPane) }
+        if !world.showsTwoPanes {
+            hidden.insert(.otherPane)
+            hidden.insert(.openInOtherPane)
+        }
+        // Nothing in the Trash to empty.
         if world.trashIsEmpty == true { hidden.insert(.emptyTrash) }
         // One file operation at a time: while one runs, the others are left out.
         if world.writeLocked {

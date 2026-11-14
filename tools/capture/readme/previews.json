@@ -1,0 +1,53 @@
+{
+  "name": "previews",
+  "description": "Photos in the Previews view, four at a time",
+  "root": "/Users/Shared/Lighthouse",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "density": "standard",
+        "viewMode": "icons",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "photos"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "command",
+      "id": "viewAsPreviews"
+    },
+    {
+      "step": "wait",
+      "ms": 2500
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "previews"
+    }
+  ]
+}

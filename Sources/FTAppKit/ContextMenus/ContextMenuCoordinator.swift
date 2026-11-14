@@ -166,9 +166,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         tab.sort(by: field)
     }
 
-    /// The Other Pane submenu for what the menu is for: Open for a folder, Copy and Move for items of the list, and for
-    /// the list's background Show This Folder and Go to Its Folder. What can't run now is dimmed, so the submenu keeps
-    /// its shape.
+    /// The Other Pane submenu for what the menu is for: Open, Copy and Move for items of the list, and for the list's
+    /// background Show This Folder and Go to Its Folder. What can't run now is dimmed, so the submenu keeps its shape.
+    /// A folder of the tree or the favorites has one thing to do there, so its menu has Open in Other Pane itself.
     private func otherPaneItems(_ subject: ContextMenuSubject, _ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
         func key(_ command: AppCommand) -> MenuKeyEquivalent? {
             ShortcutCommandID(rawValue: command.rawValue).flatMap { shortcuts.written($0) }
@@ -187,7 +187,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 item("Go to Its Folder", .goToOtherPaneFolder, !otherFolder.isEmpty && otherFolder != folder),
             ]
         case .treeFolder, .favorite:
-            return [item("Open", .openSelectionInOtherPane, subject.targetPath != nil)]
+            return []
         case .content, .search, .trash:
             let oneFolder = subject.entries.count == 1 && subject.entries[0].kind.isDirectoryLike
             // Into the folder the other pane shows: not when it shows none, search results, or this list's folder.
@@ -273,6 +273,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if let target = subject.targetPath ?? subject.paths.first {
                 openFolder(target, subject: subject, inWindow: action == .openInNewWindow)
             }
+        case .openInOtherPane:
+            if let target = subject.targetPath ?? subject.paths.first { tab.openSecondPane(at: target) }
         case .showPackageContents:
             if let first = subject.paths.first { tab.go(to: URL(fileURLWithPath: first)) }
         case .terminal:

@@ -150,12 +150,44 @@ struct ContextMenuRulesTests {
             subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))
         #expect(
             folder == [
-                "Open", "Open in New Tab", "Open in New Window", "Open With", "Quick Look", "Show Info",
+                "Open", "Open With", "Open in New Tab", "Open in New Window", "Quick Look", "Show Info",
                 "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Rename", "Duplicate", "Move to…",
-                "Compress \u{201C}F\u{201D}", "New Folder", "Remove from Favorites", "Open in Terminal",
+                "New Folder", "Compress \u{201C}F\u{201D}", "Remove from Favorites", "Open in Terminal",
                 "Show in Finder",
                 "Move to Trash",
             ])
+    }
+
+    /// What makes new files from the items has a group of its own, after Rename's.
+    @Test func compressExtractAndConvertImagesAreAGroupOfTheirOwn() {
+        func groups(_ subject: ContextMenuSubject) -> [[String]] {
+            let options = ContextMenuRules.options(subject, world(), textEditorName: nil)
+            return ContextMenuItems.visibleItems(
+                surface: subject.surface, options: options, hidden: hidden(subject, world())
+            ).split { $0.actionID == nil }.map { $0.compactMap(\.label) }
+        }
+        let archive = groups(subject(.content, [("/a/Photos.zip", .file)]))
+        #expect(archive.contains(["Rename", "Duplicate", "Move to…"]))
+        #expect(archive.contains(["Compress \u{201C}Photos.zip\u{201D}", "Extract", "Extract To…"]))
+        let image = groups(subject(.content, [("/a/p.png", .file)]))
+        #expect(image.contains(["Compress \u{201C}p.png\u{201D}", "Convert Image…"]))
+    }
+
+    /// A folder of the tree or the favorites has one thing to do in the other pane, so no submenu for it.
+    @Test func aTreeFolderOpensInTheOtherPaneFromItsOwnItemOnlyWithTwoPanes() {
+        for surface in [ContextMenuSurface.treeFolder, .favorite] {
+            let folder = subject(surface, [("/a/F", .directory)])
+            #expect(!labels(folder, world()).contains("Open in Other Pane"))
+            var two = world()
+            two.showsTwoPanes = true
+            let menu = labels(folder, two)
+            #expect(menu.contains("Open in Other Pane") && !menu.contains("Other Pane"))
+            #expect(menu.firstIndex(of: "Open in Other Pane") == menu.firstIndex(of: "Open in New Window")! + 1)
+        }
+        // The list's items keep the submenu: Open, Copy and Move.
+        var two = world()
+        two.showsTwoPanes = true
+        #expect(labels(subject(.content, [("/a/F", .directory)]), two).contains("Other Pane"))
     }
 
     @Test func archivesAloneOfferExtractAndExtractTo() {

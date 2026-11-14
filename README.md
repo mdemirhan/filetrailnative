@@ -10,8 +10,10 @@ A Mac file browser with fast search, a real folder tree and true cut and paste. 
 
 - **Search that works, and is fast.** Results appear as you type, from the folder you are in, by name or full path, in plain text, glob or regex. There is no index to wait for, and nothing left out for not being indexed.
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
+- **Two folders side by side.** ⌘\\ splits a tab into two panes, and F5 and F6 copy or move what is selected from one to the other. No second window to line up.
 - **Cut and paste files.** ⌘X and ⌘V to move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
-- **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that have those letters in order.
+- **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that have those letters in order, and a filter you pin stays as you go from folder to folder.
+- **Your windows, saved by name.** Save a window's tabs and panes as a workspace and open it again with one key.
 - **Keyboard first, with your keys.** Everything can be done from the keyboard, and every command can have a shortcut, two keys per command, that you choose. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.
 - **See what's taking the space.** Sort by size and every folder gets a bar, so the big ones stand out at a glance.
 - **Fast in big folders, and never stuck.** Scrolling stays smooth with thousands of files, and a slow or unresponsive disk never freezes the window.
@@ -25,7 +27,7 @@ Finder hands search to Spotlight: by default it searches the whole Mac, it leave
 
 - **Plain text by default.** Case doesn't matter, and a plain letter finds its accented forms: `resume` finds Résumé. Switch to glob (`*.test.ts`) or regex when you need a pattern, and match against the name or the full path.
 - **Widen or narrow without starting over.** One click moves the search from this folder to Home or the whole disk. The filter field trims what was found, by name or by folder, without searching again. A search stops at 50,000 results.
-- **Results in any view.** Icons, List or Compact List, with columns of their own that you choose and sort.
+- **Results in any view.** Icons, List, Compact List or Previews, with columns of their own that you choose and sort.
 - **It knows about Git.** Inside a repository, search can leave out `.git` and whatever `.gitignore` excludes, so build output stays out of the results.
 - **Nothing to set up.** Search runs on a bundled copy of [`fd`](https://github.com/sharkdp/fd). There is no index to build and nothing to install.
 
@@ -42,7 +44,16 @@ Finder's sidebar holds shortcuts, not a tree. File Trail keeps a folder tree bes
 
 ## Two folders side by side
 
-Press ⌘\\ and the tab shows a second pane beside the first, each with its own folder, history, view and search. Tab moves between the tree and the two panes, F5 and F6 copy or move what is selected into the other pane's folder, as does the right-click menu's Other Pane, and a drag from one pane to the other does the same. ⌘U swaps the panes, the tree marks the folder each one shows, and the tab keeps both when you quit and come back.
+<p align="center">
+  <img src="docs/screenshots/two-panes.png" alt="A tab with two panes side by side, components in a list on the left and design screens as icons on the right, the folder tree marking both folders" width="900">
+</p>
+
+In Finder, moving files between two folders means two windows, or a drag held over another tab. In File Trail, press ⌘\\ and the tab shows a second pane beside the first, each with its own folder, history, view, filter and search.
+
+- **Copy and move across with one key.** F5 copies what is selected into the other pane's folder and F6 moves it, as the right-click menu's Other Pane does, and a drag from one pane to the other does the same. What arrives shows in both panes at once, selected.
+- **Stay on the keyboard.** Tab moves between the tree and the two panes, ⌥⌘↓ opens the selected folder in the other pane, and ⌘U swaps the panes.
+- **One tree for both.** The folder tree follows the pane you are in and marks the folder each pane shows.
+- **Kept with the tab.** Both panes, the active one and the divider come back when you quit and open File Trail again, and a workspace saves them too.
 
 ## Cut, copy and paste, with a clipboard you can see
 
@@ -52,7 +63,7 @@ Press ⌘\\ and the tab shows a second pane beside the first, each with its own 
 
 In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothing marks the items waiting to be pasted. In File Trail, ⌘X cuts and ⌘V moves, in the same window or another. Cut and copied items stay marked until they are pasted, and a button in the toolbar counts them and lists them, so you can jump to one, take one off or clear the lot.
 
-**Pasting is built not to lose your files.** When a paste would overwrite something, you choose: Skip, Keep Both, Replace, or for folders, Add Missing, which copies only what the folder there lacks. Anything replaced goes to the Trash. A move to another disk checks each copy before it removes the original, and if File Trail stops in the middle of a Replace, it picks up where it stopped the next time it opens and tells you where everything is. Undo (⌘Z) takes back renames, moves, copies and Move to Trash, one at a time.
+**Pasting is built not to lose your files.** When a paste would overwrite something, you choose: Skip, Keep Both, Replace, or for folders, Add Missing, which copies only what the folder there lacks. Anything replaced goes to the Trash. A move to another disk checks each copy before it removes the original, and if File Trail stops in the middle of a Replace, it picks up where it stopped the next time it opens and tells you where everything is. Undo (⌘Z) takes back renames, moves, copies and Move to Trash, one at a time, and the toolbar can hold Undo, Redo and a button that lists what each would do.
 
 ## Any folder in a few keystrokes
 
@@ -62,6 +73,7 @@ In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothi
 
 - **Go To (⌘K)** lists the folders you use most lately, with your favorites, and finds any folder you have opened from a few letters of its name. The folders you go to often come first, the way a browser's address bar ranks the sites you visit. Start with `/` or `~` to type a path, and Tab completes it.
 - **Type in the file list** to narrow it. A name is kept when it has the letters you type in that order, so `trptl` finds TripTimeline.jsx, and the letters it matched are marked. The chip in the filter's pill says Fuzzy; click it for Contains, which keeps only the names with the letters side by side, and the filters you type next start in Contains too (Settings → Browsing has the same choice). There is no field to click first: the best match is selected, Backspace edits what you typed and ⌥⌫ takes back a word, and Esc brings the rest back. Press ⌘F and the same text becomes a search of the subfolders.
+- **Pin the filter** with the pin in its pill, and it stays while you go to other folders and search: type `pdf`, pin it, and every folder you open shows its folders and its PDFs. Finder has no filter that follows you.
 - **The path bar** is more than a label: click a folder to jump to it, click a `›` to see the folders at that level, or double-click the bar to edit the path as text.
 - **Back and Forward** remember more than one step. Hold either button to pick from the folders it leads to.
 - **The Go menu** has Home, Documents, Desktop, Downloads, Library, Macintosh HD, Applications and the Trash, like Finder's, each on a shortcut you choose.
@@ -106,7 +118,7 @@ Sizes are worked out for the folder you select or ask about, never for everythin
 
 Select several items and choose Rename. The Rename sheet replaces or adds text, numbers items or adds their date, or changes their case, and shows every new name before anything is renamed. Find and replace can use regular expressions, photos can be named by the date they were taken, and renames you repeat can be saved as presets. When a new name is already taken, you choose what happens: add a number, skip those items, or rename nothing.
 
-## Three views, with real previews
+## Four views, with real previews
 
 <p align="center">
   <img src="docs/screenshots/icon-view-tabs.png" alt="A folder of photos in Icons view, with a selection box over ten of them, in a window with three tabs" width="900">
@@ -114,7 +126,20 @@ Select several items and choose Rename. The Rename sheet replaces or adds text, 
 
 Icons view shows Quick Look previews of photos, PDFs and other documents. List view has columns for date, size and kind, and optionally date created and permissions. Compact List packs a folder into columns of names. Space opens Quick Look on whatever is selected.
 
+<p align="center">
+  <img src="docs/screenshots/previews.png" alt="A folder of photos in Previews view, four large previews filling the pane, each with its name under it" width="900">
+</p>
+
+Previews view (⌘4) is for looking through pictures and documents: it fills the pane with 9, 4, 2 or 1 large previews at a time, each in its own proportions, and a scroll settles on a whole row. Everything else works as in Icons view: select, rename, drag, cut and paste.
+
 Every tab has its own folder, history, folder tree, view and search, and every window its own tabs. Move a tab into a window of its own, or merge every window back into one. Save a window's tabs, panes and all, as a workspace, and open it again from Window ▸ Workspaces, the first five with ⌃⌘1 to ⌃⌘5.
+
+## Zip, unzip and convert, in place
+
+- **Compress** makes a zip of the selected items next to them, as Finder's does.
+- **Extract** takes zip, tar, 7z, RAR and xar archives apart next to themselves, and **Extract To** into a folder you choose. Opening an archive extracts it in File Trail and shows you what came out, with no other app opening. An archive from the internet keeps its quarantine on everything it gives.
+- **Convert Images** makes copies of the selected images as JPEG, HEIC, PNG, TIFF or AVIF, at their size or smaller, with or without their metadata and location.
+- Each of these can be stopped part way, and one Undo takes back what it made.
 
 ## Make it yours
 
@@ -156,7 +181,7 @@ File Trail runs on Apple Silicon Macs with macOS 26 Tahoe or later. It doesn't c
 
 ## Build from source
 
-You only need this for changes that haven't been released yet, or to work on File Trail itself. You need an Apple Silicon Mac and Xcode 27, and [Bun](https://bun.sh) to build the test fixtures (`bun tools/fixtures/generate.ts`; the tests that read them are skipped without them). There is no Xcode project: File Trail is a Swift package with no dependencies beyond the system's frameworks and the bundled `fd`.
+You only need this for changes that haven't been released yet, or to work on File Trail itself. You need an Apple Silicon Mac and Xcode 27, and [Bun](https://bun.sh) to build the test fixtures (`bun tools/fixtures/generate.ts`; the tests that read them are skipped without them). There is no Xcode project: File Trail is a Swift package with no dependencies beyond the system's frameworks, the system's libarchive and the bundled `fd`.
 
 ```bash
 scripts/build-app.sh
