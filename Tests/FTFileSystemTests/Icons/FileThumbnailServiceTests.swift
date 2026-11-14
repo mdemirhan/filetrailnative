@@ -277,6 +277,86 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(photo.asked.count == 2)
     }
 
+    /// An image of one color, 400 by 300 pixels, of `bits` a color (floating-point at 32), written to `file`.
+    private static func writeDeepImage(
+        _ file: URL, type: UTType, bits: Int, space: CGColorSpace, alpha: Bool = true
+    ) throws {
+        var info = (alpha ? CGImageAlphaInfo.premultipliedLast : .noneSkipLast).rawValue
+        if bits == 32 {
+            info |= CGBitmapInfo.floatComponents.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+        } else if bits == 16 {
+            info |= CGBitmapInfo.byteOrder16Little.rawValue
+        }
+        let context = try #require(
+            CGContext(
+                data: nil, width: 400, height: 300, bitsPerComponent: bits, bytesPerRow: 0, space: space,
+                bitmapInfo: info))
+        context.setFillColor(CGColor(red: 0.3, green: 0.6, blue: 0.9, alpha: 1))
+        context.fill(CGRect(x: 0, y: 0, width: 400, height: 300))
+        let image = try #require(context.makeImage())
+        let destination = try #require(
+            CGImageDestinationCreateWithURL(file as CFURL, type.identifier as CFString, 1, nil))
+        CGImageDestinationAddImage(destination, image, nil)
+        #expect(CGImageDestinationFinalize(destination))
+    }
+
+    /// Whether `image` is kept as previews are: 8 bits a color, 4 bytes a pixel, in a color space of the standard range.
+    private static func isKept(_ image: CGImage, sourceLocation: SourceLocation = #_sourceLocation) {
+        #expect(image.bitsPerComponent == 8, sourceLocation: sourceLocation)
+        #expect(image.bitsPerPixel == 32, sourceLocation: sourceLocation)
+        #expect(!image.bitmapInfo.contains(.floatComponents), sourceLocation: sourceLocation)
+        #expect(image.colorSpace.map { !CGColorSpaceUsesExtendedRange($0) } == true, sourceLocation: sourceLocation)
+        #expect(image.colorSpace.map { !CGColorSpaceUsesITUR_2100TF($0) } == true, sourceLocation: sourceLocation)
+    }
+
+    // Images of 16 bits a color, of floating-point colors and of a high dynamic range are kept at 8 bits a color and 4
+    // bytes a pixel, whether Quick Look or ImageIO read them, and a picture takes the bytes of its rows.
+    @Test func everyPictureIsKeptAtFourBytesAPixel() async throws {
+        let extended = try #require(CGColorSpace(name: CGColorSpace.extendedLinearSRGB))
+        let files: [(name: String, type: UTType, bits: Int, space: CGColorSpace)] = [
+            ("deep.png", .png, 16, try #require(CGColorSpace(name: CGColorSpace.sRGB))),
+            ("deep.tiff", .tiff, 16, try #require(CGColorSpace(name: CGColorSpace.displayP3))),
+            ("float.tiff", .tiff, 32, extended),
+            ("float.exr", try #require(UTType("com.ilm.openexr-image")), 32, extended),
+            ("bright.heic", .heic, 16, try #require(CGColorSpace(name: CGColorSpace.itur_2100_PQ))),
+        ]
+        try await withTemporaryDirectory { directory in
+            for file in files {
+                let url = directory.appending(file.name)
+                try Self.writeDeepImage(url, type: file.type, bits: file.bits, space: file.space)
+                // As ImageIO reads it, for a size Quick Look refuses.
+                let decoded = try #require(QuickLookThumbnailRenderer.decodedImage(url, side: 256))
+                let kept = try #require(QuickLookThumbnailRenderer.eightBitImage(decoded))
+                Self.isKept(kept)
+                #expect(kept.width == 256 && kept.height == 192)
+                // As the renderer gives it.
+                let picture = try #require(
+                    await QuickLookThumbnailRenderer().renderThumbnail(path: url.path, size: 256), "\(file.name)")
+                let image = try #require(picture.image.cgImage(forProposedRect: nil, context: nil, hints: nil))
+                Self.isKept(image)
+                #expect(picture.bytes == image.bytesPerRow * image.height)
+                #expect(image.bytesPerRow >= image.width * 4 && image.bytesPerRow < image.width * 4 + 64)
+            }
+        }
+    }
+
+    // A picture of 8 bits a color is kept as it is, and one with no transparency is drawn with none, and is opaque.
+    @Test func aPictureAtEightBitsIsKeptAsItIs() throws {
+        let srgb = try #require(CGColorSpace(name: CGColorSpace.sRGB))
+        let deep = try #require(
+            CGContext(
+                data: nil, width: 40, height: 30, bitsPerComponent: 16, bytesPerRow: 0,
+                space: srgb,
+                bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue | CGBitmapInfo.byteOrder16Little.rawValue
+            )?.makeImage())
+        let kept = try #require(QuickLookThumbnailRenderer.eightBitImage(deep))
+        Self.isKept(kept)
+        #expect(kept.colorSpace?.name == CGColorSpace.sRGB)
+        #expect(kept.alphaInfo == .noneSkipFirst)
+        #expect(QuickLookThumbnailRenderer.isOpaque(kept))
+        #expect(QuickLookThumbnailRenderer.eightBitImage(kept) === kept)
+    }
+
     @Test func anImagesPictureHasThePixelsOfItsSizeFittedAndNeverMoreThanTheImage() throws {
         try withTemporaryDirectory { directory in
             let file = directory.appending("photo.jpg")

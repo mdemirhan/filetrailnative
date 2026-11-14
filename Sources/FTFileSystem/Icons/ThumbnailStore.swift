@@ -5,7 +5,7 @@ import Foundation
 /// Previews are asked for at `pixelSize(forIconSize:)` on their longest side: twice the icon, for a Retina display.
 /// Previews are kept in memory only (Quick Look has its own cache on disk), most recently used last. 500 cover
 /// several screens of icon view; older ones are asked for again. A store of large previews also keeps under a memory
-/// limit, counting each preview by the pixels of its picture.
+/// limit, counting each preview by the bytes of its picture.
 @MainActor
 public final class ThumbnailStore {
     /// Previews for icons up to 64 points.
@@ -123,10 +123,10 @@ public final class ThumbnailStore {
         return Int(min(UInt64(gigabyte), physicalMemory / 16))
     }
 
-    /// What a preview takes: four bytes a pixel of the picture Quick Look made.
+    /// What a preview takes: the bytes of its picture's pixels, at most four a pixel
+    /// (`QuickLookThumbnailRenderer.eightBitImage`).
     private static func cost(_ cached: Cached) -> Int {
-        guard let image = cached.picture?.image else { return 0 }
-        return Int(image.size.width * image.size.height) * 4
+        cached.picture?.bytes ?? 0
     }
 
     private func keep(_ cached: Cached, for path: String) {

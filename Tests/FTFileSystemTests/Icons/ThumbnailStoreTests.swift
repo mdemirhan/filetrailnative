@@ -130,6 +130,23 @@ private func request(
         #expect(store.memoryUsed == 0)
     }
 
+    // A preview counts the bytes of its picture's rows, as its picture has them.
+    @Test func aPreviewCountsTheBytesOfItsPicture() async throws {
+        let image = try #require(
+            CGContext(
+                data: nil, width: 30, height: 20, bitsPerComponent: 8, bytesPerRow: 0,
+                space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue
+            )?.makeImage())
+        let made = ThumbnailPicture(cgImage: image, isOpaque: false)
+        #expect(made.bytes == image.bytesPerRow * 20)
+        let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1", unchanged: false, picture: made) }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue, memoryLimit: 1 << 20)
+        _ = store.load(path: "/a.png", kind: .file, size: 512, listing: Listing()) { _ in }
+        await idle(queue)
+        #expect(store.memoryUsed == image.bytesPerRow * 20)
+    }
+
     // The Previews view's previews may take 1 GB, or a sixteenth of a Mac's memory when that is less.
     @Test func previewsMayTakeAGigabyteOrASixteenthOfTheMacsMemory() {
         let gigabyte = 1 << 30
@@ -635,7 +652,7 @@ private func request(
         _ = store.load(path: "/a.png", kind: .file, size: 256, listing: listing) { _ in }
         let shown = Receiver()
         let one = store.load(path: "/b.png", kind: .file, size: 256, listing: listing) { _ in }
-        let other = store.load(path: "/b.png", kind: .file, size: 256, listing: listing) { shown.answers.append($0) }
+        _ = store.load(path: "/b.png", kind: .file, size: 256, listing: listing) { shown.answers.append($0) }
         await pollUntil { provider.calls.count == 1 }
         #expect(queue.queuedCount == 1)
         one.cancel()

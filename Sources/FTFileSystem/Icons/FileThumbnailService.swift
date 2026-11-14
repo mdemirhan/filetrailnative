@@ -10,10 +10,21 @@ public struct ThumbnailPicture: @unchecked Sendable {
     /// Whether every pixel is fully opaque. Such pictures (photos, video frames) get an outline around
     /// them; one with transparency is a cut-out image or a page drawn with its own outline.
     public let isOpaque: Bool
+    /// The bytes its pixels take in memory.
+    public let bytes: Int
 
+    /// A picture taken to have four bytes a pixel.
     public init(image: NSImage, isOpaque: Bool) {
         self.image = image
         self.isOpaque = isOpaque
+        self.bytes = Int(image.size.width * image.size.height) * 4
+    }
+
+    /// The picture of `image`, which takes the bytes of its rows.
+    public init(cgImage: CGImage, isOpaque: Bool) {
+        self.image = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+        self.isOpaque = isOpaque
+        self.bytes = cgImage.bytesPerRow * cgImage.height
     }
 }
 
@@ -159,10 +170,49 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
                 side: side, limits: showsPicture ? Self.pictureLimits : Self.iconLimits
             ) { await Self.quickLookImage(url, side: $0, iconMode: !showsPicture) }
         }
-        guard let image else { return nil }
-        return ThumbnailPicture(
-            image: NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height)),
-            isOpaque: Self.isOpaque(image))
+        guard let image, let kept = Self.eightBitImage(image) else { return nil }
+        return ThumbnailPicture(cgImage: kept, isOpaque: Self.isOpaque(kept))
+    }
+
+    /// `image` at 8 bits a color and at most 4 bytes a pixel, as previews are kept: as it is when it is so already,
+    /// otherwise drawn again. A 16-bit or floating-point image, one of a high dynamic range (which shows its standard
+    /// range) and one of another color model than RGB or gray are. It keeps its own color space when that is an RGB
+    /// one of the standard range, and is drawn in Display P3 otherwise; one with no transparency has none. Nil when it
+    /// can't be drawn.
+    static func eightBitImage(_ image: CGImage) -> CGImage? {
+        let space = image.colorSpace
+        let standardRange = space.map(isStandardRange) ?? false
+        if image.bitsPerComponent == 8, image.bitsPerPixel <= 32, !image.bitmapInfo.contains(.floatComponents),
+            standardRange, space?.model == .rgb || space?.model == .monochrome
+        {
+            return image
+        }
+        let opaque: Bool
+        switch image.alphaInfo {
+        case .none, .noneSkipFirst, .noneSkipLast: opaque = true
+        default: opaque = false
+        }
+        let target =
+            space.flatMap { standardRange && $0.model == .rgb ? $0 : nil }
+            ?? CGColorSpace(name: CGColorSpace.displayP3) ?? CGColorSpaceCreateDeviceRGB()
+        let alpha: CGImageAlphaInfo = opaque ? .noneSkipFirst : .premultipliedFirst
+        guard
+            let context = CGContext(
+                data: nil, width: image.width, height: image.height, bitsPerComponent: 8, bytesPerRow: 0,
+                space: target, bitmapInfo: alpha.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+        else { return nil }
+        context.setBlendMode(.copy)
+        context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        return context.makeImage()
+    }
+
+    /// Whether colors in `space` are of the standard dynamic range and kept well in 8 bits: not of an extended range,
+    /// not a high dynamic range one, not linear.
+    private static func isStandardRange(_ space: CGColorSpace) -> Bool {
+        guard space.supportsOutput, !CGColorSpaceUsesExtendedRange(space), !CGColorSpaceUsesITUR_2100TF(space)
+        else { return false }
+        let name = (space.name as String?) ?? ""
+        return !name.localizedCaseInsensitiveContains("linear")
     }
 
     private static func quickLookImage(_ url: URL, side: Int, iconMode: Bool) async -> CGImage? {
@@ -209,7 +259,8 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     }
 
     /// The image file's picture read by ImageIO, upright, its longer side at most `side` and never larger than the
-    /// image itself; nil when the file is not an image ImageIO reads. For the sizes Quick Look refuses.
+    /// image itself; nil when the file is not an image ImageIO reads. For the sizes Quick Look refuses. An image of a
+    /// high dynamic range is read at its standard range, as previews show it.
     static func decodedImage(_ url: URL, side: Int) -> CGImage? {
         guard let source = CGImageSourceCreateWithURL(url.resolvingSymlinksInPath() as CFURL, nil),
             CGImageSourceGetCount(source) > 0
@@ -217,6 +268,7 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceThumbnailMaxPixelSize: side, kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceDecodeRequest: kCGImageSourceDecodeToSDR,
         ]
         return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
     }
