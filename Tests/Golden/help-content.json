@@ -429,17 +429,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -990,7 +990,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -2703,17 +2703,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -3264,7 +3264,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -4988,12 +4988,12 @@
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -7248,17 +7248,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -7809,7 +7809,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -9389,17 +9389,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -9852,7 +9852,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -11396,17 +11396,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -11957,7 +11957,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -13686,17 +13686,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+=",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -15938,17 +15938,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -16494,7 +16494,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -18209,17 +18209,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -18760,7 +18760,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -20441,17 +20441,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -21007,7 +21007,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -22733,17 +22733,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+=",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -24975,17 +24975,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+=",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -27239,17 +27239,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -27805,7 +27805,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
                 }
               ]
             }
@@ -29513,17 +29513,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -30086,7 +30086,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -31802,17 +31802,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -32357,7 +32357,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -34055,17 +34055,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -34616,7 +34616,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -36349,17 +36349,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+=",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -38647,17 +38647,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -39213,7 +39213,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -40921,12 +40921,12 @@
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -43172,17 +43172,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -43733,7 +43733,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -45431,17 +45431,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -45992,7 +45992,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -47712,17 +47712,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -48268,7 +48268,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -49971,17 +49971,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -50537,7 +50537,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -52237,17 +52237,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -52810,7 +52810,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -54514,17 +54514,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+=",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -56739,17 +56739,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -57295,7 +57295,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }
@@ -59017,17 +59017,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -59600,7 +59600,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"
                 }
               ]
             }
@@ -61311,12 +61311,12 @@
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -63591,17 +63591,17 @@
           {
             "group": "views",
             "shortcut": "Cmd+Plus",
-            "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+            "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
           },
           {
             "group": "views",
             "shortcut": "Cmd+-",
-            "description": "Smaller icons, or narrower columns"
+            "description": "Smaller icons, narrower columns, or more and smaller previews"
           },
           {
             "group": "views",
             "shortcut": "Cmd+0",
-            "description": "Icons or columns back to their default size"
+            "description": "Icons, columns or previews back to their default size"
           },
           {
             "group": "views",
@@ -64152,7 +64152,7 @@
                 {
                   "group": "views",
                   "shortcut": "Cmd+Plus",
-                  "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
+                  "description": "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews (Cmd+= also works)"
                 }
               ]
             }

@@ -340,7 +340,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What you can undo",
                             description:
-                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Compress, Extract, and replacing an item when you paste."
+                                "Renaming (one item or several at once), moving items to another folder on the same disk, Move to Trash, New Folder, Copy, Duplicate, Paste as File, Convert Images, Compress, Extract, and replacing an item when you paste."
                         ),
                         HelpRow(
                             label: "Nothing is deleted",
@@ -355,7 +355,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What can’t be undone",
                             description:
-                                "Merging folders, moving items to another disk, copying or making a folder on a disk without a Trash (such as a network share), and anything deleted for good: Delete Immediately, Empty Trash, and Move to Trash or Replace on a disk without a Trash. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”, and nothing done before can be undone either."
+                                "Merging folders, moving items to another disk, anything made on a disk without a Trash (such as a network share): a copy, a new folder, a pasted or converted file, a zip or what is extracted, and anything deleted for good: Delete Immediately, Empty Trash, and Move to Trash or Replace on a disk without a Trash. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”, and nothing done before can be undone either."
                         ),
                     ]),
                 HelpSection(
@@ -774,9 +774,11 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.viewAsList), "View as a compact list of names"),
         HelpShortcutItem(group: .views, .command(.viewAsPreviews), "View as large previews of the files"),
         HelpShortcutItem(
-            group: .views, .command(.increaseSize), "Bigger icons in the Icons view, wider columns in the Compact List"),
-        HelpShortcutItem(group: .views, .command(.decreaseSize), "Smaller icons, or narrower columns"),
-        HelpShortcutItem(group: .views, .command(.resetSize), "Icons or columns back to their default size"),
+            group: .views, .command(.increaseSize),
+            "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"),
+        HelpShortcutItem(
+            group: .views, .command(.decreaseSize), "Smaller icons, narrower columns, or more and smaller previews"),
+        HelpShortcutItem(group: .views, .command(.resetSize), "Icons, columns or previews back to their default size"),
         HelpShortcutItem(group: .views, .command(.sortByName), "Sort by name"),
         HelpShortcutItem(group: .views, .command(.sortByKind), "Sort by kind"),
         HelpShortcutItem(group: .views, .command(.sortByModified), "Sort by date modified"),
