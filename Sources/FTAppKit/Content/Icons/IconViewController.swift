@@ -81,6 +81,15 @@ class IconViewController: ItemGridPane {
         (item as? IconItem)?.applyLook(pane: self, entry: entry)
     }
 
+    /// The previews of the files are checked again: at once for the items on screen, which keep their picture until a
+    /// new one comes, and when the others come into view.
+    override func filesChanged(paths: Set<String>?) {
+        thumbnailStore.markChanged(paths)
+        forEachVisibleItem { item, entry in
+            if paths?.contains(entry.path) != false { (item as? IconItem)?.loadThumbnail(entry, pane: self) }
+        }
+    }
+
     // MARK: Placement
 
     /// How many columns the pane holds; the arrow keys and pages step by them.

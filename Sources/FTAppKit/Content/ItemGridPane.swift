@@ -195,6 +195,9 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         keepInView(.list)
     }
 
+    /// Only the Icons and the Previews views draw previews.
+    func filesChanged(paths: Set<String>?) {}
+
     func refresh(paths: Set<String>?) {
         forEachVisibleItem { item, entry in
             if paths == nil || paths?.contains(entry.path) == true { self.refreshLook(of: item, entry: entry) }

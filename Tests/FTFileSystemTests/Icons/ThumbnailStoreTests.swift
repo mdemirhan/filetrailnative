@@ -355,6 +355,123 @@ private func request(
         #expect(store.loadedPicture(forPath: "/Users/demo/photo.jpeg") != nil)
     }
 
+    // An edit changes nothing a listing shows: a file named as changed is checked again in the same listing, and gets
+    // its new preview. One not named is not asked again.
+    @Test func aFileNamedAsChangedIsCheckedAgainInTheSameListing() async {
+        let responses = ResponseQueue([
+            ThumbnailResponse(version: "10:20", unchanged: false, picture: picture()),
+            ThumbnailResponse(version: "10:20", unchanged: false, picture: picture()),
+            ThumbnailResponse(version: "11:20", unchanged: false, picture: picture()),
+        ])
+        let provider = ScriptedProvider { _ in responses.next() }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let edited = Receiver()
+        let other = Receiver()
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: edited)
+        _ = request(store, "/Users/demo/other.jpeg", listing: listing, into: other)
+        await idle(queue)
+        let original = edited.last
+
+        store.markChanged(["/Users/demo/photo.jpeg"])
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: edited)
+        _ = request(store, "/Users/demo/other.jpeg", listing: listing, into: other)
+        // The picture kept shows until the new one comes.
+        #expect(edited.last?.image === original?.image)
+        await idle(queue)
+        #expect(provider.calls.count == 3)
+        #expect(provider.calls[2] == .init(path: "/Users/demo/photo.jpeg", size: 128, knownVersion: "10:20"))
+        #expect(edited.last != nil && edited.last?.image !== original?.image)
+
+        // Checked once: asked again in the same listing, it is not checked again.
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: edited)
+        await idle(queue)
+        #expect(provider.calls.count == 3)
+    }
+
+    // A file named as changed that is as it was is only looked at: Quick Look is not asked for its picture again.
+    @Test func aFileNamedAsChangedThatIsAsItWasIsNotDrawnAgain() async {
+        let renderer = CountingRenderer()
+        let store = ThumbnailStore(
+            provider: FileThumbnailService(renderer: renderer, version: { _ in "10:20" }), queue: ThumbnailLoadQueue())
+        let listing = Listing()
+        let receiver = Receiver()
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: receiver)
+        await pollUntil { receiver.last != nil }
+        let original = receiver.last
+
+        store.markChanged(["/Users/demo/photo.jpeg"])
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: receiver)
+        await pollUntil { receiver.answers.count == 3 }
+        #expect(receiver.last?.image === original?.image)
+        #expect(renderer.count == 1)
+    }
+
+    // Changes not named one by one (events lost, too many at once) have every preview checked again.
+    @Test func anyFileMayHaveChangedChecksEveryPreviewAgain() async {
+        let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()) }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let receiver = Receiver()
+        let paths = ["/Users/demo/a.png", "/Users/demo/b.png"]
+        for path in paths { _ = request(store, path, listing: listing, into: receiver) }
+        await idle(queue)
+
+        store.markChanged(nil)
+        for path in paths { _ = request(store, path, listing: listing, into: receiver) }
+        await idle(queue)
+        #expect(provider.calls.count == 4)
+        #expect(provider.calls.suffix(2).allSatisfy { $0.knownVersion == "1:1" })
+    }
+
+    // A file named as changed while its preview was being made may have changed after it was read: the preview is
+    // given, and checked again the next time it is asked for.
+    @Test func aLoadUnderWayWhenItsFileChangesIsCheckedAgain() async {
+        let provider = ScriptedProvider()
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let receiver = Receiver()
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: receiver)
+        await pollUntil { provider.calls.count == 1 }
+        store.markChanged(["/Users/demo/photo.jpeg"])
+        provider.release(ThumbnailResponse(version: "10:20", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(receiver.last != nil)
+
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: receiver)
+        await pollUntil { provider.calls.count == 2 }
+        #expect(provider.calls[1].knownVersion == "10:20")
+        provider.release(ThumbnailResponse(version: "10:20", unchanged: true, picture: nil))
+        await idle(queue)
+    }
+
+    // Of two loads of one file, the one asked for later read the file later: the earlier one ending last never puts
+    // its older picture in its place.
+    @Test func anEarlierLoadEndingLastNeverReplacesALaterOne() async {
+        let provider = OrderedProvider()
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let first = Receiver()
+        let second = Receiver()
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: first)
+        await pollUntil { provider.waitingCount == 1 }
+        store.markChanged(["/Users/demo/photo.jpeg"])
+        _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: second)
+        await pollUntil { provider.waitingCount == 2 }
+
+        let newer = picture()
+        provider.release(1, ThumbnailResponse(version: "11:20", unchanged: false, picture: newer))
+        await pollUntil { second.last != nil }
+        provider.release(0, ThumbnailResponse(version: "10:20", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(store.loadedPicture(forPath: "/Users/demo/photo.jpeg")?.image === newer.image)
+        #expect(first.last?.image === newer.image)
+    }
+
     @Test func keepsTheMostRecentlyUsedFiveHundred() async {
         let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()) }
         let queue = ThumbnailLoadQueue()
@@ -385,5 +502,41 @@ private final class ResponseQueue: @unchecked Sendable {
         defer { lock.unlock() }
         return remaining.isEmpty
             ? ThumbnailResponse(version: nil, unchanged: false, picture: nil) : remaining.removeFirst()
+    }
+}
+
+/// A renderer that counts the pictures it is asked for.
+private final class CountingRenderer: ThumbnailRendering, @unchecked Sendable {
+    private let lock = NSLock()
+    private var calls = 0
+
+    var count: Int { lock.withLock { calls } }
+
+    func renderThumbnail(path: String, size: Int) async -> ThumbnailPicture? {
+        lock.withLock { calls += 1 }
+        return picture()
+    }
+}
+
+/// A provider whose calls wait until the test answers each one, by the order they were made in.
+private final class OrderedProvider: ThumbnailProviding, @unchecked Sendable {
+    private let lock = NSLock()
+    private var waiting: [Int: CheckedContinuation<ThumbnailResponse, Never>] = [:]
+    private var made = 0
+
+    var waitingCount: Int { lock.withLock { waiting.count } }
+
+    func response(path: String, size: Int, knownVersion: String?) async -> ThumbnailResponse {
+        await withCheckedContinuation { continuation in
+            lock.withLock {
+                waiting[made] = continuation
+                made += 1
+            }
+        }
+    }
+
+    func release(_ index: Int, _ response: ThumbnailResponse) {
+        let continuation = lock.withLock { waiting.removeValue(forKey: index) }
+        continuation?.resume(returning: response)
     }
 }

@@ -174,6 +174,9 @@ protocol FolderPane: NSViewController {
     func refresh(paths: Set<String>?)
     /// The entries at these paths changed, and no row moved: only their rows are drawn again.
     func reloadRows(paths: Set<String>)
+    /// The files at these paths (nil: any in the folder) may have changed on disk though their entries did not, as
+    /// an edit changes nothing an entry shows: the previews drawn of them are checked against the files again.
+    func filesChanged(paths: Set<String>?)
     /// The selection model changed.
     func syncSelection()
     /// The look changed: the theme, the accent, which pane or window has the focus.
@@ -202,6 +205,7 @@ extension FolderPane {
     var hasKeyboard: Bool { focusView.window?.firstResponder === focusView }
     func refresh(paths: Set<String>?) { reload(scrollToTop: false) }
     func reloadRows(paths: Set<String>) { reload(scrollToTop: false) }
+    func filesChanged(paths: Set<String>?) {}
     func syncSelection() {}
     func refreshLook() {}
     func columnsChanged() {}

@@ -27,8 +27,21 @@ public final class ThumbnailStore {
         var picture: ThumbnailPicture?
         /// The size it was asked for at.
         var size: Int
-        /// The listing the preview was last checked against the file for.
-        var checkedFor: AnyObject
+        /// The listing the preview was last checked against the file for; nil once the file may have changed since,
+        /// so that it is checked again the next time it is asked for.
+        var checkedFor: AnyObject?
+        /// The number of the load that made it: of two loads, the one begun later read the file later.
+        var loadNumber: Int
+    }
+
+    /// A load under way, told when its file may have changed after it was read.
+    @MainActor
+    private final class PendingLoad {
+        var fileChanged = false
+    }
+
+    private struct WeakLoad {
+        weak var load: PendingLoad?
     }
 
     /// The pixels a preview `size` points across is asked for at on a screen of `scale`: in whole steps of 256, at
@@ -45,6 +58,11 @@ public final class ThumbnailStore {
     /// The bytes the previews kept may take at most (nil: only the count is limited), and what they take now.
     private let memoryLimit: Int?
     public private(set) var memoryUsed = 0
+    /// How many loads were asked for: each load's number.
+    private var loadCount = 0
+    /// The loads under way of each file. One dropped from the queue before it started goes with its work, and the
+    /// emptied lists are swept now and then.
+    private var pending: [String: [WeakLoad]] = [:]
 
     public init(
         provider: any ThumbnailProviding = FileThumbnailService(),
@@ -101,6 +119,36 @@ public final class ThumbnailStore {
         memoryUsed = 0
     }
 
+    /// The files at `paths` (nil: any file) may have changed on disk, though the listing may not show it (an edit
+    /// changes nothing a listing shows): the previews kept of them are checked against the files again the next time
+    /// they are asked for, whatever the listing. A load under way of one is kept and given, and checked again too, as
+    /// the file may have changed after it was read.
+    public func markChanged(_ paths: Set<String>?) {
+        if let paths {
+            for path in paths {
+                cache.modify(path) { $0.checkedFor = nil }
+                for entry in pending[path] ?? [] { entry.load?.fileChanged = true }
+            }
+        } else {
+            cache.modifyAll { $0.checkedFor = nil }
+            for loads in pending.values {
+                for entry in loads { entry.load?.fileChanged = true }
+            }
+        }
+    }
+
+    private func started(_ load: PendingLoad, path: String) {
+        if pending.count > Self.maxEntries {
+            pending = pending.filter { $0.value.contains { $0.load != nil } }
+        }
+        pending[path, default: []].append(WeakLoad(load: load))
+    }
+
+    private func finished(_ load: PendingLoad, path: String) {
+        let left = (pending[path] ?? []).filter { $0.load != nil && $0.load !== load }
+        pending[path] = left.isEmpty ? nil : left
+    }
+
     /// Forgets every cached preview and queued request.
     public func reset() {
         cache.removeAll()
@@ -110,9 +158,9 @@ public final class ThumbnailStore {
 
     /// Calls `completion` with the item's preview (nil while it is loading or when there is none). A cached
     /// preview is given at once and checked against the file once per `listing`, so a file that changed
-    /// gets a new preview the next time its folder is read. One cached at a smaller `size` is given at once too, and
-    /// asked for again at this size. `listing` stands for one reading of the
-    /// folder: any object that changes when the list of items does.
+    /// gets a new preview the next time its folder is read, or once `markChanged` names it. One cached at a smaller
+    /// `size` is given at once too, and asked for again at this size. `listing` stands for one reading of the folder:
+    /// any object that changes when the list of items does.
     @discardableResult
     public func load(
         path: String, kind: IconEntryKind, size: Int = ThumbnailStore.pixelSize, listing: AnyObject,
@@ -132,19 +180,36 @@ public final class ThumbnailStore {
         let wanted = max(size, cached?.size ?? 0)
         let cancelled = CancelFlag()
         let provider = self.provider
+        loadCount += 1
+        let number = loadCount
+        let load = PendingLoad()
+        started(load, path: path)
         let queued = queue.enqueue { [weak self] in
             let response = await provider.response(
                 path: path, size: wanted, knownVersion: knownVersion)
             guard let self else { return }
+            self.finished(load, path: path)
+            // Told of a change while it was being read: given all the same, and checked again the next time.
+            let checkedFor: AnyObject? = load.fileChanged ? nil : listing
             var thumbnail =
                 response.unchanged && cached != nil
-                ? Cached(version: cached?.version, picture: cached?.picture, size: wanted, checkedFor: listing)
-                : Cached(version: response.version, picture: response.picture, size: wanted, checkedFor: listing)
-            // A load of a larger size, asked for since and ended first, made a sharper picture of the file as it is:
-            // it stays, and serves this load too.
+                ? Cached(
+                    version: cached?.version, picture: cached?.picture, size: wanted, checkedFor: checkedFor,
+                    loadNumber: number)
+                : Cached(
+                    version: response.version, picture: response.picture, size: wanted, checkedFor: checkedFor,
+                    loadNumber: number)
             if let current = self.cache.peek(path), current.size > wanted, current.checkedFor === listing,
                 current.version == thumbnail.version
             {
+                // A load of a larger size, asked for since and ended first, made a sharper picture of the file as it
+                // is: it stays, and serves this load too.
+                thumbnail = current
+            } else if let current = self.cache.peek(path), current.loadNumber > number,
+                current.size >= wanted || current.version != thumbnail.version
+            {
+                // A load begun later ended first, having read the file later: its picture stays, and serves this load
+                // too, unless this one is a sharper picture of the file as that one found it.
                 thumbnail = current
             } else {
                 self.keep(thumbnail, for: path)

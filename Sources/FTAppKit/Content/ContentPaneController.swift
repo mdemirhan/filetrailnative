@@ -466,8 +466,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         closeRenameIfItemLeft()
         if let kept, !unchanged, keepingScroll, inlineRename == nil, previousPaths == entryPaths {
             // The same rows in the same order: only the rows of the items that changed are drawn again.
-            pane?.reloadRows(paths: Set(kept.changedPaths).union(customIconPaths))
+            let reloaded = Set(kept.changedPaths).union(customIconPaths)
+            pane?.reloadRows(paths: reloaded)
+            filesChanged(changedPaths, besides: reloaded)
         } else if !unchanged || !keepingScroll {
+            // Every row drawn again, as a new listing: each preview is checked against its file again.
             // The same folder in another order (a sort, Folders First, hidden files) starts at its top, and the List
             // stays where it was scrolled sideways: the column whose header was clicked stays in view.
             let keptLeft = sameFolder && !keepingScroll && pane is ListViewController ? pane?.scrollPosition.left : nil
@@ -476,12 +479,24 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         } else {
             pane?.refresh(paths: changedPaths.map(Set.init))
             if !customIconPaths.isEmpty { pane?.reloadRows(paths: customIconPaths) }
+            filesChanged(changedPaths, besides: customIconPaths)
         }
         pane?.syncSelection()
         if let memory { pane?.scrollPosition = (memory.scrollTop, memory.scrollLeft) }
         refreshState()
         updateStatus()
         if listed.isEmpty, !includeHidden, !folderPath.isEmpty { loadHiddenCount() }
+    }
+
+    /// The items a change on disk named (nil: any) may have new content though their entries are as they were: their
+    /// previews are checked again, but for the rows of `reloaded`, drawn again already.
+    private func filesChanged(_ changedPaths: [String]?, besides reloaded: Set<String>) {
+        guard let changedPaths else {
+            pane?.filesChanged(paths: nil)
+            return
+        }
+        let files = Set(changedPaths).subtracting(reloaded)
+        if !files.isEmpty { pane?.filesChanged(paths: files) }
     }
 
     /// A folder that could not be read: its error shows, and nothing is selected.

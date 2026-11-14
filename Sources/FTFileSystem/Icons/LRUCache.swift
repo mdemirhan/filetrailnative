@@ -38,6 +38,18 @@ struct LRUCache<Key: Hashable, Value> {
         return dropped
     }
 
+    /// Changes the value for `key`, if there is one, without changing the order.
+    mutating func modify(_ key: Key, _ change: (inout Value) -> Void) {
+        guard var entry = entries[key] else { return }
+        change(&entry.value)
+        entries[key] = entry
+    }
+
+    /// Changes every value, without changing the order.
+    mutating func modifyAll(_ change: (inout Value) -> Void) {
+        for key in Array(entries.keys) { modify(key, change) }
+    }
+
     /// Drops the least recently used entry and returns it.
     mutating func removeOldest() -> Value? {
         guard let oldest = entries.min(by: { $0.value.stamp < $1.value.stamp })?.key else { return nil }

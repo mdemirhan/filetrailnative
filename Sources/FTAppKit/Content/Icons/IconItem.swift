@@ -117,6 +117,8 @@ final class IconThumbnailView: PassThroughView {
 
     private(set) var isFramed = false
     private var shadowDrop: CGFloat = 0
+    /// The picture drawn.
+    var image: NSImage? { imageLayer.contents as? NSImage }
 
     func show(_ picture: ThumbnailPicture, theme: Theme, style: IconItemStyle) {
         isFramed = picture.isOpaque
@@ -340,7 +342,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
 
     private var labelTextWidth = 0.0
 
-    private func loadThumbnail(_ entry: DirectoryEntry, pane: IconViewController) {
+    func loadThumbnail(_ entry: DirectoryEntry, pane: IconViewController) {
         thumbnailRequest?.cancel()
         thumbnailRequest = nil
         let theme = pane.host?.theme ?? AppearanceModel.shared.theme
