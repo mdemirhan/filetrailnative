@@ -116,6 +116,15 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         tab.content.focusList()
     }
 
+    var searchResultsFilter: String { showsResults ? tab.content.filter : "" }
+
+    var searchResultsScroll: (top: Double, left: Double)? { showsResults ? tab.content.pane?.scrollPosition : nil }
+
+    func restoreSearchResultsView(filter: String, scroll: (top: Double, left: Double)?) {
+        tab.content.restoreSearchView(filter: filter, scroll: scroll)
+        header.filter.text = tab.content.filter
+    }
+
     // MARK: Showing the results
 
     /// The content pane follows the session: the results in the tab's search view, with the search's columns, the

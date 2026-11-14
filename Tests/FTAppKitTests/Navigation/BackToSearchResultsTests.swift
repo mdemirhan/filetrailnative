@@ -122,6 +122,88 @@ extension ExplorerWindowlessTests {
             await place.harness.close()
         }
 
+        // The filter typed over them comes back with them: the same text, the list narrowed by it, the result opened
+        // still selected.
+        @Test func bringsBackTheFilterTypedOverTheResults() async throws {
+            let place = try await start()
+            place.engine.finds = { _ in (["Inner/", "index.txt", "notes.txt"], false, false) }
+            try searchInFolder(place)
+            let content = place.tab.content
+            #expect(await waitUntil { content.entries.count == 3 })
+            content.setSearchFilter("inr")
+            #expect(content.entries.map(\.name) == ["Inner"])
+            try await openResult(place)
+            #expect(content.filter.isEmpty)
+
+            #expect(await back(place, to: place.searched))
+            expectResults(place, selected: place.found)
+            #expect(content.filter == "inr")
+            #expect(place.tab.search.header.filter.text == "inr")
+            #expect(content.entries.map(\.name) == ["Inner"])
+
+            // Done puts them away; Show Last Search Results brings them back, filter and all.
+            place.tab.search.header.onDone()
+            expectFolder(place, place.searched)
+            place.tab.perform(.showLastSearchResults)
+            #expect(place.tab.search.showsResults)
+            #expect(content.filter == "inr")
+            #expect(content.entries.map(\.name) == ["Inner"])
+
+            // A new search starts with no filter.
+            try searchInFolder(place, "not")
+            #expect(content.filter.isEmpty)
+            await place.harness.close()
+        }
+
+        // They come back scrolled where they were left.
+        @Test func bringsBackWhereTheResultsWereScrolled() async throws {
+            let place = try await start()
+            let files = (0..<150).map { String(format: "file-%03d.txt", $0) }
+            place.engine.finds = { _ in (files + ["Inner/"], false, false) }
+            try searchInFolder(place)
+            let content = place.tab.content
+            #expect(await waitUntil { content.entries.count == 151 })
+            place.harness.layout(place.tab)
+            // The last result, Inner, selected and in view at the foot of the list.
+            let inner = try #require(content.entries.first { $0.name == "Inner" })
+            content.applySelection(.single(inner.path))
+            content.pane?.scrollPosition = (top: 100_000, left: 0)
+            place.harness.layout(place.tab)
+            let scrolled = try #require(content.pane?.scrollPosition.top)
+            #expect(scrolled > 0)
+            place.tab.open([inner])
+            #expect(await settled(place, on: place.found))
+
+            #expect(await back(place, to: place.searched))
+            place.harness.layout(place.tab)
+            expectResults(place, selected: place.found)
+            #expect(content.pane?.scrollPosition.top == scrolled)
+            await place.harness.close()
+        }
+
+        // Contains chosen while they were away: the filter comes back as typed and matches in the new way. The result
+        // opened stays selected though the filter now hides it, as when the mode is changed with them on screen.
+        @Test func aFilterBroughtBackMatchesInTheModeChosenSince() async throws {
+            let place = try await start()
+            place.engine.finds = { _ in (["Inner/", "index.txt"], false, false) }
+            try searchInFolder(place)
+            let content = place.tab.content
+            #expect(await waitUntil { content.entries.count == 2 })
+            content.setSearchFilter("inr")
+            try await openResult(place)
+            place.tab.updatePreferences { $0.listFilterMatch = .contains }
+
+            #expect(await back(place, to: place.searched))
+            #expect(content.filter == "inr")
+            #expect(content.entries.isEmpty)
+            #expect(content.selection.paths == [place.found])
+            // The filter emptied, every result is back and the opened one still selected.
+            content.setSearchFilter("")
+            #expect(content.selection.paths == [place.found])
+            #expect(content.entryPaths.contains(place.found))
+            await place.harness.close()
+        }
+
         // Esc closes them for good.
         @Test func showsTheFolderAfterTheResultsWereClosed() async throws {
             let place = try await start()

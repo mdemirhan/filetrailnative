@@ -942,17 +942,40 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// The results bar's filter field: every change selects one result, the first whose name starts with the text,
-    /// else the first match.
+    /// else the first match. Emptied, it brings every result back and keeps the selection, as Esc does in a folder, so a
+    /// result the filter hid comes back selected.
     func setSearchFilter(_ text: String) {
         guard text != filter else { return }
         listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
         reorder()
         pane?.reload(scrollToTop: false)
         refreshState()
+        guard !filter.isEmpty else {
+            pane?.syncSelection()
+            updateStatus()
+            return
+        }
         let match = ListFilter.selection(in: entries, query: filter, mode: filterMode)
         setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: true)
         pane?.syncSelection()
         updateStatus()
+    }
+
+    /// The results come back as they were left: narrowed by the filter's text and scrolled where they were. The
+    /// selection is left to whoever brings them back.
+    func restoreSearchView(filter text: String, scroll: (top: Double, left: Double)?) {
+        guard searchDisplay != nil else { return }
+        if text != filter {
+            listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
+            onFilterChanged?(filter)
+            reorder()
+            pane?.reload(scrollToTop: false)
+            refreshState()
+            updateStatus()
+        }
+        guard let scroll else { return }
+        view.layoutSubtreeIfNeeded()
+        pane?.scrollPosition = scroll
     }
 
     /// Applies a selection to the list on screen, bringing its lead into view.

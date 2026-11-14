@@ -16,6 +16,12 @@ protocol SearchSessionHost: AnyObject {
     var searchIncludeHidden: Bool { get }
     /// The paths of the folder's entries, to clean a selection against when the folder list comes back.
     var searchFolderEntryPaths: [String] { get }
+    /// What is typed in the results' filter while they show.
+    var searchResultsFilter: String { get }
+    /// Where the results are scrolled while they show.
+    var searchResultsScroll: (top: Double, left: Double)? { get }
+    /// The results come back as they were left: narrowed by `filter`, scrolled to `scroll`.
+    func restoreSearchResultsView(filter: String, scroll: (top: Double, left: Double)?)
     /// The session changed: the tab shows it again.
     func searchSessionChanged(_ change: SearchSession.Change)
     /// The selection of the list now on screen (the results, or the folder).
@@ -93,6 +99,9 @@ final class SearchSession {
     private(set) var browseSelection = ContentSelection.empty
     /// The results' selection, for when they are shown again.
     private(set) var cachedSearchSelection = ContentSelection.empty
+    /// What the results' filter held when they were put away, and where they were scrolled: both come back with them.
+    private(set) var cachedFilter = ""
+    private(set) var cachedScroll: (top: Double, left: Double)?
     /// Answers from searches that are no longer the one on screen are dropped by this counter.
     private(set) var sessionCounter = 0
     /// The place in the tab's history the results were left from by opening a folder: Back and
@@ -233,6 +242,9 @@ final class SearchSession {
         let wasVisible = resultsVisible
         resultsVisible = true
         emit(wasVisible ? .draft : [.draft, .visibility])
+        if !wasVisible { host.restoreSearchResultsView(filter: cachedFilter, scroll: cachedScroll) }
+        // Checked against all the results: a selected one the filter hides stays selected, as it does whenever the
+        // filter changes (the mode may have changed since they were left).
         let paths = shownResults.map(\.path)
         host.applySearchSelection(cachedSearchSelection.sanitized(entryPaths: paths))
         if focusPane { host.focusContentPaneForSearch() }
@@ -244,6 +256,10 @@ final class SearchSession {
     func hideResults(returnPlace: NavigationHistory.Place? = nil) {
         cancelLiveSearch()
         self.returnPlace = returnPlace
+        if resultsVisible {
+            cachedFilter = host?.searchResultsFilter ?? ""
+            cachedScroll = host?.searchResultsScroll
+        }
         let restore = browseSelection
         draftQuery = ""
         let wasVisible = resultsVisible
@@ -306,6 +322,8 @@ final class SearchSession {
         truncated = false
         resultsVisible = false
         cachedSearchSelection = .empty
+        cachedFilter = ""
+        cachedScroll = nil
         emit(wasVisible ? [.results, .status, .visibility] : [.results, .status])
         guard let host else { return }
         host.applySearchSelection(restore.sanitized(entryPaths: host.searchFolderEntryPaths))
@@ -417,6 +435,8 @@ final class SearchSession {
         returnPlace = nil
         resultsChanged()
         cachedSearchSelection = .empty
+        cachedFilter = ""
+        cachedScroll = nil
         emit(.results)
         host?.applySearchSelection(.empty)
     }
@@ -548,6 +568,8 @@ final class SearchSession {
         searchedHidden = host.searchIncludeHidden
         searchedOptions = options
         cachedSearchSelection = .empty
+        cachedFilter = ""
+        cachedScroll = nil
         emit(wasVisible ? [.results, .status] : [.results, .status, .visibility])
         host.applySearchSelection(.empty)
 

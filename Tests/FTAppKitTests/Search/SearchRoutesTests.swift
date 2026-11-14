@@ -367,12 +367,14 @@ extension ExplorerWindowlessTests {
             #expect(filter.text.isEmpty)
             #expect(Set(names(tab)) == ["note.txt", "notes.md"])
 
+            // Put away and brought back, they come back as they were left, filter and all.
             filterBy("alpha")
             #expect(names(tab) == ["notes.md"])
             tab.search.session.hideResults()
-            #expect(tab.content.filter.isEmpty)
             tab.search.session.showCachedResults()
-            #expect(Set(names(tab)) == ["note.txt", "notes.md"])
+            #expect(tab.content.filter == "alpha")
+            #expect(filter.text == "alpha")
+            #expect(names(tab) == ["notes.md"])
             await opened.harness.close()
         }
 
