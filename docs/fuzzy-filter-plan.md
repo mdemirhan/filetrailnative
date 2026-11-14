@@ -55,7 +55,7 @@ done this file is deleted and `docs/decisions.md` keeps what it decided.
       limit; Plain Text marks come from the matcher. A test runs one table of queries and names (composed,
       decomposed, upper case, e/é, ß, final sigma, ø, ı) through the list filter and a real fd search over files
       spelled exactly so, and expects the same answer from both.
-- [ ] **4. The pill and no matches.** Glass, symbol, clickable mode chip, spring in and out (fade with Reduce Motion),
+- [x] **4. The pill and no matches.** Glass, symbol, clickable mode chip, spring in and out (fade with Reduce Motion),
       red edge and shake on no matches, the mode word in the search bar's filter field, ⌥⌫. The "no matches"
       state's Search Subfolders button sat at the left of the Compact List in the phase 1 check: put it under the text.
 - [ ] **5. Space and ⌘Y.** The Space rule above; ⌘Y added to Quick Look's defaults.
@@ -92,3 +92,7 @@ Help, its golden and the tests change with the phase whose behavior they describ
   unmarked. Letters fold case as Unicode does where that gives one letter ("ſ" is "s", "µ" is "μ"), as fd's case rule
   does. The runtime tests about hidden files search in Regex, which fd's
   stand-in answers without the Plain Text judge.
+- 2026-11-14: Phase 4. The search bar's filter field shows the chip before its text, and its placeholder is now
+  "Name or folder" so both fit. The pill's chip and the field's switch the Browsing setting for every window. Checked in
+  a debug build in light and dark, List and Icons, a search over results; snapshots can't show the glass itself
+  (Screen Recording isn't granted to the debug build), so the README screenshot is the check of how the glass looks.

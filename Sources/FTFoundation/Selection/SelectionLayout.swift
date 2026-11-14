@@ -15,8 +15,22 @@ public enum SelectionLayout {
         public static let borderWidth = 1.0
         /// At least 32 narrower than the list.
         public static let maxWidthInset = 32.0
-        /// The pill is the `bgElevated` colour at 94%.
-        public static let backgroundAlpha = 0.94
+        /// The filter symbol before the mode chip.
+        public static let symbolSize = 13.0
+        /// The mode chip (Fuzzy or Contains): a capsule of the accent around its word.
+        public static let chipPaddingHorizontal = 7.0
+        public static let chipPaddingVertical = 1.0
+        public static let chipFillAlpha = 0.14
+        public static let chipHoverFillAlpha = 0.24
+        /// The pill's own shadow, lighter than a menu's: it sits low over the list.
+        public static let shadowOpacity = 0.14
+        public static let shadowRadius = 6.0
+        public static let shadowOffset = 2.0
+        /// How far below its place the pill starts as it springs up, and drops to as it goes.
+        public static let travel = 14.0
+        /// The shake when nothing matches: how far it goes each way, and for how long.
+        public static let shakeDistance = 5.0
+        public static let shakeDuration = 0.32
     }
 
     /// The marquee: a grey tint with a grey edge, mixed from the text colour.

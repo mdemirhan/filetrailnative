@@ -34,7 +34,7 @@ public struct SearchScopeOption: Equatable, Sendable {
 public enum SearchBarText {
     public static let scopeLabel = "Search:"
     public static let scopeToolbarName = "Search scope"
-    public static let filterPlaceholder = "Filter by name or folder"
+    public static let filterPlaceholder = "Name or folder"
     public static let filterAccessibilityName = "Filter results"
     public static let clearFilterTitle = "Clear Filter (Esc)"
     public static let clearFilterName = "Clear filter"

@@ -7,6 +7,8 @@ import FTFoundation
 final class SearchHeaderView: NSView {
     var onScopeChange: (String) -> Void = { _ in }
     var onFilterChange: (String) -> Void = { _ in }
+    /// The filter field's mode chip was pressed: the other way of matching names is wanted.
+    var onToggleFilterMode: () -> Void = {}
     /// Return, ↓, or Esc in an empty filter field: the keyboard goes back to the results.
     var onFocusResults: () -> Void = {}
     /// Tab or Shift-Tab from a button of the bar: the keyboard goes to the other pane, as Tab among the items sends it
@@ -54,6 +56,7 @@ final class SearchHeaderView: NSView {
         doneButton.toolTip = SearchBarText.doneTitle
         doneButton.onPress = { [weak self] in self?.onDone() }
         filter.onChange = { [weak self] text in self?.onFilterChange(text) }
+        filter.onToggleMode = { [weak self] in self?.onToggleFilterMode() }
         filter.onFocusResults = { [weak self] in self?.onFocusResults() }
         filter.onTab = { [weak self] view, backward in self?.moveKeyboard(from: view, backward: backward) }
         track.onTab = { [weak self] backward in
@@ -122,6 +125,13 @@ final class SearchHeaderView: NSView {
         let barHeight = Self.barHeight
         let bannerHeight = banner.isHidden ? 0 : banner.height + layout.bannerMarginBottom
         return barHeight + bannerHeight + layout.headerBorderWidth
+    }
+
+    /// How the filter matches names, as its chip says it.
+    func showFilterMode(_ mode: NameMatchMode) {
+        guard filter.modeChip.mode != mode else { return }
+        filter.modeChip.mode = mode
+        filter.needsLayout = true
     }
 
     /// Shows the search on screen: its scopes, which one is pressed, how it stands, and the filter's text.
@@ -570,8 +580,8 @@ final class SearchBannerView: NSView, TextStyleSource {
 
 // MARK: The filter field
 
-/// The results' filter: the filter lines, the field ("Filter by name or folder"), and the clear button once something
-/// is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
+/// The results' filter: the filter lines, the mode chip, the field ("Name or folder"), and the clear button once
+/// something is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
 final class SearchFilterField: NSView, NSTextFieldDelegate {
     let input = NSTextField()
     let clearButton = ClearButton()
@@ -579,6 +589,10 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
     let clearStop = KeyboardStopView()
     var onChange: (String) -> Void = { _ in }
     var onFocusResults: () -> Void = {}
+    /// The mode chip was pressed.
+    var onToggleMode: () -> Void = {}
+    /// How the filter matches the names (Fuzzy or Contains), after the filter icon; a press switches it.
+    let modeChip = ListFilterModeChip()
     /// Tab or Shift-Tab from the field or its ✕.
     var onTab: (_ from: NSView, _ backward: Bool) -> Void = { _, _ in }
     private var theme = AppearanceModel.shared.theme
@@ -613,7 +627,12 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
             guard let self else { return }
             self.onTab(self.clearStop, backward)
         }
+        modeChip.font = SearchHeaderView.font(DesignTokens.typeScale.callout)
+        modeChip.setAccessibilityIdentifier("searchBar.filter.mode")
+        modeChip.target = self
+        modeChip.action = #selector(modePressed(_:))
         addSubview(clearStop)
+        addSubview(modeChip)
         addSubview(input)
         addSubview(clearButton)
         applyTheme(theme)
@@ -644,15 +663,22 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
             string: SearchBarText.filterPlaceholder,
             attributes: [.font: Self.font, .foregroundColor: NSColor(theme.palette.textTertiary)])
         clearButton.applyTheme(theme)
+        modeChip.theme = theme
         needsDisplay = true
     }
+
+    @objc private func modePressed(_ sender: Any?) { onToggleMode() }
 
     override func layout() {
         super.layout()
         let layout = Self.layout
         let clear = layout.clearButtonSize
+        let chipLeft = layout.fieldPaddingLeading + layout.fieldIconSize + layout.fieldGap
+        modeChip.frame = NSRect(
+            x: chipLeft, y: ((bounds.height - modeChip.fittingHeight) / 2).rounded(), width: modeChip.fittingWidth,
+            height: modeChip.fittingHeight)
         // A field keeps 2 pt before its text: the text starts after the gap.
-        let left = layout.fieldPaddingLeading + layout.fieldIconSize + layout.fieldGap - 2
+        let left = modeChip.frame.maxX + layout.fieldGap - 2
         let right =
             clearButton.isHidden ? layout.fieldPaddingTrailing : layout.fieldPaddingTrailing + clear + layout.fieldGap
         let font = Self.font

@@ -27,6 +27,14 @@ public struct ListFilterTyping: Equatable, Sendable {
         if !query.isEmpty { query.removeLast() }
     }
 
+    /// ⌥⌫ takes the last word back: what ends the text that is no letter or digit, then the letters and digits
+    /// before it.
+    public mutating func eraseWord(at now: TimeInterval) {
+        lastInputAt = now
+        while let last = query.last, !last.isLetter, !last.isNumber { query.removeLast() }
+        while let last = query.last, last.isLetter || last.isNumber { query.removeLast() }
+    }
+
     /// The filter field of the search results sets the whole text at once.
     public mutating func set(_ text: String, at now: TimeInterval) {
         lastInputAt = now
@@ -50,6 +58,8 @@ public struct ListFilterTyping: Equatable, Sendable {
 public enum ListFilterKey: Equatable, Sendable {
     case type(String)
     case erase
+    /// ⌥⌫: the last word.
+    case eraseWord
     case clear
 
     /// The key as the file list reads it, or nil when it is none of the filter's: `key` is the key's name

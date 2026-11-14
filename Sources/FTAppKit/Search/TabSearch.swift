@@ -20,6 +20,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         session.host = self
         header.onScopeChange = { [weak self] path in self?.session.changeRoot(path) }
         header.onFilterChange = { [weak self] text in self?.tab.content.setSearchFilter(text) }
+        header.onToggleFilterMode = { [weak self] in self?.tab.content.onToggleFilterMode?() }
         header.onFocusResults = { [weak self] in self?.tab.content.focusList() }
         header.onSwitchPane = { [weak self] in self?.tab.content.switchPane() }
         header.onStop = { [weak self] in self?.session.stop() }
@@ -148,6 +149,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             scopes: SearchBarText.scopeOptions(
                 currentPath: tab.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),
             rootPath: rootPath, isRunning: session.isRunning, truncated: session.truncated, filterText: content.filter)
+        header.showFilterMode(content.filterMode)
         layoutHeader()
     }
 

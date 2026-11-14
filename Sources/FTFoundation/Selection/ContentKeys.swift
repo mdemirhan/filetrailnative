@@ -66,6 +66,9 @@ public enum ContentKeys {
             return .page(forward: move.forward, size: move.size, extend: true)
         }
         if event.key == "Tab", plain { return .tab }
+        if event.key == "Backspace", event.altKey, !event.metaKey, !event.ctrlKey, filter.isActive {
+            return .filter(.eraseWord)
+        }
         if plain, let key = ListFilterKey.from(key: event.key, filter: filter, now: now) { return .filter(key) }
         if plain, hasEntries, let key = arrow(event.key) { return .move(key, extend: event.shiftKey) }
         if command == .quickLookSelection, hasSelection { return .command(.quickLookSelection) }

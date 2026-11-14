@@ -120,6 +120,23 @@ struct ContentKeysTests {
         #expect(action("?", code: "Slash", shift: true) == .command(.openHelp))
     }
 
+    @Test func optionBackspaceTakesTheFiltersLastWordBack() {
+        var filter = ListFilterTyping()
+        #expect(action("Backspace", code: "Backspace", alt: true, filter: filter) == nil)
+        filter.type("annual rep", at: 1)
+        #expect(action("Backspace", code: "Backspace", alt: true, filter: filter) == .filter(.eraseWord))
+        // ⌘⌫ stays Move to Trash.
+        #expect(action("Backspace", code: "Backspace", meta: true, filter: filter) == .command(.trashSelection))
+        filter.eraseWord(at: 2)
+        #expect(filter.query == "annual ")
+        filter.eraseWord(at: 3)
+        #expect(filter.query == "")
+        filter.type("c++ notes", at: 4)
+        filter.eraseWord(at: 5)
+        filter.eraseWord(at: 6)
+        #expect(filter.query == "")
+    }
+
     @Test func backspaceEscapeAndSpaceEditTheFilterOnlyWhileThereIsOne() {
         var filter = ListFilterTyping()
         #expect(action("Backspace", code: "Backspace", filter: filter) == nil)

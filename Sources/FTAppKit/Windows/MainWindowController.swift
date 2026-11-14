@@ -1593,6 +1593,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             self?.renameNotice(title: WriteStartAction.operation(.rename).failureTitle, message: refusal)
         }
         content.onSearchSubfolders = { [weak self] in self?.focusFileSearch() }
+        content.onToggleFilterMode = { [weak self] in
+            self?.updatePreferences { $0.listFilterMatch = $0.listFilterMatch.toggled }
+        }
         content.onColumnWidthsChanged = { [weak self] widths in self?.saveColumnWidths(widths) }
         content.onCompactListWidthChanged = { [weak self] density, width in
             self?.updatePreferences { $0.compactListWidths[density] = width }
@@ -2067,6 +2070,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         sidebar.applyPreferences()
         content.setFilterMode(preferences.listFilterMatch)
+        searchStore?.header.showFilterMode(preferences.listFilterMatch)
         refreshColumns()
         notificationsSettingChanged()
         if change.keys.contains(.markClipboardItems) || change.keys.isEmpty { clipboardMarksChanged() }

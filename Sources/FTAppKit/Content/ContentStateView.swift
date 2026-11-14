@@ -157,8 +157,8 @@ final class ContentStateView: NSView {
         }
     }
 
-    /// The filter's state in place of the view: the title and the line centered in the whole pane, and Search
-    /// Subfolders 4 under them at the start of the row.
+    /// The filter's state in place of the view: the title, the line and Search Subfolders 4 under them, centered in the
+    /// whole pane.
     private func layoutNoMatches(width: CGFloat) {
         card.frame = bounds
         let inner = max(0, width - 2 * CGFloat(stateLayout.emptyPaddingHorizontal))
@@ -176,9 +176,9 @@ final class ContentStateView: NSView {
         }
         if let searchButton {
             y += CGFloat(stateLayout.actionsTopMargin)
+            let buttonWidth = searchButton.preferredWidth
             searchButton.frame = NSRect(
-                x: CGFloat(stateLayout.emptyPaddingHorizontal), y: y, width: searchButton.preferredWidth,
-                height: SystemButton.height)
+                x: ((width - buttonWidth) / 2).rounded(), y: y, width: buttonWidth, height: SystemButton.height)
         }
     }
 

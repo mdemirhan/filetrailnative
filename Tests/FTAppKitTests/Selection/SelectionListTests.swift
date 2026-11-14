@@ -251,7 +251,9 @@ extension ExplorerWindowlessTests {
             list.key("Escape")
             #expect(list.rowNames.count == 5)
             #expect(list.selectedNames == selected)
-            #expect(shown("listFilter", tab).isEmpty)
+            // The pill drops away.
+            #expect(!tab.content.container.filterPill.isShowingFilter)
+            #expect(await waitUntil { shown("listFilter", tab).isEmpty })
             // The filter belongs to the folder: it goes when another folder opens.
             list.type("a")
             #expect(tab.content.filter == "a")

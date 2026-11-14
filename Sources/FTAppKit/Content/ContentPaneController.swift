@@ -102,6 +102,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var clipboardMarks: ClipboardMarks?
     var dropTarget: (path: String, state: DropTargetState)?
     var onSearchSubfolders: (() -> Void)?
+    /// The filter pill's chip was pressed: the other way of matching is wanted (Settings → Browsing).
+    var onToggleFilterMode: (() -> Void)?
     /// The keys of the commands, as Settings has them (the window wires its own).
     var shortcutsProvider: () -> ResolvedShortcuts = { ShortcutCommands.defaultResolved }
     /// Return with an item selected (Open or Rename, as the Return key setting says), Tab, and a command the window runs
@@ -259,6 +261,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         container.stateView.onOpenPrivacySettings = { [weak self] in self?.loaders.openPrivacySettings() }
         // The pill's ✕ brings the list back as Esc does; the list keeps the keyboard.
         container.filterPill.onClear = { [weak self] in self?.clearFilter() }
+        container.filterPill.onToggleMode = { [weak self] in self?.onToggleFilterMode?() }
         container.stateView.onSearchSubfolders = onSearchSubfolders
         shell.onMovedToWindow = { [weak self] window in self?.observeWindow(window) }
         shell.pathBarRow.onSizeSlide = { [weak self] value, done in self?.sizeSlid(to: value, save: done) }
@@ -580,6 +583,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             listFilter.type(text, at: now)
         case .erase:
             listFilter.eraseCharacter(at: now)
+        case .eraseWord:
+            listFilter.eraseWord(at: now)
         }
         onFilterChanged?(filter)
         reorder()
@@ -602,6 +607,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         filterMode = mode
         guard !filter.isEmpty else { return }
         refilter(previousPaths: entryPaths)
+        updateFilterPill()
     }
 
     /// The letters to mark in a name: what the filter matched while one is typed, otherwise what the search matched.
@@ -659,7 +665,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func updateFilterPill() {
         // Search results are narrowed in the results bar's own field.
         container.filterPill.show(
-            query: searchDisplay == nil ? filter : "", shown: entries.count, total: listed.count, theme: theme)
+            query: searchDisplay == nil ? filter : "", mode: filterMode, shown: entries.count, total: listed.count,
+            theme: theme)
         container.layoutFilterPill()
     }
 
