@@ -1,5 +1,4 @@
-// Checks opening a workspace in a window, on stand-in windows: where it opens, the window it is known by, and the
-// window it takes the place of
+// Checks opening a workspace in a window, on stand-in windows: where it opens, and the window it takes the place of
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -19,7 +18,7 @@ struct WorkspaceWindowTests {
             session: session)
     }
 
-    @Test func opensAStepDownFromTheWindowInFrontAtItsOwnSizeKnownByTheWorkspace() async throws {
+    @Test func opensAStepDownFromTheWindowInFrontAtItsOwnSize() async throws {
         let setup = try WindowSetup.withWindows(1)
         let front = try #require(setup.windows.first)
         var shown = 0
@@ -28,8 +27,6 @@ struct WorkspaceWindowTests {
 
         let record = try #require(setup.store.explorerWindows().first)
         #expect(record.id == opened.recordID)
-        #expect(record.workspaceID == "workspace-a")
-        #expect(setup.store.explorerWindowWorkspace(opened.recordID) == "workspace-a")
         let offset = ExplorerWindowPlacement.newWindowOffset
         #expect(
             record.bounds
@@ -67,8 +64,6 @@ struct WorkspaceWindowTests {
 
         #expect(second !== first)
         #expect(first.focused == 0)
-        #expect(setup.store.explorerWindowWorkspace(second.recordID) == "workspace-a")
-        #expect(setup.store.explorerWindowWorkspace(first.recordID) == "workspace-a")
         #expect(
             setup.store.windowPreferences(second.recordID).openTabs.map(\.path) == ["/Users/demo/a", "/Users/demo/b"])
     }
@@ -104,7 +99,6 @@ struct WorkspaceWindowTests {
         again.events.readyToShow()
         await settle()
         #expect(first.destroyed)
-        #expect(setup.store.explorerWindowWorkspace(again.recordID) == "workspace-a")
     }
 
     @Test func aWindowClosedOrNotKnownIsntReplacedAndNothingOpensWhileQuitting() async throws {
@@ -114,7 +108,7 @@ struct WorkspaceWindowTests {
         #expect(setup.controller.openWorkspace(Self.workspace("workspace-b")) == nil)
     }
 
-    @Test func aWindowSavedAsAWorkspaceIsKnownByItAndKeepsItsSizeAndSession() throws {
+    @Test func aWindowSavedAsAWorkspaceKeepsItsSizeAndSession() throws {
         let setup = try WindowSetup.withWindows(1)
         let window = try #require(setup.windows.first)
         window.bounds = WindowBounds(x: 10, y: 20, width: 950, height: 640)
@@ -124,10 +118,5 @@ struct WorkspaceWindowTests {
         #expect(snapshot.bounds == StoredWindowState(x: 10, y: 20, width: 950, height: 640, maximized: false))
         #expect(snapshot.session == setup.store.windowPreferences(window.recordID).windowSession)
         #expect(setup.controller.workspaceSnapshot(of: 99_999) == nil)
-
-        setup.controller.setWorkspace("workspace-a", of: window.windowID)
-        #expect(setup.store.explorerWindowWorkspace(window.recordID) == "workspace-a")
-        setup.controller.setWorkspace(nil, of: window.windowID)
-        #expect(setup.store.explorerWindowWorkspace(window.recordID) == nil)
     }
 }

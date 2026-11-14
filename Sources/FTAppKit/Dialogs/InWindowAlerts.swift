@@ -74,13 +74,16 @@ enum InWindowAlerts {
     }
 
     /// Each name submitted goes to `submit`, whose reply closes the prompt or keeps it open with
-    /// the reason under the name. Returns once it is closed, by its reply or by Cancel.
+    /// the reason under the name. Returns once it is closed, by its reply or by Cancel. With `message`, the message
+    /// follows the name as it is typed or chosen.
     static func askName(
-        _ prompt: NamePrompt, in window: NSWindow, _ submit: @escaping @MainActor (String) async -> NamePromptReply
+        _ prompt: NamePrompt, in window: NSWindow, message: (@MainActor (String) -> String)? = nil,
+        _ submit: @escaping @MainActor (String) async -> NamePromptReply
     ) async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             let accessory = TextPromptAccessory(
-                text: prompt.initialName, label: prompt.label, selectsAll: prompt.selectsAll)
+                text: prompt.initialName, label: prompt.label, selectsAll: prompt.selectsAll, names: prompt.names,
+                namesLabel: prompt.namesLabel)
             var closed = false
             var submitting = false
             var scrim: DialogScrim?
@@ -125,8 +128,13 @@ enum InWindowAlerts {
                 scrim = nil
                 accessory.onSubmit = { _ in }
                 accessory.onCanSubmit = { _ in }
+                accessory.onTextChange = { _ in }
             }
-            let submitButton = (presented.panel as? AlertCard)?.defaultButton
+            let card = presented.panel as? AlertCard
+            if let message {
+                accessory.onTextChange = { [weak card] text in card?.setMessage(message(text)) }
+            }
+            let submitButton = card?.defaultButton
             submitButton?.isEnabled = !accessory.trimmed.isEmpty
             accessory.onCanSubmit = { submitButton?.isEnabled = $0 }
         }

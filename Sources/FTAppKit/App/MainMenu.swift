@@ -20,14 +20,12 @@ public final class MainMenu {
     /// The workspaces Window ▸ Workspaces lists; the menu is built again when they change.
     var workspaces: () -> [WorkspaceMenuEntry] = { [] }
     private var renameObserver: (any NSObjectProtocol)?
-    private var listedWorkspaceIDs: [String] = []
 
     /// `focusedWindow` is the window that has the keyboard; a test whose windows are never shown names its own.
     init(windows: any ExplorerWindowListing, focusedWindow: @escaping () -> NSWindow? = { NSApp.keyWindow }) {
         sync = ApplicationMenuSync(
             .init(
-                windows: windows, focusedWindow: focusedWindow, menu: { [weak self] in self?.index },
-                workspaceIDs: { [weak self] in self?.listedWorkspaceIDs ?? [] }))
+                windows: windows, focusedWindow: focusedWindow, menu: { [weak self] in self?.index }))
         router.focusedWindow = focusedWindow
         router.explorerFor = { [weak sync] window in sync?.explorerFor(window) }
         router.isTextEditing = { [weak sync] target in sync?.state(of: target).textEditing ?? false }
@@ -57,13 +55,11 @@ public final class MainMenu {
     /// Builds the menu with the shortcuts and the text editor chosen in Settings and sets it as the menu bar; called
     /// again when they change.
     func build() {
-        let listed = workspaces()
         let result = ApplicationMenuBuilder.build(
             target: router,
             options: ApplicationMenuOptions(
                 shortcuts: shortcuts(), textEditorName: textEditorName(), startupDiskName: startupDiskName(),
-                workspaces: listed))
-        listedWorkspaceIDs = listed.map(\.id)
+                workspaces: workspaces()))
         built = result
         index = MenuItemIndex(result, router: router)
         // The enabled flags belong to the old items; the new ones start on.

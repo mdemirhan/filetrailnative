@@ -49,59 +49,47 @@ extension ExplorerWindows {
 
     // MARK: Saving
 
-    /// Save Window as Workspace…: a name is asked (the workspace the window came from, or its front tab's folder, to
-    /// begin with), and the window's tabs, panels and size are kept under it. A name another workspace has asks
-    /// before replacing it. The window is known by the workspace from then on.
+    /// Save Window as Workspace…: a name is asked (the front tab's folder to begin with, or a saved workspace's chosen
+    /// from the list), and the window's tabs, panels and size are kept under it. Under the name of a saved workspace
+    /// it asks before replacing that one.
     func saveWorkspace(from tab: MainWindowController) {
         guard let group = tab.group, let window = tab.window, !group.isBlocked else { return }
         group.saveSession()
         guard let snapshot = controller.workspaceSnapshot(of: group.windowID) else { return }
-        let linked = group.workspace
         let kept = workspaces
-        let slot = linked.flatMap { Workspaces.index(id: $0.id, in: kept) } ?? kept.count
+        // What is kept, and the key that opens it: a saved workspace's own, or the next one's.
+        let message: @MainActor (String) -> String = { [weak self] typed in
+            let slot = Workspaces.index(named: Workspaces.cleanName(typed), in: kept) ?? kept.count
+            return WorkspaceText.saveMessage(snapshot.session, key: self?.workspaceKey(slot: slot))
+        }
+        let initialName = tab.tabDescription.label
         let prompt = NamePrompt(
-            title: "Save Window as Workspace",
-            message: WorkspaceText.saveMessage(snapshot.session, key: workspaceKey(slot: slot)),
-            label: "Workspace name", submitLabel: "Save", initialName: linked?.name ?? tab.tabDescription.label)
+            title: "Save Window as Workspace", message: message(initialName), label: "Workspace name",
+            submitLabel: "Save", initialName: initialName, names: kept.map(\.name), namesLabel: "Saved Workspaces")
         Task { @MainActor [weak self, weak tab] in
             var chosen: String?
-            await InWindowAlerts.askName(prompt, in: window) { typed in
+            await InWindowAlerts.askName(prompt, in: window, message: message) { typed in
                 chosen = Workspaces.cleanName(typed)
                 return .close
             }
             guard let self, let tab, let name = chosen, !name.isEmpty else { return }
             let current = workspaces
             let existing = Workspaces.index(named: name, in: current)
-            if let existing, current[existing].id != linked?.id {
+            if let existing {
                 let question = WriteQuestion(
                     title: "Replace \u{201C}\(current[existing].name)\u{201D}?",
                     message:
                         "A workspace with this name is kept already. Its tabs are replaced by this window\u{2019}s.",
                     confirmLabel: "Replace", destructive: false, cancelIsDefault: false)
                 guard await InWindowAlerts.confirm(question, in: window) else { return }
-            } else if existing == nil, current.count >= Workspaces.limit {
+            } else if current.count >= Workspaces.limit {
                 tab.showNotice(title: WorkspaceText.limitTitle, message: WorkspaceText.limitMessage)
                 return
             }
-            // Under a new name it is a new workspace, and the one the window came from stays as it was.
+            // A saved workspace keeps its place in the list, and its keys.
             let id = existing.map { current[$0].id } ?? Workspaces.newID()
             let saved = Workspace(id: id, name: name, bounds: snapshot.bounds, session: snapshot.session)
             tab.updatePreferences { $0.workspaces = Workspaces.saving(saved, in: $0.workspaces) }
-            controller.setWorkspace(id, of: group.windowID)
-            group.reportMenuStates()
-        }
-    }
-
-    /// Update "Name": the window's tabs, panels and size saved over the workspace it came from.
-    func updateWorkspace(from tab: MainWindowController) {
-        guard let group = tab.group, !group.isBlocked, let linked = group.workspace else { return }
-        group.saveSession()
-        guard let snapshot = controller.workspaceSnapshot(of: group.windowID) else { return }
-        tab.updatePreferences { preferences in
-            guard let at = Workspaces.index(id: linked.id, in: preferences.workspaces) else { return }
-            let kept = preferences.workspaces[at]
-            preferences.workspaces[at] = Workspace(
-                id: kept.id, name: kept.name, bounds: snapshot.bounds, session: snapshot.session)
         }
     }
 

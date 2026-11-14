@@ -56,7 +56,6 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case moveTabToNewWindow
     case mergeAllWindows
     case saveWorkspace
-    case updateWorkspace
     case openWorkspace1
     case openWorkspace2
     case openWorkspace3
@@ -211,9 +210,6 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .saveWorkspace, label: "Save Window as Workspace…", group: .tabs, defaults: [],
             menuPath: "Window > Workspaces > Save Window as Workspace…"),
-        ShortcutCommandDefinition(
-            id: .updateWorkspace, label: "Update Workspace", group: .tabs, defaults: [],
-            menuPath: "Window > Workspaces > Update Workspace"),
         // The first five workspaces in the list, whatever they are called.
         ShortcutCommandDefinition(
             id: .openWorkspace1, label: "Workspace 1", group: .tabs, defaults: ["Ctrl+Cmd+1"],

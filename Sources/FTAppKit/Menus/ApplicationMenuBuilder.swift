@@ -285,12 +285,11 @@ enum ApplicationMenuBuilder {
             return item
         }
 
-        /// Window ▸ Workspaces: saving and updating, the workspaces, the first five with their keys, and Manage. Each
+        /// Window ▸ Workspaces: saving, the workspaces, the first five with their keys, and Manage. Each
         /// workspace has an item ⌥ shows in its place, which opens it in this window, with ⌥ added to its key.
         func workspacesMenu() -> NSMenu {
             let menu = NSMenu(title: "Workspaces")
             menu.addItem(command(.saveWorkspace, "Save Window as Workspace…"))
-            menu.addItem(command(.updateWorkspace, "Update Workspace"))
             if !options.workspaces.isEmpty { menu.addItem(.separator()) }
             for (index, entry) in options.workspaces.enumerated() {
                 let keyed = Workspaces.slotCommands.indices.contains(index)

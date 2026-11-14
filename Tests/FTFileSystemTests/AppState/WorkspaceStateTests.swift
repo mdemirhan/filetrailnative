@@ -1,4 +1,4 @@
-// Checks how the state file keeps the workspaces and the workspace each window came from
+// Checks how the state file keeps the workspaces
 import FTFoundation
 import Foundation
 import Testing
@@ -8,34 +8,23 @@ import Testing
 struct WorkspaceStateTests {
     typealias Kit = StateTestKit
 
-    @Test func aWindowKeepsItsWorkspaceThroughItsChangesAndBetweenLaunches() throws {
+    @Test func aWindowsWorkspaceFromAnOlderFileIsDroppedWhenItIsWrittenAgain() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
+            // Windows were once linked to the workspace they came from.
+            try #"""
+            {"preferences": {}, "windows": [
+              {"id": "window-a", "bounds": {"width": 900, "height": 600, "maximized": false},
+               "workspaceID": "workspace-1", "session": {}}
+            ]}
+            """#.write(toFile: path, atomically: true, encoding: .utf8)
             let store = Kit.store(path)
-            let bounds = StoredWindowState(x: 10, y: 20, width: 900, height: 600, maximized: false)
-            store.addExplorerWindow(id: "window-a", bounds: bounds, workspaceID: "workspace-1")
-            store.addExplorerWindow(id: "window-b", bounds: bounds)
-            #expect(store.explorerWindowWorkspace("window-a") == "workspace-1")
-            #expect(store.explorerWindowWorkspace("window-b") == nil)
-            #expect(store.explorerWindowWorkspace("window-gone") == nil)
-
-            // Moved, and its tabs changed: still the workspace's.
+            #expect(store.explorerWindows().map(\.id) == ["window-a"])
             store.setExplorerWindowBounds("window-a", StoredWindowState(width: 1000, height: 700, maximized: false))
-            store.updateWindow("window-a") { $0.treeWidth = 333 }
-            #expect(store.explorerWindowWorkspace("window-a") == "workspace-1")
-            store.setExplorerWindowWorkspace("window-b", "workspace-2")
             store.flush()
-
-            let saved = Kit.json(try String(contentsOfFile: path, encoding: .utf8))
-            let windows = saved["windows"]?.array ?? []
-            #expect(windows.compactMap { $0["workspaceID"]?.string } == ["workspace-2", "workspace-1"])
-            let reopened = Kit.store(path)
-            #expect(reopened.explorerWindowWorkspace("window-a") == "workspace-1")
-            #expect(reopened.explorerWindowWorkspace("window-b") == "workspace-2")
-
-            // Closed, it is no window of the workspace: the next window opened with none open starts from it as any.
-            reopened.rememberClosedWindow("window-a")
-            #expect(reopened.lastClosedWindow()?.workspaceID == nil)
+            let windows = Kit.json(try String(contentsOfFile: path, encoding: .utf8))["windows"]?.array ?? []
+            #expect(windows.map { $0["id"]?.string } == ["window-a"])
+            #expect(windows.allSatisfy { $0["workspaceID"] == nil })
         }
     }
 

@@ -392,7 +392,7 @@ struct ShortcutsTests {
             (.reopenClosedTab, ["Cmd+Shift+T"]),
             (.selectNextTab, ["Ctrl+Tab", "Cmd+Shift+]"]), (.selectPreviousTab, ["Ctrl+Shift+Tab", "Cmd+Shift+["]),
             (.openSelectionInNewTab, []), (.openSelectionInNewWindow, []), (.moveTabToNewWindow, []),
-            (.mergeAllWindows, []), (.saveWorkspace, []), (.updateWorkspace, []),
+            (.mergeAllWindows, []), (.saveWorkspace, []),
             (.openWorkspace1, ["Ctrl+Cmd+1"]), (.openWorkspace2, ["Ctrl+Cmd+2"]), (.openWorkspace3, ["Ctrl+Cmd+3"]),
             (.openWorkspace4, ["Ctrl+Cmd+4"]), (.openWorkspace5, ["Ctrl+Cmd+5"]),
             (.openWorkspace1InThisWindow, ["Ctrl+Cmd+Option+1"]), (.openWorkspace2InThisWindow, ["Ctrl+Cmd+Option+2"]),

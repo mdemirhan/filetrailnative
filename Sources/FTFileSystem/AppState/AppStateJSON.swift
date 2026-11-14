@@ -15,7 +15,7 @@ enum AppStateJSON {
         "includeHidden", "foldersFirst", "favoritesExpanded", "locationsExpanded", "secondPane", "activePane",
         "paneSplit",
     ]
-    private static let windowKeys = ["id", "bounds", "workspaceID", "session"]
+    private static let windowKeys = ["id", "bounds", "session"]
     private static let columnKeys = ["modified", "size", "kind", "created", "permissions"]
 
     private static let orders: [String: [String]] = [

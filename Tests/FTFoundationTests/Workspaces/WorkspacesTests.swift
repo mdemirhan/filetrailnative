@@ -146,7 +146,6 @@ struct WorkspacesTests {
         let defaults = ShortcutCommands.defaultBindings
         #expect(Workspaces.slotCommands.map { defaults[$0] ?? [] } == (1...5).map { ["Ctrl+Cmd+\($0)"] })
         #expect(defaults[.saveWorkspace] == [])
-        #expect(defaults[.updateWorkspace] == [])
     }
 
     // MARK: Opening
@@ -186,28 +185,5 @@ struct WorkspacesTests {
         #expect(ApplicationMenu.workspaceItem("newTab") == nil)
         #expect(ApplicationMenu.workspaceItem("workspace:") == nil)
         #expect(ApplicationMenu.workspaceItem(ApplicationMenu.manageWorkspacesItemID) == nil)
-    }
-
-    @Test func theMenuChecksTheWorkspaceTheWindowCameFromAndUpdateNamesIt() {
-        let state = ApplicationMenuState(workspaceID: "b", workspaceName: "Clients")
-        let focused = ApplicationMenu.WindowFacts(explorerFocused: true)
-        let states = ApplicationMenu.workspaceItemStates(state, window: focused, workspaceIDs: ["a", "b"])
-        let checked = Dictionary(uniqueKeysWithValues: states.compactMap { item in item.checked.map { (item.id, $0) } })
-        #expect(checked["workspace:a"] == false)
-        #expect(checked["workspace:b"] == true)
-        #expect(checked["workspaceHere:b"] == true)
-        #expect(states.first { $0.id == "updateWorkspace" }?.title == "Update “Clients”")
-
-        // Settings has the keyboard: no window is the menu's, and nothing is checked.
-        let other = ApplicationMenu.workspaceItemStates(
-            state, window: .init(explorerFocused: false), workspaceIDs: ["a", "b"])
-        #expect(other.allSatisfy { $0.checked != true })
-        #expect(other.first { $0.id == "updateWorkspace" }?.title == "Update Workspace")
-    }
-
-    @Test func updateIsDimmedForAWindowThatCameFromNoWorkspace() {
-        #expect(!CommandAvailability.canRun(.updateWorkspace, CommandAvailabilityContext(hasWorkspace: false)))
-        #expect(CommandAvailability.canRun(.updateWorkspace, CommandAvailabilityContext(hasWorkspace: true)))
-        #expect(CommandAvailability.canRun(.saveWorkspace, CommandAvailabilityContext(hasWorkspace: false)))
     }
 }

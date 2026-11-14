@@ -183,6 +183,9 @@ struct NamePrompt: Equatable, Sendable {
     /// The whole name is selected as the prompt opens, so typing replaces it (both of the app's prompts do); off, the
     /// caret goes to its end.
     var selectsAll = true
+    /// Names to choose one from instead of typing it, listed by a button at the field's end; and the button's name.
+    var names: [String] = []
+    var namesLabel = ""
 
     /// Renaming an item that has no row to type in (a folder of the tree).
     static func rename(_ path: String) -> NamePrompt {

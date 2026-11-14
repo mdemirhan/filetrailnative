@@ -103,7 +103,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Workspaces",
                             description:
-                                "Window > Workspaces > Save Window as Workspace… keeps the window's tabs by name: each tab's folders and panes, the folder tree, the Info panel and the window's size. Choose the workspace in Window > Workspaces to open it as it was saved in a new window, or hold Option to open it in this one instead. The first five open with {openWorkspace1} to {openWorkspace5}, and in this window with {openWorkspace1InThisWindow} to {openWorkspace5InThisWindow}. A workspace changes only when you choose Update, and Settings → Browsing renames, removes and orders them."
+                                "Window > Workspaces > Save Window as Workspace… keeps the window's tabs by name: each tab's folders and panes, the folder tree, the Info panel and the window's size. Choose the workspace in Window > Workspaces to open it as it was saved in a new window, or hold Option to open it in this one instead. The first five open with {openWorkspace1} to {openWorkspace5}, and in this window with {openWorkspace1InThisWindow} to {openWorkspace5InThisWindow}. A workspace changes only when a window is saved under its name again: the button at the end of the name field lists the saved ones. Settings → Browsing renames, removes and orders them."
                         ),
                         HelpRow(
                             label: "Between windows",
@@ -595,8 +595,6 @@ extension HelpContent {
         HelpShortcutItem(group: .navigation, .command(.moveTabToNewWindow), "Move the tab to a window of its own"),
         HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window's tabs into this window"),
         HelpShortcutItem(group: .navigation, .command(.saveWorkspace), "Save the window's tabs as a workspace"),
-        HelpShortcutItem(
-            group: .navigation, .command(.updateWorkspace), "Save the window over the workspace it came from"),
         HelpShortcutItem(group: .navigation, .command(.openWorkspace1), "Open the first workspace"),
         HelpShortcutItem(group: .navigation, .command(.openWorkspace2), "Open the second workspace"),
         HelpShortcutItem(group: .navigation, .command(.openWorkspace3), "Open the third workspace"),

@@ -96,8 +96,6 @@ final class ApplicationMenuSync {
         var focusedWindow: () -> NSWindow?
         /// The menu as it is now, or none before it has been built.
         var menu: () -> MenuItemIndex?
-        /// The ids of the workspaces the menu lists.
-        var workspaceIDs: () -> [String] = { [] }
         /// Runs `work` once the task that asked for it is done.
         var afterCurrentTask: (@escaping @MainActor () -> Void) -> Void = { work in
             DispatchQueue.main.async { MainActor.assumeIsolated { work() } }
@@ -197,11 +195,7 @@ final class ApplicationMenuSync {
             undoAvailable: (undo: undoHistory.undo != nil, redo: undoHistory.redo != nil),
             undoLabels: ApplicationMenu.undoLabels(
                 undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo))
-        ApplicationMenu.apply(
-            ApplicationMenu.itemStates(current.state, window: facts)
-                + ApplicationMenu.workspaceItemStates(
-                    current.state, window: facts, workspaceIDs: dependencies.workspaceIDs())
-        ) { menu.control($0) }
+        ApplicationMenu.apply(ApplicationMenu.itemStates(current.state, window: facts)) { menu.control($0) }
     }
 
     /// The explorer window the menu shows, and whether it has the keyboard. With no window focused (the app is in the

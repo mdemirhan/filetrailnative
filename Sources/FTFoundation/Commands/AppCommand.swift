@@ -54,7 +54,6 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case moveTabToNewWindow
     case mergeAllWindows
     case saveWorkspace
-    case updateWorkspace
     case toggleTwoPanes
     case switchToOtherPane
     case openSelectionInOtherPane

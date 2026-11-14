@@ -69,8 +69,6 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var viewSizeSteps: ViewSize.Steps?
     /// View ▸ Pin Filter can act: a filter is typed in the folder, or one is pinned (nil: it can).
     public var filterPinnable: Bool?
-    /// The window was opened from a workspace, or saved as one, that is still kept (nil: it was).
-    public var hasWorkspace: Bool?
 
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
@@ -82,7 +80,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         trashPath: String? = nil,
         homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
-        viewSizeSteps: ViewSize.Steps? = nil, filterPinnable: Bool? = nil, hasWorkspace: Bool? = nil,
+        viewSizeSteps: ViewSize.Steps? = nil, filterPinnable: Bool? = nil,
         systemClipboard: PasteAsFileChoice? = nil
     ) {
         self.shortcutContext = shortcutContext
@@ -109,7 +107,6 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.trashIsFavorite = trashIsFavorite
         self.viewSizeSteps = viewSizeSteps
         self.filterPinnable = filterPinnable
-        self.hasWorkspace = hasWorkspace
         self.systemClipboard = systemClipboard
     }
 }
@@ -385,8 +382,6 @@ public enum CommandAvailability {
             return context.canGoForward != false
         case .goEnclosingFolder:
             return !context.currentPath.isEmpty && parentDirectoryPath(context.currentPath) != nil
-        case .updateWorkspace:
-            return context.hasWorkspace ?? true
         case .selectNextTab, .selectPreviousTab, .moveTabToNewWindow:
             return context.tabCount.map { $0 > 1 } ?? true
         case .switchToOtherPane, .swapPanes, .equalizePanes:

@@ -26,14 +26,11 @@ public struct StoredExplorerWindow: Codable, Equatable, Sendable {
     public var id: String
     public var bounds: StoredWindowState
     public var session: WindowSession
-    /// The workspace the window was opened from or saved as, while it is open; nil for any other window.
-    public var workspaceID: String?
 
-    public init(id: String, bounds: StoredWindowState, session: WindowSession, workspaceID: String? = nil) {
+    public init(id: String, bounds: StoredWindowState, session: WindowSession) {
         self.id = id
         self.bounds = bounds
         self.session = session
-        self.workspaceID = workspaceID
     }
 }
 
@@ -115,10 +112,7 @@ public enum AppStateReader {
             }
             var session = PreferencesSanitizer.sanitize(.object(merged), defaults: preferences).windowSession
             session.activeTabIndex = session.frontTabIndex
-            let workspace = record["workspaceID"]?.string.flatMap { $0.isEmpty ? nil : $0 }
-            windows.append(
-                StoredExplorerWindow(
-                    id: id, bounds: windowState(record["bounds"]), session: session, workspaceID: workspace))
+            windows.append(StoredExplorerWindow(id: id, bounds: windowState(record["bounds"]), session: session))
             if windows.count == windowsLimit {
                 break
             }

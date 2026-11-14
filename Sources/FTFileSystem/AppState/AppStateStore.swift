@@ -163,34 +163,12 @@ public final class AppStateStore: @unchecked Sendable {
 
     /// Adds a window in front of the others. Only open windows are kept, so none is dropped to keep to
     /// `AppStateReader.windowsLimit`: that is for reading a damaged file.
-    /// `workspaceID`: the workspace it opens, which it is known by while it is open.
-    public func addExplorerWindow(
-        id: String, bounds: StoredWindowState, session: WindowSession? = nil, workspaceID: String? = nil
-    ) {
+    public func addExplorerWindow(id: String, bounds: StoredWindowState, session: WindowSession? = nil) {
         locked {
             let session = newWindowSession { if let session { $0 = session } }
             let added = StoredExplorerWindow(
-                id: id, bounds: AppStateReader.windowState(try? JSONNode.of(bounds)), session: session,
-                workspaceID: workspaceID)
+                id: id, bounds: AppStateReader.windowState(try? JSONNode.of(bounds)), session: session)
             setWindows([added] + windows.filter { !Self.sameID($0.id, id) })
-        }
-    }
-
-    /// The workspace the window `windowID` was opened from or saved as; nil for none, or a window not known.
-    public func explorerWindowWorkspace(_ windowID: String) -> String? {
-        locked { windows.first { Self.sameID($0.id, windowID) }?.workspaceID }
-    }
-
-    /// The window `windowID` is known by the workspace `workspaceID` from now on, or by none.
-    public func setExplorerWindowWorkspace(_ windowID: String, _ workspaceID: String?) {
-        locked {
-            guard var window = windows.first(where: { Self.sameID($0.id, windowID) }),
-                window.workspaceID != workspaceID
-            else { return }
-            window.workspaceID = workspaceID
-            replaceWindow(window)
-            markUnsaved(.state)
-            saveLater()
         }
     }
 

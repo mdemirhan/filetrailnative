@@ -349,17 +349,11 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return (entry.id, Self.stored(entry.window), host.store.windowPreferences(entry.id).windowSession)
     }
 
-    /// The window `windowID` is known by the workspace `workspaceID` from now on (it was saved as it), or by none.
-    public func setWorkspace(_ workspaceID: String?, of windowID: Int?) {
-        guard let entry = windows.byWindowID(windowID) else { return }
-        host.store.setExplorerWindowWorkspace(entry.id, workspaceID)
-    }
-
-    /// `openWorkspace`: a window with the workspace's tabs, panels and size, placed as New Window places one, known by
-    /// the workspace while it is open. It opens anew even while a window opened from it is open, as that window may
-    /// have changed since. With `replacing`, it opens in that window's place and size, and the window closes once it is shown, as a merged one
-    /// does: not remembered as the window closed last, its running operation going on in the new one. `shown` runs once
-    /// the new window is on screen. The window that shows it; nil when nothing opened.
+    /// `openWorkspace`: a window with the workspace's tabs, panels and size, placed as New Window places one. It opens
+    /// anew even while a window opened from it is open, as that window may have changed since. With `replacing`, it
+    /// opens in that window's place and size, and the window closes once it is shown, as a merged one does: not
+    /// remembered as the window closed last, its running operation going on in the new one. `shown` runs once the new
+    /// window is on screen. The window that shows it; nil when nothing opened.
     @discardableResult
     public func openWorkspace(
         _ workspace: Workspace, replacing replacingID: Int? = nil, shown: @escaping () -> Void = {}
@@ -372,10 +366,8 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
             guard let replaced, isStayingOpen(replaced.window) else { return nil }
         }
         let bounds = replaced.map { Self.stored($0.window) } ?? workspaceBounds(workspace.bounds)
-        var record = createRecord(bounds) { $0 = workspace.session }
-        record.workspaceID = workspace.id
-        host.store.addExplorerWindow(
-            id: record.id, bounds: record.bounds, session: record.session, workspaceID: workspace.id)
+        let record = createRecord(bounds) { $0 = workspace.session }
+        host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         let window = open(record, launch: ExplorerLaunchContext(restoreTabs: true), place: .front)
         let show = window.events.readyToShow
         window.events.readyToShow = { [weak self, weak replacedWindow = replaced?.window] in

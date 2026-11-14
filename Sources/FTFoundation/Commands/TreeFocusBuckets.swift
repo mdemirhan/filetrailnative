@@ -16,7 +16,7 @@ extension ShortcutPolicy {
             .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash, .rootTreeAtSelection,
             .newWindow, .newTab, .duplicateTab, .reopenClosedTab, .closeTab, .selectNextTab, .selectPreviousTab,
             .moveTabToNewWindow,
-            .mergeAllWindows, .saveWorkspace, .updateWorkspace, .toggleTwoPanes, .switchToOtherPane,
+            .mergeAllWindows, .saveWorkspace, .toggleTwoPanes, .switchToOtherPane,
             .openSelectionInOtherPane, .swapPanes,
             .showFolderInOtherPane, .goToOtherPaneFolder, .equalizePanes, .calculateSize, .toggleFavorite,
             .showInFinder,

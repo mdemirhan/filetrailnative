@@ -290,6 +290,47 @@ struct AlertCardTests {
         #expect(await waitUntil { done })
     }
 
+    // Given names, the prompt lists them from a button at the field's end; the one chosen replaces the name, selected,
+    // and a message that follows the name follows it whether it is chosen or typed.
+    @Test func theNamePromptListsNamesToChooseFromAndItsMessageFollowsTheName() async throws {
+        #expect(TextPromptAccessory(text: "", label: "Name", selectsAll: true).namesButton == nil)
+        let window = window()
+        var prompt = NamePrompt(
+            title: "Save Window as Workspace", message: "Downloads", label: "Workspace name", submitLabel: "Save",
+            initialName: "Downloads")
+        prompt.names = ["Clients", "Photos"]
+        prompt.namesLabel = "Saved Workspaces"
+        var submitted: [String] = []
+        var done = false
+        Task { @MainActor in
+            await InWindowAlerts.askName(prompt, in: window, message: { "Named \($0)" }) { name in
+                submitted.append(name)
+                return .close
+            }
+            done = true
+        }
+        let alert = try #require(await card(window))
+        alert.layoutSubtreeIfNeeded()
+        let accessory = try #require(alert.content.accessory as? TextPromptAccessory)
+        let button = try #require(accessory.namesButton)
+        #expect(button.accessibilityLabel() == "Saved Workspaces")
+        #expect(accessory.field.frame.maxX <= button.frame.minX)
+        #expect(alert.messageLabel?.stringValue == "Downloads")
+        let menu = accessory.namesMenu()
+        #expect(menu.items.map(\.title) == ["Clients", "Photos"])
+
+        menu.performActionForItem(at: 1)
+        #expect(accessory.field.stringValue == "Photos")
+        #expect(accessory.field.currentEditor()?.selectedRange == NSRange(location: 0, length: 6))
+        #expect(alert.messageLabel?.stringValue == "Named Photos")
+        accessory.field.stringValue = "Clie"
+        accessory.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification))
+        #expect(alert.messageLabel?.stringValue == "Named Clie")
+        DialogKeys.press(36, "\r", in: window)
+        #expect(await waitUntil { done })
+        #expect(submitted == ["Clie"])
+    }
+
     // The eject questions stack their three buttons, the default on top; Escape cancels.
     @Test func theEjectQuestionsStackTheirButtons() async throws {
         let window = window()

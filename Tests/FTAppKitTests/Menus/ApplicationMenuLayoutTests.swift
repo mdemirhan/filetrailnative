@@ -58,7 +58,7 @@ import Testing
             ])
         #expect(
             titles(item(submenu(main, "Window"), "Workspaces").submenu!) == [
-                "Save Window as Workspace…", "Update Workspace", "-", "Manage Workspaces…",
+                "Save Window as Workspace…", "-", "Manage Workspaces…",
             ])
         #expect(titles(submenu(main, "Help")) == ["File Trail Help", "Keyboard Shortcuts"])
         // The system's own menus are the ones AppKit adds the services, the windows and the search field to.
@@ -73,8 +73,10 @@ import Testing
         let menu = item(submenu(built.menu, "Window"), "Workspaces").submenu ?? NSMenu()
         #expect(
             titles(menu)
-                == ["Save Window as Workspace…", "Update Workspace", "-"]
+                == ["Save Window as Workspace…", "-"]
                 + entries.flatMap { [$0.name, "\($0.name) in This Window"] } + ["-", "Manage Workspaces…"])
+        // A window isn't linked to the workspace it came from: none is checked.
+        #expect(menu.items.allSatisfy { $0.state == .off })
         let first = item(menu, "Work 1")
         #expect(first.keyEquivalent == "1")
         #expect(first.keyEquivalentModifierMask == [.control, .command])

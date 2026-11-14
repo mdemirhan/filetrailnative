@@ -19,10 +19,6 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var favoriteIsSet: Bool
     /// A text field has the keyboard: Undo and Redo are its own, and always on.
     public var textEditing: Bool
-    /// The workspace the window was opened from or saved as, while it is kept: the menu checks it, and Update names
-    /// it.
-    public var workspaceID: String?
-    public var workspaceName: String?
     /// What Paste as File would write, which its item names.
     public var pasteAsFileKind: PasteAsFileKind?
     /// What the selected file's name says Copy Contents would copy, which its item names.
@@ -33,8 +29,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         foldersFirst: Bool = true, hiddenFilesShown: Bool = false, folderTreeOpen: Bool = true,
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
-        textEditing: Bool = false, workspaceID: String? = nil, workspaceName: String? = nil,
-        pasteAsFileKind: PasteAsFileKind? = nil, copyContentsGuess: CopyContentsGuess? = nil
+        textEditing: Bool = false, pasteAsFileKind: PasteAsFileKind? = nil, copyContentsGuess: CopyContentsGuess? = nil
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
@@ -48,8 +43,6 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.filterPinned = filterPinned
         self.favoriteIsSet = favoriteIsSet
         self.textEditing = textEditing
-        self.workspaceID = workspaceID
-        self.workspaceName = workspaceName
         self.pasteAsFileKind = pasteAsFileKind
         self.copyContentsGuess = copyContentsGuess
     }
@@ -63,7 +56,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
-        workspace: (id: String, name: String)? = nil, pasteAsFileKind: PasteAsFileKind? = nil,
+        pasteAsFileKind: PasteAsFileKind? = nil,
         copyContentsGuess: CopyContentsGuess? = nil,
         canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
@@ -77,8 +70,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
             hiddenFilesShown: hiddenFilesShown, folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen,
             infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
             favoriteIsSet: favoriteIsSet,
-            textEditing: textEditing, workspaceID: workspace?.id, workspaceName: workspace?.name,
-            pasteAsFileKind: pasteAsFileKind, copyContentsGuess: copyContentsGuess)
+            textEditing: textEditing, pasteAsFileKind: pasteAsFileKind, copyContentsGuess: copyContentsGuess)
     }
 }
 
@@ -261,26 +253,6 @@ public enum ApplicationMenu {
 
     private static let workspacePrefix = "workspace:"
     private static let workspaceHerePrefix = "workspaceHere:"
-
-    /// The Workspaces items for the window the menu acts on: the workspace it came from is checked, and Update names
-    /// it. `workspaceIDs` are the workspaces the menu lists.
-    public static func workspaceItemStates(
-        _ state: ApplicationMenuState, window: WindowFacts, workspaceIDs: [String]
-    ) -> [ApplicationMenuItemState] {
-        let linked = window.explorerFocused ? state.workspaceID : nil
-        let name = window.explorerFocused ? state.workspaceName : nil
-        let update = ApplicationMenuItemState(
-            id: AppCommand.updateWorkspace.rawValue,
-            title: name.map { "Update \u{201C}\($0)\u{201D}" } ?? "Update Workspace")
-        return [update]
-            + workspaceIDs.flatMap { id in
-                let checked = linked.map { $0.utf16.elementsEqual(id.utf16) } ?? false
-                return [
-                    ApplicationMenuItemState(id: workspaceItemID(id), checked: checked),
-                    ApplicationMenuItemState(id: workspaceItemID(id, inThisWindow: true), checked: checked),
-                ]
-            }
-    }
 
     /// The size commands name what they change in the view on screen: the icons in the Icons view, the columns in the
     /// Compact List. In the List, which has no size, they keep their names in Settings.

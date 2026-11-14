@@ -47,6 +47,7 @@ final class AlertCard: DialogPanelView {
     let content: AlertContent
     let titleLabel: ThemedText
     let messageLabel: ThemedText?
+    private let messageStyle: TextStyle?
     let buttons: [SystemButton]
     let asideButton: SystemButton?
 
@@ -68,8 +69,10 @@ final class AlertCard: DialogPanelView {
             let label = ThemedText(message, style: style, wrapping: true)
             label.setAccessibilityIdentifier("alert.message")
             messageLabel = label
+            messageStyle = style
         } else {
             messageLabel = nil
+            messageStyle = nil
         }
         let height = content.wide ? DesignTokens.controlHeights.regular : DesignTokens.controlHeights.large
         func make(_ button: AlertButton) -> SystemButton {
@@ -109,6 +112,14 @@ final class AlertCard: DialogPanelView {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     var defaultButton: SystemButton? { buttons.first { $0.isDefault } }
+
+    /// A new message while the alert is up, in the same place and style; an alert made with none keeps none.
+    func setMessage(_ text: String) {
+        guard let messageLabel, let messageStyle else { return }
+        messageLabel.content = { messageStyle.string(text, $0) }
+        needsLayout = true
+        superview?.needsLayout = true
+    }
 
     override func applyTheme(_ theme: Theme) {
         super.applyTheme(theme)

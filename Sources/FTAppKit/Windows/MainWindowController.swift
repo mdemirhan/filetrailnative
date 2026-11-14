@@ -1361,14 +1361,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var menuState: ApplicationMenuState {
         let context = commandContext
         let panels = group?.session.panels
-        let workspace = group?.workspace
         return ApplicationMenuState.build(
             viewMode: shownViewMode, sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
             filterPinned: content.pinnedFilter != nil,
             favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false,
-            textEditing: isTextFieldEditing, workspace: workspace.map { ($0.id, $0.name) },
+            textEditing: isTextFieldEditing,
             pasteAsFileKind: context.systemClipboard?.kind,
             copyContentsGuess: context.selectedPathsInViewOrder.count == 1
                 ? context.selectedPathsInViewOrder.first.map { CopyContents.guess(forName: NodePath.basename($0)) }
@@ -1738,7 +1737,6 @@ extension MainWindowController: ExplorerWindowHandle {
         case .moveTabToNewWindow: group?.moveTabToNewWindow(self)
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
         case .saveWorkspace: group?.saveWorkspace(from: self)
-        case .updateWorkspace: group?.updateWorkspace(from: self)
         case .toggleTwoPanes: toggleTwoPanes()
         case .switchToOtherPane: switchToOtherPane()
         case .openSelectionInOtherPane:
@@ -1902,7 +1900,6 @@ extension MainWindowController: ExplorerWindowContext {
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),
             viewSizeSteps: content.viewSize?.steps ?? .unavailable, filterPinnable: content.canTogglePin,
-            hasWorkspace: group?.workspace != nil,
             // While a text field has the keyboard, what is on the clipboard is for it.
             systemClipboard: isTextFieldEditing ? nil : systemClipboard.choice)
     }
