@@ -63,6 +63,20 @@ struct CopyContentsTests {
         #expect(CopyContents.decodeText(Data([0x63, 0x61, 0x66, 0xE9])) == nil)
     }
 
+    // UTF-32's mark begins as UTF-16's does: read as UTF-16, every other character would be a zero.
+    @Test func utf32AndTextWithAZeroCharacterAreNotText() {
+        let littleEndian: [UInt8] = [0xFF, 0xFE, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 0x62, 0x00, 0x00, 0x00]
+        #expect(CopyContents.decodeText(Data(littleEndian)) == nil)
+        let bigEndian: [UInt8] = [0x00, 0x00, 0xFE, 0xFF, 0x00, 0x00, 0x00, 0x61]
+        #expect(CopyContents.decodeText(Data(bigEndian)) == nil)
+        // UTF-16 and UTF-8 with their marks and a zero character among the letters.
+        #expect(CopyContents.decodeText(Data([0xFF, 0xFE, 0x61, 0x00, 0x00, 0x00, 0x62, 0x00])) == nil)
+        #expect(CopyContents.decodeText(Data([0xFE, 0xFF, 0x00, 0x61, 0x00, 0x00])) == nil)
+        #expect(CopyContents.decodeText(Data([0xEF, 0xBB, 0xBF, 0x61, 0x00, 0x62])) == nil)
+        #expect(CopyContents.decodeText(Data([0xEF, 0xBB, 0xBF, 0x61, 0x62])) == "ab")
+        #expect(CopyContents.decodeText(Data([0xFF, 0xFE, 0x61, 0x00, 0x62, 0x00])) == "ab")
+    }
+
     // MARK: Secrets
 
     @Test func namesThatUsuallyHoldAPasswordOrAKeyAreAskedAbout() {
@@ -70,6 +84,29 @@ struct CopyContentsTests {
             #expect(CopyContents.looksSecret(name), "\(name)")
         }
         for name in ["id_rsa.pub", "id_ed25519.pub", "env.txt", "notes.md", "keys.txt", "environment.ts"] {
+            #expect(!CopyContents.looksSecret(name), "\(name)")
+        }
+    }
+
+    @Test func theFilesToolsKeepTheirPasswordsInAreAskedAbout() {
+        for name in [
+            "prod.env", "Staging.ENV", ".netrc", ".npmrc", ".pgpass", ".htpasswd", "credentials", "kubeconfig",
+            "AuthKey_ABC123.p8", "server.ppk", "id_rsa_work",
+        ] {
+            #expect(CopyContents.looksSecret(name), "\(name)")
+        }
+        for name in ["config", "credentials.md", "netrc.txt", "kubeconfig.md", "notes.p8.txt"] {
+            #expect(!CopyContents.looksSecret(name), "\(name)")
+        }
+        // "config" is kubectl's only in its own folder.
+        #expect(CopyContents.looksSecret(path: "/Users/demo/.kube/config"))
+        #expect(!CopyContents.looksSecret(path: "/Users/demo/.ssh/config"))
+        #expect(CopyContents.looksSecret(path: "/Users/demo/.aws/credentials"))
+        #expect(!CopyContents.looksSecret(path: "/Users/demo/.kube/notes.txt"))
+    }
+
+    @Test func aNameWhoseExtensionSaysImageIsNeverAskedAbout() {
+        for name in ["id_rsa_diagram.png", "id_ed25519 setup.jpg", ".env.png", "credentials.heic"] {
             #expect(!CopyContents.looksSecret(name), "\(name)")
         }
     }

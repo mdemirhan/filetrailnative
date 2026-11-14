@@ -258,6 +258,13 @@ extension ExplorerTabGroup: WriteSessionHost {
     var currentPath: String { selected?.shownFolderPath ?? "" }
     var selectedPaths: [String] { selected?.selectedPaths ?? [] }
     var isSearching: Bool { selected?.searchRootPath != nil }
+    var activePaneID: Int? { selected?.activePane.watchID }
+
+    var paneSelections: [WritePaneSelection] {
+        (selected?.panes ?? []).map {
+            WritePaneSelection(paneID: $0.watchID, directoryPath: $0.shownFolderPath, paths: $0.content.selection.paths)
+        }
+    }
 
     var selectedTreePath: String? {
         guard let item = selected?.sidebarController.selectedTreeItemID, item.hasPrefix("fs:") else { return nil }

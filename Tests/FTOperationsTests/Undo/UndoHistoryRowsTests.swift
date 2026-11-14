@@ -199,6 +199,91 @@ struct UndoHistoryRowsTests {
         #expect(batch.items.last == "and 4991 more")
     }
 
+    // The 1,000th item's folder is read and the 1,001st's is not, one item to a unit or all in one batch rename.
+    @Test func readsTheFoldersOfExactlyTheFirstThousandItems() {
+        #expect(UndoHistoryRows.maxItemsRead == 1_000)
+        func trashedRow(_ count: Int) -> UndoHistoryRow {
+            // Every item in d0 but the last, which is in a folder of its own.
+            row(entry(.trash, (0..<count).map { [trashed("/p/\($0 == count - 1 ? "last" : "d0")/f\($0)")] }))
+        }
+        #expect(trashedRow(999).place == "from 2 folders")
+        #expect(trashedRow(1_000).place == "from 2 folders")
+        #expect(trashedRow(1_001).place == "from d0")
+        #expect(trashedRow(1_000).items.last == "and 991 more")
+        #expect(trashedRow(1_001).items.last == "and 992 more")
+        func renamedRow(_ count: Int) -> UndoHistoryRow {
+            let items = (0..<count).map { index in
+                let folder = index == count - 1 ? "last" : "d0"
+                return BatchRenamedItem(
+                    from: "/p/\(folder)/a\(index)", to: "/p/\(folder)/b\(index)", id: nil, itemKind: .file)
+            }
+            return row(entry(.batchRename, [[.batchRenamed(items: items)]]))
+        }
+        #expect(renamedRow(1_000).place == "in 2 folders")
+        #expect(renamedRow(1_001).place == "in d0")
+        #expect(renamedRow(1_001).items.last == "and 992 more")
+    }
+
+    // Exactly 100 folders are counted, taken from and put in together, and one more is "over 100".
+    @Test func countsExactlyAHundredFoldersAcrossWhereItemsWereAndWent() {
+        #expect(UndoHistoryRows.maxFolders == 100)
+        func movedRow(_ sources: Int, _ destinations: Int) -> UndoHistoryRow {
+            row(
+                entry(
+                    .moveTo,
+                    (0..<max(sources, destinations)).map {
+                        [self.moved("/p/s\($0 % sources)/f\($0)", "/q/d\($0 % destinations)/f\($0)")]
+                    }, moves: true))
+        }
+        #expect(movedRow(50, 50).place == "in 100 folders")
+        #expect(movedRow(51, 50).place == "in over 100 folders")
+        #expect(movedRow(100, 2).place == "in over 100 folders")
+        #expect(movedRow(101, 1).place == "to d0")
+        #expect(movedRow(99, 1).place == "to d0")
+    }
+
+    // A row kept for an operation is told again when the operation comes back under its id with fewer items, and
+    // kept when it comes back as it was.
+    @Test func aKeptRowIsToldAgainOnlyWhenItsOperationIsSmaller() throws {
+        let history = UndoHistory(clock: { Date(timeIntervalSince1970: 5) })
+        let cache = UndoHistoryRowCache()
+        let units = (0..<3).map { UndoUnit(steps: [moved("/p/a\($0)", "/p/b\($0)")]) }
+        history.record(FinishedWrite(action: .write(.batchRename), log: .undoable(units: units), items: []))
+        let whole = UndoHistoryRows.content(history, homePath: Self.home, cache: cache)
+        #expect(whole.undo.map(\.items) == [["a0 → b0", "a1 → b1", "a2 → b2"]])
+        #expect(UndoHistoryRows.content(history, homePath: Self.home, cache: cache) == whole)
+        // An Undo stopped after one item leaves the other two under the same id.
+        let top = try #require(history.top(.undo))
+        try history.finish(
+            .undo, entryId: top.id, done: [UndoUnit(steps: [moved("/p/b2", "/p/a2")])],
+            leftover: Array(units.prefix(2)))
+        let smaller = UndoHistoryRows.content(history, homePath: Self.home, cache: cache)
+        #expect(smaller.undo.map(\.id) == whole.undo.map(\.id))
+        #expect(smaller.undo.map(\.items) == [["a0 → b0", "a1 → b1"]])
+        #expect(smaller.undo.map(\.title) != whole.undo.map(\.title))
+    }
+
+    // The list's times next read differently when the youngest minute among them ends; operations an hour old or
+    // more read by their time of day, and never change.
+    @Test func theTimesNextChangeWhenAWholeMinuteMoreHasPassed() {
+        let now = Date(timeIntervalSince1970: 10_000)
+        func next(_ ages: [Double]) -> Double? {
+            UndoHistoryRows.nextTimeChange(of: ages.map { now.addingTimeInterval(-$0) }, now: now)?
+                .timeIntervalSince(now)
+        }
+        #expect(next([]) == nil)
+        #expect(next([0]) == 60)
+        #expect(next([59]) == 1)
+        #expect(next([60]) == 60)
+        #expect(next([100, 130, 20]) == 20)
+        // The last minute of the hour ends on the time of day.
+        #expect(next([3_599]) == 1)
+        #expect(next([3_600]) == nil)
+        #expect(next([7_200, 3_500]) == 40)
+        // A date ahead of the clock is "Just now" until it is a minute old.
+        #expect(next([-5]) == 65)
+    }
+
     // Up to 100 folders are counted; a folder met again is the same one, wherever its items are in the operation.
     @Test func countsTheFoldersOfAnOperationUpToAHundred() {
         let hundred = row(entry(.trash, (0..<300).map { [trashed("/p/d\($0 % 100)/f\($0)")] }))

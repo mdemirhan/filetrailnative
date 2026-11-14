@@ -356,14 +356,15 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     }
 
     /// Merge All Windows: the other windows' tabs join this window's, after them, waiting unread until they are
-    /// shown. No more are kept than a window may hold; one whose folder is gone is left out.
+    /// shown. No more are kept than a window may hold; one whose folder is gone is left out, or joins with its second
+    /// pane alone when that pane's folder is there.
     func addTabs(_ added: [OpenTabPreference]) {
         let room = max(0, tabLimit - tabs.count)
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let startups = added.prefix(room).map { StartupTabs.startupTab($0, homePath: home) }
-        let kept = ScreenGeometry.keepsWaitingTabs(startups.map(\.path))
-        for (startup, keep) in zip(startups, kept) {
-            guard keep, let last = tabs.last else { continue }
+        let kept = StartupTabs.waitingTabs(startups, homePath: home) { ScreenGeometry.keepsWaitingTabs($0) }
+        for startup in kept {
+            guard let startup, let last = tabs.last else { continue }
             insert(MainWindowController(tab: startup, frame: tabFrame, loadNow: false), after: last, select: false)
         }
     }
@@ -448,10 +449,6 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         }
     }
 
-    /// Disks were unmounted: the tabs showing one close, as Finder's do, and Reopen
-    /// Closed Tab doesn't offer them; when they are all the window's tabs, the window closes. While the tabs can't
-    /// change (a sheet or an alert is open), the tabs in the background go Home instead, and the tab on screen opens
-    /// Home. `volumeRoot` says which disk a path is on.
     /// The startup disk was renamed: each tab says its new name, and so do the tab bar and the Window menu.
     func startupDiskNameChanged() {
         guard !isDestroyed else { return }
@@ -459,27 +456,38 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         refreshTitles()
     }
 
+    /// Disks were unmounted: the tabs showing one close, as Finder's do, and Reopen
+    /// Closed Tab doesn't offer them; when they are all the window's tabs, the window closes. A tab with two panes
+    /// closes when both are on such a disk; with one of them elsewhere it stays, and the pane on the disk goes Home.
+    /// While the tabs can't change (a sheet or an alert is open), the tabs in the background go Home instead, and the
+    /// tab on screen opens Home. `volumeRoot` says which disk a path is on.
     func disksUnmounted(_ unmounted: Set<String>, homePath: String, volumeRoot: (String) -> String) {
         guard !unmounted.isEmpty, !isDestroyed else { return }
         func isGone(_ path: String) -> Bool { !path.isEmpty && unmounted.contains(volumeRoot(path)) }
-        let gone = tabs.filter { isGone($0.shownFolderPath) || isGone($0.treeRootPath) }
-        guard !gone.isEmpty else { return }
+        func panesGone(_ tab: MainWindowController) -> Int { tab.panes.filter { isGone($0.shownFolderPath) }.count }
+        let touched = tabs.filter { panesGone($0) > 0 || isGone($0.treeRootPath) }
+        guard !touched.isEmpty else { return }
         let front = selected
-        if isBlocked {
-            for tab in tabs where tab !== front {
-                let snapshot = tab.snapshot
-                let left = ExplorerTabs.leaveUnmountedDisks(
-                    snapshot, unmounted: unmounted, homePath: homePath, volumeRoot: volumeRoot)
-                if left != snapshot { tab.takePlace(left) }
+        // Nothing of these is left: every pane is on a disk that went, or the one pane's tree is.
+        let gone =
+            isBlocked
+            ? []
+            : touched.filter { tab in
+                panesGone(tab) == tab.panes.count || (tab.panes.count == 1 && isGone(tab.treeRootPath))
             }
-            if let front, isGone(front.shownFolderPath), !homePath.isEmpty {
-                front.go(to: URL(fileURLWithPath: homePath))
-            }
-            return
-        }
-        if gone.count == tabs.count {
+        if !gone.isEmpty, gone.count == tabs.count {
             closeAsCloseButton()
             return
+        }
+        for tab in touched where !gone.contains(where: { $0 === tab }) {
+            if tab === front {
+                tab.leaveUnmountedDisks(homePath: homePath, isGone: isGone)
+                continue
+            }
+            let snapshot = tab.snapshot
+            let left = ExplorerTabs.leaveUnmountedDisks(
+                snapshot, unmounted: unmounted, homePath: homePath, volumeRoot: volumeRoot)
+            if left != snapshot { tab.takePlace(left) }
         }
         for tab in gone where tab !== front {
             prepareToClose(tab, remember: false)

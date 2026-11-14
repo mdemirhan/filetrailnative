@@ -68,7 +68,17 @@ struct FoldedText: Sendable {
                     letters[letters.count - 1].exact |= 0x8000_0000
                     continue
                 }
-                let folded = Self.caseFolded(scalar)
+                // A ligature is its letters, each spanning the one character the name stores.
+                if let spelled = Self.ligatures[scalar.value] {
+                    for value in spelled {
+                        letters.append(FoldedLetter(exact: value, base: value))
+                        spans.append(span)
+                        wordStarts.append(!opened && Self.startsWord(previous: previous, current: first))
+                        opened = true
+                    }
+                    continue
+                }
+                let folded = Self.caseFolded(Self.narrowed(scalar))
                 letters.append(FoldedLetter(exact: folded.value, base: Self.base(of: folded)))
                 spans.append(span)
                 wordStarts.append(!opened && Self.startsWord(previous: previous, current: first))
@@ -77,6 +87,23 @@ struct FoldedText: Sendable {
             previous = first
             offset += stored
         }
+    }
+
+    /// The Latin ligatures some fonts and documents put in names ("\u{FB01}" in "\u{FB01}le"), as the letters they
+    /// stand for.
+    static let ligatures: [UInt32: [UInt32]] = [
+        0xFB00: [0x66, 0x66], 0xFB01: [0x66, 0x69], 0xFB02: [0x66, 0x6C], 0xFB03: [0x66, 0x66, 0x69],
+        0xFB04: [0x66, 0x66, 0x6C], 0xFB05: [0x73, 0x74], 0xFB06: [0x73, 0x74],
+    ]
+
+    /// The full-width forms of the ASCII characters, which East Asian keyboards type: U+FF21 is "A", U+FF11 is "1".
+    static let fullWidth: ClosedRange<UInt32> = 0xFF01...0xFF5E
+
+    /// A full-width letter, digit or sign as the ASCII one it is, lowercased; any other scalar as it is.
+    private static func narrowed(_ scalar: Unicode.Scalar) -> Unicode.Scalar {
+        guard fullWidth.contains(scalar.value) else { return scalar }
+        let ascii = scalar.value - 0xFEE0
+        return Unicode.Scalar((0x41...0x5A).contains(ascii) ? ascii + 0x20 : ascii) ?? scalar
     }
 
     private static func isMark(_ scalar: Unicode.Scalar) -> Bool {
@@ -104,7 +131,7 @@ struct FoldedText: Sendable {
         return Unicode.Scalar(value)?.properties.isLowercase ?? false
     }
 
-    private static func startsWord(previous: UInt32, current: UInt32) -> Bool {
+    static func startsWord(previous: UInt32, current: UInt32) -> Bool {
         !isLetterOrDigit(previous) || (isLowercase(previous) && isUppercase(current))
     }
 
@@ -142,22 +169,111 @@ struct FoldedText: Sendable {
     }
 }
 
+/// A name's letters and which of them start words: what matching and weighing a name need, without where each
+/// letter is in the name as stored.
+struct FoldedName: Sendable {
+    var letters: [FoldedLetter]
+    var wordStarts: [Bool]
+
+    init(_ text: FoldedText) {
+        letters = text.letters
+        wordStarts = text.wordStarts
+    }
+}
+
 /// Names beyond ASCII folded into letters once, for a list filtered keystroke after keystroke: the first keystroke
 /// folds them and the next ones only compare. An ASCII name is compared byte by byte and isn't kept.
 public final class FoldedNameCache {
-    private var folded: [String: [FoldedLetter]] = [:]
+    private var folded: [String: FoldedName] = [:]
     /// Past this many names the cache starts over, so a long session of searches doesn't keep every name it saw.
     private static let limit = 200_000
 
     public init() {}
 
-    func letters(of name: String) -> [FoldedLetter] {
+    func name(_ name: String) -> FoldedName {
         if let known = folded[name] { return known }
         if folded.count >= Self.limit { folded.removeAll(keepingCapacity: true) }
-        let letters = FoldedText(name).letters
-        folded[name] = letters
-        return letters
+        let made = FoldedName(FoldedText(name))
+        folded[name] = made
+        return made
     }
+
+    func letters(of name: String) -> [FoldedLetter] {
+        self.name(name).letters
+    }
+}
+
+/// Room to weigh one name after another without asking for memory for each: an ASCII name's letters, and the table
+/// the best fit is worked out in.
+final class FitScratch {
+    private(set) var letters: UnsafeMutablePointer<FoldedLetter>
+    private(set) var wordStarts: UnsafeMutablePointer<Bool>
+    private var nameRoom = 256
+    /// The best score for each letter typed at each letter of the name, and where the letter before it was.
+    private(set) var best: UnsafeMutablePointer<Int>
+    private(set) var from: UnsafeMutablePointer<Int>
+    private var cellRoom = 2048
+    /// For each letter typed, the first and the last place in the name it can take.
+    private(set) var first: UnsafeMutablePointer<Int>
+    private(set) var last: UnsafeMutablePointer<Int>
+    private var typedRoom = 32
+
+    init() {
+        letters = .allocate(capacity: nameRoom)
+        wordStarts = .allocate(capacity: nameRoom)
+        best = .allocate(capacity: cellRoom)
+        from = .allocate(capacity: cellRoom)
+        first = .allocate(capacity: typedRoom)
+        last = .allocate(capacity: typedRoom)
+    }
+
+    deinit {
+        letters.deallocate()
+        wordStarts.deallocate()
+        best.deallocate()
+        from.deallocate()
+        first.deallocate()
+        last.deallocate()
+    }
+
+    /// Makes room for a name of `count` letters.
+    func reserveName(_ count: Int) {
+        guard count > nameRoom else { return }
+        nameRoom = max(count, nameRoom * 2)
+        letters.deallocate()
+        wordStarts.deallocate()
+        letters = .allocate(capacity: nameRoom)
+        wordStarts = .allocate(capacity: nameRoom)
+    }
+
+    /// Makes room for the table of `typed` letters over a name of `count`.
+    func reserveTable(typed: Int, count: Int) {
+        if typed > typedRoom {
+            typedRoom = max(typed, typedRoom * 2)
+            first.deallocate()
+            last.deallocate()
+            first = .allocate(capacity: typedRoom)
+            last = .allocate(capacity: typedRoom)
+        }
+        guard typed * count > cellRoom else { return }
+        cellRoom = max(typed * count, cellRoom * 2)
+        best.deallocate()
+        from.deallocate()
+        best = .allocate(capacity: cellRoom)
+        from = .allocate(capacity: cellRoom)
+    }
+}
+
+/// How a name stands to the text typed, for choosing the one a filter selects.
+enum NameStanding: Equatable {
+    /// It starts with the text.
+    case prefix
+    /// It holds the text as a run of letters.
+    case contained
+    /// It has the letters in order, fitting this well.
+    case fit(Int)
+    /// None of these, or a fit that wasn't asked for.
+    case other
 }
 
 /// Typed text, ready to find names: Contains or Fuzzy, an accented letter found only as itself and a plain one with
@@ -204,20 +320,96 @@ public struct NameMatcher: Sendable {
     }
 
     /// Whether `name` starts with the text.
-    public func isPrefix(of name: String) -> Bool {
+    public func isPrefix(of name: String, cache: FoldedNameCache? = nil) -> Bool {
         if let bytes = ascii, let result = withASCII(name, { Self.asciiRun(bytes, in: $0, prefixOnly: true) }) {
             return result
         }
-        let folded = FoldedText(name).letters
-        return folded.count >= letters.count && letters.indices.allSatisfy { same($0, folded[$0]) }
+        return isPrefix(of: cache?.letters(of: name) ?? FoldedText(name).letters)
+    }
+
+    private func isPrefix(of folded: [FoldedLetter]) -> Bool {
+        folded.count >= letters.count && letters.indices.allSatisfy { same($0, folded[$0]) }
     }
 
     /// Whether `name` holds the text as a run of letters, whatever the mode.
-    public func isContained(in name: String) -> Bool {
+    public func isContained(in name: String, cache: FoldedNameCache? = nil) -> Bool {
         if let bytes = ascii, let result = withASCII(name, { Self.asciiRun(bytes, in: $0, prefixOnly: false) }) {
             return result
         }
-        return firstRun(in: FoldedText(name).letters) != nil
+        return firstRun(in: cache?.letters(of: name) ?? FoldedText(name).letters) != nil
+    }
+
+    /// How `name` stands to the text: one look at the name tells a prefix, a run and, when `fit` asks for it, how
+    /// well the letters in order fit. A name beyond ASCII is folded through `cache`; an ASCII one is read into
+    /// `scratch`, so weighing many names asks for no memory.
+    func standing(of name: String, cache: FoldedNameCache?, scratch: FitScratch, fit: Bool) -> NameStanding {
+        var name = name
+        let plainName: NameStanding? = name.withUTF8 { bytes in
+            guard let stored = bytes.baseAddress else { return .other }
+            scratch.reserveName(bytes.count)
+            let letters = scratch.letters
+            let wordStarts = scratch.wordStarts
+            // A letter starts a word after what is no letter or digit, and a capital does after a lowercase letter
+            // (`FoldedText.startsWord`, for bytes).
+            var afterLower = false
+            var afterLetterOrDigit = false
+            for index in 0..<bytes.count {
+                let byte = stored[index]
+                if byte >= 0x80 { return nil }
+                let upper = byte >= 0x41 && byte <= 0x5A
+                let lower = byte >= 0x61 && byte <= 0x7A
+                let folded = UInt32(upper ? byte + 0x20 : byte)
+                letters[index] = FoldedLetter(exact: folded, base: folded)
+                wordStarts[index] = !afterLetterOrDigit || (afterLower && upper)
+                afterLower = lower
+                afterLetterOrDigit = upper || lower || (byte >= 0x30 && byte <= 0x39)
+            }
+            // Text with a letter beyond ASCII is in no ASCII name.
+            guard ascii != nil else { return .other }
+            if let run = firstRun(UnsafePointer(letters), count: bytes.count) { return run == 0 ? .prefix : .contained }
+            guard fit else { return .other }
+            let found = bestFit(
+                UnsafePointer(letters), UnsafePointer(wordStarts), count: bytes.count, scratch: scratch,
+                positions: false)
+            return found.map { .fit($0.score) } ?? .other
+        }
+        if let plainName { return plainName }
+        let folded = cache?.name(name) ?? FoldedName(FoldedText(name))
+        let count = folded.letters.count
+        return folded.letters.withUnsafeBufferPointer { stored in
+            folded.wordStarts.withUnsafeBufferPointer { starts in
+                guard let stored = stored.baseAddress, let starts = starts.baseAddress else { return .other }
+                if let run = firstRun(stored, count: count) { return run == 0 ? .prefix : .contained }
+                guard fit else { return .other }
+                let found = bestFit(stored, starts, count: count, scratch: scratch, positions: false)
+                return found.map { .fit($0.score) } ?? .other
+            }
+        }
+    }
+
+    /// Where the text first runs in the `count` letters at `name`; nil when it doesn't.
+    private func firstRun(_ name: UnsafePointer<FoldedLetter>, count: Int) -> Int? {
+        let typedCount = letters.count
+        guard typedCount <= count else { return nil }
+        return letters.withUnsafeBufferPointer { typed in
+            plain.withUnsafeBufferPointer { plain in
+                guard let typed = typed.baseAddress, let plain = plain.baseAddress else { return nil }
+                var start = 0
+                while start + typedCount <= count {
+                    var index = 0
+                    while index < typedCount {
+                        let letter = name[start + index]
+                        let same =
+                            plain[index] ? typed[index].base == letter.base : typed[index].exact == letter.exact
+                        if !same { break }
+                        index += 1
+                    }
+                    if index == typedCount { return start }
+                    start += 1
+                }
+                return nil
+            }
+        }
     }
 
     /// The match for an ASCII name, byte by byte; nil when the name isn't ASCII or the text isn't.
@@ -304,13 +496,14 @@ public struct NameMatcher: Sendable {
     // MARK: Marks and fit
 
     /// The letters of `name` to mark, in its UTF-16 units as stored; empty when it doesn't match. A run of the text is
-    /// marked where it first is; a fuzzy match marks the letters of its best fit (`score`).
+    /// marked where it first is; a fuzzy match marks the letters of its best fit (`score`). A letter the name stores as
+    /// one character with others (a ligature, a letter and its accent) marks the whole character.
     public func marks(in name: String) -> [HighlightRange] {
         let folded = FoldedText(name)
         let positions: [Int]
         if let run = firstRun(in: folded.letters) {
             positions = Array(run)
-        } else if mode == .fuzzy, let fit = bestFit(folded) {
+        } else if mode == .fuzzy, let fit = bestFit(FoldedName(folded), scratch: FitScratch(), positions: true) {
             positions = fit.positions
         } else {
             return []
@@ -330,7 +523,7 @@ public struct NameMatcher: Sendable {
     /// How well the letters in order fit `name`, higher being better; nil when they aren't all in it. Letters next to
     /// each other and letters that start words count for more, and a gap or a late start for less.
     public func score(_ name: String) -> Int? {
-        bestFit(FoldedText(name))?.score
+        bestFit(FoldedName(FoldedText(name)), scratch: FitScratch(), positions: false)?.score
     }
 
     private static let matchScore = 16
@@ -340,58 +533,112 @@ public struct NameMatcher: Sendable {
     private static let gapExtension = 1
     private static let lateStartLimit = 8
 
-    private func bestFit(_ name: FoldedText) -> (score: Int, positions: [Int])? {
-        let n = name.letters.count
-        let m = letters.count
-        guard m <= n, isSubsequence(of: name.letters) else { return nil }
-        let none = Int.min / 4
-        // best[i][j]: the best score with letter i typed matched at letter j of the name; from[i][j] where letter i-1 was.
-        var best = [[Int]](repeating: [Int](repeating: none, count: n), count: m)
-        var from = [[Int]](repeating: [Int](repeating: -1, count: n), count: m)
-        for i in 0..<m {
-            var gapBest = none
-            var gapFrom = -1
-            for j in 0..<n {
-                if i > 0, j >= 2 {
-                    // A gap of at least one letter between i-1 at k and i at j.
-                    let opened = best[i - 1][j - 2] - Self.gapOpening
-                    if gapBest != none { gapBest -= Self.gapExtension }
-                    if opened > gapBest {
-                        gapBest = opened
-                        gapFrom = j - 2
-                    }
-                }
-                guard same(i, name.letters[j]) else { continue }
-                // A letter that starts a word counts for more where the match lands on it, first or after a gap; one
-                // next to the letter before counts for being next to it.
-                let landing = Self.matchScore + (name.wordStarts[j] ? Self.wordStartBonus : 0)
-                if i == 0 {
-                    best[i][j] = landing - min(j, Self.lateStartLimit)
-                    continue
-                }
-                var value = none
-                var origin = -1
-                if j >= 1, best[i - 1][j - 1] > none {
-                    value = best[i - 1][j - 1] + Self.matchScore + Self.nextToBonus
-                    origin = j - 1
-                }
-                if gapBest > none, gapBest + landing > value {
-                    value = gapBest + landing
-                    origin = gapFrom
-                }
-                best[i][j] = value
-                from[i][j] = origin
+    private func bestFit(_ name: FoldedName, scratch: FitScratch, positions: Bool) -> (score: Int, positions: [Int])? {
+        name.letters.withUnsafeBufferPointer { letters in
+            name.wordStarts.withUnsafeBufferPointer { starts in
+                guard let letters = letters.baseAddress, let starts = starts.baseAddress else { return nil }
+                return bestFit(letters, starts, count: name.letters.count, scratch: scratch, positions: positions)
             }
         }
-        var end = -1
-        for j in 0..<n where best[m - 1][j] > none && (end < 0 || best[m - 1][j] > best[m - 1][end]) { end = j }
-        guard end >= 0 else { return nil }
-        var positions = [Int](repeating: 0, count: m)
-        var j = end
-        for i in stride(from: m - 1, through: 0, by: -1) {
-            positions[i] = j
-            j = from[i][j]
+    }
+
+    /// The best fit of the letters typed, in order, over the `count` letters at `name`: its score, and with
+    /// `positions` where each letter landed. The table is `scratch`'s, and only the stretch of the name each letter
+    /// can take is worked out: from where it first can be, the ones before it placed as early as they go, to where it
+    /// last can be, the ones after it placed as late as they go.
+    private func bestFit(
+        _ name: UnsafePointer<FoldedLetter>, _ wordStarts: UnsafePointer<Bool>, count n: Int, scratch: FitScratch,
+        positions wantsPositions: Bool
+    ) -> (score: Int, positions: [Int])? {
+        let m = letters.count
+        guard m <= n else { return nil }
+        scratch.reserveTable(typed: m, count: n)
+        let best = scratch.best
+        let from = scratch.from
+        let first = scratch.first
+        let last = scratch.last
+        return letters.withUnsafeBufferPointer { typed -> (score: Int, positions: [Int])? in
+            plain.withUnsafeBufferPointer { plain -> (score: Int, positions: [Int])? in
+                guard let typed = typed.baseAddress, let plain = plain.baseAddress else { return nil }
+                func same(_ index: Int, _ letter: FoldedLetter) -> Bool {
+                    plain[index] ? typed[index].base == letter.base : typed[index].exact == letter.exact
+                }
+                var j = 0
+                for i in 0..<m {
+                    while j < n, !same(i, name[j]) { j += 1 }
+                    if j == n { return nil }
+                    first[i] = j
+                    j += 1
+                }
+                j = n - 1
+                for i in stride(from: m - 1, through: 0, by: -1) {
+                    while !same(i, name[j]) { j -= 1 }
+                    last[i] = j
+                    j -= 1
+                }
+                let none = Int.min / 4
+                for j in first[0]...last[0] {
+                    let landing = Self.matchScore + (wordStarts[j] ? Self.wordStartBonus : 0)
+                    best[j] = same(0, name[j]) ? landing - min(j, Self.lateStartLimit) : none
+                    from[j] = -1
+                }
+                for i in 1..<max(m, 1) {
+                    let row = best + i * n
+                    let origins = from + i * n
+                    let before = row - n
+                    let beforeFirst = first[i - 1]
+                    let beforeLast = last[i - 1]
+                    let rowFirst = first[i]
+                    var gapBest = none
+                    var gapFrom = -1
+                    for j in (beforeFirst + 1)...last[i] {
+                        if j >= beforeFirst + 2 {
+                            // A gap of at least one letter between the letter before at k and this one at j.
+                            let k = j - 2
+                            let opened = (k <= beforeLast ? before[k] : none) - Self.gapOpening
+                            if gapBest != none { gapBest -= Self.gapExtension }
+                            if opened > gapBest {
+                                gapBest = opened
+                                gapFrom = k
+                            }
+                        }
+                        guard j >= rowFirst else { continue }
+                        guard same(i, name[j]) else {
+                            row[j] = none
+                            continue
+                        }
+                        // One next to the letter before counts for being next to it; one after a gap counts for more
+                        // where it lands on a letter that starts a word.
+                        var value = none
+                        var origin = -1
+                        if j - 1 <= beforeLast, before[j - 1] > none {
+                            value = before[j - 1] + Self.matchScore + Self.nextToBonus
+                            origin = j - 1
+                        }
+                        let landing = Self.matchScore + (wordStarts[j] ? Self.wordStartBonus : 0)
+                        if gapBest > none, gapBest + landing > value {
+                            value = gapBest + landing
+                            origin = gapFrom
+                        }
+                        row[j] = value
+                        origins[j] = origin
+                    }
+                }
+                let final = best + (m - 1) * n
+                var end = -1
+                for j in first[m - 1]...last[m - 1] where final[j] > none && (end < 0 || final[j] > final[end]) {
+                    end = j
+                }
+                guard end >= 0 else { return nil }
+                guard wantsPositions else { return (final[end], []) }
+                var positions = [Int](repeating: 0, count: m)
+                j = end
+                for i in stride(from: m - 1, through: 0, by: -1) {
+                    positions[i] = j
+                    j = from[i * n + j]
+                }
+                return (final[end], positions)
+            }
         }
-        return (best[m - 1][end], positions)
     }
 }

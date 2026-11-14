@@ -124,17 +124,21 @@ class IconViewController: ItemGridPane {
         let top = layout.paddingTop
         let inItems = DragSelectionBox(
             left: box.left - left, top: box.top - top, right: box.right - left, bottom: box.bottom - top)
-        // Sizes are of the names; the hit test places them itself.
-        return DragSelection.iconGridItems(
-            box: inItems, entryPaths: entryPaths, columns: columns,
-            gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout, sizes: sizes
-        ).map { hit in
+        return gridHits(box: inItems, sizes: sizes).map { hit in
             var moved = hit
             moved.rect = DragSelectionBox(
                 left: hit.rect.left + left, top: hit.rect.top + top, right: hit.rect.right + left,
                 bottom: hit.rect.bottom + top)
             return moved
         }
+    }
+
+    /// The items a box touches, both inside the pane's padding. Sizes are of the names; the hit test places them
+    /// itself.
+    func gridHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
+        DragSelection.iconGridItems(
+            box: box, entryPaths: entryPaths, columns: columns,
+            gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout, sizes: sizes)
     }
 
     // MARK: Keeping the selection in view

@@ -91,11 +91,13 @@ private struct GoldenRequest: Codable {
         #expect(!args(.glob).contains("--fixed-strings"))
         #expect(!args(.regex).contains("--fixed-strings"))
         #expect(!args(.regex).contains("--glob"))
-        // Plain Text goes as a pattern of its own: case aside, letters with their accented forms, the rest as typed.
+        // Plain Text goes as a pattern of its own: case aside, each character with its accented and full-width forms
+        // and any marks after it, a sign escaped.
         #expect(Array(args(.text).suffix(2)) == [PlainTextPattern.regex(for: "report (1).pdf"), "/Users/demo/project"])
         #expect(PlainTextPattern.regex(for: "report (1).pdf").hasPrefix("(?i)[r"))
-        #expect(PlainTextPattern.regex(for: "report (1).pdf").contains(" \\(1\\)\\."))
-        #expect(PlainTextPattern.regex(for: "2024") == "(?i)2024")
+        #expect(PlainTextPattern.regex(for: "report (1).pdf").contains(" \\p{M}*[\\(\u{FF08}]\\p{M}*[1\u{FF11}]"))
+        #expect(
+            PlainTextPattern.regex(for: "24") == "(?i)[2\u{FF12}]\\p{M}*[4\u{FF14}]\\p{M}*")
         // Glob and Regex are passed through untouched.
         #expect(Array(args(.regex).suffix(2)) == ["report (1).pdf", "/Users/demo/project"])
     }

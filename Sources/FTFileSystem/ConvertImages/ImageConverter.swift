@@ -155,9 +155,12 @@ public enum ImageConverter {
         return abs(ratio - targetRatio) * Double(max(target.width, target.height)) <= 1.5
     }
 
+    /// The picture drawn at `size`, whatever its shape. A bitmap to draw in holds red, green and blue with
+    /// transparency, so a picture in gray or in CMYK is drawn in sRGB; one in RGB keeps its own color space.
     private static func drawn(_ image: CGImage, at size: PixelSize) throws(Failure) -> CGImage {
         let deep = image.bitsPerComponent > 8
-        let space = image.colorSpace ?? CGColorSpace(name: CGColorSpace.sRGB)!
+        let own = image.colorSpace.flatMap { $0.model == .rgb ? $0 : nil }
+        let space = own ?? CGColorSpace(name: CGColorSpace.sRGB)!
         let info: UInt32 =
             deep
             ? CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.floatComponents.rawValue
@@ -184,13 +187,28 @@ public enum ImageConverter {
         ]
     }
 
-    /// For a picture written as it is: what to take out of the metadata it carries along (null removes a key).
+    /// Where a picture was taken, as its caption data names it (IPTC, and the XMP that mirrors it): the city, the
+    /// state, the country and the place in the city. They go with the GPS position.
+    private static var locationNameKeys: [CFString] {
+        [
+            kCGImagePropertyIPTCCity, kCGImagePropertyIPTCProvinceState,
+            kCGImagePropertyIPTCCountryPrimaryLocationName, kCGImagePropertyIPTCCountryPrimaryLocationCode,
+            kCGImagePropertyIPTCSubLocation, kCGImagePropertyIPTCContentLocationName,
+            kCGImagePropertyIPTCContentLocationCode,
+        ]
+    }
+
+    /// For a picture written as it is: what to take out of the metadata it carries along (null removes a key, in the
+    /// caption data and in the XMP that says the same).
     private static func removedMetadata(_ options: ImageConversionOptions) -> [CFString: Any] {
         var removed: [CFString: Any] = [:]
         if !options.keepMetadata {
             for key in metadataKeys { removed[key] = kCFNull }
         } else if options.removeLocation {
             removed[kCGImagePropertyGPSDictionary] = kCFNull
+            var names: [CFString: Any] = [:]
+            for key in locationNameKeys { names[key] = kCFNull }
+            removed[kCGImagePropertyIPTCDictionary] = names
         }
         return removed
     }
@@ -203,6 +221,10 @@ public enum ImageConverter {
         var kept: [CFString: Any] = [:]
         for key in metadataKeys where !(key == kCGImagePropertyGPSDictionary && options.removeLocation) {
             if let value = source[key] { kept[key] = value }
+        }
+        if options.removeLocation, var caption = kept[kCGImagePropertyIPTCDictionary] as? [CFString: Any] {
+            for key in locationNameKeys { caption[key] = nil }
+            kept[kCGImagePropertyIPTCDictionary] = caption.isEmpty ? nil : caption
         }
         if var exif = kept[kCGImagePropertyExifDictionary] as? [CFString: Any] {
             exif[kCGImagePropertyExifPixelXDimension] = newSize.width

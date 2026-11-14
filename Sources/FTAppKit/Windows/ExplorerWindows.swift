@@ -264,7 +264,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         for tab in allTabs {
             tab.preferencesChanged(change)
         }
-        // Renamed or removed: the menu says again which each window came from.
+        // Saved, renamed, removed or put in another order: the Window menu lists them again.
         if change.keys.contains(.workspaces) {
             for group in liveGroups { group.reportMenuStates() }
         }
@@ -284,16 +284,23 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         let preferences = store.windowPreferences(record.id)
         let resolved = StartupTabs.resolve(
             preferences, homePath: home, startupFolderPath: launch.startupFolderPath, restoreTabs: launch.restoreTabs)
-        // A waiting tab whose folder is gone is dropped; the one in front reads its own, and opens Home if it can't.
+        // A waiting tab whose folder is gone is dropped, unless its second pane's folder is there: then it waits with
+        // that pane alone. The one in front reads its own, and opens Home if it can't.
         let startups = resolved.tabs.map { StartupTabs.withoutRemovedFavorite($0, preferences) }
         let waiting = startups.indices.filter { $0 != resolved.activeIndex }
-        let kept = ScreenGeometry.keepsWaitingTabs(waiting.map { startups[$0].path })
-        let dropped = Set(zip(waiting, kept).filter { !$0.1 }.map(\.0))
+        let kept = StartupTabs.waitingTabs(waiting.map { startups[$0] }, homePath: home) {
+            ScreenGeometry.keepsWaitingTabs($0)
+        }
+        let waits = Dictionary(uniqueKeysWithValues: zip(waiting, kept))
         var tabs: [StartupTab] = []
         var active = 0
-        for (index, startup) in startups.enumerated() where !dropped.contains(index) {
-            if index == resolved.activeIndex { active = tabs.count }
-            tabs.append(startup)
+        for (index, startup) in startups.enumerated() {
+            if index == resolved.activeIndex {
+                active = tabs.count
+                tabs.append(startup)
+            } else if let waitingTab = waits[index] ?? nil {
+                tabs.append(waitingTab)
+            }
         }
         let frame = ScreenGeometry.frame(for: record.bounds)
         nextGroupNumber += 1

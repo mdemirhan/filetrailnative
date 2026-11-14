@@ -74,16 +74,39 @@ struct PathReadCacheTests {
         #expect(cache.begin(["/gone/a"]) == ["/gone/a"])
     }
 
-    // An item known before that a read finds nothing for keeps what it had, still changed, and isn't asked again.
-    @Test func aKnownItemFoundNothingForKeepsWhatItHad() {
+    // An item known before that a read finds gone lets go of what it had, and isn't asked again until it changes.
+    @Test func aKnownItemFoundGoneLetsGoOfWhatItHad() {
+        var cache = Cache()
+        _ = cache.begin(["/a", "/b"])
+        _ = cache.finish(["/a", "/b"], from: cache.generation, answers: ["/a": 1, "/b": 2])
+        cache.markChanged(["/a"])
+        #expect(cache.stale == ["/a"] && cache["/a"] == 1)
+        _ = cache.begin(["/a"])
+        #expect(cache.finish(["/a"], from: cache.generation, answers: [:]) == [])
+        #expect(cache["/a"] == nil && cache.stale.isEmpty && cache.unanswered == ["/a"])
+        #expect(cache["/b"] == 2)
+        #expect(cache.begin(["/a"]).isEmpty)
+        // Everything may have changed: it is neither changed (it has nothing) nor kept from being asked for.
+        cache.markChanged(nil)
+        #expect(cache.stale == ["/b"] && cache.unanswered.isEmpty)
+        #expect(cache.begin(["/a"]) == ["/a"])
+        _ = cache.finish(["/a"], from: cache.generation, answers: ["/a": 3])
+        #expect(cache["/a"] == 3 && cache.unanswered.isEmpty)
+    }
+
+    // An item that changed while the read that found it gone ran keeps what it had until it is read once more.
+    @Test func aKnownItemFoundGoneThatChangedMeanwhileIsReadOnceMore() {
         var cache = Cache()
         _ = cache.begin(["/a"])
         _ = cache.finish(["/a"], from: cache.generation, answers: ["/a": 1])
         cache.markChanged(["/a"])
         _ = cache.begin(["/a"])
-        _ = cache.finish(["/a"], from: cache.generation, answers: [:])
-        #expect(cache["/a"] == 1 && cache.stale == ["/a"])
-        #expect(cache.begin(["/a"]).isEmpty)
+        cache.markChanged(["/a"])
+        #expect(cache.finish(["/a"], from: cache.generation, answers: [:]) == ["/a"])
+        #expect(cache["/a"] == 1 && cache.stale == ["/a"] && cache.unanswered.isEmpty)
+        #expect(cache.begin(["/a"]) == ["/a"])
+        #expect(cache.finish(["/a"], from: cache.generation, answers: [:]) == [])
+        #expect(cache["/a"] == nil && cache.stale.isEmpty && cache.unanswered == ["/a"])
     }
 
     // After a start over an answer from before changes nothing, and leaves the read begun since under way.

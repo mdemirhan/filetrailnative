@@ -66,8 +66,8 @@ private final class SizedProvider: ThumbnailProviding, @unchecked Sendable {
     }
 }
 
-private func picture(opaque: Bool = true) -> ThumbnailPicture {
-    ThumbnailPicture(image: NSImage(size: NSSize(width: 4, height: 4)), isOpaque: opaque)
+private func picture(opaque: Bool = true, side: Int = 4) -> ThumbnailPicture {
+    ThumbnailPicture(image: NSImage(size: NSSize(width: side, height: side)), isOpaque: opaque)
 }
 
 /// Waits until every load asked for has finished.
@@ -155,6 +155,81 @@ private func request(
         _ = store.load(path: "/a.png", kind: .file, size: 512, listing: listing) { receiver.answers.append($0) }
         await idle(queue)
         #expect(receiver.last != nil && store.count == 1)
+    }
+
+    // A preview made again at a larger size takes the smaller one's place in the count of memory too.
+    @Test func aLargerPreviewOfTheSameFileCountsOnce() async {
+        let provider = ScriptedProvider { call in
+            ThumbnailResponse(version: "1", unchanged: false, picture: picture(side: call.size == 256 ? 4 : 8))
+        }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue, memoryLimit: 1 << 20)
+        let listing = Listing()
+        _ = store.load(path: "/a.png", kind: .file, size: 256, listing: listing) { _ in }
+        await idle(queue)
+        #expect(store.memoryUsed == 4 * 4 * 4)
+        _ = store.load(path: "/a.png", kind: .file, size: 512, listing: listing) { _ in }
+        await idle(queue)
+        #expect(store.count == 1)
+        #expect(store.memoryUsed == 8 * 8 * 4)
+        // Asked for at the smaller size again: the larger one serves, counted once.
+        _ = store.load(path: "/a.png", kind: .file, size: 256, listing: listing) { _ in }
+        await idle(queue)
+        #expect(store.count == 1 && store.memoryUsed == 8 * 8 * 4)
+    }
+
+    // One preview can push another out by the count and a second by the memory it takes: what is counted is what
+    // is left.
+    @Test func theCountAndTheMemoryLimitDropPreviewsTogether() async {
+        let provider = ScriptedProvider { call in
+            ThumbnailResponse(
+                version: "1", unchanged: false, picture: picture(side: call.path == "/large.png" ? 8 : 4))
+        }
+        let queue = ThumbnailLoadQueue()
+        // Two previews at most, and room for a large one (256 bytes) and not a small one (64) beside it.
+        let store = ThumbnailStore(provider: provider, queue: queue, maxEntries: 2, memoryLimit: 300)
+        let listing = Listing()
+        for name in ["a", "b", "large"] {
+            _ = store.load(path: "/\(name).png", kind: .file, size: 512, listing: listing) { _ in }
+            await idle(queue)
+        }
+        #expect(store.count == 1)
+        #expect(store.memoryUsed == 8 * 8 * 4)
+        #expect(store.loadedPicture(forPath: "/large.png") != nil)
+        // Small ones again: the count alone drops the oldest.
+        for name in ["c", "d"] {
+            _ = store.load(path: "/\(name).png", kind: .file, size: 512, listing: listing) { _ in }
+            await idle(queue)
+        }
+        #expect(store.count == 2)
+        #expect(store.memoryUsed == 2 * 4 * 4 * 4)
+        #expect(store.loadedPicture(forPath: "/large.png") == nil)
+    }
+
+    // Every preview let go while one is being checked against its file, which is as it was: the check gives the
+    // picture it began with, kept and counted again, once.
+    @Test func aCheckUnderWayWhenThePreviewsAreLetGoKeepsItsPicture() async {
+        let provider = ScriptedProvider()
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue, memoryLimit: 1 << 20)
+        let first = picture()
+        _ = store.load(path: "/a.png", kind: .file, size: 512, listing: Listing()) { _ in }
+        await pollUntil { provider.calls.count == 1 }
+        provider.release(ThumbnailResponse(version: "1", unchanged: false, picture: first))
+        await idle(queue)
+        #expect(store.memoryUsed == 4 * 4 * 4)
+        // Another reading of the folder checks it again.
+        let receiver = Receiver()
+        _ = store.load(path: "/a.png", kind: .file, size: 512, listing: Listing()) { receiver.answers.append($0) }
+        await pollUntil { provider.calls.count == 2 }
+        #expect(provider.calls.last?.knownVersion == "1")
+        store.dropCached()
+        #expect(store.count == 0 && store.memoryUsed == 0)
+        provider.release(ThumbnailResponse(version: "1", unchanged: true, picture: nil))
+        await idle(queue)
+        #expect(receiver.last?.image === first.image)
+        #expect(store.count == 1 && store.memoryUsed == 4 * 4 * 4)
+        #expect(store.loadedPicture(forPath: "/a.png")?.image === first.image)
     }
 
     // A preview cached too small is given at once and made again at the larger size, the file being as it was; one

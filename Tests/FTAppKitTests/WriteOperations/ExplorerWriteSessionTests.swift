@@ -54,8 +54,23 @@ private final class FakeHost: WriteSessionHost {
     var selectedPaths: [String] = []
     var isSearching = false
     var selectedTreePath: String?
+    /// A tab with two panes: which one is active, and each one's folder and selection. Nil for one pane.
+    var activePaneID: Int?
+    var panes: [WritePaneSelection]?
     private(set) var refreshes: [WriteEndRefresh] = []
     private(set) var followed: [[PathMove]] = []
+
+    var paneSelections: [WritePaneSelection] {
+        panes ?? [WritePaneSelection(paneID: nil, directoryPath: currentPath, paths: selectedPaths)]
+    }
+
+    /// The pane `id` becomes the active one: the tab's folder and selection are its own.
+    func activate(_ id: Int) {
+        guard let pane = panes?.first(where: { $0.paneID == id }) else { return }
+        activePaneID = id
+        currentPath = pane.directoryPath
+        selectedPaths = pane.paths
+    }
 
     func applyWriteEnd(_ refresh: WriteEndRefresh) { refreshes.append(refresh) }
     func followMovesOnScreen(_ moves: [PathMove]) { followed.append(moves) }
@@ -424,6 +439,42 @@ private let arrived = WriteOperationItem(
             #expect(refresh.path == "/Users/demo/Folder")
             #expect(refresh.selecting == (switchesTab ? nil : ["/Users/demo/Folder/source.txt"]))
             await fixture.coordinator.shutDown(maxWaitMs: 0)
+        }
+    }
+
+    // A copy to the other pane takes a while, and the other pane becomes the active one meanwhile. What the copy
+    // made is selected there, unless something was picked in that pane since the copy started.
+    @Test func whatAWriteMadeIsNotSelectedOverAPickMadeInThePaneThatBecameActiveMeanwhile() {
+        let source = "/Users/demo/Folder/a.txt"
+        let made = "/Users/demo/Other/a.txt"
+        for picks in [false, true] {
+            let fixture = Fixture()
+            let host = fixture.host
+            host.panes = [
+                WritePaneSelection(paneID: 1, directoryPath: "/Users/demo/Folder", paths: [source]),
+                WritePaneSelection(paneID: 2, directoryPath: "/Users/demo/Other", paths: []),
+            ]
+            host.activate(1)
+            fixture.session.applyCard(
+                WriteOperationCardState(
+                    action: .copyTo, stage: .starting, targetPath: "/Users/demo/Other", totalItemCount: 1))
+            fixture.session.adoptWriteOperation("copy-op")
+
+            if picks { host.panes?[1].paths = ["/Users/demo/Other/picked.txt"] }
+            host.activate(2)
+            let result = LocalWriteResults.result(
+                operationId: "copy-op", action: .copyTo, targetPath: "/Users/demo/Other",
+                startedAt: Date(timeIntervalSince1970: 0), finishedAt: Date(timeIntervalSince1970: 1),
+                totalItemCount: 1, completedItemCount: 1,
+                items: [WriteOperationItem(sourcePath: source, destinationPath: made, status: .completed)],
+                status: .completed, error: nil)
+            fixture.session.handleProgress(
+                WriteOperationEvent(
+                    operationId: "copy-op", action: .copyTo, status: .completed, totalItemCount: 1, result: result))
+
+            let refresh = fixture.host.refreshes.last
+            #expect(refresh?.path == "/Users/demo/Other", "picks: \(picks)")
+            #expect(refresh?.selecting == (picks ? nil : [made]), "picks: \(picks)")
         }
     }
 }

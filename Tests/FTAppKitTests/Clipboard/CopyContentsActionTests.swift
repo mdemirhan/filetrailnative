@@ -141,6 +141,29 @@ import UniformTypeIdentifiers
         #expect(FileContents.readNow(huge, guess: .image) == .failure(.tooLarge(.image)))
     }
 
+    // A name that doesn't say what the file holds: more than the text copied is turned down by its size, before
+    // any of it is read as text.
+    @Test func aFileWithNoKnownKindLargerThanTheTextCopiedIsNotDecoded() throws {
+        let folder = Folder()
+        // Text all the way but for its last byte, which no encoding read has: decoding it whole would say "not text".
+        var long = Data(repeating: 0x61, count: Int(CopyContents.textLimit))
+        long.append(0xFF)
+        #expect(FileContents.readNow(folder.write("LONGLOG", long), guess: .unknown) == .failure(.tooLarge(.text)))
+        // At the limit it is still read, and told for what it is.
+        #expect(
+            FileContents.readNow(folder.write("EDGE", long.dropLast(2) + [0x62]), guess: .unknown)
+                == .success(.text(String(repeating: "a", count: Int(CopyContents.textLimit) - 1) + "b", rtf: nil)))
+        // A large file that begins as no text does is neither, as a small one is.
+        var blob = Data([0x7F, 0x45, 0x4C, 0x46, 0x00, 0x01])
+        blob.append(Data(repeating: 0x61, count: Int(CopyContents.textLimit)))
+        #expect(FileContents.readNow(folder.write("BLOB", blob), guess: .unknown) == .failure(.notImageOrText))
+        // A large image is still an image.
+        let png = Self.image(.png) + Data(repeating: 0, count: Int(CopyContents.textLimit))
+        #expect(
+            FileContents.readNow(folder.write("PICTURE", png), guess: .unknown)
+                == .success(.image(type: "public.png", data: png, png: nil)))
+    }
+
     @Test func aLinkIsReadForWhatItPointsToAndAMissingFileSaysWhy() throws {
         let folder = Folder()
         let target = folder.write("notes.txt", Data("linked".utf8))
@@ -250,6 +273,71 @@ import UniformTypeIdentifiers
         #expect(await fixture.action.copy(path))
         #expect(fixture.board.string(forType: .string) == "TOKEN=abc")
         #expect(PasteAsFile.isConcealed(types: fixture.board.types?.map(\.rawValue) ?? []))
+    }
+
+    // A link copies what it points to, so it is asked about for that file's name as for its own.
+    @Test func aLinkToAFileThatUsuallyHoldsASecretIsAskedAbout() async throws {
+        let folder = Folder()
+        let fixture = Fixture()
+        let secret = folder.write("prod.env", Data("TOKEN=abc".utf8))
+        let link = "\(folder.path)/settings.txt"
+        try FileManager.default.createSymbolicLink(atPath: link, withDestinationPath: secret)
+        #expect(await fixture.action.copy(link))
+        #expect(
+            fixture.asked.map(\.title) == ["\u{201C}settings.txt\u{201D} may hold a password or a key. Copy its text?"])
+        #expect(PasteAsFile.isConcealed(types: fixture.board.types?.map(\.rawValue) ?? []))
+        // A link named as a secret is one, wherever it leads; a plain link to a plain file is not.
+        let plain = folder.write("notes.md", Data("hello".utf8))
+        try FileManager.default.createSymbolicLink(atPath: "\(folder.path)/.npmrc", withDestinationPath: plain)
+        try FileManager.default.createSymbolicLink(atPath: "\(folder.path)/readme.md", withDestinationPath: plain)
+        #expect(await fixture.action.copy("\(folder.path)/.npmrc"))
+        #expect(fixture.asked.count == 2)
+        #expect(await fixture.action.copy("\(folder.path)/readme.md"))
+        #expect(fixture.asked.count == 2)
+        #expect(!PasteAsFile.isConcealed(types: fixture.board.types?.map(\.rawValue) ?? []))
+    }
+
+    @Test func anImageNamedLikeAKeyIsCopiedWithoutAsking() async {
+        let folder = Folder()
+        let fixture = Fixture()
+        #expect(await fixture.action.copy(folder.write("id_rsa_diagram.png", Self.image(.png))))
+        #expect(fixture.asked.isEmpty)
+        #expect(fixture.toastTitles == ["Copied image"])
+        #expect(!PasteAsFile.isConcealed(types: fixture.board.types?.map(\.rawValue) ?? []))
+    }
+
+    // MARK: Paste as File's reading of the clipboard
+
+    @Test func theMenusTellTextFromItsTypeAndTheReadTellsWhatIsThere() async {
+        let board = Self.privateBoard()
+        defer { board.releaseGlobally() }
+        let clipboard = SystemClipboard(board)
+        // Text alone is text for the menus, unread; read, an empty one is nothing.
+        board.declareTypes([.string], owner: nil)
+        board.setString("", forType: .string)
+        #expect(clipboard.choice == .text)
+        let empty = await clipboard.read()
+        #expect(empty.choice == .nothing && empty.data == nil)
+        board.clearContents()
+        board.setString("hello", forType: .string)
+        #expect(clipboard.kind == .text)
+        let text = await clipboard.read()
+        #expect(text.choice == .text && text.data == Data("hello".utf8) && !text.concealed)
+    }
+
+    @Test func anImageWithOnlyBlankTextBesideItIsPastedAsTheImage() async {
+        let board = Self.privateBoard()
+        defer { board.releaseGlobally() }
+        let png = Self.image(.png)
+        let item = NSPasteboardItem()
+        item.setData(png, forType: .png)
+        item.setString(" \n", forType: .string)
+        board.clearContents()
+        #expect(board.writeObjects([item]))
+        let clipboard = SystemClipboard(board)
+        #expect(clipboard.choice == .image(.png))
+        let contents = await clipboard.read()
+        #expect(contents.choice == .image(.png) && contents.data == png)
     }
 
     @Test func whatCantBeCopiedIsAToastAndWhatWentWrongAnAlert() async {

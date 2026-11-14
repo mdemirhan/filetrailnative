@@ -114,7 +114,6 @@ struct WorkspaceWindowTests {
         window.bounds = WindowBounds(x: 10, y: 20, width: 950, height: 640)
 
         let snapshot = try #require(setup.controller.workspaceSnapshot(of: window.windowID))
-        #expect(snapshot.id == window.recordID)
         #expect(snapshot.bounds == StoredWindowState(x: 10, y: 20, width: 950, height: 640, maximized: false))
         #expect(snapshot.session == setup.store.windowPreferences(window.recordID).windowSession)
         #expect(setup.controller.workspaceSnapshot(of: 99_999) == nil)

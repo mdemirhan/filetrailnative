@@ -41,6 +41,45 @@ private enum Pictures {
         return context.makeImage()
     }
 
+    /// A picture in 16-bit gray, its left half dark and its right half light.
+    static func deepGray(width: Int, height: Int) -> CGImage? {
+        guard
+            let context = CGContext(
+                data: nil, width: width, height: height, bitsPerComponent: 16, bytesPerRow: 0,
+                space: CGColorSpace(name: CGColorSpace.genericGrayGamma2_2)!,
+                bitmapInfo: CGImageAlphaInfo.none.rawValue | CGImageByteOrderInfo.order16Little.rawValue)
+        else { return nil }
+        context.setFillColor(gray: 0.1, alpha: 1)
+        context.fill(CGRect(x: 0, y: 0, width: width / 2, height: height))
+        context.setFillColor(gray: 0.9, alpha: 1)
+        context.fill(CGRect(x: width / 2, y: 0, width: width - width / 2, height: height))
+        return context.makeImage()
+    }
+
+    /// A picture in CMYK, as a print shop's: its left half cyan and its right half yellow.
+    static func cmyk(width: Int, height: Int) -> CGImage? {
+        guard
+            let context = CGContext(
+                data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+                space: CGColorSpaceCreateDeviceCMYK(), bitmapInfo: CGImageAlphaInfo.none.rawValue)
+        else { return nil }
+        context.setFillColor(cyan: 1, magenta: 0, yellow: 0, black: 0, alpha: 1)
+        context.fill(CGRect(x: 0, y: 0, width: width / 2, height: height))
+        context.setFillColor(cyan: 0, magenta: 0, yellow: 1, black: 0, alpha: 1)
+        context.fill(CGRect(x: width / 2, y: 0, width: width - width / 2, height: height))
+        return context.makeImage()
+    }
+
+    /// Where a picture was taken, as its caption data names it, with a caption and keywords that say nothing of it.
+    static var placeNames: [CFString: Any] {
+        [
+            kCGImagePropertyIPTCCity: "Cupertino", kCGImagePropertyIPTCProvinceState: "California",
+            kCGImagePropertyIPTCCountryPrimaryLocationName: "United States",
+            kCGImagePropertyIPTCCountryPrimaryLocationCode: "USA", kCGImagePropertyIPTCSubLocation: "The Park",
+            kCGImagePropertyIPTCKeywords: ["one", "two"], kCGImagePropertyIPTCCaptionAbstract: "A caption",
+        ]
+    }
+
     static let exifDate = "2026:05:14 18:02:11"
 
     static func cameraMetadata(orientation: Int) -> [CFString: Any] {
@@ -87,6 +126,18 @@ private struct Written {
             as? String
     }
     var hasLocation: Bool { properties[kCGImagePropertyGPSDictionary] != nil }
+    var caption: [CFString: Any] { properties[kCGImagePropertyIPTCDictionary] as? [CFString: Any] ?? [:] }
+    var depth: Int { properties[kCGImagePropertyDepth] as? Int ?? 0 }
+    /// The names of the XMP tags the file carries, as "photoshop:City".
+    var xmpTags: Set<String> {
+        guard let metadata = CGImageSourceCopyMetadataAtIndex(source, 0, nil) else { return [] }
+        var tags: Set<String> = []
+        CGImageMetadataEnumerateTagsUsingBlock(metadata, nil, nil) { path, _ in
+            tags.insert(path as String)
+            return true
+        }
+        return tags
+    }
     var hasGainMap: Bool {
         CGImageSourceCopyAuxiliaryDataInfoAtIndex(source, 0, kCGImageAuxiliaryDataTypeISOGainMap) != nil
             || CGImageSourceCopyAuxiliaryDataInfoAtIndex(source, 0, kCGImageAuxiliaryDataTypeHDRGainMap) != nil
@@ -185,6 +236,43 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         }
     }
 
+    // The city, the state, the country and the place go with the location, from the caption data and from the XMP
+    // that says the same; the caption and the keywords stay.
+    @Test func removingTheLocationTakesThePlaceNamesToo() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let url = folder.appending("named.jpg")
+        var properties = Pictures.cameraMetadata(orientation: 1)
+        properties[kCGImagePropertyIPTCDictionary] = Pictures.placeNames
+        try Pictures.write([Pictures.image(width: 400, height: 300)], as: .jpeg, to: url, properties: properties)
+        let names: [CFString] = [
+            kCGImagePropertyIPTCCity, kCGImagePropertyIPTCProvinceState,
+            kCGImagePropertyIPTCCountryPrimaryLocationName, kCGImagePropertyIPTCCountryPrimaryLocationCode,
+            kCGImagePropertyIPTCSubLocation,
+        ]
+        let xmpNames: Set<String> = [
+            "photoshop:City", "photoshop:State", "photoshop:Country", "Iptc4xmpCore:Location",
+            "Iptc4xmpCore:CountryCode", "exif:GPSLatitude", "exif:GPSLongitude",
+        ]
+        for format in [ImageFormat.jpeg, .heic, .tiff] {
+            for size in [ImageSize.actual, .fitWithin(200)] {
+                // Kept with the rest unless the location goes.
+                let kept = try await Written(converted(url.path, ImageConversionOptions(format: format, size: size)))
+                #expect(kept.caption[kCGImagePropertyIPTCCity] as? String == "Cupertino", "\(format) \(size)")
+                #expect(kept.hasLocation, "\(format) \(size)")
+
+                let written = try await Written(
+                    converted(url.path, ImageConversionOptions(format: format, size: size, removeLocation: true)))
+                #expect(!written.hasLocation, "\(format) \(size)")
+                for name in names { #expect(written.caption[name] == nil, "\(format) \(size) \(name)") }
+                #expect(written.xmpTags.isDisjoint(with: xmpNames), "\(format) \(size) \(written.xmpTags)")
+                #expect(written.caption[kCGImagePropertyIPTCCaptionAbstract] as? String == "A caption")
+                #expect(written.caption[kCGImagePropertyIPTCKeywords] as? [String] == ["one", "two"])
+                #expect(written.exifDate == Pictures.exifDate, "\(format) \(size)")
+            }
+        }
+    }
+
     @Test func withoutMetadataNoneIsWritten() async throws {
         let folder = try TemporaryDirectory()
         defer { folder.remove() }
@@ -222,6 +310,43 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         let image = try written.upright
         #expect(pixel(image, x: 10, y: 50)[0] > 200)
         #expect(pixel(image, x: 90, y: 50)[2] > 200)
+    }
+
+    // A picture in gray or in CMYK is drawn to an exact size of another shape as one in RGB is; a 16-bit one keeps
+    // its depth where the format holds it.
+    @Test func anExactSizeOfAnotherShapeIsDrawnFromGrayAndFromCMYK() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let exact = ImageSize.custom(width: 100, height: 80, unit: .pixels, proportional: false)
+
+        let gray = folder.appending("gray.png")
+        try Pictures.write([try #require(Pictures.deepGray(width: 200, height: 100))], as: .png, to: gray)
+        #expect(try Written(Data(contentsOf: gray)).depth == 16)
+        for format in [ImageFormat.png, .tiff, .jpeg, .heic] {
+            let written = try await Written(converted(gray.path, ImageConversionOptions(format: format, size: exact)))
+            #expect(written.size == PixelSize(width: 100, height: 80), "\(format)")
+            let image = try written.upright
+            let (dark, light) = (pixel(image, x: 10, y: 40), pixel(image, x: 90, y: 40))
+            #expect(dark[0] < 90 && light[0] > 200, "\(format) \(dark) \(light)")
+            // Gray all the same.
+            #expect(abs(Int(light[0]) - Int(light[2])) < 6, "\(format) \(light)")
+            if format == .png || format == .tiff { #expect(written.depth == 16, "\(format)") }
+        }
+        // In its own shape it was never drawn again, and still isn't.
+        let fitted = try await Written(converted(gray.path, ImageConversionOptions(format: .png, size: .scale(50))))
+        #expect(fitted.size == PixelSize(width: 100, height: 50))
+
+        let print = folder.appending("print.tiff")
+        try Pictures.write([try #require(Pictures.cmyk(width: 200, height: 100))], as: .tiff, to: print)
+        for format in [ImageFormat.jpeg, .png] {
+            let written = try await Written(converted(print.path, ImageConversionOptions(format: format, size: exact)))
+            #expect(written.size == PixelSize(width: 100, height: 80), "\(format)")
+            let image = try written.upright
+            // Cyan on the left (no red), yellow on the right (no blue).
+            let (cyan, yellow) = (pixel(image, x: 10, y: 40), pixel(image, x: 90, y: 40))
+            #expect(cyan[0] < 120 && cyan[2] > 150, "\(format) \(cyan)")
+            #expect(yellow[0] > 200 && yellow[2] < 120, "\(format) \(yellow)")
+        }
     }
 
     @Test func anExactSizeLargerThanThePictureIsRefused() async throws {

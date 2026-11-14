@@ -26,6 +26,57 @@ import Testing
         #expect(StartupTabs.withoutRemovedFavorite(tab("/gone"), preferences).favoritePath == "/gone")
     }
 
+    // A tab that waits behind the one in front is left out when its folder is gone. One with two panes stays while
+    // either pane's folder is there: with the first one's gone, it opens with its second pane alone.
+    @Test func aWaitingTabWhoseFirstPanesFolderIsGoneStaysOnItsSecondPane() throws {
+        func tab(_ path: String, second: String? = nil) -> StartupTab {
+            var tab = StartupTab(
+                path: path, rootPath: Self.home, favoritePath: path, viewMode: .list, searchViewMode: .details,
+                sortBy: .name, sortDirection: .asc, includeHidden: false, foldersFirst: true, favoritesExpanded: false,
+                locationsExpanded: true)
+            if let second {
+                tab.secondPane = OpenPanePreference(
+                    path: second, viewMode: .icons, searchViewMode: .list, sortBy: .modified, sortDirection: .desc,
+                    includeHidden: true, foldersFirst: false)
+                tab.activePane = 1
+                tab.paneSplit = 0.7
+            }
+            return tab
+        }
+        let waiting = [
+            tab("/Users/demo/there"), tab("/Users/demo/gone"),
+            tab("/Users/demo/gone", second: "/Users/demo/Projects/app"),
+            tab("/Users/demo/there", second: "/Users/demo/gone"), tab("/Users/demo/gone", second: "/Users/demo/gone"),
+        ]
+        var asked: [[String]] = []
+
+        let kept = StartupTabs.waitingTabs(waiting, homePath: Self.home) { paths in
+            asked.append(paths)
+            return paths.map { $0 != "/Users/demo/gone" }
+        }
+
+        // Every folder is asked about in one go.
+        #expect(asked.count == 1)
+        #expect(
+            kept.map { $0?.path } == ["/Users/demo/there", nil, "/Users/demo/Projects/app", "/Users/demo/there", nil])
+        #expect(kept[0] == waiting[0])
+        // A second pane whose folder is gone finds the folder above it when the tab is shown.
+        #expect(kept[3] == waiting[3])
+        let survivor = try #require(kept[2])
+        #expect(survivor.secondPane == nil)
+        #expect(survivor.activePane == nil)
+        #expect(survivor.paneSplit == nil)
+        #expect(survivor.favoritePath == nil)
+        #expect(survivor.rootPath == Self.home)
+        #expect(survivor.viewMode == .icons)
+        #expect(survivor.searchViewMode == .list)
+        #expect(survivor.sortBy == .modified)
+        #expect(survivor.sortDirection == .desc)
+        #expect(survivor.includeHidden)
+        #expect(!survivor.foldersFirst)
+        #expect(!survivor.favoritesExpanded)
+    }
+
     /// The single view a window opens with when no tabs were saved.
     private func single(
         restore: Bool, last: String?, favorite: String?, root: String?, startupFolder: String? = nil

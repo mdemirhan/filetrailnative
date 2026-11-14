@@ -393,7 +393,7 @@ final class WindowWriteActions {
     /// and a clipboard with nothing to write, are only told of; what a password manager marked as private is asked
     /// about first.
     func pasteAsFile(in folder: String, from clipboard: SystemClipboard) async -> CopyLikeOutcome {
-        let contents = clipboard.read()
+        let contents = await clipboard.read()
         if contents.choice == .files {
             dialogs.toast(PasteAsFile.filesTitle, PasteAsFile.filesMessage, window)
             return .cancelled

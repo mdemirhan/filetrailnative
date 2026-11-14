@@ -90,6 +90,19 @@ public enum UndoHistoryRows {
             barrier: undo.count > limit ? nil : history.barrier)
     }
 
+    /// When the list next reads differently for the time alone: an operation under an hour old is told by its age in
+    /// whole minutes, so the next change is the earliest moment one of `dates` is a whole minute older, the hour
+    /// included, at which it is told by its time of day. Nil when none is under an hour old: those read the same for
+    /// the rest of the day.
+    public static func nextTimeChange(of dates: [Date], now: Date) -> Date? {
+        let (minute, hour) = (60.0, 3_600.0)
+        return dates.compactMap { date -> Date? in
+            let age = max(0, now.timeIntervalSince(date))
+            guard age < hour else { return nil }
+            return date.addingTimeInterval(((age / minute).rounded(.down) + 1) * minute)
+        }.min()
+    }
+
     /// What one item of an operation did, as the person did it. An entry on the Redo list holds what its Undo did, the
     /// other way round.
     enum Change: Equatable {

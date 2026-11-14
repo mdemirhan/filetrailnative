@@ -577,7 +577,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard text != filter || (mode != nil && mode != filterMode) else { return }
         startFilter(mode, ifEmpty: false)
         listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
-        refilter(previousPaths: entryPaths)
+        filterChanged(.kept(previousPaths: entryPaths))
     }
 
     /// A filter starting from nothing takes the default mode, or the one it is given.
@@ -591,9 +591,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard !filter.isEmpty else { return }
         let previous = entryPaths
         listFilter.clear()
-        onFilterChanged?(filter)
-        refilter(previousPaths: previous)
-        onFilterStateChanged?()
+        filterChanged(.kept(previousPaths: previous))
     }
 
     // MARK: Pinned filter
@@ -614,9 +612,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         pinnedFilter = PinnedListFilter(query: filter, mode: filterMode)
         listFilter.clear()
         typedToSelect.clear()
-        onFilterChanged?(filter)
-        refilter(previousPaths: previous)
-        onFilterStateChanged?()
+        filterChanged(.kept(previousPaths: previous))
     }
 
     /// The pinned filter goes back to being typed text, to be edited or cleared, in a folder; over search results it
@@ -629,10 +625,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if searchDisplay == nil {
             typedFilterMode = pin.mode
             listFilter.set(pin.query, at: ProcessInfo.processInfo.systemUptime)
-            onFilterChanged?(filter)
         }
-        refilter(previousPaths: previous)
-        onFilterStateChanged?()
+        filterChanged(.kept(previousPaths: previous))
     }
 
     /// The pill's ✕: the filter goes, pinned or typed.
@@ -642,9 +636,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         pinnedFilter = nil
         typedToSelect.clear()
         listFilter.clear()
-        onFilterChanged?(filter)
-        refilter(previousPaths: previous)
-        onFilterStateChanged?()
+        filterChanged(.kept(previousPaths: previous))
     }
 
     /// A pane started from another (Duplicate Tab, a tab moved to another window) takes its pinned filter.
@@ -653,19 +645,32 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let previous = entryPaths
         pinnedFilter = pin
         typedToSelect.clear()
-        refilter(previousPaths: previous)
-        onFilterStateChanged?()
+        filterChanged(.kept(previousPaths: previous))
     }
 
-    /// An item the pinned filter hides is to be shown (Reveal, Go To a file, a paste, a rename): the pin goes, and a
-    /// toast says so.
-    private func dropPinToShowHidden() {
-        guard let pin = pinnedFilter else { return }
-        pinnedFilter = nil
-        typedToSelect.clear()
-        onFilterStateChanged?()
-        _ = NotificationOverlay.push(
-            .info, title: "The filter “\(pin.query)” is no longer pinned, to show an item it hid", in: view.window)
+    /// An item a filter hides is to be shown (Reveal, Go To a file, a paste, a rename): what hides it goes, and only
+    /// that. The pin goes when the pin is what hides the item, and a toast says so; the typed filter (the results'
+    /// own, over search results) is cleared when it hides the item.
+    private func showHidden(_ path: String) {
+        guard position(of: path) == nil, let entry = rowsByPath[path], !filter.isEmpty || pinnedFilter != nil
+        else { return }
+        var dropped: PinnedListFilter?
+        if let pin = pinnedFilter,
+            ListFilter.filterPinned([entry], pin: pin, isFolder: \.isDirectoryLike, cache: foldedNames).isEmpty
+        {
+            dropped = pin
+            pinnedFilter = nil
+            typedToSelect.clear()
+            // Whether the typed filter hides it too shows once the pin is gone.
+            if !filter.isEmpty { reorder() }
+        }
+        if !filter.isEmpty, dropped == nil || position(of: path) == nil { listFilter.clear() }
+        filterChanged(.untouched)
+        if let dropped {
+            _ = NotificationOverlay.push(
+                .info, title: "The filter “\(dropped.query)” is no longer pinned, to show an item it hid",
+                in: view.window)
+        }
     }
 
     func typeToSelect(_ text: String?) {
@@ -674,18 +679,36 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             return
         }
         let query = typedToSelect.type(text, at: ProcessInfo.processInfo.systemUptime)
-        guard let match = ListTypeToSelect.match(in: entries, query: query) else { return }
+        guard let match = ListTypeToSelect.match(in: entries, query: query, cache: foldedNames) else { return }
         setSelection(.single(match.path), notify: true)
         pane?.syncSelection()
     }
 
-    private func refilter(previousPaths: [String]) {
+    /// What becomes of the selection when the filter changes.
+    private enum SelectionAfterFilter {
+        /// Kept, without what is no longer listed; `previousPaths` is the order the items that left stood in.
+        case kept(previousPaths: [String])
+        /// The name the text fits best, as typing selects; kept when the text is empty.
+        case bestMatch
+        /// Left as it is: whoever changed the filter sets it next.
+        case untouched
+    }
+
+    /// The filter's text, its mode or the pin changed, whatever changed it: the list is narrowed again and drawn, and
+    /// the results bar's field and Pin Filter are told, so neither is left showing what was.
+    private func filterChanged(_ after: SelectionAfterFilter) {
+        onFilterChanged?(filter)
         reorder()
-        resanitizeSelection(previousPaths: previousPaths)
+        if case .kept(let previousPaths) = after { resanitizeSelection(previousPaths: previousPaths) }
         pane?.reload(scrollToTop: false)
+        if case .bestMatch = after, !filter.isEmpty {
+            let match = ListFilter.selection(in: entries, query: filter, mode: filterMode, cache: foldedNames)
+            setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: true)
+        }
         pane?.syncSelection()
         refreshState()
         updateStatus()
+        onFilterStateChanged?()
     }
 
     /// A key typed into the list: the text narrows it and selects the first name that starts with it, otherwise the
@@ -704,20 +727,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         case .eraseWord:
             listFilter.eraseWord(at: now)
         }
-        onFilterChanged?(filter)
-        onFilterStateChanged?()
-        reorder()
-        pane?.reload(scrollToTop: false)
-        refreshState()
-        guard !filter.isEmpty else {
-            pane?.syncSelection()
-            updateStatus()
-            return
-        }
-        let match = ListFilter.selection(in: entries, query: filter, mode: filterMode)
-        setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: true)
-        pane?.syncSelection()
-        updateStatus()
+        filterChanged(.bestMatch)
     }
 
     /// Settings changed how a filter starts finding names. A filter already typed keeps its own mode.
@@ -731,8 +741,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let next = filterMode.toggled
         guard !filter.isEmpty else { return next }
         typedFilterMode = next
-        refilter(previousPaths: entryPaths)
-        updateFilterPill()
+        filterChanged(.kept(previousPaths: entryPaths))
         return next
     }
 
@@ -916,24 +925,19 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         return order
     }
 
-    /// Selects the paths that are listed; the view keeps their lead in view (`RevealKeeper`). An item the filter hides is shown: the filter is
-    /// cleared.
+    /// Selects the paths that are listed; the view keeps their lead in view (`RevealKeeper`). A lead a filter hides is
+    /// shown: the filter that hides it goes (`showHidden`).
     func select(paths: [String]) {
         let existing = paths.filter { rowsByPath[$0] != nil }
         let selecting = ContentSelection.of(existing)
-        if let lead = selecting.leadPath, position(of: lead) == nil, !filter.isEmpty || pinnedFilter != nil {
-            dropPinToShowHidden()
-            listFilter.clear()
-            reorder()
-            pane?.reload(scrollToTop: false)
-            refreshState()
-        }
+        if let lead = selecting.leadPath { showHidden(lead) }
         setSelection(selecting, notify: true)
         pane?.syncSelection()
     }
 
     /// The pane reports a selection from a click, a key or the marquee: the lead is brought into view when it changes.
     func selectionChanged(_ selection: ContentSelection) {
+        restoredScroll = nil
         setSelection(selection, notify: true)
     }
 
@@ -961,18 +965,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     // MARK: Rename
 
-    /// Starts renaming the item in its row. The item is shown first: one the filter hides clears the filter.
+    /// Starts renaming the item in its row. The item is shown first: the filter that hides it goes (`showHidden`).
     /// Whether the item is listed.
     @discardableResult
     func beginRename(path: String) -> Bool {
         guard rowsByPath[path] != nil else { return false }
-        if position(of: path) == nil, !filter.isEmpty || pinnedFilter != nil {
-            dropPinToShowHidden()
-            listFilter.clear()
-            reorder()
-            pane?.reload(scrollToTop: false)
-            refreshState()
-        }
+        showHidden(path)
         Self.renameSessions += 1
         inlineRename = InlineRenameState(path: path, error: nil, refusalCount: 0, sessionID: Self.renameSessions)
         pane?.syncRename()
@@ -1026,6 +1024,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func showSearch(_ display: ContentSearchDisplay) {
         let entering = searchDisplay == nil
         let newList = entering || searchDisplay?.viewKey != display.viewKey
+        if newList { restoredScroll = nil }
         if entering {
             endLoading()
             keptFolder = KeptFolder(
@@ -1065,6 +1064,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func endSearch() {
         guard searchDisplay != nil else { return }
         let kept = keptFolder
+        restoredScroll = nil
         searchDisplay = nil
         search = nil
         keptFolder = nil
@@ -1093,42 +1093,38 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard text != filter else { return }
         startFilter()
         listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
-        reorder()
-        pane?.reload(scrollToTop: false)
-        refreshState()
-        guard !filter.isEmpty else {
-            pane?.syncSelection()
-            updateStatus()
-            return
-        }
-        let match = ListFilter.selection(in: entries, query: filter, mode: filterMode)
-        setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: true)
-        pane?.syncSelection()
-        updateStatus()
+        filterChanged(.bestMatch)
     }
 
     /// The results come back as they were left: narrowed by the filter's text in its own mode and scrolled where they
-    /// were. The selection is left to whoever brings them back.
+    /// were. The selection is left to whoever brings them back, and the list stays scrolled where it was when that
+    /// selection is applied, also when its lead was out of view.
     func restoreSearchView(filter text: String, mode: NameMatchMode, scroll: (top: Double, left: Double)?) {
         guard searchDisplay != nil else { return }
         if text != filter || (!text.isEmpty && mode != filterMode) {
             startFilter(mode, ifEmpty: false)
             listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
-            onFilterChanged?(filter)
-            reorder()
-            pane?.reload(scrollToTop: false)
-            refreshState()
-            updateStatus()
+            filterChanged(.untouched)
         }
         guard let scroll else { return }
         view.layoutSubtreeIfNeeded()
         pane?.scrollPosition = scroll
+        restoredScroll = scroll
     }
 
-    /// Applies a selection to the list on screen, bringing its lead into view.
+    /// Where results that came back were scrolled, until their selection is applied: selecting brings the lead into
+    /// view, and the list is then put back where it was.
+    private var restoredScroll: (top: Double, left: Double)?
+
+    /// Applies a selection to the list on screen, bringing its lead into view; results just brought back stay
+    /// scrolled where they were left.
     func applySelection(_ next: ContentSelection) {
         setSelection(next, notify: true)
         pane?.syncSelection()
+        if let scroll = restoredScroll {
+            restoredScroll = nil
+            pane?.scrollPosition = scroll
+        }
     }
 
     // MARK: Host
@@ -1367,11 +1363,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             let items = await self.loaders.metadata(folder, paths)
             let belongs = listKey == self.listKey
             let answers = Dictionary(items.map { ($0.path, $0) }) { $1 }
+            let known = paths.filter { self.details[$0] != nil }
             guard let readAgain = self.details.finish(paths, from: generation, answers: belongs ? answers : nil),
                 belongs
             else { return }
-            // Nothing found (the folder is gone): no row changed, and drawing them again would ask again.
-            if !answers.isEmpty { self.pane?.refresh(paths: Set(answers.keys)) }
+            // The rows that changed: those read, and those found gone that showed details from before. Nothing found
+            // for a row that showed none (the folder is gone) changes no row.
+            let changed = Set(answers.keys).union(known.filter { self.details[$0] == nil })
+            if !changed.isEmpty { self.pane?.refresh(paths: changed) }
             self.updateStatus()
             if !readAgain.isEmpty { self.requestMetadata(for: readAgain) }
         }
@@ -1434,7 +1433,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     // MARK: Status
 
-    /// "240 items", "3 of 240 items" while filtered, "2 of 240 selected", then " · size".
+    /// "240 items", "3 of 240 items" while a typed or a pinned filter hides some, "2 of 240 selected", then " · size".
     func updateStatus() {
         let size: StatusSize?
         if selection.isEmpty, searchDisplay != nil {
@@ -1465,7 +1464,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
                 selectedCount: selection.paths.count, selectionSize: size)
         } else {
             status.stringValue = StatusSummary.content(
-                itemCount: listed.count, shownCount: filter.isEmpty ? nil : entries.count,
+                itemCount: listed.count, shownCount: filter.isEmpty && pinnedFilter == nil ? nil : entries.count,
                 selectedCount: selection.paths.count,
                 size: size)
         }

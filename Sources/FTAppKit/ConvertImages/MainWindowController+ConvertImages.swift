@@ -9,6 +9,9 @@ extension MainWindowController {
         _ = await actions.convertImages(paths, options: options)
     }
 
+    /// The formats the sheet offers: those this Mac can write. Tests swap it.
+    static var writableImageFormats: @MainActor () -> [ImageFormat] = { ImageFormat.writableHere }
+
     /// Reads what the sheet needs of the pictures; tests swap it.
     static var readImageInfos: @Sendable ([String]) async -> [ImageInfo?] = { await ImageConverter.infos($0) }
 
@@ -31,7 +34,9 @@ extension MainWindowController {
         else { return }
         sidebarController.model.clearTypeahead()
         let sheetView = ConvertImagesSheetView(
-            sheet: ConvertImagesSheet(settings: preferences.convertImagesSettings, count: paths.count))
+            sheet: ConvertImagesSheet(
+                settings: preferences.convertImagesSettings, count: paths.count,
+                formats: Self.writableImageFormats()))
         let scrim = DialogScrim(panel: sheetView, placement: .sheet)
         scrim.setAccessibilityIdentifier("convertImages.scrim")
         sheetView.onCancel = { [weak scrim] in scrim?.dismiss() }

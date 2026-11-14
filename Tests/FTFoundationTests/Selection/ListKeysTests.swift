@@ -93,6 +93,22 @@ struct ContentKeysTests {
         #expect(action("t", code: "KeyT", meta: true, pinned: true) == .command(.newTab))
     }
 
+    // Over search results the results' own field may hold a filter while one is pinned: the list's keys leave that
+    // text alone too.
+    @Test func withThePinTheKeysLeaveTheResultsFilterAlone() {
+        let typed = ListFilterTyping(restoring: "rep")
+        #expect(action("Backspace", code: "Backspace", filter: typed) == .filter(.erase))
+        #expect(action("Backspace", code: "Backspace", filter: typed, pinned: true) == nil)
+        #expect(action("Backspace", code: "Backspace", alt: true, filter: typed, pinned: true) == nil)
+        #expect(action("Escape", code: "Escape", filter: typed, pinned: true) == .typeToSelect(nil))
+        #expect(action("s", code: "KeyS", filter: typed, pinned: true) == .typeToSelect("s"))
+        // Space is Quick Look, also just after the field's text was typed.
+        var fresh = ListFilterTyping()
+        fresh.type("rep", at: 10)
+        #expect(action(" ", code: "Space", filter: fresh, now: 10.2) == .filter(.type(" ")))
+        #expect(action(" ", code: "Space", filter: fresh, now: 10.2, pinned: true) == .command(.quickLookSelection))
+    }
+
     @Test func arrowsHomeAndEndMoveTheSelectionAndShiftExtendsIt() {
         #expect(action("ArrowDown", code: "ArrowDown") == .move(.down, extend: false))
         #expect(action("ArrowUp", code: "ArrowUp", shift: true) == .move(.up, extend: true))

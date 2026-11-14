@@ -77,6 +77,42 @@ public enum StartupTabs {
             favoritesExpanded: tab.favoritesExpanded, locationsExpanded: tab.locationsExpanded)
     }
 
+    /// The tabs that wait unread behind the one in front, as they open: one whose folder is gone is left out (nil).
+    /// One with two panes whose first pane's folder is gone, and whose second pane's is there, stays, with that pane
+    /// alone. `keeps` says of each folder whether a tab may wait on it, all of them asked at once.
+    public static func waitingTabs(_ tabs: [StartupTab], homePath: String, keeps: ([String]) -> [Bool]) -> [StartupTab?]
+    {
+        var paths: [String] = []
+        var asked: [(first: Int, second: Int?)] = []
+        for tab in tabs {
+            let first = paths.count
+            paths.append(tab.path)
+            guard let second = tab.secondPane?.path, !second.isEmpty else {
+                asked.append((first, nil))
+                continue
+            }
+            asked.append((first, paths.count))
+            paths.append(second)
+        }
+        let kept = keeps(paths)
+        return zip(tabs, asked).map { tab, index in
+            if kept[index.first] { return tab }
+            guard let second = index.second, kept[second] else { return nil }
+            return onSecondPane(tab, homePath: homePath)
+        }
+    }
+
+    /// A tab of two panes with its second pane alone: that pane's folder, shown as the pane showed it.
+    static func onSecondPane(_ tab: StartupTab, homePath: String) -> StartupTab? {
+        guard let second = tab.secondPane, let path = second.path, !path.isEmpty else { return nil }
+        return StartupTab(
+            path: path, rootPath: persistedRoot(tab.rootPath, homePath: homePath, startupPath: path),
+            favoritePath: nil, viewMode: second.viewMode, searchViewMode: second.searchViewMode,
+            sortBy: second.sortBy, sortDirection: second.sortDirection, includeHidden: second.includeHidden,
+            foldersFirst: second.foldersFirst, favoritesExpanded: tab.favoritesExpanded,
+            locationsExpanded: tab.locationsExpanded)
+    }
+
     /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it.
     public static func withoutRemovedFavorite(_ tab: StartupTab, _ preferences: AppPreferences) -> StartupTab {
         guard preferences.favoritesInitialized, let favorite = tab.favoritePath,

@@ -167,6 +167,54 @@ public enum DragSelection {
         return hits
     }
 
+    /// The Previews view: items read left to right as in the icon grid, but each picture has its own shape and sits
+    /// with its name in the middle of its place (`PreviewGrid.parts`). An item is touched on the tile around its
+    /// picture or on its name. `pictures` are the shapes of the pictures seen so far, in any unit; an item without
+    /// one is taken as the icon it shows until its picture comes, and a name not measured as the largest a name
+    /// may be.
+    public static func previewGridItems(
+        box: DragSelectionBox, entryPaths: [String], columns: Int, gridWidth: Double, layout: IconGridLayout,
+        heightInset: Double, pictures: [String: DragSelectionSize] = [:], sizes: [String: DragSelectionSize] = [:]
+    ) -> [DragSelectionHit] {
+        let columnCount = max(1, columns)
+        let columnWidth = gridWidth / Double(columnCount)
+        let rowCount = (entryPaths.count + columnCount - 1) / columnCount
+        let firstRow = max(0, floorInt(box.top / layout.rowHeight))
+        let lastRow = min(rowCount - 1, floorInt(box.bottom / layout.rowHeight))
+        var hits: [DragSelectionHit] = []
+        guard firstRow <= lastRow else { return hits }
+        let largestName = PreviewGrid.largestName(layout)
+        for row in firstRow...lastRow {
+            for column in 0..<columnCount {
+                let index = row * columnCount + column
+                guard index < entryPaths.count else { continue }
+                let path = entryPaths[index]
+                let picture = PreviewGrid.pictureSize(layout, shape: pictures[path].map { ($0.width, $0.height) })
+                let name = sizes[path].map { (min(largestName.width, $0.width), min(largestName.height, $0.height)) }
+                let parts = PreviewGrid.parts(
+                    layout, picture: picture, name: name ?? largestName, heightInset: heightInset)
+                // The place's top left corner: the place is in the middle of its column.
+                let left = (Double(column) + 0.5) * columnWidth - layout.cellMinWidth / 2
+                let top = Double(row) * layout.rowHeight
+                func placed(_ rect: GridRect) -> DragSelectionBox {
+                    DragSelectionBox(
+                        left: left + rect.x, top: top + rect.y, right: left + rect.maxX, bottom: top + rect.maxY)
+                }
+                let tile = placed(parts.tile)
+                let label = placed(parts.name)
+                if box.intersects(tile) || box.intersects(label) {
+                    hits.append(
+                        DragSelectionHit(
+                            path: path,
+                            rect: DragSelectionBox(
+                                left: min(tile.left, label.left), top: tile.top, right: max(tile.right, label.right),
+                                bottom: label.bottom)))
+                }
+            }
+        }
+        return hits
+    }
+
     /// The selection while the box is drawn, what it touches combined with the selection the
     /// drag started with.
     public static func combine(startPaths: [String], hitPaths: [String], mode: Mode) -> [String] {

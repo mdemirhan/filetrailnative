@@ -29,6 +29,31 @@ struct PreviewGridTests {
         }
     }
 
+    // The tile hugs the picture, the name is right under it, and the two sit in the middle of the place.
+    @Test func thePictureAndItsNameSitInTheMiddleOfThePlace() {
+        let grid = PreviewGrid.layout(base: base, count: 4, width: 1216, height: 800)
+        let box = PreviewGrid.pictureBox(grid)
+        let name = (width: 80.0, height: grid.labelLineHeight + 2 * grid.labelPaddingVertical)
+        // A wide photo: as wide as its place allows, and lower than it.
+        let wide = PreviewGrid.pictureSize(grid, shape: (3000, 1000))
+        #expect(wide.width == box.width && wide.height == box.width / 3)
+        let parts = PreviewGrid.parts(grid, picture: wide, name: name, heightInset: 2)
+        #expect(parts.tile.width == wide.width + 2 * PreviewGrid.tileInset)
+        #expect(parts.tile.height == wide.height + 2 * PreviewGrid.tileInset)
+        #expect(parts.tile.x == (grid.cellMinWidth - parts.tile.width) / 2)
+        #expect(parts.name.y == parts.tile.maxY + grid.labelGap)
+        #expect(parts.name.x == (grid.cellMinWidth - 80) / 2)
+        // As much room above the tile as under the name.
+        #expect(abs(parts.tile.y - (grid.rowHeight - 2 - parts.name.maxY)) < 0.001)
+        #expect(parts.tile.y > 50)
+        // A tall one: as tall as its place allows, and narrower.
+        let tall = PreviewGrid.pictureSize(grid, shape: (1000, 4000))
+        #expect(tall.height == box.height && tall.width == box.height / 4)
+        // No picture: an icon two thirds of the shorter side.
+        let icon = PreviewGrid.pictureSize(grid, shape: nil)
+        #expect(icon.width == min(box.width, box.height) * 2 / 3 && icon.height == icon.width)
+    }
+
     @Test func thePictureTakesItsPlaceLessTheMarginsAndTheName() {
         let grid = PreviewGrid.layout(base: base, count: 1, width: 1216, height: 800)
         let box = PreviewGrid.pictureBox(grid)
@@ -55,5 +80,23 @@ struct PreviewGridTests {
         // A long swipe goes as far as it went, within the content.
         #expect(PreviewGrid.snappedScrollTop(from: 0, to: 1300, rowHeight: 400, maxScrollTop: 4000) == 1600)
         #expect(PreviewGrid.snappedScrollTop(from: 3600, to: 3990, rowHeight: 400, maxScrollTop: 3900) == 3900)
+    }
+
+    // A mouse wheel's notch moves the pane a few points: any notch goes on to the next row the way it went.
+    @Test func aWheelsNotchGoesOnToTheNextRow() {
+        func wheel(_ start: Double, _ end: Double) -> Double {
+            PreviewGrid.snappedScrollTop(
+                from: start, to: end, rowHeight: 400, maxScrollTop: 4000, share: PreviewGrid.wheelShare)
+        }
+        #expect(wheel(0, 10) == 400)
+        #expect(wheel(800, 790) == 400)
+        #expect(wheel(800, 800) == 800)
+        // A point or two is no notch.
+        #expect(wheel(800, 802) == 800)
+        // Several notches before it rests go as far as they went.
+        #expect(wheel(0, 950) == 1200)
+        // A place between rows that nothing scrolled to settles on the nearest row.
+        #expect(wheel(530, 530) == 400)
+        #expect(wheel(630, 630) == 800)
     }
 }

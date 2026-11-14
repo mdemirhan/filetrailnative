@@ -105,7 +105,10 @@ final class ConvertImagesSheetView: DialogPanelView {
         }
         for text in ["Format", "Quality", "Size", "Width", "Height", "Metadata"] { _ = label(text) }
         formatPopUp.onChoose = { [weak self] index in
-            self?.change { $0.choose(format: ConvertImagesSheet.formats[index]) }
+            self?.change { sheet in
+                guard sheet.formats.indices.contains(index) else { return }
+                sheet.choose(format: sheet.formats[index])
+            }
         }
         sizePopUp.onChoose = { [weak self] index in
             guard let choice = ConvertImagesSheet.sizeChoices[index] else { return }
@@ -167,8 +170,8 @@ final class ConvertImagesSheetView: DialogPanelView {
     func render() {
         let settings = sheet.settings
         formatPopUp.setItems(
-            ConvertImagesSheet.formats.map { .init(title: $0.title) },
-            selected: ConvertImagesSheet.formats.firstIndex(of: settings.format) ?? 0)
+            sheet.formats.map { .init(title: $0.title) },
+            selected: sheet.formats.firstIndex(of: settings.format) ?? 0)
         qualitySlider.doubleValue = settings.quality * 100
         let quality = sheet.qualityText
         qualityValue.content = { theme in

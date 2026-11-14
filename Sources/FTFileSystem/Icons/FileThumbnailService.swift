@@ -257,7 +257,13 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         return type.conforms(to: .image) || type.conforms(to: .audiovisualContent)
     }
 
-    /// Whether every pixel of the image is fully opaque.
+    /// The longer side of the copy `isOpaque` looks at.
+    static let opacitySampleSide = 64
+
+    /// Whether the image is opaque all over: judged from a copy drawn at most 64 pixels a side, so a large preview
+    /// costs a few kilobytes to judge and not a second bitmap of its own size. A cut-out picture or a page with its
+    /// outline is clear over whole areas, which show in the small copy; a few clear pixels alone in a large picture
+    /// do not.
     static func isOpaque(_ image: CGImage) -> Bool {
         switch image.alphaInfo {
         case .none, .noneSkipFirst, .noneSkipLast:
@@ -265,9 +271,11 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         default:
             break
         }
-        let width = image.width
-        let height = image.height
-        guard width > 0, height > 0 else { return false }
+        guard image.width > 0, image.height > 0 else { return false }
+        let longest = max(image.width, image.height)
+        let shrink = min(1, Double(opacitySampleSide) / Double(longest))
+        let width = max(1, Int((Double(image.width) * shrink).rounded()))
+        let height = max(1, Int((Double(image.height) * shrink).rounded()))
         var pixels = [UInt8](repeating: 0, count: width * height * 4)
         let drawn = pixels.withUnsafeMutableBytes { buffer -> Bool in
             guard
@@ -276,6 +284,8 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
                     bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(),
                     bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
             else { return false }
+            context.setBlendMode(.copy)
+            context.interpolationQuality = .low
             context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
             return true
         }

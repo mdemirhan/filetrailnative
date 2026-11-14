@@ -93,6 +93,29 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
+        // A Mac that can't write AVIF isn't offered it, and a format chosen on one that can gives way.
+        @Test func onlyTheFormatsTheMacCanWriteAreOffered() async throws {
+            let formats = MainWindowController.writableImageFormats
+            defer { MainWindowController.writableImageFormats = formats }
+            let opened = try await open()
+            select(opened, ["a.jpg"])
+            opened.tab.perform(.convertImages)
+            #expect(try await sheet(opened.tab).formatPopUp.titles == ImageFormat.writableHere.map(\.title))
+            opened.tab.convertImagesSheet?.onCancel()
+
+            MainWindowController.writableImageFormats = { [.jpeg, .heic, .png, .tiff] }
+            opened.tab.updatePreferences { $0.convertImagesSettings.format = .avif }
+            opened.tab.perform(.convertImages)
+            let sheet = try await sheet(opened.tab)
+            #expect(sheet.formatPopUp.titles == ["JPEG", "HEIC", "PNG", "TIFF"])
+            #expect(sheet.sheet.settings.format == .jpeg)
+            sheet.formatPopUp.choose("TIFF")
+            sheet.convertButton.perform()
+            #expect(await waitUntil { opened.requests.all.count == 1 })
+            #expect(opened.requests.all.first?.options.format == .tiff)
+            await close(opened)
+        }
+
         @Test func forOneImageTheLargerSizesAreGrayed() async throws {
             let opened = try await open()
             select(opened, ["a.jpg"])

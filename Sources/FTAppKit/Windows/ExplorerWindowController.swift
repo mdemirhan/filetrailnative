@@ -341,12 +341,11 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     // MARK: Workspaces
 
-    /// What a workspace saved from the window `windowID` keeps: its id, its size (its place too, which the workspace
-    /// drops) and its session as the store has it. Nil for a window not open.
-    public func workspaceSnapshot(of windowID: Int?) -> (id: String, bounds: StoredWindowState, session: WindowSession)?
-    {
+    /// What a workspace saved from the window `windowID` keeps: its size (its place too, which the workspace drops)
+    /// and its session as the store has it. Nil for a window not open.
+    public func workspaceSnapshot(of windowID: Int?) -> (bounds: StoredWindowState, session: WindowSession)? {
         guard let entry = windows.byWindowID(windowID), isStayingOpen(entry.window) else { return nil }
-        return (entry.id, Self.stored(entry.window), host.store.windowPreferences(entry.id).windowSession)
+        return (Self.stored(entry.window), host.store.windowPreferences(entry.id).windowSession)
     }
 
     /// `openWorkspace`: a window with the workspace's tabs, panels and size, placed as New Window places one. It opens

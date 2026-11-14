@@ -79,10 +79,11 @@ public struct ListTypeToSelect: Equatable, Sendable {
         lastInputAt = nil
     }
 
-    /// The first of `entries` whose name starts with `query`, ignoring case and accents.
-    public static func match<T: ListFilterEntry>(in entries: [T], query: String) -> T? {
+    /// The first of `entries` whose name starts with `query`, ignoring case and accents; names beyond ASCII are folded
+    /// through `cache` when one is given.
+    public static func match<T: ListFilterEntry>(in entries: [T], query: String, cache: FoldedNameCache? = nil) -> T? {
         guard let matcher = NameMatcher(JSString.trimmed(query), mode: .contains) else { return nil }
-        return entries.first { matcher.isPrefix(of: $0.name) }
+        return entries.first { matcher.isPrefix(of: $0.name, cache: cache) }
     }
 }
 

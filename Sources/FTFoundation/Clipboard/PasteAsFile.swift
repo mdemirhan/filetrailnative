@@ -70,18 +70,37 @@ public enum PasteAsFile {
 
     /// What a file would be made of, from the clipboard's types. Files copied elsewhere are never written. Plain text
     /// wins over an image: a copy from a document or a spreadsheet carries a picture of it as well. An image whose only
-    /// text is its address (a browser's Copy Image) is the image. Of several images, the first encoded one in the
-    /// clipboard's order is taken, as the app that copied it lists its own format first, and TIFF only when there is no
-    /// other. `text` reads the plain text, and is asked only then.
+    /// text is its address (a browser's Copy Image), or only blank space, is the image. Of several images, the first
+    /// encoded one in the clipboard's order is taken, as the app that copied it lists its own format first, and TIFF
+    /// only when there is no other. `text` reads the plain text, and is asked only then.
     public static func choose(types: [String], text: () -> String?) -> PasteAsFileChoice {
         if types.contains(where: fileTypes.contains) { return .files }
-        let formats = types.compactMap(PasteAsFileImageFormat.init(typeIdentifier:))
-        let image = formats.first { $0 != .tiff } ?? formats.first
+        let image = image(types: types)
         if types.contains(textType), let text = text(), !text.isEmpty {
-            if let image, isLoneAddress(text) { return .image(image) }
+            if let image, isLoneAddress(text) || isBlank(text) { return .image(image) }
             return .text
         }
         return image.map { .image($0) } ?? .nothing
+    }
+
+    /// What a file would be made of as far as the clipboard's types alone say, with nothing read from it, for the
+    /// menus; nil when the text has to be read to tell (an image with text beside it). Text with no image is taken as
+    /// text unread: that it is empty is found out when it is pasted.
+    public static func choose(types: [String]) -> PasteAsFileChoice? {
+        if types.contains(where: fileTypes.contains) { return .files }
+        let image = image(types: types)
+        guard types.contains(textType) else { return image.map { .image($0) } ?? .nothing }
+        return image == nil ? .text : nil
+    }
+
+    private static func image(types: [String]) -> PasteAsFileImageFormat? {
+        let formats = types.compactMap(PasteAsFileImageFormat.init(typeIdentifier:))
+        return formats.first { $0 != .tiff } ?? formats.first
+    }
+
+    /// Nothing but blank space and line ends.
+    static func isBlank(_ text: String) -> Bool {
+        text.allSatisfy(\.isWhitespace)
     }
 
     /// Whether the clipboard holds what a password manager marked as private.

@@ -66,6 +66,19 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     }
 
     private var escapeInterceptor: Int?
+    /// Whether the window asks this search about Esc.
+    var listensForEscape: Bool { escapeInterceptor != nil }
+
+    /// The pane was closed: the window no longer asks it about Esc.
+    func disconnect() {
+        guard let id = escapeInterceptor else { return }
+        escapeInterceptor = nil
+        if let window = tab.window { WindowEventRouting.remove(id, from: window) }
+    }
+
+    /// The toolbar's field shows this search: its pane is the one the tab has active. The other pane's search goes on
+    /// without writing to the field.
+    private var drivesField: Bool { tab.activePane === pane }
 
     /// Esc in the results, with no filter to clear first, puts them away and leaves the keyboard in the list.
     /// Keys of a text field (a rename, the filter field) are left alone.
@@ -89,7 +102,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     var searchFolderEntryPaths: [String] { pane.content.listed.map(\.path) }
 
     func searchSessionChanged(_ change: SearchSession.Change) {
-        if change.contains(.draft), let field, field.stringValue != session.draftQuery {
+        if change.contains(.draft), drivesField, let field, field.stringValue != session.draftQuery {
             field.stringValue = session.draftQuery
         }
         if !change.isDisjoint(with: [.results, .status, .visibility]) { refreshDisplay(change) }

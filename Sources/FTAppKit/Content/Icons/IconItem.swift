@@ -450,31 +450,21 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
     }
 
     /// The Previews view: the picture as large as its place allows in its own shape (an icon at most two thirds of
-    /// it), the tile hugging it, and the name right under it, the two together in the middle of the place.
+    /// it), the tile hugging it, and the name right under it, the two together in the middle of the place
+    /// (`PreviewGrid.parts`, which a drag-to-select goes by too).
     private func layoutFillingThePlace() {
-        let box = PreviewGrid.pictureBox(layout)
-        let picture: (width: Double, height: Double)
-        if hasThumbnail, thumbnailSize.width > 0, thumbnailSize.height > 0 {
-            picture = PreviewGrid.fitted(
-                (Double(thumbnailSize.width), Double(thumbnailSize.height)), in: box)
-        } else {
-            let side = min(box.width, box.height) * 2 / 3
-            picture = (side, side)
-        }
+        let picture = PreviewGrid.pictureSize(layout, shape: pictureShape.map { ($0.width, $0.height) })
         let labelFrame = layout.labelFrame(textWidth: labelTextWidth, lines: label.lines.count)
-        let inset = 4.0
-        let placeHeight = layout.rowHeight - style.heightInset
-        let together = picture.height + inset * 2 + layout.labelGap + labelFrame.height
-        let top = max(0, (placeHeight - together) / 2)
-        let tileFrame = GridRect(
-            x: (layout.cellMinWidth - picture.width) / 2 - inset, y: top, width: picture.width + inset * 2,
-            height: picture.height + inset * 2)
+        let inset = PreviewGrid.tileInset
+        let parts = PreviewGrid.parts(
+            layout, picture: picture, name: (labelFrame.width, labelFrame.height), heightInset: style.heightInset)
+        let tileFrame = parts.tile
         tile.frame = NSRect(x: tileFrame.x, y: tileFrame.y, width: tileFrame.width, height: tileFrame.height)
         iconBox.frame = NSRect(x: inset, y: inset, width: picture.width, height: picture.height)
         iconView.frame = iconBox.bounds
         thumbnail.frame = iconBox.bounds
         label.frame = NSRect(
-            x: labelFrame.x, y: tileFrame.maxY + layout.labelGap, width: labelFrame.width, height: labelFrame.height)
+            x: parts.name.x, y: parts.name.y, width: parts.name.width, height: parts.name.height)
         pill.frame = label.bounds
         label.placeTagDots()
         dropMarker.frame = root.bounds
@@ -482,6 +472,12 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         let offset = layout.clipboardBadgeOffset
         badge.frame = NSRect(
             x: tileFrame.maxX - offset - badgeSize, y: tileFrame.y + offset, width: badgeSize, height: badgeSize)
+    }
+
+    /// The shape of the preview shown, in its picture's pixels; nil while the item shows an icon.
+    var pictureShape: DragSelectionSize? {
+        guard hasThumbnail, thumbnailSize.width > 0, thumbnailSize.height > 0 else { return nil }
+        return DragSelectionSize(width: Double(thumbnailSize.width), height: Double(thumbnailSize.height))
     }
 
     /// Where the name is in the item, for the rename field over it.

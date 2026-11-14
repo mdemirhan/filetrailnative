@@ -60,8 +60,13 @@ extension SidebarViewController {
         Task { await model.folderOpened(url.path, open) }
     }
 
-    /// Another pane of the tab became the active one (`SidebarModel.activePaneChanged`).
-    func activePaneChanged(to path: String) {
+    /// Another pane of the tab became the active one (`SidebarModel.activePaneChanged`). The tree shows hidden folders
+    /// as that pane does, whichever pane last turned them on or off.
+    func activePaneChanged(to path: String, includeHidden: Bool) {
+        if model.includeHidden != includeHidden {
+            model.currentPath = path
+            hiddenFilesChanged(includeHidden)
+        }
         Task { await model.activePaneChanged(to: path) }
     }
 

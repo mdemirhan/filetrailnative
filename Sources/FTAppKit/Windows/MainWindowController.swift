@@ -395,6 +395,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             }
         }
         holdTabBar(of: window)
+        // The divider is kept with the tab.
+        workspace.onPaneSplitChosen = { [weak self] _ in
+            guard let self else { return }
+            self.group?.tabChanged(self)
+        }
         workspace.onWidthsChosen = { [weak self] panes in
             self?.updatePanels {
                 $0.treeWidth = Int(panes.preferredTreeWidth)
@@ -435,9 +440,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// A tab as `snapshot` kept it: its folder, tree, view and history (Reopen Closed Tab, Duplicate Tab).
     convenience init(snapshot: TabSnapshot, frame: NSRect?) {
+        // The tree's row is the active pane's: a favorite the second pane is on isn't the first pane's folder.
         let startup = StartupTab(
             path: snapshot.currentPath, rootPath: snapshot.treeRootPath,
-            favoritePath: snapshot.selectedTreeItemID?.hasPrefix("favorite:") == true ? snapshot.currentPath : nil,
+            favoritePath: snapshot.selectedTreeItemID == "favorite:\(snapshot.currentPath)"
+                ? snapshot.currentPath : nil,
             viewMode: snapshot.viewMode, searchViewMode: snapshot.searchViewMode, sortBy: snapshot.sortBy,
             sortDirection: snapshot.sortDirection, includeHidden: snapshot.includeHidden,
             foldersFirst: snapshot.foldersFirst, favoritesExpanded: snapshot.favoritesExpanded,
@@ -550,16 +557,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// What the tab keeps of itself.
-    /// Its fields are the first pane's; the second pane, while there is one, comes with its history.
+    /// Its fields are the first pane's; the second pane, while there is one, comes with its history. The tree's row is
+    /// the one selected, which follows the active pane.
     var snapshot: TabSnapshot {
         let pane = focusedPane ?? lastFocusedPane
         let first = panes[0]
+        let active = activePane
         var snapshot = TabSnapshot(
             currentPath: first.shownFolderPath, historyPaths: first.navigationHistory.paths,
             historyIndex: max(0, first.navigationHistory.index),
             viewMode: first.viewMode, searchViewMode: first.searchViewMode, sortBy: first.sortBy,
             sortDirection: first.sortDirection, treeRootPath: treeRootPath,
-            selectedTreeItemID: sidebar.selectedTreeItemID ?? (first.folderLetGo ? nil : "fs:\(first.folder.path)"),
+            selectedTreeItemID: sidebar.selectedTreeItemID ?? (active.folderLetGo ? nil : "fs:\(active.folder.path)"),
             leftPaneSubview: sidebar.leftPaneSubview == .favorites ? .favorites : .tree,
             focusedPane: pane == .tree ? .tree : .content,
             includeHidden: first.includeHidden, foldersFirst: first.foldersFirst, favoritesExpanded: favoritesExpanded,
@@ -575,8 +584,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return snapshot
     }
 
-    /// The view on screen: the active pane's (`BrowserPane.liveView`), with the tree as the tab has it. A view the
-    /// pane was started with keeps its scrolls.
+    /// The view on screen: the first pane's (`BrowserPane.liveView`), as the snapshot's other fields are, with the tree
+    /// as the tab has it. A view the pane was started with keeps its scrolls.
     private var liveView: TabViewState? {
         guard var view = panes[0].liveView else { return nil }
         view.treeNodes = sidebar.model.nodes
@@ -640,13 +649,19 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// `followMovedItems` and `leaveUnmountedDisks` for a tab in the background: it takes the place `snapshot` gives
     /// it (folder, history, tree root) and reads its folder when it is next shown.
     func takePlace(_ snapshot: TabSnapshot) {
-        panes[0].takePlace(snapshot)
+        panes[0].takePlace(
+            path: snapshot.currentPath, historyPaths: snapshot.historyPaths, historyIndex: snapshot.historyIndex)
+        if panes.count > 1, let second = snapshot.secondPane {
+            panes[1].takePlace(
+                path: second.pane.path ?? "", historyPaths: second.historyPaths, historyIndex: second.historyIndex)
+        }
         let favoritePrefix = "favorite:"
         let favorite = snapshot.selectedTreeItemID.flatMap {
             $0.hasPrefix(favoritePrefix) ? String($0.dropFirst(favoritePrefix.count)) : nil
         }
+        // The tree follows the active pane, which may be the second.
         sidebar.restore(
-            rootPath: snapshot.treeRootPath, folder: snapshot.currentPath, favoritePath: favorite,
+            rootPath: snapshot.treeRootPath, folder: activePane.shownFolderPath, favoritePath: favorite,
             favoritesExpanded: sidebar.favoritesExpanded, locationsExpanded: sidebar.locationsExpanded,
             includeHidden: includeHidden)
         updateTitle()
@@ -760,7 +775,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func startupDiskNameChanged() {
         updateTitle()
         explorerToolbar.reload()
-        content.contentShell.pathBarRow.namesChanged()
+        for pane in panes { pane.content.contentShell.pathBarRow.namesChanged() }
         sidebar.model.namesChanged()
         if loaded { infoController?.namesChanged() }
     }
@@ -893,7 +908,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 case .resolveThenOpen(let path):
                     Task {
                         guard let target = await Self.resolved(path) else { return }
-                        openExternally(target)
+                        // A link to an archive, itself named as one: what it holds comes out beside the link,
+                        // where it was opened, not beside the archive it leads to.
+                        if ArchiveNames.isArchive(NodePath.basename(target)),
+                            ArchiveNames.isArchive(NodePath.basename(path)), !DiskImageNames.isDiskImagePath(target)
+                        {
+                            extractToOpen([path])
+                        } else {
+                            openExternally(target)
+                        }
                     }
                 case .openExternally(let path):
                     openExternally(path)
@@ -961,14 +984,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// A command the list's keys ask for: the key is one the menu does not listen for (a command's second key, Space,
     /// F2, ⌘←). Whether the window ran it. Keys don't go by what dims the menu (only `ShortcutPolicy.canHandle` is
     /// asked): a command that can't start says why itself.
-    private func runKeyCommand(_ id: ShortcutCommandID) -> Bool {
+    /// `isRepeat`: the key is held down. A workspace opens once per press, not a window for every repeat.
+    private func runKeyCommand(_ id: ShortcutCommandID, isRepeat: Bool) -> Bool {
         if id == .openSelectedItem { return openSelectedItem() }
         if let slot = Workspaces.slot(of: id) {
-            group?.openWorkspace(slot: slot)
+            if !isRepeat { group?.openWorkspace(slot: slot) }
             return true
         }
         if let slot = Workspaces.inThisWindowSlot(of: id) {
-            group?.openWorkspace(slot: slot, inPlaceOf: self)
+            if !isRepeat { group?.openWorkspace(slot: slot, inPlaceOf: self) }
             return true
         }
         guard let command = AppCommand(rawValue: id.rawValue), ShortcutPolicy.canHandle(command, shortcutContext)
@@ -1021,8 +1045,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
             let command = ShortcutCommands.resolve(preferences.shortcutOverrides).command(pressed: pressed)
         else { return false }
-        if WriteStartingShortcuts.runs(command.rawValue, isRepeat: event.isARepeat) { _ = runKeyCommand(command) }
+        if WriteStartingShortcuts.runs(command.rawValue, isRepeat: event.isARepeat) {
+            _ = runKeyCommand(command, isRepeat: event.isARepeat)
+        }
         return true
+    }
+
+    /// Whether `event` is a key held down, repeating. Only a key press can say.
+    static func isKeyRepeat(_ event: NSEvent?) -> Bool {
+        guard let event, event.type == .keyDown else { return false }
+        return event.isARepeat
     }
 
     /// F2, Rename and Return: one item is renamed in its row, several in the Rename sheet.
@@ -1051,8 +1083,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         case started
     }
 
-    private func submitRename(path: String, typed: String) {
+    /// A name typed into a row of `pane`: the pane that had the field takes the outcome, whichever pane is active by
+    /// the time the name has been checked (a click on the other pane ends the field too).
+    private func submitRename(in pane: BrowserPane, path: String, typed: String) {
         guard renameTask == nil else { return }
+        let content = pane.content
+        let hiddenFilesShown = pane.includeHidden
         renameTask = Task { [weak self] in
             guard let self else { return }
             defer { self.renameTask = nil }
@@ -1061,15 +1097,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                     await renameItem(path, typed)
                 } else if let actions = self.writeActions {
                     // The write coordinator renames it (WriteOperations/).
-                    await actions.commitRename(path: path, typed: typed, hiddenFilesShown: self.includeHidden)
+                    await actions.commitRename(path: path, typed: typed, hiddenFilesShown: hiddenFilesShown)
                 } else {
                     // A tab has the file operations once the app has started them.
                     .unchanged
                 }
-            guard self.content.inlineRename?.path == path else {
+            guard content.inlineRename?.path == path else {
                 // The folder was left while the name was checked (a click on another folder ends the field and opens
                 // that folder): with no field to show it under, the refusal gets a dialog of its own.
-                if case .refused(let message) = outcome, !self.content.listed.contains(where: { $0.path == path }) {
+                if case .refused(let message) = outcome, !content.listed.contains(where: { $0.path == path }) {
                     let name = NodePath.basename(path)
                     self.renameNotice(title: "\u{201C}\(name)\u{201D} couldn\u{2019}t be renamed", message: message)
                 }
@@ -1077,9 +1113,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             }
             switch outcome {
             case .unchanged, .started:
-                self.content.endRename()
+                content.endRename()
             case .refused(let message):
-                self.content.refuseRename(message)
+                content.refuseRename(message)
             }
         }
     }
@@ -1141,8 +1177,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             guard let self, let pane else { return }
             self.tabKeyPressed(from: pane)
         }
-        content.onCommand = { [weak self] id in self?.runKeyCommand(id) ?? false }
-        content.onRenameSubmit = { [weak self] path, name in self?.submitRename(path: path, typed: name) }
+        content.onCommand = { [weak self] id in
+            self?.runKeyCommand(id, isRepeat: Self.isKeyRepeat(NSApp.currentEvent)) ?? false
+        }
+        content.onRenameSubmit = { [weak self, weak pane] path, name in
+            guard let self, let pane else { return }
+            self.submitRename(in: pane, path: path, typed: name)
+        }
         content.onRenameStateChanged = { [weak self, weak content] in
             guard let self else { return }
             // While a name is being typed, changes made outside the app wait.
@@ -1230,15 +1271,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         notify(.search)
     }
 
-    /// A search tab shows a magnifier before its label, in the accent while it searches.
-    private func updateSearchTabAccessory() {
-        guard let window, let session = searchStore?.session else { return }
-        guard session.isSearchMode else {
+    /// A tab with search results in a pane, active or not, shows a magnifier before its label, in the accent while
+    /// one of them searches.
+    func updateSearchTabAccessory() {
+        guard let window else { return }
+        let searches = panes.compactMap { $0.searchStore?.session }.filter(\.isSearchMode)
+        guard !searches.isEmpty else {
             if window.tab.accessoryView != nil { window.tab.accessoryView = nil }
             return
         }
         let view = (window.tab.accessoryView as? SearchTabMagnifier) ?? SearchTabMagnifier()
-        view.searching = session.isRunning
+        view.searching = searches.contains(where: \.isRunning)
         if window.tab.accessoryView !== view { window.tab.accessoryView = view }
     }
 
@@ -1604,10 +1647,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let searchDefaults: Set<PreferenceKey> = [
             .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders, .searchSkipGitIgnored,
         ]
-        // Only the keys edited, and only in the tab on screen: a tab behind keeps the options of its own search.
-        if let search = searchStore, group == nil || group?.selected === self {
-            let edited = searchDefaults.intersection(change.keys)
-            if !edited.isEmpty { search.session.applyDefaults(preferences, keys: edited) }
+        // Only the keys edited, and only in the tab on screen, in each of its panes: a tab behind keeps the options of
+        // its own search.
+        let edited = searchDefaults.intersection(change.keys)
+        if !edited.isEmpty, group == nil || group?.selected === self {
+            for pane in panes { pane.searchStore?.session.applyDefaults(preferences, keys: edited) }
         }
         sidebar.applyPreferences()
         for pane in panes {
@@ -1845,7 +1889,7 @@ extension MainWindowController: ExplorerWindowHandle {
         let treeLosesKeyboard = !panels.folderTreeOpen && focusedPane == .tree
         workspace.show(folderTree: panels.folderTreeOpen, infoPanel: panels.propertiesOpen)
         if treeLosesKeyboard { content.focusList() }
-        content.setInfoRowOpen(panels.detailRowOpen, animated: workspace.isReady)
+        showInfoRow(animated: workspace.isReady)
         if !workspace.isReady { workspace.becomeReady() }
         notify(.panels)
     }
@@ -1912,7 +1956,7 @@ extension MainWindowController: ExplorerWindowContext {
             writeOperationLocked: isWriteLocked, canGoBack: canGoBack,
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,
             tabCount: group?.tabs.count ?? 1, paneCount: panes.count,
-            otherPanePath: otherPane.map { $0.searchRootPath == nil ? $0.shownFolderPath : "" },
+            otherPanePath: otherPane.map { otherPaneDestination($0) ?? "" },
             trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),

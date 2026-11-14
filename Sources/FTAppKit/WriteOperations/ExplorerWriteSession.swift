@@ -42,6 +42,17 @@ struct WriteEndRefresh: Equatable, Sendable {
     var arrived: AfterWrite.Arrived? = nil
     /// What an Extract started in this tab made: what of it is in no folder the tab shows opens in a new tab or window.
     var extracted: [String] = []
+    /// What the write took and made, for a pane that isn't the active one to tell whether its folder was touched;
+    /// nil when that can't be told, and the pane is read again.
+    var touched: AfterWrite.Touched? = nil
+}
+
+/// A pane of the tab on screen as a write starts: its folder and what is selected in it.
+struct WritePaneSelection: Equatable, Sendable {
+    /// The pane's own number; nil for a window that doesn't tell its panes apart.
+    var paneID: Int?
+    var directoryPath: String
+    var paths: [String]
 }
 
 /// The explorer window a session belongs to, as the session sees it: its tab on screen, and what a write's end does
@@ -64,6 +75,18 @@ protocol WriteSessionHost: AnyObject {
     func followMovesOnScreen(_ moves: [PathMove])
     /// Whether this window may start a write changed: the menu dims its write commands meanwhile.
     func writeLockChanged()
+    /// The active pane of the tab on screen, by its own number.
+    var activePaneID: Int? { get }
+    /// Every pane of the tab on screen, with its folder and selection.
+    var paneSelections: [WritePaneSelection] { get }
+}
+
+extension WriteSessionHost {
+    /// A window with one pane to a tab: the tab's folder and selection are that pane's.
+    var activePaneID: Int? { nil }
+    var paneSelections: [WritePaneSelection] {
+        [WritePaneSelection(paneID: nil, directoryPath: currentPath, paths: selectedPaths)]
+    }
 }
 
 /// One explorer window's side of the file operations: the operation it runs or took over, another window's that
@@ -92,8 +115,8 @@ final class ExplorerWriteSession: WriteOperationWindow {
     private var adoptedOperationId: String?
     // The tab the running operation was started from.
     private var startedTabID: Int?
-    // What was selected, and in which folder, when the running operation started.
-    private var selectionAtStart: (directoryPath: String, paths: [String])?
+    // What was selected in each pane of the tab, and in which folder, when the running operation started.
+    private var selectionsAtStart: [WritePaneSelection] = []
     // The cut a move clears once it moved something.
     private var clipboardClearAfterMove: (operationId: String, capturedAt: String)?
     // For the one surface read at the end: the analysis of a move dragged out of
@@ -180,7 +203,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
     func applyCard(_ next: WriteOperationCardState?) {
         if next != nil, card == nil {
             startedTabID = host?.activeTabID
-            selectionAtStart = host.map { ($0.currentPath, $0.selectedPaths) }
+            selectionsAtStart = host?.paneSelections ?? []
         }
         let lockChanged = (next == nil) != (card == nil)
         card = next
@@ -342,7 +365,8 @@ final class ExplorerWriteSession: WriteOperationWindow {
                 leftPaths: AfterWrite.pathsLeftByWrite(result).filter { !replaced.contains($0) },
                 arrived: startedInTabOnScreen ? AfterWrite.arrived(result) : nil,
                 extracted: startedInTabOnScreen && result.action == .extract
-                    ? result.items.compactMap { $0.status == .completed ? $0.destinationPath : nil } : [])
+                    ? result.items.compactMap { $0.status == .completed ? $0.destinationPath : nil } : [],
+                touched: AfterWrite.touched(result))
         } else {
             refresh = WriteEndRefresh(path: currentPath, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [])
         }
@@ -367,11 +391,14 @@ final class ExplorerWriteSession: WriteOperationWindow {
         return AfterWrite.treeSelectionPath(result, selectedTreePath: host?.selectedTreePath)
     }
 
-    /// `selectionChangedSinceWriteStarted`: whether the person picked something else while the operation ran.
+    /// `selectionChangedSinceWriteStarted`: whether the person picked something else while the operation ran, in the
+    /// pane that is active now: it may not be the one that was active when the operation started.
     private func selectionChangedSinceWriteStarted() -> Bool {
-        let atStart = selectionAtStart
-        selectionAtStart = nil
-        guard let atStart, let host, atStart.directoryPath == host.currentPath else { return false }
+        let panes = selectionsAtStart
+        selectionsAtStart = []
+        guard let host, let atStart = panes.first(where: { $0.paneID == host.activePaneID }),
+            atStart.directoryPath == host.currentPath
+        else { return false }
         let now = host.selectedPaths
         if now.count != atStart.paths.count { return true }
         let pathsAtStart = Set(atStart.paths)

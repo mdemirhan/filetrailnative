@@ -87,7 +87,7 @@ extension MainWindowController {
         if loaded { pane.ensureLoaded() }
         if active {
             activePaneIndex = 1
-            activePaneChanged()
+            activePaneChanged(saving: false)
         }
         panesChanged()
     }
@@ -101,6 +101,7 @@ extension MainWindowController {
         closedSecondPane = (startupTab(of: gone, path: gone.shownFolderPath), gone.navigationHistory)
         closedPaneWatchID = gone.watchID
         gone.searchStore?.session.close()
+        gone.searchStore?.disconnect()
         // The cells let go of their views first, so the kept pane's view moves into the left cell without being taken out
         // again.
         workspace.showSecondPane(nil, status: nil)
@@ -109,19 +110,27 @@ extension MainWindowController {
         panes = [keep]
         activePaneIndex = 0
         window?.minSize = minimumWindowSize
-        activePaneChanged()
+        activePaneChanged(saving: false)
         panesChanged()
         // The list that had the keyboard keeps it; the pane that went gives it to the one that stays.
         if keyboard != nil { keepKeyboard(in: keep) }
     }
 
-    /// The panes changed: the window's watches, title and saved state follow.
+    /// The panes changed: the window's watches, title and saved state follow, the Info Row goes to the active pane, and
+    /// the tab's magnifier to the searches still there.
     private func panesChanged() {
         window?.minSize = minimumWindowSize
         workspace.activePane = activePaneIndex
-        group?.refreshTitles()
+        showInfoRow(animated: false)
+        updateSearchTabAccessory()
         group?.tabChanged(self)
         notify(.panels)
+    }
+
+    /// The Info Row shows in the active pane only, as it describes that pane's selection: the other pane has none.
+    func showInfoRow(animated: Bool) {
+        let open = panels.detailRowOpen
+        for pane in panes { pane.content.setInfoRowOpen(open && pane === activePane, animated: animated) }
     }
 
     /// The window is widened, as far as its screen allows, to the width two panes need.
@@ -170,10 +179,11 @@ extension MainWindowController {
 
     /// `paths` of the active pane go into the other pane's folder (the right-click menu's Copy and Move).
     func sendToOtherPane(_ sources: [String], copying: Bool) {
-        guard let other = otherPane, other.searchRootPath == nil, let actions = writeActions else { return }
-        let destination = other.shownFolderPath
+        guard let other = otherPane, let destination = otherPaneDestination(other), let actions = writeActions else {
+            return
+        }
         let fromSearchResults = searchRootPath != nil
-        guard !sources.isEmpty, !destination.isEmpty else { return }
+        guard !sources.isEmpty else { return }
         let action: WriteOperationAction = copying ? .copyTo : .moveTo
         if actions.refuseWhileBusy(.operation(action)) { return }
         Task {
@@ -186,6 +196,16 @@ extension MainWindowController {
                 initiator: .otherPane, moveFromSearchResults: !copying && fromSearchResults)
             actions.reviewIfAsked(outcome, action: action)
         }
+    }
+
+    /// The folder Copy and Move to Other Pane put items into: the one `other` shows. None while it shows no folder,
+    /// search results, or the Trash or a folder in it, where nothing is pasted either.
+    func otherPaneDestination(_ other: BrowserPane) -> String? {
+        let path = other.shownFolderPath
+        guard other.searchRootPath == nil, !path.isEmpty, !Paths.isInsideTrash(path, homePath: trashHomePath) else {
+            return nil
+        }
+        return path
     }
 
     /// Swap Panes: the panes change places, each keeping its folder, history and view; the active one stays active,
@@ -205,7 +225,22 @@ extension MainWindowController {
 
     /// Make Panes Equal Width, and a double-click on the divider.
     func equalizePanes() {
+        guard showsTwoPanes, workspace.paneSplit != PaneSplit.even else { return }
         workspace.setPaneSplit(PaneSplit.even)
+        group?.tabChanged(self)
+    }
+
+    /// Disks went while the tab is on screen, and it stays: each pane on one opens Home, and a pane elsewhere stays
+    /// where it is. A tree rooted on one of them starts again at Home when the active pane doesn't take it there.
+    func leaveUnmountedDisks(homePath: String, isGone: (String) -> Bool) {
+        guard !homePath.isEmpty else { return }
+        let active = activePane
+        let activeLeaves = isGone(active.shownFolderPath)
+        for pane in panes where isGone(pane.shownFolderPath) { pane.go(to: URL(fileURLWithPath: homePath)) }
+        if !activeLeaves, isGone(treeRootPath) {
+            sidebarController.model.initializeTree(homePath)
+            sidebarController.activePaneChanged(to: active.shownFolderPath, includeHidden: active.includeHidden)
+        }
     }
 
     // MARK: The active pane
@@ -217,20 +252,22 @@ extension MainWindowController {
         activePaneChanged()
     }
 
-    /// What follows the active pane: the search field, the Info panel and Info Row, the tree's selection, the title
-    /// and everything that reads the tab.
-    func activePaneChanged() {
+    /// What follows the active pane: the search field, the Info panel and Info Row, the tree's selection and hidden
+    /// files, the title and everything that reads the tab. `saving`: the tab is saved with its new active pane; off
+    /// when what comes next saves it anyway.
+    func activePaneChanged(saving: Bool = true) {
         let pane = activePane
         workspace.activePane = activePaneIndex
         pane.search.connect(searchField)
         infoController?.follow(row: pane.content.contentShell.infoRow)
-        sidebarController.activePaneChanged(to: pane.shownFolderPath)
+        showInfoRow(animated: false)
+        sidebarController.activePaneChanged(to: pane.shownFolderPath, includeHidden: pane.includeHidden)
         updateTitle()
         if group?.selected === self { group?.frontSearch = pane.searchStore }
         for change: ExplorerWindowChange in [.folder, .history, .view, .search, .selection, .focusedPane] {
             notify(change)
         }
-        group?.tabChanged(self)
+        if saving { group?.tabChanged(self) }
     }
 
     /// The pane whose list, or path bar, has the keyboard.

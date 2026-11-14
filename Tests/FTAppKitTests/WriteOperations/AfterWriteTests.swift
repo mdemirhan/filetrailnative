@@ -296,4 +296,38 @@ private func item(
         #expect(outcome.3.count == count)
         #expect(seconds < 2, "took \(seconds) s of CPU time")
     }
+
+    // A pane that didn't start the write is read again only when the write had to do with its folder.
+    @Test func aWriteTouchesTheFoldersItsItemsWereInAndWentIntoAndTheItemsThemselves() throws {
+        let moved = result(
+            .paste,
+            [
+                item("/Users/demo/From/a.txt", "/Users/demo/Into/a.txt"),
+                item("/Users/demo/From/Sub", "/Users/demo/Into/Sub"),
+                item("/Users/demo/Elsewhere/c.txt", "/Users/demo/Into/c.txt", .failed),
+            ], targetPath: "/Users/demo/Into", mode: .cut)
+        let touched = try #require(AfterWrite.touched(moved))
+        for folder in ["/Users/demo/From", "/Users/demo/Into", "/Users/demo/Elsewhere"] {
+            #expect(touched.mayShow(in: folder), "\(folder)")
+        }
+        // A folder that was moved, and one inside it, are somewhere else now.
+        #expect(touched.mayShow(in: "/Users/demo/From/Sub"))
+        #expect(touched.mayShow(in: "/Users/demo/From/Sub/Deep"))
+        for folder in ["/Users/demo", "/Users/demo/Other", "/Users/demo/From 2", "/Users/demo/Into/Other", "/"] {
+            #expect(!touched.mayShow(in: folder), "\(folder)")
+        }
+
+        // A write into an empty folder made nothing yet says where it went; what a Replace put aside counts too.
+        var replaced = result(.paste, [], targetPath: "/Users/demo/Into")
+        replaced.replacedPaths = ["/Users/demo/Aside/old.txt"]
+        let aside = try #require(AfterWrite.touched(replaced))
+        #expect(aside.mayShow(in: "/Users/demo/Into"))
+        #expect(aside.mayShow(in: "/Users/demo/Aside"))
+        #expect(!aside.mayShow(in: "/Users/demo/From"))
+
+        // What went to the Trash, and what an Undo or Redo did, isn't all among the items.
+        for action: WriteOperationAction in [.trash, .undo, .redo] {
+            #expect(AfterWrite.touched(result(action, [item("/Users/demo/From/a.txt", nil)])) == nil)
+        }
+    }
 }

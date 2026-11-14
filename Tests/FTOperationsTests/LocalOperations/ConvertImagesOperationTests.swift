@@ -11,6 +11,18 @@ import UniformTypeIdentifiers
 
 @testable import FTOperations
 
+/// Paths noted from any thread.
+private final class Encoded: @unchecked Sendable {
+    private let lock = NSLock()
+    private var noted: [String] = []
+
+    var paths: [String] { lock.withLock { noted } }
+
+    func add(_ path: String) {
+        lock.withLock { noted.append(path) }
+    }
+}
+
 @MainActor
 @Suite(.localOperationHang) struct ConvertImagesOperationTests {
     /// What is in the folder, the test's Trash left out.
@@ -171,6 +183,63 @@ import UniformTypeIdentifiers
         let partial = fileSystem.calls.writeNewFile.first
         #expect(partial?.hasPrefix("/Users/demo/.") == true)
         #expect(partial != nil && fileSystem.calls.rm.map(\.0) == [partial!])
+        await coordinator.shutDown(maxWaitMs: 0)
+    }
+
+    // A folder that takes no new file says so before any picture in it is encoded.
+    @Test func aFolderThatTakesNoNewFileIsFoundBeforeEncoding() async throws {
+        let fileSystem = TestLocalFileSystem.stub()
+        fileSystem.canModifyFolderImpl = { path in
+            if path == "/Users/demo/locked" { throw NativeError.errno(EACCES, syscall: "access", path: path) }
+        }
+        let coordinator = WriteCoordinator.local(fileSystem)
+        let window = TestWindow()
+        let encoded = Encoded()
+        _ = try await coordinator.convertImages(
+            paths: ["/Users/demo/locked/a.png", "/Users/demo/open/b.png"], options: ImageConversionOptions(),
+            window: window,
+            encode: { path, _ in
+                encoded.add(path)
+                return Data([1, 2, 3])
+            })
+        let end = await window.ended("write-op-1")
+        #expect(end.status == .partial)
+        #expect(encoded.paths == ["/Users/demo/open/b.png"])
+        let items = end.result?.items ?? []
+        #expect(items.map(\.status) == [.failed, .completed])
+        #expect(items.first?.error?.isEmpty == false)
+        #expect(items.last?.destinationPath == "/Users/demo/open/b.jpg")
+        #expect(fileSystem.calls.writeNewFile.allSatisfy { $0.hasPrefix("/Users/demo/open/.") })
+        await coordinator.shutDown(maxWaitMs: 0)
+    }
+
+    // A name taken between the look and the rename gives the next free one, as an archive's does.
+    @Test func aNameTakenMeanwhileGivesTheNextFreeOne() async throws {
+        let fileSystem = TestLocalFileSystem.stub()
+        let taken = Encoded()
+        fileSystem.lstatImpl = { path in
+            if taken.paths.contains(path) { return Stats.file() }
+            throw OperationError("missing")
+        }
+        fileSystem.renameExclusiveImpl = { from, to in
+            // Something else made "a.jpg" first.
+            if to == "/Users/demo/a.jpg" {
+                taken.add(to)
+                throw NativeError.errno(EEXIST, syscall: "rename", path: from, dest: to)
+            }
+        }
+        let coordinator = WriteCoordinator.local(fileSystem)
+        let window = TestWindow()
+        _ = try await coordinator.convertImages(
+            paths: ["/Users/demo/a.png"], options: ImageConversionOptions(), window: window,
+            encode: { _, _ in Data([1, 2, 3]) })
+        let end = await window.ended("write-op-1")
+        #expect(end.status == .completed)
+        #expect(end.result?.items.first?.destinationPath == "/Users/demo/a 2.jpg")
+        #expect(fileSystem.calls.renameExclusive.map(\.1) == ["/Users/demo/a.jpg", "/Users/demo/a 2.jpg"])
+        // The file filled under a hidden name is the one renamed, and nothing is removed.
+        #expect(Set(fileSystem.calls.renameExclusive.map(\.0)) == Set(fileSystem.calls.writeNewFile))
+        #expect(fileSystem.calls.rm.isEmpty)
         await coordinator.shutDown(maxWaitMs: 0)
     }
 

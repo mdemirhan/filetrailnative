@@ -46,6 +46,26 @@ struct PasteAsFileTests {
         #expect(Self.choose(["public.utf8-plain-text"], text: "https://example.com") == .text)
     }
 
+    @Test func textThatIsOnlyBlankSpaceDoesNotWinOverAnImage() {
+        let types = ["public.png", "public.utf8-plain-text"]
+        #expect(Self.choose(types, text: " ") == .image(.png))
+        #expect(Self.choose(types, text: "\n\t  \r\n") == .image(.png))
+        #expect(Self.choose(types, text: " x ") == .text)
+        // With no image it is still text, as it was copied.
+        #expect(Self.choose(["public.utf8-plain-text"], text: "  \n") == .text)
+    }
+
+    // The menus ask each time they open: the types answer where they can, and nothing is read from the clipboard.
+    @Test func theTypesAloneSayWhatWouldBeWrittenUnlessAnImageHasTextBesideIt() {
+        #expect(PasteAsFile.choose(types: ["public.utf8-plain-text", "public.rtf"]) == .text)
+        #expect(PasteAsFile.choose(types: ["public.heic", "public.png"]) == .image(.heic))
+        #expect(PasteAsFile.choose(types: ["public.file-url", "public.utf8-plain-text", "public.tiff"]) == .files)
+        #expect(PasteAsFile.choose(types: ["public.rtf"]) == .nothing)
+        #expect(PasteAsFile.choose(types: []) == .nothing)
+        // The text decides between the two, so it has to be read.
+        #expect(PasteAsFile.choose(types: ["public.tiff", "public.utf8-plain-text"]) == nil)
+    }
+
     @Test func filesCopiedInAnotherAppAreNeverWrittenNotEvenTheirIconOrName() {
         let finder = ["public.file-url", "public.utf8-plain-text", "public.tiff", "com.apple.icns"]
         #expect(Self.choose(finder, text: "report.pdf") == .files)

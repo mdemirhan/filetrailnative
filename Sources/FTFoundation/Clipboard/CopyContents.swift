@@ -72,26 +72,49 @@ public enum CopyContents {
         identifier != UTType.png.identifier && identifier != UTType.jpeg.identifier
     }
 
-    /// Text in UTF-8, or in UTF-16 with its byte-order mark; nil for anything else, a file with a zero byte in it among
-    /// them, as that is a binary file.
+    /// Text in UTF-8, or in UTF-16 with its byte-order mark; nil for anything else: UTF-32, whose mark begins as
+    /// UTF-16's does, and any text with a zero character in it, as that is a binary file.
     public static func decodeText(_ data: Data) -> String? {
-        if data.starts(with: [0xEF, 0xBB, 0xBF]) { return String(data: data.dropFirst(3), encoding: .utf8) }
-        if data.starts(with: [0xFF, 0xFE]) || data.starts(with: [0xFE, 0xFF]) {
-            return String(data: data, encoding: .utf16)
+        if data.starts(with: [0xFF, 0xFE, 0x00, 0x00]) || data.starts(with: [0x00, 0x00, 0xFE, 0xFF]) { return nil }
+        let text: String?
+        if data.starts(with: [0xEF, 0xBB, 0xBF]) {
+            text = String(data: data.dropFirst(3), encoding: .utf8)
+        } else if data.starts(with: [0xFF, 0xFE]) || data.starts(with: [0xFE, 0xFF]) {
+            text = String(data: data, encoding: .utf16)
+        } else if data.contains(0) {
+            return nil
+        } else {
+            return String(data: data, encoding: .utf8)
         }
-        if data.contains(0) { return nil }
-        return String(data: data, encoding: .utf8)
+        guard let text, !text.unicodeScalars.contains("\0") else { return nil }
+        return text
     }
 
-    /// A name that usually holds a password or a key: `.env` files, keys and certificates, and private SSH keys (the
-    /// public `.pub` ones are meant to be shared).
-    public static func looksSecret(_ name: String) -> Bool {
+    /// Names that hold passwords or keys whatever their extension.
+    static let secretNames: Set<String> = [
+        ".netrc", ".npmrc", ".pgpass", ".htpasswd", "credentials", "kubeconfig",
+    ]
+    /// Extensions of keys and of files of settings with passwords in them.
+    static let secretExtensions: Set<String> = ["env", "pem", "key", "p8", "ppk"]
+
+    /// A name that usually holds a password or a key: `.env` files and `*.env`, the files tools keep their passwords
+    /// in (`.netrc`, `.npmrc`, `.pgpass`, `.htpasswd`, `credentials`, `kubeconfig`, and `config` in a folder named
+    /// `.kube`, which is why `folder` is asked for), keys and certificates, and private SSH keys (the public `.pub`
+    /// ones are meant to be shared). A name whose extension says image is never one.
+    public static func looksSecret(_ name: String, inFolderNamed folder: String = "") -> Bool {
         let lower = name.lowercased()
-        if lower == ".env" || lower.hasPrefix(".env.") { return true }
+        if guess(forName: lower) == .image { return false }
+        if lower == ".env" || lower.hasPrefix(".env.") || secretNames.contains(lower) { return true }
+        if lower == "config", folder.lowercased() == ".kube" { return true }
         let ext = extensionName(lower)
-        if ext == "pem" || ext == "key" { return true }
+        if secretExtensions.contains(ext) { return true }
         if ext == "pub" { return false }
         return ["id_rsa", "id_ed25519", "id_ecdsa", "id_dsa"].contains { lower.hasPrefix($0) }
+    }
+
+    /// Whether the file at `path` is one of those names, by its name and the folder it is in.
+    public static func looksSecret(path: String) -> Bool {
+        looksSecret(NodePath.basename(path), inFolderNamed: NodePath.basename(NodePath.dirname(path)))
     }
 
     // MARK: Names

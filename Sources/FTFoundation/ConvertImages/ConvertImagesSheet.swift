@@ -10,11 +10,20 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     public private(set) var infos: [ImageInfo?]?
     /// Said under the custom size after a value was brought back to what is allowed, until the next change.
     public private(set) var customNote: String?
+    /// The formats offered: those this Mac can write.
+    public let formats: [ImageFormat]
 
-    public init(settings: ConvertImagesSettings, count: Int, infos: [ImageInfo?]? = nil) {
+    /// `formats` are the ones the Mac can write; a format chosen last time that isn't among them gives way to the
+    /// first that is.
+    public init(
+        settings: ConvertImagesSettings, count: Int, infos: [ImageInfo?]? = nil,
+        formats: [ImageFormat] = ImageFormat.allCases
+    ) {
         self.settings = settings
         self.count = count
         self.infos = infos
+        self.formats = formats
+        if !formats.contains(settings.format), let first = formats.first { self.settings.format = first }
         if let infos { read(infos) }
     }
 
@@ -40,9 +49,8 @@ public struct ConvertImagesSheet: Equatable, Sendable {
 
     // MARK: Format
 
-    public static let formats = ImageFormat.allCases
-
     public mutating func choose(format: ImageFormat) {
+        guard formats.contains(format) else { return }
         settings.format = format
         customNote = nil
     }

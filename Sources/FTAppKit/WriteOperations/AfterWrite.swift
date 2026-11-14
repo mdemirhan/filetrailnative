@@ -122,6 +122,37 @@ enum AfterWrite {
         return Arrived(folder: folder, paths: made)
     }
 
+    /// What a write took and made, as a pane that didn't start it asks: whether its folder was touched.
+    struct Touched: Equatable, Sendable {
+        /// The folder the write went into.
+        var targetPath: String?
+        var items: [WriteOperationItem]
+        /// What a Replace put aside, and where.
+        var aside: [String]
+
+        /// Whether a pane on `folder` may show something else after the write: an item was in it or went into it,
+        /// whether or not it got there, or the folder is one of the items or inside one.
+        func mayShow(in folder: String) -> Bool {
+            func touches(_ path: String?) -> Bool {
+                guard let path, !path.isEmpty else { return false }
+                return ExplorerTabs.parentDirectoryPath(path).map { samePath($0, folder) } ?? false
+                    || AfterWrite.isAtOrInside(folder, path)
+            }
+            if let targetPath, samePath(targetPath, folder) { return true }
+            return items.contains { touches($0.sourcePath) || touches($0.destinationPath) }
+                || aside.contains(where: touches)
+        }
+    }
+
+    /// What `result` took and made. Nil for a write whose items don't say all it touched: one that moved items to
+    /// the Trash, and an Undo or Redo.
+    static func touched(_ result: WriteOperationResult) -> Touched? {
+        if result.action == .trash || isUndoOrRedo(result.action) { return nil }
+        return Touched(
+            targetPath: result.targetPath, items: result.items,
+            aside: (result.replacedPaths ?? []) + (result.trashedPaths ?? []))
+    }
+
     static func selection(
         _ result: WriteOperationResult, currentPath: String, isSearching: Bool, selectionChanged: Bool
     ) -> [String]? {

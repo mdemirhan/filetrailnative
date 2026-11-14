@@ -17,6 +17,12 @@ final class CopyContentsAction {
     var read: (_ path: String, _ guess: CopyContentsGuess) async -> Result<FileContents, FileContents.Failure> = {
         await FileContents.read($0, guess: $1)
     }
+    /// Where a link at `path` leads, or `path` itself: found off the main thread, as it asks the disk.
+    var resolve: (_ path: String) async -> String = { path in
+        await Task.detached(priority: .userInitiated) {
+            URL(fileURLWithPath: path).resolvingSymlinksInPath().path
+        }.value
+    }
     /// How long a read runs before "Copying…" is shown.
     var slowDelay: Duration = .milliseconds(500)
 
@@ -47,7 +53,13 @@ final class CopyContentsAction {
         let mine = generation
         let name = NodePath.basename(path)
         let guess = CopyContents.guess(forName: name)
-        let concealed = CopyContents.looksSecret(name)
+        // A link copies what it points to, so it is asked about for its own name or for that file's.
+        var concealed = CopyContents.looksSecret(path: path)
+        if !concealed, guess != .image {
+            let target = await resolve(path)
+            guard mine == generation else { return false }
+            concealed = target != path && CopyContents.looksSecret(path: target)
+        }
         if concealed {
             guard await confirm(Self.secretQuestion(name), window()), mine == generation else { return false }
         }
@@ -64,7 +76,8 @@ final class CopyContentsAction {
         endCopyingToast()
         switch result {
         case .success(let contents):
-            guard contents.write(to: pasteboard(), concealed: concealed) else {
+            // Only text is marked as private: an image found in a file named like a key is no secret.
+            guard contents.write(to: pasteboard(), concealed: concealed && contents.kind == .text) else {
                 notices.show(
                     title: CopyContents.failureTitle(contents.kind), message: CopyContents.pasteboardMessage,
                     in: window())

@@ -69,6 +69,47 @@ final class UndoHistoryView: NSView {
         subtitle.textColor = NSColor(palette.contextMenuShortcut)
         fillList()
         needsLayout = true
+        if window != nil { tellTimes() }
+    }
+
+    // MARK: Times
+
+    /// Waits for the next moment a row's time reads differently ("2 min ago" becoming "3 min ago"), only while the
+    /// list is in a window: closed, nothing waits.
+    private var timeChange: Timer?
+
+    /// Whether the list is waiting to tell its times again.
+    var followsTheTime: Bool { timeChange != nil }
+
+    /// When each thing listed happened.
+    private var dates: [Date] {
+        (content.redo + content.undo).map(\.date) + (content.barrier.map { [$0.date] } ?? [])
+    }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if window == nil {
+            timeChange?.invalidate()
+            timeChange = nil
+        } else {
+            tellTimes()
+        }
+    }
+
+    /// Tells every row's time as of now, and waits for the next change of one while the list is open.
+    func tellTimes() {
+        let date = now()
+        for case let row as TwoLineRow in list.subviews { row.tell(now: date) }
+        timeChange?.invalidate()
+        timeChange = nil
+        guard window != nil, let next = UndoHistoryRows.nextTimeChange(of: dates, now: date) else { return }
+        let timer = Timer(timeInterval: max(0.05, next.timeIntervalSince(date)), repeats: false) { [weak self] _ in
+            MainActor.assumeIsolated { self?.tellTimes() }
+        }
+        // A second late costs nothing, and lets macOS fire it along with other timers.
+        timer.tolerance = 1
+        RunLoop.main.add(timer, forMode: .common)
+        timeChange = timer
     }
 
     /// The rows, top to bottom, and the list's height.
@@ -253,6 +294,18 @@ final class UndoHistoryView: NSView {
 
         override var isFlipped: Bool { true }
 
+        /// The second line as of `now`: its time reads differently as it gets older.
+        func detail(now: Date) -> String { second.stringValue }
+
+        /// Shows the second line as of `now`.
+        func tell(now: Date) {
+            let detail = detail(now: now)
+            guard detail != second.stringValue else { return }
+            second.set(detail, font: ChromeColors.font(size: DesignTokens.typeScale.small))
+            setAccessibilityLabel("\(first.stringValue), \(detail)")
+            needsLayout = true
+        }
+
         override func layout() {
             super.layout()
             let padding = UndoHistoryView.paddingHorizontal
@@ -273,27 +326,39 @@ final class UndoHistoryView: NSView {
 
         init(_ row: UndoHistoryRow, undone: Bool, now: Date) {
             self.row = row
-            let when = DateText.shared.relative(row.date, now: now)
             super.init(
-                symbol: row.icon.symbolName, first: row.title,
-                second: [row.place, when].compactMap { $0 }.joined(separator: " · "), dimmed: undone)
+                symbol: row.icon.symbolName, first: row.title, second: Self.detail(row, now: now), dimmed: undone)
             toolTip = UndoHistoryView.tooltip(row, undone: undone)
             setAccessibilityIdentifier(undone ? "undoHistoryPopover.redoRow" : "undoHistoryPopover.undoRow")
         }
+
+        private static func detail(_ row: UndoHistoryRow, now: Date) -> String {
+            [row.place, DateText.shared.relative(row.date, now: now)].compactMap { $0 }.joined(separator: " · ")
+        }
+
+        override func detail(now: Date) -> String { Self.detail(row, now: now) }
 
         required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
     }
 
     /// What can't be undone, under the oldest operation.
     final class UndoHistoryBarrierView: TwoLineRow {
+        private let barrier: UndoBarrier
+
         init(_ barrier: UndoBarrier, now: Date) {
-            let when = DateText.shared.relative(barrier.date, now: now)
+            self.barrier = barrier
             super.init(
                 symbol: "lock", first: UndoHistoryRows.barrierTitle(barrier),
-                second: "\(UndoHistoryRows.barrierReason(barrier)) · \(when)", dimmed: true)
+                second: Self.detail(barrier, now: now), dimmed: true)
             toolTip = DateText.shared.exactDateTime(barrier.date)
             setAccessibilityIdentifier("undoHistoryPopover.barrier")
         }
+
+        private static func detail(_ barrier: UndoBarrier, now: Date) -> String {
+            "\(UndoHistoryRows.barrierReason(barrier)) · \(DateText.shared.relative(barrier.date, now: now))"
+        }
+
+        override func detail(now: Date) -> String { Self.detail(barrier, now: now) }
 
         required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
     }

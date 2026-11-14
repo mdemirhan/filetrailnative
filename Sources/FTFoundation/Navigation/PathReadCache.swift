@@ -51,7 +51,8 @@ public struct PathReadCache<Value> {
     /// The read of `paths` begun at `generation` answered. `answers` are what it found, or nil when they no longer
     /// belong to what is shown, which only ends the read. Nil when the read is from before a start over; otherwise the
     /// items to read once more, which changed while it ran. An item of `paths` it found nothing for, and that didn't
-    /// change meanwhile, is left as it is and not asked for again.
+    /// change meanwhile, is not asked for again, and what it had from an earlier read goes: the item is gone, so
+    /// what was known of it is no longer true.
     public mutating func finish(_ paths: [String], from generation: Int, answers: [String: Value]?) -> [String]? {
         guard generation == self.generation else { return nil }
         reading.subtract(paths)
@@ -60,7 +61,11 @@ public struct PathReadCache<Value> {
         guard let answers else { return [] }
         values.merge(answers) { $1 }
         stale.subtract(answers.keys)
-        unanswered.formUnion(paths.filter { answers[$0] == nil && !again.contains($0) })
+        for path in paths where answers[path] == nil && !again.contains(path) {
+            unanswered.insert(path)
+            values[path] = nil
+            stale.remove(path)
+        }
         stale.formUnion(again.filter { values[$0] != nil })
         return Array(again)
     }

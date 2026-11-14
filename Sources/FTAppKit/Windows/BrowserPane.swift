@@ -281,18 +281,18 @@ final class BrowserPane {
         }
     }
 
-    /// `followMovedItems` and `leaveUnmountedDisks` for a pane in the background: it takes the place `snapshot` gives
+    /// `followMovedItems` and `leaveUnmountedDisks` for a pane in the background: it takes the place a snapshot gives
     /// it (folder and history) and reads its folder when it is next shown. Whether its folder changed.
     @discardableResult
-    func takePlace(_ snapshot: TabSnapshot) -> Bool {
-        if snapshot.historyPaths.indices.contains(snapshot.historyIndex) {
-            navigationHistory = NavigationHistory(paths: snapshot.historyPaths, index: snapshot.historyIndex)
+    func takePlace(path: String, historyPaths: [String], historyIndex: Int) -> Bool {
+        if historyPaths.indices.contains(historyIndex) {
+            navigationHistory = NavigationHistory(paths: historyPaths, index: historyIndex)
         } else {
-            navigationHistory = NavigationHistory(startingAt: snapshot.currentPath)
+            navigationHistory = NavigationHistory(startingAt: path)
         }
-        let moved = shownFolderPath != snapshot.currentPath
-        if !snapshot.currentPath.isEmpty {
-            folder = URL(fileURLWithPath: snapshot.currentPath)
+        let moved = shownFolderPath != path
+        if !path.isEmpty {
+            folder = URL(fileURLWithPath: path)
             folderLetGo = false
         }
         if moved, loaded { stale = true }
@@ -332,13 +332,59 @@ final class BrowserPane {
         reload(changedPaths: [])
     }
 
-    /// A write that ended made these in the folder: they are selected once the read that shows them lands.
-    private var selectAfterRead: [String]?
+    /// What the read that shows a write's end does once its listing is on screen.
+    struct WriteEndRead {
+        /// The folder the write's end shows in.
+        var folder: String
+        /// What the write made there, selected once it is listed; nil to keep the selection.
+        var selecting: [String]?
+        /// Told once: true with the listing on screen, false when the pane left the folder or couldn't read it.
+        var finish: ((Bool) -> Void)?
+    }
+
+    /// A write that ended is yet to show in this pane: it waits for the pane's own read of its folder, whichever
+    /// other pane's read lands first.
+    private var writeEndRead: WriteEndRead?
+
+    /// The pane's next read of `waiting.folder` shows a write's end: what the write made is selected then. One still
+    /// waiting gives way.
+    func showWriteEnd(_ waiting: WriteEndRead) {
+        dropWriteEndRead()
+        writeEndRead = waiting
+    }
 
     /// The folder read again after a write that touched it, `selecting` what the write made there.
     func readAgain(selecting: [String]?) {
-        if let selecting, !selecting.isEmpty { selectAfterRead = selecting }
+        if let selecting, !selecting.isEmpty {
+            showWriteEnd(WriteEndRead(folder: shownFolderPath, selecting: selecting))
+        }
         reload(changedPaths: [])
+    }
+
+    /// The pane won't show the write's end: it left the folder, or couldn't read it.
+    private func dropWriteEndRead() {
+        guard let waiting = writeEndRead else { return }
+        writeEndRead = nil
+        waiting.finish?(false)
+    }
+
+    /// A listing of `path` is on screen: what waited for the write's end is done, unless this read began before the
+    /// write ended and the one asked for is still waiting. Another folder's listing ends the wait.
+    private func writeEndShown(in path: String) {
+        guard let waiting = writeEndRead else { return }
+        guard samePath(path, waiting.folder) else {
+            dropWriteEndRead()
+            return
+        }
+        if let pending = folderChanges.pending, samePath(pending.path, path) { return }
+        writeEndRead = nil
+        if let selecting = waiting.selecting { content.select(paths: selecting) }
+        waiting.finish?(true)
+    }
+
+    /// A folder didn't open, and the one on screen stays: with no read of it on its way, the write's end won't show.
+    private func writeEndReadMissed() {
+        if folderChanges.pending == nil, folderChanges.drain == .idle { dropWriteEndRead() }
     }
 
     var folderChangesHeld: Bool { folderChanges.isHeld }
@@ -391,8 +437,12 @@ final class BrowserPane {
     private func quietRead(_ changedPaths: [String]?) async {
         let url = folder
         let result = await readFolder(url)
-        // The folder was left meanwhile: the user's folder wins.
-        guard url == folder, !isNavigating, !folderLetGo else { return }
+        // The folder was left meanwhile: the user's folder wins. A folder being opened settles what waits for a
+        // write's end itself.
+        guard url == folder, !isNavigating, !folderLetGo else {
+            if !isNavigating { dropWriteEndRead() }
+            return
+        }
         switch result {
         case .success(let snapshot):
             isTakingInOutsideChange = true
@@ -400,10 +450,7 @@ final class BrowserPane {
             content.show(
                 folder: url.path, entries: snapshot.entries, selecting: nil, keepingScroll: true,
                 changedPaths: changedPaths)
-            if let selecting = selectAfterRead {
-                selectAfterRead = nil
-                content.select(paths: selecting)
-            }
+            writeEndShown(in: url.path)
             tab.notify(.folder)
         case .failure(let error):
             if FolderReadFailure.isGone(error) {
@@ -411,6 +458,7 @@ final class BrowserPane {
             } else {
                 content.showError(folder: url.path, error: FolderReadFailure.readError(error))
             }
+            dropWriteEndRead()
         }
     }
 
@@ -636,6 +684,7 @@ final class BrowserPane {
             if let goToFailure {
                 content.showReadError(readError)
                 goToFailure(readError.message)
+                writeEndReadMissed()
                 return .failed
             }
             switch readFailure ?? (open.origin.opensWhenUnreadable ? .opens : .leavesFolderOnScreen) {
@@ -648,6 +697,7 @@ final class BrowserPane {
                 if !quiet { content.showReadError(readError) }
                 if drivesSidebar { sidebar.openFailed() }
                 tab.notify(.history)
+                writeEndReadMissed()
                 return .failed
             }
         }
@@ -732,6 +782,8 @@ final class BrowserPane {
         }
         tab.notify(.history)
         updatePathBar()
+        // A write's end waiting for this folder shows now; one that waited for the folder just left never will.
+        if opensWithError { dropWriteEndRead() } else { writeEndShown(in: shown.path) }
         tab.notify(.folder)
         window?.contentView?.layoutSubtreeIfNeeded()
         if let carried { content.pane?.scrollPosition = (carried.contentScroll.y, carried.contentScroll.x) }
@@ -771,6 +823,7 @@ final class BrowserPane {
     func showNoFolder() {
         folderLetGo = true
         folderChanges.letGo()
+        dropWriteEndRead()
         content.showNoFolder()
         tab.updateTitle()
         updatePathBar()

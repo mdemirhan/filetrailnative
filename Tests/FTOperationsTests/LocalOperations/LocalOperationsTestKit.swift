@@ -37,6 +37,8 @@ final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
     var realpathImpl: @Sendable (String) throws -> String
     private let getFlagsImpl: @Sendable (String) throws -> UInt32
     var itemSizeImpl: (@Sendable (String) throws -> ItemSize)?
+    /// Every folder takes new items, unless the test says otherwise.
+    var canModifyFolderImpl: @Sendable (String) throws -> Void = { _ in }
     /// Every file written works, holding nothing, unless the test says otherwise.
     var writeNewFileImpl: @Sendable (String, Data) throws -> Void = { _, _ in }
 
@@ -160,9 +162,7 @@ final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
     }
     func setAcl(_ path: String, _ acl: String?) throws { throw OperationError("setAcl isn't used by these operations") }
     func getAcl(_ path: String) throws -> String? { throw OperationError("getAcl isn't used by these operations") }
-    func canModifyFolder(_ path: String) throws {
-        throw OperationError("canModifyFolder isn't used by these operations")
-    }
+    func canModifyFolder(_ path: String) throws { try canModifyFolderImpl(path) }
 
     func trash(_ path: String) throws -> String? {
         record { $0.trash.append(path) }

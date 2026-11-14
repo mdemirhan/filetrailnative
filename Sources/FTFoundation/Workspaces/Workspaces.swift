@@ -3,7 +3,7 @@ import Foundation
 /// A window's tabs saved by name, to be opened again: the window's session (its tabs and their panes, the tab in
 /// front, its panels and widths) and its size.
 public struct Workspace: Codable, Equatable, Sendable {
-    /// Kept while it is renamed and moved: a window opened from it knows it by this.
+    /// Kept while it is renamed and moved in the list, and when a window is saved over it.
     public var id: String
     public var name: String
     /// The window's size and whether it was zoomed. It has no place on screen: it opens where a new window would.

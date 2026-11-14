@@ -83,6 +83,9 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     func itemFrame(at index: Int, viewport: NSSize) -> NSRect { .zero }
     func items(in rect: NSRect, viewport: NSSize) -> Range<Int> { 0..<0 }
     func placesChange(from old: NSSize, to new: NSSize) -> Bool { old != new }
+    /// Before the items are placed in a pane of this size: a grid that follows the pane's size (the Previews view's)
+    /// is fitted to it.
+    func fitGrid(to size: NSSize) {}
     /// The items the box touches; the box is in the collection's coordinates.
     func marqueeHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] { [] }
     /// The scroll offset that brings the item into view, or nil to leave it.
@@ -145,6 +148,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         let frame = NSRect(x: 0, y: room, width: root.bounds.width, height: max(0, root.bounds.height - room))
         if scroll.frame != frame { scroll.frame = frame }
         let resized = lastViewport != viewport
+        fitGrid(to: viewport)
         if placesChange(from: lastViewport, to: viewport) { gridLayout.invalidateLayout() }
         lastViewport = viewport
         placeItems()

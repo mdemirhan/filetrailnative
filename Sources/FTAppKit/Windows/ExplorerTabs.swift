@@ -246,11 +246,26 @@ public enum ExplorerTabs {
     }
 
     /// The tab a new one starts as: the same folder and tree, a history of its own, nothing selected or
-    /// typed, the list at the top, no memories and no search.
+    /// typed, the list at the top, no memories and no search. It has one pane, on the active pane's folder and shown
+    /// as that pane shows it.
     public static func newTab(from snapshot: TabSnapshot) -> TabSnapshot {
         var new = snapshot
-        new.historyPaths = snapshot.currentPath.isEmpty ? [] : [snapshot.currentPath]
-        new.historyIndex = snapshot.currentPath.isEmpty ? -1 : 0
+        if snapshot.activePane == 1, let second = snapshot.secondPane?.pane {
+            new.currentPath = second.path ?? ""
+            new.viewMode = second.viewMode
+            new.searchViewMode = second.searchViewMode
+            new.sortBy = second.sortBy
+            new.sortDirection = second.sortDirection
+            new.includeHidden = second.includeHidden
+            new.foldersFirst = second.foldersFirst
+            // What the first pane had on screen isn't this folder's.
+            new.view?.directoryError = nil
+        }
+        new.secondPane = nil
+        new.activePane = 0
+        new.paneSplit = nil
+        new.historyPaths = new.currentPath.isEmpty ? [] : [new.currentPath]
+        new.historyIndex = new.currentPath.isEmpty ? -1 : 0
         new.view?.contentSelection = .empty
         new.view?.listFilterQuery = ""
         new.view?.listFilterMode = nil
@@ -275,21 +290,39 @@ public enum ExplorerTabs {
     }
 
     /// `leaveUnmountedDisks`: a background tab on a disk that was unmounted goes Home, as the tab on screen does.
-    /// `volumeRoot` says which disk a path is on.
+    /// Each of its panes on the disk does; one on another disk stays where it is. The tree goes Home with the active
+    /// pane, or when its own root was on the disk. `volumeRoot` says which disk a path is on.
     public static func leaveUnmountedDisks(
         _ snapshot: TabSnapshot, unmounted: Set<String>, homePath: String,
         volumeRoot: (String) -> String = volumeRootPath
     ) -> TabSnapshot {
         func isGone(_ path: String) -> Bool { !path.isEmpty && unmounted.contains(volumeRoot(path)) }
-        guard isGone(snapshot.currentPath) || isGone(snapshot.treeRootPath) else { return snapshot }
+        let second = snapshot.secondPane
+        let rootGone = isGone(snapshot.treeRootPath)
+        // A tab with one pane goes with its tree.
+        let firstGone = isGone(snapshot.currentPath) || (second == nil && rootGone)
+        let secondGone = second?.pane.path.map(isGone) ?? false
+        guard firstGone || secondGone || rootGone else { return snapshot }
         var left = snapshot
-        left.historyPaths = snapshot.historyPaths.filter { !isGone($0) } + [homePath]
-        left.currentPath = homePath
-        left.historyIndex = left.historyPaths.count - 1
-        left.treeRootPath = homePath
-        left.selectedTreeItemID = "fs:\(homePath)"
-        left.leftPaneSubview = .tree
-        left.view = nil
+        if firstGone {
+            left.historyPaths = snapshot.historyPaths.filter { !isGone($0) } + [homePath]
+            left.currentPath = homePath
+            left.historyIndex = left.historyPaths.count - 1
+            left.view = nil
+        }
+        if secondGone, let second {
+            let history = second.historyPaths.filter { !isGone($0) } + [homePath]
+            left.secondPane?.pane.path = homePath
+            left.secondPane?.historyPaths = history
+            left.secondPane?.historyIndex = history.count - 1
+        }
+        let secondIsActive = snapshot.activePane == 1 && second != nil
+        if rootGone || (secondIsActive ? secondGone : firstGone) {
+            let active = secondIsActive ? left.secondPane?.pane.path ?? "" : left.currentPath
+            left.treeRootPath = homePath
+            left.selectedTreeItemID = active.isEmpty ? nil : "fs:\(active)"
+            left.leftPaneSubview = .tree
+        }
         return left
     }
 
@@ -324,8 +357,8 @@ public enum ExplorerTabs {
         return collectFollowedMoves(result.action, items: result.items)
     }
 
-    /// `followMovedItems`: a background tab on a folder that was renamed or moved follows it, as a Finder window does.
-    /// Its listing is read again, at the new place, when it is shown.
+    /// `followMovedItems`: a background tab on a folder that was renamed or moved follows it, as a Finder window does,
+    /// in each of its panes. Its listing is read again, at the new place, when it is shown.
     public static func followMovedItems(_ snapshot: TabSnapshot, _ moves: [PathMove]) -> TabSnapshot {
         let currentPath = followMovedPath(snapshot.currentPath, moves)
         let historyPaths = snapshot.historyPaths.map { followMovedPath($0, moves) }
@@ -334,15 +367,21 @@ public enum ExplorerTabs {
         if let item = selected, item.hasPrefix("fs:") {
             selected = "fs:" + followMovedPath(String(item.dropFirst(3)), moves)
         }
+        var secondPane = snapshot.secondPane
+        if let second = snapshot.secondPane {
+            secondPane?.pane.path = second.pane.path.map { followMovedPath($0, moves) }
+            secondPane?.historyPaths = second.historyPaths.map { followMovedPath($0, moves) }
+        }
         let moved =
             currentPath != snapshot.currentPath || treeRootPath != snapshot.treeRootPath
-            || historyPaths != snapshot.historyPaths
+            || historyPaths != snapshot.historyPaths || secondPane != snapshot.secondPane
         if !moved, selected == snapshot.selectedTreeItemID { return snapshot }
         var followed = snapshot
         followed.currentPath = currentPath
         followed.historyPaths = historyPaths
         followed.treeRootPath = treeRootPath
         followed.selectedTreeItemID = selected
+        followed.secondPane = secondPane
         if currentPath != snapshot.currentPath { followed.view = nil }
         return followed
     }

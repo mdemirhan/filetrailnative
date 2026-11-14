@@ -208,6 +208,9 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
             "Stra\u{DF}e.txt", "STRASSE 2.txt", "\u{3A3}\u{3AF}\u{3C3}\u{3C5}\u{3C6}\u{3BF}\u{3C2}.txt",
             "\u{39F}\u{394}\u{39F}\u{3A3}.txt", "Sm\u{F8}rrebr\u{F8}d.txt", "\u{130}zmir.txt", "\u{131}sl\u{131}k.txt",
             "report (1).pdf", "c++ notes.txt", "Nai\u{308}ve.txt", "README.md",
+            // A letter with a mark it has no composed form with, a digit with one, ligatures and full-width letters.
+            "q\u{303}1x.txt", "7\u{301}up.txt", "\u{FB01}le.txt", "o\u{FB03}ce.txt", "wa\u{FB04}e.txt",
+            "\u{FF21}\u{FF22}\u{FF23} \u{FF11}\u{FF12}.txt", "be\u{FB06} of.txt",
         ]
         let queries = [
             "cafe", "caf\u{E9}", "CAF\u{C9}", "cafe\u{301}", "e", "\u{E9}", "ss", "\u{DF}",
@@ -215,6 +218,8 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
             "\u{3C2}", "\u{3BF}\u{3B4}\u{3BF}\u{3C3}", "smorrebrod", "sm\u{F8}rrebr\u{F8}d", "izmir", "\u{131}", "i",
             "(1)", "c++",
             "naive", "na\u{EF}ve", "readme", "README", "Rep", "2.t",
+            "q1", "7u", "fi", "file", "ffi", "fic", "offic", "of", "ff", "fl", "affle", "st", "est o", "t",
+            "abc", "ABC 12", "\u{FF41}\u{FF42}", "\u{FB01}", "1", ".",
         ]
         let runtime = try makeRuntime()
         defer { runtime.close() }
@@ -295,9 +300,11 @@ private func waitUntil(seconds: Double, _ condition: () -> Bool) async throws ->
 }
 
 /// The ids of the fd processes searching for `query` in Plain Text, found by their command line. There the query is a
-/// pattern of letters and their accented forms; its last 12 characters, digits, are as typed.
+/// pattern of characters and their other forms; each of its last 12 characters, digits, opens a class of its own
+/// ("[1…]\p{M}*"), and they are looked for in that order.
 private func fdProcesses(for query: String) -> [String] {
-    let marker = String(query.suffix(12))
+    let marker = query.suffix(12).map { "\\[\($0)[^\\]]*\\]\\\\p\\{M\\}\\*" }.joined()
+    guard let pattern = try? NSRegularExpression(pattern: marker) else { return [] }
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/bin/ps")
     process.arguments = ["-axo", "pid=,command="]
@@ -307,6 +314,9 @@ private func fdProcesses(for query: String) -> [String] {
     guard (try? process.run()) != nil else { return [] }
     let text = String(decoding: output.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
     process.waitUntilExit()
-    return text.split(separator: "\n").filter { $0.contains(marker) && $0.contains("/fd ") }
-        .map { String($0.split(separator: " ").first ?? "") }
+    return text.split(separator: "\n").map(String.init).filter { line in
+        line.contains("/fd ")
+            && pattern.firstMatch(in: line, range: NSRange(location: 0, length: line.utf16.count)) != nil
+    }
+    .map { String($0.split(separator: " ").first ?? "") }
 }

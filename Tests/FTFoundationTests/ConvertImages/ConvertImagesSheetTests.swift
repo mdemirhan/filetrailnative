@@ -12,6 +12,31 @@ import Testing
         return ConvertImagesSheet(settings: settings, count: infos.count, infos: infos)
     }
 
+    // Only the formats this Mac can write are offered; one chosen on another Mac gives way to the first of them.
+    @Test func onlyTheFormatsTheMacWritesAreOffered() {
+        #expect(sheet([photo]).formats == ImageFormat.allCases)
+        let types = ImageFormat.allCases.map(\.typeIdentifier)
+        #expect(ImageFormat.formats(amongTypes: types + ["com.example.other"]) == ImageFormat.allCases)
+        let withoutAVIF = ImageFormat.formats(amongTypes: types.filter { $0 != "public.avif" })
+        #expect(withoutAVIF == [.jpeg, .heic, .png, .tiff])
+        #expect(ImageFormat.formats(amongTypes: []) == [])
+        // Every Mac writes these.
+        #expect(ImageFormat.writableHere.contains(.jpeg) && ImageFormat.writableHere.contains(.png))
+
+        var settings = ConvertImagesSettings.defaults
+        settings.format = .avif
+        var offered = ConvertImagesSheet(settings: settings, count: 1, infos: [photo], formats: withoutAVIF)
+        #expect(offered.formats == withoutAVIF)
+        #expect(offered.settings.format == .jpeg)
+        offered.choose(format: .avif)
+        #expect(offered.settings.format == .jpeg)
+        offered.choose(format: .heic)
+        #expect(offered.settings.format == .heic)
+        // A format it can write stays as chosen.
+        settings.format = .tiff
+        #expect(ConvertImagesSheet(settings: settings, count: 1, formats: withoutAVIF).settings.format == .tiff)
+    }
+
     @Test func forOneImageTheSizesItAlreadyFitsAreGrayedWithItsSize() {
         let one = sheet([photo])
         #expect(!one.isEnabled(.fitWithin(3840)))

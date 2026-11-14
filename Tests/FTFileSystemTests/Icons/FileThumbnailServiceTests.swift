@@ -285,6 +285,31 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(QuickLookThumbnailRenderer.isOpaque(try image(alpha: .premultipliedLast, clear: false)))
         #expect(!QuickLookThumbnailRenderer.isOpaque(try image(alpha: .premultipliedLast, clear: true)))
     }
+
+    // A large preview is judged from a small copy of it: opaque all over stays opaque, and a clear corner or a clear
+    // edge around a page still shows.
+    @Test func judgesALargePictureFromASmallCopy() throws {
+        func image(width: Int, height: Int, clear: CGRect?) throws -> CGImage {
+            let context = try #require(
+                CGContext(
+                    data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+                    space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+            context.setFillColor(CGColor(red: 0.2, green: 0.6, blue: 0.9, alpha: 1))
+            context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+            if let clear { context.clear(clear) }
+            return try #require(context.makeImage())
+        }
+        #expect(QuickLookThumbnailRenderer.opacitySampleSide == 64)
+        #expect(QuickLookThumbnailRenderer.isOpaque(try image(width: 2048, height: 1365, clear: nil)))
+        #expect(QuickLookThumbnailRenderer.isOpaque(try image(width: 333, height: 2047, clear: nil)))
+        #expect(
+            !QuickLookThumbnailRenderer.isOpaque(
+                try image(width: 2048, height: 1365, clear: CGRect(x: 0, y: 0, width: 300, height: 300))))
+        // A page's clear margin, a hundredth of its width.
+        #expect(
+            !QuickLookThumbnailRenderer.isOpaque(
+                try image(width: 2048, height: 2048, clear: CGRect(x: 0, y: 0, width: 20, height: 2048))))
+    }
 }
 
 @MainActor @Suite struct ThumbnailLoadQueueTests {

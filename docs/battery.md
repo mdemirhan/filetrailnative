@@ -34,4 +34,6 @@ Other repeating timers run only while something is going on, and stop when it en
 - **A folder size** being calculated is asked about every 0.2 s.
 - **A marquee** (dragging to select in the List, Icons or Compact List) looks at the pointer 60 times a second while the button is held, to scroll when it is past the edge.
 - **Leftover writes**: when a start finds crash-journal entries it can't finish yet (a disk not connected or not answering), they are tried again once a minute, while nothing is being written, until none is left.
+- **The Undo History list**, while it is open and lists an operation under an hour old, waits for the next minute one of them turns, to tell its times again; closed, nothing waits.
+- **The Previews view** waits a moment after a mouse wheel or a drag-to-select scrolled it, to settle on a row, and ten seconds after its last pane went, to let go of its previews; each fires once.
 - **A copy** updates its progress while it runs; **an open menu** that changes with Option checks the key 20 times a second; **animations** (a tree row's arrow turning, the Info Row sliding) run at 60 frames a second while they last.

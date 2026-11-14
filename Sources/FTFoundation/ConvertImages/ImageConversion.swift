@@ -71,6 +71,16 @@ public enum ImageFormat: String, CaseIterable, Sendable, Codable {
         }
     }
 
+    /// Of the formats, those among the types `writable` names, in their order.
+    public static func formats(amongTypes writable: [String]) -> [ImageFormat] {
+        let types = Set(writable)
+        return allCases.filter { types.contains($0.typeIdentifier) }
+    }
+
+    /// The formats this Mac's ImageIO writes: an older macOS, or a Mac without the encoder, has no AVIF.
+    public static let writableHere: [ImageFormat] = formats(
+        amongTypes: CGImageDestinationCopyTypeIdentifiers() as? [String] ?? [])
+
     /// Whether it is saved at a chosen quality, losing some detail.
     public var hasQuality: Bool { self == .jpeg || self == .heic || self == .avif }
     /// JPEG has none: a transparent picture gets a white background.

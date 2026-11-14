@@ -137,21 +137,19 @@ extension MainWindowController {
             isSearchMode: searchRootPath != nil, homePath: actions.session.coordinator.homePath)
     }
 
-    /// The folder just made in the folder on screen is renamed in its row once it is listed (and selected, see
-    /// `AfterWrite.selection`). Leaving the folder forgets it.
-    func renamePendingFolder(_ session: ExplorerWriteSession) {
+    /// The folder just made in `pane`'s folder is renamed in its row, now that the pane's own read has listed it (and
+    /// selected it, see `AfterWrite.selection`). A pane that left the folder forgets it, and so does one whose
+    /// listing doesn't have it: it is asked for once.
+    func renamePendingFolder(_ session: ExplorerWriteSession, in pane: BrowserPane) {
         guard let path = session.pendingInlineRenamePath else { return }
-        if !NodePath.dirname(path).utf16.elementsEqual(shownFolderPath.utf16) {
-            session.pendingInlineRenamePath = nil
-            return
-        }
+        session.pendingInlineRenamePath = nil
+        guard NodePath.dirname(path).utf16.elementsEqual(pane.shownFolderPath.utf16) else { return }
         // By its name in the folder on screen: the listing gives its rows the folder's real path, which may be spelled
         // otherwise than the one the tab was opened on (/private/var for /var).
         let name = NodePath.basename(path)
-        guard let row = content.listed.first(where: { $0.name.utf16.elementsEqual(name.utf16) }) else { return }
-        session.pendingInlineRenamePath = nil
+        guard let row = pane.content.listed.first(where: { $0.name.utf16.elementsEqual(name.utf16) }) else { return }
         if let actions = writeActions, actions.refuseWhileBusy(.operation(.rename)) { return }
-        content.beginRename(path: row.path)
+        pane.content.beginRename(path: row.path)
     }
 
     /// The file operations of the right-click menus: Rename, New Folder, Move to Trash,
@@ -297,45 +295,45 @@ extension MainWindowController {
         openMoveDialog(paths, actions)
     }
 
-    /// A write ended: the folder on screen is read again, at its new place if the write moved it, overwriting its step
-    /// of the history, what the write made is selected once it is listed, and the tree comes back to the folder, or to
-    /// the row the write asks for.
+    /// A write ended: the active pane's folder is read again, at its new place if the write moved it, overwriting its
+    /// step of the history, what the write made is selected once that pane's own read lists it, and the tree comes
+    /// back to the folder, or to the row the write asks for.
     func applyWriteEnd(_ refresh: WriteEndRefresh) {
         // No folder on screen, none to read: this stops here, before the tree too.
         guard !refresh.path.isEmpty else { return }
         let session = group.flatMap { AppWriteOperations.current?.session(for: $0) }
-        if refresh.selecting != nil || session?.pendingInlineRenamePath != nil {
-            final class Once {
-                var token: ExplorerWindowObservation?
-            }
-            let once = Once()
-            once.token = observe { [weak self, once] change in
-                guard change == .folder, let self, let token = once.token, token.isValid else { return }
-                // A read begun before the write ended landed first, with the old listing: the one asked for is still
-                // waiting, and has what the write made.
-                guard self.pendingChange == nil else { return }
-                token.invalidate()
-                once.token = nil
-                if let selecting = refresh.selecting, folder.path == refresh.path {
-                    content.select(paths: selecting)
-                }
-                if let session { renamePendingFolder(session) }
-            }
+        // The pane the write's end was worked out for, whichever is active by the time its read lands.
+        let acting = activePane
+        let renaming = session?.pendingInlineRenamePath
+        if refresh.selecting != nil || renaming != nil {
+            acting.showWriteEnd(
+                BrowserPane.WriteEndRead(folder: refresh.path, selecting: refresh.selecting) {
+                    [weak self, weak acting] shown in
+                    // A folder made since has a name field of its own to wait for.
+                    guard let session, session.pendingInlineRenamePath == renaming else { return }
+                    if shown, let self, let acting {
+                        self.renamePendingFolder(session, in: acting)
+                    } else {
+                        session.pendingInlineRenamePath = nil
+                    }
+                })
         }
         let model = sidebarController.model
         var open = model.openReadingAgain(refresh.path)
         open.selectingRow = refresh.treeSelectionPath
         var treeFollows = false
-        if refresh.path == folder.path {
-            content.dropFromSelection(refresh.leftPaths)
-            readAgain()
-            treeFollows = treeFollowsReadingAgain && (open.forceTreeReload || open.selectingRow != nil)
+        if refresh.path == acting.folder.path {
+            acting.content.dropFromSelection(refresh.leftPaths)
+            acting.readAgain()
+            treeFollows = acting.treeFollowsReadingAgain && (open.forceTreeReload || open.selectingRow != nil)
         } else {
-            go(to: URL(fileURLWithPath: refresh.path), history: .replace, open: open)
+            acting.go(to: URL(fileURLWithPath: refresh.path), history: .replace, open: open)
         }
         // The tab's other pane is read again now too, instead of when the folder watch tells of the change: a copy, a
-        // move or a drag between the panes changed both. What arrived there is selected.
-        for pane in panes where pane !== activePane && pane.loaded && !pane.shownFolderPath.isEmpty {
+        // move or a drag between the panes changed both. What arrived there is selected. A pane on a folder the write
+        // had nothing to do with is left alone.
+        for pane in panes where pane !== acting && pane.loaded && !pane.shownFolderPath.isEmpty {
+            guard refresh.touched?.mayShow(in: pane.shownFolderPath) ?? true else { continue }
             let arrived = refresh.arrived.flatMap { samePath($0.folder, pane.shownFolderPath) ? $0.paths : nil }
             pane.readAgain(selecting: arrived)
         }

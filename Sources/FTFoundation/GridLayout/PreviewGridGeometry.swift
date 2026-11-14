@@ -70,15 +70,58 @@ public enum PreviewGrid {
         return (size.width * scale, size.height * scale)
     }
 
+    /// The tile around a picture reaches this far past it on every side.
+    public static let tileInset = 4.0
+
+    /// The size a preview is drawn at in its place: its picture (`shape`, in any unit) as large as the place allows,
+    /// or an icon two thirds of the place's shorter side when it has no picture.
+    public static func pictureSize(_ grid: IconGridLayout, shape: (width: Double, height: Double)?) -> (
+        width: Double, height: Double
+    ) {
+        let box = pictureBox(grid)
+        if let shape, shape.width > 0, shape.height > 0 { return fitted(shape, in: box) }
+        let side = min(box.width, box.height) * 2 / 3
+        return (side, side)
+    }
+
+    /// The name's size when it isn't known: as wide as a name may be and two lines tall.
+    public static func largestName(_ grid: IconGridLayout) -> (width: Double, height: Double) {
+        (grid.labelWidth, Double(IconLabel.lineCount) * grid.labelLineHeight + grid.labelPaddingVertical * 2)
+    }
+
+    /// Where a preview's tile and name are in its place, from the place's top left corner: the tile hugs the picture,
+    /// the name is right under it, and the two together sit in the middle of the place, which is `heightInset`
+    /// shorter than its row. What draws a preview and what a drag-to-select touches both come from here.
+    public static func parts(
+        _ grid: IconGridLayout, picture: (width: Double, height: Double), name: (width: Double, height: Double),
+        heightInset: Double
+    ) -> (tile: GridRect, name: GridRect) {
+        let placeHeight = grid.rowHeight - heightInset
+        let together = picture.height + tileInset * 2 + grid.labelGap + name.height
+        let top = max(0, (placeHeight - together) / 2)
+        let tile = GridRect(
+            x: (grid.cellMinWidth - picture.width) / 2 - tileInset, y: top, width: picture.width + tileInset * 2,
+            height: picture.height + tileInset * 2)
+        let label = GridRect(
+            x: (grid.cellMinWidth - name.width) / 2, y: tile.maxY + grid.labelGap, width: name.width,
+            height: name.height)
+        return (tile, label)
+    }
+
+    /// How far of a row a swipe goes before it settles on the next row and not back.
+    public static let swipeShare = 1.0 / 6
+    /// The same for a mouse wheel, whose one notch moves the view only a little: any notch goes on to the next row.
+    public static let wheelShare = 1.0 / 100
+
     /// Where a scroll from `start` that ended at `end` settles: the top of a row, the next one along in the direction
-    /// it went once it went a sixth of a row, otherwise back where it started.
-    public static func snappedScrollTop(from start: Double, to end: Double, rowHeight: Double, maxScrollTop: Double)
-        -> Double
-    {
+    /// it went once it went `share` of a row (a sixth), otherwise back where it started.
+    public static func snappedScrollTop(
+        from start: Double, to end: Double, rowHeight: Double, maxScrollTop: Double, share: Double = swipeShare
+    ) -> Double {
         guard rowHeight > 0 else { return end }
         let startRow = (start / rowHeight).rounded()
         let moved = (end - start) / rowHeight
-        let rows = moved > 0 ? (moved - 1.0 / 6).rounded(.up) : (moved + 1.0 / 6).rounded(.down)
+        let rows = moved > 0 ? (moved - share).rounded(.up) : (moved + share).rounded(.down)
         let snapped = (startRow + rows) * rowHeight
         return min(max(0, maxScrollTop), max(0, snapped))
     }

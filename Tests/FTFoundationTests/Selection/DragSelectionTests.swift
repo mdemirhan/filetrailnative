@@ -97,6 +97,65 @@ struct DragSelectionTests {
         #expect(hit(0, gridWidth, 2 * layout.rowHeight + 5, 400) == ["item-8", "item-9"])
     }
 
+    // The Previews view: a preview is touched where its picture is, in its own shape, and on its name under it.
+    @Test func selectsThePreviewsOnTheirPicturesInTheirOwnShapes() {
+        let style = IconItemStyle.make(density: .standard)
+        let name = DragSelectionSize(width: 60, height: 20)
+        func hit(
+            _ layout: IconGridLayout, gridWidth: Double, _ left: Double, _ right: Double, _ top: Double,
+            _ bottom: Double, pictures: [String: DragSelectionSize]
+        ) -> [String] {
+            names(
+                DragSelection.previewGridItems(
+                    box: DragSelectionBox(left: left, top: top, right: right, bottom: bottom), entryPaths: entries,
+                    columns: 2, gridWidth: gridWidth, layout: layout, heightInset: style.heightInset,
+                    pictures: pictures, sizes: Dictionary(uniqueKeysWithValues: entries.map { ($0, name) })))
+        }
+        let landscape = Dictionary(
+            uniqueKeysWithValues: entries.map { ($0, DragSelectionSize(width: 3000, height: 2000)) })
+        let portrait = Dictionary(
+            uniqueKeysWithValues: entries.map { ($0, DragSelectionSize(width: 2000, height: 3000)) })
+
+        // A wide, short pane: two columns of 600 by 300. A landscape photo is as high as its place allows and half
+        // as wide again, far wider than the square an icon would take.
+        let wide = PreviewGrid.layout(
+            base: DesignTokens.iconGrid(density: .standard), count: 2, width: 1216, height: 300)
+        let wideBox = PreviewGrid.pictureBox(wide)
+        let photo = PreviewGrid.fitted((3000, 2000), in: wideBox)
+        #expect(photo.width > wideBox.height * 1.4)
+        let photoLeft = (600 - photo.width) / 2 - PreviewGrid.tileInset
+        #expect(hit(wide, gridWidth: 1200, photoLeft + 1, photoLeft + 10, 100, 120, pictures: landscape) == ["item-0"])
+        #expect(hit(wide, gridWidth: 1200, photoLeft - 10, photoLeft - 1, 100, 120, pictures: landscape) == [])
+        let photoRight = 600 + (600 + photo.width) / 2 + PreviewGrid.tileInset
+        #expect(
+            hit(wide, gridWidth: 1200, photoRight - 10, photoRight - 1, 100, 120, pictures: landscape) == ["item-1"])
+        #expect(hit(wide, gridWidth: 1200, photoRight + 1, photoRight + 10, 100, 120, pictures: landscape) == [])
+        // A portrait photo in the same place is narrow: the same box misses it.
+        #expect(hit(wide, gridWidth: 1200, photoLeft + 1, photoLeft + 10, 100, 120, pictures: portrait) == [])
+        // Not seen yet, an item is the icon it shows until its picture comes: a square in the middle.
+        #expect(hit(wide, gridWidth: 1200, photoLeft + 1, photoLeft + 10, 100, 120, pictures: [:]) == [])
+        #expect(hit(wide, gridWidth: 1200, 290, 310, 100, 120, pictures: [:]) == ["item-0"])
+
+        // A tall, narrow pane: two columns of 200 by 800. A landscape photo is as wide as its place allows and low,
+        // in the middle of its place with its name: the space above it is empty.
+        let tall = PreviewGrid.layout(
+            base: DesignTokens.iconGrid(density: .standard), count: 2, width: 416, height: 800)
+        let small = PreviewGrid.pictureSize(tall, shape: (3000, 2000))
+        let parts = PreviewGrid.parts(tall, picture: small, name: (60, 20), heightInset: style.heightInset)
+        #expect(parts.tile.y > 250)
+        #expect(hit(tall, gridWidth: 400, 0, 400, 20, parts.tile.y - 1, pictures: landscape) == [])
+        #expect(hit(tall, gridWidth: 400, 0, 400, 20, parts.tile.y + 1, pictures: landscape) == ["item-0", "item-1"])
+        // Under the names: nothing; on a name, its item, though the box is beside the picture's column middle.
+        #expect(hit(tall, gridWidth: 400, 0, 400, parts.name.maxY + 1, 790, pictures: landscape) == [])
+        #expect(
+            hit(tall, gridWidth: 400, 0, 75, parts.name.y + 2, parts.name.y + 4, pictures: landscape) == ["item-0"])
+        #expect(hit(tall, gridWidth: 400, 0, 65, parts.name.y + 2, parts.name.y + 4, pictures: landscape) == [])
+        // The row below holds items 2 and 3.
+        #expect(
+            hit(tall, gridWidth: 400, 0, 400, 800 + parts.tile.y + 1, 800 + parts.tile.y + 2, pictures: landscape)
+                == ["item-2", "item-3"])
+    }
+
     @Test func scrollsFasterTheFurtherPastTheEdgeThePointerIs() {
         #expect(DragSelection.autoScrollStep(overshoot: 0) == 0)
         #expect(DragSelection.autoScrollStep(overshoot: 3) == 5)

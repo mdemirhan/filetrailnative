@@ -49,6 +49,11 @@ enum FileContents: Equatable {
         case .text: break
         }
         if size == 0 { return .failure(.empty) }
+        // A name that doesn't say what it holds, with more in it than the text copied: only an image is worth reading
+        // whole, so the first bytes are looked at before anything is read or decoded.
+        if guess == .unknown || guess == .other, size > CopyContents.textLimit, !looksLikeImage(path) {
+            return .failure(isBinary(path) ? .notImageOrText : .tooLarge(.text))
+        }
         let data: Data
         do {
             data = try Data(contentsOf: URL(fileURLWithPath: path))
@@ -63,11 +68,30 @@ enum FileContents: Equatable {
             return text(data, rtf: isRTF(path)).map { .success($0) } ?? .failure(.unknownEncoding)
         case .unknown, .other:
             if let image = image(data) { return .success(image) }
-            if let text = text(data, rtf: false) {
-                return Int64(data.count) > CopyContents.textLimit ? .failure(.tooLarge(.text)) : .success(text)
-            }
+            // The file may have grown since its size was read.
+            if Int64(data.count) > CopyContents.textLimit { return .failure(.tooLarge(.text)) }
+            if let text = text(data, rtf: false) { return .success(text) }
             return .failure(.notImageOrText)
         }
+    }
+
+    /// Whether the file's first bytes are those of an image ImageIO knows, without reading the file whole.
+    private nonisolated static func looksLikeImage(_ path: String) -> Bool {
+        guard let source = CGImageSourceCreateWithURL(URL(fileURLWithPath: path) as CFURL, nil),
+            let type = CGImageSourceGetType(source) as String?
+        else { return false }
+        return CopyContents.isImageType(type)
+    }
+
+    /// Whether the file's first bytes say it isn't text that is copied: a zero byte among them, or the mark of an
+    /// encoding that isn't read.
+    private nonisolated static func isBinary(_ path: String) -> Bool {
+        guard let handle = FileHandle(forReadingAtPath: path) else { return false }
+        defer { try? handle.close() }
+        guard let head = try? handle.read(upToCount: 4096), !head.isEmpty else { return false }
+        if head.starts(with: [0xFF, 0xFE, 0x00, 0x00]) || head.starts(with: [0x00, 0x00, 0xFE, 0xFF]) { return true }
+        if head.starts(with: [0xFF, 0xFE]) || head.starts(with: [0xFE, 0xFF]) { return false }
+        return head.contains(0)
     }
 
     private nonisolated static func isRTF(_ path: String) -> Bool {

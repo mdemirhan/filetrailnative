@@ -104,11 +104,18 @@ extension WriteCoordinator {
             undoLog: undoLog)
     }
 
-    /// One picture converted, on the disk: filled under a hidden name, then given the first free one of its own.
+    /// One picture converted, on the disk: filled under a hidden name, then given the first free one of its own. A
+    /// folder that takes no new file says so before the picture is encoded, which can take long for a large one.
     private nonisolated static func convertOne(
         _ path: String, _ options: ImageConversionOptions, _ fileSystem: any LocalWriteFileSystem,
         _ encode: ImageEncoder
     ) -> ConvertedImage {
+        let folder = NodePath.dirname(path)
+        do {
+            try fileSystem.canModifyFolder(folder)
+        } catch {
+            return .failed(LocalOperations.describeWriteError(error, missing: NodePath.basename(folder)))
+        }
         let data: Data
         do {
             data = try encode(path, options)
@@ -117,27 +124,22 @@ extension WriteCoordinator {
         } catch {
             return .failed(LocalOperations.describeWriteError(error, missing: NodePath.basename(path)))
         }
-        let folder = NodePath.dirname(path)
         let name = ImageConversion.newName(for: NodePath.basename(path), format: options.format)
         let partial = partialFilePath(for: NodePath.join(folder, name))
-        var destinationPath = NodePath.join(folder, name)
         do {
-            if LocalOperations.lstatOrNull(fileSystem, destinationPath) != nil {
-                destinationPath = try nextFreeFilePath(folder, name, fileSystem)
-            }
             try fileSystem.writeNewFile(partial, data)
         } catch {
             return .failed(LocalOperations.describeWriteError(error, missing: NodePath.basename(folder)))
         }
         do {
-            try fileSystem.renameExclusive(partial, destinationPath)
+            // The first free name; when something takes it between the look and the rename, the next one.
+            return .made(try place(partial, in: folder, named: name, isFolder: false, fileSystem))
         } catch {
             try? fileSystem.rm(partial, recursive: false, force: true)
             return .failed(
                 LocalOperations.describeWriteError(
-                    error, missing: NodePath.basename(folder), existing: NodePath.basename(destinationPath)))
+                    error, missing: NodePath.basename(folder), existing: name))
         }
-        return .made(destinationPath)
     }
 
     private nonisolated static func message(_ failure: ImageConverter.Failure, _ format: ImageFormat) -> String {

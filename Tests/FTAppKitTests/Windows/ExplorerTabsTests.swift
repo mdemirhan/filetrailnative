@@ -250,4 +250,79 @@ import Testing
         #expect(ExplorerTabs.followMovedPath("/P/C", moves) == "/Q/C")
         #expect(ExplorerTabs.followMovedPath("/Elsewhere", moves) == "/Elsewhere")
     }
+
+    // MARK: Two panes
+
+    private func secondPane(_ path: String, _ history: [String]) -> PaneSnapshot {
+        PaneSnapshot(
+            pane: OpenPanePreference(
+                path: path, viewMode: .icons, searchViewMode: .details, sortBy: .modified, sortDirection: .desc,
+                includeHidden: true, foldersFirst: false),
+            historyPaths: history, historyIndex: history.count - 1)
+    }
+
+    @Test func followsARenamedFolderInTheSecondPaneAndItsHistory() {
+        var tab = snapshot("/Users/demo/Documents")
+        tab.secondPane = secondPane("/Users/demo/Projects/app", ["/Users/demo/Projects", "/Users/demo/Projects/app"])
+
+        let followed = ExplorerTabs.followMovedItems(
+            tab, [PathMove(from: "/Users/demo/Projects", to: "/Users/demo/Work")])
+
+        #expect(followed.secondPane?.pane.path == "/Users/demo/Work/app")
+        #expect(followed.secondPane?.historyPaths == ["/Users/demo/Work", "/Users/demo/Work/app"])
+        // The first pane stays where it is, with what it had on screen.
+        #expect(followed.currentPath == "/Users/demo/Documents")
+        #expect(followed.view != nil)
+    }
+
+    @Test func sendsOnlyThePaneOnAnUnmountedDiskHome() {
+        var tab = snapshot("/Users/demo/Documents")
+        tab.secondPane = secondPane("/Volumes/Backup/Photos", ["/Users/demo/Desktop", "/Volumes/Backup/Photos"])
+
+        let left = ExplorerTabs.leaveUnmountedDisks(tab, unmounted: ["/Volumes/Backup"], homePath: "/Users/demo")
+
+        #expect(left.secondPane?.pane.path == "/Users/demo")
+        #expect(left.secondPane?.historyPaths == ["/Users/demo/Desktop", "/Users/demo"])
+        #expect(left.secondPane?.historyIndex == 1)
+        #expect(left.currentPath == "/Users/demo/Documents")
+        #expect(left.historyPaths == tab.historyPaths)
+        #expect(left.treeRootPath == "/Users/demo")
+        #expect(left.selectedTreeItemID == tab.selectedTreeItemID)
+        #expect(left.view != nil)
+
+        // The first pane on the disk, the second one elsewhere and active: the tree stays with the second.
+        var other = onDisk("/Volumes/Backup/Photos", ["/Volumes/Backup/Photos"], root: "/Users/demo")
+        other.secondPane = secondPane("/Users/demo/Documents", ["/Users/demo/Documents"])
+        other.activePane = 1
+        other.selectedTreeItemID = "fs:/Users/demo/Documents"
+        let stayed = ExplorerTabs.leaveUnmountedDisks(other, unmounted: ["/Volumes/Backup"], homePath: "/Users/demo")
+        #expect(stayed.currentPath == "/Users/demo")
+        #expect(stayed.secondPane == other.secondPane)
+        #expect(stayed.selectedTreeItemID == "fs:/Users/demo/Documents")
+        #expect(stayed.leftPaneSubview == other.leftPaneSubview)
+    }
+
+    @Test func aNewTabHasOnePaneOnTheActivePanesFolderShownAsThatPaneShowsIt() {
+        var tab = snapshot("/Users/demo/Documents")
+        tab.secondPane = secondPane("/Users/demo/Projects", ["/Users/demo", "/Users/demo/Projects"])
+        tab.paneSplit = 0.7
+
+        let fromFirst = ExplorerTabs.newTab(from: tab)
+        #expect(fromFirst.secondPane == nil)
+        #expect(fromFirst.paneSplit == nil)
+        #expect(fromFirst.currentPath == "/Users/demo/Documents")
+        #expect(fromFirst.sortBy == tab.sortBy)
+
+        tab.activePane = 1
+        let fromSecond = ExplorerTabs.newTab(from: tab)
+        #expect(fromSecond.secondPane == nil)
+        #expect(fromSecond.activePane == 0)
+        #expect(fromSecond.currentPath == "/Users/demo/Projects")
+        #expect(fromSecond.historyPaths == ["/Users/demo/Projects"])
+        #expect(fromSecond.viewMode == .icons)
+        #expect(fromSecond.sortBy == .modified)
+        #expect(fromSecond.sortDirection == .desc)
+        #expect(fromSecond.includeHidden)
+        #expect(!fromSecond.foldersFirst)
+    }
 }

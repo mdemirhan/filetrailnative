@@ -57,20 +57,27 @@ public enum ListFilter {
 
     /// The item a filter selects: the first name that starts with the text, as type-to-select would
     /// pick, then the first that contains it, then the name the letters in order fit best (the first of equals);
-    /// otherwise the first match.
-    public static func selection<T: ListFilterEntry>(in matches: [T], query: String, mode: NameMatchMode) -> T? {
+    /// otherwise the first match. Each name is looked at once: names beyond ASCII come folded from `cache`, the one
+    /// the list was filtered with, and once a name holding the text is found only a name starting with it is still
+    /// looked for.
+    public static func selection<T: ListFilterEntry>(
+        in matches: [T], query: String, mode: NameMatchMode, cache: FoldedNameCache? = nil
+    ) -> T? {
         guard let matcher = NameMatcher(query, mode: mode) else { return nil }
-        if let prefix = matches.first(where: { matcher.isPrefix(of: $0.name) }) { return prefix }
-        if let contained = matches.first(where: { matcher.isContained(in: $0.name) }) { return contained }
-        if mode == .fuzzy {
-            var best: (entry: T, score: Int)?
-            for entry in matches {
-                guard let score = matcher.score(entry.name), score > best?.score ?? Int.min else { continue }
-                best = (entry, score)
+        let cache = cache ?? FoldedNameCache()
+        let scratch = FitScratch()
+        var contained: T?
+        var best: (entry: T, score: Int)?
+        for entry in matches {
+            let weighs = mode == .fuzzy && contained == nil
+            switch matcher.standing(of: entry.name, cache: cache, scratch: scratch, fit: weighs) {
+            case .prefix: return entry
+            case .contained: if contained == nil { contained = entry }
+            case .fit(let score): if score > best?.score ?? Int.min { best = (entry, score) }
+            case .other: break
             }
-            if let best { return best.entry }
         }
-        return matches.first
+        return contained ?? best?.entry ?? matches.first
     }
 
     /// The entries a pinned filter keeps: every folder (so the pane can still be walked), and the files whose names
