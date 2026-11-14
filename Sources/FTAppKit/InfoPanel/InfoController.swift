@@ -189,15 +189,15 @@ final class InfoController {
             propertiesLoad.stop()
             return
         }
-        propertiesLoad.ask(path)
+        let request = propertiesLoad.ask(path)
         let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated { self?.fetch(path) }
+            MainActor.assumeIsolated { self?.fetch(path, request: request) }
         }
         fetchTimer = work
         DispatchQueue.main.asyncAfter(deadline: .now() + (immediately ? 0 : InfoMetrics.fetchDelay), execute: work)
     }
 
-    private func fetch(_ path: String) {
+    private func fetch(_ path: String, request: Int) {
         guard liveHost != nil else { return }
         fetchTimer = nil
         let service = host.services.directoryService
@@ -212,8 +212,9 @@ final class InfoController {
                 modifiedAt: item.modifiedAt, sizeBytes: item.sizeBytes,
                 sizeStatus: FTFoundation.SizeStatus(rawValue: item.sizeStatus.rawValue) ?? .deferred,
                 permissionMode: item.permissionMode)
-            // A response for a request that is no longer the latest is kept, not shown.
-            guard self.propertiesLoad.answered(path, mapped) else { return }
+            // A response for another item than the one now asked for is kept, not shown; one older than what is kept for
+            // its item is dropped.
+            guard self.propertiesLoad.answered(path, mapped, request: request) else { return }
             self.update()
         }
     }

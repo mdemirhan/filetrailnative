@@ -2,7 +2,8 @@ import Foundation
 
 /// The properties the Info panel and the Info Row show for their item, read from disk a moment after the item changes.
 /// What is shown stays until the next answer for the item comes; the last few answers are kept, so an item seen again
-/// shows at once while it is read again.
+/// shows at once while it is read again. An item asked for again while a read of it is still on its way (its folder
+/// changed) may be answered out of order: an answer to an older request than the one kept is dropped.
 public struct InfoPropertiesLoad: Equatable, Sendable {
     public enum Phase: Equatable, Sendable {
         /// Nothing asked: the panel and the row are closed, or there is no folder.
@@ -16,12 +17,16 @@ public struct InfoPropertiesLoad: Equatable, Sendable {
     private struct Kept: Equatable, Sendable {
         var path: String
         var item: InfoItem
+        /// The request it answered.
+        var request: Int
     }
 
     public private(set) var phase = Phase.idle
     /// What is shown, which may still be another item's until the answer comes.
     public private(set) var shown: InfoItem?
     private var recent: [Kept] = []
+    /// Goes up with each request.
+    public private(set) var requests = 0
     public let recentLimit: Int
 
     public init(recentLimit: Int) {
@@ -48,14 +53,17 @@ public struct InfoPropertiesLoad: Equatable, Sendable {
         target != path || (shown == nil && !isLoading)
     }
 
-    /// `path` is asked for: what was kept of it shows at once.
-    public mutating func ask(_ path: String) {
+    /// `path` is asked for: what was kept of it shows at once. The request, to answer with.
+    @discardableResult
+    public mutating func ask(_ path: String) -> Int {
+        requests += 1
         if let kept = recent.first(where: { $0.path == path }) {
             shown = kept.item
             phase = .asking(path: path, fromRecent: true)
         } else {
             phase = .asking(path: path, fromRecent: false)
         }
+        return requests
     }
 
     /// Nothing is asked any more (the panel and the row closed, no folder): nothing loads.
@@ -63,11 +71,12 @@ public struct InfoPropertiesLoad: Equatable, Sendable {
         phase = .idle
     }
 
-    /// The answer for `path` came. It is kept either way; whether it is shown, since a later item may have been asked
-    /// for meanwhile.
-    public mutating func answered(_ path: String, _ item: InfoItem) -> Bool {
+    /// The answer to `request` for `path` came. It is kept unless a later request's answer for the item is; whether it
+    /// is shown, since a later item may have been asked for meanwhile.
+    public mutating func answered(_ path: String, _ item: InfoItem, request: Int) -> Bool {
+        if let kept = recent.first(where: { $0.path == path }), kept.request > request { return false }
         recent.removeAll { $0.path == path }
-        recent.append(Kept(path: path, item: item))
+        recent.append(Kept(path: path, item: item, request: request))
         if recent.count > recentLimit { recent.removeFirst(recent.count - recentLimit) }
         guard target == path else { return false }
         shown = item

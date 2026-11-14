@@ -14,10 +14,10 @@ struct InfoPropertiesLoadTests {
     @Test func anItemNotSeenBeforeLoadsUntilItsAnswerComes() {
         var load = InfoPropertiesLoad(recentLimit: 3)
         #expect(load.needsAsking("/a"))
-        load.ask("/a")
+        let request = load.ask("/a")
         #expect(load.isLoading && load.target == "/a" && load.shown == nil)
         #expect(!load.needsAsking("/a"))
-        let shown = load.answered("/a", item("/a"))
+        let shown = load.answered("/a", item("/a"), request: request)
         #expect(shown)
         #expect(!load.isLoading && load.shown == item("/a"))
         #expect(load.phase == .answered(path: "/a"))
@@ -27,11 +27,11 @@ struct InfoPropertiesLoadTests {
     // What is shown stays while the next item is asked for, and an answer that came too late is kept, not shown.
     @Test func aLateAnswerIsKeptButNotShown() {
         var load = InfoPropertiesLoad(recentLimit: 3)
-        load.ask("/a")
-        _ = load.answered("/a", item("/a"))
+        _ = load.answered("/a", item("/a"), request: load.ask("/a"))
+        let late = load.ask("/c")
         load.ask("/b")
         #expect(load.shown == item("/a"))
-        let lateShown = load.answered("/c", item("/c"))
+        let lateShown = load.answered("/c", item("/c"), request: late)
         #expect(!lateShown)
         #expect(load.shown == item("/a"))
         load.ask("/c")
@@ -43,26 +43,48 @@ struct InfoPropertiesLoadTests {
     @Test func anItemSeenAgainShowsAtOnceWhileReadAgain() {
         var load = InfoPropertiesLoad(recentLimit: 2)
         for path in ["/a", "/b", "/c"] {
-            load.ask(path)
-            _ = load.answered(path, item(path))
+            _ = load.answered(path, item(path), request: load.ask(path))
         }
-        load.ask("/b")
+        let again = load.ask("/b")
         #expect(load.shown == item("/b") && !load.isLoading)
-        let shownAgain = load.answered("/b", item("/b", size: 9))
+        let shownAgain = load.answered("/b", item("/b", size: 9), request: again)
         #expect(shownAgain)
         #expect(load.shown == item("/b", size: 9))
         load.ask("/a")
         #expect(load.isLoading)
     }
 
+    // The item asked for again while its first read is still on its way (its folder changed): answers that come out of
+    // order leave the later one shown and kept, and the first answer still shows when it is the only one so far.
+    @Test func anOlderAnswerForTheSameItemDoesntReplaceANewerOne() {
+        var load = InfoPropertiesLoad(recentLimit: 2)
+        let older = load.ask("/a")
+        let newer = load.ask("/a")
+        let newerShown = load.answered("/a", item("/a", size: 200), request: newer)
+        let olderShown = load.answered("/a", item("/a", size: 100), request: older)
+        #expect(newerShown && !olderShown)
+        #expect(load.shown == item("/a", size: 200))
+        load.ask("/b")
+        load.ask("/a")
+        #expect(load.shown == item("/a", size: 200))
+
+        let first = load.ask("/c")
+        let second = load.ask("/c")
+        let firstShown = load.answered("/c", item("/c", size: 100), request: first)
+        #expect(firstShown && load.shown == item("/c", size: 100))
+        let secondShown = load.answered("/c", item("/c", size: 200), request: second)
+        #expect(secondShown)
+        #expect(load.shown == item("/c", size: 200))
+    }
+
     // Closed, nothing loads: opening again over nothing at all shows the panel empty, not waiting.
     @Test func stoppingLeavesNothingLoading() {
         var load = InfoPropertiesLoad(recentLimit: 2)
-        load.ask("/a")
+        let request = load.ask("/a")
         load.stop()
         #expect(!load.isLoading && load.target == nil)
         #expect(load.needsAsking("/a"))
-        let shownAfterStop = load.answered("/a", item("/a"))
+        let shownAfterStop = load.answered("/a", item("/a"), request: request)
         #expect(!shownAfterStop)
         load.ask("/a")
         #expect(!load.isLoading && load.shown == item("/a"))
