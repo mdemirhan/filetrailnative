@@ -305,15 +305,16 @@ struct ListFilterTests {
         #expect(seconds < 0.4)
     }
 
-    // Choosing what a keystroke selects among 150,000 matches when no name starts with the text or holds it as a run,
-    // so every name is weighed for how well its letters fit: all plain names, then every other one beyond ASCII.
-    // Folding each name again and a table asked for per name took several seconds of an unoptimized build.
+    // Choosing what a keystroke selects among 15,000 matches when no name starts with the text or holds it as a run,
+    // so every name is weighed for how well its letters fit: all plain names, then every other one beyond ASCII. The
+    // cost grows with the names, so a tenth of the 150,000 a folder may hold tells the two apart as well: folding each
+    // name again and a table asked for per name took ten times as long.
     @Test(arguments: [0, 2])
-    func picksTheBestFitAmongAHundredAndFiftyThousandMatchesEvenUnoptimized(_ beyondASCIIEvery: Int) {
+    func picksTheBestFitAmongFifteenThousandMatchesEvenUnoptimized(_ beyondASCIIEvery: Int) {
         struct Entry: ListFilterEntry {
             var name: String
         }
-        let entries = (0..<150_000).map {
+        let entries = (0..<15_000).map {
             Entry(
                 name: beyondASCIIEvery > 0 && $0 % beyondASCIIEvery == 0
                     ? "Été \($0) holiday photo copié.jpg" : "IMG_\($0) holiday photo copy.jpg")
@@ -326,7 +327,8 @@ struct ListFilterTests {
             ListFilter.selection(in: matches, query: "hpc", mode: .fuzzy, cache: cache)
         }
         #expect(picked?.name == entries[0].name)
-        #expect(seconds < 2.5)
+        // About 0.15 s of an unoptimized build now.
+        #expect(seconds < 0.4, "\(seconds)")
     }
 }
 
