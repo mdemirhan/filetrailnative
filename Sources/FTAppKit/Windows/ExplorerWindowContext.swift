@@ -25,14 +25,15 @@ struct ExplorerViewState: Equatable, Sendable {
     var foldersFirst: Bool
 }
 
-/// What changed in a window, for the panes that show it.
-enum ExplorerWindowChange: Equatable, Sendable {
+/// What changed in a window, for the panes that show it. A change of a pane's own (its folder, history, view, search
+/// or selection) is told as itself for the active pane, and inside `otherPane` for the other one.
+indirect enum ExplorerWindowChange: Equatable, Sendable {
     /// The active pane's folder opened or was read again in place.
     case folder
-    /// The folder of the pane that isn't active opened or was read again. What follows the active pane (the toolbar's
-    /// folder and history, the Info panel and Info Row) doesn't hear of it; the tree's marks and the commands that
-    /// read the other pane's folder do.
-    case otherPaneFolder
+    /// A change of the pane that isn't active. What follows the active pane (the toolbar's folder, Back and Forward,
+    /// view and search field, the Info panel and Info Row) doesn't hear of it; the tree's marks, the Trash's bar and
+    /// the commands that read the other pane do.
+    case otherPane(ExplorerWindowChange)
     case history
     case selection
     case focusedPane

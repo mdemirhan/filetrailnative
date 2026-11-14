@@ -110,7 +110,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             selectFirstResultWhenDone()
         }
         pane.searchRootPath = session.isSearchMode ? session.rootPath : nil
-        tab.searchStateChanged()
+        tab.searchStateChanged(in: pane)
         if session.isSearchMode { observeWrites() }
     }
 

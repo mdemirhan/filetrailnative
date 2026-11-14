@@ -1170,7 +1170,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             pane.searchStore?.session.noteSelection(selection)
             if pane.searchRootPath != nil { pane.updatePathBar() }
             self?.noteFocusedPane()
-            self?.notify(.selection)
+            self?.paneChanged(.selection, in: pane)
         }
         content.shortcutsProvider = { [weak self] in
             ShortcutCommands.resolve(self?.preferences.shortcutOverrides ?? [:])
@@ -1269,11 +1269,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         for pane in panes { pane.refreshColumns() }
     }
 
-    /// The search changed how it stands: the tab's label and magnifier, and the commands.
-    func searchStateChanged() {
+    /// `pane`'s search changed how it stands: the tab's label and magnifier, and the commands.
+    func searchStateChanged(in pane: BrowserPane) {
         group?.refreshTitles()
         updateSearchTabAccessory()
-        notify(.search)
+        paneChanged(.search, in: pane)
     }
 
     /// A tab with search results in a pane, active or not, shows a magnifier before its label, in the accent while
@@ -1626,11 +1626,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     func notify(_ change: ExplorerWindowChange) {
         // The tree marks the folders of both panes while there are two.
-        let folderChanged = change == .folder || change == .otherPaneFolder
+        let folderChanged = change == .folder || change == .otherPane(.folder)
         if folderChanged || change == .panels {
             sidebar.paneFolders = showsTwoPanes ? panes.map(\.shownFolderPath) : []
         }
-        if folderChanged || change == .search || change == .commands { refreshTrashHeader() }
+        // Each pane shows the Trash's bar on its own folder, not on its search results.
+        let searchChanged = change == .search || change == .otherPane(.search)
+        if folderChanged || searchChanged || change == .commands { refreshTrashHeader() }
         // The Trash on screen changed, or came to the screen: what it holds may not be what was last read.
         if folderChanged, panes.contains(where: { $0.content.contentShell.trashHeader != nil }) {
             refreshTrashState()

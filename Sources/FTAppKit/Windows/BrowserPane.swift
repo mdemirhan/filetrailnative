@@ -35,7 +35,7 @@ final class BrowserPane {
         didSet {
             guard searchRootPath != oldValue else { return }
             updatePathBar()
-            tab?.notify(.search)
+            tab?.paneChanged(.search, in: self)
         }
     }
     private(set) var searchStore: TabSearch?
@@ -456,7 +456,7 @@ final class BrowserPane {
                 folder: url.path, entries: snapshot.entries, selecting: nil, keepingScroll: true,
                 changedPaths: changedPaths)
             writeEndShown(in: url.path)
-            tab.paneFolderChanged(self)
+            tab.paneChanged(.folder, in: self)
         case .failure(let error):
             if FolderReadFailure.isGone(error) {
                 await openNearestExistingFolder(above: url.path)
@@ -701,7 +701,7 @@ final class BrowserPane {
                 // A quiet read shows nothing: the search for a folder that can be read goes on from it.
                 if !quiet { content.showReadError(readError) }
                 if drivesSidebar { sidebar.openFailed() }
-                tab.notify(.history)
+                tab.paneChanged(.history, in: self)
                 writeEndReadMissed()
                 return .failed
             }
@@ -785,11 +785,11 @@ final class BrowserPane {
                 sidebar.folderOpened(shown, open)
             }
         }
-        tab.notify(.history)
+        tab.paneChanged(.history, in: self)
         updatePathBar()
         // A write's end waiting for this folder shows now; one that waited for the folder just left never will.
         if opensWithError { dropWriteEndRead() } else { writeEndShown(in: shown.path) }
-        tab.paneFolderChanged(self)
+        tab.paneChanged(.folder, in: self)
         window?.contentView?.layoutSubtreeIfNeeded()
         if let carried { content.pane?.scrollPosition = (carried.contentScroll.y, carried.contentScroll.x) }
         if isFirstFolder { finishCarrying(carried) }
@@ -815,7 +815,7 @@ final class BrowserPane {
         guard outcome.didOpen, let tab else { return }
         navigationHistory = place.history
         if drivesSidebar { sidebar.model.restoreSelected(place.sidebarRow) }
-        tab.notify(.history)
+        tab.paneChanged(.history, in: self)
         tab.group?.tabChanged(tab)
     }
 
@@ -838,7 +838,7 @@ final class BrowserPane {
     func setSearchViewMode(_ mode: ExplorerViewMode) {
         searchViewMode = mode
         if let search = searchStore, search.showsResults { content.setMode(mode) }
-        tab.notify(.view)
+        tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
     }
 
@@ -850,7 +850,7 @@ final class BrowserPane {
             viewMode = mode
         }
         content.setMode(mode)
-        tab.notify(.view)
+        tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
     }
 
@@ -874,7 +874,7 @@ final class BrowserPane {
     func viewChanged(keepingTree: Bool = false) {
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
-        tab.notify(.view)
+        tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
         // No folder to read again (`toggleHiddenFiles` with an empty currentPath).
         guard loaded, !folderLetGo else { return }

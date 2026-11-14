@@ -225,5 +225,184 @@ extension ExplorerWindowlessTests {
             #expect(tab.panes.first === right)
             try await closesWhole(tab, harness, watches) { tab.closeOtherPane() }
         }
+
+        // MARK: What follows the active pane
+
+        /// What the tab tells what follows it, while the token is kept.
+        @MainActor
+        private final class Told {
+            var changes: [ExplorerWindowChange] = []
+            var token: ExplorerWindowObservation?
+
+            init(_ tab: MainWindowController) {
+                token = tab.observe { [unowned self] in self.changes.append($0) }
+            }
+
+            /// The changes of a pane's own that the toolbar and the Info panel follow, told as the active pane's. Not the
+            /// selection: the tree tells of its own as it redraws its marks of the panes' folders.
+            var ofTheActivePane: [ExplorerWindowChange] {
+                changes.filter { [.folder, .history, .view, .search].contains($0) }
+            }
+        }
+
+        /// What the toolbar shows of the pane it follows.
+        private struct ToolbarShows: Equatable {
+            var back: Bool?
+            var forward: Bool?
+            var view: ExplorerViewMode?
+            var sort: String?
+            var title: String?
+            var search: String?
+        }
+
+        private func toolbarShows(_ tab: MainWindowController) -> ToolbarShows {
+            let toolbar = tab.explorerToolbar
+            return ToolbarShows(
+                back: toolbar.button(.back)?.isEnabled, forward: toolbar.button(.forward)?.isEnabled,
+                view: toolbar.viewSwitch?.selected, sort: toolbar.button(.sort)?.tooltip,
+                title: toolbar.titleView?.field.stringValue, search: tab.searchField?.stringValue)
+        }
+
+        /// The Info panel describes `path` (Show Info), its properties read once.
+        private func showingInfo(_ tab: MainWindowController, _ path: String, _ harness: ExplorerHarness) async throws
+            -> (InfoController, Int)
+        {
+            let info = try #require(tab.infoController)
+            info.showInfo(for: path)
+            harness.layout(tab)
+            #expect(await waitUntil { info.propertiesLoad.phase == .answered(path: path) })
+            return (info, info.propertiesLoad.requests)
+        }
+
+        // The other pane going Back and Forward leaves the toolbar's Back and Forward the active pane's, and Show Info's
+        // item with nothing asked again; the active pane's own Back still moves them.
+        @Test func theOtherPaneGoingBackAndForwardLeavesTheToolbarAndTheInfoPanel() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            await open(right, harness, "Gamma")
+            await open(left, harness, "Beta")
+            let (info, asked) = try await showingInfo(tab, real(harness, "Gamma"), harness)
+            let shows = toolbarShows(tab)
+            #expect(shows.back == true && shows.forward == false)
+            let told = Told(tab)
+
+            right.go(to: URL(fileURLWithPath: real(harness, "Alpha")), history: .back)
+            #expect(await waitUntil { right.shownFolderPath == real(harness, "Alpha") && !right.isNavigating })
+            await settle()
+            #expect(right.navigationHistory.canGoForward)
+            #expect(toolbarShows(tab) == shows)
+            right.go(to: URL(fileURLWithPath: real(harness, "Gamma")), history: .forward)
+            #expect(await waitUntil { right.shownFolderPath == real(harness, "Gamma") && !right.isNavigating })
+            await settle()
+            #expect(toolbarShows(tab) == shows)
+            #expect(told.ofTheActivePane == [])
+            #expect(told.changes.contains(.otherPane(.history)))
+            #expect(told.changes.contains(.otherPane(.folder)))
+            #expect(info.targetOverride == real(harness, "Gamma"))
+            #expect(info.propertiesLoad.requests == asked)
+            // The tree marks the folders of both all along.
+            #expect(tab.sidebarController.paneFolders == [real(harness, "Beta"), real(harness, "Gamma")])
+
+            left.go(to: URL(fileURLWithPath: real(harness)), history: .back)
+            #expect(await waitUntil { left.shownFolderPath == real(harness) && !left.isNavigating })
+            await settle()
+            #expect(told.changes.contains(.history))
+            #expect(toolbarShows(tab).back == false)
+            #expect(toolbarShows(tab).forward == true)
+            #expect(await waitUntil { info.targetOverride == nil })
+        }
+
+        // The other pane switching its view or its order leaves the toolbar's view switch and Sort button the active
+        // pane's; the active pane's own switch still moves them.
+        @Test func theOtherPaneSwitchingItsViewLeavesTheToolbarsViewSwitch() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            left.setMode(.details)
+            let (info, asked) = try await showingInfo(tab, real(harness, "Gamma"), harness)
+            let shows = toolbarShows(tab)
+            #expect(shows.view == .details)
+            let told = Told(tab)
+
+            right.setMode(.icons)
+            right.setSort(.size, .desc)
+            #expect(await waitUntil { !right.isNavigating })
+            await settle()
+            #expect(right.content.mode == .icons)
+            #expect(toolbarShows(tab) == shows)
+            #expect(told.ofTheActivePane == [])
+            #expect(told.changes.contains(.otherPane(.view)))
+            #expect(info.targetOverride == real(harness, "Gamma"))
+            #expect(info.propertiesLoad.requests == asked)
+
+            left.setMode(.list)
+            #expect(told.changes.contains(.view))
+            #expect(toolbarShows(tab).view == .list)
+        }
+
+        // Items selected in the other pane (as a copy to it selects what arrived) leave Show Info's item, with nothing
+        // asked again; a selection in the active pane still lets it go.
+        @Test func aSelectionInTheOtherPaneLeavesShowInfosItem() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            let (info, asked) = try await showingInfo(tab, real(harness, "Gamma"), harness)
+            let told = Told(tab)
+
+            let inner = real(harness, "Alpha") + "/Inner"
+            right.content.select(paths: [inner])
+            await settle()
+            #expect(right.content.selection.paths == [inner])
+            #expect(told.changes.contains(.otherPane(.selection)))
+            #expect(!told.changes.contains(.selection))
+            #expect(info.targetOverride == real(harness, "Gamma"))
+            #expect(info.propertiesLoad.requests == asked)
+
+            left.content.select(paths: [real(harness, "Beta")])
+            #expect(told.changes.contains(.selection))
+            #expect(info.targetOverride == nil)
+        }
+
+        // A search starting and ending in the other pane (its results put away by a folder opened there) leaves the
+        // toolbar's search field, title and view the active pane's, and Show Info's item; the tab still shows the
+        // magnifier for it, and a search in the active pane still tells them.
+        @Test func aSearchInTheOtherPaneLeavesTheToolbarsSearchField() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            let engine = FakeSearchEngine()
+            engine.finds = { _ in (["notes.md"], false, false) }
+            for pane in [left, right] {
+                pane.search.session.engine = engine
+                pane.search.session.timers = ManualTimers()
+            }
+            let (info, asked) = try await showingInfo(tab, real(harness, "Gamma"), harness)
+            let shows = toolbarShows(tab)
+            let told = Told(tab)
+
+            right.search.session.submit("no")
+            #expect(await waitUntil { right.searchRootPath == real(harness, "Alpha") })
+            await settle()
+            #expect(left.searchRootPath == nil)
+            #expect(toolbarShows(tab) == shows)
+            #expect(tab.window?.tab.accessoryView is SearchTabMagnifier)
+            right.go(to: URL(fileURLWithPath: real(harness, "Gamma")))
+            #expect(await waitUntil { right.searchRootPath == nil && !right.isNavigating })
+            await settle()
+            #expect(toolbarShows(tab) == shows)
+            #expect(told.ofTheActivePane == [])
+            #expect(told.changes.contains(.otherPane(.search)))
+            #expect(info.targetOverride == real(harness, "Gamma"))
+            #expect(info.propertiesLoad.requests == asked)
+
+            let field = try #require(tab.searchField)
+            field.stringValue = "no"
+            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            left.search.session.submit("no")
+            #expect(await waitUntil { left.searchRootPath == real(harness) })
+            #expect(told.changes.contains(.search))
+            #expect(toolbarShows(tab).title?.hasPrefix("Searching") == true)
+        }
     }
 }
