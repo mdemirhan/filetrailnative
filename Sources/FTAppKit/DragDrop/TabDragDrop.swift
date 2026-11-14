@@ -716,7 +716,7 @@ final class TabDragDrop {
         guard !asking.isEmpty else { return }
         let read = Self.readDiskIds
         Task.detached {
-            let ids = read(asking)
+            let ids = await BlockingWork.run { read(asking) }
             await MainActor.run {
                 for (path, id) in zip(asking, ids) {
                     answers.ids[PathBox(path)] = .some(id)

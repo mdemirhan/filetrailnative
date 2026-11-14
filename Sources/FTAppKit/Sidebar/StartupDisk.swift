@@ -34,11 +34,12 @@ final class StartupDisk {
     }
 
     /// The name Finder shows for `/`, or nil when it can't be read.
-    @concurrent
     nonisolated static func readName() async -> String? {
-        let values = try? URL(fileURLWithPath: "/").resourceValues(
-            forKeys: [.volumeLocalizedNameKey, .volumeNameKey])
-        return values?.volumeLocalizedName ?? values?.volumeName
+        await BlockingWork.run {
+            let values = try? URL(fileURLWithPath: "/").resourceValues(
+                forKeys: [.volumeLocalizedNameKey, .volumeNameKey])
+            return values?.volumeLocalizedName ?? values?.volumeName
+        }
     }
 
     /// A name read: a different one is kept and told to the windows (`nameChanged`).

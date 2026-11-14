@@ -129,7 +129,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         tagColors = row
         guard paths.count <= Self.tagStateLimit else { return }
         Task { @MainActor [weak row] in
-            let states = await Task.detached(priority: .userInitiated) { FinderTags.states(of: paths) }.value
+            let states = await BlockingWork.run { FinderTags.states(of: paths) }
             row?.show(states)
         }
     }

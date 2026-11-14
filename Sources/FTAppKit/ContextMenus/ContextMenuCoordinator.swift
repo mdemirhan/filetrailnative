@@ -220,9 +220,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     func contextMenu(toggleTag color: FinderTagColor, paths: [String]) {
         let name = color.systemName
         holdingTheTab { [self] in
-            let failures = await Task.detached(priority: .userInitiated) {
+            let failures = await BlockingWork.run {
                 FinderTags.toggle(color, name: name, on: paths)
-            }.value
+            }
             tab.content.tagsChanged(paths)
             guard let first = failures.first else { return }
             notices.show(
@@ -419,7 +419,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             // A folder is never edited, so the tab's own opening goes where this one does.
             tab.open([entry])
         case .resolveThenOpen(let path):
-            let target = await Task.detached(priority: .userInitiated) { try? NativeFileSystem().realpath(path) }.value
+            let target = await BlockingWork.run { try? NativeFileSystem().realpath(path) }
             if let target { await openExternally(target) }
         case .openExternally(let path):
             await openExternally(path)

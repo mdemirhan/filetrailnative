@@ -863,9 +863,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// Where a link points.
-    /// Looked up off the main thread: a link into a slow volume must not freeze the window.
+    /// Looked up as `BlockingWork`: a link into a slow volume must not freeze the window, nor hold up the app's
+    /// other work.
     private static func resolved(_ path: String) async -> String? {
-        await Task.detached(priority: .userInitiated) { try? NativeFileSystem().realpath(path) }.value
+        await BlockingWork.run { try? NativeFileSystem().realpath(path) }
     }
 
     private func perform(_ plan: OpenItems.Plan) {
@@ -1468,7 +1469,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         trashReads += 1
         let asked = trashReads
         Task { [weak self] in
-            let empty = await Task.detached(priority: .utility) { read() }.value
+            let empty = await BlockingWork.run(qos: .utility) { read() }
             guard let self, asked == self.trashReads, self.trashIsEmpty != empty else { return }
             self.trashIsEmpty = empty
             self.commandsChanged()

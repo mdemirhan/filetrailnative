@@ -252,7 +252,7 @@ final class InfoController {
         volumeRequested = path
         let read = Self.volumeSizes
         Task { @MainActor [weak self] in
-            let sizes = await Task.detached { read(path) }.value
+            let sizes = await BlockingWork.run { read(path) }
             guard let self, self.volumeRequested == path else { return }
             self.volume = (path, InfoVolume(totalBytes: sizes.totalBytes, availableBytes: sizes.availableBytes))
             self.update()

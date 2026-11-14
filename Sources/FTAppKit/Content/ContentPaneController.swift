@@ -19,9 +19,9 @@ struct ContentLoaders {
     var openPrivacySettings: @MainActor () -> Void
     /// The colors of items' Finder tags.
     var tagColors: @MainActor (_ paths: [String]) async -> [String: [FinderTagColor]] = { paths in
-        await Task.detached(priority: .utility) {
+        await BlockingWork.run(qos: .utility) {
             Dictionary(uniqueKeysWithValues: paths.map { ($0, FinderTags.colors($0)) })
-        }.value
+        }
     }
 }
 

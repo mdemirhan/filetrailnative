@@ -116,7 +116,7 @@ extension MainWindowController {
             case .superseded: break
             }
             guard wasVisited else { return }
-            let exists = await Task.detached { FileManager.default.fileExists(atPath: path) }.value
+            let exists = await BlockingWork.run { FileManager.default.fileExists(atPath: path) }
             // `forgetPlace`: the folder leaves the list of the box, still up with the error.
             guard !exists else { return }
             Self.visitStore()?.forgetVisitedFolder(path)
@@ -225,7 +225,7 @@ extension MainWindowController {
         }
         // A folder that isn't there, in one that is, can be made first.
         let parent = NodePath.dirname(folder)
-        let isMissing = await Task.detached { (try? FileManager.default.attributesOfItem(atPath: folder)) == nil }.value
+        let isMissing = await BlockingWork.run { (try? FileManager.default.attributesOfItem(atPath: folder)) == nil }
         guard isMissing, parent != folder,
             await TabDragDrop.destinationRefusal(parent, services.directoryService) == nil
         else { return .blocked(message: refused) }

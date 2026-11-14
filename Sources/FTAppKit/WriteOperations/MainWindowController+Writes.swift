@@ -359,9 +359,9 @@ extension MainWindowController {
         Task { [weak self] in
             // A link is opened as a file, in its folder: what it points to isn't looked at, which may be on a disk
             // that has to be reached first, or anywhere else.
-            let kinds = await Task.detached(priority: .userInitiated) {
+            let kinds = await BlockingWork.run {
                 made.map { (try? NativeFileSystem().lstat($0))?.isDirectory ?? false }
-            }.value
+            }
             guard let self else { return }
             for opening in Self.extractedOpenings(made, isFolder: kinds, shown: shown) {
                 if inNewWindow {
