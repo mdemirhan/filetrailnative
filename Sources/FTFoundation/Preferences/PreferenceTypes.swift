@@ -403,11 +403,18 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
     public var foldersFirst: Bool
     public var favoritesExpanded: Bool
     public var locationsExpanded: Bool
+    /// The tab's second pane, while it shows two; nil with one. A file saved before panes has none.
+    public var secondPane: OpenPanePreference?
+    /// The pane the tab has active: 1 for the second; nil for the first.
+    public var activePane: Int?
+    /// The left pane's share of the room, while the tab shows two.
+    public var paneSplit: Double?
 
     public init(
         path: String?, treeRootPath: String?, favoritePath: String?, viewMode: ExplorerViewMode,
         searchViewMode: ExplorerViewMode, sortBy: SortByPreference, sortDirection: SortDirectionPreference,
-        includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool
+        includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool,
+        secondPane: OpenPanePreference? = nil, activePane: Int? = nil, paneSplit: Double? = nil
     ) {
         self.path = path
         self.treeRootPath = treeRootPath
@@ -420,6 +427,34 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         self.foldersFirst = foldersFirst
         self.favoritesExpanded = favoritesExpanded
         self.locationsExpanded = locationsExpanded
+        self.secondPane = secondPane
+        self.activePane = secondPane == nil ? nil : activePane
+        self.paneSplit = secondPane == nil ? nil : paneSplit
+    }
+}
+
+/// A tab's second pane as it is saved: its folder and how it shows it.
+public struct OpenPanePreference: Codable, Equatable, Sendable {
+    /// Nil for a pane that showed no folder.
+    public var path: String?
+    public var viewMode: ExplorerViewMode
+    public var searchViewMode: ExplorerViewMode
+    public var sortBy: SortByPreference
+    public var sortDirection: SortDirectionPreference
+    public var includeHidden: Bool
+    public var foldersFirst: Bool
+
+    public init(
+        path: String?, viewMode: ExplorerViewMode, searchViewMode: ExplorerViewMode, sortBy: SortByPreference,
+        sortDirection: SortDirectionPreference, includeHidden: Bool, foldersFirst: Bool
+    ) {
+        self.path = path
+        self.viewMode = viewMode
+        self.searchViewMode = searchViewMode
+        self.sortBy = sortBy
+        self.sortDirection = sortDirection
+        self.includeHidden = includeHidden
+        self.foldersFirst = foldersFirst
     }
 }
 

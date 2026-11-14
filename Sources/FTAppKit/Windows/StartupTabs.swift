@@ -14,6 +14,10 @@ public struct StartupTab: Equatable, Sendable {
     public var foldersFirst: Bool
     public var favoritesExpanded: Bool
     public var locationsExpanded: Bool
+    /// The tab's second pane, its active pane and where the divider sits, while it shows two.
+    public var secondPane: OpenPanePreference? = nil
+    public var activePane: Int? = nil
+    public var paneSplit: Double? = nil
 
     /// The tab as it is saved between launches.
     public var openTab: OpenTabPreference {
@@ -21,7 +25,8 @@ public struct StartupTab: Equatable, Sendable {
             path: path.isEmpty ? nil : path, treeRootPath: rootPath.isEmpty ? nil : rootPath,
             favoritePath: favoritePath, viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy,
             sortDirection: sortDirection, includeHidden: includeHidden, foldersFirst: foldersFirst,
-            favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded)
+            favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded, secondPane: secondPane,
+            activePane: activePane, paneSplit: paneSplit)
     }
 }
 
@@ -49,6 +54,14 @@ public enum StartupTabs {
 
     /// A saved tab in its folder, with the tree rooted where it was when the folder is still inside it.
     public static func startupTab(_ tab: OpenTabPreference, homePath: String) -> StartupTab {
+        var start = firstPane(tab, homePath: homePath)
+        start.secondPane = tab.secondPane
+        start.activePane = tab.activePane
+        start.paneSplit = tab.paneSplit
+        return start
+    }
+
+    private static func firstPane(_ tab: OpenTabPreference, homePath: String) -> StartupTab {
         guard let path = tab.path, !path.isEmpty else {
             return StartupTab(
                 path: homePath, rootPath: homePath, favoritePath: nil, viewMode: tab.viewMode,

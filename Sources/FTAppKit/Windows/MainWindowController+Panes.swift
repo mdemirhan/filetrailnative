@@ -45,6 +45,14 @@ extension MainWindowController {
         } else {
             start = startupTab(of: source, path: path ?? source.shownFolderPath)
         }
+        let pane = addSecondPane(start: start, history: history)
+        pane.ensureLoaded()
+        panesChanged()
+        return pane
+    }
+
+    /// The second pane, made and put in place unread.
+    private func addSecondPane(start: StartupTab, history: (paths: [String], index: Int)?) -> BrowserPane {
         let pane = BrowserPane(tab: start, history: history, folderSizes: folderSizes, startsTheWindow: false)
         pane.tab = self
         pane.watchID = Self.makeWatchID()
@@ -52,9 +60,28 @@ extension MainWindowController {
         install(pane)
         workspace.showSecondPane(pane.content.view, status: pane.content.contentShell.pathBarRow)
         fitWindowToPanes()
-        pane.ensureLoaded()
-        panesChanged()
         return pane
+    }
+
+    /// A tab brought back with two panes (a relaunch, Reopen Closed Tab, Duplicate Tab, a tab moved to another
+    /// window): its second pane as it was kept, read with the tab's first.
+    func restoreSecondPane(
+        _ saved: OpenPanePreference, history: (paths: [String], index: Int)?, active: Bool, split: Double?
+    ) {
+        guard !showsTwoPanes else { return }
+        let start = StartupTab(
+            path: saved.path ?? "", rootPath: treeRootPath, favoritePath: nil, viewMode: saved.viewMode,
+            searchViewMode: saved.searchViewMode, sortBy: saved.sortBy, sortDirection: saved.sortDirection,
+            includeHidden: saved.includeHidden, foldersFirst: saved.foldersFirst, favoritesExpanded: favoritesExpanded,
+            locationsExpanded: locationsExpanded)
+        let pane = addSecondPane(start: start, history: history)
+        if let split { workspace.setPaneSplit(split) }
+        if loaded { pane.ensureLoaded() }
+        if active {
+            activePaneIndex = 1
+            activePaneChanged()
+        }
+        panesChanged()
     }
 
     /// Closes the pane that isn't active; the active one takes the whole width. Where the closed one was is kept, for

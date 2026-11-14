@@ -309,5 +309,66 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             #expect(abs(tab.workspace.mainCell.frame.width - tab.workspace.secondCell.frame.width) <= 1)
         }
+        // MARK: Kept with the tab
+
+        /// The tab the group opened after `tab`, read.
+        private func opened(_ tab: MainWindowController, after count: Int) async throws -> MainWindowController {
+            let group = try #require(tab.group)
+            #expect(await waitUntil { group.tabs.count == count + 1 })
+            let index = try #require(group.tabs.firstIndex { $0 === tab })
+            let new = group.tabs[index + 1]
+            new.servicesOverride = tab.servicesOverride
+            #expect(await waitUntil { new.panes.allSatisfy { $0.loaded && !$0.isNavigating } })
+            return new
+        }
+
+        @Test func theSavedTabKeepsBothPanesAndATabMadeFromItShowsThemAgain() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, _, right) = try await twoPanes(harness, right: "Beta")
+            right.setMode(.icons)
+            tab.focusPane(right)
+            tab.workspace.setPaneSplit(0.6)
+
+            let saved = tab.openTab
+            #expect(saved.path == real(harness))
+            #expect(saved.secondPane?.path == real(harness, "Beta"))
+            #expect(saved.secondPane?.viewMode == .icons)
+            #expect(saved.activePane == 1)
+            #expect(saved.paneSplit == 0.6)
+            #expect(tab.activePaneTab.path == real(harness, "Beta"))
+            #expect(tab.activePaneTab.secondPane == nil)
+
+            let start = StartupTabs.startupTab(saved, homePath: real(harness))
+            let again = MainWindowController(tab: start)
+            again.servicesOverride = tab.servicesOverride
+            defer { again.window?.close() }
+            #expect(again.panes.count == 2)
+            #expect(again.activePaneIndex == 1)
+            #expect(again.panes[1].folder.path == real(harness, "Beta"))
+            #expect(again.panes[1].viewMode == .icons)
+            #expect(again.workspace.paneSplit == 0.6)
+        }
+
+        @Test func duplicateTabAndReopenClosedTabBringBothPanes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, _, right) = try await twoPanes(harness, right: "Alpha")
+            await right.navigate(to: URL(fileURLWithPath: real(harness, "Alpha/Inner")))
+            let group = try #require(tab.group)
+
+            group.duplicateTab(tab)
+            let copy = try await opened(tab, after: 1)
+            #expect(copy.panes.count == 2)
+            #expect(copy.panes[1].shownFolderPath == real(harness, "Alpha/Inner"))
+            #expect(copy.panes[1].navigationHistory.paths == right.navigationHistory.paths)
+
+            group.closeTab(copy)
+            #expect(await waitUntil { group.tabs.count == 1 })
+            group.reopenClosedTab(from: tab)
+            let back = try await opened(tab, after: 1)
+            #expect(back.panes.count == 2)
+            #expect(back.panes[1].shownFolderPath == real(harness, "Alpha/Inner"))
+        }
     }
 }

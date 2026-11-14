@@ -46,6 +46,12 @@ public struct TabSnapshot: Equatable, Sendable {
     public var locationsExpanded: Bool
     /// Nil for a tab that has not been shown yet: its folder and tree are read when it is first opened.
     public var view: TabViewState?
+    /// The tab's second pane while it shows two, with its history; the fields above are its first pane's.
+    public var secondPane: PaneSnapshot?
+    /// The pane the tab has active: 1 for the second.
+    public var activePane = 0
+    /// The left pane's share of the room while it shows two.
+    public var paneSplit: Double?
 
     public init(
         currentPath: String, historyPaths: [String], historyIndex: Int, viewMode: ExplorerViewMode = .icons,
@@ -71,6 +77,19 @@ public struct TabSnapshot: Equatable, Sendable {
         self.favoritesExpanded = favoritesExpanded
         self.locationsExpanded = locationsExpanded
         self.view = view
+    }
+}
+
+/// A tab's second pane as a snapshot keeps it: how it shows its folder, and its history.
+public struct PaneSnapshot: Equatable, Sendable {
+    public var pane: OpenPanePreference
+    public var historyPaths: [String]
+    public var historyIndex: Int
+
+    public init(pane: OpenPanePreference, historyPaths: [String], historyIndex: Int) {
+        self.pane = pane
+        self.historyPaths = historyPaths
+        self.historyIndex = historyIndex
     }
 }
 
@@ -245,6 +264,10 @@ public enum ExplorerTabs {
         kept.historyPaths = snapshot.currentPath.isEmpty ? [] : [snapshot.currentPath]
         kept.historyIndex = snapshot.currentPath.isEmpty ? -1 : 0
         kept.view = nil
+        if let second = snapshot.secondPane, let path = second.pane.path, !path.isEmpty {
+            kept.secondPane?.historyPaths = [path]
+            kept.secondPane?.historyIndex = 0
+        }
         return kept
     }
 

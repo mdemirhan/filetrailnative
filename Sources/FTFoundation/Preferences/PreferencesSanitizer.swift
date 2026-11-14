@@ -42,28 +42,43 @@ public enum PreferencesSanitizer {
         var tabs: [OpenTabPreference] = []
         for candidate in candidates {
             guard let record = candidate.object else { continue }
-            let sortBy: SortByPreference =
-                switch record["sortBy"]?.string {
-                case "modified": .modified
-                case "kind": .kind
-                case "size": .size
-                default: .name
-                }
+            let sortBy = Self.sortBy(record)
+            let includesHidden = bool(record, "includeHidden", includeHidden)
+            let showsFoldersFirst = bool(record, "foldersFirst", foldersFirst)
+            // A second pane takes what it doesn't say from the tab's first.
+            let secondPane = record["secondPane"]?.object.map { pane in
+                OpenPanePreference(
+                    path: nonEmptyString(pane["path"]), viewMode: viewMode(pane["viewMode"]),
+                    searchViewMode: viewMode(pane["searchViewMode"], .details), sortBy: Self.sortBy(pane),
+                    sortDirection: pane["sortDirection"]?.string == "desc" ? .desc : .asc,
+                    includeHidden: bool(pane, "includeHidden", includesHidden),
+                    foldersFirst: bool(pane, "foldersFirst", showsFoldersFirst))
+            }
+            let split = record["paneSplit"]?.number.flatMap { $0.isFinite ? min(0.8, max(0.2, $0)) : nil }
             tabs.append(
                 OpenTabPreference(
                     path: nonEmptyString(record["path"]), treeRootPath: nonEmptyString(record["treeRootPath"]),
                     favoritePath: nonEmptyString(record["favoritePath"]), viewMode: viewMode(record["viewMode"]),
                     searchViewMode: viewMode(record["searchViewMode"], .details), sortBy: sortBy,
                     sortDirection: record["sortDirection"]?.string == "desc" ? .desc : .asc,
-                    includeHidden: bool(record, "includeHidden", includeHidden),
-                    foldersFirst: bool(record, "foldersFirst", foldersFirst),
+                    includeHidden: includesHidden, foldersFirst: showsFoldersFirst,
                     favoritesExpanded: bool(record, "favoritesExpanded", favoritesExpanded),
-                    locationsExpanded: bool(record, "locationsExpanded", locationsExpanded)))
+                    locationsExpanded: bool(record, "locationsExpanded", locationsExpanded), secondPane: secondPane,
+                    activePane: record["activePane"]?.number == 1 ? 1 : nil, paneSplit: split))
             if tabs.count == AppPreferenceLimits.openTabsLimit {
                 break
             }
         }
         return tabs
+    }
+
+    private static func sortBy(_ record: [String: JSONNode]) -> SortByPreference {
+        switch record["sortBy"]?.string {
+        case "modified": .modified
+        case "kind": .kind
+        case "size": .size
+        default: .name
+        }
     }
 
     // MARK: Favorites and applications

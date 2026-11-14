@@ -495,7 +495,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
 
     /// New Window (⌘N) on the folder on screen, or Open in New Window on `path`, with this tab's view and tree root.
     func openNewWindow(from tab: MainWindowController, path: String?) {
-        var preference = tab.openTab
+        // A new window has one pane: the active one's.
+        var preference = tab.activePaneTab
         if let path {
             preference.path = path
             preference.favoritePath = nil

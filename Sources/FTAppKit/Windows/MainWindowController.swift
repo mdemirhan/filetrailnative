@@ -420,6 +420,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             AutomationClipboardPrefs.registerOnce()
             AutomationSearchPrefs.registerOnce()
         #endif
+        if let second = tab.secondPane {
+            restoreSecondPane(second, history: nil, active: tab.activePane == 1, split: tab.paneSplit)
+        }
         updateTitle()
         if loadNow { ensureLoaded() }
     }
@@ -436,12 +439,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         self.init(tab: startup, history: (snapshot.historyPaths, snapshot.historyIndex), frame: frame)
         startingPane = snapshot.focusedPane
         if let view = snapshot.view { carry(view, of: snapshot) }
+        if let second = snapshot.secondPane {
+            restoreSecondPane(
+                second.pane, history: (second.historyPaths, second.historyIndex), active: snapshot.activePane == 1,
+                split: snapshot.paneSplit)
+        }
     }
 
     /// The tab starts with the view the other one had. Its folder is read as it first shows, the task
     /// for that not having run yet.
     private func carry(_ view: TabViewState, of snapshot: TabSnapshot) {
-        activePane.carry(view)
+        panes[0].carry(view)
         sidebar.holdsScrollPosition = true
         sidebar.restoreView(
             nodes: ExplorerTabs.settleTreeNodes(view.treeNodes), selectedItem: snapshot.selectedTreeItemID,
@@ -465,13 +473,37 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     // MARK: The tab
 
     /// The tab as it is saved between launches.
+    /// Its first pane, and its second while it shows two.
     var openTab: OpenTabPreference {
-        let path = shownFolderPath
+        var tab = paneTab(panes[0])
+        if panes.count > 1 {
+            tab.secondPane = savedPane(panes[1])
+            tab.activePane = activePaneIndex == 1 ? 1 : nil
+            tab.paneSplit = workspace.paneSplit
+        }
+        return tab
+    }
+
+    /// The active pane alone, as a new window starts from it.
+    var activePaneTab: OpenTabPreference { paneTab(activePane) }
+
+    private func paneTab(_ pane: BrowserPane) -> OpenTabPreference {
+        let path = pane.shownFolderPath
         return OpenTabPreference(
             path: path.isEmpty ? nil : path, treeRootPath: treeRootPath.isEmpty ? nil : treeRootPath,
-            favoritePath: favoritePath == path ? favoritePath : nil, viewMode: viewMode, searchViewMode: searchViewMode,
-            sortBy: sortBy, sortDirection: sortDirection, includeHidden: includeHidden, foldersFirst: foldersFirst,
-            favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded)
+            favoritePath: favoritePath == path ? favoritePath : nil, viewMode: pane.viewMode,
+            searchViewMode: pane.searchViewMode, sortBy: pane.sortBy, sortDirection: pane.sortDirection,
+            includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
+            locationsExpanded: locationsExpanded)
+    }
+
+    /// A pane as a saved tab keeps its second one.
+    func savedPane(_ pane: BrowserPane) -> OpenPanePreference {
+        let path = pane.shownFolderPath
+        return OpenPanePreference(
+            path: path.isEmpty ? nil : path, viewMode: pane.viewMode, searchViewMode: pane.searchViewMode,
+            sortBy: pane.sortBy, sortDirection: pane.sortDirection, includeHidden: pane.includeHidden,
+            foldersFirst: pane.foldersFirst)
     }
 
     /// The tab as a new tab or a reopened one starts from it.
@@ -512,26 +544,37 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// What the tab keeps of itself.
+    /// Its fields are the first pane's; the second pane, while there is one, comes with its history.
     var snapshot: TabSnapshot {
         let pane = focusedPane ?? lastFocusedPane
-        return TabSnapshot(
-            currentPath: shownFolderPath, historyPaths: navigationHistory.paths,
-            historyIndex: max(0, navigationHistory.index),
-            viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
-            treeRootPath: treeRootPath,
-            selectedTreeItemID: sidebar.selectedTreeItemID ?? (folderLetGo ? nil : "fs:\(folder.path)"),
+        let first = panes[0]
+        var snapshot = TabSnapshot(
+            currentPath: first.shownFolderPath, historyPaths: first.navigationHistory.paths,
+            historyIndex: max(0, first.navigationHistory.index),
+            viewMode: first.viewMode, searchViewMode: first.searchViewMode, sortBy: first.sortBy,
+            sortDirection: first.sortDirection, treeRootPath: treeRootPath,
+            selectedTreeItemID: sidebar.selectedTreeItemID ?? (first.folderLetGo ? nil : "fs:\(first.folder.path)"),
             leftPaneSubview: sidebar.leftPaneSubview == .favorites ? .favorites : .tree,
             focusedPane: pane == .tree ? .tree : .content,
-            includeHidden: includeHidden, foldersFirst: foldersFirst, favoritesExpanded: favoritesExpanded,
+            includeHidden: first.includeHidden, foldersFirst: first.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, view: liveView)
+        if panes.count > 1 {
+            let second = panes[1]
+            snapshot.secondPane = PaneSnapshot(
+                pane: savedPane(second), historyPaths: second.navigationHistory.paths,
+                historyIndex: max(0, second.navigationHistory.index))
+            snapshot.activePane = activePaneIndex
+            snapshot.paneSplit = workspace.paneSplit
+        }
+        return snapshot
     }
 
     /// The view on screen: the active pane's (`BrowserPane.liveView`), with the tree as the tab has it. A view the
     /// pane was started with keeps its scrolls.
     private var liveView: TabViewState? {
-        guard var view = activePane.liveView else { return nil }
+        guard var view = panes[0].liveView else { return nil }
         view.treeNodes = sidebar.model.nodes
-        if activePane.carriedView == nil {
+        if panes[0].carriedView == nil {
             view.treeScrollTop = sidebar.tree.scrollTop
             view.sidebarSectionsScrollTop = sidebar.sections.scrollTop
         }
@@ -591,7 +634,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// `followMovedItems` and `leaveUnmountedDisks` for a tab in the background: it takes the place `snapshot` gives
     /// it (folder, history, tree root) and reads its folder when it is next shown.
     func takePlace(_ snapshot: TabSnapshot) {
-        activePane.takePlace(snapshot)
+        panes[0].takePlace(snapshot)
         let favoritePrefix = "favorite:"
         let favorite = snapshot.selectedTreeItemID.flatMap {
             $0.hasPrefix(favoritePrefix) ? String($0.dropFirst(favoritePrefix.count)) : nil
