@@ -17,11 +17,10 @@ final class CopyContentsAction {
     var read: (_ path: String, _ guess: CopyContentsGuess) async -> Result<FileContents, FileContents.Failure> = {
         await FileContents.read($0, guess: $1)
     }
-    /// Where a link at `path` leads, or `path` itself: found off the main thread, as it asks the disk.
+    /// Where a link at `path` leads, or `path` itself: found off the main thread and out of Swift's shared pool, as it
+    /// asks the disk.
     var resolve: (_ path: String) async -> String = { path in
-        await Task.detached(priority: .userInitiated) {
-            URL(fileURLWithPath: path).resolvingSymlinksInPath().path
-        }.value
+        await BlockingWork.run { URL(fileURLWithPath: path).resolvingSymlinksInPath().path }
     }
     /// How long a read runs before "Copying…" is shown.
     var slowDelay: Duration = .milliseconds(500)

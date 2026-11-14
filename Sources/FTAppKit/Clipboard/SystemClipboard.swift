@@ -56,13 +56,13 @@ final class SystemClipboard {
         var concealed: Bool
     }
 
-    /// Reads the clipboard off the main thread, as an image or a long text can be large: what it holds is decided
-    /// from what was read, so text that turns out empty is nothing.
+    /// Reads the clipboard off the main thread and out of Swift's shared pool, as an image or a long text can be
+    /// large, and what another app copied as a promise waits for that app to make it: what it holds is decided from
+    /// what was read, so text that turns out empty is nothing. The clipboard is opened again by its name on the thread
+    /// that reads it.
     func read() async -> Contents {
         let name = pasteboard.name.rawValue
-        return await Task.detached(priority: .userInitiated) {
-            Self.readNow(NSPasteboard(name: NSPasteboard.Name(name)))
-        }.value
+        return await BlockingWork.run { Self.readNow(NSPasteboard(name: NSPasteboard.Name(name))) }
     }
 
     nonisolated static func readNow(_ pasteboard: NSPasteboard) -> Contents {

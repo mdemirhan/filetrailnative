@@ -33,9 +33,10 @@ enum FileContents: Equatable {
         case unreadable(String)
     }
 
-    /// Reads the file at `path` (a link's target, for a link), off the main thread. `guess` is what its name said.
+    /// Reads the file at `path` (a link's target, for a link), off the main thread and out of Swift's shared pool,
+    /// as a disk that stopped answering holds the read until it gives up. `guess` is what its name said.
     nonisolated static func read(_ path: String, guess: CopyContentsGuess) async -> Result<FileContents, Failure> {
-        await Task.detached(priority: .userInitiated) { readNow(path, guess: guess) }.value
+        await BlockingWork.run { readNow(path, guess: guess) }
     }
 
     nonisolated static func readNow(_ path: String, guess: CopyContentsGuess) -> Result<FileContents, Failure> {
