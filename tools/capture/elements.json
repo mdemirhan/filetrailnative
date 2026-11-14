@@ -187,7 +187,7 @@
     "compact list highlight": {"swift": "compactList.item.selected"},
     "compact list icon": {"swift": "compactList.item.icon"},
     "compact list name": {"swift": "compactList.item.name"},
-    "list filter label": {"swift": "listFilter.label"},
+    "list filter mode": {"swift": "listFilter.mode"},
     "list filter clear": {"swift": "listFilter.clear"},
     "marquee box": {"swift": "marquee"},
     "list area": {"swift": "list.table"},

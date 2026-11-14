@@ -65,8 +65,9 @@ done this file is deleted and `docs/decisions.md` keeps what it decided.
       screenshot, `docs/screenshots/filter.png`, shows a fuzzy filter typed in a folder: the pill with its chip and
       count, the matched letters marked. Its scene goes in `tools/capture/readme/` and is taken with
       `scripts/readme-screenshots.sh`; the other screenshots are taken again where the change shows in them.
-- [ ] **7. Wrap-up.** `docs/decisions.md` takes the decisions above (replacing "Plain 'e' doesn't find 'é'" and the
-      glass rule's list); Help says how filtering, Space and Plain Text search work; this file is deleted. The app is
+- [x] **7. Wrap-up.** `docs/decisions.md` takes the decisions above (replacing "Plain 'e' doesn't find 'é'" and the
+      glass rule's list); Help says how filtering, Space and Plain Text search work; this file is deleted once ⌘Y is
+      settled. The app is
       checked by hand with an `--automation` scenario: typing a filter in each view, the mode chip, no matches,
       a 50,000-result search with a filter typed over it.
 
@@ -104,3 +105,11 @@ Help, its golden and the tests change with the phase whose behavior they describ
   yes before changing goldens a task doesn't name, so ⌘Y waits for it.
 - 2026-11-14: Phase 6. `filter.png` is new (List view, "trptl" in the demo project's components folder); `search.png`
   was taken again, its filter field now showing the chip. The other screenshots show no filter or search bar.
+- 2026-11-14: Phase 7. Help's "Type in the list" says how filtering works, the search topic's case section is now
+  "Upper and lower case, and accents" with rows for `resume` and `résumé`, and the results' Filter row mentions the
+  chip. `help-content.json` was edited by hand to match: the section's new name, those rows in the searches for "case",
+  the "Report" row in those for "glob" and "regex" (its text names both), and "Type in the list" in those for
+  "quick look".
+- 2026-11-14: The hand check of a 50,000-result search with a filter over it didn't run: another app kept the front and
+  the search never started. `FilterNarrowingTests` covers the narrowing and the CPU time of a keystroke over 50,000
+  results. The scenarios' element "list filter label" is now "list filter mode", the chip.

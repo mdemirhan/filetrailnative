@@ -628,6 +628,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -662,6 +666,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -1716,6 +1724,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -1793,11 +1811,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -2554,6 +2580,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -2588,6 +2618,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -3641,6 +3675,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -3718,11 +3762,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -4498,6 +4550,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -4532,6 +4588,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -5560,6 +5620,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -5637,11 +5707,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -6403,6 +6481,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -6437,6 +6519,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -7490,6 +7576,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -7567,11 +7663,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -8150,6 +8254,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -8184,6 +8292,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -9044,6 +9156,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -9115,11 +9237,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -9855,6 +9985,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -9889,6 +10023,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -10958,6 +11096,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -11035,11 +11183,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -11787,6 +11943,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -11821,6 +11981,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -12860,6 +13024,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -12937,11 +13111,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -13696,6 +13878,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -13730,6 +13916,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -14789,6 +14979,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -14866,11 +15066,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -15614,6 +15822,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -15648,6 +15860,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -16669,6 +16885,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -16746,11 +16972,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -17512,6 +17746,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -17546,6 +17784,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -18604,6 +18846,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -18681,11 +18933,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -19438,6 +19698,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -19472,6 +19736,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -20527,6 +20795,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -20604,11 +20882,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -21369,6 +21655,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -21403,6 +21693,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -22432,6 +22726,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -22509,11 +22813,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -23290,6 +23602,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -23324,6 +23640,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -24373,6 +24693,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -24450,11 +24780,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -25228,6 +25566,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -25262,6 +25604,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -26315,6 +26661,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -26392,11 +26748,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -27151,6 +27515,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -27185,6 +27553,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -28227,6 +28599,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -28304,11 +28686,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -29062,6 +29452,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -29096,6 +29490,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -30150,6 +30548,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -30227,11 +30635,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -31047,6 +31463,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -31081,6 +31501,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -32125,6 +32549,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -32202,11 +32636,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -32968,6 +33410,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -33002,6 +33448,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -34048,6 +34498,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -34125,11 +34585,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -34884,6 +35352,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -34918,6 +35390,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -35965,6 +36441,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -36042,11 +36528,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -36797,6 +37291,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -36831,6 +37329,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -37872,6 +38374,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -37949,11 +38461,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -38708,6 +39228,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -38742,6 +39266,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -39792,6 +40320,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -39869,11 +40407,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -40651,6 +41197,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -40685,6 +41235,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -41728,6 +42282,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -41805,11 +42369,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -42572,6 +43144,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -42606,6 +43182,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -43647,6 +44227,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -43724,11 +44314,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -44506,6 +45104,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -44540,6 +45142,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -45583,6 +46189,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -45660,11 +46276,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -46428,6 +47052,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -46462,6 +47090,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -47477,6 +48109,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -47554,11 +48196,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -48300,6 +48950,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -48334,6 +48988,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -49383,6 +50041,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -49460,11 +50128,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -50257,6 +50933,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -50291,6 +50971,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -51340,6 +52024,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -51417,11 +52111,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -52181,6 +52883,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -52215,6 +52921,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -53268,6 +53978,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -53345,11 +54065,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],
@@ -54118,6 +54846,10 @@
                   "[a-c]*.txt"
                 ],
                 [
+                  "Upper and lower case, and accents",
+                  "Report"
+                ],
+                [
                   "Matching the full path",
                   "**/src/**/*.ts"
                 ],
@@ -54152,6 +54884,10 @@
                 [
                   "Regex patterns",
                   "^photo-\\d{2}\\.jpg$"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "Report"
                 ],
                 [
                   "Matching the full path",
@@ -55201,6 +55937,16 @@
           ],
           [
             {
+              "topic": "navigation",
+              "rows": [
+                [
+                  "Keyboard",
+                  "Type in the list"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "files",
               "rows": [
                 [
@@ -55278,11 +56024,19 @@
               "topic": "search",
               "rows": [
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
                   "report"
                 ],
                 [
-                  "Upper and lower case",
+                  "Upper and lower case, and accents",
+                  "resume"
+                ],
+                [
+                  "Upper and lower case, and accents",
+                  "résumé"
+                ],
+                [
+                  "Upper and lower case, and accents",
                   "Report"
                 ]
               ],

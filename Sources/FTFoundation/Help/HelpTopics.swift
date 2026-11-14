@@ -145,7 +145,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Type in the list",
                             description:
-                                "Narrows the folder to the names containing what you type and selects the best match. Backspace takes a character back; Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
+                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The chip in the filter's pill says Fuzzy: click it for Contains, which keeps only the names with the letters side by side, as Settings → Browsing does. Backspace takes a character back, and Option-Backspace a word. Space types a space while you type and is Quick Look after a pause. Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
                         ),
                         HelpRow(
                             label: "Type in the folder tree",
@@ -379,14 +379,22 @@ extension HelpContent {
                             description: "“photo-”, two digits, “.jpg”"),
                     ], note: "A regex matches anywhere in the name unless you anchor it with `^` (start) or `$` (end)."),
                 HelpSection(
-                    title: "Upper and lower case",
+                    title: "Upper and lower case, and accents",
                     rows: [
                         HelpRow(
                             label: "report", code: true,
-                            description: "All lowercase ignores case: finds report.pdf and Report-final.pdf"),
+                            description: "Plain text ignores case: finds report.pdf and Report-final.pdf"),
+                        HelpRow(
+                            label: "resume", code: true,
+                            description: "A plain letter finds its accented forms: résumé.pdf and Resume.txt"),
+                        HelpRow(
+                            label: "résumé", code: true,
+                            description: "A letter typed with its accent finds only that letter: résumé.pdf"),
                         HelpRow(
                             label: "Report", code: true,
-                            description: "A capital letter makes the search case-sensitive: only Report-final.pdf"),
+                            description:
+                                "In a glob or a regex, a capital letter makes the search case-sensitive: only Report-final.pdf"
+                        ),
                     ]),
                 HelpSection(
                     title: "Matching the full path",
@@ -439,7 +447,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Filter",
                             description:
-                                "The Filter field narrows what was found, by name or by the folder a result is in, without searching again. Typing in the results goes to the same filter, and Esc clears it."
+                                "The Filter field narrows what was found, by name or by the folder a result is in, without searching again. Its chip says how names match, as typing in a folder does; the folder always has to hold the text as typed. Typing in the results goes to the same filter, and Esc clears it."
                         ),
                         HelpRow(
                             label: "Keep typing",
