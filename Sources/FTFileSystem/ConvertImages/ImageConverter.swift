@@ -67,14 +67,24 @@ public enum ImageConverter {
             if hdr { properties[kCGImageDestinationEncodeRequest] = kCGImageDestinationEncodeToISOGainmap }
             if format == .tiff { properties[kCGImagePropertyTIFFDictionary] = tiffDictionary(properties) }
             CGImageDestinationAddImage(destination, image, properties as CFDictionary)
-        } else {
+        } else if options.keepMetadata {
             // The picture as it is, its metadata, orientation and color profile with it.
-            properties.merge(removedMetadata(options)) { _, new in new }
-            if format == .tiff {
-                properties[kCGImagePropertyTIFFDictionary] = tiffDictionary(
-                    options.keepMetadata ? header.properties : [:])
-            }
+            properties.merge(removedLocation(options)) { _, new in new }
+            if format == .tiff { properties[kCGImagePropertyTIFFDictionary] = tiffDictionary(header.properties) }
             CGImageDestinationAddImageFromSource(destination, source, header.index, properties as CFDictionary)
+        } else {
+            // The picture alone, decoded at its size: written from its file, ImageIO carries over every kind of
+            // metadata it holds, and keeps some (a TIFF's tags, a PNG's text, the XMP) even when each dictionary is
+            // told to go. The decoded picture keeps its color profile and depth; its orientation and resolution are
+            // written again.
+            let decode = [kCGImageSourceShouldCache: false] as CFDictionary
+            guard let image = CGImageSourceCreateImageAtIndex(source, header.index, decode) else { throw .notAnImage }
+            properties[kCGImagePropertyOrientation] = header.orientation
+            for key in [kCGImagePropertyDPIWidth, kCGImagePropertyDPIHeight] {
+                if let dpi = header.properties[key] { properties[key] = dpi }
+            }
+            if format == .tiff { properties[kCGImagePropertyTIFFDictionary] = tiffDictionary([:]) }
+            CGImageDestinationAddImage(destination, image, properties as CFDictionary)
         }
         guard CGImageDestinationFinalize(destination) else { throw .notWritten }
         return out as Data
@@ -179,7 +189,7 @@ public enum ImageConverter {
 
     // MARK: Metadata
 
-    /// The dictionaries that hold the camera's metadata, which a write keeps from its source unless told not to.
+    /// The dictionaries that hold the camera's metadata, which a picture drawn again keeps from its source.
     private static var metadataKeys: [CFString] {
         [
             kCGImagePropertyExifDictionary, kCGImagePropertyExifAuxDictionary, kCGImagePropertyGPSDictionary,
@@ -198,13 +208,11 @@ public enum ImageConverter {
         ]
     }
 
-    /// For a picture written as it is: what to take out of the metadata it carries along (null removes a key, in the
+    /// For a picture written as it is with its metadata: the location to take out of it (null removes a key, in the
     /// caption data and in the XMP that says the same).
-    private static func removedMetadata(_ options: ImageConversionOptions) -> [CFString: Any] {
+    private static func removedLocation(_ options: ImageConversionOptions) -> [CFString: Any] {
         var removed: [CFString: Any] = [:]
-        if !options.keepMetadata {
-            for key in metadataKeys { removed[key] = kCFNull }
-        } else if options.removeLocation {
+        if options.removeLocation {
             removed[kCGImagePropertyGPSDictionary] = kCFNull
             var names: [CFString: Any] = [:]
             for key in locationNameKeys { names[key] = kCFNull }

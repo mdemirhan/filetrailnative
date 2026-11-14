@@ -11,10 +11,12 @@ import UniformTypeIdentifiers
 /// Pictures made here, in the formats and with the metadata each test needs.
 private enum Pictures {
     /// A picture whose left half is red and right half blue, its top half transparent when `alpha`.
-    static func image(width: Int, height: Int, alpha: Bool = false) -> CGImage {
+    static func image(
+        width: Int, height: Int, alpha: Bool = false, space: CFString = CGColorSpace.sRGB
+    ) -> CGImage {
         let context = CGContext(
             data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
-            space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+            space: CGColorSpace(name: space)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
         context.setFillColor(red: 1, green: 0, blue: 0, alpha: 1)
         context.fill(CGRect(x: 0, y: 0, width: width / 2, height: height))
         context.setFillColor(red: 0, green: 0, blue: 1, alpha: 1)
@@ -93,6 +95,46 @@ private enum Pictures {
         ]
     }
 
+    /// Every kind of metadata a picture can carry, each value of it marked "Mark", so a file that kept any of it
+    /// says "Mark" somewhere: the camera's (TIFF, EXIF), the location, the caption data (IPTC) and a PNG's text.
+    static var everyMetadata: [CFString: Any] {
+        [
+            kCGImagePropertyOrientation: 6,
+            kCGImagePropertyTIFFDictionary: [
+                kCGImagePropertyTIFFMake: "Mark Make", kCGImagePropertyTIFFModel: "Mark Model",
+                kCGImagePropertyTIFFArtist: "Mark Artist", kCGImagePropertyTIFFCopyright: "Mark Copyright",
+                kCGImagePropertyTIFFImageDescription: "Mark Description", kCGImagePropertyTIFFSoftware: "Mark App",
+                kCGImagePropertyTIFFHostComputer: "Mark Mac", kCGImagePropertyTIFFOrientation: 6,
+            ],
+            kCGImagePropertyExifDictionary: [
+                kCGImagePropertyExifDateTimeOriginal: exifDate, kCGImagePropertyExifLensModel: "Mark Lens",
+                kCGImagePropertyExifBodySerialNumber: "Mark Serial",
+            ],
+            kCGImagePropertyGPSDictionary: [
+                kCGImagePropertyGPSLatitude: 37.33, kCGImagePropertyGPSLatitudeRef: "N",
+                kCGImagePropertyGPSLongitude: 122.0, kCGImagePropertyGPSLongitudeRef: "W",
+            ],
+            kCGImagePropertyIPTCDictionary: [
+                kCGImagePropertyIPTCCity: "Mark City", kCGImagePropertyIPTCByline: ["Mark Byline"],
+                kCGImagePropertyIPTCKeywords: ["Mark Keyword"],
+            ],
+            kCGImagePropertyPNGDictionary: [
+                kCGImagePropertyPNGAuthor: "Mark Author", kCGImagePropertyPNGCopyright: "Mark Notice",
+                kCGImagePropertyPNGDescription: "Mark Text", kCGImagePropertyPNGTitle: "Mark Title",
+                kCGImagePropertyPNGComment: "Mark Comment",
+            ],
+        ]
+    }
+
+    /// XMP of its own, not mirrored by any dictionary ImageIO reads.
+    static var xmp: CGImageMetadata {
+        let metadata = CGImageMetadataCreateMutable()
+        CGImageMetadataSetValueWithPath(metadata, nil, "dc:creator" as CFString, ["Mark Creator"] as CFArray)
+        CGImageMetadataSetValueWithPath(metadata, nil, "xmp:CreatorTool" as CFString, "Mark Tool" as CFString)
+        CGImageMetadataSetValueWithPath(metadata, nil, "xmp:Label" as CFString, "Mark Label" as CFString)
+        return metadata
+    }
+
     static func write(
         _ images: [CGImage], as type: UTType, to url: URL, properties: [CFString: Any] = [:]
     ) throws {
@@ -128,6 +170,14 @@ private struct Written {
     var hasLocation: Bool { properties[kCGImagePropertyGPSDictionary] != nil }
     var caption: [CFString: Any] { properties[kCGImagePropertyIPTCDictionary] as? [CFString: Any] ?? [:] }
     var depth: Int { properties[kCGImagePropertyDepth] as? Int ?? 0 }
+    var profileName: String? { properties[kCGImagePropertyProfileName] as? String }
+    /// Everything the file says of itself: its properties and its XMP, as text.
+    var everything: String {
+        let xmp = CGImageSourceCopyMetadataAtIndex(source, 0, nil)
+            .flatMap { CGImageMetadataCreateXMPData($0, nil) as Data? }
+            .flatMap { String(data: $0, encoding: .utf8) }
+        return "\(properties)\n\(xmp ?? "")"
+    }
     /// The names of the XMP tags the file carries, as "photoshop:City".
     var xmpTags: Set<String> {
         guard let metadata = CGImageSourceCopyMetadataAtIndex(source, 0, nil) else { return [] }
@@ -273,15 +323,38 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         }
     }
 
+    // Nothing of the camera's, the location, the caption data, a PNG's text or the XMP is written, in any format,
+    // whether the picture is written at its size or made smaller; its orientation and color profile still are.
     @Test func withoutMetadataNoneIsWritten() async throws {
         let folder = try TemporaryDirectory()
         defer { folder.remove() }
-        let path = try photo(folder)
-        for size in [ImageSize.actual, .scale(50)] {
-            let written = try await Written(
-                converted(path, ImageConversionOptions(format: .jpeg, size: size, keepMetadata: false)))
-            #expect(!written.hasLocation, "\(size)")
-            #expect(written.exifDate == nil, "\(size)")
+        var sources: [URL] = []
+        for type in [UTType.jpeg, .png, .tiff, .heic] {
+            let url = folder.appending("marked.\(type.preferredFilenameExtension ?? "")")
+            let destination = try #require(
+                CGImageDestinationCreateWithURL(url as CFURL, type.identifier as CFString, 1, nil))
+            CGImageDestinationAddImageAndMetadata(
+                destination, Pictures.image(width: 80, height: 60, space: CGColorSpace.displayP3), Pictures.xmp,
+                Pictures.everyMetadata as CFDictionary)
+            #expect(CGImageDestinationFinalize(destination))
+            // Each carries some of it, as its format holds.
+            #expect(try Written(Data(contentsOf: url)).everything.contains("Mark"), "\(type)")
+            sources.append(url)
+        }
+        for url in sources {
+            for format in ImageFormat.allCases {
+                for size in [ImageSize.actual, .scale(50)] {
+                    let label = "\(url.lastPathComponent) to \(format) \(size)"
+                    let written = try await Written(
+                        converted(url.path, ImageConversionOptions(format: format, size: size, keepMetadata: false)))
+                    #expect(!written.everything.contains("Mark"), "\(label): \(written.everything)")
+                    #expect(!written.hasLocation, "\(label)")
+                    #expect(written.exifDate == nil, "\(label)")
+                    #expect(written.profileName == "Display P3", "\(label)")
+                    let upright = try written.upright
+                    #expect(upright.height > upright.width, "\(label)")
+                }
+            }
         }
     }
 
@@ -332,9 +405,18 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
             #expect(abs(Int(light[0]) - Int(light[2])) < 6, "\(format) \(light)")
             if format == .png || format == .tiff { #expect(written.depth == 16, "\(format)") }
         }
-        // In its own shape it was never drawn again, and still isn't.
+        // In its own shape it was never drawn again, and still isn't; made smaller or written without its metadata,
+        // it keeps its depth too.
         let fitted = try await Written(converted(gray.path, ImageConversionOptions(format: .png, size: .scale(50))))
         #expect(fitted.size == PixelSize(width: 100, height: 50))
+        for format in [ImageFormat.png, .tiff] {
+            for (size, keepMetadata) in [(ImageSize.scale(50), true), (.fitWithin(120), true), (.actual, false)] {
+                let written = try await Written(
+                    converted(
+                        gray.path, ImageConversionOptions(format: format, size: size, keepMetadata: keepMetadata)))
+                #expect(written.depth == 16, "\(format) \(size) \(keepMetadata)")
+            }
+        }
 
         let print = folder.appending("print.tiff")
         try Pictures.write([try #require(Pictures.cmyk(width: 200, height: 100))], as: .tiff, to: print)
@@ -344,6 +426,16 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
             let image = try written.upright
             // Cyan on the left (no red), yellow on the right (no blue).
             let (cyan, yellow) = (pixel(image, x: 10, y: 40), pixel(image, x: 90, y: 40))
+            #expect(cyan[0] < 120 && cyan[2] > 150, "\(format) \(cyan)")
+            #expect(yellow[0] > 200 && yellow[2] < 120, "\(format) \(yellow)")
+        }
+        // Written at its size without its metadata, it is decoded and written again, in every format.
+        for format in ImageFormat.allCases {
+            let written = try await Written(
+                converted(print.path, ImageConversionOptions(format: format, keepMetadata: false)))
+            #expect(written.size == PixelSize(width: 200, height: 100), "\(format)")
+            let image = try written.upright
+            let (cyan, yellow) = (pixel(image, x: 20, y: 50), pixel(image, x: 180, y: 50))
             #expect(cyan[0] < 120 && cyan[2] > 150, "\(format) \(cyan)")
             #expect(yellow[0] > 200 && yellow[2] < 120, "\(format) \(yellow)")
         }
@@ -365,8 +457,14 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         let url = folder.appending("clear.png")
         try Pictures.write([Pictures.image(width: 40, height: 20, alpha: true)], as: .png, to: url)
         #expect(ImageConverter.info(ofImageAt: url.path)?.hasAlpha == true)
-        let white = try await Written(converted(url.path, ImageConversionOptions(format: .jpeg))).topLeft
-        #expect(white.allSatisfy { $0 >= 250 }, "\(white)")
+        let exact = ImageSize.custom(width: 20, height: 20, unit: .pixels, proportional: false)
+        // At its size, made smaller, drawn to another shape, and written without its metadata.
+        for (size, keepMetadata) in [(ImageSize.actual, true), (.scale(50), true), (exact, true), (.actual, false)] {
+            let white = try await Written(
+                converted(url.path, ImageConversionOptions(format: .jpeg, size: size, keepMetadata: keepMetadata))
+            ).topLeft
+            #expect(white.allSatisfy { $0 >= 250 }, "\(size) \(keepMetadata) \(white)")
+        }
         #expect(try await Written(converted(url.path, ImageConversionOptions(format: .heic))).topLeft[3] == 0)
     }
 
