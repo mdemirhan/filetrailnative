@@ -11,7 +11,7 @@ A Mac file browser with fast search, a real folder tree and true cut and paste. 
 - **Search that works, and is fast.** Results appear as you type, from the folder you are in, by name or full path, in plain text, glob or regex. There is no index to wait for, and nothing left out for not being indexed.
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
 - **Cut and paste files.** ⌘X and ⌘V to move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
-- **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that match.
+- **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that have those letters in order.
 - **Keyboard first, with your keys.** Everything can be done from the keyboard, and every command can have a shortcut, two keys per command, that you choose. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.
 - **See what's taking the space.** Sort by size and every folder gets a bar, so the big ones stand out at a glance.
 - **Fast in big folders, and never stuck.** Scrolling stays smooth with thousands of files, and a slow or unresponsive disk never freezes the window.
@@ -23,8 +23,8 @@ Switching costs nothing. File Trail keeps most of Finder's shortcuts, Quick Look
 
 Finder hands search to Spotlight: by default it searches the whole Mac, it leaves out hidden and system files and anything excluded in Spotlight's settings, and matching a pattern means writing a raw Spotlight query. In File Trail, type in the search field and results appear as you type: everything under the folder you are in, each with the folder it lives in.
 
-- **Plain text by default.** Switch to glob (`*.test.ts`) or regex when you need a pattern, and match against the name or the full path.
-- **Widen or narrow without starting over.** One click moves the search from this folder to Home or the whole disk. The filter field trims what was found, by name or by folder, without searching again.
+- **Plain text by default.** Case doesn't matter, and a plain letter finds its accented forms: `resume` finds Résumé. Switch to glob (`*.test.ts`) or regex when you need a pattern, and match against the name or the full path.
+- **Widen or narrow without starting over.** One click moves the search from this folder to Home or the whole disk. The filter field trims what was found, by name or by folder, without searching again. A search stops at 50,000 results.
 - **Results in any view.** Icons, List or Compact List, with columns of their own that you choose and sort.
 - **It knows about Git.** Inside a repository, search can leave out `.git` and whatever `.gitignore` excludes, so build output stays out of the results.
 - **Nothing to set up.** Search runs on a bundled copy of [`fd`](https://github.com/sharkdp/fd). There is no index to build and nothing to install.
@@ -57,10 +57,14 @@ In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothi
 </p>
 
 - **Go To (⌘K)** lists the folders you use most lately, with your favorites, and finds any folder you have opened from a few letters of its name. The folders you go to often come first, the way a browser's address bar ranks the sites you visit. Start with `/` or `~` to type a path, and Tab completes it.
-- **Type in the file list** to narrow it to the names containing what you typed. There is no field to click first: the best match is selected, Backspace edits what you typed, and Esc brings the rest back. Press ⌘F and the same text becomes a search of the subfolders.
+- **Type in the file list** to narrow it. A name is kept when it has the letters you type in that order, so `trptl` finds TripTimeline.jsx, and the letters it matched are marked. The chip in the filter's pill says Fuzzy; click it for Contains, which keeps only the names with the letters side by side (Settings → Browsing has the same choice). There is no field to click first: the best match is selected, Backspace edits what you typed and ⌥⌫ takes back a word, and Esc brings the rest back. Press ⌘F and the same text becomes a search of the subfolders.
 - **The path bar** is more than a label: click a folder to jump to it, click a `›` to see the folders at that level, or double-click the bar to edit the path as text.
 - **Back and Forward** remember more than one step. Hold either button to pick from the folders it leads to.
 - **The Go menu** has Home, Documents, Desktop, Downloads, Library, Macintosh HD, Applications and the Trash, like Finder's, each on a shortcut you choose.
+
+<p align="center">
+  <img src="docs/screenshots/filter.png" alt="A folder of components narrowed by typing trptl to TripTimeline.jsx and its test, the matched letters marked, with the filter pill saying Fuzzy and 2 of 14" width="900">
+</p>
 
 ## Keyboard first
 

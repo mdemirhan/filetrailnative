@@ -60,7 +60,7 @@ done this file is deleted and `docs/decisions.md` keeps what it decided.
       state's Search Subfolders button sat at the left of the Compact List in the phase 1 check: put it under the text.
 - [ ] **5. Space and ⌘Y.** The Space rule above (done); ⌘Y added to Quick Look's defaults (waits on the owner: it
       changes about 320 cases of three goldens a task didn't name, see the Log).
-- [ ] **6. README and screenshots.** The README says how typing filters now (letters in order, the marks, the mode
+- [x] **6. README and screenshots.** The README says how typing filters now (letters in order, the marks, the mode
       chip, Settings → Browsing) and that Plain Text search finds accented names from plain letters. A new README
       screenshot, `docs/screenshots/filter.png`, shows a fuzzy filter typed in a folder: the pill with its chip and
       count, the matched letters marked. Its scene goes in `tools/capture/readme/` and is taken with
@@ -102,3 +102,5 @@ Help, its golden and the tests change with the phase whose behavior they describ
   as a conflict), `prefs-sanitize.json` (19: an override giving ⌘Y elsewhere now keeps Quick Look's Space as an
   override of its own) and `help-content.json` (23: "Quick Look (Cmd+Y also works)"). The decisions ask for the owner's
   yes before changing goldens a task doesn't name, so ⌘Y waits for it.
+- 2026-11-14: Phase 6. `filter.png` is new (List view, "trptl" in the demo project's components folder); `search.png`
+  was taken again, its filter field now showing the chip. The other screenshots show no filter or search bar.
