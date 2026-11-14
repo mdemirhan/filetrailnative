@@ -34,8 +34,8 @@ done this file is deleted and `docs/decisions.md` keeps what it decided.
 10. **No caret, no editable field.** The arrows keep moving the selection in every view.
 11. **⌥⌫ deletes the filter's last word.**
 12. **Space**: never starts a filter. While a filter is typed, Space types a space for a second after each key and
-    then does what it is assigned to (Quick Look by default). With nothing assigned to Space, Space always types a
-    space into a filter. A command assigned to Space no longer stops Space from typing into a filter.
+    then is Quick Look. Taken off Quick Look in Settings → Shortcuts, Space always types a space into a filter. (No
+    other command can have Space: a typing key needs ⌘ or ⌃.)
 13. **⌘Y is a second default shortcut for Quick Look**, as in Finder.
 
 ## Phases
@@ -58,7 +58,8 @@ done this file is deleted and `docs/decisions.md` keeps what it decided.
 - [x] **4. The pill and no matches.** Glass, symbol, clickable mode chip, spring in and out (fade with Reduce Motion),
       red edge and shake on no matches, the mode word in the search bar's filter field, ⌥⌫. The "no matches"
       state's Search Subfolders button sat at the left of the Compact List in the phase 1 check: put it under the text.
-- [ ] **5. Space and ⌘Y.** The Space rule above; ⌘Y added to Quick Look's defaults.
+- [ ] **5. Space and ⌘Y.** The Space rule above (done); ⌘Y added to Quick Look's defaults (waits on the owner: it
+      changes about 320 cases of three goldens a task didn't name, see the Log).
 - [ ] **6. README and screenshots.** The README says how typing filters now (letters in order, the marks, the mode
       chip, Settings → Browsing) and that Plain Text search finds accented names from plain letters. A new README
       screenshot, `docs/screenshots/filter.png`, shows a fuzzy filter typed in a folder: the pill with its chip and
@@ -96,3 +97,8 @@ Help, its golden and the tests change with the phase whose behavior they describ
   "Name or folder" so both fit. The pill's chip and the field's switch the Browsing setting for every window. Checked in
   a debug build in light and dark, List and Icons, a search over results; snapshots can't show the glass itself
   (Screen Recording isn't granted to the debug build), so the README screenshot is the check of how the glass looks.
+- 2026-11-14: Phase 5, Space. ⌘Y as a second default for Quick Look changes `shortcut-resolution.json` (275 of 300
+  cases: Quick Look's keys gain ⌘Y, and the random cases that give ⌘Y to another command now meet Quick Look's default
+  as a conflict), `prefs-sanitize.json` (19: an override giving ⌘Y elsewhere now keeps Quick Look's Space as an
+  override of its own) and `help-content.json` (23: "Quick Look (Cmd+Y also works)"). The decisions ask for the owner's
+  yes before changing goldens a task doesn't name, so ⌘Y waits for it.

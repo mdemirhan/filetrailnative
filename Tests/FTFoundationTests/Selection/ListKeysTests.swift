@@ -151,6 +151,24 @@ struct ContentKeysTests {
         #expect(action(" ", code: "Space") == .command(.quickLookSelection))
     }
 
+    // Space never starts a filter. While one is typed it types a space for a moment after each key and then is Quick
+    // Look; taken off Quick Look in Settings (no other command can have it), it always types a space.
+    @Test func spaceTypesIntoAFilterAlwaysWhenQuickLookDoesntHaveIt() {
+        func action(_ overrides: ShortcutOverrides, filter: ListFilterTyping, now: Double) -> ContentKeyAction? {
+            ContentKeys.action(
+                for: ShortcutKeyEvent(key: " ", code: "Space"), shortcuts: ShortcutCommands.resolve(overrides),
+                filter: filter, now: now, hasEntries: true, hasSelection: true)
+        }
+        var typed = ListFilterTyping()
+        typed.type("my", at: 5)
+        var unassigned = ShortcutOverrides()
+        unassigned["quickLookSelection"] = []
+        #expect(action(unassigned, filter: ListFilterTyping(), now: 0) == nil)
+        #expect(action(unassigned, filter: typed, now: 5.5) == .filter(.type(" ")))
+        #expect(action(unassigned, filter: typed, now: 60) == .filter(.type(" ")))
+        #expect(action([:], filter: typed, now: 60) == .command(.quickLookSelection))
+    }
+
     @Test func returnWithAnItemSelectedAndTabSwitchesPanes() {
         #expect(action("Enter", code: "Enter") == .enter)
         #expect(action("Enter", code: "Enter", shift: true) == .enter)

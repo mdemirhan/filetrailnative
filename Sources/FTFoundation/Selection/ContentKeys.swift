@@ -57,7 +57,14 @@ public enum ContentKeys {
         // ? opens Help from anywhere.
         if command == .openHelp { return .command(.openHelp) }
         if let move = pageMove(command) { return .page(forward: move.forward, size: move.size, extend: false) }
-        // Quick Look is the last of the raw bindings: Space is the filter's while a filter is being typed.
+        // Space never starts a filter. While one is typed it is the filter's for a moment after each key, and then Quick
+        // Look's; taken off Quick Look in Settings (no other command can have it), it is always the filter's.
+        if event.key == " ", !event.metaKey, !event.ctrlKey, !event.altKey, !event.shiftKey, filter.isActive,
+            command == nil || filter.takesSpace(at: now)
+        {
+            return .filter(.type(" "))
+        }
+        // Quick Look is the last of the raw bindings, so a filter's keys come before it.
         if let command, command != .selectAll, command != .quickLookSelection {
             return .command(command)
         }
