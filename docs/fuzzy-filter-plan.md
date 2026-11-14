@@ -50,7 +50,7 @@ done this file is deleted and `docs/decisions.md` keeps what it decided.
 - [x] **2. Search results at 50,000.** Each result's folded name and folder computed once (names beyond ASCII; an
       ASCII name is compared byte by byte and needs no folding), the first time a filter looks at it. The filter narrows the previous matches when the new text extends the old (both filters). The limit
       is 50,000. A CPU-time test bounds one keystroke over 50,000 results.
-- [ ] **3. Plain Text search as the filters match.** `FdSearchArgs` gives fd the accent-aware, case-ignoring pattern
+- [x] **3. Plain Text search as the filters match.** `FdSearchArgs` gives fd the accent-aware, case-ignoring pattern
       for Plain Text; the runtime's reading of results drops what the matcher rejects before it counts toward the
       limit; Plain Text marks come from the matcher. A test runs one table of queries and names (composed,
       decomposed, upper case, e/é, ß, final sigma, ø, ı) through the list filter and a real fd search over files
@@ -84,3 +84,11 @@ Help, its golden and the tests change with the phase whose behavior they describ
 - 2026-11-14: Phase 2. Folding is kept per pane (`FoldedNameCache`) for names beyond ASCII only, on the main thread the
   first time a filter looks at a name: ASCII names, nearly all of them, are compared byte by byte with no copy. The
   narrowing starts over whenever the folder's items or the search's results change.
+- 2026-11-14: Phase 3. Plain Text marks and the live narrowing of a search as more is typed (`SearchRefinement`) use
+  the matcher too. The goldens were edited by hand: `search-args.json` lost `--fixed-strings` (its test puts the text
+  as typed back in place of the pattern, which `PlainTextPattern` tests check); `search-results.json`'s "App" and
+  "Report" cases now hold what their "app" and "report" twins hold; `search-sort.json` marks "app", "c++", "résumé"
+  and "é" where capitals once kept them unmarked, and `name-highlight.json` marks six names a capital once kept
+  unmarked. Letters fold case as Unicode does where that gives one letter ("ſ" is "s", "µ" is "μ"), as fd's case rule
+  does. The runtime tests about hidden files search in Regex, which fd's
+  stand-in answers without the Plain Text judge.

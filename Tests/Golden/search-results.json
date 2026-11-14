@@ -916,8 +916,48 @@
         "error": null,
         "items": [
           {
+            "path": "$ROOT/project/Notes.app",
+            "name": "Notes.app",
+            "extension": "app",
+            "kind": "bundle",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "project"
+          },
+          {
+            "path": "$ROOT/project/app.v2",
+            "name": "app.v2",
+            "extension": "v2",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "project"
+          },
+          {
+            "path": "$ROOT/project/app.v2/app.ts",
+            "name": "app.ts",
+            "extension": "ts",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project/app.v2",
+            "relativeParentPath": "project/app.v2"
+          },
+          {
             "path": "$ROOT/project/src/App.tsx",
             "name": "App.tsx",
+            "extension": "tsx",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project/src",
+            "relativeParentPath": "project/src"
+          },
+          {
+            "path": "$ROOT/project/src/app.test.tsx",
+            "name": "app.test.tsx",
             "extension": "tsx",
             "kind": "file",
             "isHidden": false,
@@ -1118,8 +1158,48 @@
         "error": null,
         "items": [
           {
+            "path": "$ROOT/project/Notes.app",
+            "name": "Notes.app",
+            "extension": "app",
+            "kind": "bundle",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          },
+          {
+            "path": "$ROOT/project/app.v2",
+            "name": "app.v2",
+            "extension": "v2",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          },
+          {
+            "path": "$ROOT/project/app.v2/app.ts",
+            "name": "app.ts",
+            "extension": "ts",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project/app.v2",
+            "relativeParentPath": "app.v2"
+          },
+          {
             "path": "$ROOT/project/src/App.tsx",
             "name": "App.tsx",
+            "extension": "tsx",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project/src",
+            "relativeParentPath": "src"
+          },
+          {
+            "path": "$ROOT/project/src/app.test.tsx",
+            "name": "app.test.tsx",
             "extension": "tsx",
             "kind": "file",
             "isHidden": false,
@@ -1320,8 +1400,48 @@
         "error": null,
         "items": [
           {
+            "path": "$ROOT/project/Notes.app",
+            "name": "Notes.app",
+            "extension": "app",
+            "kind": "bundle",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          },
+          {
+            "path": "$ROOT/project/app.v2",
+            "name": "app.v2",
+            "extension": "v2",
+            "kind": "directory",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          },
+          {
+            "path": "$ROOT/project/app.v2/app.ts",
+            "name": "app.ts",
+            "extension": "ts",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project/app.v2",
+            "relativeParentPath": "app.v2"
+          },
+          {
             "path": "$ROOT/project/src/App.tsx",
             "name": "App.tsx",
+            "extension": "tsx",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project/src",
+            "relativeParentPath": "src"
+          },
+          {
+            "path": "$ROOT/project/src/app.test.tsx",
+            "name": "app.test.tsx",
             "extension": "tsx",
             "kind": "file",
             "isHidden": false,
@@ -2176,6 +2296,26 @@
             "isSymlink": false,
             "parentPath": "$ROOT/other",
             "relativeParentPath": "other"
+          },
+          {
+            "path": "$ROOT/project/report (1).pdf",
+            "name": "report (1).pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "project"
+          },
+          {
+            "path": "$ROOT/project/report 2.pdf",
+            "name": "report 2.pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "project"
           }
         ]
       }
@@ -2368,7 +2508,28 @@
         "status": "complete",
         "truncated": false,
         "error": null,
-        "items": []
+        "items": [
+          {
+            "path": "$ROOT/project/report (1).pdf",
+            "name": "report (1).pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          },
+          {
+            "path": "$ROOT/project/report 2.pdf",
+            "name": "report 2.pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          }
+        ]
       }
     },
     {
@@ -2559,7 +2720,28 @@
         "status": "complete",
         "truncated": false,
         "error": null,
-        "items": []
+        "items": [
+          {
+            "path": "$ROOT/project/report (1).pdf",
+            "name": "report (1).pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          },
+          {
+            "path": "$ROOT/project/report 2.pdf",
+            "name": "report 2.pdf",
+            "extension": "pdf",
+            "kind": "file",
+            "isHidden": false,
+            "isSymlink": false,
+            "parentPath": "$ROOT/project",
+            "relativeParentPath": "."
+          }
+        ]
       }
     },
     {

@@ -85,14 +85,19 @@ private struct GoldenRequest: Codable {
         func args(_ mode: SearchPatternModePreference) -> [String] {
             FdSearchArgs.build(request(query: "report (1).pdf", mode: mode))
         }
-        #expect(args(.text).contains("--fixed-strings"))
+        #expect(!args(.text).contains("--fixed-strings"))
         #expect(!args(.text).contains("--glob"))
         #expect(args(.glob).contains("--glob"))
         #expect(!args(.glob).contains("--fixed-strings"))
         #expect(!args(.regex).contains("--fixed-strings"))
         #expect(!args(.regex).contains("--glob"))
-        // The query itself is always passed through untouched.
-        #expect(Array(args(.text).suffix(2)) == ["report (1).pdf", "/Users/demo/project"])
+        // Plain Text goes as a pattern of its own: case aside, letters with their accented forms, the rest as typed.
+        #expect(Array(args(.text).suffix(2)) == [PlainTextPattern.regex(for: "report (1).pdf"), "/Users/demo/project"])
+        #expect(PlainTextPattern.regex(for: "report (1).pdf").hasPrefix("(?i)[r"))
+        #expect(PlainTextPattern.regex(for: "report (1).pdf").contains(" \\(1\\)\\."))
+        #expect(PlainTextPattern.regex(for: "2024") == "(?i)2024")
+        // Glob and Regex are passed through untouched.
+        #expect(Array(args(.regex).suffix(2)) == ["report (1).pdf", "/Users/demo/project"])
     }
 
     @Test func endsOptionParsingBeforeTheQuerySoALeadingDashIsNotAnFdFlag() {
@@ -104,6 +109,15 @@ private struct GoldenRequest: Codable {
     @Test func matchesTheGoldenFileForEveryCombinationOfOptions() throws {
         let cases: [GoldenCase<GoldenRequest, [String]>] = try Golden.load(suite: "search-args")
         #expect(cases.count > 300)
-        Golden.expectMatches(cases) { FdSearchArgs.build($0.request) }
+        Golden.expectMatches(cases) { input in
+            var args = FdSearchArgs.build(input.request)
+            // Plain Text's pattern is checked on its own (`PlainTextPattern`); the golden keeps the text as typed.
+            if input.request.patternMode == .text, let end = args.firstIndex(of: "--"),
+                args[end + 1] == PlainTextPattern.regex(for: input.request.query)
+            {
+                args[end + 1] = input.request.query
+            }
+            return args
+        }
     }
 }

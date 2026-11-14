@@ -198,14 +198,18 @@ struct ListFilterTests {
     private let readmeLower = Item(path: "/Users/demo/docs/readme.txt")
     private let notes = Item(path: "/Users/demo/docs/notes.txt")
 
-    @Test func matchesPlainTextAsFdDoes() {
+    @Test func matchesPlainTextAsTheSearchJudgesIt() {
         func matches(_ item: Item, _ query: String) -> Bool {
             SearchRefinement.matchesTextQuery(item, query: query, scope: .name)
         }
         #expect(matches(readmeUpper, "readme"))
         #expect(matches(readmeLower, "readme"))
         #expect(matches(readmeUpper, "README"))
-        #expect(!matches(readmeLower, "README"))
+        // Case aside, always.
+        #expect(matches(readmeLower, "README"))
+        // A plain letter finds an accented one.
+        #expect(matches(Item(path: "/x/R\u{E9}sum\u{E9}.pdf"), "resume"))
+        #expect(!matches(Item(path: "/x/resume.pdf"), "r\u{E9}sum\u{E9}"))
         #expect(!matches(notes, "readme"))
         // Nothing is a pattern.
         #expect(matches(Item(path: "/x/report (1).pdf"), "(1).p"))
@@ -216,18 +220,20 @@ struct ListFilterTests {
         #expect(!SearchRefinement.matchesTextQuery(notes, query: "docs", scope: .name))
         #expect(SearchRefinement.matchesTextQuery(notes, query: "docs", scope: .path))
         #expect(SearchRefinement.matchesTextQuery(readmeUpper, query: "project", scope: .path))
-        #expect(!SearchRefinement.matchesTextQuery(readmeUpper, query: "Docs", scope: .path))
+        #expect(SearchRefinement.matchesTextQuery(readmeUpper, query: "Docs", scope: .path) == false)
+        #expect(SearchRefinement.matchesTextQuery(notes, query: "DOCS", scope: .path))
     }
 
     @Test func knowsWhenLongerTextCanOnlyFindASubset() {
         #expect(SearchRefinement.isNarrower(base: "re", next: "readme"))
         #expect(SearchRefinement.isNarrower(base: "re", next: "more"))
         #expect(SearchRefinement.isNarrower(base: "re", next: "re"))
-        // A capital in the longer text only makes it stricter.
+        // Case doesn't count.
         #expect(SearchRefinement.isNarrower(base: "re", next: "REadme"))
-        // A capital in the shorter text was matched exactly, so the longer one must keep it.
-        #expect(SearchRefinement.isNarrower(base: "Re", next: "Readme"))
-        #expect(!SearchRefinement.isNarrower(base: "Re", next: "readme"))
+        #expect(SearchRefinement.isNarrower(base: "Re", next: "readme"))
+        // An accent added narrows; one taken away widens.
+        #expect(SearchRefinement.isNarrower(base: "re", next: "r\u{E9}sum\u{E9}"))
+        #expect(!SearchRefinement.isNarrower(base: "r\u{E9}", next: "resume"))
         #expect(!SearchRefinement.isNarrower(base: "re", next: "r"))
         #expect(!SearchRefinement.isNarrower(base: "re", next: "notes"))
         #expect(!SearchRefinement.isNarrower(base: "", next: "anything"))

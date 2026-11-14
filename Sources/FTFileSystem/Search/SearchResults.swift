@@ -153,9 +153,10 @@ public enum SearchResults {
 
     // MARK: - Highlighting
 
-    /// What a name search matched, to mark it in the names. fd uses smart case (case-sensitive only when the query has
-    /// an uppercase letter); glob patterns match the whole name, so they are not marked, and neither are patterns that
-    /// the system's regular expressions don't take.
+    /// What a name search matched, to mark it in the names. Plain Text is marked as the filters match names; a regular
+    /// expression with fd's smart case (case-sensitive only when the query has an uppercase letter). Glob patterns match
+    /// the whole name, so they are not marked, and neither are patterns that the system's regular expressions don't
+    /// take.
     public static func highlightPattern(
         query: String, patternMode: SearchPatternModePreference, matchScope: SearchMatchScopePreference
     ) -> HighlightPattern? {
@@ -163,10 +164,10 @@ public enum SearchResults {
         if trimmed.isEmpty || patternMode == .glob || matchScope != .name {
             return nil
         }
-        let hasUppercase = trimmed.unicodeScalars.contains { $0.properties.generalCategory == .uppercaseLetter }
         if patternMode == .text {
-            return HighlightPattern(text: trimmed, ignoreCase: !hasUppercase)
+            return NameMatcher(trimmed, mode: .contains).map(HighlightPattern.init(names:))
         }
+        let hasUppercase = trimmed.unicodeScalars.contains { $0.properties.generalCategory == .uppercaseLetter }
         return HighlightPattern(regex: trimmed, ignoreCase: !hasUppercase)
     }
 

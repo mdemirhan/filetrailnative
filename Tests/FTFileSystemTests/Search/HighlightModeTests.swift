@@ -1,4 +1,4 @@
-// The search highlight: a regular expression in the system's syntax, or the text itself, with fd's smart case
+// The search highlight: a regular expression in the system's syntax with fd's smart case, or Plain Text as the filters match
 import FTFileSystem
 import FTFoundation
 import Testing
@@ -30,12 +30,19 @@ import Testing
         #expect(match("(1)", .text, in: "report (1).pdf") == HighlightRange(start: 7, end: 10))
     }
 
-    // Case matters only when the query has a capital letter, in both modes.
-    @Test func ignoresCaseUnlessTheQueryHasACapital() {
+    // A regular expression ignores case only without a capital letter; Plain Text always does.
+    @Test func ignoresCaseUnlessARegularExpressionHasACapital() {
         #expect(match("rep", in: "Report.pdf") == HighlightRange(start: 0, end: 3))
         #expect(match("Rep", in: "report.pdf") == nil)
         #expect(match("rep", .text, in: "REPORT.pdf") == HighlightRange(start: 0, end: 3))
-        #expect(match("Rep", .text, in: "report.pdf") == nil)
+        #expect(match("Rep", .text, in: "report.pdf") == HighlightRange(start: 0, end: 3))
+    }
+
+    // Plain Text marks an accented letter found by a plain one, the accent kept apart included.
+    @Test func marksPlainTextAsTheFiltersMatch() {
+        #expect(match("cafe", .text, in: "Caf\u{E9}.txt") == HighlightRange(start: 0, end: 4))
+        #expect(match("cafe", .text, in: "Cafe\u{301}.txt") == HighlightRange(start: 0, end: 5))
+        #expect(match("caf\u{E9}", .text, in: "cafe.txt") == nil)
     }
 
     // Glob patterns match whole names, so they mark nothing.

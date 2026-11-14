@@ -123,10 +123,10 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(match("*.ts", .glob, .name, in: "a.ts") == nil)
         #expect(match("src/app", .regex, .path, in: "a") == nil)
         #expect(match("(", .regex, .name, in: "a") == nil)
-        // Plain text is found as typed, with the same smart case.
+        // Plain text is found as typed, case aside.
         #expect(match("(1).pdf", .text, .name, in: "report (1).pdf") == .some("(1).pdf"))
         #expect(match("c++", .text, .name, in: "My C++ notes") == .some("C++"))
-        #expect(match("C++", .text, .name, in: "my c++ notes") == .some(nil))
+        #expect(match("C++", .text, .name, in: "my c++ notes") == .some("c++"))
         #expect(match("a.c", .text, .name, in: "abc") == .some(nil))
     }
 

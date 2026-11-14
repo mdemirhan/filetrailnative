@@ -198,6 +198,43 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         }
     }
 
+    // Plain Text search and the list filter find the same names: case aside, a plain letter finding its accented
+    // forms, an accented one only itself, however each name stores its accents.
+    @Test(.enabled(if: hasFd))
+    func plainTextFindsWhatTheListFilterFinds() throws {
+        struct Entry: ListFilterEntry { var name: String }
+        let names = [
+            "Cafe\u{301} decomposed.txt", "Caf\u{E9} composed.txt", "CAF\u{C9} upper.txt", "cafe plain.txt",
+            "Stra\u{DF}e.txt", "STRASSE 2.txt", "\u{3A3}\u{3AF}\u{3C3}\u{3C5}\u{3C6}\u{3BF}\u{3C2}.txt",
+            "\u{39F}\u{394}\u{39F}\u{3A3}.txt", "Sm\u{F8}rrebr\u{F8}d.txt", "\u{130}zmir.txt", "\u{131}sl\u{131}k.txt",
+            "report (1).pdf", "c++ notes.txt", "Nai\u{308}ve.txt", "README.md",
+        ]
+        let queries = [
+            "cafe", "caf\u{E9}", "CAF\u{C9}", "cafe\u{301}", "e", "\u{E9}", "ss", "\u{DF}",
+            "\u{3C3}\u{3B9}\u{3C3}\u{3C5}\u{3C6}\u{3BF}\u{3C2}",
+            "\u{3C2}", "\u{3BF}\u{3B4}\u{3BF}\u{3C3}", "smorrebrod", "sm\u{F8}rrebr\u{F8}d", "izmir", "\u{131}", "i",
+            "(1)", "c++",
+            "naive", "na\u{EF}ve", "readme", "README", "Rep", "2.t",
+        ]
+        let runtime = try makeRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            for name in names {
+                // Spelled exactly: Foundation would store some of these decomposed.
+                let descriptor = open(folder.path + "/" + name, O_WRONLY | O_CREAT, 0o644)
+                #expect(descriptor >= 0, "\(name)")
+                close(descriptor)
+            }
+            let entries = names.map(Entry.init)
+            for query in queries {
+                let (_, items) = try runToEnd(
+                    runtime, SearchRequest(rootPath: folder.path, query: query, patternMode: .text))
+                let filtered = ListFilter.filterByName(entries, query: query, mode: .contains).map(\.name)
+                #expect(Set(items.map(\.name)) == Set(filtered), "\(query)")
+            }
+        }
+    }
+
     @Test(.enabled(if: hasFd))
     func findsEveryResultOfARealSearch() throws {
         let runtime = try makeRuntime()
@@ -220,7 +257,7 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         let runtime = try makeRuntime()
         // Matches nothing, so fd searches the system library (some seconds of work) without writing a line. Not all of
         // "/", which takes in every mounted disk, other tests' disk images too; nor /usr, which fd reads in 0.05 s.
-        let query = "filetrail-quit-test-\(UUID().uuidString)"
+        let query = "filetrail-quit-test-\(UInt64.random(in: 100_000_000_000...999_999_999_999))"
         let started = runtime.startSearch(SearchRequest(rootPath: "/System/Library", query: query, patternMode: .text))
         #expect(try await waitUntil(seconds: 5) { !fdProcesses(for: query).isEmpty })
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).done == false)
@@ -233,7 +270,7 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
     func cancellingASearchEndsItsFd() async throws {
         let runtime = try makeRuntime()
         defer { runtime.close() }
-        let query = "filetrail-cancel-test-\(UUID().uuidString)"
+        let query = "filetrail-cancel-test-\(UInt64.random(in: 100_000_000_000...999_999_999_999))"
         let started = runtime.startSearch(SearchRequest(rootPath: "/System/Library", query: query, patternMode: .text))
         #expect(try await waitUntil(seconds: 5) { !fdProcesses(for: query).isEmpty })
         runtime.cancelSearch(jobId: started.jobId)
@@ -257,8 +294,10 @@ private func waitUntil(seconds: Double, _ condition: () -> Bool) async throws ->
     return condition()
 }
 
-/// The ids of the fd processes searching for `query` (found by their command line).
+/// The ids of the fd processes searching for `query` in Plain Text, found by their command line. There the query is a
+/// pattern of letters and their accented forms; its last 12 characters, digits, are as typed.
 private func fdProcesses(for query: String) -> [String] {
+    let marker = String(query.suffix(12))
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/bin/ps")
     process.arguments = ["-axo", "pid=,command="]
@@ -268,6 +307,6 @@ private func fdProcesses(for query: String) -> [String] {
     guard (try? process.run()) != nil else { return [] }
     let text = String(decoding: output.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
     process.waitUntilExit()
-    return text.split(separator: "\n").filter { $0.contains(query) && $0.contains("/fd ") }
+    return text.split(separator: "\n").filter { $0.contains(marker) && $0.contains("/fd ") }
         .map { String($0.split(separator: " ").first ?? "") }
 }

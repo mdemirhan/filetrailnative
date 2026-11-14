@@ -15,30 +15,22 @@ public enum SearchMatchScope: String, Codable, Sendable {
 /// running (or has finished) is kept and its results are narrowed here, instead of walking the disk
 /// again for every pause in typing.
 public enum SearchRefinement {
-    // fd's "smart case": a query with an uppercase letter is matched exactly, any other ignores case.
-    private static func isCaseSensitive(_ query: String) -> Bool {
-        query.unicodeScalars.contains { $0.properties.generalCategory == .uppercaseLetter }
-    }
-
-    /// Whether a plain-text search for `query` would find this item, as fd decides it.
+    /// Whether a plain-text search for `query` would find this item: as the filters match names (`NameMatcher` in
+    /// Contains), which is how the search's own results are judged.
     public static func matchesTextQuery(_ item: some SearchRefinementItem, query: String, scope: SearchMatchScope)
         -> Bool
     {
-        let haystack = scope == .path ? item.path : item.name
-        return isCaseSensitive(query)
-            ? JSString.includes(haystack, query)
-            : JSString.includes(JSString.lowercased(haystack), query)
+        guard let matcher = NameMatcher(query, mode: .contains) else { return true }
+        return matcher.matches(scope == .path ? item.path : item.name)
     }
 
-    /// Whether everything a plain-text search for `next` finds is also found by one for `base`:
-    /// `next` contains `base`, by the case rule `base` is matched with.
+    /// Whether everything a plain-text search for `next` finds is also found by one for `base`: `next` holds `base`
+    /// as a run of letters, a plain letter of `base` standing for its accented forms in `next`.
     public static func isNarrower(base: String, next: String) -> Bool {
         if base.isEmpty || next.utf16.count < base.utf16.count {
             return false
         }
-        return isCaseSensitive(base)
-            ? JSString.includes(next, base)
-            : JSString.includes(JSString.lowercased(next), base)
+        return NameMatcher(base, mode: .contains)?.matches(next) ?? false
     }
 
     /// The results a search for `query` and one for `previousQuery` have in common: whichever of the

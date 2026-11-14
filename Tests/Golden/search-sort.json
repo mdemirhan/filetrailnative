@@ -11148,7 +11148,7 @@
       },
       "output": [
         "App",
-        null,
+        "app",
         null,
         null,
         null,
@@ -11367,7 +11367,7 @@
         null,
         null,
         "C++",
-        null,
+        "c++",
         null,
         null,
         null,
@@ -11563,7 +11563,7 @@
         null,
         null,
         "Résumé",
-        null,
+        "résumé",
         null,
         null
       ]
@@ -11814,8 +11814,8 @@
         null,
         null,
         null,
-        null,
-        null,
+        "é",
+        "é",
         null,
         null
       ]

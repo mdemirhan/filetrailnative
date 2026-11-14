@@ -54,6 +54,11 @@ struct NameMatcherTests {
         #expect(!matches("l", "ł"))
         #expect(!matches("か", "が"))
         #expect(matches("i", "İzmir"))
+        // Case folds as Unicode folds it, as fd's case rule does: the long s is an s, the micro sign a mu.
+        #expect(matches("\u{17F}", "Sun.txt"))
+        #expect(matches("s", "\u{17F}un.txt"))
+        #expect(matches("\u{B5}", "ΜΑΘ.txt"))
+        #expect(!matches("ss", "Straße"))
         #expect(!matches("ı", "izmir"))
     }
 

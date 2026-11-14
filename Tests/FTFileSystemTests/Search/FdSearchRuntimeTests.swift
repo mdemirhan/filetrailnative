@@ -33,7 +33,9 @@ final class MockSearchProcess: SearchProcess, @unchecked Sendable {
     func close(code: Int32?, signal: Int32? = nil) { events?.onClose(code, signal) }
 }
 
-private func demo(_ query: String = "app", mode: SearchPatternModePreference = .text, hidden: Bool = false)
+/// A search whose stand-in fd writes what the test says. Regex by default: a Plain Text search also judges what fd
+/// found by its own matching, which tests of something else shouldn't have to satisfy.
+private func demo(_ query: String = "app", mode: SearchPatternModePreference = .regex, hidden: Bool = false)
     -> SearchRequest
 {
     SearchRequest(
@@ -288,12 +290,34 @@ private final class AskedWhileLooking: @unchecked Sendable {
 
     @Test func keepsAMultiByteCharacterSplitBetweenChunks() throws {
         let (runtime, process) = make()
-        let started = runtime.startSearch(demo("日"))
+        let started = runtime.startSearch(demo("日", mode: .text))
         let bytes = Array("/Users/demo/project/日本語.txt\0".utf8)
         let cut = bytes.firstIndex(of: 0xE6)! + 1
         process.events?.onStdout(Data(bytes[..<cut]))
         process.events?.onStdout(Data(bytes[cut...]))
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).items.map(\.name) == ["日本語.txt"])
+    }
+
+    // Plain Text keeps what its own matching finds among what fd wrote: the name, case aside, a plain letter finding an
+    // accented one. What it drops doesn't count toward the limit.
+    @Test func plainTextKeepsWhatItsOwnMatchingFindsInWhatFdWrote() throws {
+        let (runtime, process) = make()
+        let started = runtime.startSearch(demo("resume", mode: .text))
+        let root = "/Users/demo/project"
+        process.write(
+            "\(root)/R\u{E9}sum\u{E9}.pdf\0\(root)/RESUME.txt\0\(root)/resume/notes.txt\0\(root)/res-ume.txt\0")
+        let names = try runtime.getUpdate(jobId: started.jobId, cursor: 0).items.map(\.name)
+        #expect(names == ["R\u{E9}sum\u{E9}.pdf", "RESUME.txt"])
+    }
+
+    @Test func plainTextOfFullPathsJudgesTheWholePath() throws {
+        let (runtime, process) = make()
+        var search = demo("project/re", mode: .text)
+        search.matchScope = .path
+        let started = runtime.startSearch(search)
+        process.write("/Users/demo/project/report.txt\0/Users/demo/other/report.txt\0")
+        let paths = try runtime.getUpdate(jobId: started.jobId, cursor: 0).items.map(\.path)
+        #expect(paths == ["/Users/demo/project/report.txt"])
     }
 
     @Test func terminatesCancelledJobsAndAnswersLaterPollsWithACancelledTerminalState() throws {

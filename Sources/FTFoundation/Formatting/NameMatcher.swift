@@ -68,7 +68,8 @@ struct FoldedText: Sendable {
                     letters[letters.count - 1].exact |= 0x8000_0000
                     continue
                 }
-                letters.append(FoldedLetter(exact: scalar.value, base: Self.base(of: scalar)))
+                let folded = Self.caseFolded(scalar)
+                letters.append(FoldedLetter(exact: folded.value, base: Self.base(of: folded)))
                 spans.append(span)
                 wordStarts.append(!opened && Self.startsWord(previous: previous, current: first))
                 opened = true
@@ -108,6 +109,18 @@ struct FoldedText: Sendable {
     }
 
     private static let bases = OSAllocatedUnfairLock(initialState: [UInt32: UInt32]())
+    private static let folds = OSAllocatedUnfairLock(initialState: [UInt32: Unicode.Scalar]())
+
+    /// A lowercase letter as Unicode folds case, where that gives one letter: "ſ" is "s", "µ" is "μ", "ς" is "σ", as
+    /// fd's own case rule takes them. "ß" stays itself, as its fold is two letters.
+    static func caseFolded(_ scalar: Unicode.Scalar) -> Unicode.Scalar {
+        if scalar.isASCII { return scalar }
+        if let known = folds.withLock({ $0[scalar.value] }) { return known }
+        let parts = Array(String(scalar).folding(options: .caseInsensitive, locale: nil).unicodeScalars)
+        let found = parts.count == 1 ? parts[0] : scalar
+        folds.withLock { $0[scalar.value] = found }
+        return found
+    }
 
     /// `scalar` without its accent, for a letter of the scripts whose accents a plain letter may stand for.
     static func base(of scalar: Unicode.Scalar) -> UInt32 {
@@ -156,7 +169,7 @@ public struct NameMatcher: Sendable {
     private let letters: [FoldedLetter]
     /// For each letter typed, whether it is plain: compared with the name's letters without their accents.
     private let plain: [Bool]
-    /// The text's bytes when it is ASCII: compared with an ASCII name byte by byte, case aside.
+    /// The text's bytes when it folds to ASCII: compared with an ASCII name byte by byte, case aside.
     private let ascii: [UInt8]?
 
     /// Nil for text that folds to nothing.
@@ -168,7 +181,8 @@ public struct NameMatcher: Sendable {
         letters = folded.letters
         // The final sigma is a plain sigma.
         plain = folded.letters.map { $0.exact == $0.base || $0.exact == 0x3C2 }
-        let isASCII = text.utf8.allSatisfy { $0 < 0x80 }
+        // Folded, not as typed: "ſ" is an "s" and compares byte by byte with an ASCII name.
+        let isASCII = folded.letters.allSatisfy { $0.exact < 0x80 }
         ascii = isASCII ? folded.letters.map { UInt8($0.exact) } : nil
     }
 
@@ -209,7 +223,8 @@ public struct NameMatcher: Sendable {
     /// The match for an ASCII name, byte by byte; nil when the name isn't ASCII or the text isn't.
     private func asciiMatches(_ name: String) -> Bool? {
         guard let bytes = ascii else {
-            // Text with a letter beyond ASCII never matches an ASCII name: neither the letter nor its base is ASCII.
+            // Text with a letter that folds beyond ASCII never matches an ASCII name: a plain one is its own base, and
+            // an accented one is compared as itself.
             return withASCII(name) { _ in false }
         }
         return withASCII(name) { name in

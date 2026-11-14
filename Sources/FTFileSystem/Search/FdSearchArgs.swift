@@ -1,7 +1,9 @@
+import FTFoundation
 import Foundation
 
 public enum FdSearchArgs {
-    /// The `fd` argument list for a search; case sensitivity is fd's own smart case, so no flag is passed.
+    /// The `fd` argument list for a search. Plain Text is given as a pattern that ignores case and finds accented
+    /// letters as the filters do (`PlainTextPattern`); Glob and Regex keep fd's own smart case, so no flag is passed.
     public static func build(_ request: SearchRequest) -> [String] {
         // Files and folders. Symbolic links are left out, as they always have been.
         var args = ["--type", "f", "--type", "d", "--print0", "--absolute-path", "--color", "never"]
@@ -30,8 +32,8 @@ public enum FdSearchArgs {
         case .glob:
             args.append("--glob")
         case .text:
-            // The query is the text to find, not a pattern: "c++" and "report (1)" match as typed.
-            args.append("--fixed-strings")
+            // The text to find, as a pattern of its own: "c++" and "report (1)" match as typed, "e" finds "é".
+            break
         case .regex:
             break
         }
@@ -47,7 +49,8 @@ public enum FdSearchArgs {
 
         // "--" ends option parsing so a query starting with "-" (e.g. "-xrm") is treated as a pattern, never as an fd
         // flag such as --exec.
-        args += ["--", request.query, request.rootPath]
+        let pattern = request.patternMode == .text ? PlainTextPattern.regex(for: request.query) : request.query
+        args += ["--", pattern, request.rootPath]
         return args
     }
 }

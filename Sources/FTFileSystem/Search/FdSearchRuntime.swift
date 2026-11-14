@@ -67,6 +67,8 @@ public final class FdSearchRuntime: @unchecked Sendable {
         var rootPath: String
         var includeHidden: Bool
         var filter: HiddenFilter
+        /// For Plain Text, what decides which of fd's results count (fd's pattern finds at least those).
+        var judge: Judge?
         var items: [SearchResultItem] = []
         var status: SearchJobStatus = .running
         var truncated = false
@@ -80,7 +82,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
         /// them without copying them, and gives it back with the results.
         mutating func lend(_ records: Data) -> Reading {
             let reading = Reading(
-                records: records, rootPath: rootPath, includeHidden: includeHidden, filter: filter,
+                records: records, rootPath: rootPath, includeHidden: includeHidden, filter: filter, judge: judge,
                 room: SearchLimits.resultLimit - items.count)
             filter.folders = [:]
             return reading
@@ -110,6 +112,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
         var rootPath: String
         var includeHidden: Bool
         var filter: HiddenFilter
+        var judge: Judge?
         /// How many more results the job takes before it reaches `SearchLimits.resultLimit`.
         var room: Int
 
@@ -124,9 +127,24 @@ public final class FdSearchRuntime: @unchecked Sendable {
                 } else if filter.isInHiddenFolder(item.path) || filter.hasHiddenFlag(item.path) {
                     continue
                 }
+                if let judge, !judge.matcher.matches(judge.fullPath ? item.path : item.name) { continue }
                 found.append(item)
             }
             return found
+        }
+    }
+
+    /// A Plain Text search's own matching of what fd found: the name, or for a search of full paths the whole path.
+    struct Judge: Sendable {
+        var matcher: NameMatcher
+        var fullPath: Bool
+
+        init?(_ request: SearchRequest) {
+            guard request.patternMode == .text, let matcher = NameMatcher(request.query, mode: .contains) else {
+                return nil
+            }
+            self.matcher = matcher
+            fullPath = request.matchScope == .path
         }
     }
 
@@ -172,7 +190,8 @@ public final class FdSearchRuntime: @unchecked Sendable {
         let jobId = lock.withLock {
             sequence += 1
             let id = "search-\(sequence)"
-            jobs[id] = Job(rootPath: rootPath, includeHidden: request.includeHidden, filter: filter)
+            jobs[id] = Job(
+                rootPath: rootPath, includeHidden: request.includeHidden, filter: filter, judge: Judge(request))
             return id
         }
         let events = SearchProcessEvents(
