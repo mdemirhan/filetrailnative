@@ -202,10 +202,10 @@ extension ShortcutCommands {
             id: .openSelectionInOtherPane, label: "Open in Other Pane", group: .tabs, defaults: ["Cmd+Option+Down"],
             menuPath: "File > Open in Other Pane"),
         ShortcutCommandDefinition(
-            id: .copyToOtherPane, label: "Copy to Other Pane", group: .tabs, defaults: ["Cmd+Shift+C", "F5"],
+            id: .copyToOtherPane, label: "Copy to Other Pane", group: .tabs, defaults: ["F5"],
             menuPath: "Edit > Copy to Other Pane"),
         ShortcutCommandDefinition(
-            id: .moveToOtherPane, label: "Move to Other Pane", group: .tabs, defaults: ["Cmd+Shift+X", "F6"],
+            id: .moveToOtherPane, label: "Move to Other Pane", group: .tabs, defaults: ["F6"],
             menuPath: "Edit > Move to Other Pane"),
         ShortcutCommandDefinition(
             id: .swapPanes, label: "Swap Panes", group: .tabs, defaults: ["Cmd+U"], menuPath: "View > Swap Panes"),

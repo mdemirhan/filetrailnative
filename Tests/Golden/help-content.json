@@ -123,13 +123,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -1065,13 +1065,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -2119,13 +2119,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -3061,13 +3061,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -4121,13 +4121,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -5053,13 +5053,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -6108,13 +6108,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -7050,13 +7050,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -8121,13 +8121,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -8780,13 +8780,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 }
               ]
             },
@@ -9693,13 +9693,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -10640,13 +10640,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -11710,13 +11710,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -12632,13 +12632,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -13684,13 +13684,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -14616,13 +14616,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -15697,13 +15697,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -16599,13 +16599,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 }
               ]
             },
@@ -17626,13 +17626,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -18573,13 +18573,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -19650,13 +19650,8 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder"
-          },
-          {
-            "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -20564,13 +20559,8 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder"
-                },
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -21629,13 +21619,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -22561,13 +22551,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -23600,13 +23590,8 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder"
-          },
-          {
-            "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -24547,13 +24532,8 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder"
-                },
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -25606,13 +25586,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -26560,13 +26540,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -27622,13 +27602,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -28548,13 +28528,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -29597,13 +29577,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -30534,13 +30514,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -31613,13 +31593,8 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder"
-          },
-          {
-            "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -32579,13 +32554,8 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder"
-                },
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -33643,13 +33613,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -34585,13 +34555,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -35644,13 +35614,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -36549,13 +36519,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -37612,13 +37582,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -38549,13 +38519,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -39613,13 +39583,8 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder"
-          },
-          {
-            "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -40535,13 +40500,8 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder"
-                },
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -41606,13 +41566,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -42538,13 +42498,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -43592,13 +43552,8 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder"
-          },
-          {
-            "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -44524,13 +44479,8 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder"
-                },
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 }
               ]
             },
@@ -45580,13 +45530,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -46529,13 +46479,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -47589,13 +47539,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -48511,13 +48461,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -49531,13 +49481,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -50463,13 +50413,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -51536,13 +51486,8 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder"
-          },
-          {
-            "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -52495,13 +52440,8 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder"
-                },
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -53552,13 +53492,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -54489,13 +54429,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
@@ -55559,13 +55499,13 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+C",
-            "description": "Copy the selected items into the other pane's folder (F5 also works)"
+            "shortcut": "F5",
+            "description": "Copy the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+Shift+X",
-            "description": "Move the selected items into the other pane's folder (F6 also works)"
+            "shortcut": "F6",
+            "description": "Move the selected items into the other pane's folder"
           },
           {
             "group": "navigation",
@@ -56496,13 +56436,13 @@
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+C",
-                  "description": "Copy the selected items into the other pane's folder (F5 also works)"
+                  "shortcut": "F5",
+                  "description": "Copy the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",
-                  "shortcut": "Cmd+Shift+X",
-                  "description": "Move the selected items into the other pane's folder (F6 also works)"
+                  "shortcut": "F6",
+                  "description": "Move the selected items into the other pane's folder"
                 },
                 {
                   "group": "navigation",

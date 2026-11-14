@@ -102,8 +102,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.editCut, "Cut", fixed: .cut))
             menu.addItem(context.command(.editCopy, "Copy", fixed: .copy))
             menu.addItem(context.command(.editPaste, "Paste", fixed: .paste))
-            // After Cut and Copy: AppKit lets an item with ⇧ take the press of the same key without it, so ⌘C and ⌘X
-            // must meet their own items first.
+            // F5 and F6 by default, which the window takes: the menu shows a key only if one with ⌘ is chosen. After Cut
+            // and Copy all the same, as AppKit lets an item with ⇧ take the press of the same key without it.
             menu.addItem(context.command(.copyToOtherPane, "Copy to Other Pane"))
             menu.addItem(context.command(.moveToOtherPane, "Move to Other Pane"))
             menu.addItem(context.command(.copyPath, "Copy Path"))

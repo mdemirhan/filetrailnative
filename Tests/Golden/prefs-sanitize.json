@@ -12113,9 +12113,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [
               "F5"
             ],
@@ -13560,9 +13558,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "F5"
             ],
@@ -16796,9 +16792,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "quickLookSelection": [
               "F5"
             ]
@@ -20052,9 +20046,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "Cmd+Y",
               "F5"
@@ -22803,9 +22795,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [],
             "refreshOrApplySearchSort": [],
             "newTab": [
@@ -26542,9 +26532,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [
               "F5"
             ],
@@ -27254,9 +27242,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "refreshOrApplySearchSort": [
               "F5"
             ],
@@ -27697,9 +27683,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "refreshOrApplySearchSort": [
               "F5"
             ],
@@ -28255,9 +28239,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "newTab": [
               "F5"
             ]
@@ -29454,9 +29436,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [
               "F5"
             ],
@@ -32050,9 +32030,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [],
             "refreshOrApplySearchSort": [
               "Cmd+U",
@@ -35072,9 +35050,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "F5"
             ]
@@ -36370,9 +36346,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "F5"
             ],
@@ -37244,9 +37218,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "Cmd+Y"
             ],
@@ -37729,9 +37701,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [],
             "refreshOrApplySearchSort": [
               "F5"
@@ -39984,9 +39954,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "refreshOrApplySearchSort": [
               "Cmd+Y",
               "F5"
@@ -41178,9 +41146,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [
               "F5",
               "Cmd+Y"
@@ -43826,9 +43792,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "newTab": [
               "Cmd+Y",
               "F5"
@@ -48465,9 +48429,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "F5",
               "Cmd+Y"
@@ -48941,9 +48903,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [],
             "quickLookSelection": [
               "F5",
@@ -49390,9 +49350,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "quickLookSelection": [
               "F5"
             ]
@@ -52276,9 +52234,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [
               "F5"
             ]
@@ -54360,9 +54316,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [],
             "newTab": [
               "F5"
@@ -54588,9 +54542,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "Cmd+Y"
             ],
@@ -56525,9 +56477,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "F5"
             ],
@@ -58405,9 +58355,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [],
             "goForward": [
               "F5"
@@ -65959,9 +65907,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "refreshOrApplySearchSort": [
               "Cmd+U",
               "F5"
@@ -66791,9 +66737,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "Cmd+Y"
             ],
@@ -67089,9 +67033,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goForward": [
               "Cmd+Y",
               "F5"
@@ -71270,9 +71212,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "open",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "goBack": [
               "Cmd+Y"
             ],
@@ -74603,9 +74543,7 @@
           "diskImageOpensIn": "window",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "newTab": [
               "F5"
             ]
@@ -78651,9 +78589,7 @@
           "diskImageOpensIn": "tab",
           "returnKeyAction": "rename",
           "shortcutOverrides": {
-            "copyToOtherPane": [
-              "Cmd+Shift+C"
-            ],
+            "copyToOtherPane": [],
             "newTab": [
               "F5"
             ]

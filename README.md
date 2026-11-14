@@ -42,7 +42,7 @@ Finder's sidebar holds shortcuts, not a tree. File Trail keeps a folder tree bes
 
 ## Two folders side by side
 
-Press ⌘\\ and the tab shows a second pane beside the first, each with its own folder, history, view and search. Tab moves between the tree and the two panes, ⇧⌘C and ⇧⌘X copy or move what is selected into the other pane's folder (F5 and F6 too), and a drag from one pane to the other does the same. ⌘U swaps the panes, the tree marks the folder each one shows, and the tab keeps both when you quit and come back.
+Press ⌘\\ and the tab shows a second pane beside the first, each with its own folder, history, view and search. Tab moves between the tree and the two panes, F5 and F6 copy or move what is selected into the other pane's folder, as does the right-click menu's Other Pane, and a drag from one pane to the other does the same. ⌘U swaps the panes, the tree marks the folder each one shows, and the tab keeps both when you quit and come back.
 
 ## Cut, copy and paste, with a clipboard you can see
 
