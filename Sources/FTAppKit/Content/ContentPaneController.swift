@@ -91,7 +91,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onColumnWidthsChanged: (([DetailColumn: Double]) -> Void)?
     var onCompactListWidthChanged: ((Density, Int) -> Void)?
     var onIconSizeChanged: ((Density, Int) -> Void)?
-    var onPreviewSizeChanged: ((Density, Int) -> Void)?
+    var onPreviewCountChanged: ((Density, Int) -> Void)?
     /// The keys the size slider's tooltip names, as chosen in Settings.
     var sizeShortcuts = ShortcutDisplay.defaults {
         didSet { if sizeShortcuts != oldValue { syncSizeSlider() } }
@@ -1200,19 +1200,20 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         }
     }
 
-    /// The status bar's slider set the Previews view's preview size, in steps of 40 points: the previews follow it
-    /// while it moves, and the size is saved once it is let go (or set by a click or a key).
-    func previewSizeChanged(_ size: Double, save: Bool) {
+    /// The status bar's slider set how many previews fill the pane, at one of its four stops (`PreviewGrid.counts`):
+    /// the previews follow it while it moves, and the count is saved once it is let go (or set by a click or a key).
+    func previewStopChanged(_ stop: Double, save: Bool) {
         let density = columnState.density
-        let stepped = AppPreferenceLimits.clampPreviewSize(size)
-        shell.pathBarRow.sizeValue = stepped
-        if stepped != columnState.previewSizes[density] {
-            columnState.previewSizes[density] = stepped
+        let index = min(PreviewGrid.counts.count - 1, max(0, Int(stop.rounded())))
+        let count = PreviewGrid.counts[index]
+        shell.pathBarRow.sizeValue = count
+        if count != columnState.previewCounts[density] {
+            columnState.previewCounts[density] = count
             pane?.columnsChanged()
         }
         if save {
             syncSizeSlider()
-            onPreviewSizeChanged?(density, stepped)
+            onPreviewCountChanged?(density, count)
         }
     }
 
@@ -1220,7 +1221,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var viewSize: ViewSize? {
         ViewSize.of(
             mode, density: columnState.density, iconSizes: columnState.iconSizes,
-            compactListWidths: columnState.compactListWidths, previewSizes: columnState.previewSizes)
+            compactListWidths: columnState.compactListWidths, previewCounts: columnState.previewCounts)
     }
 
     /// View ▸ Make Bigger, Make Smaller or Default Size: the icons or the columns go a step bigger or smaller, or back
@@ -1232,7 +1233,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         switch mode {
         case .icons: iconSizeChanged(next, save: true)
         case .list: compactListWidthChanged(next, save: true)
-        case .previews: previewSizeChanged(next, save: true)
+        case .previews: previewStopChanged(next, save: true)
         case .details: return
         }
         syncSizeSlider()
@@ -1243,7 +1244,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         switch mode {
         case .icons: iconSizeChanged(value, save: save)
         case .list: compactListWidthChanged(value, save: save)
-        case .previews: previewSizeChanged(value, save: save)
+        case .previews: previewStopChanged(value, save: save)
         case .details: break
         }
     }
@@ -1254,6 +1255,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let bar = shell.pathBarRow
         let slider = bar.sizeSlider
         let density = columnState.density
+        if mode != .previews {
+            slider.numberOfTickMarks = 0
+            slider.allowsTickMarkValuesOnly = false
+            bar.sizeText = { "\($0) pt" }
+        }
         switch mode {
         case .icons:
             let range = AppPreferenceLimits.iconSizeRange
@@ -1272,11 +1278,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             slider.toolTip = Tooltips.sizeSliderTooltip(.list, shortcuts: sizeShortcuts)
             bar.showsSizeSlider = true
         case .previews:
-            let range = AppPreferenceLimits.previewSizeRange
-            slider.minValue = Double(range.lowerBound)
-            slider.maxValue = Double(range.upperBound)
-            slider.doubleValue = Double(columnState.previewSizes[density])
-            bar.sizeValue = columnState.previewSizes[density]
+            // Four stops, from nine previews at a time to one.
+            slider.minValue = 0
+            slider.maxValue = Double(PreviewGrid.counts.count - 1)
+            slider.numberOfTickMarks = PreviewGrid.counts.count
+            slider.allowsTickMarkValuesOnly = true
+            slider.doubleValue = Double(PreviewGrid.index(of: columnState.previewCounts[density]))
+            bar.sizeText = PreviewGrid.label
+            bar.sizeValue = PreviewGrid.valid(columnState.previewCounts[density])
             slider.toolTip = Tooltips.sizeSliderTooltip(.previews, shortcuts: sizeShortcuts)
             bar.showsSizeSlider = true
         case .details:

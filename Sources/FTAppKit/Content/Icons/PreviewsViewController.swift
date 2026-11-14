@@ -13,16 +13,77 @@ enum PreviewThumbnails {
     static let store = ThumbnailStore(maxEntries: ThumbnailStore.maxEntries, memoryLimit: memoryLimit)
 }
 
-/// Large previews of the files' content in a grid that scrolls down, as wide as the size in the status bar: the pane's
-/// width decides how many fit in a row. Everything else is the Icons view's: selection, keys, drags, rename.
+/// Large previews of the files' content in a grid that scrolls down: 9, 4, 2 or 1 of them fill the pane at a time
+/// (`PreviewGrid`), as large as that many fit, so a narrower pane shows as many, smaller. Everything else is the Icons
+/// view's: selection, keys, drags, rename.
 final class PreviewsViewController: IconViewController {
     private var magnifier: PreviewMagnifier?
+    /// The pane's size the grid was last fitted to.
+    private var fittedTo = NSSize.zero
 
     override var navigationViewMode: ExplorerViewMode { .previews }
     override var gridIdentifier: String { "previews.grid" }
 
-    override func savedSize(for density: Density) -> Double {
-        Double(host?.columnState.previewSizes[density] ?? DensitySizes.previewDefaults[density])
+    /// How many previews fill the pane, as the preferences have it.
+    var count: Int {
+        let density = host?.columnState.density ?? .standard
+        return PreviewGrid.valid(host?.columnState.previewCounts[density] ?? PreviewGrid.defaultCount)
+    }
+
+    /// The grid that fits the count in the pane as it is now.
+    override func metricsChanged() -> Bool {
+        let next = host?.columnState.density ?? .standard
+        let size = viewport
+        let fitted = PreviewGrid.layout(
+            base: DesignTokens.iconGrid(density: next), count: count, width: Double(size.width),
+            height: Double(size.height))
+        fittedTo = size
+        guard next != density || fitted != layout else { return false }
+        setGrid(density: next, layout: fitted)
+        collection.collectionViewLayout?.invalidateLayout()
+        return true
+    }
+
+    /// Any change of the pane's size gives the previews another size: they are made again at it, and the row that was
+    /// at the top stays there.
+    override func placesChange(from old: NSSize, to new: NSSize) -> Bool {
+        guard new != fittedTo else { return old.width != new.width }
+        let anchor = scrollAnchor()
+        guard metricsChanged() else { return old.width != new.width }
+        collection.reloadData()
+        DispatchQueue.main.async { anchor?() }
+        return true
+    }
+
+    /// Another count keeps the row that was mostly at the top, now at the top: the pane shows whole rows.
+    override func scrollAnchor() -> (() -> Void)? {
+        guard !entries.isEmpty else { return nil }
+        let top = Double(scroll.contentView.bounds.origin.y)
+        let index = min(layout.row(atScrollTop: top + layout.rowHeight / 2) * columns, entries.count - 1)
+        return { [self] in
+            scrollClamped(to: NSPoint(x: 0, y: Double(index / max(1, columns)) * layout.rowHeight))
+        }
+    }
+
+    /// A scroll that ends between rows settles on the nearest one, so the pane shows whole previews.
+    private func snapToRow() {
+        let clip = scroll.contentView
+        let maxTop = Double(max(0, collection.frame.height - clip.bounds.height))
+        let top = PreviewGrid.snappedScrollTop(
+            Double(clip.bounds.origin.y), rowHeight: layout.rowHeight, maxScrollTop: maxTop)
+        guard abs(top - Double(clip.bounds.origin.y)) >= 0.5 else { return }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = DesignTokens.motion.fast / 1000
+            clip.animator().setBoundsOrigin(NSPoint(x: clip.bounds.origin.x, y: top))
+        } completionHandler: { [weak self] in
+            MainActor.assumeIsolated { self?.scroll.reflectScrolledClipView(clip) }
+        }
+    }
+
+    private var scrollEndObserver: (any NSObjectProtocol)?
+
+    isolated deinit {
+        if let scrollEndObserver { NotificationCenter.default.removeObserver(scrollEndObserver) }
     }
 
     override var thumbnailStore: ThumbnailStore { PreviewThumbnails.store }
@@ -37,6 +98,11 @@ final class PreviewsViewController: IconViewController {
     override func loadView() {
         super.loadView()
         magnifier = PreviewMagnifier(pane: self)
+        scrollEndObserver = NotificationCenter.default.addObserver(
+            forName: NSScrollView.didEndLiveScrollNotification, object: scroll, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.snapToRow() }
+        }
     }
 
     override func viewWillDisappear() {

@@ -32,9 +32,10 @@ public final class ThumbnailStore {
     }
 
     /// The size of a preview `size` points wide in the Previews view on a Retina display: twice as many pixels, in
-    /// whole steps of 64, at most 1280.
+    /// whole steps of 256, at most 1280. The previews follow the pane's size, so the steps keep a window being resized
+    /// from asking for each one again every few points.
     public nonisolated static func pixelSize(forPreviewSize size: Double) -> Int {
-        min(1280, Int((size * 2 / 64).rounded(.up)) * 64)
+        min(1280, max(1, Int((size * 2 / 256).rounded(.up))) * 256)
     }
 
     private let provider: any ThumbnailProviding

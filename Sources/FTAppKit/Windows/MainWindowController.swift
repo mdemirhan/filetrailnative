@@ -1150,8 +1150,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.onIconSizeChanged = { [weak self] density, size in
             self?.updatePreferences { $0.iconSizes[density] = size }
         }
-        content.onPreviewSizeChanged = { [weak self] density, size in
-            self?.updatePreferences { $0.previewSizes[density] = size }
+        content.onPreviewCountChanged = { [weak self] density, count in
+            self?.updatePreferences { $0.previewCounts[density] = count }
         }
         content.setView(
             sortBy: pane.sortBy, direction: pane.sortDirection, foldersFirst: pane.foldersFirst,

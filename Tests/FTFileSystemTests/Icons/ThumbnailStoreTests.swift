@@ -100,10 +100,12 @@ private func request(
         #expect(ThumbnailStore.pixelSize(forIconSize: 128) == 256)
     }
 
-    // The Previews view asks for twice its size in pixels, in steps of 64, at most 1280.
+    // The Previews view asks for twice its size in pixels, in steps of 256, at most 1280.
     @Test func previewsAskForTwiceTheirSizeUpTo1280Pixels() {
-        #expect(ThumbnailStore.pixelSize(forPreviewSize: 160) == 320)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 100) == 256)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 160) == 512)
         #expect(ThumbnailStore.pixelSize(forPreviewSize: 240) == 512)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 300) == 768)
         #expect(ThumbnailStore.pixelSize(forPreviewSize: 640) == 1280)
         #expect(ThumbnailStore.pixelSize(forPreviewSize: 900) == 1280)
     }

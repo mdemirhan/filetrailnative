@@ -19,11 +19,6 @@ class IconViewController: ItemGridPane {
     /// The grid's name for automation.
     var gridIdentifier: String { "icons.grid" }
 
-    /// The size the grid is drawn at for `density`, as the preferences have it: the icon's side.
-    func savedSize(for density: Density) -> Double {
-        Double(host?.columnState.iconSizes[density] ?? DensitySizes.iconDefaults[density])
-    }
-
     /// Where the previews of the files' content come from, and the pixels they are asked for at.
     var thumbnailStore: ThumbnailStore { IconThumbnails.store }
     var thumbnailPixelSize: Int { ThumbnailStore.pixelSize(forIconSize: layout.iconSize) }
@@ -40,10 +35,17 @@ class IconViewController: ItemGridPane {
         collection.wantsLayer = true
     }
 
+    /// Another grid for the items: the Previews view fits its own to the pane.
+    func setGrid(density: Density, layout: IconGridLayout) {
+        self.density = density
+        self.layout = layout
+        style = IconItemStyle.make(density: density)
+    }
+
     /// The density's grid, at the icon size saved for it.
     override func metricsChanged() -> Bool {
         let next = host?.columnState.density ?? .standard
-        let size = savedSize(for: next)
+        let size = Double(host?.columnState.iconSizes[next] ?? DensitySizes.iconDefaults[next])
         guard next != density || size != layout.iconSize else { return false }
         density = next
         layout = DesignTokens.iconGrid(density: next).sized(iconSize: size)

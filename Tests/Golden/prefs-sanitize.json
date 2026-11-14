@@ -72,9 +72,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -277,9 +277,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -524,9 +524,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -729,9 +729,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -935,9 +935,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -1141,9 +1141,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -1377,9 +1377,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -1583,9 +1583,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -1815,9 +1815,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -2083,9 +2083,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -4591,9 +4591,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -5449,9 +5449,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -5709,9 +5709,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -5915,9 +5915,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6121,9 +6121,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6327,9 +6327,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6538,9 +6538,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6753,9 +6753,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6959,9 +6959,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -7159,9 +7159,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -7356,9 +7356,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -7575,9 +7575,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -7781,9 +7781,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -7987,9 +7987,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -8286,9 +8286,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -8532,9 +8532,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -9045,9 +9045,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -9214,9 +9214,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -9463,9 +9463,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -9668,9 +9668,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -9966,9 +9966,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -10171,9 +10171,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -10642,9 +10642,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -10952,9 +10952,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -11158,9 +11158,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -11363,9 +11363,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -11666,9 +11666,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -12031,9 +12031,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -12236,9 +12236,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -12749,9 +12749,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -13022,9 +13022,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -13263,9 +13263,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -13449,9 +13449,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -13700,9 +13700,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -13943,9 +13943,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -14361,9 +14361,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -14536,9 +14536,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -14968,9 +14968,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -15411,9 +15411,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -15702,9 +15702,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -15908,9 +15908,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -16153,9 +16153,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -16455,9 +16455,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -16768,9 +16768,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -16977,9 +16977,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -17221,9 +17221,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -17480,9 +17480,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -17719,9 +17719,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -17947,9 +17947,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -18179,9 +18179,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -18401,9 +18401,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -18962,9 +18962,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -19245,9 +19245,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -19506,9 +19506,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -19835,9 +19835,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -20072,9 +20072,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -20277,9 +20277,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -20691,9 +20691,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -20896,9 +20896,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -21112,9 +21112,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -21434,9 +21434,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -21706,9 +21706,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -21926,9 +21926,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -22132,9 +22132,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -22584,9 +22584,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -22849,9 +22849,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -23057,9 +23057,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -23424,9 +23424,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -23699,9 +23699,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -23935,9 +23935,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -24277,9 +24277,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -24485,9 +24485,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -24802,9 +24802,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -25076,9 +25076,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -25289,9 +25289,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -25608,9 +25608,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -25882,9 +25882,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -26109,9 +26109,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -26324,9 +26324,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -26565,9 +26565,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -26856,9 +26856,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -27203,9 +27203,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -27574,9 +27574,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -28034,9 +28034,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -28218,9 +28218,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -28589,9 +28589,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -28809,9 +28809,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -29180,9 +29180,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -29537,9 +29537,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -29806,9 +29806,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -30143,9 +30143,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -30356,9 +30356,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -30566,9 +30566,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -30788,9 +30788,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -31231,9 +31231,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -31461,9 +31461,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -31677,9 +31677,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -31989,9 +31989,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -32414,9 +32414,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -32864,9 +32864,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -33334,9 +33334,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -33594,9 +33594,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -33811,9 +33811,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -34045,9 +34045,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -34406,9 +34406,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -34674,9 +34674,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -34884,9 +34884,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -35059,9 +35059,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -35264,9 +35264,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -35496,9 +35496,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -35709,9 +35709,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -35949,9 +35949,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -36226,9 +36226,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -36808,9 +36808,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -37036,9 +37036,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -37242,9 +37242,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -37448,9 +37448,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -37691,9 +37691,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -37974,9 +37974,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -38179,9 +38179,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -38493,9 +38493,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -38909,9 +38909,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -39239,9 +39239,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -39627,9 +39627,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -39853,9 +39853,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -40058,9 +40058,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -40304,9 +40304,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -40475,9 +40475,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -40704,9 +40704,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -40918,9 +40918,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -41265,9 +41265,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -41471,9 +41471,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -41677,9 +41677,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -41912,9 +41912,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -42225,9 +42225,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -42440,9 +42440,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -42615,9 +42615,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -42829,9 +42829,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -43422,9 +43422,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -43626,9 +43626,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -43826,9 +43826,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -44079,9 +44079,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -44369,9 +44369,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -44611,9 +44611,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -45003,9 +45003,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -45342,9 +45342,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -45607,9 +45607,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -45896,9 +45896,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -46331,9 +46331,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -46853,9 +46853,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -47155,9 +47155,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -47400,9 +47400,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -47723,9 +47723,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -48107,9 +48107,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -48312,9 +48312,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -48561,9 +48561,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -48798,9 +48798,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -49070,9 +49070,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -49545,9 +49545,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -49787,9 +49787,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -50008,9 +50008,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -50306,9 +50306,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -50520,9 +50520,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -50725,9 +50725,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -50991,9 +50991,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -51254,9 +51254,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -51534,9 +51534,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -52032,9 +52032,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -52394,9 +52394,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -52601,9 +52601,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -52913,9 +52913,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -53430,9 +53430,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -53636,9 +53636,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -53849,9 +53849,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -54239,9 +54239,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -54532,9 +54532,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -54816,9 +54816,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -55023,9 +55023,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -55259,9 +55259,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -55629,9 +55629,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -55835,9 +55835,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -56274,9 +56274,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -56480,9 +56480,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -56685,9 +56685,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -56907,9 +56907,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -57224,9 +57224,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -57526,9 +57526,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -57872,9 +57872,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -58146,9 +58146,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -58374,9 +58374,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -58749,9 +58749,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -59119,9 +59119,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -59369,9 +59369,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -59819,9 +59819,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -60144,9 +60144,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -60369,9 +60369,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -60683,9 +60683,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -60901,9 +60901,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -61107,9 +61107,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -61313,9 +61313,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -61651,9 +61651,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -61881,9 +61881,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -62226,9 +62226,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -62519,9 +62519,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -62825,9 +62825,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -63121,9 +63121,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -63360,9 +63360,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -63554,9 +63554,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -64064,9 +64064,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -64342,9 +64342,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -64562,9 +64562,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -64813,9 +64813,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -65075,9 +65075,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -65315,9 +65315,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -65530,9 +65530,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -66075,9 +66075,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -66371,9 +66371,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -66578,9 +66578,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -66783,9 +66783,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -67152,9 +67152,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -67632,9 +67632,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -67925,9 +67925,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -68170,9 +68170,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -68457,9 +68457,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -68809,9 +68809,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -69014,9 +69014,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -69222,9 +69222,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -69584,9 +69584,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -69837,9 +69837,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -70122,9 +70122,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -70348,9 +70348,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -70813,9 +70813,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -71128,9 +71128,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -71381,9 +71381,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -71589,9 +71589,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -71841,9 +71841,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -72172,9 +72172,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -72385,9 +72385,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -72741,9 +72741,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -72965,9 +72965,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -73408,9 +73408,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -73661,9 +73661,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -74084,9 +74084,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -74457,9 +74457,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -74788,9 +74788,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -75081,9 +75081,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -75331,9 +75331,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -75550,9 +75550,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -75758,9 +75758,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -76155,9 +76155,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -76511,9 +76511,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -76730,9 +76730,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -76936,9 +76936,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -77179,9 +77179,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -77385,9 +77385,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -77686,9 +77686,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -77907,9 +77907,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -78112,9 +78112,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -78329,9 +78329,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -78525,9 +78525,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -78979,9 +78979,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -79253,9 +79253,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -79633,9 +79633,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -80191,9 +80191,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -80482,9 +80482,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -80757,9 +80757,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -80923,9 +80923,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -81154,9 +81154,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -81515,9 +81515,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -81898,9 +81898,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -82184,9 +82184,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -82531,9 +82531,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -82776,9 +82776,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -82982,9 +82982,9 @@
             "standard": 64,
             "finder": 64
           },
-          "previewSizes": {
-            "standard": 240,
-            "finder": 240
+          "previewCounts": {
+            "standard": 4,
+            "finder": 4
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,

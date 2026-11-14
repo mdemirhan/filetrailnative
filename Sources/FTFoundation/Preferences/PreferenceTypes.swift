@@ -230,8 +230,9 @@ public struct DensitySizes: Codable, Equatable, Sendable {
     public static let compactListDefaults = DensitySizes(standard: 292, finder: 252)
     /// The Icons view's icon sizes before they are changed.
     public static let iconDefaults = DensitySizes(standard: 64, finder: 64)
-    /// The Previews view's preview sizes before they are changed.
-    public static let previewDefaults = DensitySizes(standard: 240, finder: 240)
+    /// How many previews fill the pane in the Previews view before it is changed (`PreviewGrid`).
+    public static let previewCountDefaults = DensitySizes(
+        standard: PreviewGrid.defaultCount, finder: PreviewGrid.defaultCount)
 
     public subscript(density: Density) -> Int {
         get {
@@ -484,18 +485,6 @@ public enum AppPreferenceLimits {
         let step = Double(iconSizeStep)
         let stepped = (value / step).rounded() * step
         return clampRounded(stepped, Double(iconSizeRange.lowerBound), Double(iconSizeRange.upperBound))
-    }
-
-    /// The Previews view's previews, as wide as this many points: the pane's width decides how many fit in a row.
-    public static let previewSizeRange = 160...640
-    /// Preview sizes go in steps of this many points.
-    public static let previewSizeStep = 40
-
-    /// A preview size within its range, at a whole step.
-    public static func clampPreviewSize(_ value: Double) -> Int {
-        let step = Double(previewSizeStep)
-        let stepped = (value / step).rounded() * step
-        return clampRounded(stepped, Double(previewSizeRange.lowerBound), Double(previewSizeRange.upperBound))
     }
 
     /// The order of the columns before any is moved: the order `OptionalDetailColumnKey` lists them in.

@@ -364,7 +364,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -583,6 +585,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -2535,7 +2541,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -2754,6 +2762,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -3006,7 +3018,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -3225,6 +3239,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -3471,7 +3489,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -3690,6 +3710,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -3943,7 +3967,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -4158,6 +4184,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -4455,7 +4485,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -4674,6 +4706,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -4924,7 +4960,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -5135,6 +5173,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -5386,7 +5428,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -5601,6 +5645,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -5860,7 +5908,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -6079,6 +6129,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -6325,7 +6379,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -6540,6 +6596,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -6798,7 +6858,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -7014,6 +7076,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -7259,7 +7325,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -7474,6 +7542,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -7716,7 +7788,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -7923,6 +7997,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -8176,7 +8254,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -8391,6 +8471,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -8644,7 +8728,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -8859,6 +8945,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -9109,7 +9199,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -9316,6 +9408,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -9568,7 +9664,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -9779,6 +9877,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -10047,7 +10149,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -10262,6 +10366,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -10658,7 +10766,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -10877,6 +10987,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -11464,7 +11578,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -11675,6 +11791,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -12009,7 +12129,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -12230,6 +12352,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -12556,7 +12682,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -12777,6 +12905,10 @@
             "viewAsList"
           ],
           [
+            "Cmd+4",
+            "viewAsPreviews"
+          ],
+          [
             "Cmd+Plus",
             "increaseSize"
           ],
@@ -12940,7 +13072,9 @@
           "viewAsList": [
             "Cmd+K"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -13278,6 +13412,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -13638,7 +13776,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -13854,6 +13994,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -14247,7 +14391,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -14462,6 +14608,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -14967,7 +15117,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -15200,6 +15352,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -15833,7 +15989,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -16051,6 +16209,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -16605,7 +16767,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -16823,6 +16987,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -17138,7 +17306,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -17353,6 +17523,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -17821,7 +17995,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -18040,6 +18216,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -18392,7 +18572,9 @@
           "viewAsList": [
             "Cmd+Up"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -18667,6 +18849,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -19293,7 +19479,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -19499,6 +19687,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -19816,7 +20008,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -20039,6 +20233,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -20458,7 +20656,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -20645,6 +20845,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -21013,7 +21217,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -21232,6 +21438,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -21554,7 +21764,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -21772,6 +21984,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -22102,7 +22318,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -22320,6 +22538,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -22667,7 +22889,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -22877,6 +23101,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -23228,7 +23456,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -23427,6 +23657,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -23948,7 +24182,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -24170,6 +24406,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -24474,7 +24714,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -24693,6 +24935,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -25141,7 +25387,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -25351,6 +25599,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -25733,7 +25985,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -25944,6 +26198,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -26594,7 +26852,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [],
           "decreaseSize": [
             "Cmd+-"
@@ -26783,6 +27043,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+-",
@@ -27184,7 +27448,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -27403,6 +27669,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -27819,7 +28089,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -28036,6 +28308,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -28457,7 +28733,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -28675,6 +28953,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -29238,7 +29520,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -29457,6 +29741,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -29871,7 +30159,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -30086,6 +30376,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -30602,7 +30896,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -30809,6 +31105,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -32132,7 +32432,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -32355,6 +32657,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -32773,7 +33079,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -32992,6 +33300,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -33367,7 +33679,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -33587,6 +33901,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -34038,7 +34356,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -34250,6 +34570,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -35032,7 +35356,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -35247,6 +35573,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -35713,7 +36043,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -35935,6 +36267,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -36382,7 +36718,9 @@
           "viewAsList": [
             "Cmd+I"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -36686,6 +37024,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -37281,7 +37623,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -37495,6 +37839,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -38093,7 +38441,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -38313,6 +38663,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -38701,7 +39055,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -38920,6 +39276,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -39339,7 +39699,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -39558,6 +39920,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -39988,7 +40354,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -40199,6 +40567,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -40734,7 +41106,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -40957,6 +41331,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -41481,7 +41859,9 @@
             "Cmd+]"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -41775,6 +42155,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -42927,7 +43311,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -43142,6 +43528,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -43503,7 +43893,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -43718,6 +44110,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -43976,7 +44372,9 @@
           "viewAsList": [
             "Cmd+Shift+."
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -44313,6 +44711,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -44865,7 +45267,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -45087,6 +45491,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -45465,7 +45873,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -45680,6 +46090,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -46107,7 +46521,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -46322,6 +46738,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -46765,7 +47185,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -46987,6 +47409,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -47678,7 +48104,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -47880,6 +48308,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -48254,7 +48686,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -48475,6 +48909,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -48859,7 +49297,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -49052,6 +49492,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -49781,7 +50225,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -49988,6 +50434,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -50375,7 +50825,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -50594,6 +51046,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -51183,7 +51639,9 @@
             "Cmd+Shift+F",
             "Cmd+E"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -51414,6 +51872,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -52135,7 +52597,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -52354,6 +52818,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -52813,7 +53281,9 @@
             "Cmd+Shift+N",
             "Cmd+-"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -53115,6 +53585,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -54485,7 +54959,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -54686,6 +55162,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -55612,7 +56092,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -55831,6 +56313,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -56250,7 +56736,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -56459,6 +56947,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -57243,7 +57735,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -57462,6 +57956,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -57838,7 +58336,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -58057,6 +58557,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -58492,7 +58996,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -58707,6 +59213,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -59121,7 +59631,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -59321,6 +59833,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -59892,7 +60408,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -60103,6 +60621,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -60778,7 +61300,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -60996,6 +61520,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -61484,7 +62012,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -61689,6 +62219,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -62395,7 +62929,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -62597,6 +63133,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -63342,7 +63882,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -63557,6 +64099,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -63970,7 +64516,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -64171,6 +64719,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -64908,7 +65460,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -65129,6 +65683,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -65612,7 +66170,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -65824,6 +66384,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -66285,7 +66849,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -66495,6 +67061,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -67012,7 +67582,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -67215,6 +67787,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -67764,7 +68340,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -67983,6 +68561,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -68558,7 +69140,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -68777,6 +69361,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -69143,7 +69731,9 @@
           "viewAsList": [
             "Cmd+Shift+M"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -69466,6 +70056,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -70539,7 +71133,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -70758,6 +71354,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -71184,7 +71784,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -71403,6 +72005,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -71779,7 +72385,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -71995,6 +72603,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -72324,7 +72936,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -72535,6 +73149,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -73015,7 +73633,9 @@
           "viewAsList": [
             "Cmd+Up"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -73289,6 +73909,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -73987,7 +74611,9 @@
             "F20",
             "Cmd+2"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -74257,6 +74883,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -75618,7 +76248,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -75838,6 +76470,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -76319,7 +76955,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -76538,6 +77176,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -76984,7 +77626,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -77193,6 +77837,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -78041,7 +78689,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -78236,6 +78886,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -79441,7 +80095,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -79630,6 +80286,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -80187,7 +80847,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -80406,6 +81068,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -80693,7 +81359,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -80897,6 +81565,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -81225,7 +81897,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -81444,6 +82118,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -81839,7 +82517,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -82035,6 +82715,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -82680,7 +83364,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -82903,6 +83589,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -83431,7 +84121,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -83647,6 +84339,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -84102,7 +84798,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -84320,6 +85018,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -84877,7 +85579,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -85096,6 +85800,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -85500,7 +86208,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -85695,6 +86405,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -86698,7 +87412,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -86896,6 +87612,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -87558,7 +88278,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -87765,6 +88487,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -88181,7 +88907,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -88388,6 +89116,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -88677,7 +89409,9 @@
             "Cmd+'"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -88979,6 +89713,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -89761,7 +90499,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -89972,6 +90712,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -90853,7 +91597,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -91072,6 +91818,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -91437,7 +92187,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -91648,6 +92400,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -92068,7 +92824,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -92287,6 +93045,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -92678,7 +93440,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -92883,6 +93647,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -93594,7 +94362,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -93805,6 +94575,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -94158,7 +94932,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -94377,6 +95153,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -94888,7 +95668,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -95107,6 +95889,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -95503,7 +96289,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -95714,6 +96502,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -96119,7 +96911,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -96338,6 +97132,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -96698,7 +97496,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -96920,6 +97720,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -97431,7 +98235,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -97641,6 +98447,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -98086,7 +98896,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -98298,6 +99110,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -98797,7 +99613,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -99002,6 +99820,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -99485,7 +100307,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -99717,6 +100541,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -100301,7 +101129,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -100527,6 +101357,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -100877,7 +101711,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -101096,6 +101932,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -101458,7 +102298,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -101674,6 +102516,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -102049,7 +102895,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -102246,6 +103094,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -102893,7 +103745,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -103083,6 +103937,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -103508,7 +104366,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -103715,6 +104575,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -104350,7 +105214,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -104572,6 +105438,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -104993,7 +105863,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -105181,6 +106053,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -105577,7 +106453,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -105792,6 +106670,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -106288,7 +107170,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -106486,6 +107370,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -107392,7 +108280,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -107612,6 +108502,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -108084,7 +108978,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -108295,6 +109191,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -108874,7 +109774,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -109096,6 +109998,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -109567,7 +110473,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -109788,6 +110696,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -110332,7 +111244,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -110551,6 +111465,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -110998,7 +111916,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -111212,6 +112132,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -111681,7 +112605,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -111892,6 +112818,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -112242,7 +113172,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -112456,6 +113388,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -112940,7 +113876,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -113162,6 +114100,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -113752,7 +114694,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -113937,6 +114881,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -114767,7 +115715,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -114973,6 +115923,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -115298,7 +116252,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -115517,6 +116473,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -115892,7 +116852,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -116083,6 +117045,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -116581,7 +117547,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -116784,6 +117752,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -117354,7 +118326,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -117573,6 +118547,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -118047,7 +119025,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -118248,6 +119228,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -118932,7 +119916,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -119136,6 +120122,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -120036,7 +121026,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -120251,6 +121243,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -120695,7 +121691,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -120918,6 +121916,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -121276,7 +122278,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -121491,6 +122495,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -122006,7 +123014,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -122223,6 +123233,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -122842,7 +123856,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -123057,6 +124073,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -123456,7 +124476,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -123675,6 +124697,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -124132,7 +125158,9 @@
             "Cmd+="
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -124424,6 +125452,10 @@
           [
             "Cmd+Option+T",
             "openInTerminal"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -125711,7 +126743,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -125930,6 +126964,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -126277,7 +127315,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -126496,6 +127536,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -126881,7 +127925,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -127100,6 +128146,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -127513,7 +128563,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -127732,6 +128784,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -128113,7 +129169,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -128323,6 +129381,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -128637,7 +129699,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -128856,6 +129920,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -129318,7 +130386,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -129541,6 +130611,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -130065,7 +131139,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -130276,6 +131352,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -130749,7 +131829,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -130962,6 +132044,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -131316,7 +132402,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -131531,6 +132619,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -132010,7 +133102,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -132225,6 +133319,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -132793,7 +133891,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -133010,6 +134110,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -133636,7 +134740,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -133855,6 +134961,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -134255,7 +135365,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -134479,6 +135591,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -134994,7 +136110,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -135182,6 +136300,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -136274,7 +137396,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -136489,6 +137613,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -136924,7 +138052,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -137143,6 +138273,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -137434,7 +138568,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -137647,6 +138783,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -138011,7 +139151,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -138226,6 +139368,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -138725,7 +139871,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -138944,6 +140092,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -139397,7 +140549,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -139616,6 +140770,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -139904,7 +141062,9 @@
           "equalizePanes": [],
           "showInFinder": [],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -140243,6 +141403,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -140629,7 +141793,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -140850,6 +142016,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -141218,7 +142388,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -141437,6 +142609,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -141794,7 +142970,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -142013,6 +143191,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -142445,7 +143627,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -142655,6 +143839,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -143089,7 +144277,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -143310,6 +144500,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -143855,7 +145049,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -144066,6 +145262,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -144405,7 +145605,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -144620,6 +145822,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -145014,7 +146220,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -145225,6 +146433,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -145593,7 +146805,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -145812,6 +147026,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -146290,7 +147508,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -146477,6 +147697,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -147352,7 +148576,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -147544,6 +148770,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -147976,7 +149206,9 @@
             "Cmd+Esc"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -148294,6 +149526,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -149309,7 +150545,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -149528,6 +150766,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -149817,7 +151059,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -150036,6 +151280,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -150362,7 +151610,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -150581,6 +151831,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -150966,7 +152220,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -151188,6 +152444,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -151714,7 +152974,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -151929,6 +153191,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -152323,7 +153589,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -152542,6 +153810,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -153054,7 +154326,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -153268,6 +154542,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -153737,7 +155015,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -153956,6 +155236,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -154344,7 +155628,9 @@
           ],
           "viewAsDetails": [],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -154545,6 +155831,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -155075,7 +156365,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -155292,6 +156584,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -155743,7 +157039,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -155962,6 +157260,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -156321,7 +157623,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -156540,6 +157844,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -157097,7 +158405,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -157307,6 +158617,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -158006,7 +159320,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -158225,6 +159541,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -158673,7 +159993,9 @@
           ],
           "toggleFavorite": [],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -159001,6 +160323,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -159447,7 +160773,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -159668,6 +160996,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -160274,7 +161606,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -160489,6 +161823,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -160894,7 +162232,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -161113,6 +162453,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -161493,7 +162837,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -161712,6 +163058,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -162026,7 +163376,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -162245,6 +163597,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -162614,7 +163970,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -162821,6 +164179,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -163144,7 +164506,9 @@
             "Cmd+K",
             "Ctrl+D"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -163484,6 +164848,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -163914,7 +165282,9 @@
           "showClipboard": [],
           "toggleFavorite": [],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -164227,6 +165597,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -164578,7 +165952,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -164788,6 +166164,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -165265,7 +166645,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -165481,6 +166863,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -165937,7 +167323,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -166163,6 +167551,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -166601,7 +167993,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -166816,6 +168210,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -167264,7 +168662,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -167483,6 +168883,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -167875,7 +169279,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -168094,6 +169500,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -168776,7 +170186,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -168995,6 +170407,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -169342,7 +170758,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -169553,6 +170971,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -169949,7 +171371,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -170167,6 +171591,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -170743,7 +172171,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -170966,6 +172396,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -171405,7 +172839,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -171619,6 +173055,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -172189,7 +173629,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -172379,6 +173821,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -172771,7 +174217,9 @@
           "viewAsList": [
             "Cmd+Right"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -173093,6 +174541,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -173601,7 +175053,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -173814,6 +175268,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -174344,7 +175802,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -174555,6 +176015,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -175005,7 +176469,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -175224,6 +176690,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -175687,7 +177157,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -175910,6 +177382,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -176300,7 +177776,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -176517,6 +177995,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -177004,7 +178486,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -177225,6 +178709,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -177857,7 +179345,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -178081,6 +179571,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -178860,7 +180354,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -179069,6 +180565,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -179604,7 +181104,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -179822,6 +181324,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -180287,7 +181793,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -180472,6 +181980,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -181117,7 +182629,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -181336,6 +182850,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -181758,7 +183276,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -181972,6 +183492,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -182351,7 +183875,9 @@
             "Cmd+2"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -182565,6 +184091,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -183057,7 +184587,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -183284,6 +184816,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -183635,7 +185171,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -183846,6 +185384,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -184257,7 +185799,9 @@
           "viewAsList": [
             "Cmd+Option+J"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -184547,6 +186091,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -185056,7 +186604,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -185268,6 +186818,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -185734,7 +187288,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -185926,6 +187482,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -186472,7 +188032,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -186691,6 +188253,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -187160,7 +188726,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -187380,6 +188948,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -187992,7 +189564,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -188204,6 +189778,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -188570,7 +190148,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -188773,6 +190353,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -189148,7 +190732,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -189362,6 +190948,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -189796,7 +191386,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -190015,6 +191607,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -190465,7 +192061,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -190684,6 +192282,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -191090,7 +192692,9 @@
           "viewAsList": [
             "Cmd+Option+J"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -191373,6 +192977,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -191765,7 +193373,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -191979,6 +193589,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -192460,7 +194074,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -192670,6 +194286,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -192993,7 +194613,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -193212,6 +194834,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -193493,7 +195119,9 @@
             "F12",
             "Cmd+Shift+N"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -193837,6 +195465,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -194307,7 +195939,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -194526,6 +196160,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -194889,7 +196527,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -195113,6 +196753,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -195472,7 +197116,9 @@
             "Cmd+Shift+E"
           ],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -195753,6 +197399,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -196937,7 +198587,9 @@
           ],
           "viewAsDetails": [],
           "viewAsList": [],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -197241,6 +198893,10 @@
           [
             "Cmd+1",
             "viewAsIcons"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -198232,7 +199888,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -198451,6 +200109,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -198804,7 +200466,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -199014,6 +200678,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -199370,7 +201038,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -199589,6 +201259,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -200033,7 +201707,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -200258,6 +201934,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -200685,7 +202365,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -200904,6 +202586,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -201265,7 +202951,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -201484,6 +203172,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -201804,7 +203496,9 @@
           "viewAsList": [
             "F2"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -202143,6 +203837,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -202696,7 +204394,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -202905,6 +204605,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -203534,7 +205238,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+="
           ],
@@ -203757,6 +205463,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+=",
@@ -204233,7 +205943,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -204452,6 +206164,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -204843,7 +206559,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus"
           ],
@@ -205053,6 +206771,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -205635,7 +207357,9 @@
           "viewAsList": [
             "Cmd+-"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -205926,6 +207650,10 @@
           [
             "Cmd+2",
             "viewAsDetails"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -206621,7 +208349,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -206836,6 +208566,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -207250,7 +208984,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -207458,6 +209194,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -208000,7 +209740,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -208219,6 +209961,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -208660,7 +210406,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -208871,6 +210619,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -209247,7 +210999,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -209448,6 +211202,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -210237,7 +211995,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -210453,6 +212213,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -211049,7 +212813,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -211268,6 +213034,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -211653,7 +213423,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -211868,6 +213640,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -212321,7 +214097,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -212536,6 +214314,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -212993,7 +214775,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -213221,6 +215005,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -213651,7 +215439,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -213863,6 +215653,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",
@@ -214689,7 +216483,9 @@
           "viewAsList": [
             "Cmd+3"
           ],
-          "viewAsPreviews": [],
+          "viewAsPreviews": [
+            "Cmd+4"
+          ],
           "increaseSize": [
             "Cmd+Plus",
             "Cmd+="
@@ -214907,6 +216703,10 @@
           [
             "Cmd+3",
             "viewAsList"
+          ],
+          [
+            "Cmd+4",
+            "viewAsPreviews"
           ],
           [
             "Cmd+Plus",

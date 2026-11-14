@@ -283,7 +283,7 @@ extension ShortcutCommands {
             id: .viewAsList, label: "View as Compact List", group: .view, defaults: ["Cmd+3"],
             menuPath: "View > as Compact List"),
         ShortcutCommandDefinition(
-            id: .viewAsPreviews, label: "View as Previews", group: .view, defaults: [],
+            id: .viewAsPreviews, label: "View as Previews", group: .view, defaults: ["Cmd+4"],
             menuPath: "View > as Previews"),
         // ⌘+ is pressed as ⌘= on most keyboards, so ⌘= is its other key.
         ShortcutCommandDefinition(

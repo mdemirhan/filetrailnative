@@ -166,15 +166,15 @@ struct AppPreferencesTests {
         #expect(!PreferenceKey.iconSizes.isWindowSessionKey)
     }
 
-    @Test func previewSizesAreKeptPerDensityInStepsWithinTheirLimits() throws {
-        #expect(AppPreferences.defaults().previewSizes == DensitySizes(standard: 240, finder: 240))
+    @Test func previewCountsAreKeptPerDensityAndOnlyNineFourTwoOrOne() throws {
+        #expect(AppPreferences.defaults().previewCounts == DensitySizes(standard: 4, finder: 4))
         let read = PreferencesSanitizer.sanitize(
-            try JSONNode.parse(Data(#"{"previewSizes": {"standard": 299, "finder": 20}}"#.utf8)), defaults: .defaults())
-        #expect(read.previewSizes == DensitySizes(standard: 280, finder: 160))
-        let large = PreferencesSanitizer.sanitize(
-            try JSONNode.parse(Data(#"{"previewSizes": {"finder": 5000}}"#.utf8)), defaults: .defaults())
-        #expect(large.previewSizes == DensitySizes(standard: 240, finder: 640))
-        #expect(!PreferenceKey.previewSizes.isWindowSessionKey)
+            try JSONNode.parse(Data(#"{"previewCounts": {"standard": 9, "finder": 1}}"#.utf8)), defaults: .defaults())
+        #expect(read.previewCounts == DensitySizes(standard: 9, finder: 1))
+        let other = PreferencesSanitizer.sanitize(
+            try JSONNode.parse(Data(#"{"previewCounts": {"standard": 3, "finder": 240}}"#.utf8)), defaults: .defaults())
+        #expect(other.previewCounts == DensitySizes(standard: 4, finder: 4))
+        #expect(!PreferenceKey.previewCounts.isWindowSessionKey)
     }
 
     @Test func filesRoundTripWithTheSameJSONKeys() throws {

@@ -40,7 +40,14 @@ final class PathBarRowView: NSView {
     var sizeValue = 0 {
         didSet {
             guard sizeValue != oldValue else { return }
-            sizeLabel.stringValue = "\(sizeValue) pt"
+            sizeLabel.stringValue = sizeText(sizeValue)
+            needsLayout = true
+        }
+    }
+    /// How the size reads: points, or the Previews view's count of previews.
+    var sizeText: (Int) -> String = { "\($0) pt" } {
+        didSet {
+            sizeLabel.stringValue = sizeText(sizeValue)
             needsLayout = true
         }
     }

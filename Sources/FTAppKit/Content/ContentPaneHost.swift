@@ -12,8 +12,8 @@ struct ListColumnState: Equatable {
     var compactListWidths: DensitySizes = .compactListDefaults
     /// The Icons view's icon size at each density.
     var iconSizes: DensitySizes = .iconDefaults
-    /// The Previews view's preview size at each density.
-    var previewSizes: DensitySizes = .previewDefaults
+    /// How many previews fill the pane in the Previews view, at each density.
+    var previewCounts: DensitySizes = .previewCountDefaults
 
     /// A folder's columns, from Settings and the window's saved widths.
     init(preferences: AppPreferences) {
@@ -23,7 +23,7 @@ struct ListColumnState: Equatable {
         density = preferences.density
         compactListWidths = preferences.compactListWidths
         iconSizes = preferences.iconSizes
-        previewSizes = preferences.previewSizes
+        previewCounts = preferences.previewCounts
     }
 
     init(columns: [DetailColumn], widths: [DetailColumn: Double], density: Density) {

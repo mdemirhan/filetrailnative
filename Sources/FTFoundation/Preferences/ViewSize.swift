@@ -18,13 +18,14 @@ public struct ViewSize: Equatable, Sendable {
     /// The size of a view at a density; nil for the List.
     public static func of(
         _ mode: ExplorerViewMode, density: Density, iconSizes: DensitySizes, compactListWidths: DensitySizes,
-        previewSizes: DensitySizes = .previewDefaults
+        previewCounts: DensitySizes = .previewCountDefaults
     ) -> ViewSize? {
         switch mode {
+        // Where the count is in `PreviewGrid.counts`: a step bigger is fewer, larger previews.
         case .previews:
             ViewSize(
-                value: previewSizes[density], range: AppPreferenceLimits.previewSizeRange,
-                step: AppPreferenceLimits.previewSizeStep, defaultValue: DensitySizes.previewDefaults[density])
+                value: PreviewGrid.index(of: previewCounts[density]), range: 0...(PreviewGrid.counts.count - 1),
+                step: 1, defaultValue: PreviewGrid.index(of: DensitySizes.previewCountDefaults[density]))
         case .icons:
             ViewSize(
                 value: iconSizes[density], range: AppPreferenceLimits.iconSizeRange,

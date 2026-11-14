@@ -363,6 +363,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+Plus",
             "description": "Bigger icons in the Icons view, wider columns in the Compact List (Cmd+= also works)"
           },
@@ -1971,6 +1976,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -2356,6 +2366,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -3966,6 +3981,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -4363,6 +4383,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -5955,6 +5980,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -6345,6 +6375,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -7951,6 +7986,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -8208,6 +8248,11 @@
             "group": "search",
             "shortcut": "Esc",
             "description": "Close the results"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -9535,7 +9580,19 @@
               "shortcuts": []
             }
           ],
-          [],
+          [
+            {
+              "rows": [],
+              "topic": "views",
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "description": "View as large previews of the files",
+                  "shortcut": "Cmd+4"
+                }
+              ]
+            }
+          ],
           [
             {
               "topic": "views",
@@ -9930,6 +9987,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -11556,6 +11618,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -11942,6 +12009,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -13528,6 +13600,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -13916,6 +13993,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -15527,6 +15609,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -15909,6 +15996,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -17473,6 +17565,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -17863,6 +17960,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -19478,6 +19580,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -19877,6 +19984,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -21457,6 +21569,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -21841,6 +21958,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -23420,6 +23542,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -23827,6 +23954,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -25433,6 +25565,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -25823,6 +25960,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -27445,6 +27587,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -27834,6 +27981,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -29427,6 +29579,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -29809,6 +29966,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -31420,6 +31582,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -31825,6 +31992,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -33455,6 +33627,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -33845,6 +34022,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -35448,6 +35630,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -35841,6 +36028,11 @@
             "group": "views",
             "shortcut": "Cmd+2",
             "description": "View as a list, with columns"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -37430,6 +37622,11 @@
                   "group": "views",
                   "shortcut": "Cmd+2",
                   "description": "View as a list, with columns"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -37814,6 +38011,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -39412,6 +39614,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -39795,6 +40002,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -41392,6 +41604,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -41798,6 +42015,11 @@
             "group": "views",
             "shortcut": "Option+Return",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -43398,6 +43620,11 @@
                   "group": "views",
                   "shortcut": "Option+Return",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -43779,6 +44006,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -45373,6 +45605,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -45767,6 +46004,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -47379,6 +47621,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -47766,6 +48013,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -49331,6 +49583,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -49713,6 +49970,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -51319,6 +51581,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -51713,6 +51980,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -53336,6 +53608,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -53729,6 +54006,11 @@
             "group": "views",
             "shortcut": "Cmd+Left",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -55334,6 +55616,11 @@
                   "group": "views",
                   "shortcut": "Cmd+Left",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }
@@ -55731,6 +56018,11 @@
             "group": "views",
             "shortcut": "Cmd+3",
             "description": "View as a compact list of names"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+4",
+            "description": "View as large previews of the files"
           },
           {
             "group": "views",
@@ -57333,6 +57625,11 @@
                   "group": "views",
                   "shortcut": "Cmd+3",
                   "description": "View as a compact list of names"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+4",
+                  "description": "View as large previews of the files"
                 }
               ]
             }

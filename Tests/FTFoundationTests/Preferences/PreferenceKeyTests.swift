@@ -19,7 +19,7 @@ struct PreferenceKeyTests {
                  "searchColumns": {"folder": false, "kind": true, "created": true},
                  "searchColumnOrder": ["size", "folder", "modified", "kind", "created", "permissions"],
                  "searchColumnWidths": {"name": 400, "folder": 300}, "compactListWidths": {"standard": 400, "finder": 200}, "iconSizes": {"standard": 96, "finder": 40},
-                 "previewSizes": {"standard": 320, "finder": 200},
+                 "previewCounts": {"standard": 9, "finder": 1},
                  "notificationsEnabled": false, "markClipboardItems": false, "autoCalculateFolderSizes": false,
                  "folderTreeOpen": false, "propertiesOpen": true, "detailRowOpen": true,
                  "topToolbarItems": ["search", "back", "title"],
