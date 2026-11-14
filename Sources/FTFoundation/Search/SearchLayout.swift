@@ -24,8 +24,8 @@ public struct SearchLayout: Equatable, Sendable {
     public var segmentHeight: Double
     public var segmentMaxWidth: Double
 
-    /// The results filter: 200 wide, at least 90; its field: the control height, padding 0 4 0 8, 6 between the
-    /// icon, the text and the clear button; a 13 pt icon stroked 2.
+    /// The results filter: 280 wide, at least 150, so the mode chip leaves room for the text; its field: the control
+    /// height, padding 0 4 0 8, 6 between the icon, the chip, the text and the clear button; a 13 pt icon stroked 2.
     public var filterWidth: Double
     public var filterMinWidth: Double
     public var fieldHeight: Double
@@ -73,7 +73,7 @@ public struct SearchLayout: Equatable, Sendable {
         scopeBarPaddingVertical: 6, scopeBarPaddingHorizontal: 12, scopeBarMinHeight: 36, scopeBarGap: 6,
         scopeLabelMarginTrailing: 2, headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
         segmentPaddingHorizontal: 12, segmentHeight: 24, segmentMaxWidth: 220,
-        filterWidth: 200, filterMinWidth: 90, fieldHeight: 24,
+        filterWidth: 280, filterMinWidth: 150, fieldHeight: 24,
         fieldPaddingLeading: 8, fieldPaddingTrailing: 4, fieldGap: 6, fieldIconSize: 13, fieldIconStrokeWidth: 2,
         clearButtonSize: 16, smallButtonHeight: 22, smallButtonPaddingHorizontal: 10, smallButtonGap: 6,
         spinnerSize: 10, spinnerLineWidth: 1.5, bannerMarginHorizontal: 6, bannerMarginBottom: 12,

@@ -34,6 +34,32 @@ import Testing
         #expect(weight(label.font) == weight(NSFont.systemFont(ofSize: 12, weight: .medium)))
     }
 
+    // The results' filter is 280 wide where there is room, and gives up room first in a narrow bar, down to 150: the
+    // mode chip always leaves room to type.
+    @Test func theFilterFieldIsWideEnoughForItsChipAndText() throws {
+        func filterField(width: CGFloat) throws -> (field: SearchFilterField, chip: NSView, input: NSView) {
+            let header = SearchHeaderView(frame: NSRect(x: 0, y: 0, width: width, height: 41))
+            header.show(
+                scopes: [
+                    SearchScopeOption(path: "/a/Application Support", label: "“Application Support”"),
+                    SearchScopeOption(path: "/a", label: "Home"), SearchScopeOption(path: "/", label: "Macintosh HD"),
+                ],
+                rootPath: "/a/Application Support", isRunning: false, truncated: false, filterText: "")
+            header.showFilterMode(.contains)
+            header.layoutSubtreeIfNeeded()
+            let field = try #require(Views.first(SearchFilterField.self, in: header) { _ in true })
+            field.layoutSubtreeIfNeeded()
+            return (field, field.modeChip, field.input)
+        }
+        let wide = try filterField(width: 1_400)
+        #expect(wide.field.frame.width == 280)
+        #expect(wide.input.frame.minX > wide.chip.frame.maxX)
+        #expect(wide.input.frame.width >= 150)
+        let narrow = try filterField(width: 500)
+        #expect(narrow.field.frame.width == 150)
+        #expect(narrow.input.frame.width >= 45)
+    }
+
     // "No matches" is drawn in the body size, at weight 500, in the primary text color.
     @Test func anEmptyStatesTitleIsTheContentStatesStrongText() throws {
         let state = ContentStateView(frame: NSRect(x: 0, y: 0, width: 600, height: 400))
