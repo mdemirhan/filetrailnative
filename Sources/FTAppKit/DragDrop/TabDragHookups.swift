@@ -19,14 +19,18 @@ extension MainWindowController {
     func installDrags(on pane: BrowserPane) {
         let drags = dragDrop
         let content = pane.content
-        content.dragHooks.beginDrag = { [weak drags] entries, event, view in
-            drags?.beginDrag(entries, event: event, from: view) ?? false
+        // A drag starts in the pane pressed, which is the active one; a drag over a list is over its pane.
+        content.dragHooks.beginDrag = { [weak self, weak drags, weak pane] entries, event, view in
+            if let pane { self?.activate(pane) }
+            return drags?.beginDrag(entries, event: event, from: view) ?? false
         }
-        content.dragHooks.dragUpdated = { [weak drags] info, entry in
-            drags?.contentDragUpdated(info, entry: entry) ?? []
+        content.dragHooks.dragUpdated = { [weak drags, weak pane] info, entry in
+            drags?.paneUnderDrag = pane
+            return drags?.contentDragUpdated(info, entry: entry) ?? []
         }
-        content.dragHooks.performDrop = { [weak drags] info, entry in
-            drags?.contentPerformDrop(info, entry: entry) ?? false
+        content.dragHooks.performDrop = { [weak drags, weak pane] info, entry in
+            drags?.paneUnderDrag = pane
+            return drags?.contentPerformDrop(info, entry: entry) ?? false
         }
         content.dragHooks.dragExited = { [weak drags] in drags?.dragExited() }
     }
@@ -83,7 +87,8 @@ extension SidebarViewController {
                     entries.first { samePath($0.path, path) }?.kind.rules
                 })
             {
-                Self.ownDrag = OwnDrag(session: session, windowNumber: window.windowNumber, tab: tab)
+                Self.ownDrag = OwnDrag(
+                    session: session, windowNumber: window.windowNumber, tab: tab, pane: tab.activePane)
             }
             return entries.map(\.url)
         }

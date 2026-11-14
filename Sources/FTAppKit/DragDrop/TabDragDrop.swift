@@ -15,6 +15,8 @@ final class TabDragDrop {
         let windowNumber: Int
         /// The tab it came from.
         weak var tab: MainWindowController?
+        /// The pane of that tab it came from.
+        weak var pane: BrowserPane? = nil
     }
 
     /// Where a drop goes, as the drag-overs and the drop work it out.
@@ -25,6 +27,8 @@ final class TabDragDrop {
         var isSelected = false
         /// The tree selects the target after the drop (a folder of the tree or a favorite, not a location).
         var selectsInTree = false
+        /// The list of the tab's other pane, not the one the app's own drag came from.
+        var isAnotherList = false
     }
 
     /// The app's own drag, while it lasts (one at a time).
@@ -75,7 +79,10 @@ final class TabDragDrop {
     /// Where the tab was before the drag's first spring in it, and whether a folder opened.
     /// Where a drag that sprang left the tab, from the first folder it asked for. `arrived`: one is on screen, so the
     /// background takes the drag's drop.
-    private var springStart: (sequence: Int, place: MainWindowController.TabPlace, arrived: Bool)?
+    private var springStart: (sequence: Int, place: MainWindowController.TabPlace, arrived: Bool, pane: BrowserPane)?
+    /// The pane whose list the drag is over now; the active pane when none has said.
+    weak var paneUnderDrag: BrowserPane?
+    private var listPane: BrowserPane? { paneUnderDrag ?? tab?.activePane }
     /// Spring reads not back yet (`opening`): a drag can end with one on its way.
     private(set) var springsOpening = 0
     private var externalGone: TimerToken?
@@ -111,7 +118,7 @@ final class TabDragDrop {
         let paths = session.sourceItems.map(\.path)
         var images: [FileDragImage] = []
         var source = view
-        if let placed = tab.content.dragPlacements(for: paths) {
+        if let placed = tab.activePane.content.dragPlacements(for: paths) {
             source = placed.view
             images = FileDragImages.measure(paths, placements: placed.placements)
         }
@@ -119,7 +126,7 @@ final class TabDragDrop {
         let thumbnails = Self.dragThumbnails(paths, images: images) {
             IconThumbnails.store.loadedPicture(forPath: $0)?.image
         }
-        Self.ownDrag = OwnDrag(session: session, windowNumber: window.windowNumber, tab: tab)
+        Self.ownDrag = OwnDrag(session: session, windowNumber: window.windowNumber, tab: tab, pane: tab.activePane)
         tab.holdFolderChanges(.drag, true)
         let started = FileDrag.start(
             from: source, event: event, paths: paths, directories: directories, images: images,
@@ -275,7 +282,8 @@ final class TabDragDrop {
             offersMove: offersMove)
         let refusal = DragRules.validate(
             session: session, blocked: isBlocked, targetSurface: target.surface, targetPath: target.path,
-            targetSupportsMove: target.supportsMove, targetIsSelected: target.isSelected, operation: operation)
+            targetSupportsMove: target.supportsMove, targetIsSelected: target.isSelected, operation: operation,
+            targetIsAnotherList: target.isAnotherList)
         return (operation, refusal)
     }
 
@@ -297,37 +305,54 @@ final class TabDragDrop {
     /// The target of a drag over the content pane: a folder row (real folders take drops; an alias shows invalid),
     /// or the folder on screen, which takes a drag from another app, and the app's own once it has sprung into it.
     func contentTarget(_ session: DragSession, entry: DirectoryEntry?) -> Target? {
-        guard let tab else { return nil }
+        guard let pane = listPane else { return nil }
         let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let anotherList = fromTheOtherPane(session, into: pane)
         if let entry {
             // Search results take drops from other apps only.
-            if tab.searchRootPath != nil, session.sourceSurface != .external { return nil }
+            if pane.searchRootPath != nil, session.sourceSurface != .external { return nil }
             let real = entry.kind == .directory && !entry.isSymlink
             return Target(
                 surface: .content, path: entry.path,
                 supportsMove: real && !Paths.isInsideTrash(entry.path, homePath: home),
-                isSelected: session.facts.sourcePaths.contains { samePath($0, entry.path) })
+                isSelected: session.facts.sourcePaths.contains { samePath($0, entry.path) }, isAnotherList: anotherList)
         }
         // Search results have no background to drop on.
-        guard tab.searchRootPath == nil else { return nil }
-        let folder = tab.shownFolderPath
-        guard !folder.isEmpty, session.sourceSurface == .external || springOpenedHere(session) else { return nil }
-        return Target(surface: .content, path: folder, supportsMove: !Paths.isInsideTrash(folder, homePath: home))
+        guard pane.searchRootPath == nil else { return nil }
+        let folder = pane.shownFolderPath
+        guard !folder.isEmpty, session.sourceSurface == .external || springOpenedHere(session, in: pane) || anotherList
+        else { return nil }
+        return Target(
+            surface: .content, path: folder, supportsMove: !Paths.isInsideTrash(folder, homePath: home),
+            isAnotherList: anotherList)
     }
 
-    private func springOpenedHere(_ session: DragSession) -> Bool {
-        guard let start = springStart, let own = Self.ownDrag, own.session === session else { return false }
+    /// The app's own drag came from the tab's other pane: that pane's list takes it on its background too.
+    private func fromTheOtherPane(_ session: DragSession, into pane: BrowserPane) -> Bool {
+        guard let own = Self.ownDrag, own.session === session, own.tab === tab, let source = own.pane else {
+            return false
+        }
+        return source !== pane
+    }
+
+    private func springOpenedHere(_ session: DragSession, in pane: BrowserPane) -> Bool {
+        guard let start = springStart, start.pane === pane, let own = Self.ownDrag, own.session === session else {
+            return false
+        }
         return start.arrived
     }
 
     /// A drag-over of the content pane, at the entry under it (nil: a file or empty space).
     func contentDragUpdated(_ info: any NSDraggingInfo, entry: DirectoryEntry?) -> NSDragOperation {
-        guard let tab else { return [] }
+        guard let pane = listPane else { return [] }
         noteDragOver()
         clearTreeTarget()
+        // The other pane's list lets go of what it showed for the drag.
+        for other in tab?.panes ?? [] where other !== pane { other.content.setDropTarget(nil, nil, background: nil) }
+        let content = pane.content
         let session = session(for: info)
         guard let session else {
-            tab.content.setDropTarget(nil, nil, background: nil)
+            content.setDropTarget(nil, nil, background: nil)
             return []
         }
         let target = contentTarget(session, entry: entry)
@@ -341,15 +366,15 @@ final class TabDragDrop {
                 canSpring: canSpring(session, into: entry, target: target, refusal: decision.refusal),
                 at: (Double(point.x), Double(point.y)), now: now())
             switch step {
-            case .idle: tab.content.setDropTarget(entry.path, state, background: nil)
-            case .warning: tab.content.setDropTarget(entry.path, .springing, background: nil)
+            case .idle: content.setDropTarget(entry.path, state, background: nil)
+            case .warning: content.setDropTarget(entry.path, .springing, background: nil)
             case .open(let path):
-                tab.content.setDropTarget(nil, nil, background: nil)
+                content.setDropTarget(nil, nil, background: nil)
                 springOpen(path, sequence: info.draggingSequenceNumber)
             }
         } else {
             spring.reset()
-            tab.content.setDropTarget(nil, nil, background: target == nil ? nil : state)
+            content.setDropTarget(nil, nil, background: target == nil ? nil : state)
         }
         return dragOperation(decision, info)
     }
@@ -357,22 +382,23 @@ final class TabDragDrop {
     /// Whether a drag resting on the folder `entry` opens it: one that takes the drop and isn't the folder on screen,
     /// and never while the tab shows search results, whatever the drag came from.
     func canSpring(_ session: DragSession, into entry: DirectoryEntry, target: Target, refusal: DropRefusal?) -> Bool {
-        guard let tab, tab.searchRootPath == nil else { return false }
-        return refusal == nil && target.supportsMove && !isBlocked && !samePath(entry.path, tab.folder.path)
+        guard let pane = listPane, pane.searchRootPath == nil else { return false }
+        return refusal == nil && target.supportsMove && !isBlocked && !samePath(entry.path, pane.folder.path)
             && session.sourceSurface != .search
     }
 
     /// Opens the folder a drag rests on in the tab, noting first where the tab was.
     func springOpen(_ path: String, sequence: Int) {
-        guard let tab else { return }
+        guard let tab, let pane = listPane else { return }
         if springStart?.sequence != sequence {
-            springStart = (sequence, tab.tabPlace, false)
+            springStart = (sequence, pane.place, false, pane)
         }
         springsOpening += 1
         Task { [weak self] in
             // A drag that ended before this began has already sent the tab back.
             if self?.springStart?.sequence == sequence {
-                let opened = await tab.navigate(to: URL(fileURLWithPath: path, isDirectory: true))
+                let opened = await pane.navigate(to: URL(fileURLWithPath: path, isDirectory: true))
+                withExtendedLifetime(tab) {}
                 if opened, self?.springStart?.sequence == sequence { self?.springStart?.arrived = true }
             }
             self?.springsOpening -= 1
@@ -384,11 +410,15 @@ final class TabDragDrop {
     private func restoreSprings() {
         guard let start = springStart, let tab else { return }
         springStart = nil
+        let pane = start.pane
         guard
-            springsOpening > 0 || !samePath(tab.folder.path, start.place.path)
-                || tab.navigationHistory != start.place.history
+            springsOpening > 0 || !samePath(pane.folder.path, start.place.path)
+                || pane.navigationHistory != start.place.history
         else { return }
-        Task { await tab.comeBack(to: start.place) }
+        Task {
+            await pane.comeBack(to: start.place)
+            withExtendedLifetime(tab) {}
+        }
     }
 
     /// Drag-overs of another app's drag stopped. Held over a part of the window that hears
@@ -409,6 +439,11 @@ final class TabDragDrop {
     func contentPerformDrop(_ info: any NSDraggingInfo, entry: DirectoryEntry?) -> Bool {
         let session = session(for: info)
         let target = session.flatMap { contentTarget($0, entry: entry) }
+        // The pane that takes a drop becomes the active one: what arrives is selected there, and the keys act on it.
+        if target != nil, let tab, let pane = listPane {
+            tab.activate(pane)
+            pane.content.focusList()
+        }
         return drop(info, session: session, target: target)
     }
 
@@ -517,7 +552,7 @@ final class TabDragDrop {
         quiet?.cancel()
         quiet = nil
         spring.reset()
-        tab?.content.setDropTarget(nil, nil, background: nil)
+        for pane in tab?.panes ?? [] { pane.content.setDropTarget(nil, nil, background: nil) }
         clearTreeTarget()
     }
 
