@@ -6,7 +6,7 @@ import Foundation
 /// An archive's own trouble, as a sentence naming it.
 public struct ArchiveError: CodedError, Equatable, Sendable {
     public enum Reason: Equatable, Sendable {
-        case unreadable, needsPassword, empty
+        case unreadable, needsPassword, empty, notQuarantined
     }
 
     public var reason: Reason
@@ -24,6 +24,8 @@ public struct ArchiveError: CodedError, Equatable, Sendable {
                 "\u{201C}\(name)\u{201D} is protected with a password. File Trail can\u{2019}t open protected archives yet; Archive Utility can."
             case .empty:
                 "\u{201C}\(name)\u{201D} holds nothing to extract."
+            case .notQuarantined:
+                "\u{201C}\(name)\u{201D} wasn\u{2019}t extracted: what is in it couldn\u{2019}t be marked as downloaded, as the archive is, so macOS wouldn\u{2019}t check it before it runs."
             }
     }
 }
@@ -81,6 +83,7 @@ enum NativeArchive {
         case Int32(FT_ARCHIVE_UNREADABLE): throw ArchiveError(.unreadable, archivePath: path)
         case Int32(FT_ARCHIVE_NEEDS_PASSWORD): throw ArchiveError(.needsPassword, archivePath: path)
         case Int32(FT_ARCHIVE_EMPTY): throw ArchiveError(.empty, archivePath: path)
+        case Int32(FT_ARCHIVE_NOT_QUARANTINED): throw ArchiveError(.notQuarantined, archivePath: path)
         default: throw NativeError.errno(code, syscall: syscall, path: path)
         }
     }

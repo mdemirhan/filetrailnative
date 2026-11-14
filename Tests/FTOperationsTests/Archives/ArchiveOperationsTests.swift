@@ -191,6 +191,44 @@ import Testing
         }
     }
 
+    /// Its items' access rules would deny writing their attributes and deleting them: they come out without them,
+    /// quarantined, and Undo can move them to the Trash.
+    @Test func anArchiveWithAccessRulesComesOutWithoutThemAndUndoTakesItAway() async throws {
+        try await withUndoFolder { root, trashDir in
+            let zip = try AccessRuleArchive.zip(in: root)
+            let quarantine = "0083;6734a1b2;Safari;"
+            Self.setAttribute(zip, "com.apple.quarantine", quarantine)
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let end = try await Self.extract(t, [zip])
+            #expect(end.status == .completed)
+            #expect(end.result?.items.map(\.destinationPath) == ["\(root)/Evil"])
+            for item in AccessRuleArchive.items(in: root).dropFirst() {
+                #expect(Self.attribute(item, "com.apple.quarantine") == quarantine, "\(item)")
+                #expect(!AccessRuleArchive.hasAccessRules(item), "\(item)")
+            }
+            try await t.undo()
+            #expect(try Self.names(root) == ["evil.zip"])
+            #expect(t.inTrash() == ["1-Evil"])
+            await t.shutDown()
+        }
+    }
+
+    /// The archive's quarantine can't be read: nothing of it comes out, as what did would be run unchecked.
+    @Test func anArchiveWhoseQuarantineCantBeReadIsRefusedAndLeavesNothing() async throws {
+        try await withUndoFolder { root, trashDir in
+            let zip = try Self.finderZip(in: root)
+            Self.setAttribute(zip, "com.apple.quarantine", "0083;6734a1b2;Safari;")
+            try Self.run("/bin/chmod", ["+a", "everyone deny readextattr", zip])
+            defer { _ = try? Self.run("/bin/chmod", ["-N", zip]) }
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let end = try await Self.extract(t, [zip])
+            #expect(end.status == .failed)
+            #expect(end.result?.error?.contains("couldn\u{2019}t be marked as downloaded") == true)
+            #expect(try Self.names(root) == ["Photos.zip"])
+            await t.shutDown()
+        }
+    }
+
     @Test func aProtectedArchiveIsRefusedAndLeavesNothing() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/secret.txt", "secret")

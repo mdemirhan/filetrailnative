@@ -1,6 +1,60 @@
 // Archives written by hand, for what the system's tools won't make: a device, a name twice, a link then an item
-// through it, names that aren't UTF-8
+// through it, names that aren't UTF-8; and archives that carry access rules
+import Darwin
+import FTFoundation
 import Foundation
+
+/// Archives of a folder "Evil" holding bin/tool, whose items carry access rules that deny writing their attributes
+/// and deleting them, bin's inherited by what is made in it.
+enum AccessRuleArchive {
+    /// The archive `name` in `root`, made by `tool` with the arguments `arguments` gives for its path, in the folder
+    /// that holds "Evil".
+    static func make(
+        _ name: String, in root: String, _ tool: String, _ arguments: (String) -> [String]
+    ) throws -> String {
+        let source = "\(root)/access-rules-source"
+        try FileManager.default.createDirectory(atPath: "\(source)/Evil/bin", withIntermediateDirectories: true)
+        try Data("#!/bin/sh\n".utf8).write(to: URL(fileURLWithPath: "\(source)/Evil/bin/tool"))
+        defer {
+            // The rules taken off again, for the folder to be removed.
+            _ = try? ArchiveOperationsTests.run("/bin/chmod", ["-R", "-N", source])
+            try? FileManager.default.removeItem(atPath: source)
+        }
+        try ArchiveOperationsTests.run(
+            "/bin/chmod",
+            ["+a", "everyone deny writeextattr,delete,delete_child,file_inherit,directory_inherit", "Evil/bin"],
+            in: source)
+        try ArchiveOperationsTests.run(
+            "/bin/chmod", ["+a", "everyone deny writeextattr,delete", "Evil/bin/tool"], in: source)
+        let archive = "\(root)/\(name)"
+        try ArchiveOperationsTests.run(tool, arguments(archive), in: source)
+        return archive
+    }
+
+    /// A zip as `ditto` makes it with the access rules kept, in `__MACOSX`.
+    static func zip(in root: String) throws -> String {
+        try make("evil.zip", in: root, "/usr/bin/ditto") {
+            ["-c", "-k", "--sequesterRsrc", "--acl", "--keepParent", "Evil", $0]
+        }
+    }
+
+    /// A tar with the access rules kept, as the archive's own and in each item's `._` file.
+    static func tar(in root: String) throws -> String {
+        try make("evil.tar", in: root, "/usr/bin/tar") { ["-c", "--acls", "--mac-metadata", "-f", $0, "Evil"] }
+    }
+
+    /// The paths of the items under `folder` that came out of one, and `folder` itself.
+    static func items(in folder: String) -> [String] {
+        [folder] + ["Evil", "Evil/bin", "Evil/bin/tool"].map { "\(folder)/\($0)" }
+    }
+
+    /// Whether the item at `path` (a link not followed) has access rules of its own.
+    static func hasAccessRules(_ path: String) -> Bool {
+        guard let rules = acl_get_link_np(path, ACL_TYPE_EXTENDED) else { return false }
+        acl_free(UnsafeMutableRawPointer(rules))
+        return true
+    }
+}
 
 /// A tar (ustar), one item after another in the order added.
 struct TarBuilder {

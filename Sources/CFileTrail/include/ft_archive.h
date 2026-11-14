@@ -13,6 +13,9 @@ enum {
     FT_ARCHIVE_NEEDS_PASSWORD = -2,
     /// It holds nothing to extract.
     FT_ARCHIVE_EMPTY = -3,
+    /// It is quarantined, and its quarantine couldn't be read, or an item that came out of it (or the destination)
+    /// refused it: what came out would be run unchecked.
+    FT_ARCHIVE_NOT_QUARANTINED = -4,
 };
 
 /// The stop flag of one archive's work and how far it has come, shared between the thread that does it and the
@@ -45,7 +48,8 @@ int64_t ft_archive_control_skipped(const ft_archive_control *control);
 /// everything in it is written, and only when the whole archive came out: after a failure or a stop the folders
 /// are left their owner's to write, for the caller to remove. When `quarantine` is set, every item and
 /// `destination` itself get the archive's quarantine, read-only items too, so what came from the internet is
-/// checked as the archive would be. The process's umask is never changed. `raw_name`, for a single compressed
+/// checked as the archive would be; one that refuses it (a link aside) fails the archive with
+/// FT_ARCHIVE_NOT_QUARANTINED. Access rules (ACLs) the archive keeps are not put on. The process's umask is never changed. `raw_name`, for a single compressed
 /// file (`.gz`, `.bz2`, `.xz` not holding a tar), is the name the file is written as. Returns 0, an errno
 /// (ECANCELED when stopped), or one of the FT_ARCHIVE_ codes.
 int ft_archive_extract(

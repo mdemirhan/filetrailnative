@@ -247,6 +247,10 @@ struct extraction {
     int parent_fd;
     /// A file with no name, for an item's Mac metadata on its way to the item; -1 until one is needed.
     int scratch;
+    /// Room for an item's quarantine read back, one byte longer than the archive's.
+    char *quarantine_check;
+    /// A folder made on the way to an item refused the archive's quarantine: the extraction fails.
+    int unquarantined;
 };
 
 /// The item couldn't be made as the archive names it, and is left out.
@@ -318,11 +322,15 @@ static struct made_folder *note_folder(struct extraction *extraction, const char
     return folder;
 }
 
-/// Gives the open item the archive's quarantine, when it has one. An item that refuses it keeps what it has.
-static void quarantine_item(const struct extraction *extraction, int fd) {
-    if (extraction->quarantine_length > 0) {
-        fsetxattr(fd, quarantine_name, extraction->quarantine, extraction->quarantine_length, 0, 0);
-    }
+/// Gives the open item the archive's quarantine, when it has one, and reads it back: 0 when the item has it, and
+/// otherwise FT_ARCHIVE_NOT_QUARANTINED.
+static int quarantine_item(const struct extraction *extraction, int fd) {
+    size_t length = extraction->quarantine_length;
+    if (length == 0) return 0;
+    fsetxattr(fd, quarantine_name, extraction->quarantine, length, 0, 0);
+    ssize_t got = fgetxattr(fd, quarantine_name, extraction->quarantine_check, length + 1, 0, 0);
+    if (got == (ssize_t)length && memcmp(extraction->quarantine_check, extraction->quarantine, length) == 0) return 0;
+    return FT_ARCHIVE_NOT_QUARANTINED;
 }
 
 static const int open_folder_flags = O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC;
@@ -357,8 +365,11 @@ static int open_folder(struct extraction *extraction, const char *path, size_t l
                         close(next);
                         next = -1;
                         error = ENOMEM;
-                    } else {
-                        quarantine_item(extraction, next);
+                    } else if (quarantine_item(extraction, next) != 0) {
+                        close(next);
+                        next = -1;
+                        error = EPERM;
+                        extraction->unquarantined = 1;
                     }
                 }
             } else {
@@ -462,17 +473,52 @@ static int write_all(int fd, const void *data, size_t length, off_t offset) {
     return 0;
 }
 
+/// An extended attribute an archive may not put on an item: an access rule as text (as copyfile packs one), or one
+/// of the system's own.
+static int is_access_rule(const char *name) {
+    return strcmp(name, "com.apple.acl.text") == 0 || strncmp(name, "com.apple.system.", 17) == 0;
+}
+
+/// Puts the extended attributes of the open file `from` on the open item `to`, but for access rules. One that
+/// can't be read or put on is left off.
+static void copy_attributes(int from, int to) {
+    ssize_t size = flistxattr(from, NULL, 0, 0);
+    if (size <= 0) return;
+    char *names = malloc((size_t)size);
+    if (names == NULL) return;
+    size = flistxattr(from, names, (size_t)size, 0);
+    for (ssize_t start = 0; start < size;) {
+        const char *name = names + start;
+        size_t name_length = strnlen(name, (size_t)(size - start));
+        start += (ssize_t)name_length + 1;
+        if (is_access_rule(name)) continue;
+        ssize_t length = fgetxattr(from, name, NULL, 0, 0, 0);
+        if (length < 0) continue;
+        void *value = malloc(length > 0 ? (size_t)length : 1);
+        if (value == NULL) continue;
+        length = fgetxattr(from, name, value, (size_t)length, 0, 0);
+        if (length >= 0) fsetxattr(to, name, value, (size_t)length, 0, 0);
+        free(value);
+    }
+    free(names);
+}
+
 /// Puts on the open item, just made and still its owner's to write, what the archive keeps for it besides its data:
-/// its extended attributes, its Mac metadata (the resource fork, Finder's information, access rules and attributes,
-/// which Finder's zips keep in `__MACOSX` and tars in a `._` file), and last the archive's quarantine, so that none
-/// of those can take it off. What the item refuses is left off.
-static void dress_item(struct extraction *extraction, int fd, struct archive_entry *entry) {
+/// its extended attributes and its Mac metadata (the resource fork, Finder's information and attributes, which
+/// Finder's zips keep in `__MACOSX` and tars in a `._` file), and last the archive's quarantine, so that none of
+/// those can take it off. What the item refuses is left off, but for the quarantine: returns 0, or
+/// FT_ARCHIVE_NOT_QUARANTINED.
+///
+/// Access rules (ACLs) are never put on: one that denies writing attributes, inherited by everything in a folder,
+/// would keep the quarantine off, and one that denies deleting would keep a stopped extraction, or Undo, from
+/// clearing the items away.
+static int dress_item(struct extraction *extraction, int fd, struct archive_entry *entry) {
     if (archive_entry_xattr_reset(entry) > 0) {
         const char *name;
         const void *value;
         size_t size;
         while (archive_entry_xattr_next(entry, &name, &value, &size) == ARCHIVE_OK) {
-            if (name != NULL && value != NULL) fsetxattr(fd, name, value, size, 0, 0);
+            if (name != NULL && value != NULL && !is_access_rule(name)) fsetxattr(fd, name, value, size, 0, 0);
         }
     }
     size_t metadata_length = 0;
@@ -482,10 +528,18 @@ static void dress_item(struct extraction *extraction, int fd, struct archive_ent
         int scratch = extraction->scratch;
         if (scratch >= 0 && ftruncate(scratch, 0) == 0 && write_all(scratch, metadata, metadata_length, 0) == 0
             && lseek(scratch, 0, SEEK_SET) == 0) {
-            fcopyfile(scratch, fd, NULL, COPYFILE_UNPACK | COPYFILE_ACL | COPYFILE_XATTR);
+            // copyfile puts the access rules it finds on whatever it unpacks onto, asked to or not: it unpacks onto
+            // a file of its own, with no name, and only the attributes go on from there.
+            int unpacked = scratch_file();
+            if (unpacked >= 0) {
+                if (fcopyfile(scratch, unpacked, NULL, COPYFILE_UNPACK | COPYFILE_XATTR) == 0) {
+                    copy_attributes(unpacked, fd);
+                }
+                close(unpacked);
+            }
         }
     }
-    quarantine_item(extraction, fd);
+    return quarantine_item(extraction, fd);
 }
 
 /// Makes the file `leaf` in the open folder `parent` and writes the item's data to it.
@@ -515,8 +569,8 @@ static int make_file(
     if (result == 0 && archive_entry_size_is_set(entry) && archive_entry_size(entry) > end) {
         if (ftruncate(fd, (off_t)archive_entry_size(entry)) != 0) result = errno;
     }
+    if (result == 0) result = dress_item(extraction, fd, entry);
     if (result == 0) {
-        dress_item(extraction, fd, entry);
         if (fchmod(fd, archive_entry_perm(entry) & 0777) != 0) result = errno;
         struct item_times times = times_of(entry);
         set_times(fd, &times);
@@ -556,13 +610,14 @@ static int make_folder(
     folder->given = 1;
     folder->mode = archive_entry_perm(entry) & 0777;
     folder->times = times_of(entry);
-    dress_item(extraction, fd, entry);
+    int result = dress_item(extraction, fd, entry);
     close(fd);
-    return 0;
+    return result;
 }
 
 /// Makes the link `leaf` in the open folder `parent`. Where it points is the archive's to say: it is never followed
-/// here.
+/// here. A link that refuses the quarantine goes without: it runs nothing itself, what it points to is checked when
+/// opened, and some disks keep no attributes on a link.
 static int make_symlink(struct extraction *extraction, struct archive_entry *entry, int parent, const char *leaf) {
     const char *target = archive_entry_symlink(entry);
     if (target == NULL) target = archive_entry_symlink_utf8(entry);
@@ -625,6 +680,33 @@ static void finish_folders(struct extraction *extraction) {
     }
 }
 
+/// The open archive's quarantine, in a buffer the caller frees: 0, with nothing when it has none, or
+/// FT_ARCHIVE_NOT_QUARANTINED when it can't be read, as what came out of a downloaded archive would then be run
+/// unchecked.
+static int read_quarantine(int fd, char **value, size_t *length) {
+    *value = NULL;
+    *length = 0;
+    // It may grow between the look at its length and the read: it is read again then.
+    for (int attempt = 0; attempt < 4; attempt++) {
+        ssize_t size = fgetxattr(fd, quarantine_name, NULL, 0, 0, 0);
+        if (size < 0) return errno == ENOATTR || errno == ENOTSUP ? 0 : FT_ARCHIVE_NOT_QUARANTINED;
+        if (size == 0) return 0;
+        char *buffer = malloc((size_t)size);
+        if (buffer == NULL) return ENOMEM;
+        ssize_t got = fgetxattr(fd, quarantine_name, buffer, (size_t)size, 0, 0);
+        if (got > 0) {
+            *value = buffer;
+            *length = (size_t)got;
+            return 0;
+        }
+        int error = got < 0 ? errno : ENOATTR;
+        free(buffer);
+        if (error == ENOATTR) return 0;
+        if (error != ERANGE) return FT_ARCHIVE_NOT_QUARANTINED;
+    }
+    return FT_ARCHIVE_NOT_QUARANTINED;
+}
+
 int ft_archive_extract(
     const char *archive, const char *destination, const char *raw_name, int quarantine, ft_archive_control *control) {
     int fd = open(archive, O_RDONLY | O_CLOEXEC);
@@ -637,38 +719,45 @@ int ft_archive_extract(
     }
     if (control != NULL) atomic_store(&control->total, (int64_t)stats.st_size);
 
-    char quarantine_value[1024];
-    ssize_t quarantine_length = 0;
-    if (quarantine) {
-        quarantine_length = fgetxattr(fd, quarantine_name, quarantine_value, sizeof(quarantine_value), 0, 0);
-        if (quarantine_length < 0) quarantine_length = 0;
+    char *quarantine_value = NULL;
+    size_t quarantine_length = 0;
+    int result = quarantine ? read_quarantine(fd, &quarantine_value, &quarantine_length) : 0;
+    if (result != 0) {
+        close(fd);
+        return result;
     }
 
     struct extraction extraction;
     memset(&extraction, 0, sizeof(extraction));
     extraction.control = control;
     extraction.quarantine = quarantine_value;
-    extraction.quarantine_length = (size_t)quarantine_length;
+    extraction.quarantine_length = quarantine_length;
     extraction.parent_fd = -1;
     extraction.scratch = -1;
+    if (quarantine_length > 0) extraction.quarantine_check = malloc(quarantine_length + 1);
     extraction.root = open(destination, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
-    if (extraction.root < 0) {
-        int error = errno;
+    if (extraction.root < 0 || (quarantine_length > 0 && extraction.quarantine_check == NULL)) {
+        int error = extraction.root < 0 ? errno : ENOMEM;
+        if (extraction.root >= 0) close(extraction.root);
+        free(extraction.quarantine_check);
+        free(quarantine_value);
         close(fd);
         return error;
     }
     // The destination too: with several items at its top, it is the folder they are handed over in.
-    quarantine_item(&extraction, extraction.root);
+    result = quarantine_item(&extraction, extraction.root);
 
-    struct archive *reader = new_reader(raw_name != NULL);
-    int result = 0;
-    if (reader == NULL) {
-        result = ENOMEM;
-    } else if (archive_read_open_fd(reader, fd, 1 << 16) != ARCHIVE_OK) {
-        result = reader_error(reader);
-    } else if (raw_name != NULL && archive_filter_code(reader, 0) == ARCHIVE_FILTER_NONE) {
-        // A file that isn't compressed at all: "raw" would copy it as it is.
-        result = FT_ARCHIVE_UNREADABLE;
+    // When the destination refused the quarantine, nothing is read.
+    struct archive *reader = result == 0 ? new_reader(raw_name != NULL) : NULL;
+    if (result == 0) {
+        if (reader == NULL) {
+            result = ENOMEM;
+        } else if (archive_read_open_fd(reader, fd, 1 << 16) != ARCHIVE_OK) {
+            result = reader_error(reader);
+        } else if (raw_name != NULL && archive_filter_code(reader, 0) == ARCHIVE_FILTER_NONE) {
+            // A file that isn't compressed at all: "raw" would copy it as it is.
+            result = FT_ARCHIVE_UNREADABLE;
+        }
     }
 
     char name[PATH_MAX];
@@ -726,6 +815,8 @@ int ft_archive_extract(
         COUNT(control, items, 1);
         if (control != NULL) atomic_store(&control->done, archive_filter_bytes(reader, -1));
     }
+    // An item without the quarantine fails the whole archive, whatever its failure was taken for on the way.
+    if (extraction.unquarantined) result = FT_ARCHIVE_NOT_QUARANTINED;
     // After a failure the folders stay their owner's to write, for what was made to be cleared away.
     if (result == 0) finish_folders(&extraction);
     if (result == 0 && count_made == 0) result = FT_ARCHIVE_EMPTY;
@@ -735,6 +826,8 @@ int ft_archive_extract(
     free(extraction.slots);
     if (extraction.parent_fd >= 0) close(extraction.parent_fd);
     if (extraction.scratch >= 0) close(extraction.scratch);
+    free(extraction.quarantine_check);
+    free(quarantine_value);
     close(extraction.root);
     if (reader != NULL) archive_read_free(reader);
     close(fd);

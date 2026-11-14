@@ -101,6 +101,80 @@ import Testing
         #expect(try Self.mode("\(folders.out)/shared") == 0o777)
     }
 
+    // MARK: Access rules
+
+    /// An archive whose items deny writing their attributes (bin's rule inherited by what is made in it) would keep
+    /// them from being quarantined, and one that denies deleting them would keep a stop or Undo from clearing them
+    /// away: no access rule comes out of an archive.
+    @Test(arguments: ["zip", "tar"]) func accessRulesDontComeOutSoTheQuarantineStaysOn(kind: String) throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let archive =
+            kind == "zip" ? try AccessRuleArchive.zip(in: folders.root) : try AccessRuleArchive.tar(in: folders.root)
+        ArchiveOperationsTests.setAttribute(archive, "com.apple.quarantine", Self.quarantine)
+        #expect(try Self.extract(archive, into: folders.out) == 0)
+        for item in AccessRuleArchive.items(in: folders.out) {
+            #expect(ArchiveOperationsTests.attribute(item, "com.apple.quarantine") == Self.quarantine, "\(item)")
+            #expect(!AccessRuleArchive.hasAccessRules(item), "\(item)")
+            #expect(ArchiveOperationsTests.attribute(item, "com.apple.acl.text") == nil, "\(item)")
+        }
+        #expect(try String(contentsOfFile: "\(folders.out)/Evil/bin/tool", encoding: .utf8) == "#!/bin/sh\n")
+        try NativeRemoval.rm(folders.out, recursive: true, force: true, unlockingFolders: true)
+        #expect(!FileManager.default.fileExists(atPath: folders.out))
+    }
+
+    /// The folder extracted into has a rule that denies writing attributes to what is made in it: the first item made
+    /// can't be quarantined, and the archive fails.
+    @Test func anItemThatRefusesTheQuarantineFailsTheArchive() throws {
+        let folders = try Folders()
+        defer {
+            _ = try? ArchiveOperationsTests.run("/bin/chmod", ["-R", "-N", folders.root])
+            folders.directory.remove()
+        }
+        var tar = TarBuilder()
+        tar.add("first.txt", contents: "first")
+        tar.add("second.txt", contents: "second")
+        try tar.write(to: folders.archive)
+        ArchiveOperationsTests.setAttribute(folders.archive, "com.apple.quarantine", Self.quarantine)
+        // The items refuse it, and then the folder itself too.
+        let refusing = "\(folders.root)/refusing"
+        try FileManager.default.createDirectory(atPath: refusing, withIntermediateDirectories: false)
+        let rule = "everyone deny writeextattr,file_inherit,directory_inherit"
+        try ArchiveOperationsTests.run("/bin/chmod", ["+a", rule + ",only_inherit", folders.out])
+        try ArchiveOperationsTests.run("/bin/chmod", ["+a", rule, refusing])
+        for folder in [folders.out, refusing] {
+            let error = #expect(throws: ArchiveError.self) { try Self.extract(folders.archive, into: folder) }
+            #expect(error?.reason == .notQuarantined, "\(folder)")
+            #expect(error?.message.contains("couldn\u{2019}t be marked as downloaded") == true)
+        }
+        #expect(try Self.names(refusing).isEmpty)
+        // Without a quarantine on the archive, nothing is asked of the items.
+        try ArchiveOperationsTests.run("/usr/bin/xattr", ["-d", "com.apple.quarantine", folders.archive])
+        let plain = "\(folders.root)/plain"
+        try FileManager.default.createDirectory(atPath: plain, withIntermediateDirectories: false)
+        try ArchiveOperationsTests.run("/bin/chmod", ["+a", rule + ",only_inherit", plain])
+        #expect(try Self.extract(folders.archive, into: plain) == 0)
+        #expect(try Self.names(plain) == ["first.txt", "second.txt"])
+    }
+
+    /// A quarantine longer than a kilobyte is read whole, and put on every item.
+    @Test func aLongQuarantineIsKeptWhole() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        var tar = TarBuilder()
+        tar.add("folder/", .folder, mode: 0o755)
+        tar.add("folder/file.txt", contents: "x")
+        try tar.write(to: folders.archive)
+        let long = "0083;6734a1b2;\(String(repeating: "Agent", count: 400));"
+        ArchiveOperationsTests.setAttribute(folders.archive, "com.apple.quarantine", long)
+        #expect(ArchiveOperationsTests.attribute(folders.archive, "com.apple.quarantine") == long)
+        try Self.extract(folders.archive, into: folders.out)
+        for item in ["", "folder", "folder/file.txt"] {
+            let path = "\(folders.out)/\(item)"
+            #expect(ArchiveOperationsTests.attribute(path, "com.apple.quarantine") == long, "\(item)")
+        }
+    }
+
     // MARK: The umask
 
     /// Extracting on one thread while others make folders: each of those must come out with the permissions the
