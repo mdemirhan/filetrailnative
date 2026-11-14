@@ -635,7 +635,10 @@ final class SearchSession {
     private func apply(_ update: SearchUpdate) {
         let newItems =
             keptResultPaths.isEmpty ? update.items : update.items.filter { !keptResultPaths.contains($0.path) }
-        var change: Change = .status
+        // A poll that found nothing new and changed nothing tells the tab nothing: showing the results again costs
+        // as much as there are of them, every poll of a long search.
+        var change: Change =
+            update.status != status || update.error != error || update.truncated != truncated ? .status : []
         if !newItems.isEmpty {
             results = SearchResults.append(results, newItems)
             resultsChanged()
@@ -646,7 +649,7 @@ final class SearchSession {
         // have missed matches, so that text is looked for itself. Other text typed since waits for its rest and is
         // searched then.
         if update.truncated, committedQuery != baseQuery, !isBackground, pendingLiveQuery == nil {
-            emit(change)
+            if !change.isEmpty { emit(change) }
             startSearch(committedQuery, rootPath: resolveRootPath(), live: true, keepMatching: true)
             return
         }
@@ -657,7 +660,7 @@ final class SearchSession {
             jobID = nil
             clearPolling()
         }
-        emit(change)
+        if !change.isEmpty { emit(change) }
     }
 
     // MARK: The tab in the background

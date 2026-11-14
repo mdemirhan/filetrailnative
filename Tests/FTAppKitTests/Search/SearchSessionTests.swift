@@ -147,6 +147,28 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(search.draftQuery == "s")
     }
 
+    // A poll of a running search that found nothing new tells the tab nothing; one that found more, or ended, does.
+    @Test func aPollThatFindsNothingNewTellsTheTabNothing() {
+        finding(["so": ["source.txt"]], running: true)
+        let search = session()
+        search.submit("so")
+        let job = engine.lastJobID
+        let told = host.changes.count
+        let polls = engine.updates.count
+        timers.advance(1)
+        #expect(engine.updates.count > polls + 1)
+        #expect(host.changes.count == told)
+        engine.progress(job, add: ["sonar.txt"])
+        timers.advance(0.5)
+        #expect(host.changes.count == told + 1)
+        #expect(host.changes.last == .results)
+        engine.progress(job, finish: true)
+        timers.advance(0.5)
+        #expect(host.changes.last == .status)
+        #expect(!search.isRunning)
+        #expect(Set(names(search)) == ["source.txt", "sonar.txt"])
+    }
+
     @Test func narrowsWhatASearchFoundAsMoreIsTypedWithoutSearchingAgain() {
         finding(["so": ["source.txt", "sonar.txt", "soup.md"], "on": ["sonar.txt", "one.txt"]])
         let search = session()
