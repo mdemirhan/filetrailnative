@@ -1000,6 +1000,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -1229,6 +1233,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -1535,6 +1543,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -1786,6 +1798,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -3258,6 +3274,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -3487,6 +3507,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -3793,6 +3817,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -4043,6 +4071,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -5517,6 +5549,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -5741,6 +5777,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -6047,6 +6087,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -6294,6 +6338,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -7771,6 +7819,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -8000,6 +8052,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -8306,6 +8362,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -8553,6 +8613,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
                 [
                   "Copying and moving",
                   "Image or text as a file"
@@ -9798,6 +9862,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -9987,6 +10055,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -10258,6 +10330,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
                 [
                   "Changing",
                   "Rename"
@@ -11891,6 +11967,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -12125,6 +12205,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -12431,6 +12515,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -12692,6 +12780,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -14155,6 +14247,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -14379,6 +14475,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -14685,6 +14785,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -14940,6 +15044,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -16396,6 +16504,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -16625,6 +16737,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -16931,6 +17047,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -17181,6 +17301,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -18646,6 +18770,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -18865,6 +18993,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -19159,6 +19291,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -19410,6 +19546,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
                 [
                   "Copying and moving",
                   "Image or text as a file"
@@ -20877,6 +21017,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -21106,6 +21250,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -21412,6 +21560,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -21662,6 +21814,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -23125,6 +23281,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -23349,6 +23509,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -23661,6 +23825,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -23904,6 +24072,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
                 [
                   "Copying and moving",
                   "Image or text as a file"
@@ -25379,6 +25551,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -25608,6 +25784,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -25902,6 +26082,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -26148,6 +26332,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -27627,6 +27815,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -27846,6 +28038,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -28152,6 +28348,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -28403,6 +28603,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -29892,6 +30096,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -30121,6 +30329,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -30427,6 +30639,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -30677,6 +30893,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -32147,6 +32367,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -32371,6 +32595,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -32665,6 +32893,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -32915,6 +33147,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -34390,6 +34626,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -34619,6 +34859,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -34925,6 +35169,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -35176,6 +35424,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -36697,6 +36949,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -36921,6 +37177,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -37227,6 +37487,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -37473,6 +37737,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -38955,6 +39223,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -39184,6 +39456,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -39478,6 +39754,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -39728,6 +40008,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -41186,6 +41470,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -41410,6 +41698,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -41721,6 +42013,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -41977,6 +42273,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -43443,6 +43743,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -43672,6 +43976,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -43966,6 +44274,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -44216,6 +44528,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -45686,6 +46002,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -45910,6 +46230,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -46221,6 +46545,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -46472,6 +46800,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -47946,6 +48278,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -48180,6 +48516,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -48479,6 +48819,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -48740,6 +49084,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -50199,6 +50547,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -50408,6 +50760,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -50714,6 +51070,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -50958,6 +51318,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
                 [
                   "Copying and moving",
                   "Image or text as a file"
@@ -52456,6 +52820,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -52680,6 +53048,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -52981,6 +53353,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -53231,6 +53607,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -54705,6 +55085,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -54924,6 +55308,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -55218,6 +55606,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -55457,6 +55849,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -56909,6 +57305,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -57138,6 +57538,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -57444,6 +57848,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -57695,6 +58103,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -59198,6 +59610,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -59422,6 +59838,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -59728,6 +60148,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -59974,6 +60398,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -61449,6 +61877,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -61678,6 +62110,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -61984,6 +62420,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -62234,6 +62674,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -63718,6 +64162,10 @@
               "topic": "navigation",
               "rows": [
                 [
+                  "Folders",
+                  "Go to Folder"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -63947,6 +64395,10 @@
                 [
                   "Copying and moving",
                   "Copy, cut, paste"
+                ],
+                [
+                  "Copying and moving",
+                  "Move to a folder"
                 ],
                 [
                   "Copying and moving",
@@ -64248,6 +64700,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
+                [
                   "Changing",
                   "Rename"
                 ]
@@ -64496,6 +64952,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Move to a folder"
+                ],
                 [
                   "Copying and moving",
                   "Image or text as a file"

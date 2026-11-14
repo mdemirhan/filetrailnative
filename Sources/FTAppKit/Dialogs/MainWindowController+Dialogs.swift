@@ -1,4 +1,4 @@
-// The Go To and Move To boxes of a tab
+// The Go To, Move To and Extract To boxes of a tab
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -43,7 +43,7 @@ extension MainWindowController {
     func openLocationSheet() {
         guard let window, !isDialogOpen else { return }
         AppMenuPresenter.shared.close()
-        let box = presentGoToBox(.goTo, in: window)
+        let box = presentGoToBox(.goTo(currentPath: shownFolderPath), in: window)
         box.onSubmit = { [weak self, weak box] path in
             guard let self, let box else { return }
             self.submitGoTo(path, box: box)
@@ -54,7 +54,7 @@ extension MainWindowController {
     @discardableResult
     func presentGoToBox(_ options: GoToBoxOptions, in window: NSWindow) -> GoToFolderBox {
         let box = GoToFolderBox(
-            places: placesNow(), options: options, timers: Self.dialogTimers,
+            places: placesNow(options.purpose), options: options, timers: Self.dialogTimers,
             requestCompletions: { [weak self] input in await self?.pathCompletions(input) })
         let scrim = DialogScrim(panel: box, placement: .sheet)
         scrim.onScrimPress = { [weak box] in box?.onClose() }
@@ -69,19 +69,23 @@ extension MainWindowController {
         return box
     }
 
-    /// The `places` memo: the opened folders and the favorites, ranked as of now.
-    private func placesNow() -> [Place] {
-        Places.build(
+    /// The `places` memo: the opened folders and the favorites, ranked as of now. A box choosing a folder for items
+    /// also has the folders chosen before, and the other pane's folder first.
+    private func placesNow(_ purpose: GoToPurpose) -> [Place] {
+        let choosing = purpose == .chooseFolder
+        return Places.build(
             visitedFolders: Self.visitStore()?.folders() ?? [], favoritePaths: preferences.favorites.map(\.path),
             currentPath: shownFolderPath, homePath: FileManager.default.homeDirectoryForCurrentUser.path,
-            now: AppClock.now.timeIntervalSince1970 * 1000, startupDiskName: services.startupDisk.name)
+            now: AppClock.now.timeIntervalSince1970 * 1000, startupDiskName: services.startupDisk.name,
+            destinationFolders: choosing ? Self.visitStore()?.destinations() ?? [] : [],
+            otherPanePath: choosing ? otherPane.flatMap(otherPaneDestination) : nil)
     }
 
-    /// The typed text trimmed, `~` expanded, hidden folders only when the tab shows them,
-    /// 12 at most.
+    /// The typed text trimmed, `~` expanded, a path from "./" or "../" taken from the folder on screen, hidden folders
+    /// only when the tab shows them, 12 at most.
     func pathCompletions(_ input: String) async -> [GoToCompletion]? {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let path = PathCompletionRequests.requestPath(input, homePath: home)
+        let path = PathCompletionRequests.requestPath(input, homePath: home, currentPath: shownFolderPath)
         let hidden = includeHidden
         guard
             let answer = try? await services.directoryService.pathSuggestions(
@@ -90,12 +94,12 @@ extension MainWindowController {
         return answer.suggestions.map { GoToCompletion(path: $0.path, name: $0.name) }
     }
 
-    /// Opens the typed path: trimmed, `~` expanded, a push counted as a Go To visit. The box closes
-    /// only if the folder opened; otherwise it shows the read's message. An opened folder chosen from the list that is
-    /// gone is forgotten; one that only couldn't be opened is kept.
+    /// Opens the typed path: trimmed, `~` expanded, "./" and "../" from the folder on screen, a push counted as a Go To
+    /// visit. The box closes only if the folder opened; otherwise it shows the read's message. An opened folder chosen
+    /// from the list that is gone is forgotten; one that only couldn't be opened is kept.
     func submitGoTo(_ path: String, box: GoToFolderBox) {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let expanded = PathText2.expandHome(GoToBoxState.trim(path), homePath: home)
+        let expanded = GoToBoxState.folderPath(path, homePath: home, currentPath: box.options.currentPath)
         let wasVisited = box.state.places.contains { $0.isVisited && $0.path == path }
         box.setError(nil)
         box.setSubmitting(true)
@@ -116,7 +120,7 @@ extension MainWindowController {
             // `forgetPlace`: the folder leaves the list of the box, still up with the error.
             guard !exists else { return }
             Self.visitStore()?.forgetVisitedFolder(path)
-            if self.goToBox === box { box.setPlaces(self.placesNow()) }
+            if self.goToBox === box { box.setPlaces(self.placesNow(box.options.purpose)) }
         }
     }
 
@@ -127,40 +131,77 @@ extension MainWindowController {
         return failure.map(GoToOutcome.failed) ?? .superseded
     }
 
-    // MARK: Move To
+    // MARK: Move To and Extract To
 
     /// `openMoveDialog`: the Move To box, on the folder shown now. The busy notice was said before it opens.
     func openMoveDialog(_ paths: [String], _ actions: WindowWriteActions) {
         guard !paths.isEmpty, let window, !isDialogOpen else { return }
         AppMenuPresenter.shared.close()
-        let current = shownFolderPath
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let options = GoToBoxOptions.moveTo(currentPath: current) { [weak window] path in
-            // The picker starts at the path, `~` expanded.
-            await Self.pickDirectory(path.isEmpty ? nil : PathText2.expandHome(path, homePath: home), window)
-        }
+        let options = GoToBoxOptions.moveTo(paths, currentPath: shownFolderPath, browse: browseFolder(window))
         let box = presentGoToBox(options, in: window)
         box.onSubmit = { [weak self, weak box] destination in
             guard let self, let box else { return }
-            self.submitMoveDialog(destination, paths: paths, actions: actions, box: box)
+            self.submitChosenFolder(
+                destination, box: box, actions: actions, verb: "Move",
+                refusal: { Self.alreadyThere(paths, in: $0) },
+                start: { [weak self] folder in
+                    await self?.startMove(paths, to: folder, actions) ?? .cancelled
+                },
+                started: { actions.reviewIfAsked($0, action: .moveTo) })
         }
     }
 
-    /// `submitMoveDialog`: queued or sent to the review, the box closes; cancelled, it stays as it was; refused, it
-    /// says why under the field.
-    func submitMoveDialog(_ destination: String, paths: [String], actions: WindowWriteActions, box: GoToFolderBox) {
+    /// The Extract To box, on the folder shown now: the archives are taken apart into the folder chosen. The busy
+    /// notice was said before it opens.
+    func openExtractToDialog(_ paths: [String], _ actions: WindowWriteActions) {
+        guard !paths.isEmpty, let window, !isDialogOpen else { return }
+        AppMenuPresenter.shared.close()
+        let options = GoToBoxOptions.extractTo(paths, currentPath: shownFolderPath, browse: browseFolder(window))
+        let box = presentGoToBox(options, in: window)
+        box.onSubmit = { [weak self, weak box] destination in
+            guard let self, let box else { return }
+            self.submitChosenFolder(
+                destination, box: box, actions: actions, verb: "Extract",
+                start: { folder in await actions.extract(paths, into: folder, reportsRefusals: false) })
+        }
+    }
+
+    /// Choose…: the system's folder picker, starting at the path typed.
+    private func browseFolder(_ window: NSWindow) -> @MainActor (String) async -> String? {
+        let current = shownFolderPath
         let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let resolved = PathText2.expandHome(GoToBoxState.trim(destination), homePath: home)
+        return { [weak window] path in
+            await Self.pickDirectory(
+                path.isEmpty ? nil : GoToBoxState.folderPath(path, homePath: home, currentPath: current), window)
+        }
+    }
+
+    /// The items go into the folder typed in a Move To or Extract To box. Queued or sent to the review, the box
+    /// closes and the folder is remembered as a destination; cancelled, it stays as it was; refused, it says why under
+    /// the field. A folder that doesn't exist yet, in one that does, is offered to be made first: the box's button
+    /// says "Create and Move" (or Extract), and the next submit makes it.
+    func submitChosenFolder(
+        _ typed: String, box: GoToFolderBox, actions: WindowWriteActions, verb: String,
+        refusal: @escaping @MainActor (String) -> String? = { _ in nil },
+        start: @escaping @MainActor (String) async -> CopyLikeOutcome,
+        started: @escaping @MainActor (CopyLikeOutcome) -> Void = { _ in }
+    ) {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let folder = GoToBoxState.folderPath(typed, homePath: home, currentPath: box.options.currentPath)
+        let creates = box.state.createsFolder
         box.setError(nil)
         box.setSubmitting(true)
         Task { @MainActor [weak self, weak box] in
             guard let self else { return }
-            let outcome = await self.startMoveFromDialog(paths, to: resolved, actions)
+            let outcome = await self.sendToChosenFolder(
+                folder, creates: creates, actions: actions, verb: verb, refusal: refusal, start: start,
+                offer: { [weak box] notice in box?.offerToCreate(notice: notice) })
             guard let box else { return }
             switch outcome {
             case .queued, .review:
+                Self.visitStore()?.recordDestination(folder)
                 box.onClose()
-                actions.reviewIfAsked(outcome, action: .moveTo)
+                started(outcome)
             case .cancelled:
                 box.setSubmitting(false)
             case .blocked(let message), .error(let message):
@@ -170,64 +211,55 @@ extension MainWindowController {
         }
     }
 
-    /// A move from the Move To box, its destination checked first.
-    private func startMoveFromDialog(_ paths: [String], to destination: String, _ actions: WindowWriteActions) async
+    /// The folder checked, made when that was offered, and the items started into it.
+    private func sendToChosenFolder(
+        _ folder: String, creates: Bool, actions: WindowWriteActions, verb: String,
+        refusal: @MainActor (String) -> String?, start: @MainActor (String) async -> CopyLikeOutcome,
+        offer: @MainActor (String) -> Void
+    ) async -> CopyLikeOutcome {
+        if !folder.hasPrefix("/") { return .blocked(message: "Choose a destination folder.") }
+        if actions.session.isWriteLocked { return .blocked(message: WriteDialogs.busyMessage) }
+        if let message = refusal(folder) { return .blocked(message: message) }
+        guard let refused = await TabDragDrop.destinationRefusal(folder, services.directoryService) else {
+            return await start(folder)
+        }
+        // A folder that isn't there, in one that is, can be made first.
+        let parent = NodePath.dirname(folder)
+        let isMissing = await Task.detached { (try? FileManager.default.attributesOfItem(atPath: folder)) == nil }.value
+        guard isMissing, parent != folder,
+            await TabDragDrop.destinationRefusal(parent, services.directoryService) == nil
+        else { return .blocked(message: refused) }
+        guard creates else {
+            offer(
+                "There\u{2019}s no folder \u{201C}\(NodePath.basename(folder))\u{201D} there yet: Create and \(verb) "
+                    + "makes it first.")
+            return .cancelled
+        }
+        switch await actions.makeFolder(at: folder) {
+        case .made(let made):
+            return await start(made)
+        case .failed(let message):
+            return .error(message: message)
+        case .cancelled:
+            return .cancelled
+        }
+    }
+
+    /// Why a move into `folder` would do nothing: every item is in it already.
+    static func alreadyThere(_ paths: [String], in folder: String) -> String? {
+        guard !paths.isEmpty, paths.allSatisfy({ NodePath.dirname($0) == folder }) else { return nil }
+        return paths.count == 1
+            ? "\u{201C}\(NodePath.basename(paths[0]))\u{201D} is already in this folder."
+            : "These items are already in this folder."
+    }
+
+    /// A move from the Move To box into a folder checked already.
+    private func startMove(_ paths: [String], to destination: String, _ actions: WindowWriteActions) async
         -> CopyLikeOutcome
     {
-        if paths.isEmpty || destination.isEmpty { return .blocked(message: "Choose a destination folder.") }
-        if actions.session.isWriteLocked { return .blocked(message: WriteDialogs.busyMessage) }
-        if let refusal = await TabDragDrop.destinationRefusal(destination, services.directoryService) {
-            return .blocked(message: refusal)
-        }
-        return await actions.copyLike(
+        await actions.copyLike(
             mode: .cut, sources: paths, destination: destination, action: .moveTo, initiator: .moveDialog,
             reportsRefusals: false)
-    }
-
-    // MARK: Extract To
-
-    /// The Extract To box, on the folder shown now: the archives are taken apart into the folder chosen. The busy
-    /// notice was said before it opens.
-    func openExtractToDialog(_ paths: [String], _ actions: WindowWriteActions) {
-        guard !paths.isEmpty, let window, !isDialogOpen else { return }
-        AppMenuPresenter.shared.close()
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let options = GoToBoxOptions.extractTo(currentPath: shownFolderPath) { [weak window] path in
-            await Self.pickDirectory(path.isEmpty ? nil : PathText2.expandHome(path, homePath: home), window)
-        }
-        let box = presentGoToBox(options, in: window)
-        box.onSubmit = { [weak self, weak box] typed in
-            guard let self, let box else { return }
-            let destination = PathText2.expandHome(GoToBoxState.trim(typed), homePath: home)
-            box.setError(nil)
-            box.setSubmitting(true)
-            Task { @MainActor [weak self, weak box] in
-                guard let self else { return }
-                let outcome = await self.startExtractFromDialog(paths, to: destination, actions)
-                guard let box else { return }
-                switch outcome {
-                case .queued, .review:
-                    box.onClose()
-                case .cancelled:
-                    box.setSubmitting(false)
-                case .blocked(let message), .error(let message):
-                    box.setSubmitting(false)
-                    box.setError(message)
-                }
-            }
-        }
-    }
-
-    /// An extract from the Extract To box, its destination checked first.
-    private func startExtractFromDialog(_ paths: [String], to destination: String, _ actions: WindowWriteActions)
-        async -> CopyLikeOutcome
-    {
-        if paths.isEmpty || destination.isEmpty { return .blocked(message: "Choose a destination folder.") }
-        if actions.session.isWriteLocked { return .blocked(message: WriteDialogs.busyMessage) }
-        if let refusal = await TabDragDrop.destinationRefusal(destination, services.directoryService) {
-            return .blocked(message: refusal)
-        }
-        return await actions.extract(paths, into: destination, reportsRefusals: false)
     }
 
     // MARK: Alerts

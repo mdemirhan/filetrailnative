@@ -53,6 +53,10 @@ struct GoToBoxStateTests {
         state.moveSelection(-1)
         state.moveSelection(-1)
         #expect(selected(state) == "Downloads")
+        // ↑ from the first row gives the field what was typed back.
+        state.moveSelection(-1)
+        #expect(state.text == "d")
+        #expect(selected(state) == "Downloads")
         #expect(state.click(1) == .submit("/Users/demo/Desktop"))
         _ = state.setText("zzz")
         #expect(state.rows.isEmpty)
@@ -101,9 +105,8 @@ struct GoToBoxStateTests {
         state.setCompletions([GoToCompletion(path: "/Users/demo/src", name: "src")])
         state.moveSelection(1)
         #expect(selected(state) == "src")
-        // Return puts the selected folder into the field; Return again opens it.
-        #expect(state.pressReturn() == .requestCompletions("/Users/demo/src"))
-        #expect(state.text == "/Users/demo/src")
+        // ↓ shows the folder in the field, as typed from "/"; Return opens it at once.
+        #expect(state.text == "/Users/demo/src/")
         #expect(state.pressReturn() == .submit("/Users/demo/src"))
         // Tab with nothing listed moves the focus.
         _ = state.setText("/nowhere")
@@ -133,19 +136,28 @@ struct GoToBoxStateTests {
         state.moveSelection(1)
         #expect(state.click(0) == .none)
         #expect(state.pressReturn() == .none)
-        #expect(state.text == "/Users/")
+        #expect(state.text == "/Users/demo/")
         state.submitting = false
-        #expect(state.click(0) == .requestCompletions("/Users/demo"))
+        #expect(state.click(0) == .submit("/Users/demo"))
     }
 
-    // A click on a completion puts it into the field without a slash, and selects nothing.
-    @Test func aClickOnACompletionFillsTheField() {
+    // In Go To a click on a completion goes there; choosing a folder, it shows the folder in the field, and a double
+    // click sends the items there.
+    @Test func aClickGoesInGoToAndChoosesWhenChoosingAFolder() {
         var state = GoToBoxState(places: [])
         _ = state.setText("/Users/")
         state.setCompletions([GoToCompletion(path: "/Users/demo", name: "demo")])
-        #expect(state.click(0) == .requestCompletions("/Users/demo"))
-        #expect(state.text == "/Users/demo")
-        #expect(state.selectedIndex == -1)
+        #expect(state.click(0) == .submit("/Users/demo"))
+        var choosing = GoToBoxState(places: Self.places, purpose: .chooseFolder, homePath: Self.home)
+        #expect(choosing.click(1) == .none)
+        #expect(choosing.text == "~/Downloads/")
+        #expect(selected(choosing) == "Downloads")
+        #expect(choosing.submitValue == "/Users/demo/Downloads")
+        // The pointer doesn't move the choice while it is in the field.
+        choosing.pointerMoved(over: 2, at: CGPoint(x: 1, y: 1))
+        choosing.pointerMoved(over: 2, at: CGPoint(x: 2, y: 1))
+        #expect(selected(choosing) == "Downloads")
+        #expect(choosing.doubleClick(2) == .submit("/Users/demo/src/render-farm"))
     }
 
     @Test func saysHowToTypeAPathWhenThereIsNothingToList() {
@@ -159,9 +171,9 @@ struct GoToBoxStateTests {
         #expect(state.emptyText == "Folders you open are listed here. Start with / or ~ to type a path.")
     }
 
-    // Move To selects nothing until something is typed or ↓ is pressed.
+    // Choosing a folder selects nothing until something is typed or ↓ is pressed.
     @Test func moveToSelectsNothingUntilTyped() {
-        var state = GoToBoxState(places: Self.places, selectFirstPlace: false)
+        var state = GoToBoxState(places: Self.places, purpose: .chooseFolder)
         #expect(names(state) == ["filetrail", "Downloads", "render-farm", "Desktop"])
         #expect(state.selectedRow == nil)
         #expect(!state.canSubmit)
@@ -173,6 +185,98 @@ struct GoToBoxStateTests {
         #expect(state.selectedRow == nil)
         state.moveSelection(-1)
         #expect(selected(state) == "Desktop")
+    }
+
+    // A row chosen with ↓ is in the field, and typing goes on from it: a place's path from "~", ending in "/".
+    @Test func typingGoesOnFromTheRowInTheField() {
+        var state = GoToBoxState(places: Self.places, homePath: Self.home)
+        _ = state.setText("src")
+        #expect(names(state) == ["filetrail", "render-farm"])
+        state.moveSelection(1)
+        #expect(selected(state) == "render-farm")
+        #expect(state.text == "~/src/render-farm/")
+        #expect(state.isShowingRow)
+        // The list stays as typed while the field shows the row.
+        #expect(names(state) == ["filetrail", "render-farm"])
+        #expect(state.setText("~/src/render-farm/sh") == .requestCompletions("~/src/render-farm/sh"))
+        #expect(state.isPathMode)
+        #expect(!state.isShowingRow)
+        // A completion of a path from "~" is shown from "~" too.
+        state.setCompletions([GoToCompletion(path: "/Users/demo/src/render-farm/shaders", name: "shaders")])
+        state.moveSelection(1)
+        #expect(state.text == "~/src/render-farm/shaders/")
+    }
+
+    // Escape lets go of the row in the field first; only then does it close the box.
+    @Test func escapeGivesBackWhatWasTyped() {
+        var state = GoToBoxState(places: Self.places, homePath: Self.home)
+        _ = state.setText("down")
+        let first = state.escape()
+        #expect(!first)
+        state.moveSelection(1)
+        #expect(state.text == "~/Downloads/")
+        let second = state.escape()
+        #expect(second)
+        #expect(state.text == "down")
+        #expect(selected(state) == "Downloads")
+        let third = state.escape()
+        #expect(!third)
+    }
+
+    // Tab puts the selected place in the field, and the list moves on to the folders inside it.
+    @Test func tabTakesAPlaceIntoTheField() {
+        var state = GoToBoxState(places: Self.places, homePath: Self.home)
+        _ = state.setText("render")
+        #expect(state.tab() == .requestCompletions("~/src/render-farm/"))
+        #expect(state.text == "~/src/render-farm/")
+        #expect(state.isPathMode)
+        var choosing = GoToBoxState(places: Self.places, purpose: .chooseFolder, homePath: Self.home)
+        // Nothing is chosen for the user: Tab moves the focus.
+        #expect(choosing.tab() == nil)
+    }
+
+    // A box choosing a folder can open on the folder shown: a path, so Return sends the items there.
+    @Test func opensOnAPath() {
+        var state = GoToBoxState(
+            places: Self.places, purpose: .chooseFolder, homePath: Self.home, text: "~/src/")
+        #expect(state.isPathMode)
+        #expect(state.rows.isEmpty)
+        #expect(state.emptyText == "No folders in this folder")
+        #expect(state.pressReturn() == .submit("~/src/"))
+        // What is said about the text goes once it is changed.
+        state.error = "\u{201C}a\u{201D} is already in this folder."
+        // Typing a name replaces it and finds the places again.
+        _ = state.setText("down")
+        #expect(state.error == nil)
+        #expect(selected(state) == "Downloads")
+    }
+
+    // A folder that doesn't exist is made on the next submit of the same text, and only that text.
+    @Test func offersToCreateForTheTextAsked() {
+        var state = GoToBoxState(places: [], purpose: .chooseFolder, homePath: Self.home)
+        _ = state.setText("~/New")
+        #expect(!state.createsFolder)
+        state.error = "Destination must be an existing folder."
+        state.offerToCreate(notice: "There’s no folder “New”.")
+        #expect(state.createsFolder)
+        #expect(state.error == nil)
+        _ = state.setText("~/Newer")
+        #expect(!state.createsFolder)
+    }
+
+    // ".", "..", "./…" and "../…" are paths from the folder on screen; "~" and "." and ".." are followed.
+    @Test func resolvesPathsFromTheFolderOnScreen() {
+        let home = Self.home
+        let here = "/Users/demo/src/filetrail"
+        #expect(GoToBoxState.resolve("../", homePath: home, currentPath: here) == "/Users/demo/src/")
+        #expect(
+            GoToBoxState.resolve("./Sources", homePath: home, currentPath: here) == "/Users/demo/src/filetrail/Sources")
+        #expect(GoToBoxState.resolve(" .. ", homePath: home, currentPath: here) == "/Users/demo/src")
+        #expect(GoToBoxState.resolve("~/a/../b/", homePath: home, currentPath: here) == "/Users/demo/b/")
+        #expect(GoToBoxState.resolve("/../..", homePath: home, currentPath: here) == "/")
+        #expect(GoToBoxState.resolve(".config", homePath: home, currentPath: here) == ".config")
+        #expect(GoToBoxState.folderPath("~/src/", homePath: home, currentPath: here) == "/Users/demo/src")
+        #expect(GoToBoxState.folderPath("/", homePath: home, currentPath: here) == "/")
     }
 
     // Only a pointer that really moved selects a row.

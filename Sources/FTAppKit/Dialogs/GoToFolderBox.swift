@@ -1,37 +1,65 @@
 import AppKit
 import FTFoundation
 
-/// What a Go To box is for: Go To itself, or Move To with its title, words and Choose….
+/// What a Go To box is for: Go To itself, or a folder for items to go into (Move To, Extract To) with its title,
+/// words and Choose….
 struct GoToBoxOptions {
+    var purpose = GoToPurpose.goTo
     /// Shown above the field; Go To has none.
     var title: String?
     var fieldLabel = "Folder name or path"
     var submitLabel = "Open"
-    var selectFirstPlace = true
     /// Choose…: the system's folder picker, from a path; nil when there is no such button.
     var browse: (@MainActor (String) async -> String?)?
-    /// The folder shown when the box opened, where Choose… starts with no path typed.
+    /// The folder shown when the box opened: where Choose… starts with no path typed, and what "./" and "../" start
+    /// from.
     var currentPath = ""
+    /// What the field holds when the box opens, all of it selected, so typing replaces it.
+    var initialText = ""
+    var homePath = FileManager.default.homeDirectoryForCurrentUser.path
 
-    static let goTo = GoToBoxOptions()
+    static func goTo(currentPath: String) -> GoToBoxOptions { GoToBoxOptions(currentPath: currentPath) }
 
-    static func moveTo(currentPath: String, browse: @escaping @MainActor (String) async -> String?) -> GoToBoxOptions {
-        GoToBoxOptions(
-            title: "Move To", fieldLabel: "Destination folder", submitLabel: "Move", selectFirstPlace: false,
+    /// A box for choosing where items go: it opens on the folder shown, as "~/…/Folder/", so the folders inside it
+    /// are listed and Return sends the items there.
+    static func chooseFolder(
+        title: String, submitLabel: String, currentPath: String,
+        browse: @escaping @MainActor (String) async -> String?
+    ) -> GoToBoxOptions {
+        var options = GoToBoxOptions(
+            purpose: .chooseFolder, title: title, fieldLabel: "Destination folder", submitLabel: submitLabel,
             browse: browse, currentPath: currentPath)
+        if !currentPath.isEmpty {
+            let shown = Places.abbreviate(currentPath, homePath: options.homePath)
+            options.initialText = shown.hasSuffix("/") ? shown : shown + "/"
+        }
+        return options
     }
 
-    static func extractTo(currentPath: String, browse: @escaping @MainActor (String) async -> String?)
-        -> GoToBoxOptions
-    {
-        GoToBoxOptions(
-            title: "Extract To", fieldLabel: "Destination folder", submitLabel: "Extract", selectFirstPlace: false,
-            browse: browse, currentPath: currentPath)
+    static func moveTo(
+        _ paths: [String], currentPath: String, browse: @escaping @MainActor (String) async -> String?
+    ) -> GoToBoxOptions {
+        chooseFolder(
+            title: title("Move", paths, items: "Items"), submitLabel: "Move", currentPath: currentPath, browse: browse)
+    }
+
+    static func extractTo(
+        _ paths: [String], currentPath: String, browse: @escaping @MainActor (String) async -> String?
+    ) -> GoToBoxOptions {
+        chooseFolder(
+            title: title("Extract", paths, items: "Archives"), submitLabel: "Extract", currentPath: currentPath,
+            browse: browse)
+    }
+
+    /// "Move “Report.pdf” To", "Move 3 Items To".
+    static func title(_ verb: String, _ paths: [String], items: String) -> String {
+        if paths.count == 1 { return "\(verb) \u{201C}\(NodePath.basename(paths[0]))\u{201D} To" }
+        return "\(verb) \(paths.count) \(items) To"
     }
 }
 
-/// The Go To box (⌘K, ⇧⌘G) and the Move To box: a panel dropped below the toolbar with a field, the folders that match
-/// and the footer's buttons.
+/// The Go To box (⌘K, ⇧⌘G), and the Move To and Extract To boxes: a panel dropped below the toolbar with a field, the
+/// folders that match and the footer's buttons.
 @MainActor
 final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
     static let placeholder = "Folder name, or a path starting with / or ~"
@@ -80,12 +108,15 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
         requestCompletions: @escaping @MainActor (String) async -> [GoToCompletion]?
     ) {
         self.options = options
-        state = GoToBoxState(places: places, selectFirstPlace: options.selectFirstPlace, canForgetPlaces: true)
+        state = GoToBoxState(
+            places: places, purpose: options.purpose, canForgetPlaces: true, homePath: options.homePath,
+            text: options.initialText)
         requests = PathCompletionRequests(timers: timers, request: requestCompletions)
         shell = GoToFieldShell(label: options.fieldLabel)
         if let title = options.title {
             let label = NSTextField(labelWithString: title)
             label.font = Self.titleFont
+            label.lineBreakMode = .byTruncatingMiddle
             label.setAccessibilityIdentifier("goToFolder.title")
             titleLabel = label
         } else {
@@ -101,6 +132,7 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
         if let titleLabel { addSubview(titleLabel) }
         addSubview(shell)
         shell.field.delegate = self
+        shell.field.stringValue = state.text
         shell.clearButton.target = self
         shell.clearButton.action = #selector(clearPressed(_:))
         errorLabel.font = Self.errorFont
@@ -156,13 +188,20 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
 
     // MARK: Opening
 
-    /// The box is up over `window`: it starts empty, the field focused with the caret at its end, and the empty field's
-    /// request waits for the pause.
+    /// The box is up over `window`, the field focused: Go To starts empty with the caret in the field; a box choosing
+    /// a folder starts on the folder shown, selected, and asks for the folders inside it after the pause.
     func opened(in window: NSWindow) {
         pointerWindow = window
         state.lastPointer = Self.lastPointers.object(forKey: window)?.pointValue
         requests.setOpen(true)
+        if state.isPathMode { requests.requestNow(state.text) }
         focusField()
+        if !options.initialText.isEmpty, let editor = field.currentEditor() as? NSTextView {
+            let length = (field.stringValue as NSString).length
+            editor.selectedRange = NSRange(location: 0, length: length)
+            // A long path shows its end, the folder's name, rather than its start.
+            editor.scrollRangeToVisible(NSRange(location: length, length: 0))
+        }
     }
 
     func closed() {
@@ -176,6 +215,12 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
 
     func setError(_ error: String?) {
         state.error = error
+        render()
+    }
+
+    /// The typed folder doesn't exist: the footer's button makes it first, and `notice` says so under the field.
+    func offerToCreate(notice: String) {
+        state.offerToCreate(notice: notice)
         render()
     }
 
@@ -241,7 +286,12 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
 
     override func handleKey(_ event: NSEvent) -> Bool {
         if KeyCode.isCancel(event) {
-            onClose()
+            // A folder shown in the field gives way to what was typed first; a second Escape closes the box.
+            if state.escape() {
+                render()
+            } else {
+                onClose()
+            }
             return true
         }
         let modifiers = event.modifierFlags.intersection([.command, .control, .option, .shift])
@@ -302,6 +352,12 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
         apply(state.click(index))
     }
 
+    /// A double click: the items go into the folder. Go To went there on the first click.
+    func rowDoubleClicked(_ index: Int) {
+        guard options.purpose == .chooseFolder else { return }
+        apply(state.doubleClick(index))
+    }
+
     func pointerMoved(over index: Int, at point: CGPoint) {
         state.pointerMoved(over: index, at: point)
         if let pointerWindow { Self.lastPointers.setObject(NSValue(point: point), forKey: pointerWindow) }
@@ -356,9 +412,13 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
 
     /// Shows the state: the ✕, the error, the label and hint, the rows or the empty text, and what the buttons allow.
     func render() {
+        // The field follows the state when a row is shown in it or let go of; while typing they already agree.
+        if field.stringValue != state.text { setField(state.text) }
         shell.clearButton.isHidden = !state.showsClear
-        errorLabel.stringValue = state.error ?? ""
-        errorLabel.isHidden = state.error == nil
+        let notice = state.createsFolder ? state.folderToCreate?.notice : nil
+        errorLabel.stringValue = state.error ?? notice ?? ""
+        errorLabel.isHidden = state.error == nil && notice == nil
+        submitButton.title = state.createsFolder ? "Create and \(options.submitLabel)" : options.submitLabel
         let rows = state.rows
         listLabel.stringValue = state.label
         hintLabel.stringValue = state.hint ?? ""
@@ -391,7 +451,8 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
     private func styleLabels() {
         let palette = theme.palette
         let labels: [(NSTextField, RGBA)] = [
-            (errorLabel, palette.dangerText), (listLabel, palette.textSecondary), (hintLabel, palette.textSecondary),
+            (errorLabel, state.error == nil ? palette.textSecondary : palette.dangerText),
+            (listLabel, palette.textSecondary), (hintLabel, palette.textSecondary),
             (emptyLabel, palette.textSecondary),
         ]
         for (label, color) in labels {

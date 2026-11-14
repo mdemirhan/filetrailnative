@@ -46,51 +46,87 @@ public enum GoToEffect: Equatable, Sendable {
     case forget(String)
 }
 
-/// The Go To box (⌘K, ⇧⌘G) and the Move To box: what is typed, what is listed and selected, and what the keys do. A
-/// few letters find a folder that has been opened before, or a favorite; text starting with "/" or "~" is a path and
-/// is completed folder by folder.
+/// What a Go To box is for.
+public enum GoToPurpose: Equatable, Sendable {
+    /// Go To (⌘K, ⇧⌘G): going to a folder is quick and Back undoes it, so the best place is selected before anything
+    /// is typed and a click goes at once.
+    case goTo
+    /// Move To and Extract To: a folder for items to go into. Nothing is chosen for the user, and a click only puts a
+    /// folder in the field; a double click, or Return, sends the items there.
+    case chooseFolder
+}
+
+/// The Go To box (⌘K, ⇧⌘G), the Move To box and the Extract To box: what is typed, what is listed and selected, and
+/// what the keys do. A few letters find a folder that has been opened before, or a favorite; text starting with "/",
+/// "~", "./" or "../" is a path and is completed folder by folder. ↑ and ↓ show the selected folder's path in the
+/// field, and typing goes on from it.
 public struct GoToBoxState: Equatable, Sendable {
     /// The opened folders and favorites to find by name, as the box opened.
     public private(set) var places: [Place]
-    /// Whether the top place is selected before anything is typed (Go To), so Return goes there at once. Off for Move
-    /// To, where Return must never act on a folder nobody chose.
-    public let selectFirstPlace: Bool
+    public let purpose: GoToPurpose
     /// Whether ⌘⌫ forgets a folder.
     public let canForgetPlaces: Bool
+    /// The home folder, written "~" in a path the field takes from a row.
+    public let homePath: String
+    /// What the field shows.
     public private(set) var text = ""
+    /// What the list was made for: what was typed. It differs from `text` while a row is shown in the field.
+    public private(set) var listText = ""
+    /// Whether the field shows the selected row's path, put there by ↑ or ↓ (or a click, when choosing a folder),
+    /// rather than what was typed. The list stays as it was until something is typed.
+    public private(set) var isShowingRow = false
     public private(set) var completions: [GoToCompletion] = []
     public private(set) var rows: [GoToRow] = []
     /// The selected row; -1 for none.
     public private(set) var selectedIndex = -1
     public var submitting = false
     public var error: String?
+    /// The folder that doesn't exist yet and is made before the items go into it, once asked (`offerToCreate`):
+    /// the text it was asked for, and what is said under the field.
+    public private(set) var folderToCreate: (text: String, notice: String)?
     /// The pointer's last place over the list: a row is selected only once it really moved.
     public var lastPointer: CGPoint?
 
-    public init(places: [Place], selectFirstPlace: Bool = true, canForgetPlaces: Bool = true) {
+    public init(
+        places: [Place], purpose: GoToPurpose = .goTo, canForgetPlaces: Bool = true, homePath: String = "",
+        text: String = ""
+    ) {
         self.places = places
-        self.selectFirstPlace = selectFirstPlace
+        self.purpose = purpose
         self.canForgetPlaces = canForgetPlaces
+        self.homePath = homePath
+        self.text = text
+        listText = text
         rebuild(reselect: true)
     }
 
-    public var isPathMode: Bool { Places.isPathQuery(text) }
+    public static func == (lhs: GoToBoxState, rhs: GoToBoxState) -> Bool {
+        lhs.places == rhs.places && lhs.purpose == rhs.purpose && lhs.canForgetPlaces == rhs.canForgetPlaces
+            && lhs.homePath == rhs.homePath && lhs.text == rhs.text && lhs.listText == rhs.listText
+            && lhs.isShowingRow == rhs.isShowingRow && lhs.completions == rhs.completions && lhs.rows == rhs.rows
+            && lhs.selectedIndex == rhs.selectedIndex && lhs.submitting == rhs.submitting && lhs.error == rhs.error
+            && lhs.folderToCreate?.text == rhs.folderToCreate?.text
+            && lhs.folderToCreate?.notice == rhs.folderToCreate?.notice && lhs.lastPointer == rhs.lastPointer
+    }
+
+    /// Whether the list holds a path's completions rather than places found by name.
+    public var isPathMode: Bool { Places.isPathQuery(listText) }
     public var trimmedText: String { JSString.trimmed(text) }
     /// The text without white space at either end, as the box submits it.
     public static func trim(_ text: String) -> String { JSString.trimmed(text) }
-    public var hasQuery: Bool { !trimmedText.isEmpty }
+    public var hasQuery: Bool { !JSString.trimmed(listText).isEmpty }
     public var selectedRow: GoToRow? { rows.indices.contains(selectedIndex) ? rows[selectedIndex] : nil }
 
-    /// A name needs a folder picked from the list; a path can be opened as typed.
-    public var canSubmit: Bool {
-        !submitting && (isPathMode ? hasQuery : selectedRow != nil)
+    /// What Open (or Move, or Extract) goes to: the folder shown in the field, the selected place, or the typed path.
+    public var submitValue: String? {
+        guard !submitting else { return nil }
+        if isShowingRow { return selectedRow?.path ?? JSString.trimmed(text) }
+        if let row = selectedRow { return row.path }
+        return isPathMode && hasQuery ? JSString.trimmed(text) : nil
     }
 
-    /// What Open (or Move) goes to: the trimmed path, or the selected place.
-    public var submitValue: String? {
-        guard canSubmit else { return nil }
-        return isPathMode ? JSString.trimmed(text) : selectedRow?.path
-    }
+    /// A name needs a folder picked from the list; a path can be opened as typed.
+    public var canSubmit: Bool { submitValue != nil }
 
     /// The list's heading, while it lists something.
     public var label: String {
@@ -98,7 +134,7 @@ public struct GoToBoxState: Equatable, Sendable {
         return "\(rows.count) match\(rows.count == 1 ? "" : "es")"
     }
 
-    /// The keys easy to miss: Tab completes a path, ⌘⌫ forgets a folder.
+    /// The keys easy to miss: Tab completes, ⌘⌫ forgets a folder.
     public var hint: String? {
         if isPathMode { return "⇥ Completes" }
         return canForgetPlaces && selectedRow?.canForget == true ? "⌘⌫ Removes from List" : nil
@@ -106,7 +142,10 @@ public struct GoToBoxState: Equatable, Sendable {
 
     /// What shows instead of the list when it is empty.
     public var emptyText: String {
-        if isPathMode { return "No folders match this path" }
+        if isPathMode {
+            return JSString.trimmed(listText).hasSuffix("/")
+                ? "No folders in this folder" : "No folders match this path"
+        }
         return hasQuery
             ? "No folder you have opened has that name. Start with / or ~ to type a path."
             : "Folders you open are listed here. Start with / or ~ to type a path."
@@ -115,11 +154,24 @@ public struct GoToBoxState: Equatable, Sendable {
     /// Whether the field shows its ✕.
     public var showsClear: Bool { !text.isEmpty }
 
+    /// The path a row puts in the field, ending in "/" so what is typed next goes inside it: from the home folder
+    /// as "~", unless a path from "/" was typed.
+    public func fieldPath(for row: GoToRow) -> String {
+        let fromRoot = isPathMode && JSString.hasPrefix(JSString.trimmedStart(listText), "/")
+        let path = fromRoot ? row.path : Places.abbreviate(row.path, homePath: homePath)
+        return path.hasSuffix("/") ? path : path + "/"
+    }
+
     // MARK: Changes
 
-    /// What is typed changed (`setValue`): the completions go at once; a path asks for new ones.
+    /// What is typed changed (`setValue`): the completions go at once, and so does an error about the text before; a
+    /// path asks for new ones.
     public mutating func setText(_ value: String) -> GoToEffect {
         text = value
+        listText = value
+        isShowingRow = false
+        folderToCreate = nil
+        error = nil
         completions = []
         rebuild(reselect: true)
         return Places.isPathQuery(value) ? .requestCompletions(value) : .none
@@ -128,6 +180,9 @@ public struct GoToBoxState: Equatable, Sendable {
     /// The ✕: the field empties and the completions go, and nothing is asked.
     public mutating func clear() {
         text = ""
+        listText = ""
+        isShowingRow = false
+        folderToCreate = nil
         completions = []
         rebuild(reselect: true)
     }
@@ -141,6 +196,7 @@ public struct GoToBoxState: Equatable, Sendable {
     /// A folder was forgotten: it leaves the list at once.
     public mutating func forgetPlace(_ path: String) {
         places.removeAll { $0.path == path }
+        letGoOfRow()
         rebuild(reselect: false)
     }
 
@@ -150,6 +206,15 @@ public struct GoToBoxState: Equatable, Sendable {
         rebuild(reselect: false)
     }
 
+    /// The typed folder doesn't exist: the next submit of the same text makes it first, and `notice` says so.
+    public mutating func offerToCreate(notice: String) {
+        folderToCreate = (text, notice)
+        error = nil
+    }
+
+    /// Whether the next submit makes the typed folder first.
+    public var createsFolder: Bool { folderToCreate?.text == text }
+
     private mutating func rebuild(reselect: Bool) {
         let before = rows.count
         if isPathMode {
@@ -158,53 +223,79 @@ public struct GoToBoxState: Equatable, Sendable {
                     path: $0.path, name: $0.name, detail: $0.path, nameRanges: [], isFavorite: false, canForget: false)
             }
         } else {
-            rows = Places.rank(places, query: text).map { match in
-                GoToRow(
+            rows = Places.rank(places, query: listText).map { match in
+                let location = Places.describeLocation(
+                    name: match.place.name, displayPath: match.place.displayPath)
+                return GoToRow(
                     path: match.place.path, name: match.place.name,
-                    detail: Places.describeLocation(name: match.place.name, displayPath: match.place.displayPath),
+                    detail: match.place.isOtherPane ? "Other pane \u{00B7} \(location)" : location,
                     nameRanges: match.nameRanges, isFavorite: match.place.isFavorite,
-                    canForget: match.place.isVisited)
+                    canForget: match.place.canForget)
             }
         }
         // What is typed decides what is selected: the best place while a name is typed (and before, for Go To),
         // nothing while a path is typed until ↓ picks a completion. Re-evaluated when the text, the mode or the
         // number of rows changes, not on every selection move.
         guard reselect || rows.count != before else { return }
-        if rows.isEmpty || isPathMode {
-            selectedIndex = -1
-        } else {
-            selectedIndex = hasQuery || selectFirstPlace ? 0 : -1
-        }
+        selectedIndex = defaultSelection
+    }
+
+    private var defaultSelection: Int {
+        if rows.isEmpty || isPathMode { return -1 }
+        return hasQuery || purpose == .goTo ? 0 : -1
+    }
+
+    /// The field shows row `index`'s path; the list stays as typed.
+    private mutating func showRow(_ index: Int) {
+        selectedIndex = index
+        text = fieldPath(for: rows[index])
+        isShowingRow = true
+        folderToCreate = nil
+    }
+
+    /// The field shows what was typed again, and the selection is what the typing chose.
+    private mutating func letGoOfRow() {
+        guard isShowingRow else { return }
+        text = listText
+        isShowingRow = false
+        selectedIndex = defaultSelection
     }
 
     // MARK: Keys
 
-    /// ↓ (`step` 1) and ↑ (-1): from no selection to the first or the last row; otherwise one row, stopping at the
-    /// ends.
+    /// ↓ (`step` 1) and ↑ (-1): from no selection to the first or the last row, otherwise one row, stopping at the
+    /// ends; the field shows the row's path. ↑ from the first row gives the field what was typed back.
     public mutating func moveSelection(_ step: Int) {
         guard !rows.isEmpty else { return }
+        if isShowingRow, selectedIndex == 0, step == -1 {
+            letGoOfRow()
+            return
+        }
         if selectedIndex < 0 {
-            selectedIndex = step == 1 ? 0 : rows.count - 1
+            showRow(step == 1 ? 0 : rows.count - 1)
         } else {
-            selectedIndex = max(0, min(rows.count - 1, selectedIndex + step))
+            showRow(max(0, min(rows.count - 1, selectedIndex + step)))
         }
     }
 
-    /// Tab: in path mode with a row, completes with the selected row (or the first) and descends into it. Nil when
-    /// Tab is left to move the focus.
+    /// Escape: a row shown in the field gives way to what was typed. False when there was none, and Escape closes the
+    /// box.
+    public mutating func escape() -> Bool {
+        guard isShowingRow else { return false }
+        letGoOfRow()
+        return true
+    }
+
+    /// Tab: the selected row (or in a path, the first) goes into the field ending in "/", and the list moves on to
+    /// the folders inside it. Nil when Tab is left to move the focus.
     public mutating func tab() -> GoToEffect? {
-        guard isPathMode, let row = selectedRow ?? rows.first else { return nil }
-        return acceptCompletion(row, descend: true)
+        guard let row = selectedRow ?? (isPathMode ? rows.first : nil) else { return nil }
+        return acceptRow(row)
     }
 
-    /// Return: in path mode a selected completion goes into the field first; otherwise what can be submitted is.
-    /// Nothing while a submit is under way.
+    /// Return: what can be submitted is. Nothing while a submit is under way.
     public mutating func pressReturn() -> GoToEffect {
-        guard !submitting else { return .none }
-        if isPathMode, let row = selectedRow, row.path != JSString.trimmed(text) {
-            return acceptCompletion(row, descend: false)
-        }
-        return submitValue.map(GoToEffect.submit) ?? .none
+        submitValue.map(GoToEffect.submit) ?? .none
     }
 
     /// ⌘⌫: the selected opened folder is forgotten. Nil when the key is left to the field.
@@ -213,31 +304,70 @@ public struct GoToBoxState: Equatable, Sendable {
         return .forget(row.path)
     }
 
-    /// A click on a row: a completion goes into the field, a place is gone to at once. Nothing while a submit is under
-    /// way, so a double click goes to a place once.
+    /// A click on a row: Go To goes there at once; when a folder is chosen for items, the field shows it, as ↓ would.
+    /// Nothing while a submit is under way, so a double click goes to a place once.
     public mutating func click(_ index: Int) -> GoToEffect {
         guard !submitting, rows.indices.contains(index) else { return .none }
-        let row = rows[index]
-        guard isPathMode else { return .submit(row.path) }
-        let effect = acceptCompletion(row, descend: false)
-        // The click doesn't select the row: the text changed in path mode, so the selection is none again.
-        return effect
+        switch purpose {
+        case .goTo:
+            return .submit(rows[index].path)
+        case .chooseFolder:
+            showRow(index)
+            return .none
+        }
     }
 
-    /// The pointer moved over row `index`: it selects the row only when it really moved since the last time.
+    /// A double click on a row: the items go into it.
+    public mutating func doubleClick(_ index: Int) -> GoToEffect {
+        guard !submitting, rows.indices.contains(index) else { return .none }
+        if purpose == .chooseFolder { showRow(index) }
+        return .submit(rows[index].path)
+    }
+
+    /// The pointer moved over row `index`: it selects the row only when it really moved since the last time, and
+    /// not while the field shows a row, which stays the one chosen.
     public mutating func pointerMoved(over index: Int, at point: CGPoint) {
         let last = lastPointer
         lastPointer = point
-        if let last, last != point, rows.indices.contains(index) {
+        if let last, last != point, !isShowingRow, rows.indices.contains(index) {
             selectedIndex = index
         }
     }
 
-    /// Puts a completion into the field. With `descend` the path ends in a slash, so the list moves on to the folders
-    /// inside it (Tab); without, the folder itself stays listed.
-    private mutating func acceptCompletion(_ row: GoToRow, descend: Bool) -> GoToEffect {
-        let value = descend && !row.path.hasSuffix("/") ? row.path + "/" : row.path
-        _ = setText(value)
-        return .requestCompletions(value)
+    /// Puts a row into the field ending in "/", so the list moves on to the folders inside it.
+    private mutating func acceptRow(_ row: GoToRow) -> GoToEffect {
+        setText(fieldPath(for: row))
+    }
+
+    // MARK: Paths
+
+    /// What a typed path names: trimmed, "~" expanded, "." and ".." followed, and a path starting with "./" or "../"
+    /// taken from `currentPath`. A path ending in "/" still does, so its completions are the folders inside it. A
+    /// name is left as it is.
+    public static func resolve(_ text: String, homePath: String, currentPath: String) -> String {
+        let expanded = PathText2.expandHome(JSString.trimmed(text), homePath: homePath)
+        guard Places.isPathQuery(expanded) else { return expanded }
+        var joined = expanded
+        if !JSString.hasPrefix(expanded, "/") {
+            guard !currentPath.isEmpty else { return expanded }
+            joined = currentPath + "/" + expanded
+        }
+        var parts: [Substring] = []
+        for part in joined.split(separator: "/", omittingEmptySubsequences: true) {
+            if part == "." { continue }
+            if part == ".." {
+                _ = parts.popLast()
+                continue
+            }
+            parts.append(part)
+        }
+        let path = "/" + parts.joined(separator: "/")
+        return joined.hasSuffix("/") && path != "/" ? path + "/" : path
+    }
+
+    /// The folder a submitted text names, as `resolve` reads it, without a "/" at its end.
+    public static func folderPath(_ text: String, homePath: String, currentPath: String) -> String {
+        let path = resolve(text, homePath: homePath, currentPath: currentPath)
+        return path.count > 1 && path.hasSuffix("/") ? String(path.dropLast()) : path
     }
 }

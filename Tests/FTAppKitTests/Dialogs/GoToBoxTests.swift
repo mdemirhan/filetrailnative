@@ -105,7 +105,8 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // Tab goes round the box and stays in it, the rows included, and Return on a row opens that folder.
+        // Tab goes round the box and stays in it, the rows included, and Return on a row opens that folder. In the
+        // field, with a place selected, Tab completes it instead (see `tabInTheFieldCompletesThePlace`).
         @Test func tabGoesRoundTheBoxAndReturnOnARowOpensIt() async throws {
             let (harness, tab, _) = try await open()
             for name in ["Alpha", "Beta"] { harness.store.recordFolderVisit(path(harness, name), kind: .stay) }
@@ -125,11 +126,10 @@ extension ExplorerWindowlessTests {
             // Backward from the field, the first of the box: round to the last, the default button.
             DialogKeys.press(48, "\t", modifiers: .shift, in: window)
             #expect(hasKeyboard(box.submitButton))
-            // Forward from the last: back to the field, on to the × beside it, and on to the first row.
+            // Forward from the last: back to the field; from the × beside it on to the first row.
             DialogKeys.press(48, "\t", in: window)
             #expect(hasKeyboard(box.field))
-            DialogKeys.press(48, "\t", in: window)
-            #expect(window.firstResponder === box.shell.clearButton)
+            window.makeFirstResponder(box.shell.clearButton)
             DialogKeys.press(48, "\t", in: window)
             #expect(hasKeyboard(box.rowViews[0]))
             #expect(scrim.holdsKeyboard(window))
@@ -138,9 +138,9 @@ extension ExplorerWindowlessTests {
             #expect(window.firstResponder === box.shell.clearButton)
             DialogKeys.press(48, "\t", in: window)
             #expect(hasKeyboard(box.rowViews[0]))
-            // All the way round it never leaves.
+            // All the way round, backward past the field, it never leaves.
             for _ in DialogPanelView.focusable(in: scrim.panel) {
-                DialogKeys.press(48, "\t", in: window)
+                DialogKeys.press(48, "\t", modifiers: .shift, in: window)
                 #expect(scrim.holdsKeyboard(window))
             }
             #expect(hasKeyboard(box.rowViews[0]))
@@ -153,6 +153,28 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
+        // Tab in the field puts the selected place in it, ending in "/", and the list moves on to the folders inside
+        // it; ↓ shows a folder in the field, typing goes on from it, and Escape gives back what was typed.
+        @Test func tabInTheFieldCompletesThePlace() async throws {
+            let (harness, tab, timers) = try await open()
+            harness.store.recordFolderVisit(path(harness, "Alpha"), kind: .stay)
+            let box = try openBox(tab)
+            DialogKeys.type("alp", into: box)
+            let shown = Places.abbreviate(
+                path(harness, "Alpha"), homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+            DialogKeys.press(125, in: tab.window)
+            #expect(box.field.stringValue == shown + "/")
+            DialogKeys.press(53, "\u{1b}", in: tab.window)
+            #expect(box.field.stringValue == "alp")
+            #expect(tab.goToBox === box)
+            DialogKeys.press(48, "\t", in: tab.window)
+            #expect(box.field.stringValue == shown + "/")
+            #expect(box.shell.holdsKeyboard)
+            timers.advance(0.35)
+            #expect(await waitUntil { names(box) == ["Inner"] })
+            await close(harness)
+        }
+
         // The × is a button of the box like the others: with the keyboard on it, Return or Space empties the
         // field, and the keyboard goes back there. With nothing typed it isn't there, so Tab no longer stops on it.
         @Test func returnOrSpaceOnTheClearButtonEmptiesTheField() async throws {
@@ -161,7 +183,7 @@ extension ExplorerWindowlessTests {
             let box = try openBox(tab)
             let window = try #require(tab.window)
             for (key, characters) in [(UInt16(36), "\r"), (UInt16(49), " ")] {
-                DialogKeys.type("a", into: box)
+                DialogKeys.type("zz", into: box)
                 DialogKeys.press(48, "\t", in: window)
                 #expect(window.firstResponder === box.shell.clearButton)
 
@@ -283,9 +305,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { names(box) == ["Inner"] })
             DialogKeys.press(125, in: tab.window)
             #expect(selected(box) == "Inner")
-            DialogKeys.press(36, "\r", in: tab.window)
-            #expect(box.field.stringValue.hasSuffix("/Alpha/Inner"))
-            #expect(tab.goToBox != nil)
+            #expect(box.field.stringValue.hasSuffix("/Alpha/Inner/"))
             DialogKeys.press(36, "\r", in: tab.window)
             #expect(await waitUntil { tab.folder.lastPathComponent == "Inner" })
             #expect(await waitUntil { tab.goToBox == nil })
@@ -356,7 +376,9 @@ extension ExplorerWindowlessTests {
             #expect(tab.goToBox == nil)
 
             let window = try #require(tab.window)
-            let moveTo = tab.presentGoToBox(.moveTo(currentPath: harness.folder.path, browse: { _ in nil }), in: window)
+            let moveTo = tab.presentGoToBox(
+                .moveTo([harness.folder.path + "/a"], currentPath: harness.folder.path, browse: { _ in nil }),
+                in: window)
             window.contentView?.layoutSubtreeIfNeeded()
             let moveScrim = try #require(tab.dialogs.first)
             let title = try #require(moveTo.titleLabel)
@@ -411,7 +433,8 @@ extension ExplorerWindowlessTests {
                     backing: .buffered, defer: true)
                 window.isReleasedWhenClosed = false
                 let box = GoToFolderBox(
-                    places: [], options: .goTo, timers: ManualTimers(), requestCompletions: { _ in [] })
+                    places: [], options: .goTo(currentPath: ""), timers: ManualTimers(), requestCompletions: { _ in [] }
+                )
                 box.opened(in: window)
                 box.pointerMoved(over: 0, at: CGPoint(x: 10, y: 10))
                 #expect(GoToFolderBox.rememberedPointerCount == before + 1)

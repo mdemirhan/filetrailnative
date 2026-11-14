@@ -115,10 +115,39 @@ struct PlacesTests {
         #expect(Places.isPathQuery(" ~"))
         #expect(!Places.isPathQuery("docs"))
         #expect(!Places.isPathQuery(""))
+        #expect(Places.isPathQuery("../src"))
+        #expect(Places.isPathQuery(" ./"))
+        #expect(Places.isPathQuery(".."))
+        #expect(!Places.isPathQuery(".config"))
+        #expect(!Places.isPathQuery("..."))
         #expect(Places.abbreviate("/Users/demo/src", homePath: Self.home) == "~/src")
         #expect(Places.abbreviate(Self.home, homePath: Self.home) == "~")
         #expect(Places.abbreviate("/Users/demolition", homePath: Self.home) == "/Users/demolition")
         #expect(Places.abbreviate("/Applications", homePath: Self.home) == "/Applications")
+    }
+
+    // Choosing a folder for items: the folders chosen before count with their visits, and the other pane's folder
+    // comes first, unless it is the folder on screen.
+    @Test func ranksDestinationsAndPutsTheOtherPaneFirst() {
+        let chosen = [
+            VisitedFolder(
+                path: "/Users/demo/Archive",
+                visits: (0..<5).map { _ in
+                    FolderVisit(at: Self.now - Self.hour, kind: .goTo)
+                })
+        ]
+        let built = Places.build(
+            visitedFolders: [visited("/Users/demo/Downloads", 4), visited("/Users/demo/src", 2)], favoritePaths: [],
+            currentPath: "/somewhere/else", homePath: Self.home, now: Self.now, destinationFolders: chosen,
+            otherPanePath: "/Users/demo/src")
+        let ranked = Places.rank(built, query: "").map(\.place)
+        #expect(ranked.map(\.name) == ["src", "Archive", "Downloads"])
+        #expect(ranked.map(\.isOtherPane) == [true, false, false])
+        #expect(ranked[1].isDestination && !ranked[1].isVisited && ranked[1].canForget)
+        let samePane = Places.build(
+            visitedFolders: [], favoritePaths: [], currentPath: "/Users/demo/src", homePath: Self.home, now: Self.now,
+            otherPanePath: "/Users/demo/src")
+        #expect(samePane.isEmpty)
     }
 
     @Test func cutsTheListAtFiftyResults() {

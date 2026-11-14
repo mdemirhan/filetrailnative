@@ -22,7 +22,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Go to Folder",
                             description:
-                                "{openLocationSheet} finds a folder you have opened before, or a favorite, from a few letters of its name; the folders you use most come first. Start with `/` or `~` to type a path instead, and Tab completes it. ⌘⌫ removes the selected folder from the list, if it is one you opened."
+                                "{openLocationSheet} finds a folder you have opened before, or a favorite, from a few letters of its name; the folders you use most come first. Start with `/` or `~` to type a path instead, or `./` and `../` for one from the folder you are in. ↑ and ↓ put a folder's path in the field, and what you type next goes on from it; Esc puts back what you typed. Tab completes the folder selected, and the list moves on to the folders inside it. ⌘⌫ removes the selected folder from the list, if it is one you opened."
                         ),
                         HelpRow(
                             label: "Favorites",
@@ -221,6 +221,11 @@ extension HelpContent {
                                 "Paste and New Folder go into the folder you are browsing, whatever is selected. To paste into another folder, or make a folder inside it, right-click that folder. Files you copy or cut here paste only in File Trail, not in Finder or other apps, and files copied in Finder don't paste here: drag them between apps instead."
                         ),
                         HelpRow(
+                            label: "Move to a folder",
+                            description:
+                                "{moveSelection} asks where to move the selected items. It opens on the folder you are in, its path selected: type a few letters to find another folder instead, or change the path. The other pane's folder comes first, then the folders you move or extract into most and the folders you open. A click puts a folder in the field, and a double-click or Return moves the items there. A folder that doesn't exist yet can be made on the way: the button becomes Create and Move."
+                        ),
+                        HelpRow(
                             label: "Image or text as a file",
                             description:
                                 "{pasteAsFile} saves an image or text copied in another app, a screenshot or a few paragraphs, as a new file in the folder you are browsing, and selects its name for you to change. An image keeps the format it was copied in; one copied only as TIFF is saved as PNG. Text is saved as plain text (.txt). The Edit menu and the right-click menu of the folder's empty space say which it will be. Undo moves the file to the Trash."
@@ -306,7 +311,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Extract To",
                             description:
-                                "File › Extract To… takes the archives apart in a folder you choose. What isn't in a folder you're looking at opens in a new window, or a new tab, as Settings → Files says for disk images and archives."
+                                "File › Extract To… takes the archives apart in a folder you choose, found as Move to… finds one: it opens on the folder you are in, and a folder that doesn't exist yet can be made on the way. What isn't in a folder you're looking at opens in a new window, or a new tab, as Settings → Files says for disk images and archives."
                         ),
                         HelpRow(
                             label: "What isn’t extracted",

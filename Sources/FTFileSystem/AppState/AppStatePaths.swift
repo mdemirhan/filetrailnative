@@ -26,6 +26,11 @@ public enum AppStatePaths {
         appState.deletingLastPathComponent().appendingPathComponent("visited-folders.json")
     }
 
+    /// The folders chosen in Move To and Extract To, next to the state file.
+    public static func destinationFolders(besideAppState appState: URL) -> URL {
+        appState.deletingLastPathComponent().appendingPathComponent("destination-folders.json")
+    }
+
     /// `logs/app.log` in the user data folder.
     public static func appLog(in userData: URL) -> URL {
         userData.appendingPathComponent("logs", isDirectory: true).appendingPathComponent("app.log")

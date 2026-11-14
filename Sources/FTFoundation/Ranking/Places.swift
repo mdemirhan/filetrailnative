@@ -10,15 +10,32 @@ public struct Place: Codable, Equatable, Sendable {
     public var isVisited: Bool
     /// How much the folder is in use (see `VisitedFolders.score`); 0 for a favorite never opened.
     public var score: Double
+    /// Whether Move To or Extract To sent items into it; such a folder can be forgotten too.
+    public var isDestination = false
+    /// Whether the tab's other pane shows it: listed first when a folder is chosen for items.
+    public var isOtherPane = false
 
-    public init(path: String, name: String, displayPath: String, isFavorite: Bool, isVisited: Bool, score: Double) {
+    // What the golden files hold: the two marks above belong to a box choosing a folder only.
+    private enum CodingKeys: String, CodingKey {
+        case path, name, displayPath, isFavorite, isVisited, score
+    }
+
+    public init(
+        path: String, name: String, displayPath: String, isFavorite: Bool, isVisited: Bool, score: Double,
+        isDestination: Bool = false, isOtherPane: Bool = false
+    ) {
         self.path = path
         self.name = name
         self.displayPath = displayPath
         self.isFavorite = isFavorite
         self.isVisited = isVisited
         self.score = score
+        self.isDestination = isDestination
+        self.isOtherPane = isOtherPane
     }
+
+    /// Whether ⌘⌫ can take it out of the list: it was opened, or chosen as a destination.
+    public var canForget: Bool { isVisited || isDestination }
 }
 
 public struct PlaceMatch: Equatable, Sendable {
@@ -58,10 +75,13 @@ public enum Places {
 
     public static let maxResults = 50
 
-    /// Every opened folder and every favorite, once each, without the folder on screen.
+    /// Every opened folder and every favorite, once each, without the folder on screen. When a folder is chosen for
+    /// items, the folders chosen before (`destinationFolders`) join them, each scored by its visits and its choices
+    /// together, and the other pane's folder comes first.
     public static func build(
         visitedFolders: [VisitedFolder], favoritePaths: [String], currentPath: String, homePath: String, now: Double,
-        startupDiskName: String = VolumePaths.defaultStartupDiskName
+        startupDiskName: String = VolumePaths.defaultStartupDiskName, destinationFolders: [VisitedFolder] = [],
+        otherPanePath: String? = nil
     ) -> [Place] {
         let favorites = Set(favoritePaths.map(ExactKey.init))
         // Insertion order is kept, as a Map keeps it; setting a path again replaces its value in place.
@@ -85,6 +105,28 @@ public enum Places {
                     isVisited: true,
                     score: VisitedFolders.score(folder, now: now)))
         }
+        func place(_ path: String, isVisited: Bool, score: Double) -> Place {
+            Place(
+                path: path, name: FavoriteLabel.label(for: path, homePath: homePath, startupDiskName: startupDiskName),
+                displayPath: abbreviate(path, homePath: homePath), isFavorite: favorites.contains(ExactKey(path)),
+                isVisited: isVisited, score: score)
+        }
+        for folder in destinationFolders {
+            let key = ExactKey(folder.path)
+            var chosen = places[key] ?? place(folder.path, isVisited: false, score: 0)
+            chosen.isDestination = true
+            chosen.score += VisitedFolders.score(folder, now: now)
+            set(key, chosen)
+        }
+        if let otherPanePath, !otherPanePath.isEmpty {
+            let key = ExactKey(otherPanePath)
+            var shown = places[key] ?? place(otherPanePath, isVisited: false, score: 0)
+            shown.isOtherPane = true
+            // First in the list, ahead of the opened folders.
+            places[key] = shown
+            order.removeAll { $0 == key }
+            order.insert(key, at: 0)
+        }
         for path in favoritePaths where places[ExactKey(path)] == nil {
             set(
                 ExactKey(path),
@@ -103,7 +145,11 @@ public enum Places {
     /// Text that is a path rather than a name: the box completes it folder by folder instead.
     public static func isPathQuery(_ query: String) -> Bool {
         let trimmed = JSString.trimmedStart(query)
-        return JSString.hasPrefix(trimmed, "/") || JSString.hasPrefix(trimmed, "~")
+        if JSString.hasPrefix(trimmed, "/") || JSString.hasPrefix(trimmed, "~") { return true }
+        // A path from the folder on screen: ".", "..", "./…" and "../…". A name that only starts with a dot
+        // (".config") is still a name.
+        let first = trimmed.split(separator: "/", maxSplits: 1, omittingEmptySubsequences: false).first ?? ""
+        return first == "." || first == ".."
     }
 
     /// The places matching `query`, best first. Each word typed must be found, in the name or failing
@@ -144,6 +190,7 @@ public enum Places {
         let sorted = ranked.enumerated().sorted { left, right in
             let (a, b) = (left.element, right.element)
             if a.quality != b.quality { return a.quality > b.quality }
+            if a.place.isOtherPane != b.place.isOtherPane { return a.place.isOtherPane }
             if a.place.score != b.place.score { return a.place.score > b.place.score }
             if a.place.isFavorite != b.place.isFavorite { return a.place.isFavorite }
             return left.offset < right.offset

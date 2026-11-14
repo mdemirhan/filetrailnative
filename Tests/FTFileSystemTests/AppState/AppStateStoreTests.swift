@@ -219,6 +219,32 @@ struct AppStateStoreTests {
         }
     }
 
+    // The folders chosen in Move To and Extract To have a file of their own, and forgetting a folder in a box forgets
+    // it there too.
+    @Test func remembersTheFoldersChosenForItemsAcrossRestarts() throws {
+        try Kit.withFolder { folder in
+            let path = Kit.statePath(folder)
+            let store = Kit.store(path)
+            store.recordDestination("/Users/demo/Archive", now: 1_000)
+            store.recordDestination("/Users/demo/Archive", now: 2_000)
+            store.recordFolderVisit("/Users/demo/Archive", kind: .stay, now: 1_500)
+            store.flush()
+            #expect(FileManager.default.fileExists(atPath: folder + "/destination-folders.json"))
+            let reloaded = Kit.store(path)
+            #expect(
+                reloaded.destinations() == [
+                    VisitedFolder(
+                        path: "/Users/demo/Archive",
+                        visits: [FolderVisit(at: 2_000, kind: .goTo), FolderVisit(at: 1_000, kind: .goTo)])
+                ])
+            reloaded.forgetVisitedFolder("/Users/demo/Archive")
+            #expect(reloaded.destinations().isEmpty)
+            #expect(reloaded.folders().isEmpty)
+            reloaded.flush()
+            #expect(Kit.store(path).destinations().isEmpty)
+        }
+    }
+
     @Test func remembersTheFoldersThatAreOpenedAcrossRestarts() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)

@@ -355,6 +355,52 @@ final class WindowWriteActions {
         return outcome
     }
 
+    /// What `makeFolder(at:)` came to.
+    enum MadeFolder: Equatable {
+        case made(String)
+        case failed(String)
+        case cancelled
+    }
+
+    /// Makes the folder at `path`, by the name given, and waits until it is made: a folder typed in Move To or Extract
+    /// To that doesn't exist yet. It is a New Folder of its own, so Undo takes it away apart from what goes into it.
+    func makeFolder(at path: String) async -> MadeFolder {
+        final class Ends {
+            var seen: [String: WriteOperationEvent] = [:]
+            var waiting: (id: String, resume: CheckedContinuation<WriteOperationEvent, Never>)?
+        }
+        let ends = Ends()
+        // Listening before it starts: a folder is made quickly.
+        let observation = session.observe { event in
+            guard case .ended(let ended, _) = event else { return }
+            if let waiting = ends.waiting, waiting.id == ended.operationId {
+                ends.waiting = nil
+                waiting.resume.resume(returning: ended)
+            } else {
+                ends.seen[ended.operationId] = ended
+            }
+        }
+        defer { withExtendedLifetime(observation) {} }
+        let outcome = await createFolder(
+            in: NodePath.dirname(path), named: NodePath.basename(path), nextFreeName: false, selectInTree: false)
+        guard case .queued(let operationId) = outcome else {
+            switch outcome {
+            case .blocked(let message), .error(let message): return .failed(message)
+            default: return .cancelled
+            }
+        }
+        let ended = await withCheckedContinuation { resume in
+            if let seen = ends.seen[operationId] {
+                resume.resume(returning: seen)
+            } else {
+                ends.waiting = (operationId, resume)
+            }
+        }
+        let item = ended.result?.items.first
+        if let made = item?.destinationPath, item?.status == .completed { return .made(made) }
+        return .failed(item?.error ?? "The folder couldn\u{2019}t be made.")
+    }
+
     private func createFolder(in folder: String, named name: String, nextFreeName: Bool, selectInTree: Bool) async
         -> CopyLikeOutcome
     {

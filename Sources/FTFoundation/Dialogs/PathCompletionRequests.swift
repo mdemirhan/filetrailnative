@@ -38,6 +38,13 @@ public final class PathCompletionRequests {
         if requests { schedule(value) }
     }
 
+    /// The field holds `value` and its completions are asked for now, without the pause: a box that opens on a path.
+    public func requestNow(_ value: String) {
+        timer?.cancel()
+        timer = nil
+        send(value)
+    }
+
     /// Whether a request waits for the pause to end.
     public var isScheduled: Bool { timer != nil }
 
@@ -63,8 +70,8 @@ public final class PathCompletionRequests {
         }
     }
 
-    /// What is sent for a typed text, trimmed with `~` expanded.
-    public static func requestPath(_ input: String, homePath: String) -> String {
-        PathText2.expandHome(JSString.trimmed(input), homePath: homePath)
+    /// What is sent for a typed text: trimmed, `~` expanded, and a path from the folder on screen made whole.
+    public static func requestPath(_ input: String, homePath: String, currentPath: String = "") -> String {
+        GoToBoxState.resolve(input, homePath: homePath, currentPath: currentPath)
     }
 }

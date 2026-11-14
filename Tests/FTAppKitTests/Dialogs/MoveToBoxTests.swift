@@ -36,8 +36,13 @@ extension ExplorerWindowlessTests {
             DialogKeys.press(36, "\r", in: window.tab.window)
         }
 
-        // ⇧⌘M opens Move To on the folder shown; Return does nothing until a folder is chosen; Choose… fills the field
-        // from the picker; Move moves and the box closes.
+        /// The folder as the box shows it: from "~", ending in "/".
+        private func shown(_ path: String) -> String {
+            Places.abbreviate(path, homePath: FileManager.default.homeDirectoryForCurrentUser.path) + "/"
+        }
+
+        // ⇧⌘M opens Move To on the folder shown, all of it selected; Return there says the item is in it already;
+        // Choose… fills the field from the picker; Move moves, the box closes and the folder is remembered.
         @Test func movesIntoTheFolderChosen() async throws {
             let window = try await open()
             var pickedFrom: [String?] = []
@@ -47,14 +52,19 @@ extension ExplorerWindowlessTests {
                 return alpha
             }
             let box = try openMove(window, ["note.txt"])
-            #expect(box.titleLabel?.stringValue == "Move To")
+            #expect(box.titleLabel?.stringValue == "Move \u{201C}note.txt\u{201D} To")
             #expect(box.field.accessibilityLabel() == "Destination folder")
             #expect(box.submitButton.title == "Move")
-            #expect(!box.submitButton.isEnabled)
+            #expect(box.field.stringValue == shown(window.folder.path))
+            let editor = try #require(box.field.currentEditor())
+            #expect(editor.selectedRange == NSRange(location: 0, length: (box.field.stringValue as NSString).length))
+            #expect(box.submitButton.isEnabled)
             #expect(box.browseButton?.title == "Choose…")
             #expect(box.rowViews.first(where: \.isSelected) == nil)
             #expect(window.tab.focusedPane == nil)
             DialogKeys.press(36, "\r", in: window.tab.window)
+            #expect(
+                await waitUntil { box.errorLabel.stringValue == "\u{201C}note.txt\u{201D} is already in this folder." })
             #expect(window.exists("note.txt"))
             #expect(window.tab.goToBox === box)
             try #require(box.browseButton).perform()
@@ -65,14 +75,39 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { window.exists("Alpha/note.txt") })
             #expect(!window.exists("note.txt"))
             #expect(await waitUntil { window.tab.goToBox == nil })
+            #expect(window.harness.store.destinations().map(\.path) == [alpha])
             await close(window)
         }
 
-        // A destination that isn't a folder keeps the box open with the reason.
+        // A folder that isn't there, in one that is, is offered to be made: the button says Create and Move, and the
+        // next Return makes it and moves the item into it. Typing something else takes the offer back.
+        @Test func makesAFolderThatIsNotThereYet() async throws {
+            let window = try await open()
+            let box = try openMove(window, ["note.txt"])
+            let nowhere = window.folder.appendingPathComponent("Nowhere").path
+            submit(box, nowhere, in: window)
+            #expect(await waitUntil { box.submitButton.title == "Create and Move" })
+            #expect(
+                box.errorLabel.stringValue
+                    == "There\u{2019}s no folder \u{201C}Nowhere\u{201D} there yet: Create and Move makes it first.")
+            #expect(!window.exists("Nowhere"))
+            DialogKeys.type(nowhere + "2", into: box)
+            #expect(box.submitButton.title == "Move")
+            #expect(box.errorLabel.isHidden)
+            submit(box, nowhere, in: window)
+            #expect(await waitUntil { box.submitButton.title == "Create and Move" })
+            DialogKeys.press(36, "\r", in: window.tab.window)
+            #expect(await waitUntil { window.exists("Nowhere/note.txt") })
+            #expect(await waitUntil { window.tab.goToBox == nil })
+            #expect(!window.exists("note.txt"))
+            await close(window)
+        }
+
+        // A destination that is a file, or in a folder that isn't there, keeps the box open with the reason.
         @Test func refusesADestinationThatIsNotAFolder() async throws {
             let window = try await open()
             let box = try openMove(window, ["note.txt"])
-            submit(box, window.folder.appendingPathComponent("Nowhere").path, in: window)
+            submit(box, window.folder.appendingPathComponent("Nowhere/Deeper").path, in: window)
             #expect(await waitUntil { box.errorLabel.stringValue == "Destination must be an existing folder." })
             #expect(window.tab.goToBox === box)
             #expect(box.cancelButton.isEnabled)

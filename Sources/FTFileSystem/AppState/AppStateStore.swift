@@ -23,17 +23,19 @@ public final class AppStateStore: @unchecked Sendable {
         .foldersFirst, .favoritesExpanded, .locationsExpanded,
     ]
 
-    private enum StoreFile: Hashable { case state, visits }
+    private enum StoreFile: Hashable { case state, visits, destinations }
 
     private let lock = NSLock()
     public let filePath: String
     private let visitsFilePath: String
+    private let destinationsFilePath: String
     private let defaults: AppPreferences
     private let fileSystem: any StateFileSystem
     private let timer: any StateTimer
     private let onPersistError: @Sendable (any Error) -> Void
     private var state: AppState
     private var visitedFolders: [VisitedFolder]
+    private var destinationFolders: [VisitedFolder]
     private var unsavedFiles: Set<StoreFile> = []
     private var cancelPromptSave: (@Sendable () -> Void)?
     private var cancelDeferredSave: (@Sendable () -> Void)?
@@ -59,8 +61,10 @@ public final class AppStateStore: @unchecked Sendable {
             }
         defaults = AppPreferences.defaults(theme: defaultTheme)
         visitsFilePath = AppStatePaths.visitedFolders(besideAppState: URL(fileURLWithPath: filePath)).path
+        destinationsFilePath = AppStatePaths.destinationFolders(besideAppState: URL(fileURLWithPath: filePath)).path
         state = Self.readState(filePath, fileSystem, defaults, readFailed)
         visitedFolders = Self.readVisitedFolders(visitsFilePath, fileSystem, readFailed)
+        destinationFolders = Self.readVisitedFolders(destinationsFilePath, fileSystem, readFailed)
     }
 
     // MARK: Preferences
@@ -94,7 +98,8 @@ public final class AppStateStore: @unchecked Sendable {
         }
     }
 
-    /// Removing a folder from Go To is something the user did on purpose.
+    /// Removing a folder from Go To is something the user did on purpose. It leaves the folders chosen in Move To and
+    /// Extract To too.
     @discardableResult
     public func forgetVisitedFolder(_ path: String) -> [VisitedFolder] {
         locked {
@@ -104,7 +109,31 @@ public final class AppStateStore: @unchecked Sendable {
                 saveSoon()
             }
             visitedFolders = remaining
+            let destinations = VisitedFolders.forget(destinationFolders, path: path)
+            if destinations.count != destinationFolders.count {
+                markUnsaved(.destinations)
+                saveSoon()
+            }
+            destinationFolders = destinations
             return remaining
+        }
+    }
+
+    // MARK: Destination folders
+
+    /// The folders that Move To and Extract To sent items into, ranked as the opened folders are.
+    public func destinations() -> [VisitedFolder] {
+        locked { destinationFolders }
+    }
+
+    /// A folder chosen in Move To or Extract To: each choice counts as a visit picked in the Go To box does.
+    public func recordDestination(_ path: String, now: Double = AppClock.now.epochMilliseconds) {
+        locked {
+            let recorded = VisitedFolders.record(destinationFolders, path: path, kind: .goTo, now: now)
+            if recorded == destinationFolders { return }
+            destinationFolders = recorded
+            markUnsaved(.destinations)
+            saveLater()
         }
     }
 
@@ -335,6 +364,11 @@ public final class AppStateStore: @unchecked Sendable {
         // A file whose write failed stays unsaved: the next write, or the one at quit, tries it again.
         if unsavedFiles.contains(.visits), writeAtomically(visitsFilePath, VisitedFolders.serialize(visitedFolders)) {
             unsavedFiles.remove(.visits)
+        }
+        if unsavedFiles.contains(.destinations),
+            writeAtomically(destinationsFilePath, VisitedFolders.serialize(destinationFolders))
+        {
+            unsavedFiles.remove(.destinations)
         }
         if unsavedFiles.contains(.state) {
             do {

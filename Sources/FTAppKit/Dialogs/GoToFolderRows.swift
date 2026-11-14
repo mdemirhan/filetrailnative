@@ -171,7 +171,11 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
 
     override func mouseUp(with event: NSEvent) {
         guard bounds.contains(convert(event.locationInWindow, from: nil)) else { return }
-        box?.rowClicked(index)
+        if event.clickCount >= 2 {
+            box?.rowDoubleClicked(index)
+        } else {
+            box?.rowClicked(index)
+        }
     }
 }
 
