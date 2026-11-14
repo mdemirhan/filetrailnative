@@ -100,14 +100,14 @@ private func request(
         #expect(ThumbnailStore.pixelSize(forIconSize: 128) == 256)
     }
 
-    // The Previews view asks for twice its size in pixels, in steps of 256, at most 1280.
-    @Test func previewsAskForTwiceTheirSizeUpTo1280Pixels() {
-        #expect(ThumbnailStore.pixelSize(forPreviewSize: 100) == 256)
-        #expect(ThumbnailStore.pixelSize(forPreviewSize: 160) == 512)
-        #expect(ThumbnailStore.pixelSize(forPreviewSize: 240) == 512)
-        #expect(ThumbnailStore.pixelSize(forPreviewSize: 300) == 768)
-        #expect(ThumbnailStore.pixelSize(forPreviewSize: 640) == 1280)
-        #expect(ThumbnailStore.pixelSize(forPreviewSize: 900) == 1280)
+    // The Previews view asks for its size in the screen's pixels, in steps of 256, at most the screen's longer side.
+    @Test func previewsAskForTheirSizeInTheScreensPixelsUpToTheScreen() {
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 100, limit: 5120) == 256)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 240, limit: 5120) == 512)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 300, limit: 5120) == 768)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 2400, limit: 5120) == 4864)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 3000, limit: 5120) == 5120)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 900, scale: 1, limit: 1920) == 1024)
     }
 
     // A store with a memory limit drops the least recently used previews once those it keeps would take more; one
@@ -115,15 +115,15 @@ private func request(
     @Test func aMemoryLimitDropsTheOldestPreviewsFirst() async {
         let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1", unchanged: false, picture: picture()) }
         let queue = ThumbnailLoadQueue()
-        // Room for two previews of 512 pixels (1 MB each) and not three.
-        let store = ThumbnailStore(provider: provider, queue: queue, memoryLimit: 2 * 512 * 512 * 4 + 1)
+        // Room for two pictures of 4 by 4 pixels (64 bytes each) and not three.
+        let store = ThumbnailStore(provider: provider, queue: queue, memoryLimit: 2 * 4 * 4 * 4 + 1)
         let listing = Listing()
         for name in ["a", "b", "c"] {
             _ = store.load(path: "/\(name).png", kind: .file, size: 512, listing: listing) { _ in }
             await idle(queue)
         }
         #expect(store.count == 2)
-        #expect(store.memoryUsed == 2 * 512 * 512 * 4)
+        #expect(store.memoryUsed == 2 * 4 * 4 * 4)
         #expect(store.loadedPicture(forPath: "/a.png") == nil)
         #expect(store.loadedPicture(forPath: "/c.png") != nil)
         store.reset()

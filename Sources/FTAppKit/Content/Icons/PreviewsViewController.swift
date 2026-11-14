@@ -65,12 +65,15 @@ final class PreviewsViewController: IconViewController {
         }
     }
 
-    /// A scroll that ends between rows settles on the nearest one, so the pane shows whole previews.
+    /// A swipe that ends between rows settles on the next row the way it went, or back where it started when it went
+    /// only a little, so the pane shows whole previews.
     private func snapToRow() {
         let clip = scroll.contentView
         let maxTop = Double(max(0, collection.frame.height - clip.bounds.height))
         let top = PreviewGrid.snappedScrollTop(
-            Double(clip.bounds.origin.y), rowHeight: layout.rowHeight, maxScrollTop: maxTop)
+            from: scrollStart ?? Double(clip.bounds.origin.y), to: Double(clip.bounds.origin.y),
+            rowHeight: layout.rowHeight, maxScrollTop: maxTop)
+        scrollStart = nil
         guard abs(top - Double(clip.bounds.origin.y)) >= 0.5 else { return }
         NSAnimationContext.runAnimationGroup { context in
             context.duration = DesignTokens.motion.fast / 1000
@@ -80,14 +83,36 @@ final class PreviewsViewController: IconViewController {
         }
     }
 
-    private var scrollEndObserver: (any NSObjectProtocol)?
+    private var scrollObservers: [any NSObjectProtocol] = []
+    /// Where the swipe under way started.
+    private var scrollStart: Double?
 
     isolated deinit {
-        if let scrollEndObserver { NotificationCenter.default.removeObserver(scrollEndObserver) }
+        for observer in scrollObservers { NotificationCenter.default.removeObserver(observer) }
     }
 
+    override var picturesFillTheirPlace: Bool { true }
     override var thumbnailStore: ThumbnailStore { PreviewThumbnails.store }
-    override var thumbnailPixelSize: Int { ThumbnailStore.pixelSize(forPreviewSize: layout.iconSize) }
+
+    /// The pixels a picture is asked for at: its place's longer side on this screen, at most the screen's own longer
+    /// side, so a preview filling a large screen is as sharp as the screen.
+    override var thumbnailPixelSize: Int {
+        let box = PreviewGrid.pictureBox(layout)
+        let screen = view.window?.screen ?? NSScreen.main
+        let scale = Double(screen?.backingScaleFactor ?? 2)
+        let longest = screen.map { Double(max($0.frame.width, $0.frame.height)) * scale } ?? 4096
+        return ThumbnailStore.pixelSize(forPreviewSize: max(box.width, box.height), scale: scale, limit: Int(longest))
+    }
+
+    /// The rename field goes where the name is: right under the picture.
+    override func renameFrame(at index: Int) -> NSRect {
+        let place = itemFrame(at: index, viewport: viewport)
+        guard let item = visibleItem(at: index) as? IconItem else { return super.renameFrame(at: index) }
+        let name = item.nameFrame
+        return NSRect(
+            x: place.minX + (place.width - CGFloat(layout.labelWidth)) / 2,
+            y: place.minY + name.minY, width: CGFloat(layout.labelWidth), height: CGFloat(style.renameHeight))
+    }
 
     /// The name, and how big the file is.
     override func toolTip(for entry: DirectoryEntry) -> String {
@@ -98,11 +123,20 @@ final class PreviewsViewController: IconViewController {
     override func loadView() {
         super.loadView()
         magnifier = PreviewMagnifier(pane: self)
-        scrollEndObserver = NotificationCenter.default.addObserver(
-            forName: NSScrollView.didEndLiveScrollNotification, object: scroll, queue: .main
-        ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.snapToRow() }
-        }
+        let center = NotificationCenter.default
+        scrollObservers = [
+            center.addObserver(forName: NSScrollView.willStartLiveScrollNotification, object: scroll, queue: .main) {
+                [weak self] _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.scrollStart = Double(self.scroll.contentView.bounds.origin.y)
+                }
+            },
+            center.addObserver(forName: NSScrollView.didEndLiveScrollNotification, object: scroll, queue: .main) {
+                [weak self] _ in
+                MainActor.assumeIsolated { self?.snapToRow() }
+            },
+        ]
     }
 
     override func viewWillDisappear() {

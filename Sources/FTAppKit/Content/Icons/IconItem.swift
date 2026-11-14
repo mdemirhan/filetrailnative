@@ -255,6 +255,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
     private var iconRequest: LoadHandle?
     private var thumbnailRequest: LoadHandle?
     private var hasThumbnail = false
+    /// The picture fills the item's place, whatever its shape (the Previews view).
+    private var fillsPlace = false
 
     override func loadView() {
         root.setAccessibilityIdentifier("icons.item")
@@ -303,6 +305,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         density = pane.density
         layout = pane.layout
         style = pane.style
+        fillsPlace = pane.picturesFillTheirPlace
         nameField.stringValue = entry.name
         root.setAccessibilityLabel(entry.name)
         // `title={entry.name}`: the whole name, for one shortened in the middle.
@@ -415,6 +418,10 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
     // MARK: Layout
 
     private func layoutParts() {
+        if fillsPlace {
+            layoutFillingThePlace()
+            return
+        }
         let tileFrame = layout.tileFrame(style: style)
         tile.frame = NSRect(x: tileFrame.x, y: tileFrame.y, width: tileFrame.width, height: tileFrame.height)
         let inset = layout.iconInset
@@ -439,6 +446,44 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         badge.frame = NSRect(
             x: tileFrame.maxX - offset - badgeSize, y: tileFrame.y + offset, width: badgeSize, height: badgeSize)
     }
+
+    /// The Previews view: the picture as large as its place allows in its own shape (an icon at most two thirds of
+    /// it), the tile hugging it, and the name right under it, the two together in the middle of the place.
+    private func layoutFillingThePlace() {
+        let box = PreviewGrid.pictureBox(layout)
+        let picture: (width: Double, height: Double)
+        if hasThumbnail, thumbnailSize.width > 0, thumbnailSize.height > 0 {
+            picture = PreviewGrid.fitted(
+                (Double(thumbnailSize.width), Double(thumbnailSize.height)), in: box)
+        } else {
+            let side = min(box.width, box.height) * 2 / 3
+            picture = (side, side)
+        }
+        let labelFrame = layout.labelFrame(textWidth: labelTextWidth, lines: label.lines.count)
+        let inset = 4.0
+        let placeHeight = layout.rowHeight - style.heightInset
+        let together = picture.height + inset * 2 + layout.labelGap + labelFrame.height
+        let top = max(0, (placeHeight - together) / 2)
+        let tileFrame = GridRect(
+            x: (layout.cellMinWidth - picture.width) / 2 - inset, y: top, width: picture.width + inset * 2,
+            height: picture.height + inset * 2)
+        tile.frame = NSRect(x: tileFrame.x, y: tileFrame.y, width: tileFrame.width, height: tileFrame.height)
+        iconBox.frame = NSRect(x: inset, y: inset, width: picture.width, height: picture.height)
+        iconView.frame = iconBox.bounds
+        thumbnail.frame = iconBox.bounds
+        label.frame = NSRect(
+            x: labelFrame.x, y: tileFrame.maxY + layout.labelGap, width: labelFrame.width, height: labelFrame.height)
+        pill.frame = label.bounds
+        label.placeTagDots()
+        dropMarker.frame = root.bounds
+        let badgeSize = layout.clipboardBadgeSize
+        let offset = layout.clipboardBadgeOffset
+        badge.frame = NSRect(
+            x: tileFrame.maxX - offset - badgeSize, y: tileFrame.y + offset, width: badgeSize, height: badgeSize)
+    }
+
+    /// Where the name is in the item, for the rename field over it.
+    var nameFrame: NSRect { label.frame }
 
     override func viewDidLayout() {
         super.viewDidLayout()

@@ -5,7 +5,7 @@ import Foundation
 /// Previews are asked for at `pixelSize(forIconSize:)` on their longest side: twice the icon, for a Retina display.
 /// Previews are kept in memory only (Quick Look has its own cache on disk), most recently used last. 500 cover
 /// several screens of icon view; older ones are asked for again. A store of large previews also keeps under a memory
-/// limit, counting each preview as a square of the size it was asked for.
+/// limit, counting each preview by the pixels of its picture.
 @MainActor
 public final class ThumbnailStore {
     /// Previews for icons up to 64 points.
@@ -31,11 +31,12 @@ public final class ThumbnailStore {
         var checkedFor: AnyObject
     }
 
-    /// The size of a preview `size` points wide in the Previews view on a Retina display: twice as many pixels, in
-    /// whole steps of 256, at most 1280. The previews follow the pane's size, so the steps keep a window being resized
-    /// from asking for each one again every few points.
-    public nonisolated static func pixelSize(forPreviewSize size: Double) -> Int {
-        min(1280, max(1, Int((size * 2 / 256).rounded(.up))) * 256)
+    /// The pixels a preview `size` points across is asked for at on a screen of `scale`: in whole steps of 256, at
+    /// most `limit` (the screen's longer side). The previews follow the pane's size, so the steps keep a window being
+    /// resized from asking for each one again every few points.
+    public nonisolated static func pixelSize(forPreviewSize size: Double, scale: Double = 2, limit: Int) -> Int {
+        let stepped = max(1, Int((size * scale / 256).rounded(.up))) * 256
+        return max(256, min(limit, stepped))
     }
 
     private let provider: any ThumbnailProviding
@@ -59,8 +60,11 @@ public final class ThumbnailStore {
     /// How many previews are kept.
     public var count: Int { cache.count }
 
-    /// What a preview asked for at `size` pixels may take: four bytes a pixel of its square.
-    private static func cost(_ cached: Cached) -> Int { cached.picture == nil ? 0 : cached.size * cached.size * 4 }
+    /// What a preview takes: four bytes a pixel of the picture Quick Look made.
+    private static func cost(_ cached: Cached) -> Int {
+        guard let image = cached.picture?.image else { return 0 }
+        return Int(image.size.width * image.size.height) * 4
+    }
 
     private func keep(_ cached: Cached, for path: String) {
         if let old = cache.peek(path) { memoryUsed -= Self.cost(old) }

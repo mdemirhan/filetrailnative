@@ -1,4 +1,4 @@
-// The Previews view's grid: 9, 4, 2 or 1 previews fill the pane, as large as that many fit
+// The Previews view's grid: 9, 4, 2 or 1 previews fill the pane, each picture as large as its place allows
 import Testing
 
 @testable import FTFoundation
@@ -17,36 +17,43 @@ struct PreviewGridTests {
         #expect(PreviewGrid.label(4) == "4 at a time" && PreviewGrid.label(1) == "1 at a time")
     }
 
-    @Test func thePreviewsFillThePaneWithExactlyTheirColumnsAndRows() {
+    @Test func thePlacesShareThePaneExactly() {
         for count in PreviewGrid.counts {
             let (columns, rows) = PreviewGrid.shape(count)
-            let grid = PreviewGrid.layout(base: base, count: count, width: 1200, height: 800)
-            #expect(grid.columns(containerWidth: 1200) == columns)
-            // The rows share the pane's height exactly: nothing of the next row shows.
+            let grid = PreviewGrid.layout(base: base, count: count, width: 1216, height: 800)
+            #expect(grid.columns(containerWidth: 1216) == columns)
+            #expect(grid.cellMinWidth == 1200 / Double(columns))
+            // Nothing of the next row shows.
             #expect(grid.paddingTop == 0 && grid.paddingBottom == 0)
             #expect(Double(rows) * grid.rowHeight == 800)
-            // The preview and its name sit in the middle of the row.
-            #expect(grid.itemPaddingTop + grid.iconBoxSize <= grid.rowHeight)
         }
+    }
+
+    @Test func thePictureTakesItsPlaceLessTheMarginsAndTheName() {
+        let grid = PreviewGrid.layout(base: base, count: 1, width: 1216, height: 800)
+        let box = PreviewGrid.pictureBox(grid)
+        #expect(box.width == 1200 - 12)
+        #expect(box.height == 800 - 2 - 12 - grid.labelGap - (2 * grid.labelLineHeight + 2 * grid.labelPaddingVertical))
+        // A wide photo fills the width, a tall one the height; neither is stretched.
+        let wide = PreviewGrid.fitted((4000, 2000), in: box)
+        #expect(wide.width == box.width && wide.height < box.height)
+        let tall = PreviewGrid.fitted((1000, 3000), in: box)
+        #expect(tall.height == box.height && tall.width < box.width)
         // Fewer previews are larger.
         let sides = PreviewGrid.counts.map {
-            PreviewGrid.layout(base: base, count: $0, width: 1200, height: 800).iconSize
+            PreviewGrid.layout(base: base, count: $0, width: 1216, height: 800).iconSize
         }
         #expect(sides == sides.sorted())
     }
 
-    @Test func aPaneHalfAsWideShowsAsManySmaller() {
-        let full = PreviewGrid.layout(base: base, count: 4, width: 1600, height: 2000)
-        let half = PreviewGrid.layout(base: base, count: 4, width: 800, height: 2000)
-        #expect(half.columns(containerWidth: 800) == 2)
-        #expect(half.iconSize < full.iconSize)
-        // A tiny pane still shows previews 32 points across.
-        #expect(PreviewGrid.layout(base: base, count: 9, width: 120, height: 90).iconSize == 32)
-    }
-
-    @Test func aScrollSettlesOnTheNearestRow() {
-        #expect(PreviewGrid.snappedScrollTop(390, rowHeight: 400, maxScrollTop: 4000) == 400)
-        #expect(PreviewGrid.snappedScrollTop(190, rowHeight: 400, maxScrollTop: 4000) == 0)
-        #expect(PreviewGrid.snappedScrollTop(3990, rowHeight: 400, maxScrollTop: 3900) == 3900)
+    @Test func aSwipeSettlesOnTheNextRowTheWayItWentOrBack() {
+        // A sixth of a row along goes on to the next; less goes back.
+        #expect(PreviewGrid.snappedScrollTop(from: 0, to: 80, rowHeight: 400, maxScrollTop: 4000) == 400)
+        #expect(PreviewGrid.snappedScrollTop(from: 0, to: 50, rowHeight: 400, maxScrollTop: 4000) == 0)
+        #expect(PreviewGrid.snappedScrollTop(from: 800, to: 700, rowHeight: 400, maxScrollTop: 4000) == 400)
+        #expect(PreviewGrid.snappedScrollTop(from: 800, to: 760, rowHeight: 400, maxScrollTop: 4000) == 800)
+        // A long swipe goes as far as it went, within the content.
+        #expect(PreviewGrid.snappedScrollTop(from: 0, to: 1300, rowHeight: 400, maxScrollTop: 4000) == 1600)
+        #expect(PreviewGrid.snappedScrollTop(from: 3600, to: 3990, rowHeight: 400, maxScrollTop: 3900) == 3900)
     }
 }

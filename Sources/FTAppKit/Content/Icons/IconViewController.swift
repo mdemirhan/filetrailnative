@@ -23,6 +23,10 @@ class IconViewController: ItemGridPane {
     var thumbnailStore: ThumbnailStore { IconThumbnails.store }
     var thumbnailPixelSize: Int { ThumbnailStore.pixelSize(forIconSize: layout.iconSize) }
 
+    /// Each item's picture fills its place, whatever its shape, with the name right under it (the Previews view);
+    /// otherwise it sits in a square box of the icon's size.
+    var picturesFillTheirPlace: Bool { false }
+
     /// What shows when the pointer rests on an item: its whole name, for one shortened in the middle.
     func toolTip(for entry: DirectoryEntry) -> String { entry.name }
 

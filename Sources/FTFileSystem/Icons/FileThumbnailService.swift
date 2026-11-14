@@ -84,7 +84,7 @@ public struct FileThumbnailService: ThumbnailProviding {
 }
 
 /// Asks Quick Look for a picture of the file's content (an image, a PDF page, a video frame, a document
-/// page) that fits in a square of `size` pixels, keeping its proportions. Gives nil when Quick Look has no
+/// page) that fits in a square of `size` pixels (at most 8192), keeping its proportions. Gives nil when Quick Look has no
 /// preview; the system icon is not returned as a stand-in (see `FileIconStore` for that).
 ///
 /// Pictures and videos come back as they are. Everything else (text, PDFs, documents) is drawn the way
@@ -94,7 +94,7 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     public init() {}
 
     public func renderThumbnail(path: String, size: Int) async -> ThumbnailPicture? {
-        let side = CGFloat(min(max(size, 16), 1024))
+        let side = CGFloat(min(max(size, 16), 8192))
         let url = URL(fileURLWithPath: path)
         let request = QLThumbnailGenerator.Request(
             fileAt: url, size: CGSize(width: side, height: side), scale: 1.0, representationTypes: .thumbnail)
