@@ -46,8 +46,16 @@ struct SidebarRowState: Equatable {
     var hasDisclosure: Bool
     /// The item is on the clipboard: a copy or cut glyph after its name.
     var clipboardMark: ClipboardMark? = nil
+    /// The tab shows two panes and one of them, or both, shows this row's folder.
+    var paneMark: SidebarPaneMark? = nil
 
     var isFolder: Bool { item.kind == .filesystem }
+}
+
+/// Which of a tab's two panes show a row's folder.
+struct SidebarPaneMark: Equatable {
+    var left: Bool
+    var right: Bool
 }
 
 /// One row of a list: padding, a section header, or a row.

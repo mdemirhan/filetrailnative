@@ -158,8 +158,10 @@ extension ExplorerWindowlessTests {
             #expect(tab.window?.minSize != oneMinimum)
             tab.focusPane(right)
 
+            #expect(tab.sidebarController.paneFolders == [real(harness), real(harness, "Gamma")])
             tab.perform(.toggleTwoPanes)
             #expect(tab.panes.count == 1)
+            #expect(tab.sidebarController.paneFolders.isEmpty)
             #expect(tab.activePane === right)
             #expect(tab.workspace.mainCell.content === right.content.view)
             #expect(!tab.workspace.showsTwoPanes)

@@ -99,6 +99,8 @@ final class SidebarItemCell: NSTableCellView {
     private let eject = SidebarEjectView()
     /// The copy or cut glyph after the name of an item on the clipboard.
     private let markGlyph = ClipboardMarkGlyph(identifier: "sidebar.row.clipboardMark")
+    /// Which pane shows the folder, while the tab shows two.
+    private let paneMark = SidebarPaneMarkView()
     private let loading = SidebarLabelField()
     private let error = SidebarLabelField()
     private(set) var state: SidebarRowState?
@@ -123,7 +125,7 @@ final class SidebarItemCell: NSTableCellView {
             view.setAccessibilityIdentifier(name)
         }
         for view in [
-            chevron, icon, label, badge, eject, markGlyph,
+            chevron, icon, label, badge, eject, markGlyph, paneMark,
         ] as [NSView] {
             box.addSubview(view)
         }
@@ -261,6 +263,9 @@ final class SidebarItemCell: NSTableCellView {
         markGlyph.mark = state.clipboardMark
         markGlyph.color = selectedFocused ? onSelection : ChromeColors.color(accent.solidButton)
         label.alphaValue = state.clipboardMark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
+        paneMark.mark = state.paneMark
+        paneMark.isHidden = state.paneMark == nil
+        paneMark.color = selectedFocused ? onSelection : ChromeColors.color(accent.solidButton)
 
         // The Alias badge
         badge.isHidden = !item.isSymlink
@@ -350,6 +355,13 @@ final class SidebarItemCell: NSTableCellView {
             eject.frame = NSRect(
                 x: ejectX, y: (rowHeight - layout.ejectBox) / 2, width: layout.ejectBox, height: layout.ejectBox)
             limit = ejectX - layout.rowGap
+        }
+        if !paneMark.isHidden {
+            let size = SidebarPaneMarkView.size
+            let markX = limit - size.width
+            paneMark.frame = NSRect(
+                x: markX, y: (rowHeight - size.height) / 2, width: size.width, height: size.height)
+            limit = markX - layout.rowGap
         }
         // The icon, the name, and the badge
         icon.frame = NSRect(x: x, y: (rowHeight - layout.iconSize) / 2, width: layout.iconSize, height: layout.iconSize)
@@ -563,5 +575,58 @@ final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
         SidebarIcons.drawChevron(
             in: rect, color: ChromeColors.color(theme.palette.textSecondary), stroke: layout.sectionChevronStroke,
             rotation: state.expanded ? .pi / 2 : 0)
+    }
+}
+
+/// A tree row's mark while the tab shows two panes: a small frame with the half filled for the pane that shows the folder,
+/// left or right, or both halves when both do.
+final class SidebarPaneMarkView: NSView {
+    static let size = NSSize(width: 15, height: 11)
+
+    var mark: SidebarPaneMark? {
+        didSet {
+            guard mark != oldValue else { return }
+            needsDisplay = true
+            let sides = [mark?.left == true ? "left" : nil, mark?.right == true ? "right" : nil].compactMap { $0 }
+            setAccessibilityLabel("Shown in the \(sides.joined(separator: " and ")) pane")
+        }
+    }
+    var color = NSColor.controlAccentColor {
+        didSet { if color != oldValue { needsDisplay = true } }
+    }
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        setAccessibilityIdentifier("sidebar.row.paneMark")
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard let mark else { return }
+        let outline = bounds.insetBy(dx: 0.6, dy: 0.6)
+        let frame = NSBezierPath(roundedRect: outline, xRadius: 2.5, yRadius: 2.5)
+        frame.lineWidth = 1.1
+        color.withAlphaComponent(0.75).setStroke()
+        frame.stroke()
+        color.setFill()
+        let inner = bounds.insetBy(dx: 1.8, dy: 1.8)
+        let half = (inner.width - 1) / 2
+        if mark.left {
+            NSBezierPath(
+                roundedRect: NSRect(x: inner.minX, y: inner.minY, width: half, height: inner.height),
+                xRadius: 1, yRadius: 1
+            ).fill()
+        }
+        if mark.right {
+            NSBezierPath(
+                roundedRect: NSRect(x: inner.maxX - half, y: inner.minY, width: half, height: inner.height),
+                xRadius: 1, yRadius: 1
+            ).fill()
+        }
     }
 }

@@ -1539,6 +1539,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     // MARK: Observers
 
     func notify(_ change: ExplorerWindowChange) {
+        // The tree marks the folders of both panes while there are two.
+        if change == .folder || change == .panels {
+            sidebar.paneFolders = showsTwoPanes ? panes.map(\.shownFolderPath) : []
+        }
         if change == .folder || change == .search || change == .commands { refreshTrashHeader() }
         // The Trash on screen changed, or came to the screen: what it holds may not be what was last read.
         if change == .folder, panes.contains(where: { $0.content.contentShell.trashHeader != nil }) {

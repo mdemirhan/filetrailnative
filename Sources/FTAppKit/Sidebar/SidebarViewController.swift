@@ -92,6 +92,10 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     }
     /// The items on the clipboard the rows mark.
     var clipboardMarks: ClipboardMarks?
+    /// The folders a tab's two panes show, left first; empty while it shows one. Their rows are marked.
+    var paneFolders: [String] = [] {
+        didSet { if paneFolders != oldValue { refresh() } }
+    }
 
     // MARK: Loading
 
@@ -237,7 +241,14 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             showsLoading: key.map { loadingShown.contains($0) } ?? false, density: density,
             hasDisclosure: hasDisclosure,
             // A favorite or location only points at a folder: only the folder's own row is marked.
-            clipboardMark: item.kind == .filesystem ? clipboardMarks?.mark(for: item.path) : nil)
+            clipboardMark: item.kind == .filesystem ? clipboardMarks?.mark(for: item.path) : nil,
+            paneMark: paneMark(for: item))
+    }
+
+    private func paneMark(for item: TreePresentationItem) -> SidebarPaneMark? {
+        guard paneFolders.count == 2, let path = item.path, !item.id.isHeading else { return nil }
+        let mark = SidebarPaneMark(left: samePath(paneFolders[0], path), right: samePath(paneFolders[1], path))
+        return mark.left || mark.right ? mark : nil
     }
 
     /// The rows of the folder tree (with Favorites and Locations ahead of it when integrated).
