@@ -141,6 +141,51 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Make Bigger, Make Smaller and a taller pane keep the row that was at the top there, with rows of another
+        // height: the pane's own move to that row is not a scroll to settle, in rows of either height.
+        @Test func anotherSizeKeepsTheTopRowOnceThePaneSettles() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 24)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 0.02
+            try? await Task.sleep(for: .milliseconds(50))
+            let clip = previews.scroll.contentView
+            /// The first item of the row at the top, once the pane had time to settle.
+            func topItem() async -> Int {
+                try? await Task.sleep(for: .milliseconds(100))
+                _ = await waitUntil { !previews.isSettling }
+                let row = Double(clip.bounds.origin.y) / previews.layout.rowHeight
+                #expect(abs(row - row.rounded()) < 0.001)
+                return Int(row.rounded()) * previews.columns
+            }
+            // Three rows of two down.
+            clip.scroll(to: NSPoint(x: 0, y: 3 * previews.layout.rowHeight - 20))
+            previews.scroll.reflectScrolledClipView(clip)
+            #expect(await topItem() == 6)
+            tab.perform(.increaseSize)
+            probe.layout()
+            #expect(previews.count == 2)
+            #expect(await topItem() == 6)
+            tab.perform(.decreaseSize)
+            tab.perform(.decreaseSize)
+            probe.layout()
+            #expect(previews.count == 9)
+            #expect(await topItem() == 6)
+            tab.perform(.increaseSize)
+            probe.layout()
+            #expect(previews.count == 4)
+            #expect(await topItem() == 6)
+            // A taller window: taller rows.
+            let window = try #require(tab.window)
+            let rowHeight = previews.layout.rowHeight
+            window.setContentSize(NSSize(width: window.frame.width, height: window.frame.height + 200))
+            harness.layout(tab)
+            probe.layout()
+            #expect(previews.layout.rowHeight > rowHeight)
+            #expect(await topItem() == 6)
+            await harness.close()
+        }
+
         // MARK: The previews kept
 
         // The panes are counted, and what they share is let go a little after the last one went, unless one came

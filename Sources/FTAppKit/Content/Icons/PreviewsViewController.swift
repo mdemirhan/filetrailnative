@@ -94,6 +94,10 @@ final class PreviewsViewController: IconViewController {
             height: Double(size.height))
         fittedTo = size
         guard next != density || fitted != layout else { return false }
+        // A scroll under way was in rows of the old height: the row kept at the top (`scrollAnchor`) is where it ends.
+        settle?.cancel()
+        settle = nil
+        scrollStart = nil
         setGrid(density: next, layout: fitted)
         collection.collectionViewLayout?.invalidateLayout()
         return true
@@ -123,8 +127,16 @@ final class PreviewsViewController: IconViewController {
         let top = Double(scroll.contentView.bounds.origin.y)
         let index = min(layout.row(atScrollTop: top + layout.rowHeight / 2) * columns, entries.count - 1)
         return { [self] in
-            scrollClamped(to: NSPoint(x: 0, y: Double(index / max(1, columns)) * layout.rowHeight))
+            placing { scrollClamped(to: NSPoint(x: 0, y: Double(index / max(1, columns)) * layout.rowHeight)) }
         }
+    }
+
+    override func layoutPane() {
+        placing { super.layoutPane() }
+    }
+
+    override func columnsChanged() {
+        placing { super.columnsChanged() }
     }
 
     // MARK: Whole rows
@@ -157,8 +169,10 @@ final class PreviewsViewController: IconViewController {
                 super.scrollPosition = newValue
                 return
             }
-            placeItems()
-            super.scrollPosition = (rowTop(nearest: newValue.top), newValue.left)
+            placing {
+                placeItems()
+                super.scrollPosition = (rowTop(nearest: newValue.top), newValue.left)
+            }
         }
     }
 
@@ -201,6 +215,17 @@ final class PreviewsViewController: IconViewController {
     private var isSnapping = false
     /// Where the pane was scrolled to when it last moved.
     private var lastTop = 0.0
+    /// The pane is placing its items again (for another count, another size of the pane, another listing) and moves
+    /// itself to keep a row at the top: none of that is a scroll to settle.
+    private var placingDepth = 0
+
+    /// Runs `body`, whose scrolls are the pane's own; the pane rests where it is then.
+    private func placing(_ body: () -> Void) {
+        placingDepth += 1
+        body()
+        placingDepth -= 1
+        if placingDepth == 0 { lastTop = Double(scroll.contentView.bounds.origin.y) }
+    }
     /// Waits for a scroll the system doesn't say the end of (a mouse wheel's notches, a drag-to-select past the edge)
     /// to rest; nothing waits while the pane is still.
     private var settle: DispatchWorkItem?
@@ -219,7 +244,7 @@ final class PreviewsViewController: IconViewController {
             wentUp = top < lastTop
             prefetchSoon()
         }
-        guard !isLiveScrolling, !isSnapping, top != lastTop else { return }
+        guard placingDepth == 0, !isLiveScrolling, !isSnapping, top != lastTop else { return }
         if scrollStart == nil { scrollStart = lastTop }
         settleAfterRest()
     }
@@ -368,7 +393,7 @@ final class PreviewsViewController: IconViewController {
     }
 
     override func reload(scrollToTop: Bool) {
-        super.reload(scrollToTop: scrollToTop)
+        placing { super.reload(scrollToTop: scrollToTop) }
         dropPrefetches()
         prefetchSoon()
         let listed = indexByPath
