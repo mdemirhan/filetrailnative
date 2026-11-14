@@ -52,6 +52,40 @@ struct PathReadCacheTests {
         #expect(cache.finish(["/a"], from: cache.generation, answers: ["/a": 2]) == ["/a"])
     }
 
+    // An item a read found nothing for (its folder is gone) isn't asked for again, however often its row asks, until
+    // it changes or the cache starts over; an item that changed while it was read is still read once more.
+    @Test func anItemFoundNothingForIsNotAskedAgainUntilItChanges() {
+        var cache = Cache()
+        _ = cache.begin(["/gone/a", "/b"])
+        #expect(cache.finish(["/gone/a", "/b"], from: cache.generation, answers: ["/b": 2]) == [])
+        #expect(cache.unanswered == ["/gone/a"])
+        #expect(cache.begin(["/gone/a", "/b"]).isEmpty)
+        cache.markChanged(["/gone/a"])
+        #expect(cache.begin(["/gone/a"]) == ["/gone/a"])
+        _ = cache.finish(["/gone/a"], from: cache.generation, answers: [:])
+        cache.markChanged(nil)
+        #expect(cache.begin(["/gone/a"]) == ["/gone/a"])
+        _ = cache.finish(["/gone/a"], from: cache.generation, answers: [:])
+        cache.startOver()
+        #expect(cache.begin(["/gone/a"]) == ["/gone/a"])
+        cache.markChanged(["/gone/a"])
+        #expect(cache.finish(["/gone/a"], from: cache.generation, answers: [:]) == ["/gone/a"])
+        #expect(cache.unanswered.isEmpty)
+        #expect(cache.begin(["/gone/a"]) == ["/gone/a"])
+    }
+
+    // An item known before that a read finds nothing for keeps what it had, still changed, and isn't asked again.
+    @Test func aKnownItemFoundNothingForKeepsWhatItHad() {
+        var cache = Cache()
+        _ = cache.begin(["/a"])
+        _ = cache.finish(["/a"], from: cache.generation, answers: ["/a": 1])
+        cache.markChanged(["/a"])
+        _ = cache.begin(["/a"])
+        _ = cache.finish(["/a"], from: cache.generation, answers: [:])
+        #expect(cache["/a"] == 1 && cache.stale == ["/a"])
+        #expect(cache.begin(["/a"]).isEmpty)
+    }
+
     // After a start over an answer from before changes nothing, and leaves the read begun since under way.
     @Test func anAnswerFromBeforeAStartOverIsDropped() {
         var cache = Cache()

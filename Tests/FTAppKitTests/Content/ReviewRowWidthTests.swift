@@ -101,6 +101,33 @@ struct ReviewStaleDetailsTests {
         #expect(controller.staleMetadata == Set(entries.map(\.path)))
     }
 
+    // A read that finds nothing (the results' folder is gone) isn't asked again each time the rows ask, only once the
+    // item is said to have changed.
+    @MainActor @Test func aReadThatFindsNothingIsNotAskedAgainUntilTheItemChanges() async {
+        let entries = [ContentModelTests.entry("a.txt")]
+        var reads = 0
+        let loaders = ContentLoaders(
+            metadata: { _, _ in
+                reads += 1
+                return []
+            }, hiddenCount: { _ in 0 }, iconStore: { nil }, homePath: "/", openPrivacySettings: {})
+        let controller = ContentPaneController(
+            mode: .details, folderSizes: FolderSizeService.shared.sizes(for: 9_001), loaders: loaders)
+        controller.show(folder: "/f", entries: entries, selecting: nil, keepingScroll: false)
+        controller.requestMetadata(for: entries.map(\.path))
+        await settle { reads == 1 }
+        for _ in 0..<5 {
+            controller.requestMetadata(for: entries.map(\.path))
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        #expect(reads == 1)
+        controller.show(
+            folder: "/f", entries: entries, selecting: nil, keepingScroll: true, changedPaths: [entries[0].path])
+        controller.requestMetadata(for: entries.map(\.path))
+        await settle { reads == 2 }
+        #expect(reads == 2)
+    }
+
     /// Reads of details that wait until the test lets each one answer, with the size the item had as each began.
     @MainActor final class HeldReads {
         var size = 1

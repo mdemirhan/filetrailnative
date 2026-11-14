@@ -1208,7 +1208,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             guard let readAgain = self.details.finish(paths, from: generation, answers: belongs ? answers : nil),
                 belongs
             else { return }
-            self.pane?.refresh(paths: Set(answers.keys))
+            // Nothing found (the folder is gone): no row changed, and drawing them again would ask again.
+            if !answers.isEmpty { self.pane?.refresh(paths: Set(answers.keys)) }
             self.updateStatus()
             if !readAgain.isEmpty { self.requestMetadata(for: readAgain) }
         }
