@@ -33,7 +33,7 @@ final class TabClipboard {
         let contents = tab.services.clipboard.contents
         let flashes = flash.changed(to: contents)
         let marks = marks
-        tab.content.clipboardMarksChanged(marks, flash: flashes && marks != nil)
+        for pane in tab.panes { pane.content.clipboardMarksChanged(marks, flash: flashes && marks != nil) }
         tab.sidebarController.clipboardMarksChanged(marks, flash: flashes && marks != nil)
         // An emptied clipboard closes its list (and a later Copy doesn't open it again).
         if let menu {

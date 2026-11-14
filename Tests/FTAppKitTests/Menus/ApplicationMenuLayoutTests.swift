@@ -40,7 +40,7 @@ import Testing
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "-", "Make Bigger", "Make Smaller", "Default Size", "-",
                 "Sort By", "Folders First", "Hidden Files", "Refresh",
-                "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Customize Toolbar…",
+                "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "-", "Customize Toolbar…",
             ])
         #expect(
             titles(submenu(main, "Go")) == [
@@ -49,8 +49,8 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "Window")) == [
-                "Minimize", "Zoom", "-", "Show Previous Tab", "Show Next Tab", "Move Tab to New Window",
-                "Merge All Windows", "-", "Bring All to Front",
+                "Minimize", "Zoom", "-", "Show Previous Tab", "Show Next Tab", "Switch to Other Pane",
+                "Move Tab to New Window", "Merge All Windows", "-", "Bring All to Front",
             ])
         #expect(titles(submenu(main, "Help")) == ["File Trail Help", "Keyboard Shortcuts"])
         // The system's own menus are the ones AppKit adds the services, the windows and the search field to.

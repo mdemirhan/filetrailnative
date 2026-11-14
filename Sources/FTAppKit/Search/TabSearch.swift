@@ -7,31 +7,34 @@ import FTFoundation
 @MainActor
 final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     private unowned let tab: MainWindowController
+    /// The pane whose folder it searches and whose list shows its results.
+    private unowned let pane: BrowserPane
     let session: SearchSession
     let header = SearchHeaderView()
     /// Whether the content pane shows the results now.
     private(set) var showsResults = false
     private var field: ToolbarSearchField? { tab.searchField }
 
-    init(tab: MainWindowController, engine: any SearchEngine = SearchRuntime.shared) {
-        self.tab = tab
-        session = SearchSession(preferences: tab.preferences, includeHidden: tab.includeHidden, engine: engine)
+    init(pane: BrowserPane, engine: any SearchEngine = SearchRuntime.shared) {
+        tab = pane.tab
+        self.pane = pane
+        session = SearchSession(preferences: tab.preferences, includeHidden: pane.includeHidden, engine: engine)
         super.init()
         session.host = self
         header.onScopeChange = { [weak self] path in self?.session.changeRoot(path) }
         header.onFilterChange = { [weak self] text in
             guard let self else { return }
-            self.tab.content.setSearchFilter(text)
+            self.pane.content.setSearchFilter(text)
             // A filter emptied shows the mode the next one starts with.
-            self.header.showFilterMode(self.tab.content.filterMode)
+            self.header.showFilterMode(self.pane.content.filterMode)
         }
-        header.onToggleFilterMode = { [weak self] in self?.tab.content.onToggleFilterMode?() }
-        header.onFocusResults = { [weak self] in self?.tab.content.focusList() }
-        header.onSwitchPane = { [weak self] in self?.tab.content.switchPane() }
+        header.onToggleFilterMode = { [weak self] in self?.pane.content.onToggleFilterMode?() }
+        header.onFocusResults = { [weak self] in self?.pane.content.focusList() }
+        header.onSwitchPane = { [weak self] in self?.pane.content.switchPane() }
         header.onStop = { [weak self] in self?.session.stop() }
         header.onDone = { [weak self] in self?.done() }
         header.onHeightChange = { [weak self] in self?.layoutHeader() }
-        let content = tab.content
+        let content = pane.content
         content.onSearchSort = { [weak self] key in self?.sortByColumn(key) }
         content.onSearchSortSet = { [weak self] key, direction in
             self?.session.setSort(key, direction)
@@ -39,7 +42,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         }
         content.onFilterChanged = { [weak self] text in
             guard let self, self.showsResults else { return }
-            self.header.showFilterMode(self.tab.content.filterMode)
+            self.header.showFilterMode(self.pane.content.filterMode)
             guard self.header.filter.text != text else { return }
             self.header.filter.text = text
         }
@@ -70,7 +73,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         guard event.type == .keyDown, event.keyCode == 53,
             event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty, session.isSearchMode
         else { return false }
-        let content = tab.content
+        let content = pane.content
         guard content.filter.isEmpty, content.inlineRename == nil, let focus = content.focusView,
             tab.window?.firstResponder === focus
         else { return false }
@@ -81,9 +84,9 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     // MARK: SearchSessionHost
 
-    var searchCurrentPath: String { tab.shownFolderPath }
-    var searchIncludeHidden: Bool { tab.includeHidden }
-    var searchFolderEntryPaths: [String] { tab.content.listed.map(\.path) }
+    var searchCurrentPath: String { pane.shownFolderPath }
+    var searchIncludeHidden: Bool { pane.includeHidden }
+    var searchFolderEntryPaths: [String] { pane.content.listed.map(\.path) }
 
     func searchSessionChanged(_ change: SearchSession.Change) {
         if change.contains(.draft), let field, field.stringValue != session.draftQuery {
@@ -93,7 +96,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         if change.contains(.status), !session.isRunning, session.selectFirstResultWhenDone {
             selectFirstResultWhenDone()
         }
-        tab.searchRootPath = session.isSearchMode ? session.rootPath : nil
+        pane.searchRootPath = session.isSearchMode ? session.rootPath : nil
         tab.searchStateChanged()
         if session.isSearchMode { observeWrites() }
     }
@@ -116,23 +119,23 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     }
 
     func applySearchSelection(_ selection: ContentSelection) {
-        tab.content.applySelection(selection)
+        pane.content.applySelection(selection)
     }
 
     func focusContentPaneForSearch() {
-        tab.content.focusList()
+        pane.content.focusList()
     }
 
-    var searchResultsFilter: String { showsResults ? tab.content.filter : "" }
+    var searchResultsFilter: String { showsResults ? pane.content.filter : "" }
 
-    var searchResultsFilterMode: NameMatchMode { tab.content.filterMode }
+    var searchResultsFilterMode: NameMatchMode { pane.content.filterMode }
 
-    var searchResultsScroll: (top: Double, left: Double)? { showsResults ? tab.content.pane?.scrollPosition : nil }
+    var searchResultsScroll: (top: Double, left: Double)? { showsResults ? pane.content.pane?.scrollPosition : nil }
 
     func restoreSearchResultsView(filter: String, mode: NameMatchMode, scroll: (top: Double, left: Double)?) {
-        tab.content.restoreSearchView(filter: filter, mode: mode, scroll: scroll)
-        header.filter.text = tab.content.filter
-        header.showFilterMode(tab.content.filterMode)
+        pane.content.restoreSearchView(filter: filter, mode: mode, scroll: scroll)
+        header.filter.text = pane.content.filter
+        header.showFilterMode(pane.content.filterMode)
     }
 
     // MARK: Showing the results
@@ -140,22 +143,22 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     /// The content pane follows the session: the results in the tab's search view, with the search's columns, the
     /// results bar above them; or the folder again.
     private func refreshDisplay(_ change: SearchSession.Change) {
-        let content = tab.content
+        let content = pane.content
         guard session.isSearchMode else {
             guard showsResults else { return }
             showsResults = false
             content.endSearch()
             content.contentShell.searchHeader = nil
-            content.setMode(tab.viewMode)
-            tab.refreshColumns()
+            content.setMode(pane.viewMode)
+            pane.refreshColumns()
             return
         }
         if !showsResults {
             showsResults = true
-            content.setMode(tab.searchViewMode)
+            content.setMode(pane.searchViewMode)
             content.contentShell.searchHeader = header
         }
-        tab.refreshColumns()
+        pane.refreshColumns()
         let rootPath = session.rootPath
         let disk = tab.services.startupDisk.name
         content.showSearch(
@@ -166,14 +169,14 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
                 errorIsQuiet: session.errorIsQuiet, startupDiskName: disk))
         header.show(
             scopes: SearchBarText.scopeOptions(
-                currentPath: tab.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),
+                currentPath: pane.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),
             rootPath: rootPath, isRunning: session.isRunning, truncated: session.truncated, filterText: content.filter)
         header.showFilterMode(content.filterMode)
         layoutHeader()
     }
 
     private func layoutHeader() {
-        let shell = tab.content.contentShell
+        let shell = pane.content.contentShell
         shell.searchHeaderHeight = header.height
         shell.needsLayout = true
     }
@@ -256,11 +259,11 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     private func dismissField() {
         AppMenuPresenter.shared.close()
         tab.explorerToolbar.endSearch()
-        tab.content.focusList()
+        pane.content.focusList()
     }
 
     private func selectFirstResultIfNone() {
-        let content = tab.content
+        let content = pane.content
         guard session.isSearchMode, content.selection.isEmpty, let first = content.entryPaths.first else { return }
         content.applySelection(.single(first))
     }
@@ -284,7 +287,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     private func done() {
         AppMenuPresenter.shared.close()
         session.hideResults()
-        tab.content.focusList()
+        pane.content.focusList()
     }
 
     // MARK: ⌘F, ⇧⌘F
@@ -292,13 +295,13 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     /// The field takes the keyboard with its text selected. Text typed into the folder list goes into
     /// it, and is searched at once, with the caret after it so typing goes on.
     func focusField() {
-        let content = tab.content
+        let content = pane.content
         let typed = content.filter
         let carried = !session.isSearchMode && !typed.isEmpty
         if carried {
             content.clearFilter()
             session.setDraft(typed)
-            session.startSearch(typed, rootPath: tab.shownFolderPath, live: true)
+            session.startSearch(typed, rootPath: pane.shownFolderPath, live: true)
         } else {
             session.showCachedResults(fromField: true)
         }

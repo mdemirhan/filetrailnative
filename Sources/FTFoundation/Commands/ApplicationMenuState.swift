@@ -11,6 +11,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var folderTreeOpen: Bool
     public var infoPanelOpen: Bool
     public var infoRowOpen: Bool
+    /// The tab shows two panes.
+    public var twoPanesShown: Bool
     /// Whether the folder the Favorites item acts on is a favorite already.
     public var favoriteIsSet: Bool
     /// A text field has the keyboard: Undo and Redo are its own, and always on.
@@ -19,7 +21,9 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
         foldersFirst: Bool = true, hiddenFilesShown: Bool = false, folderTreeOpen: Bool = true,
-        infoPanelOpen: Bool = false, infoRowOpen: Bool = false, favoriteIsSet: Bool = false, textEditing: Bool = false
+        infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
+        favoriteIsSet: Bool = false,
+        textEditing: Bool = false
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
@@ -29,6 +33,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.folderTreeOpen = folderTreeOpen
         self.infoPanelOpen = infoPanelOpen
         self.infoRowOpen = infoRowOpen
+        self.twoPanesShown = twoPanesShown
         self.favoriteIsSet = favoriteIsSet
         self.textEditing = textEditing
     }
@@ -40,8 +45,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// run now, and what its checkmarks show.
     public static func build(
         viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
-        folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, favoriteIsSet: Bool, textEditing: Bool,
-        canRun: (AppCommand) -> Bool
+        folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
+        favoriteIsSet: Bool, textEditing: Bool, canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
         // change its text.
@@ -51,7 +56,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
         return ApplicationMenuState(
             disabledCommands: disabled, viewMode: viewMode, sortBy: sortBy, foldersFirst: foldersFirst,
             hiddenFilesShown: hiddenFilesShown, folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen,
-            infoRowOpen: infoRowOpen, favoriteIsSet: favoriteIsSet, textEditing: textEditing)
+            infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, favoriteIsSet: favoriteIsSet,
+            textEditing: textEditing)
     }
 }
 
@@ -181,6 +187,7 @@ public enum ApplicationMenu {
             case .toggleHiddenFiles: state.hiddenFilesShown
             case .toggleInfoPanel: state.infoPanelOpen
             case .toggleInfoRow: state.infoRowOpen
+            case .toggleTwoPanes: state.twoPanesShown
             default: nil
             }
         }

@@ -33,8 +33,23 @@ final class WorkspaceView: NSView {
     var inspectorResizer: PaneResizerView { inspectorColumn.resizer }
     /// The Info panel's cell.
     var inspectorCell: WorkspaceCell { inspectorColumn.cell }
-    /// The status bar (`PathBarRowView`), from the sidebar's edge to the window's right.
+    /// The status bar (`PathBarRowView`), from the sidebar's edge to the window's right; with two panes, under the left
+    /// pane only.
     let statusCell = WorkspaceCell()
+    /// The right pane's status bar, from the divider to the window's right, while the tab shows two panes.
+    let secondStatusCell = WorkspaceCell()
+    /// The right pane's cell.
+    var secondCell: WorkspaceCell { contentColumn.secondCell }
+    /// The tab shows two panes side by side.
+    private(set) var showsTwoPanes = false
+    /// Which pane the tab has active, 0 (left) or 1 (right): the accent line is over it.
+    var activePane = 0 {
+        didSet { if activePane != oldValue { contentColumn.needsLayout = true } }
+    }
+    /// The left pane's share of the room the two panes have, from `PaneSplit.minimum` to `PaneSplit.maximum`.
+    private(set) var paneSplit = PaneSplit.even
+    /// Told when the divider was dragged or double-clicked, with where it is now.
+    var onPaneSplitChosen: (Double) -> Void = { _ in }
 
     private(set) var panes: PaneWidths
     private(set) var folderTreeOpen = true
@@ -90,6 +105,19 @@ final class WorkspaceView: NSView {
         split.view.autoresizingMask = [.width, .height]
         addSubview(split.view)
         addSubview(statusCell)
+        addSubview(secondStatusCell)
+        secondStatusCell.isHidden = true
+        secondStatusCell.setAccessibilityIdentifier("workspace.status.second")
+        contentColumn.divider.onDrag = { [weak self] x in self?.dragDivider(to: x) }
+        contentColumn.divider.onDragEnd = { [weak self] in
+            guard let self else { return }
+            self.onPaneSplitChosen(self.paneSplit)
+        }
+        contentColumn.divider.onDoubleClick = { [weak self] in
+            guard let self else { return }
+            self.setPaneSplit(PaneSplit.even)
+            self.onPaneSplitChosen(self.paneSplit)
+        }
         sidebarColumn.workspace = self
         contentColumn.workspace = self
         inspectorColumn.workspace = self
@@ -171,6 +199,38 @@ final class WorkspaceView: NSView {
         needsLayout = true
     }
 
+    /// Shows the second pane (its list and its status bar) to the right of the first, or takes it away.
+    func showSecondPane(_ content: NSView?, status: NSView?) {
+        showsTwoPanes = content != nil
+        // The cell lets go of the view it had first: a view moved into the other cell stays there.
+        secondCell.content = content
+        secondStatusCell.content = status
+        contentColumn.needsLayout = true
+        needsLayout = true
+    }
+
+    /// Where the divider sits: the left pane's share of the room.
+    func setPaneSplit(_ split: Double) {
+        let clamped = PaneSplit.clamp(split)
+        guard clamped != paneSplit else { return }
+        paneSplit = clamped
+        contentColumn.needsLayout = true
+        needsLayout = true
+    }
+
+    /// The divider dragged to `x` in the content column.
+    private func dragDivider(to x: Double) {
+        let room = contentColumn.bounds.width - PaneSplit.dividerWidth
+        guard room > 0 else { return }
+        setPaneSplit((x - PaneSplit.dividerWidth / 2) / room)
+    }
+
+    /// The width the content column needs beyond the window's own minimum for its panes: two panes need room for both.
+    var extraContentWidth: Double {
+        guard showsTwoPanes else { return 0 }
+        return max(0, PaneSplit.minimumPaneWidth * 2 + PaneSplit.dividerWidth - Self.metrics.explorer.minContentWidth)
+    }
+
     /// Which panels are open. Opening or closing the Info panel slides it, unless the window is not ready yet.
     func show(folderTree: Bool, infoPanel: Bool) {
         let infoChanged = infoPanel != infoPanelOpen
@@ -214,7 +274,7 @@ final class WorkspaceView: NSView {
     }
 
     override func layout() {
-        panes.sync(viewportWidth: bounds.width, inspectorVisible: infoPanelOpen)
+        panes.sync(viewportWidth: bounds.width - extraContentWidth, inspectorVisible: infoPanelOpen)
         setSidebarWidth(panes.treeWidth + Self.metrics.explorer.resizerWidth)
         if sidebarItem.isCollapsed == folderTreeOpen { sidebarItem.isCollapsed = !folderTreeOpen }
         setInspectorWidth(panes.inspectorWidth + Self.metrics.explorer.resizerWidth)
@@ -240,13 +300,15 @@ final class WorkspaceView: NSView {
         effectiveAppearance.performAsCurrentDrawingAppearance {
             contentColumn.bandLine.layer?.backgroundColor = WorkspaceBandLine.color.cgColor
             inspectorColumn.bandLine.layer?.backgroundColor = WorkspaceBandLine.color.cgColor
+            contentColumn.activeLine.layer?.backgroundColor =
+                NSColor(AppearanceModel.shared.theme.accent.solid).cgColor
         }
     }
 
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
         needsLayout = true
-        for view in [treeResizer, inspectorResizer] as [NSView] { view.needsDisplay = true }
+        for view in [treeResizer, inspectorResizer, contentColumn.divider] as [NSView] { view.needsDisplay = true }
     }
 
     /// The content column's panes, in its own coordinates.
@@ -258,19 +320,40 @@ final class WorkspaceView: NSView {
         }
         column.backdrop.frame = column.bounds
         statusCell.isHidden = !isReady
+        secondStatusCell.isHidden = !isReady || !showsTwoPanes
+        column.secondCell.isHidden = !isReady || !showsTwoPanes
+        column.divider.isHidden = !isReady || !showsTwoPanes
+        column.activeLine.isHidden = !isReady || !showsTwoPanes
         guard isReady else { return }
         let top = panesTop
         let paneHeight = max(0, height - top - PathBarRowView.height)
         let left = frame(of: column).minX
+        let statusTop = bounds.height - PathBarRowView.height
+        // With two panes the left one takes its share of the room, the divider sits after it and the right one has the
+        // rest; each status bar lies under its pane, the right one on under the Info panel.
+        let leftWidth = showsTwoPanes ? PaneSplit.leftWidth(paneSplit, columnWidth: width) : width
         statusCell.frame = NSRect(
-            x: left, y: bounds.height - PathBarRowView.height, width: max(0, bounds.width - left),
-            height: PathBarRowView.height)
+            x: left, y: statusTop,
+            width: showsTwoPanes ? leftWidth : max(0, bounds.width - left), height: PathBarRowView.height)
         // The toolbar's band runs over the inspector item too.
         let inspectorRoom = inspectorItem.isCollapsed ? 0 : inspectorColumn.frame.width
         column.band.frame = NSRect(
             x: 0, y: 0, width: width + inspectorRoom, height: Self.metrics.toolbar.minHeight)
         column.bandLine.frame = NSRect(x: 0, y: top, width: width, height: WorkspaceBandLine.height(in: window))
-        column.mainCell.frame = NSRect(x: 0, y: top, width: width, height: paneHeight)
+        column.mainCell.frame = NSRect(x: 0, y: top, width: leftWidth, height: paneHeight)
+        if showsTwoPanes {
+            let rightX = leftWidth + PaneSplit.dividerWidth
+            column.divider.frame = NSRect(x: leftWidth, y: top, width: PaneSplit.dividerWidth, height: paneHeight)
+            column.secondCell.frame = NSRect(x: rightX, y: top, width: max(0, width - rightX), height: paneHeight)
+            secondStatusCell.frame = NSRect(
+                x: left + rightX, y: statusTop, width: max(0, bounds.width - left - rightX),
+                height: PathBarRowView.height)
+            let active = activePane == 0 ? column.mainCell.frame : column.secondCell.frame
+            let inset = PaneSplit.activeLineInset
+            column.activeLine.frame = NSRect(
+                x: active.minX + inset, y: top, width: max(0, active.width - inset * 2),
+                height: PaneSplit.activeLineHeight)
+        }
         // A closing panel stays over the content's right edge, out of reach, while it slides away.
         if inspectorCell.superview === column {
             inspectorCell.frame = NSRect(
@@ -449,14 +532,27 @@ final class WorkspaceContentColumn: NSView {
     /// Finder's line under the band: only while the pointer is over the band.
     let bandLine = WorkspaceBandLine()
     let mainCell = WorkspaceCell()
+    /// The right pane, while the tab shows two.
+    let secondCell = WorkspaceCell()
+    /// Between the two panes: drags to share the room, double-clicks to share it evenly.
+    let divider = PaneDividerView()
+    /// The line over the active pane, while the tab shows two.
+    let activeLine = NSView()
 
     override init(frame: NSRect) {
         super.init(frame: frame)
         wantsLayer = true
         mainCell.setAccessibilityIdentifier("workspace.main")
+        secondCell.setAccessibilityIdentifier("workspace.second")
         // The rows that reached the old hairline stop at the sidebar's edge.
         mainCell.layer?.masksToBounds = true
-        for view in [backdrop, band, mainCell, bandLine] as [NSView] { addSubview(view) }
+        secondCell.layer?.masksToBounds = true
+        activeLine.wantsLayer = true
+        activeLine.layer?.cornerRadius = PaneSplit.activeLineHeight / 2
+        for view in [backdrop, band, mainCell, secondCell, divider, activeLine, bandLine] as [NSView] {
+            addSubview(view)
+        }
+        for view in [secondCell, divider, activeLine] as [NSView] { view.isHidden = true }
         band.setAccessibilityIdentifier("toolbar.band")
         bandLine.isHidden = true
     }
@@ -546,4 +642,74 @@ final class WorkspaceBandLine: NSView {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
+}
+
+/// How the room of the content column is shared between two panes.
+enum PaneSplit {
+    /// The left pane's share when they share it evenly.
+    static let even = 0.5
+    static let minimum = 0.2
+    static let maximum = 0.8
+    /// The narrowest a pane gets; the window is kept wide enough for two.
+    static let minimumPaneWidth = 280.0
+    /// The divider's room: a hairline in the middle of a band the pointer can take.
+    static let dividerWidth = 9.0
+    static let activeLineHeight = 2.0
+    static let activeLineInset = 8.0
+
+    static func clamp(_ split: Double) -> Double {
+        guard split.isFinite else { return even }
+        return min(maximum, max(minimum, split))
+    }
+
+    /// The left pane's width in a column `columnWidth` wide, kept so that neither pane is narrower than the minimum
+    /// while there is room for both.
+    static func leftWidth(_ split: Double, columnWidth: Double) -> Double {
+        let room = max(0, columnWidth - dividerWidth)
+        let wanted = (room * clamp(split)).rounded()
+        guard room >= minimumPaneWidth * 2 else { return (room / 2).rounded() }
+        return min(room - minimumPaneWidth, max(minimumPaneWidth, wanted))
+    }
+}
+
+/// The divider between two panes: a hairline the pointer can take over its whole band. A drag moves it; a double-click
+/// shares the room evenly.
+final class PaneDividerView: NSView {
+    var onDrag: (Double) -> Void = { _ in }
+    var onDragEnd: () -> Void = {}
+    var onDoubleClick: () -> Void = {}
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        setAccessibilityIdentifier("pane.divider")
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let line = 1 / (window?.backingScaleFactor ?? 2)
+        NSColor.separatorColor.setFill()
+        NSRect(x: (bounds.width - line) / 2, y: 0, width: line, height: bounds.height).fill()
+    }
+
+    override func resetCursorRects() {
+        addCursorRect(bounds, cursor: .resizeLeftRight)
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        if event.clickCount == 2 {
+            onDoubleClick()
+            return
+        }
+        guard let window, let column = superview else { return }
+        var dragged = false
+        while let next = window.nextEvent(matching: [.leftMouseDragged, .leftMouseUp]) {
+            if next.type == .leftMouseUp { break }
+            dragged = true
+            onDrag(column.convert(next.locationInWindow, from: nil).x)
+        }
+        if dragged { onDragEnd() }
+    }
 }

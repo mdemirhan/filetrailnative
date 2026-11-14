@@ -625,7 +625,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
             startupDiskName: tabs.first?.services.startupDisk.name ?? VolumePaths.defaultStartupDiskName)
         for (index, tab) in tabs.enumerated() {
             guard let window = tab.window else { continue }
-            let label = labels[index].label
+            let label = tab.twoPaneLabel ?? labels[index].label
             // Only what changed: this runs for every tab each time one opens, and the tab bar redoes itself for a set.
             if window.tab.title != label { window.tab.title = label }
             if window.tab.toolTip != descriptions[index].tooltip { window.tab.toolTip = descriptions[index].tooltip }

@@ -363,14 +363,14 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     /// A tab closed: its folder is no longer watched, and the menu forgets what it said.
     func tabGone(_ tab: MainWindowController) {
-        folderWatches?.watch(windowID: tab.windowID, path: nil)
+        for pane in tab.panes { folderWatches?.watch(windowID: pane.watchID, path: nil) }
         FolderSizeService.shared.forget(windowID: tab.windowID)
     }
 
     /// The tab got the keyboard: a change its folder's watch could not see is looked for.
     func tabFocused(_ tab: MainWindowController) {
         onTabFocused(tab)
-        folderWatches?.checkForMissedChanges(windowID: tab.windowID)
+        for pane in tab.panes { folderWatches?.checkForMissedChanges(windowID: pane.watchID) }
         tabNavigated(tab)
     }
 
@@ -380,9 +380,16 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         if let group = tab.group, let watches = folderWatches {
             let front = group.selected
             for other in group.tabs {
-                // A tab that let go of its folder shows nothing that could change.
-                let path = other === front && other.loaded ? other.shownFolderPath : ""
-                watches.watch(windowID: other.windowID, path: path.isEmpty ? nil : path)
+                for pane in other.panes {
+                    // A pane that let go of its folder shows nothing that could change.
+                    let path = other === front && pane.loaded ? pane.shownFolderPath : ""
+                    watches.watch(windowID: pane.watchID, path: path.isEmpty ? nil : path)
+                }
+                // A second pane closed since stops being watched.
+                if let closed = other.closedPaneWatchID {
+                    watches.watch(windowID: closed, path: nil)
+                    other.closedPaneWatchID = nil
+                }
             }
         }
         reportMenuState(tab)
@@ -395,8 +402,11 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// A folder a window watches changed.
     func folderChanged(windowID: Int, _ change: FolderChange) {
         // Only the folder on screen matters: one left behind may still be telling of a change.
-        guard let tab = tab(windowID: windowID), change.path == tab.folder.path else { return }
-        tab.reload(changedPaths: change.changedPaths)
+        for tab in allTabs {
+            guard let pane = tab.panes.first(where: { $0.watchID == windowID }) else { continue }
+            if change.path == pane.folder.path { pane.reload(changedPaths: change.changedPaths) }
+            return
+        }
     }
 
     // MARK: Tabs the system moved

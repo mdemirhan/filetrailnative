@@ -81,7 +81,7 @@ struct ApplicationMenuTests {
             checked == [
                 "viewAsIcons": false, "viewAsList": false, "viewAsDetails": true, "sortByName": false,
                 "sortByModified": false, "sortBySize": true, "sortByKind": false, "toggleFoldersFirst": false,
-                "toggleHiddenFiles": true, "toggleInfoPanel": true, "toggleInfoRow": false,
+                "toggleHiddenFiles": true, "toggleInfoPanel": true, "toggleInfoRow": false, "toggleTwoPanes": false,
             ])
     }
 

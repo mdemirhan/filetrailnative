@@ -494,6 +494,27 @@ final class SidebarModel {
         onChange()
     }
 
+    /// Another pane of the tab became the active one: the tree selects its folder, opening the branch to it, as long as
+    /// the folder is inside the tree's root. The root stays where it is: one outside it leaves no row selected until
+    /// the pane opens a folder.
+    func activePaneChanged(to path: String) async {
+        currentPath = path
+        viewVersion += 1
+        let version = viewVersion
+        let inTrash = !path.isEmpty && Paths.isInsideTrash(path, homePath: homePath)
+        if inTrash {
+            select(.location(FavoriteLabel.trashPath(homePath: homePath)), subview: separate ? .favorites : nil)
+        } else if !path.isEmpty, !rootPath.isEmpty, TreePaths.isWithinTreeRoot(path, rootPath) {
+            await syncTree(to: path, version: version)
+            if viewVersion != version { return }
+            select(.filesystem(path), subview: .tree)
+        } else {
+            select(nil, subview: nil)
+        }
+        optimistic = nil
+        onChange()
+    }
+
     /// How the folder on screen is read again. The row of a favorite or location that is the
     /// folder, or of a link in the tree, stays; otherwise the tree follows, its branch read again.
     func openReadingAgain(_ path: String) -> SidebarOpen {

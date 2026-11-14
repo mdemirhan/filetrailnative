@@ -49,6 +49,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var canGoForward: Bool?
     public var hasCachedSearch: Bool?
     public var tabCount: Int?
+    /// How many panes the tab shows.
+    public var paneCount: Int?
     /// Trash is never added to Favorites; it is offered for removal only when it is one.
     public var trashPath: String?
     /// The Trash is among the favorites, so File ▸ Remove from Favorites can take it out.
@@ -68,7 +70,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         selectedEntry: CommandEntry? = nil, selectedTreeTargetPath: String? = nil, clipboardHasItems: Bool = false,
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
-        hasCachedSearch: Bool? = nil, tabCount: Int? = nil, trashPath: String? = nil, homePath: String? = nil,
+        hasCachedSearch: Bool? = nil, tabCount: Int? = nil, paneCount: Int? = nil, trashPath: String? = nil,
+        homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
         viewSizeSteps: ViewSize.Steps? = nil
     ) {
@@ -87,6 +90,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.canGoForward = canGoForward
         self.hasCachedSearch = hasCachedSearch
         self.tabCount = tabCount
+        self.paneCount = paneCount
         self.trashPath = trashPath
         self.homePath = homePath
         self.trashIsEmpty = trashIsEmpty
@@ -356,6 +360,8 @@ public enum CommandAvailability {
             return !context.currentPath.isEmpty && parentDirectoryPath(context.currentPath) != nil
         case .selectNextTab, .selectPreviousTab, .moveTabToNewWindow:
             return context.tabCount.map { $0 > 1 } ?? true
+        case .switchToOtherPane:
+            return context.paneCount.map { $0 > 1 } ?? true
         case .increaseSize, .decreaseSize, .resetSize:
             // The Icons view's icon size and the Compact List's column width, short of their ends; the List has none.
             guard let change = ViewSize.Change(command) else { return true }

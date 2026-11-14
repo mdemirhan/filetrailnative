@@ -60,6 +60,11 @@ extension SidebarViewController {
         Task { await model.folderOpened(url.path, open) }
     }
 
+    /// Another pane of the tab became the active one (`SidebarModel.activePaneChanged`).
+    func activePaneChanged(to path: String) {
+        Task { await model.activePaneChanged(to: path) }
+    }
+
     /// The window opened a folder it can't read, showing why.
     func folderOpenedWithError(_ url: URL, _ open: SidebarOpen) {
         Task { await model.folderOpenedWithError(url.path, open) }

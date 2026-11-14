@@ -284,6 +284,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -466,6 +470,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -2414,6 +2422,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -2596,6 +2608,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -2844,6 +2860,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -3026,6 +3046,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -3268,6 +3292,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -3450,6 +3478,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -3700,6 +3732,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -3881,6 +3917,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -4170,6 +4210,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -4352,6 +4396,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -4598,6 +4646,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -4772,6 +4824,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -5022,6 +5078,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -5207,6 +5267,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -5457,6 +5521,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -5639,6 +5707,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -5882,6 +5954,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -6065,6 +6141,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -6242,6 +6322,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Space"
           ],
@@ -6502,6 +6586,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -6733,6 +6821,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -6911,6 +7003,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -7149,6 +7245,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -7319,6 +7419,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -7568,6 +7672,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -7746,6 +7854,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -7996,6 +8108,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -8177,6 +8293,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -8419,6 +8539,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -8589,6 +8713,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -8838,6 +8966,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -9015,6 +9147,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -9275,6 +9411,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -9453,6 +9593,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -9845,6 +9989,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -10027,6 +10175,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -10547,6 +10699,10 @@
             "PageDown",
             "Cmd+0"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "ejectVolume": [],
           "sortBySize": [
             "Cmd+Shift+G",
@@ -10788,6 +10944,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -11057,6 +11217,10 @@
           "moveTabToNewWindow": [
             "Cmd+]"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "F1",
             "Cmd+/"
@@ -11310,6 +11474,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -11620,6 +11788,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -11802,6 +11974,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -12018,6 +12194,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "focusFileSearch": [
             "Cmd+Home"
           ],
@@ -12272,6 +12452,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -12546,6 +12730,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleHiddenFiles": [
             "Cmd+Option+K"
           ],
@@ -12799,6 +12987,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -13121,6 +13313,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openInTerminal": [],
           "toggleFavorite": [
             "Cmd+R"
@@ -13370,6 +13566,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -13794,6 +13994,10 @@
             "Cmd+["
           ],
           "openSelectionInNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleHiddenFiles": [
             "F20"
           ],
@@ -14063,6 +14267,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -14629,6 +14837,10 @@
             "F11",
             "Cmd+PageUp"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "customizeToolbar": [],
           "goBack": [
@@ -14877,6 +15089,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -15363,6 +15579,10 @@
             "F5",
             "Cmd+W"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByName": [
             "Cmd+Option+T",
             "F2"
@@ -15620,6 +15840,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -15853,6 +16077,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [],
           "newFolder": [
             "Cmd+Shift+Backspace"
@@ -16110,6 +16338,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -16564,6 +16796,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -16748,6 +16984,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -17128,6 +17368,8 @@
           "mergeAllWindows": [
             "Cmd+Down"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+Shift+K",
             "Cmd+Shift+H"
@@ -17478,6 +17720,7 @@
           "mergeAllWindows": [
             "Cmd+Down"
           ],
+          "toggleTwoPanes": [],
           "openSelection": [],
           "openSelectedItem": [],
           "renameSelection": [
@@ -17593,6 +17836,7 @@
               "mergeAllWindows": [
                 "Cmd+Down"
               ],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "openSelectedItem": [],
               "renameSelection": [
@@ -17665,6 +17909,7 @@
               "mergeAllWindows": [
                 "Cmd+Down"
               ],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "openSelectedItem": [],
               "renameSelection": [
@@ -17736,6 +17981,7 @@
               "mergeAllWindows": [
                 "Cmd+Down"
               ],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "openSelectedItem": [],
               "renameSelection": [
@@ -17899,6 +18145,10 @@
             "Cmd+Plus"
           ],
           "refreshOrApplySearchSort": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [],
           "duplicateSelection": [
             "Cmd+Shift+E"
@@ -18137,6 +18387,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -18368,6 +18622,10 @@
           "focusTreePane": [
             "Cmd+Esc"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Cmd+/"
           ],
@@ -18626,6 +18884,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -18989,6 +19251,10 @@
           "openSelectionInNewTab": [
             "Cmd+Shift+Backspace"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [],
           "quickLookSelection": [],
           "moveSelection": [
@@ -19223,6 +19489,10 @@
           [
             "Cmd+Shift+T",
             "reopenClosedTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -19551,6 +19821,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -19733,6 +20007,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -19980,6 +20258,8 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "calculateSize": [
             "Cmd+\\"
           ],
@@ -20346,6 +20626,7 @@
         ],
         "sanitized": {
           "pageUp": [],
+          "toggleTwoPanes": [],
           "calculateSize": [
             "Cmd+\\"
           ],
@@ -20377,6 +20658,7 @@
             "customized": false,
             "assigned": {
               "pageUp": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Cmd+\\"
               ],
@@ -20391,6 +20673,7 @@
             },
             "removed": {
               "pageUp": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Cmd+\\"
               ],
@@ -20402,6 +20685,7 @@
             },
             "reset": {
               "pageUp": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Cmd+\\"
               ],
@@ -20490,6 +20774,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleFoldersFirst": [],
           "goBack": [
             "Cmd+[",
@@ -20741,6 +21029,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -21024,6 +21316,10 @@
             "PageUp",
             "Ctrl+D"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "moveSelection": [
             "Cmd+Shift+G",
             "Cmd+/"
@@ -21279,6 +21575,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -21552,6 +21852,10 @@
           ],
           "reopenClosedTab": [],
           "selectNextTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Ctrl+Tab",
             "PageDown"
@@ -21783,6 +22087,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -22217,6 +22525,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showInFinder": [
             "Cmd+K",
             "Cmd+Plus"
@@ -22473,6 +22785,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -22773,6 +23089,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -22955,6 +23275,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -23337,6 +23661,10 @@
             "Cmd+Shift+[",
             "Ctrl+Up"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+="
           ],
@@ -23592,6 +23920,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -23895,6 +24227,10 @@
             "Ctrl+A"
           ],
           "openSelectionInNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [],
           "focusFileSearch": [
             "Cmd+/"
@@ -24136,6 +24472,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -24722,6 +25062,10 @@
             "F5"
           ],
           "moveTabToNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "PageDown"
           ],
@@ -24956,6 +25300,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -25324,6 +25672,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -25506,6 +25858,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -25854,6 +26210,10 @@
             "Cmd+Shift+[",
             "Cmd+R"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "clearClipboard": [
             "Cmd+I"
           ],
@@ -26098,6 +26458,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -26450,6 +26814,10 @@
             "Cmd+Shift+N",
             "Ctrl+U"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [
             "Ctrl+Tab",
             "Cmd+Shift+T"
@@ -26700,6 +27068,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -27255,6 +27627,10 @@
           "openSelectionInNewTab": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -27437,6 +27813,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -27783,6 +28163,10 @@
           "halfPageDown": [
             "Cmd+Shift+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showLastSearchResults": [],
           "goBack": [
             "Cmd+[",
@@ -28029,6 +28413,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -28498,6 +28886,8 @@
             "Cmd+Shift+H",
             "Cmd+'"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Ctrl+Shift+Tab"
           ],
@@ -28858,6 +29248,7 @@
             "Cmd+Shift+H",
             "Cmd+'"
           ],
+          "toggleTwoPanes": [],
           "openSelectedItem": [
             "Ctrl+Shift+Tab"
           ],
@@ -28975,6 +29366,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29052,6 +29444,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29125,6 +29518,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29209,6 +29603,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29284,6 +29679,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29357,6 +29753,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29440,6 +29837,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29516,6 +29914,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29588,6 +29987,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29677,6 +30077,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29751,6 +30152,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29821,6 +30223,7 @@
                 "Cmd+Shift+H",
                 "Cmd+'"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [
                 "Ctrl+Shift+Tab"
               ],
@@ -29951,6 +30354,10 @@
           "openSelectionInNewWindow": [
             "Ctrl+Cmd+Option+Shift+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "trashSelection": [
             "Cmd+K"
           ],
@@ -30209,6 +30616,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -30619,6 +31030,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -30801,6 +31216,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -31116,6 +31535,10 @@
           ],
           "pageDown": [],
           "halfPageDown": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleFolderTree": [
             "Cmd+Return"
           ],
@@ -31355,6 +31778,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -31750,6 +32177,10 @@
             "Ctrl+Shift+K",
             "Cmd+-"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [],
           "moveSelection": [],
           "showClipboard": [],
@@ -31991,6 +32422,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -32681,6 +33116,10 @@
           "moveTabToNewWindow": [
             "Cmd+Shift+H"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "revealInFolder": [],
           "toggleHiddenFiles": [
             "Cmd+1",
@@ -32930,6 +33369,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -33322,6 +33765,10 @@
           "mergeAllWindows": [
             "Cmd+Option+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "ejectVolume": [],
           "toggleFoldersFirst": [
             "Ctrl+F4"
@@ -33579,6 +34026,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -33831,9 +34282,9 @@
             "id": "halfPageDown",
             "shortcut": "Cmd+\\",
             "slot": 2,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "toggleTwoPanes",
             "customized": false,
             "assigned": {
               "openLocationSheet": [
@@ -33847,6 +34298,7 @@
               "mergeAllWindows": [
                 "Cmd+Option+K"
               ],
+              "toggleTwoPanes": [],
               "ejectVolume": [],
               "toggleFoldersFirst": [
                 "Ctrl+F4"
@@ -34065,6 +34517,10 @@
           "focusTreePane": [],
           "pageDown": [],
           "halfPageDown": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [],
           "renameSelection": [
             "F2",
@@ -34302,6 +34758,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -34813,6 +35273,10 @@
           "openSelectionInNewTab": [
             "Cmd+Shift+."
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [
             "Ctrl+D"
           ],
@@ -35058,6 +35522,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -35582,6 +36050,10 @@
           "mergeAllWindows": [
             "Cmd+Option+J"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [
             "Cmd+Backspace",
             "Cmd+Home"
@@ -35837,6 +36309,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -36213,6 +36689,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -36395,6 +36875,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -36810,6 +37294,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -36992,6 +37480,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -37356,6 +37848,10 @@
           "pageUp": [
             "F12"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "PageDown"
           ],
@@ -37600,6 +38096,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -38057,6 +38557,8 @@
           "focusTreePane": [
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "ejectVolume": [
             "F12",
             "Cmd+F"
@@ -38433,6 +38935,7 @@
           "focusTreePane": [
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
           "ejectVolume": [
             "F12",
             "Cmd+F"
@@ -38490,6 +38993,7 @@
                 "Cmd+Shift+T",
                 "Cmd+É"
               ],
+              "toggleTwoPanes": [],
               "ejectVolume": [
                 "F12",
                 "Cmd+F"
@@ -38508,6 +39012,7 @@
               "focusTreePane": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "ejectVolume": [
                 "F12",
                 "Cmd+F"
@@ -38526,6 +39031,7 @@
               "focusTreePane": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "ejectVolume": [
                 "F12",
                 "Cmd+F"
@@ -38556,6 +39062,7 @@
               "focusTreePane": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "ejectVolume": [
                 "F12",
                 "Cmd+F"
@@ -38574,6 +39081,7 @@
               "focusTreePane": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "ejectVolume": [
                 "F12",
                 "Cmd+F"
@@ -38592,6 +39100,7 @@
               "focusTreePane": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "ejectVolume": [
                 "F12",
                 "Cmd+F"
@@ -38865,6 +39374,10 @@
             "F11",
             "F20"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [],
           "ejectVolume": [
             "Cmd+F3",
@@ -39121,6 +39634,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -40166,6 +40683,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "emptyTrash": [],
           "viewAsIcons": [
             "Cmd+F11"
@@ -40419,6 +40940,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -40768,6 +41293,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -40946,6 +41475,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -41253,6 +41786,10 @@
             "F11",
             "Cmd+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [],
           "clearClipboard": [
             "Ctrl+Shift+K",
@@ -41512,6 +42049,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -41976,6 +42517,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortBySize": [
             "Ctrl+Shift+K"
           ],
@@ -42233,6 +42778,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -42540,6 +43089,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "focusFileSearch": [
             "Cmd+Shift+F"
           ],
@@ -42793,6 +43346,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -43208,6 +43765,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -43386,6 +43947,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -43756,6 +44321,10 @@
           "newTab": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByModified": [],
           "toggleHiddenFiles": [
             "Cmd+Plus",
@@ -44014,6 +44583,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -44643,6 +45216,8 @@
           "openSelectionInNewTab": [
             "Cmd+T"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "focusFileSearch": [],
           "sortByModified": [],
           "goBack": [
@@ -44993,6 +45568,7 @@
           "openSelectionInNewTab": [
             "Cmd+T"
           ],
+          "toggleTwoPanes": [],
           "openInTerminal": [],
           "focusFileSearch": []
         },
@@ -45237,6 +45813,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -45421,6 +46001,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -45756,6 +46340,10 @@
           "pageDown": [
             "Cmd+D"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+F11"
           ],
@@ -45981,6 +46569,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -46618,6 +47210,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [],
           "copyPath": [],
           "focusFileSearch": [
@@ -46864,6 +47460,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -47235,6 +47835,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -47417,6 +48021,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -48034,6 +48642,10 @@
           "moveTabToNewWindow": [
             "PageDown"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [
             "Cmd+Option+T",
             "Cmd+Shift+]"
@@ -48270,6 +48882,10 @@
           [
             "Cmd+Shift+T",
             "reopenClosedTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -48843,6 +49459,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+'",
             "Cmd+Shift+I"
@@ -49101,6 +49721,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -49590,6 +50214,10 @@
             "Ctrl+U",
             "Cmd+R"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [
             "Cmd+K",
             "Cmd+Option+J"
@@ -49845,6 +50473,10 @@
           [
             "Cmd+Shift+T",
             "reopenClosedTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -51137,6 +51769,10 @@
           ],
           "newTab": [],
           "selectNextTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "editSelection": [
             "Cmd+Shift+."
@@ -51373,6 +52009,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -52262,6 +52902,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -52446,6 +53090,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -52628,11 +53276,13 @@
             "id": "goMacintoshHD",
             "shortcut": "Cmd+\\",
             "slot": -1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "toggleTwoPanes",
             "customized": false,
-            "assigned": {},
+            "assigned": {
+              "toggleTwoPanes": []
+            },
             "removed": {},
             "reset": {},
             "takenFrom": [],
@@ -52802,6 +53452,10 @@
           "openSelectionInNewWindow": [
             "PageUp"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "emptyTrash": [
             "Cmd+Delete",
             "Ctrl+D"
@@ -53041,6 +53695,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -53809,6 +54467,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -53991,6 +54653,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -54363,6 +55029,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -54545,6 +55215,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -54912,6 +55586,10 @@
           "halfPageDown": [
             "PageDown"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showLastSearchResults": [
             "Delete"
           ],
@@ -55158,6 +55836,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -55502,6 +56184,10 @@
           ],
           "goForward": [],
           "goHomeRootTree": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+K"
           ],
@@ -55731,6 +56417,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -56226,6 +56916,10 @@
             "Cmd+Q"
           ],
           "goLibrary": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [
             "Cmd+Down",
             "Cmd+Shift+]"
@@ -56480,6 +57174,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -57067,6 +57765,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+-",
             "Cmd+;"
@@ -57328,6 +58030,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -57757,6 +58463,10 @@
           "selectPreviousTab": [],
           "openSelectionInNewTab": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Ctrl+Cmd+K",
             "Cmd+Return"
@@ -58008,6 +58718,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Shift+E",
@@ -58621,6 +59335,10 @@
             "Cmd+K"
           ],
           "moveTabToNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "duplicateSelection": [],
           "showClipboard": [
@@ -58855,6 +59573,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -59515,6 +60237,10 @@
           ],
           "pageUp": [],
           "openSelectionInNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "revealInFolder": [],
           "goBack": [
             "Cmd+[",
@@ -59758,6 +60484,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -60119,6 +60849,10 @@
           "reopenClosedTab": [
             "Cmd+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [],
           "ejectVolume": [],
           "sortBySize": [
@@ -60351,6 +61085,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -60995,6 +61733,10 @@
             "Cmd+Q"
           ],
           "newWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "revealInFolder": [
             "Cmd+0",
             "F12"
@@ -61248,6 +61990,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -61660,6 +62406,10 @@
             "Cmd+Q"
           ],
           "pageUp": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleInfoPanel": [],
           "goBack": [
             "Cmd+[",
@@ -61902,6 +62652,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -62294,6 +63048,10 @@
             "Cmd+Shift+I"
           ],
           "openSelectionInNewTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleFoldersFirst": [
             "PageUp",
             "Cmd+Option+J"
@@ -62532,6 +63290,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -63004,6 +63766,10 @@
           "halfPageUp": [],
           "selectPreviousTab": [],
           "openSelectionInNewTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+1"
           ],
@@ -63243,6 +64009,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -63693,6 +64463,10 @@
             "Cmd+W",
             "Ctrl+F4"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showClipboard": [
             "Cmd+Shift+M",
             "PageUp"
@@ -63942,6 +64716,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -64511,6 +65289,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -64695,6 +65477,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -65102,6 +65888,8 @@
             "Cmd+Shift+I"
           ],
           "newTab": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openSelection": [],
           "openInTerminal": [
             "Ctrl+U",
@@ -65462,6 +66250,7 @@
           "halfPageUp": [],
           "newWindow": [],
           "newTab": [],
+          "toggleTwoPanes": [],
           "openSelection": [],
           "moveSelection": [],
           "emptyTrash": [],
@@ -65572,6 +66361,7 @@
               "selectNextTab": [
                 "Ctrl+Tab"
               ],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "duplicateSelection": [
                 "Cmd+D",
@@ -65627,6 +66417,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
@@ -65678,6 +66469,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
@@ -65743,6 +66535,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "editSelection": [
                 "Shift+?"
@@ -65797,6 +66590,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "editSelection": [],
               "moveSelection": [],
@@ -65849,6 +66643,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
@@ -65911,6 +66706,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [
@@ -65967,6 +66763,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
@@ -66018,6 +66815,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "openInTerminal": [
@@ -66083,6 +66881,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
@@ -66138,6 +66937,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
@@ -66189,6 +66989,7 @@
               "halfPageUp": [],
               "newWindow": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "openSelection": [],
               "moveSelection": [],
               "emptyTrash": [],
@@ -66401,6 +67202,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -66583,6 +67388,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -67005,6 +67814,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -67187,6 +68000,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -67492,6 +68309,10 @@
           ],
           "goDownloads": [],
           "closeTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openInTerminal": [],
           "toggleFoldersFirst": [
             "Ctrl+Cmd+K",
@@ -67742,6 +68563,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -68004,6 +68829,10 @@
             "Delete"
           ],
           "pageDown": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Cmd+Shift+N"
           ],
@@ -68249,6 +69078,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -68754,6 +69587,10 @@
           "mergeAllWindows": [
             "Cmd+Option+J"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [
             "Ctrl+Cmd+S"
           ],
@@ -68992,6 +69829,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -69684,6 +70525,10 @@
             "Ctrl+D"
           ],
           "moveTabToNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Esc"
           ],
@@ -69941,6 +70786,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Y",
@@ -71157,6 +72006,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showClipboard": [
             "Ctrl+F4"
           ],
@@ -71420,6 +72273,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -71889,6 +72746,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -72071,6 +72932,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -72464,6 +73329,10 @@
           "openSelectionInNewTab": [
             "Cmd+Shift+M"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Cmd+R",
             "Cmd+-"
@@ -72697,6 +73566,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -73490,6 +74363,10 @@
           "selectPreviousTab": [
             "Cmd+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [],
           "calculateSize": [],
           "duplicateSelection": [
@@ -73719,6 +74596,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -74860,6 +75741,8 @@
             "F5"
           ],
           "moveTabToNewWindow": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Option+K",
             "Cmd+PageUp"
@@ -75188,6 +76071,7 @@
             "Option+Left",
             "F5"
           ],
+          "toggleTwoPanes": [],
           "openSelection": [
             "Cmd+Option+K",
             "Cmd+PageUp"
@@ -75289,6 +76173,7 @@
                 "Option+Left",
                 "F5"
               ],
+              "toggleTwoPanes": [],
               "openSelection": [
                 "Cmd+Option+K",
                 "Cmd+PageUp"
@@ -75350,6 +76235,7 @@
                 "Option+Left",
                 "F5"
               ],
+              "toggleTwoPanes": [],
               "openSelection": [
                 "Cmd+Option+K",
                 "Cmd+PageUp"
@@ -75407,6 +76293,7 @@
                 "Option+Left",
                 "F5"
               ],
+              "toggleTwoPanes": [],
               "openSelection": [
                 "Cmd+Option+K",
                 "Cmd+PageUp"
@@ -75597,6 +76484,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -75779,6 +76670,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -75998,6 +76893,10 @@
             "Cmd+Q"
           ],
           "goBack": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [],
           "toggleInfoRow": [],
           "goForward": [
@@ -76233,6 +77132,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -76553,6 +77456,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -76735,6 +77642,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -77072,6 +77983,10 @@
             "PageDown"
           ],
           "reopenClosedTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+K"
           ],
@@ -77305,6 +78220,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -77855,6 +78774,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showInFinder": [
             "Ctrl+Shift+K",
             "Cmd+K"
@@ -78112,6 +79035,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -78574,6 +79501,8 @@
             "Cmd+F",
             "Cmd+Option+K"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "showInFinder": [],
           "sortBySize": [],
           "toggleFolderTree": [],
@@ -78939,6 +79868,7 @@
             "Cmd+F",
             "Cmd+Option+K"
           ],
+          "toggleTwoPanes": [],
           "editSelection": [],
           "focusFileSearch": [],
           "toggleFolderTree": [],
@@ -79020,6 +79950,7 @@
                 "Cmd+F",
                 "Cmd+Option+K"
               ],
+              "toggleTwoPanes": [],
               "editSelection": [],
               "focusFileSearch": [],
               "toggleFolderTree": [],
@@ -79039,6 +79970,7 @@
                 "Cmd+F",
                 "Cmd+Option+K"
               ],
+              "toggleTwoPanes": [],
               "editSelection": [],
               "focusFileSearch": [],
               "toggleFolderTree": [],
@@ -79058,6 +79990,7 @@
                 "Cmd+F",
                 "Cmd+Option+K"
               ],
+              "toggleTwoPanes": [],
               "editSelection": [],
               "focusFileSearch": [],
               "toggleFolderTree": [],
@@ -79199,6 +80132,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "duplicateSelection": [
             "Cmd+Esc",
             "F2"
@@ -79457,6 +80394,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -80002,6 +80943,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -80184,6 +81129,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -80530,6 +81479,10 @@
             "Cmd+Left"
           ],
           "selectPreviousTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "quickLookSelection": [
             "Cmd+Shift+N"
@@ -80766,6 +81719,10 @@
           [
             "Cmd+Shift+T",
             "reopenClosedTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -81695,6 +82652,8 @@
             "Ctrl+Cmd+S",
             "Cmd+PageUp"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+K"
           ],
@@ -82033,6 +82992,7 @@
             "Ctrl+Cmd+S",
             "Cmd+PageUp"
           ],
+          "toggleTwoPanes": [],
           "renameSelection": [
             "Cmd+K"
           ],
@@ -82138,6 +83098,7 @@
                 "Ctrl+Cmd+S",
                 "Cmd+PageUp"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [
                 "Cmd+K"
               ],
@@ -82185,6 +83146,7 @@
                 "Ctrl+Cmd+S",
                 "Cmd+PageUp"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [
                 "Cmd+K"
               ],
@@ -82228,6 +83190,7 @@
                 "Ctrl+Cmd+S",
                 "Cmd+PageUp"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [
                 "Cmd+K"
               ],
@@ -82282,6 +83245,7 @@
                 "Ctrl+Cmd+S",
                 "Cmd+PageUp"
               ],
+              "toggleTwoPanes": [],
               "editSelection": [],
               "renameSelection": [
                 "Cmd+K"
@@ -82329,6 +83293,7 @@
                 "Ctrl+Cmd+S",
                 "Cmd+PageUp"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [
                 "Cmd+K"
               ],
@@ -82372,6 +83337,7 @@
                 "Ctrl+Cmd+S",
                 "Cmd+PageUp"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [
                 "Cmd+K"
               ],
@@ -82559,6 +83525,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -82729,6 +83699,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -83078,6 +84052,10 @@
             "Cmd+Q"
           ],
           "goBack": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "focusFileSearch": [
             "Cmd+Option+C"
           ],
@@ -83319,6 +84297,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -83647,6 +84629,10 @@
             "Cmd+Shift+]",
             "F5"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Down"
           ],
@@ -83887,6 +84873,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Shift+E",
@@ -84587,6 +85577,10 @@
             "Cmd+Option+C",
             "Cmd+E"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+T",
             "Cmd+Up"
@@ -84836,6 +85830,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -85689,6 +86687,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -85871,6 +86873,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -86168,6 +87174,10 @@
             "Cmd+Q"
           ],
           "newTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "viewAsDetails": [
             "F5"
           ],
@@ -86416,6 +87426,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -86815,6 +87829,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -86997,6 +88015,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -87344,6 +88366,10 @@
             "Cmd+Delete",
             "Cmd+I"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Ctrl+Cmd+K"
           ],
@@ -87580,6 +88606,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -88259,6 +89289,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -88433,6 +89467,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -88714,6 +89752,10 @@
             "Cmd+O",
             "Cmd+Down"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByName": [
             "Cmd+I"
           ],
@@ -88972,6 +90014,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Shift+E",
@@ -89471,6 +90517,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -89653,6 +90703,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -89981,6 +91035,10 @@
             "Cmd+Q"
           ],
           "openSelectionInNewTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [],
           "focusFileSearch": [],
           "goBack": [
@@ -90227,6 +91285,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -90547,6 +91609,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleHiddenFiles": [
             "Ctrl+A"
           ],
@@ -90802,6 +91868,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -91158,6 +92228,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -91343,6 +92417,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -91788,6 +92866,10 @@
           "openSelectionInNewWindow": [
             "Cmd+Option+T"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortBySize": [
             "Ctrl+Shift+Tab"
           ],
@@ -92027,6 +93109,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -92398,6 +93484,10 @@
           "newWindow": [
             "Cmd+;"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showLastSearchResults": [],
           "toggleInfoRow": [
             "Cmd+K"
@@ -92643,6 +93733,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -93076,6 +94170,10 @@
           "newTab": [
             "Cmd+N"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "emptyTrash": [
             "Option+Left",
             "Cmd+Shift+I"
@@ -93318,6 +94416,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -93711,6 +94813,10 @@
           "newTab": [
             "Ctrl+Cmd+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "emptyTrash": [
             "Ctrl+F4"
           ],
@@ -93988,6 +95094,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -94491,6 +95601,8 @@
           "pageDown": [
             "F12"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openKeyboardShortcuts": [
             "F5",
             "Ctrl+F4"
@@ -94879,6 +95991,7 @@
           "pageDown": [
             "F12"
           ],
+          "toggleTwoPanes": [],
           "openKeyboardShortcuts": [
             "F5",
             "Ctrl+F4"
@@ -95101,6 +96214,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -95283,6 +96400,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -95576,6 +96697,10 @@
             "Ctrl+Cmd+S"
           ],
           "halfPageUp": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "trashSelection": [
             "Ctrl+D"
           ],
@@ -95824,6 +96949,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -96135,6 +97264,10 @@
             "Cmd+]"
           ],
           "selectNextTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Shift+F",
             "Cmd+W"
@@ -96359,6 +97492,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -96955,6 +98092,10 @@
           "mergeAllWindows": [
             "Ctrl+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Ctrl+A"
           ],
@@ -97187,6 +98328,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -97502,6 +98647,10 @@
           "goDocuments": [],
           "refreshOrApplySearchSort": [],
           "newWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [],
           "sortBySize": [
             "Cmd+Shift+R",
@@ -97746,6 +98895,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -98371,6 +99524,8 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -98682,6 +99837,7 @@
             "Cmd+Plus",
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
           "increaseSize": [
             "Cmd+="
           ]
@@ -98927,6 +100083,10 @@
             "Cmd+;"
           ],
           "reopenClosedTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "openSelectedItem": [
             "Cmd+Up"
@@ -99167,6 +100327,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Shift+E",
@@ -99519,6 +100683,10 @@
           "openSelectionInNewTab": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -99697,6 +100865,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -100142,6 +101314,10 @@
           "mergeAllWindows": [
             "Cmd+Shift+]"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Cmd+0"
           ],
@@ -100374,6 +101550,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -101180,6 +102360,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openKeyboardShortcuts": [
             "Cmd+Shift+I"
           ],
@@ -101435,6 +102619,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -101903,6 +103091,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -102077,6 +103269,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -102580,6 +103776,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortBySize": [
             "Cmd+F3"
           ],
@@ -102837,6 +104037,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -103230,6 +104434,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [
             "Cmd+Shift+[",
             "Cmd+K"
@@ -103488,6 +104696,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -104034,6 +105246,10 @@
           "openSelectionInNewTab": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "openSelectedItem": [
             "Cmd+Down"
@@ -104224,6 +105440,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -104591,6 +105811,10 @@
           ],
           "goDocuments": [],
           "focusContentPane": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [],
           "trashSelection": [
             "Cmd+'"
@@ -104844,6 +106068,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -105237,6 +106465,10 @@
           "openSelectionInNewTab": [
             "Ctrl+Shift+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "trashSelection": [
             "Cmd+Shift+K"
@@ -105497,6 +106729,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+Shift+E",
             "editSelection"
           ],
@@ -105745,6 +106981,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [
             "Cmd+/",
             "Cmd+R"
@@ -106006,6 +107246,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -106413,6 +107657,10 @@
             "Cmd+Esc",
             "Ctrl+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [],
           "goBack": [
             "Cmd+[",
@@ -106659,6 +107907,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -107212,6 +108464,8 @@
             "Cmd+Shift+["
           ],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+N"
           ],
@@ -107540,6 +108794,7 @@
           "moveTabToNewWindow": [
             "Cmd+Shift+["
           ],
+          "toggleTwoPanes": [],
           "quickLookSelection": [
             "Cmd+N"
           ],
@@ -107638,6 +108893,7 @@
               "moveTabToNewWindow": [
                 "Cmd+Shift+["
               ],
+              "toggleTwoPanes": [],
               "quickLookSelection": [
                 "Cmd+N"
               ],
@@ -107701,6 +108957,7 @@
               "moveTabToNewWindow": [
                 "Cmd+Shift+["
               ],
+              "toggleTwoPanes": [],
               "quickLookSelection": [
                 "Cmd+N"
               ],
@@ -107764,6 +109021,7 @@
               "moveTabToNewWindow": [
                 "Cmd+Shift+["
               ],
+              "toggleTwoPanes": [],
               "quickLookSelection": [
                 "Cmd+N"
               ],
@@ -107838,6 +109096,7 @@
               "moveTabToNewWindow": [
                 "Cmd+Shift+["
               ],
+              "toggleTwoPanes": [],
               "quickLookSelection": [
                 "Cmd+N"
               ],
@@ -107905,6 +109164,7 @@
               "moveTabToNewWindow": [
                 "Cmd+Shift+["
               ],
+              "toggleTwoPanes": [],
               "quickLookSelection": [
                 "Cmd+N"
               ],
@@ -107968,6 +109228,7 @@
               "moveTabToNewWindow": [
                 "Cmd+Shift+["
               ],
+              "toggleTwoPanes": [],
               "quickLookSelection": [
                 "Cmd+N"
               ],
@@ -108190,6 +109451,10 @@
           "mergeAllWindows": [
             "Cmd+Left"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [
             "Cmd+0",
             "Cmd+Option+C"
@@ -108407,6 +109672,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -108708,6 +109977,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -108890,6 +110163,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -109216,6 +110493,10 @@
             "Cmd+[",
             "Cmd+Shift+]"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "copyPath": [
             "Cmd+Left"
@@ -109431,6 +110712,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -109850,6 +111135,10 @@
           "selectNextTab": [
             "Ctrl+Shift+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+K"
           ],
@@ -110079,6 +111368,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -110641,6 +111934,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -110823,6 +112120,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -111255,6 +112556,10 @@
           "mergeAllWindows": [
             "Cmd+3"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Left"
           ],
@@ -111493,6 +112798,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -112094,6 +113403,10 @@
           ],
           "openSelectionInNewTab": [],
           "openSelectionInNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+K"
           ],
@@ -112342,6 +113655,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -113129,6 +114446,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "duplicateSelection": [],
           "goBack": [
             "Cmd+[",
@@ -113378,6 +114699,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -113750,6 +115075,10 @@
           "pageDown": [
             "F20"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "viewAsDetails": [
             "Cmd+Esc",
             "Ctrl+F4"
@@ -114004,6 +115333,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -114288,6 +115621,10 @@
             "Cmd+Q"
           ],
           "goTrash": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "viewAsIcons": [
             "Cmd+Backspace"
           ],
@@ -114540,6 +115877,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -114980,6 +116321,10 @@
             "Cmd+Shift+N",
             "Cmd+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Shift+]"
           ],
@@ -115231,6 +116576,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -115771,6 +117120,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "goBack": [
             "Cmd+[",
@@ -116020,6 +117373,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -116411,6 +117768,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -116593,6 +117954,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -117084,6 +118449,10 @@
             "Ctrl+F4",
             "Ctrl+U"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+F"
           ],
@@ -117347,6 +118716,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Shift+E",
@@ -118577,6 +119950,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -118759,6 +120136,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -119102,6 +120483,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -119284,6 +120669,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -119665,6 +121054,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -119847,6 +121240,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -120256,6 +121653,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -120438,6 +121839,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -120751,6 +122156,10 @@
           "openLocationSheet": [
             "Cmd+2"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openKeyboardShortcuts": [
             "Cmd+Shift+N"
           ],
@@ -120998,6 +122407,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -121236,6 +122649,10 @@
             "Cmd+Backspace",
             "Cmd+PageDown"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "moveSelection": [
             "Cmd+Shift+M",
             "Cmd+3"
@@ -121492,6 +122909,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -121873,6 +123294,10 @@
             "Cmd+Esc",
             "Cmd+F"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "viewAsIcons": [
             "Cmd+R",
             "Ctrl+Cmd+Option+Shift+K"
@@ -122132,6 +123557,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -122581,6 +124010,10 @@
           "selectNextTab": [
             "F11"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "goBack": [
             "Cmd+[",
@@ -122822,6 +124255,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -123222,6 +124659,10 @@
             "Cmd+K",
             "Cmd+Return"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Cmd+="
           ],
@@ -123471,6 +124912,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -123747,6 +125192,10 @@
             "Cmd+Q"
           ],
           "goTrash": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [],
           "focusFileSearch": [],
           "revealInFolder": [
@@ -123999,6 +125448,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -124405,6 +125858,10 @@
           "newWindow": [
             "Cmd+F"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showClipboard": [
             "F5"
           ],
@@ -124658,6 +126115,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -125137,6 +126598,10 @@
             "Ctrl+K",
             "Ctrl+Cmd+S"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "trashSelection": [
             "PageUp",
             "Cmd+Shift+]"
@@ -125397,6 +126862,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -126003,6 +127472,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -126185,6 +127658,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -126512,6 +127989,10 @@
             "Cmd+0"
           ],
           "moveTabToNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Shift+E",
             "Cmd+Shift+]"
@@ -126784,6 +128265,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -127233,6 +128718,10 @@
           "selectPreviousTab": [
             "Cmd+Option+T"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [],
           "emptyTrash": [
             "Ctrl+Cmd+Option+Shift+K",
@@ -127460,6 +128949,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -128444,6 +129937,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "trashSelection": [
             "Cmd+Shift+F"
           ],
@@ -128697,6 +130194,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -129120,6 +130621,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -129302,6 +130807,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -129524,6 +131033,10 @@
           "halfPageDown": [
             "Cmd+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Ctrl+Up"
           ],
@@ -129773,6 +131286,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -130125,6 +131642,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -130303,6 +131824,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -130798,6 +132323,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -130980,6 +132509,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -131429,6 +132962,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -131611,6 +133148,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -131954,6 +133495,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showInFinder": [],
           "viewAsList": [],
           "increaseSize": [
@@ -132201,6 +133746,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -132579,6 +134128,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -132763,6 +134316,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -133127,6 +134684,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -133309,6 +134870,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -133662,6 +135227,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -133844,6 +135413,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -134218,6 +135791,10 @@
             "Ctrl+F4",
             "Ctrl+Up"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Ctrl+Cmd+Option+Shift+K",
             "Cmd+Shift+K"
@@ -134465,6 +136042,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -134801,6 +136382,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleFolderTree": [
             "Cmd+Option+K",
             "Cmd+]"
@@ -135059,6 +136644,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -135545,6 +137134,10 @@
             "Cmd+Shift+."
           ],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleInfoRow": [
             "Cmd+0",
             "F1"
@@ -135778,6 +137371,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -136109,6 +137706,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -136287,6 +137888,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -136612,6 +138217,10 @@
             "Cmd+PageUp",
             "Cmd+Shift+F"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleHiddenFiles": [
             "Cmd+K",
             "Cmd+Option+C"
@@ -136859,6 +138468,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -137215,6 +138828,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -137397,6 +139014,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -137822,6 +139443,10 @@
             "Cmd+Esc"
           ],
           "selectNextTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Ctrl+Shift+Tab"
           ],
@@ -138037,6 +139662,10 @@
           [
             "Cmd+Shift+T",
             "reopenClosedTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -138837,6 +140466,10 @@
             "Cmd+T"
           ],
           "pageDown": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+K"
           ],
@@ -139081,6 +140714,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -139523,6 +141160,10 @@
             "Cmd+Shift+K",
             "Ctrl+Cmd+Option+Shift+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Option+K"
           ],
@@ -139786,6 +141427,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Shift+E",
@@ -140700,6 +142345,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "clearClipboard": [],
           "goBack": [
             "Cmd+[",
@@ -140951,6 +142600,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -141236,6 +142889,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -141418,6 +143075,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -141740,6 +143401,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -141922,6 +143587,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -142237,6 +143906,10 @@
             "Cmd+Plus",
             "Cmd+Delete"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "goBack": [
             "Cmd+[",
@@ -142492,6 +144165,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -142957,6 +144634,10 @@
             "Delete"
           ],
           "newTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [],
           "newFolder": [],
           "clearClipboard": [],
@@ -143204,6 +144885,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -143514,6 +145199,10 @@
             "F5",
             "Ctrl+Up"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+F11",
             "Cmd+K"
@@ -143770,6 +145459,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -144198,6 +145891,10 @@
             "Ctrl+Cmd+S",
             "Option+Left"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "sortBySize": [
             "Cmd+I"
@@ -144447,6 +146144,10 @@
             "selectPreviousTab"
           ],
           [
+            "Cmd+\\",
+            "toggleTwoPanes"
+          ],
+          [
             "Cmd+O",
             "openSelection"
           ],
@@ -144692,9 +146393,9 @@
             "id": "openLocationSheet",
             "shortcut": "Cmd+\\",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "toggleTwoPanes",
             "customized": false,
             "assigned": {
               "goForward": [
@@ -144705,6 +146406,7 @@
                 "Cmd+K",
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "sortBySize": [
                 "Cmd+I"
@@ -144905,6 +146607,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -145087,6 +146793,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -145418,6 +147128,10 @@
             "Ctrl+Shift+Tab",
             "Cmd+F"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [],
           "moveSelection": [],
           "trashSelection": [
@@ -145663,6 +147377,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -146092,6 +147810,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "emptyTrash": [
             "Cmd+0"
           ],
@@ -146345,6 +148067,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -146720,6 +148446,10 @@
             "Cmd+Q"
           ],
           "pageUp": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "clearClipboard": [
             "Ctrl+Shift+K"
           ],
@@ -146970,6 +148700,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -147329,6 +149063,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -147515,6 +149253,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -148003,6 +149745,10 @@
           "mergeAllWindows": [
             "PageDown"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+Shift+G"
           ],
@@ -148265,6 +150011,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -148928,6 +150678,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -149110,6 +150864,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -149591,6 +151349,10 @@
             "Cmd+2",
             "Ctrl+F4"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [
             "Cmd+F",
             "Ctrl+A"
@@ -149893,6 +151655,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -150224,6 +151990,8 @@
           "refreshOrApplySearchSort": [
             "Cmd+K"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "renameSelection": [
             "Cmd+Down",
@@ -150598,6 +152366,7 @@
             "Cmd+K"
           ],
           "halfPageUp": [],
+          "toggleTwoPanes": [],
           "openSelectedItem": [],
           "renameSelection": [
             "Cmd+Down",
@@ -150637,6 +152406,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Cmd+Down",
@@ -150664,6 +152434,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Cmd+Down",
@@ -150690,6 +152461,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Cmd+Down",
@@ -150730,6 +152502,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Cmd+Down",
@@ -150760,6 +152533,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Cmd+Down",
@@ -150786,6 +152560,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Cmd+Down",
@@ -150823,6 +152598,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Shift+Cmd+K",
@@ -150849,6 +152625,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "renameSelection": [
                 "Cmd+\\"
@@ -150874,6 +152651,7 @@
                 "Cmd+K"
               ],
               "halfPageUp": [],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "ejectVolume": [
                 "Cmd+Shift+K",
@@ -151002,6 +152780,8 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+\\"
           ],
@@ -151368,6 +153148,7 @@
           ]
         ],
         "sanitized": {
+          "toggleTwoPanes": [],
           "openSelection": [
             "Cmd+\\"
           ]
@@ -151447,6 +153228,7 @@
             "command": null,
             "customized": false,
             "assigned": {
+              "toggleTwoPanes": [],
               "openSelection": [
                 "Cmd+\\"
               ],
@@ -151455,11 +153237,13 @@
               ]
             },
             "removed": {
+              "toggleTwoPanes": [],
               "openSelection": [
                 "Cmd+\\"
               ]
             },
             "reset": {
+              "toggleTwoPanes": [],
               "openSelection": [
                 "Cmd+\\"
               ]
@@ -151650,6 +153434,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -151832,6 +153620,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -152208,6 +154000,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -152390,6 +154186,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -152700,6 +154500,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -152882,6 +154686,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -153249,6 +155057,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -153421,6 +155233,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -153790,6 +155606,10 @@
           "selectNextTab": [
             "Cmd+Esc"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "emptyTrash": [],
           "showClipboard": [],
           "showInFinder": [],
@@ -154047,6 +155867,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -154516,6 +156340,10 @@
             "Ctrl+F4",
             "Cmd+Backspace"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [
             "Cmd+Delete"
           ],
@@ -154757,6 +156585,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -155025,6 +156857,10 @@
             "Cmd+T"
           ],
           "selectNextTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [],
           "goBack": [
             "Cmd+[",
@@ -155261,6 +157097,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -155664,6 +157504,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleInfoPanel": [],
           "goBack": [
             "Cmd+[",
@@ -155913,6 +157757,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -156302,6 +158150,10 @@
             "Cmd+F3",
             "Cmd+PageDown"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openKeyboardShortcuts": [],
           "goBack": [
             "Cmd+[",
@@ -156554,6 +158406,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -156918,6 +158774,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showLastSearchResults": [],
           "toggleInfoPanel": [
             "Cmd+="
@@ -157170,6 +159030,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -157610,6 +159474,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -157792,6 +159660,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -158111,6 +159983,10 @@
           "goMacintoshHD": [
             "Cmd+Esc"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [
             "Cmd+Shift+E"
           ],
@@ -158374,6 +160250,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -159040,6 +160920,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -159222,6 +161106,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -159565,6 +161453,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -159739,6 +161631,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -160068,6 +161964,10 @@
             "F20"
           ],
           "closeTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [
             "Cmd+Shift+["
           ],
@@ -160320,6 +162220,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -160884,6 +162788,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -161070,6 +162978,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -161440,6 +163352,10 @@
             "Cmd+Option+K"
           ],
           "selectPreviousTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showLastSearchResults": [
             "Cmd+PageDown"
           ],
@@ -161686,6 +163602,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -162204,6 +164124,10 @@
             "Cmd+Up"
           ],
           "selectPreviousTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [],
           "copyPath": [],
           "focusFileSearch": [],
@@ -162421,6 +164345,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -162838,6 +164766,10 @@
             "Ctrl+D"
           ],
           "moveTabToNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openInTerminal": [
             "Ctrl+U",
             "Option+Left"
@@ -163086,6 +165018,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -163512,6 +165448,10 @@
           "halfPageUp": [
             "F13"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [],
           "moveSelection": [
             "Cmd+E"
@@ -163766,6 +165706,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -164280,6 +166224,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -164454,6 +166402,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -164900,6 +166852,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -165082,6 +167038,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -165477,6 +167437,10 @@
             "Ctrl+Shift+K",
             "Cmd+2"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showClipboard": [
             "Ctrl+Up",
             "Cmd+F3"
@@ -165735,6 +167699,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -166115,6 +168083,10 @@
           "openSelectionInNewTab": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -166297,6 +168269,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -166715,6 +168691,10 @@
             "Cmd+Shift+M",
             "Cmd+Backspace"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showInFinder": [],
           "goBack": [
             "Cmd+[",
@@ -166968,6 +168948,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -167523,6 +169507,8 @@
             "Ctrl+Cmd+S"
           ],
           "openSelectionInNewWindow": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "calculateSize": [
             "Ctrl+D"
           ],
@@ -167897,6 +169883,7 @@
           ],
           "halfPageDown": [],
           "newTab": [],
+          "toggleTwoPanes": [],
           "calculateSize": [
             "Ctrl+D"
           ],
@@ -167993,6 +169980,7 @@
               ],
               "halfPageDown": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "editSelection": [],
               "calculateSize": [
                 "Ctrl+D"
@@ -168059,6 +170047,7 @@
               ],
               "halfPageDown": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Ctrl+D"
               ],
@@ -168120,6 +170109,7 @@
               ],
               "halfPageDown": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Ctrl+D"
               ],
@@ -168198,6 +170188,7 @@
               ],
               "halfPageDown": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Ctrl+D"
               ],
@@ -168259,6 +170250,7 @@
               ],
               "halfPageDown": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Ctrl+D"
               ],
@@ -168320,6 +170312,7 @@
               ],
               "halfPageDown": [],
               "newTab": [],
+              "toggleTwoPanes": [],
               "calculateSize": [
                 "Ctrl+D"
               ],
@@ -168482,6 +170475,8 @@
           "selectPreviousTab": [
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "moveSelection": [],
           "newFolder": [
             "Cmd+]"
@@ -168839,6 +170834,7 @@
           "selectPreviousTab": [
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
           "moveSelection": [],
           "newFolder": [
             "Cmd+]"
@@ -168876,6 +170872,7 @@
               "openSelectionInNewWindow": [
                 "Shift+Space"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -168897,6 +170894,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -168918,6 +170916,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -168957,6 +170956,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -168978,6 +170978,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -168999,6 +171000,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -169034,6 +171036,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -169058,6 +171061,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -169080,6 +171084,7 @@
               "selectPreviousTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [],
               "newFolder": [
                 "Cmd+]"
@@ -169177,6 +171182,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleFoldersFirst": [
             "Cmd+Option+C"
           ],
@@ -169432,6 +171441,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -169842,6 +171855,10 @@
             "Cmd+Plus"
           ],
           "selectPreviousTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "quickLookSelection": [
             "Cmd+Shift+I"
@@ -170063,6 +172080,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -170674,6 +172695,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -170856,6 +172881,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -171204,6 +173233,10 @@
           ],
           "goMacintoshHD": [],
           "goTrash": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Ctrl+Cmd+S"
           ],
@@ -171467,6 +173500,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -171770,6 +173807,10 @@
             "F12",
             "Cmd+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [
             "Cmd+3",
             "Cmd+Shift+G"
@@ -172007,6 +174048,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -172491,6 +174536,10 @@
           "openSelectionInNewTab": [],
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -172681,6 +174730,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -172967,6 +175020,8 @@
           "selectNextTab": [
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "moveSelection": [
             "Cmd+2",
             "Ctrl+Tab"
@@ -173330,6 +175385,7 @@
           "selectNextTab": [
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
           "moveSelection": [
             "Cmd+2",
             "Ctrl+Tab"
@@ -173403,6 +175459,7 @@
               "selectNextTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [
                 "Cmd+2",
                 "Ctrl+Tab"
@@ -173427,6 +175484,7 @@
               "selectNextTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [
                 "Cmd+2",
                 "Ctrl+Tab"
@@ -173450,6 +175508,7 @@
               "selectNextTab": [
                 "Cmd+\\"
               ],
+              "toggleTwoPanes": [],
               "moveSelection": [
                 "Cmd+2",
                 "Ctrl+Tab"
@@ -173645,6 +175704,10 @@
             "Cmd+Backspace",
             "Ctrl+Up"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Ctrl+Cmd+K",
             "Cmd+Shift+Backspace"
@@ -173908,6 +175971,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Y",
@@ -174336,6 +176403,8 @@
             "Cmd+\\"
           ],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+Delete",
             "Cmd+Shift+F"
@@ -174699,6 +176768,7 @@
             "Cmd+R",
             "Cmd+\\"
           ],
+          "toggleTwoPanes": [],
           "openSelection": [],
           "editSelection": [],
           "renameSelection": [
@@ -174957,6 +177027,8 @@
             "Ctrl+Cmd+Option+Shift+K"
           ],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "editSelection": [
             "Cmd+Shift+K",
             "Cmd+-"
@@ -175283,6 +177355,7 @@
             "F2",
             "Ctrl+Cmd+Option+Shift+K"
           ],
+          "toggleTwoPanes": [],
           "openSelectedItem": [],
           "editSelection": [
             "Cmd+Shift+K",
@@ -175395,6 +177468,7 @@
               "selectPreviousTab": [
                 "Cmd+Shift+["
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "editSelection": [
                 "Cmd+Shift+K",
@@ -175450,6 +177524,7 @@
                 "F2",
                 "Ctrl+Cmd+Option+Shift+K"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "editSelection": [
                 "Cmd+Shift+K",
@@ -175502,6 +177577,7 @@
                 "F2",
                 "Ctrl+Cmd+Option+Shift+K"
               ],
+              "toggleTwoPanes": [],
               "openSelectedItem": [],
               "editSelection": [
                 "Cmd+Shift+K",
@@ -175641,6 +177717,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "editSelection": [
             "Cmd+Delete"
           ],
@@ -175896,6 +177976,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -176290,6 +178374,10 @@
             "Cmd+Shift+F"
           ],
           "halfPageUp": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "newFolder": [
             "Cmd+Delete",
             "Cmd+R"
@@ -176548,6 +178636,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -177088,6 +179180,10 @@
             "Cmd+Right"
           ],
           "openSelectionInNewTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+T",
             "Cmd+Home"
@@ -177343,6 +179439,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -177624,6 +179724,10 @@
             "Cmd+Q"
           ],
           "newWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+Shift+E"
           ],
@@ -177867,6 +179971,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -178157,6 +180265,10 @@
           "pageDown": [
             "Cmd+Shift+R"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [],
           "goBack": [
             "Cmd+[",
@@ -178399,6 +180511,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -178829,6 +180945,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -179011,6 +181131,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -179457,6 +181581,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -179639,6 +181767,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -180081,6 +182213,10 @@
           "openSelectionInNewTab": [
             "Cmd+Delete"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [],
           "duplicateSelection": [
             "Cmd+Shift+M"
@@ -180315,6 +182451,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -180609,6 +182749,10 @@
             "Cmd+-",
             "Delete"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [],
           "toggleInfoPanel": [],
           "goBack": [
@@ -180860,6 +183004,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -181267,6 +183415,10 @@
             "Ctrl+Cmd+K"
           ],
           "newWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [
             "Cmd+Shift+F"
           ],
@@ -181518,6 +183670,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -181821,6 +183977,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -182003,6 +184163,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -182337,6 +184501,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "viewAsList": [
             "F12",
             "Cmd+Shift+N"
@@ -182595,6 +184763,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -183053,6 +185225,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -183235,6 +185411,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -183523,6 +185703,10 @@
           ],
           "goLibrary": [],
           "goMacintoshHD": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "focusFileSearch": [
             "Cmd+Option+K",
             "Cmd+Esc"
@@ -183785,6 +185969,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -184179,6 +186367,10 @@
           "mergeAllWindows": [
             "F11"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [],
           "calculateSize": [
             "Cmd+Shift+R"
@@ -184422,6 +186614,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -185606,6 +187802,8 @@
             "Cmd+Home"
           ],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "renameSelection": [],
           "copyPath": [
             "Cmd+]"
@@ -185956,6 +188154,7 @@
             "F20",
             "Cmd+Home"
           ],
+          "toggleTwoPanes": [],
           "renameSelection": [],
           "newFolder": [],
           "copyPath": [
@@ -186116,6 +188315,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186176,6 +188376,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186234,6 +188435,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186310,6 +188512,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186371,6 +188574,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186431,6 +188635,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186501,6 +188706,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186561,6 +188767,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186621,6 +188828,7 @@
                 "F20",
                 "Cmd+Home"
               ],
+              "toggleTwoPanes": [],
               "renameSelection": [],
               "newFolder": [],
               "copyPath": [
@@ -186803,6 +189011,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -186985,6 +189197,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -187270,6 +189486,10 @@
           "selectNextTab": [
             "Cmd+Esc"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelectedItem": [],
           "sortByModified": [],
           "goBack": [
@@ -187511,6 +189731,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -187859,6 +190083,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -188041,6 +190269,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -188483,6 +190715,8 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -188797,6 +191031,7 @@
             "Cmd+\\",
             "Cmd+Shift+G"
           ],
+          "toggleTwoPanes": [],
           "toggleHiddenFiles": []
         },
         "probes": [
@@ -188901,6 +191136,7 @@
                 "Cmd+Shift+G"
               ],
               "reopenClosedTab": [],
+              "toggleTwoPanes": [],
               "toggleHiddenFiles": []
             },
             "removed": {
@@ -188915,6 +191151,7 @@
                 "Cmd+\\",
                 "Cmd+Shift+G"
               ],
+              "toggleTwoPanes": [],
               "toggleHiddenFiles": []
             },
             "reset": {
@@ -188929,6 +191166,7 @@
                 "Cmd+\\",
                 "Cmd+Shift+G"
               ],
+              "toggleTwoPanes": [],
               "toggleHiddenFiles": []
             },
             "takenFrom": [],
@@ -189094,6 +191332,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -189276,6 +191518,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -189563,6 +191809,10 @@
           "openSelectionInNewTab": [
             "Cmd+Esc"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [],
           "toggleFolderTree": [],
           "goBack": [
@@ -189815,6 +192065,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -190182,6 +192436,10 @@
           "newTab": [
             "F20"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+Up"
           ],
@@ -190445,6 +192703,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+Down",
@@ -190915,6 +193177,10 @@
           "goDocuments": [
             "Cmd+Return"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "ejectVolume": [
             "Cmd+K"
           ],
@@ -191162,6 +193428,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -191716,6 +193986,10 @@
           "goMacintoshHD": [
             "Cmd+Option+K"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "renameSelection": [
             "Cmd+Plus"
           ],
@@ -191973,6 +194247,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -192437,6 +194715,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -192619,6 +194901,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -192952,6 +195238,10 @@
             "F2"
           ],
           "selectPreviousTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showInFinder": [],
           "toggleHiddenFiles": [],
           "goBack": [
@@ -193183,6 +195473,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -193795,6 +196089,10 @@
             "Cmd+E"
           ],
           "reopenClosedTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "duplicateSelection": [],
           "trashSelection": [
             "Ctrl+Cmd+S"
@@ -194043,6 +196341,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -194702,6 +197004,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -194880,6 +197186,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -195231,6 +197541,10 @@
           "newWindow": [
             "Cmd+R"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "toggleFavorite": [],
           "openHelp": [],
           "goBack": [
@@ -195461,6 +197775,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -195999,6 +198317,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -196181,6 +198503,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -196618,6 +198944,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -196792,6 +199122,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -197103,6 +199437,10 @@
           ],
           "focusContentPane": [],
           "selectPreviousTab": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [
             "Cmd+Shift+H"
           ],
@@ -197352,6 +199690,10 @@
           [
             "Cmd+Shift+]",
             "selectNextTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -198041,6 +200383,10 @@
             "Cmd+Q"
           ],
           "openSelectionInNewWindow": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByName": [
             "Cmd+Backspace",
             "PageDown"
@@ -198296,6 +200642,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -198886,6 +201236,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -199070,6 +201424,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -199447,6 +201805,10 @@
           "openSelectionInNewWindow": [],
           "moveTabToNewWindow": [],
           "mergeAllWindows": [],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "openSelection": [
             "Cmd+O"
           ],
@@ -199625,6 +201987,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -200007,6 +202373,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "showInFinder": [
             "Cmd+Shift+T"
           ],
@@ -200256,6 +202626,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -200627,6 +203001,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "sortByKind": [
             "Cmd+Option+K",
             "Ctrl+Cmd+K"
@@ -200896,6 +203274,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -201266,6 +203648,10 @@
           "openSelectionInNewTab": [
             "Cmd+Shift+F"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "quickLookSelection": [],
           "ejectVolume": [
             "Cmd+Delete",
@@ -201521,6 +203907,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",
@@ -202249,6 +204639,10 @@
           "quit": [
             "Cmd+Q"
           ],
+          "toggleTwoPanes": [
+            "Cmd+\\"
+          ],
+          "switchToOtherPane": [],
           "calculateSize": [
             "F11"
           ],
@@ -202508,6 +204902,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+\\",
+            "toggleTwoPanes"
           ],
           [
             "Cmd+O",

@@ -13,7 +13,7 @@ public enum ShortcutGroup: String, CaseIterable, Sendable, Hashable {
     public var label: String {
         switch self {
         case .navigation: "Navigation"
-        case .tabs: "Windows and Tabs"
+        case .tabs: "Windows, Tabs and Panes"
         case .files: "Files"
         case .search: "Search"
         case .view: "View"
@@ -55,6 +55,8 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case openSelectionInNewWindow
     case moveTabToNewWindow
     case mergeAllWindows
+    case toggleTwoPanes
+    case switchToOtherPane
     case openSelection
     case openSelectedItem
     case editSelection
@@ -183,6 +185,12 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .mergeAllWindows, label: "Merge All Windows", group: .tabs, defaults: [],
             menuPath: "Window > Merge All Windows"),
+        ShortcutCommandDefinition(
+            id: .toggleTwoPanes, label: "Two Panes", group: .tabs, defaults: ["Cmd+\\"],
+            menuPath: "View > Two Panes"),
+        ShortcutCommandDefinition(
+            id: .switchToOtherPane, label: "Switch to Other Pane", group: .tabs, defaults: [],
+            menuPath: "Window > Switch to Other Pane"),
         ShortcutCommandDefinition(
             id: .openSelection, label: "Open", group: .files, defaults: ["Cmd+O"], menuPath: "File > Open"),
         ShortcutCommandDefinition(

@@ -7,6 +7,18 @@ extension MainWindowController {
     /// Plugs the clipboard's marks and the drags into the panes.
     func installClipboardAndDrags() {
         let drags = dragDrop
+        installDrags(on: activePane)
+        sidebarController.fileDrops = SidebarFileDrops(
+            over: { [weak drags] row, info in drags?.sidebarDragUpdated(info, row: row) ?? [] },
+            drop: { [weak drags] row, info in drags?.sidebarPerformDrop(info, row: row) ?? false })
+        sidebarController.installFileDrops()
+        clipboardMarksChanged()
+    }
+
+    /// The drags out of a pane's list and over it.
+    func installDrags(on pane: BrowserPane) {
+        let drags = dragDrop
+        let content = pane.content
         content.dragHooks.beginDrag = { [weak drags] entries, event, view in
             drags?.beginDrag(entries, event: event, from: view) ?? false
         }
@@ -17,11 +29,6 @@ extension MainWindowController {
             drags?.contentPerformDrop(info, entry: entry) ?? false
         }
         content.dragHooks.dragExited = { [weak drags] in drags?.dragExited() }
-        sidebarController.fileDrops = SidebarFileDrops(
-            over: { [weak drags] row, info in drags?.sidebarDragUpdated(info, row: row) ?? [] },
-            drop: { [weak drags] row, info in drags?.sidebarPerformDrop(info, row: row) ?? false })
-        sidebarController.installFileDrops()
-        clipboardMarksChanged()
     }
 }
 

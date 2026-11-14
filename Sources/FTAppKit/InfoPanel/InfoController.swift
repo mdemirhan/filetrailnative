@@ -10,7 +10,8 @@ final class InfoController {
     /// Whether `host` is still there: a timer or an answer can outlast the tab while something still holds this controller.
     private weak var liveHost: MainWindowController?
     let panel: InfoPanelView
-    let row: InfoRowView
+    /// The active pane's Info Row; the other pane's keeps what it last showed.
+    private(set) var row: InfoRowView
     let auto: AutoFolderSizeController
 
     // The target.
@@ -65,7 +66,7 @@ final class InfoController {
             default: break
             }
         }
-        host.content.onDetailsChanged = { [weak self] in self?.queueUpdate() }
+        watchDetails(of: host.content)
         // Something can still hold this controller when its tab has gone, and `host` is unowned.
         relativeRelease = RelativeClock.shared.subscribe { [weak self, weak host] in
             guard let host, host.window?.isBehindAnotherTab != true else { return }
@@ -81,9 +82,27 @@ final class InfoController {
         fetchTimer?.cancel()
     }
 
+    /// A pane's list read more of its items' details: the panel and the row update when it is the active one.
+    func watchDetails(of content: ContentPaneController) {
+        content.onDetailsChanged = { [weak self, weak content] in
+            guard let self, let content, content === self.host.content else { return }
+            self.queueUpdate()
+        }
+    }
+
+    /// Another pane became active: its Info Row is the one kept up to date, and the panel describes its selection.
+    func follow(row next: InfoRowView) {
+        guard next !== row else { return }
+        row = next
+        wireRow()
+        seenSelection = content.selection
+        targetOverride = nil
+        update()
+    }
+
     private func wire() {
         panel.iconStore = host.services.iconStore
-        row.iconStore = host.services.iconStore
+        wireRow()
         panel.onClose = { [weak self] in self?.host.updatePanels { $0.propertiesOpen = false } }
         panel.onNavigate = { [weak self] path in
             guard let self else { return }
@@ -99,6 +118,10 @@ final class InfoController {
         panel.onCalculate = { [weak self] in self?.calculate(forced: false) }
         panel.onRecalculate = { [weak self] in self?.calculate(forced: true) }
         panel.onCancel = { [weak self] in self?.cancelCalculating() }
+    }
+
+    private func wireRow() {
+        row.iconStore = host.services.iconStore
         row.onCalculate = { [weak self] in self?.calculate(forced: false, targets: self?.rowSizeTargets) }
         row.onRecalculate = { [weak self] in self?.calculate(forced: true, targets: self?.rowSizeTargets) }
         row.onCancel = { [weak self] in self?.cancelCalculating(targets: self?.rowSizeTargets) }

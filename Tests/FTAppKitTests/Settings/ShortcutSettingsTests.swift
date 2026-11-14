@@ -36,7 +36,7 @@ import Testing
         let (_, _, view) = try make()
         #expect(
             view.groups.map { $0.titleText.stringValue } == [
-                "Navigation", "Windows and Tabs", "Files", "Search", "View", "Standard shortcuts",
+                "Navigation", "Windows, Tabs and Panes", "Files", "Search", "View", "Standard shortcuts",
             ])
         #expect(view.rows.count == ShortcutCommands.all.count)
         #expect(texts("settings.shortcuts.intro", in: view) == [ShortcutSettingsText.intro])
@@ -375,7 +375,7 @@ import Testing
         #expect(texts("settings.shortcuts.label", in: view).contains("New Folder"))
         view.setQuery("cmd+shift+n")
         #expect(texts("settings.shortcuts.label", in: view).contains("New Folder"))
-        view.setQuery("windows and tabs")
+        view.setQuery("windows, tabs and panes")
         #expect(view.groups.map(\.group) == [.tabs])
         view.setQuery("zzz")
         #expect(texts("settings.shortcuts.empty", in: view) == ["No command or key matches “zzz”."])

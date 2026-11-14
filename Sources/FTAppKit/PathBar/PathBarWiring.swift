@@ -5,13 +5,15 @@ import Foundation
 
 extension MainWindowController {
     /// Connects the path bar to the window: what it opens, and the folders and suggestions it asks for.
-    func wirePathBar() {
-        let bar = content.contentShell.pathBarRow
+    func wirePathBar(_ pane: BrowserPane) {
+        let bar = pane.content.contentShell.pathBarRow
         bar.startupDiskName = { [weak self] in self?.services.startupDisk.name ?? VolumePaths.defaultStartupDiskName }
         bar.namesChanged()
-        bar.path = folder.path
-        bar.onNavigate = { [weak self] path in
-            guard let self else { return }
+        bar.path = pane.folder.path
+        // The bar acts in its own pane, which it makes the active one.
+        bar.onNavigate = { [weak self, weak pane] path in
+            guard let self, let pane else { return }
+            self.activate(pane)
             // In search results the bar ends with the selected result, which opens as a double-click would open it.
             if let result = self.selectedSearchResult, result.path == path {
                 self.open([result])
@@ -23,16 +25,20 @@ extension MainWindowController {
             guard let self else { return }
             self.navigate(to: URL(fileURLWithPath: path), target: .newTab)
         }
-        bar.onFocusContent = { [weak self] in self?.perform(.focusContentPane) }
-        bar.requestFolders = { [weak self] path in
-            guard let self else { return [] }
-            let hidden = self.viewState.includeHidden
+        bar.onFocusContent = { [weak self, weak pane] in
+            guard let self, let pane else { return }
+            self.activate(pane)
+            self.perform(.focusContentPane)
+        }
+        bar.requestFolders = { [weak self, weak pane] path in
+            guard let self, let pane else { return [] }
+            let hidden = pane.includeHidden
             let children = try await self.services.directoryService.treeChildren(path: path, includeHidden: hidden)
             return children.children.map { PathbarFolder(path: $0.path, name: $0.name) }
         }
-        bar.requestSuggestions = { [weak self] input in
-            guard let self else { return [] }
-            let hidden = self.viewState.includeHidden
+        bar.requestSuggestions = { [weak self, weak pane] input in
+            guard let self, let pane else { return [] }
+            let hidden = pane.includeHidden
             let answer = try? await self.services.directoryService.pathSuggestions(
                 inputPath: input, includeHidden: hidden, limit: InfoMetrics.suggestionLimit)
             return (answer?.suggestions ?? []).map { PathSuggestionRow(path: $0.path, name: $0.name) }
@@ -47,15 +53,8 @@ extension MainWindowController {
         return selected.first { $0.path == content.selection.leadPath } ?? selected.first
     }
 
-    /// The path bar shows the folder on screen; in search mode where the one selected result is, as Finder's does, or
-    /// else the folder the search runs from.
+    /// The active pane's path bar (`BrowserPane.updatePathBar`).
     func updatePathBar() {
-        let bar = content.contentShell.pathBarRow
-        guard let searchRootPath else {
-            bar.path = shownFolderPath
-            return
-        }
-        let selected = content.selectedEntries
-        bar.path = content.selection.paths.count == 1 && selected.count == 1 ? selected[0].path : searchRootPath
+        activePane.updatePathBar()
     }
 }

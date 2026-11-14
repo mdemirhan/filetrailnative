@@ -34,8 +34,17 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     /// Puts the menus on the file list's rows and background, and on the sidebar's rows.
     func install() {
-        tab.content.contextMenuProvider = { [weak self] entries in self?.contentMenu(for: entries) }
+        install(on: tab.activePane)
         tab.sidebarController.contextMenuProvider = { [weak self] request in self?.sidebarMenu(for: request) }
+    }
+
+    /// A pane's list: a right-click there makes it the active pane first, so the menu acts on it.
+    func install(on pane: BrowserPane) {
+        pane.content.contextMenuProvider = { [weak self, weak pane] entries in
+            guard let self, let pane else { return nil }
+            self.tab.activate(pane)
+            return self.contentMenu(for: entries)
+        }
     }
 
     // MARK: Building

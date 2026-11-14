@@ -42,7 +42,7 @@ final class BrowserPane {
     /// The pane's search: its session, the toolbar field while the pane is active, the results bar.
     var search: TabSearch {
         if let searchStore { return searchStore }
-        let made = TabSearch(tab: tab)
+        let made = TabSearch(pane: self)
         searchStore = made
         return made
     }
@@ -84,6 +84,16 @@ final class BrowserPane {
     private let startsTheWindow: Bool
     /// What waits out `retryDelay`; tests move it by hand.
     var timers: any TimerScheduling = TaskTimerScheduler()
+    /// The number the pane's folder watch is filed under: the tab's own for its first pane.
+    var watchID = 0
+    /// The Trash's bar over the list, while the pane shows the Trash.
+    private(set) lazy var trashHeader: TrashHeaderView = {
+        let header = TrashHeaderView()
+        header.onEmpty = { [weak self] in _ = self?.tab?.performWriteCommand(.emptyTrash) }
+        header.onFocusList = { [weak self] in self?.content.focusList() }
+        header.onSwitchPane = { [weak self] in self?.content.switchPane() }
+        return header
+    }()
 
     init(
         tab startup: StartupTab, history: (paths: [String], index: Int)?, folderSizes: WindowFolderSizes,
@@ -805,6 +815,17 @@ final class BrowserPane {
 
     /// The folder on screen read again brings the tree along; a folder being opened now will do that itself.
     var treeFollowsReadingAgain: Bool { loaded && !folderLetGo && !isNavigating }
+
+    /// The columns and the density again, from the preferences: the search's own columns while results show.
+    func refreshColumns() {
+        guard let tab else { return }
+        content.sizeShortcuts = tab.sizeShortcuts
+        if let search = searchStore, search.showsResults {
+            content.setColumns(search.columnState(tab.preferences))
+        } else {
+            content.setColumns(ListColumnState(preferences: tab.preferences))
+        }
+    }
 
     /// The path bar shows the folder on screen; in search mode where the one selected result is, as Finder's does, or
     /// else the folder the search runs from.

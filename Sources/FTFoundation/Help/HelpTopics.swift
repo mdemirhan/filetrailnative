@@ -580,6 +580,10 @@ extension HelpContent {
         HelpShortcutItem(group: .navigation, .command(.moveTabToNewWindow), "Move the tab to a window of its own"),
         HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window's tabs into this window"),
         HelpShortcutItem(
+            group: .navigation, .command(.toggleTwoPanes),
+            "Show a second pane beside this one, or close the pane you aren't in"),
+        HelpShortcutItem(group: .navigation, .command(.switchToOtherPane), "Move the keyboard to the other pane"),
+        HelpShortcutItem(
             group: .navigation, .command(.closeTab), "Close the tab (the window, when it is the last tab)"),
         HelpShortcutItem(group: .navigation, .command(.selectNextTab), "Next tab"),
         HelpShortcutItem(group: .navigation, .command(.selectPreviousTab), "Previous tab"),
@@ -588,7 +592,9 @@ extension HelpContent {
         HelpShortcutItem(group: .navigation, .command(.closeWindow), "Close the window"),
         HelpShortcutItem(group: .navigation, .command(.focusTreePane), "Focus the folder tree"),
         HelpShortcutItem(group: .navigation, .command(.focusContentPane), "Focus the file list"),
-        HelpShortcutItem(group: .navigation, .fixed("Tab"), "Switch between the tree and the list"),
+        HelpShortcutItem(
+            group: .navigation, .fixed("Tab"),
+            "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"),
         HelpShortcutItem(group: .navigation, .fixed("Shift+Down"), "Extend the selection (Shift+Up, the other way)"),
         HelpShortcutItem(group: .navigation, .fixed("Home"), "Select the first item (End, the last)"),
         HelpShortcutItem(group: .navigation, .command(.halfPageDown), "Move half a page down"),

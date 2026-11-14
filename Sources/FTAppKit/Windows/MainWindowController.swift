@@ -200,6 +200,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     static let minimumSize = NSSize(width: 760, height: 480)
     private static var nextWindowID = 1
 
+    /// A number for a second pane's folder watch, from the same count as the tabs' own.
+    static func makeWatchID() -> Int {
+        defer { nextWindowID += 1 }
+        return nextWindowID
+    }
+
     /// The number its folder watch and menu state are filed under.
     let windowID: Int
     /// The explorer window it is a tab of.
@@ -239,8 +245,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The sidebar, for the parts of the window that put a menu on a row or follow its selection.
     var sidebarController: SidebarViewController { sidebar }
     /// The tab's panes, left to right, and the one the toolbar, the sidebar, the Info panel and the commands follow.
-    private(set) var panes: [BrowserPane]
-    private(set) var activePaneIndex = 0
+    var panes: [BrowserPane]
+    var activePaneIndex = 0
+    /// Where the second pane was when it was last closed, for ⌘\ to open it there again.
+    var closedSecondPane: (start: StartupTab, history: NavigationHistory)?
+    /// The folder watch of a second pane just closed, for the window's watches to let go of.
+    var closedPaneWatchID: Int?
     var activePane: BrowserPane { panes[activePaneIndex] }
     /// The active pane's file list.
     var content: ContentPaneController { activePane.content }
@@ -340,7 +350,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         explorerToolbar = ExplorerToolbar(identifier: "filetrail.explorer.\(windowID)")
         WindowChrome.configure(window, toolbar: explorerToolbar.toolbar)
         super.init(window: window)
-        for pane in panes { pane.tab = self }
+        for pane in panes {
+            pane.tab = self
+            pane.watchID = windowID
+        }
         window.explorerTab = self
         window.delegate = self
 
@@ -353,9 +366,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             favoritesExpanded: tab.favoritesExpanded, locationsExpanded: tab.locationsExpanded,
             includeHidden: tab.includeHidden)
         workspace.sidebarCell.content = sidebar.view
-        workspace.mainCell.content = content.view
+        workspace.mainCell.content = activePane.content.view
         workspace.inspectorCell.content = infoPanel
-        workspace.statusCell.content = content.contentShell.pathBarRow
+        workspace.statusCell.content = activePane.content.contentShell.pathBarRow
         // The tree's resizer is in no pane, so it walks Tab itself: on to the toolbar, or back into the tree.
         workspace.treeResizer.onTab = { [weak self] backward in
             guard let self else { return }
@@ -389,11 +402,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             window.center()
         }
 
-        wireContent()
+        wireContent(activePane)
         installMenusAndNotifications()
         installClipboardAndDrags()
-        wirePathBar()
-        infoController = InfoController(host: self, panel: infoPanel, row: content.contentShell.infoRow)
+        wirePathBar(activePane)
+        infoController = InfoController(host: self, panel: infoPanel, row: activePane.content.contentShell.infoRow)
         explorerToolbar.attach(self)
         connectSearchField()
         installBatchRename()
@@ -525,7 +538,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return view
     }
 
-    /// What the tab bar calls the tab.
+    /// What the tab bar calls the tab; with two panes, its label names both (`twoPaneLabel`).
     var tabDescription: TabDescription {
         guard let session = searchStore?.session else {
             return ExplorerTabs.describe(
@@ -1018,7 +1031,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     // MARK: The content pane
 
     /// Connects the content pane to the window: what it reads from the services, and what it reports.
-    private func wireContent() {
+    func wireContent(_ pane: BrowserPane) {
+        let content = pane.content
         content.loaders = ContentLoaders(
             metadata: { [weak self] folder, paths in
                 guard let service = self?.services.directoryService else { return [] }
@@ -1033,14 +1047,19 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             openPrivacySettings: {
                 Task { _ = await SystemActions.openFullDiskAccessSettings() }
             })
-        content.onActivate = { [weak self] entries, newTab in self?.open(entries, inNewTab: newTab) }
-        content.onSortRequested = { [weak self] field in self?.sort(by: field) }
-        content.onSortSetFromOutside = { [weak self] field, ascending in
-            self?.setSort(field, ascending ? .asc : .desc)
+        content.onActivate = { [weak self, weak pane] entries, newTab in
+            guard let self, let pane else { return }
+            self.activate(pane)
+            self.open(entries, inNewTab: newTab)
         }
-        content.onSelectionChanged = { [weak self] selection in
-            self?.searchStore?.session.noteSelection(selection)
-            if self?.searchRootPath != nil { self?.updatePathBar() }
+        content.onSortRequested = { [weak pane] field in pane?.sort(by: field) }
+        content.onSortSetFromOutside = { [weak pane] field, ascending in
+            pane?.setSort(field, ascending ? .asc : .desc)
+        }
+        content.onSelectionChanged = { [weak self, weak pane] selection in
+            guard let pane else { return }
+            pane.searchStore?.session.noteSelection(selection)
+            if pane.searchRootPath != nil { pane.updatePathBar() }
             self?.noteFocusedPane()
             self?.notify(.selection)
         }
@@ -1048,17 +1067,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             ShortcutCommands.resolve(self?.preferences.shortcutOverrides ?? [:])
         }
         content.onReturn = { [weak self] in self?.pressedReturn() }
-        // With the tree hidden Tab stays in the list.
-        content.onSwitchPane = { [weak self] in
-            guard let self else { return }
-            if self.panels.folderTreeOpen { self.perform(.focusTreePane) } else { self.content.focusList() }
+        // Tab walks the tree and the panes in the order they are on screen; with the tree hidden it stays among the
+        // panes, and with one pane in the list.
+        content.onSwitchPane = { [weak self, weak pane] in
+            guard let self, let pane else { return }
+            self.tabKeyPressed(from: pane)
         }
         content.onCommand = { [weak self] id in self?.runKeyCommand(id) ?? false }
         content.onRenameSubmit = { [weak self] path, name in self?.submitRename(path: path, typed: name) }
-        content.onRenameStateChanged = { [weak self] in
+        content.onRenameStateChanged = { [weak self, weak content] in
             guard let self else { return }
             // While a name is being typed, changes made outside the app wait.
-            if self.content.inlineRename == nil { self.recheckFolderChanges() }
+            if content?.inlineRename == nil { self.recheckFolderChanges() }
             self.notify(.focusedPane)
         }
         // A refusal the field was showing when its item left the list.
@@ -1068,13 +1088,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.onSearchSubfolders = { [weak self] in self?.focusFileSearch() }
         // The chip switches the filter on screen and makes its mode the default for the filters to come.
-        content.onToggleFilterMode = { [weak self] in
-            guard let self else { return }
-            let mode = self.content.toggleFilterMode()
-            self.searchStore?.header.showFilterMode(self.content.filterMode)
+        content.onToggleFilterMode = { [weak self, weak pane] in
+            guard let self, let pane else { return }
+            let mode = pane.content.toggleFilterMode()
+            pane.searchStore?.header.showFilterMode(pane.content.filterMode)
             self.updatePreferences { $0.listFilterMatch = mode }
         }
-        content.onColumnWidthsChanged = { [weak self] widths in self?.saveColumnWidths(widths) }
+        content.onColumnWidthsChanged = { [weak self, weak pane] widths in
+            guard let pane else { return }
+            self?.saveColumnWidths(widths, searching: pane.searchStore?.showsResults == true)
+        }
         content.onCompactListWidthChanged = { [weak self] density, width in
             self?.updatePreferences { $0.compactListWidths[density] = width }
         }
@@ -1082,16 +1105,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             self?.updatePreferences { $0.iconSizes[density] = size }
         }
         content.setView(
-            sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
+            sortBy: pane.sortBy, direction: pane.sortDirection, foldersFirst: pane.foldersFirst,
+            includeHidden: pane.includeHidden)
         content.setDefaultFilterMode(preferences.listFilterMatch)
         content.sizeShortcuts = sizeShortcuts
         content.setColumns(ListColumnState(preferences: preferences))
-        content.setMode(viewMode)
+        content.setMode(pane.viewMode)
     }
 
     /// The widths the List keeps are the window's own (`detailColumnWidths` is a window session key).
-    private func saveColumnWidths(_ widths: [DetailColumn: Double]) {
-        let searching = searchStore?.showsResults == true
+    private func saveColumnWidths(_ widths: [DetailColumn: Double], searching: Bool) {
         // As the column's width is drawn, then kept as a whole number the way the saved state keeps it.
         func width(_ column: DetailColumn) -> Double {
             DetailsColumns.clamp(widths[column] ?? 0, column: column, search: searching)
@@ -1119,17 +1142,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// The columns and the density again, from the preferences (Settings changed them, or a scenario did).
     /// The keys of the size commands, which the status bar's slider names.
-    private var sizeShortcuts: ShortcutDisplay {
+    var sizeShortcuts: ShortcutDisplay {
         ShortcutDisplay(shortcuts: ShortcutCommands.resolve(preferences.shortcutOverrides))
     }
 
     func refreshColumns() {
-        content.sizeShortcuts = sizeShortcuts
-        if let search = searchStore, search.showsResults {
-            content.setColumns(search.columnState(preferences))
-        } else {
-            content.setColumns(ListColumnState(preferences: preferences))
-        }
+        for pane in panes { pane.refreshColumns() }
     }
 
     /// The search changed how it stands: the tab's label and magnifier, and the commands.
@@ -1189,6 +1207,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// The keyboard moved in the window.
     func keyboardMoved() {
+        followKeyboardToPane()
         noteFocusedPane()
         let now = (pane: focusedPane, editing: isTextFieldEditing)
         guard now != keyboardHolder else { return }
@@ -1235,7 +1254,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             guard let self else { return }
             self.group?.openTab(path: path, from: self)
         }
-        sidebar.focusContent = { [weak self] in self?.perform(.focusContentPane) }
+        sidebar.focusContent = { [weak self] in self?.tabKeyPressedInTree() }
         sidebar.stateChanged = { [weak self] in
             guard let self else { return }
             self.group?.tabChanged(self)
@@ -1281,7 +1300,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return ApplicationMenuState.build(
             viewMode: shownViewMode, sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
-            infoRowOpen: panels?.detailRowOpen ?? false,
+            infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
             favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false,
             textEditing: isTextFieldEditing
         ) { CommandAvailability.canRun($0, context) }
@@ -1328,24 +1347,19 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The home folder whose Trash gets the bar; tests use their own.
     var trashHomePath = FileManager.default.homeDirectoryForCurrentUser.path
 
-    private lazy var trashHeader: TrashHeaderView = {
-        let header = TrashHeaderView()
-        header.onEmpty = { [weak self] in _ = self?.performWriteCommand(.emptyTrash) }
-        header.onFocusList = { [weak self] in self?.content.focusList() }
-        header.onSwitchPane = { [weak self] in self?.content.switchPane() }
-        return header
-    }()
-
-    /// The Trash itself on screen has its bar, not a folder in it, and not over search results. Empty follows Empty
-    /// Trash in the menu: dimmed with nothing to erase, or while a file operation runs.
+    /// The Trash itself on screen has its bar, not a folder in it, and not over search results, in each pane. Empty
+    /// follows Empty Trash in the menu: dimmed with nothing to erase, or while a file operation runs.
     private func refreshTrashHeader() {
-        let shell = content.contentShell
-        guard searchRootPath == nil, Paths.isTrashFolder(shownFolderPath, homePath: trashHomePath) else {
-            shell.trashHeader = nil
-            return
+        let canEmpty = canPerform(.emptyTrash)
+        for pane in panes {
+            let shell = pane.content.contentShell
+            guard pane.searchRootPath == nil, Paths.isTrashFolder(pane.shownFolderPath, homePath: trashHomePath) else {
+                shell.trashHeader = nil
+                continue
+            }
+            shell.trashHeader = pane.trashHeader
+            pane.trashHeader.emptyButton.isEnabled = canEmpty
         }
-        shell.trashHeader = trashHeader
-        trashHeader.emptyButton.isEnabled = canPerform(.emptyTrash)
     }
 
     /// Something the commands read changed that has no change of its own to tell of.
@@ -1431,8 +1445,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     func windowWillClose(_ notification: Notification) {
-        // Closing a tab stops its search.
-        searchStore?.session.close()
+        // Closing a tab stops its searches.
+        for pane in panes { pane.searchStore?.session.close() }
         group?.tabWillClose(self)
         visitTracker.dispose()
         // An open clipboard or Undo History list goes with the tab, and so does what it listens to.
@@ -1448,8 +1462,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         ensureLoaded()
         refreshTrashState()
         // The tab on screen is the one live search; the others of its window go on in the background.
-        for other in group?.tabs ?? [] where other !== self { other.searchStore?.session.enterBackground() }
-        searchStore?.session.returnToForeground()
+        for other in group?.tabs ?? [] where other !== self {
+            for pane in other.panes { pane.searchStore?.session.enterBackground() }
+        }
+        for pane in panes { pane.searchStore?.session.returnToForeground() }
         group?.frontSearch = searchStore
         group?.tabBecameKey(self)
     }
@@ -1480,7 +1496,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func notify(_ change: ExplorerWindowChange) {
         if change == .folder || change == .search || change == .commands { refreshTrashHeader() }
         // The Trash on screen changed, or came to the screen: what it holds may not be what was last read.
-        if change == .folder, content.contentShell.trashHeader != nil { refreshTrashState() }
+        if change == .folder, panes.contains(where: { $0.content.contentShell.trashHeader != nil }) {
+            refreshTrashState()
+        }
         observers.removeAll { $0.token.value?.isValid != true }
         for observer in observers { observer.handler(change) }
         reportMenuStateSoon()
@@ -1505,8 +1523,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             if !edited.isEmpty { search.session.applyDefaults(preferences, keys: edited) }
         }
         sidebar.applyPreferences()
-        content.setDefaultFilterMode(preferences.listFilterMatch)
-        searchStore?.header.showFilterMode(content.filterMode)
+        for pane in panes {
+            pane.content.setDefaultFilterMode(preferences.listFilterMatch)
+            pane.searchStore?.header.showFilterMode(pane.content.filterMode)
+        }
         refreshColumns()
         notificationsSettingChanged()
         if change.keys.contains(.markClipboardItems) || change.keys.isEmpty { clipboardMarksChanged() }
@@ -1640,6 +1660,8 @@ extension MainWindowController: ExplorerWindowHandle {
             if let target = selectedFolder { openSelectedFolder(target, place: .window) }
         case .moveTabToNewWindow: group?.moveTabToNewWindow(self)
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
+        case .toggleTwoPanes: toggleTwoPanes()
+        case .switchToOtherPane: switchToOtherPane()
         case .toggleFolderTree: updatePanels { $0.folderTreeOpen.toggle() }
         case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
         case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
@@ -1782,7 +1804,8 @@ extension MainWindowController: ExplorerWindowContext {
             isSearchMode: searchRootPath != nil, openItemLimit: preferences.openItemLimit,
             writeOperationLocked: isWriteLocked, canGoBack: canGoBack,
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,
-            tabCount: group?.tabs.count ?? 1, trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
+            tabCount: group?.tabs.count ?? 1, paneCount: panes.count,
+            trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),
             viewSizeSteps: content.viewSize?.steps ?? .unavailable)

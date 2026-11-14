@@ -138,6 +138,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.toggleInfoPanel, "Info Panel"))
             menu.addItem(context.command(.toggleInfoRow, "Info Row"))
             menu.addItem(.separator())
+            menu.addItem(context.command(.toggleTwoPanes, "Two Panes"))
+            menu.addItem(.separator())
             menu.addItem(context.command(.customizeToolbar, "Customize Toolbar…"))
             // No Zoom In, Zoom Out or Actual Size of the whole window, and no hidden full screen item: AppKit adds its
             // own Enter Full Screen to this menu, with ⌃⌘F.
@@ -169,6 +171,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(.separator())
             menu.addItem(context.command(.selectPreviousTab, "Show Previous Tab"))
             menu.addItem(context.command(.selectNextTab, "Show Next Tab"))
+            // Tab does it too, from a pane's list; the menu can't show Tab.
+            menu.addItem(context.command(.switchToOtherPane, "Switch to Other Pane"))
             menu.addItem(context.command(.moveTabToNewWindow, "Move Tab to New Window"))
             menu.addItem(context.command(.mergeAllWindows, "Merge All Windows"))
             menu.addItem(.separator())

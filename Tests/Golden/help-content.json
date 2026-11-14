@@ -113,6 +113,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -139,7 +144,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -777,7 +782,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -2069,6 +2074,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -2095,7 +2105,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -2733,7 +2743,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -4031,6 +4041,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -4057,7 +4072,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -4702,7 +4717,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -5978,6 +5993,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -6004,7 +6024,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -6642,7 +6662,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -7951,13 +7971,18 @@
         "shortcuts": [
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Shift+W",
             "description": "Close the window"
           },
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -8390,7 +8415,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -9482,6 +9507,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -9508,7 +9538,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -10146,7 +10176,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -11459,6 +11489,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -11490,7 +11525,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -12108,7 +12143,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -13393,6 +13428,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -13419,7 +13459,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -14047,7 +14087,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -15366,6 +15406,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -15392,7 +15437,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -15995,7 +16040,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -17255,6 +17300,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -17281,7 +17331,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -17924,7 +17974,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -19239,6 +19289,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -19265,7 +19320,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -19875,7 +19930,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -21178,6 +21233,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -21204,7 +21264,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -21832,7 +21892,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -23109,6 +23169,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -23135,7 +23200,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -23783,7 +23848,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -25075,6 +25140,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -25101,7 +25171,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -25751,7 +25821,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -27051,6 +27121,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -27077,7 +27152,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -27704,7 +27779,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -28986,6 +29061,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -29012,7 +29092,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -29645,7 +29725,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -30962,6 +31042,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -30993,7 +31078,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -31655,7 +31740,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -32952,6 +33037,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -32978,7 +33068,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -33616,7 +33706,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -34913,6 +35003,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -34939,7 +35034,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -35557,7 +35652,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -36841,6 +36936,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Ctrl+Cmd+S",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -36867,7 +36967,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -37500,7 +37600,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -38802,6 +38902,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -38828,7 +38933,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -39446,7 +39551,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -40755,6 +40860,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -40781,7 +40891,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -41409,7 +41519,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -42701,6 +42811,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -42727,7 +42842,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -43365,7 +43480,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -44649,6 +44764,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -44675,7 +44795,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -45325,7 +45445,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -46618,6 +46738,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -46644,7 +46769,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -47272,7 +47397,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -48520,6 +48645,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -48541,7 +48671,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -49174,7 +49304,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -50485,6 +50615,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -50511,7 +50646,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -51166,7 +51301,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -52461,6 +52596,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -52487,7 +52627,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -53120,7 +53260,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
@@ -54428,6 +54568,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+\\",
+            "description": "Show a second pane beside this one, or close the pane you aren't in"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+W",
             "description": "Close the tab (the window, when it is the last tab)"
           },
@@ -54454,7 +54599,7 @@
           {
             "group": "navigation",
             "shortcut": "Tab",
-            "description": "Switch between the tree and the list"
+            "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
           },
           {
             "group": "navigation",
@@ -55087,7 +55232,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Tab",
-                  "description": "Switch between the tree and the list"
+                  "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
             },
