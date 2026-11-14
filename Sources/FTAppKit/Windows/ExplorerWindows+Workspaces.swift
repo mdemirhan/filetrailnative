@@ -8,22 +8,25 @@ extension ExplorerWindows {
     var workspaces: [Workspace] { store.preferences().workspaces }
 
     /// Opens the workspace `id` as it was saved, in a new window, or in place of `tab`'s window (the menu's item with
-    /// ⌥). A window whose tabs a sheet or a dialog holds isn't replaced.
+    /// ⌥). A window whose tabs a sheet, a dialog or a name being edited holds isn't replaced: nothing opens, with a
+    /// beep. One that comes to hold them while the workspace's first folder loads stays open behind it, with a beep.
     func openWorkspace(id: String, inPlaceOf tab: MainWindowController? = nil) {
         let kept = workspaces
         guard let index = Workspaces.index(id: id, in: kept) else { return }
         if let tab, tab.group?.isBlocked ?? true {
-            NSSound.beep()
+            beep()
             return
         }
         var workspace = kept[index]
         let replaced = withGoneFoldersReplaced(workspace.session)
         workspace.session = replaced.session
         var opened: ExplorerTabGroup?
-        opened = controller.openWorkspace(workspace, replacing: tab?.group?.windowID) { [weak self] in
+        let shown: () -> Void = { [weak self] in
             guard let self, replaced.tabs > 0, store.preferences().notificationsEnabled else { return }
             showNotice(.workspaceFoldersGone(tabs: replaced.tabs), opened?.selected?.window)
         }
+        let held: () -> Void = { [weak self] in self?.beep() }
+        opened = controller.openWorkspace(workspace, replacing: tab?.group?.windowID, shown: shown, held: held)
     }
 
     /// Workspace 1 to 5: the workspace at `slot` in the list, in a window of its own or in place of `tab`'s. Nothing

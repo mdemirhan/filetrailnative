@@ -351,11 +351,14 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     /// `openWorkspace`: a window with the workspace's tabs, panels and size, placed as New Window places one. It opens
     /// anew even while a window opened from it is open, as that window may have changed since. With `replacing`, it
     /// opens in that window's place and size, and the window closes once it is shown, as a merged one does: not
-    /// remembered as the window closed last, its running operation going on in the new one. `shown` runs once the new
-    /// window is on screen. The window that shows it; nil when nothing opened.
+    /// remembered as the window closed last, its running operation going on in the new one. A window that by then has
+    /// something open in it that closing would lose (what Merge All Windows asks of it) stays open beside the new one,
+    /// and `held` runs. `shown` runs once the new window is on screen. The window that shows it; nil when nothing
+    /// opened.
     @discardableResult
     public func openWorkspace(
-        _ workspace: Workspace, replacing replacingID: Int? = nil, shown: @escaping () -> Void = {}
+        _ workspace: Workspace, replacing replacingID: Int? = nil, shown: @escaping () -> Void = {},
+        held: @escaping () -> Void = {}
     )
         -> W?
     {
@@ -371,10 +374,16 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         let show = window.events.readyToShow
         window.events.readyToShow = { [weak self, weak replacedWindow = replaced?.window] in
             show()
-            if let self, let replacedWindow, !replacedWindow.isDestroyed {
-                closingWithoutAsking.insert(ObjectIdentifier(replacedWindow))
-                merged.insert(ObjectIdentifier(replacedWindow))
-                replacedWindow.close()
+            if let self, let replacedWindow, isStayingOpen(replacedWindow) {
+                // The new window's first folder may take a while: a rename, a sheet or a paste's question may have
+                // begun in the window meanwhile.
+                if replacedWindow.mergeAnswer.busy {
+                    held()
+                } else {
+                    closingWithoutAsking.insert(ObjectIdentifier(replacedWindow))
+                    merged.insert(ObjectIdentifier(replacedWindow))
+                    replacedWindow.close()
+                }
             }
             shown()
         }

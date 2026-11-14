@@ -124,6 +124,40 @@ extension ExplorerWindowlessTests {
             #expect(opened.tabs.map { $0.panes[0].folder.path } == [real(harness, "Alpha"), real(harness, "Beta")])
         }
 
+        // A window with a name being edited in it isn't replaced: a beep, and nothing opens. One whose name begins
+        // to be edited while the workspace loads stays open with it, and the workspace opens beside it with a beep.
+        @Test func aWindowWithANameBeingEditedIsntReplacedByAWorkspace() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            var beeps = 0
+            harness.windows.beep = { beeps += 1 }
+            let kept = try workspace(
+                "workspace-a", "Work", of: tab, in: harness, tabs: [FTAppKitTests.tab(real(harness, "Beta"))])
+            tab.updatePreferences { $0.workspaces = [kept] }
+            let alpha = harness.folder.appending("Alpha").path
+
+            #expect(tab.content.beginRename(path: alpha))
+            harness.windows.openWorkspace(id: "workspace-a", inPlaceOf: tab)
+            await settle()
+            #expect(beeps == 1)
+            #expect(harness.windows.count == 1)
+            #expect(tab.content.inlineRename != nil)
+            tab.content.renameCancelled()
+
+            harness.windows.openWorkspace(id: "workspace-a", inPlaceOf: tab)
+            #expect(harness.windows.count == 2)
+            #expect(tab.content.beginRename(path: alpha))
+            #expect(await waitUntil { beeps == 2 })
+            let opened = try #require(harness.windows.newestGroup)
+            #expect(opened.tabs.map { $0.panes[0].folder.path } == [real(harness, "Beta")])
+            await settle()
+            #expect(harness.windows.count == 2)
+            #expect(tab.group?.isDestroyed == false)
+            #expect(tab.content.inlineRename != nil)
+            tab.content.renameCancelled()
+        }
+
         // A key held down opens its workspace once, not a window for every repeat.
         @Test func aWorkspaceKeyHeldDownOpensItsWorkspaceOnce() async throws {
             let harness = try ExplorerHarness.windowless()

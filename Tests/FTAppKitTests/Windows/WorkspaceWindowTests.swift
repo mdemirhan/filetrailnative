@@ -88,6 +88,35 @@ struct WorkspaceWindowTests {
         #expect(setup.store.lastClosedWindow() == closedBefore)
     }
 
+    // Something opened in the window while the new one loads its first folder (a rename, a sheet, a paste's question)
+    // keeps it open, behind the new one; the next workspace opened in its place replaces it once it is free.
+    @Test func aWindowThatComesToHoldSomethingWhileTheWorkspaceLoadsStaysOpen() async throws {
+        let setup = try WindowSetup.withWindows(1)
+        let old = try #require(setup.windows.first)
+        var held = 0
+        var shown = 0
+
+        let opened = try #require(
+            setup.controller.openWorkspace(
+                Self.workspace(), replacing: old.windowID, shown: { shown += 1 }, held: { held += 1 }))
+        setup.answerTabs(old, WindowTabsAnswer(tabs: [], busy: true))
+        opened.events.readyToShow()
+        await settle()
+
+        #expect(!old.destroyed)
+        #expect(held == 1)
+        #expect(shown == 1)
+        #expect(setup.log.last == "show \(opened.recordID)")
+        #expect(Set(setup.store.explorerWindows().map(\.id)) == [old.recordID, opened.recordID])
+
+        setup.answerTabs(old, WindowTabsAnswer(tabs: [], busy: false))
+        let again = try #require(setup.controller.openWorkspace(Self.workspace(), replacing: old.windowID))
+        again.events.readyToShow()
+        await settle()
+        #expect(old.destroyed)
+        #expect(held == 1)
+    }
+
     @Test func aWindowOpenedFromTheWorkspaceIsReplacedTooSoItOpensAsSaved() async throws {
         let setup = try WindowSetup()
         let first = try #require(setup.controller.openWorkspace(Self.workspace()))

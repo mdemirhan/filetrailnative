@@ -111,6 +111,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     var showNotice: (WindowNotice, NSWindow?) -> Void = { notice, window in
         if !NotificationOverlay.push(.info, title: notice.title, in: window) { NSSound.beep() }
     }
+    /// A beep: a workspace's window isn't replaced while something is open in it.
+    var beep: () -> Void = { NSSound.beep() }
     /// An explorer window closed, and a tab got the keyboard: the file operations follow (`AppWriteOperations`).
     var onExplorerWindowClosed: (ExplorerTabGroup) -> Void = { _ in }
     var onTabFocused: (MainWindowController) -> Void = { _ in }
