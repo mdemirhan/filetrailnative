@@ -13,7 +13,7 @@ public struct TabViewState: Equatable, Sendable {
     public var listFilterQuery = ""
     /// The typed filter's own mode, which a tab started from this one keeps; nil for none typed.
     public var listFilterMode: NameMatchMode?
-    /// The pane's pinned filter, kept while the app runs (Duplicate Tab, a tab moved or merged); never saved.
+    /// The pane's pinned filter, kept while the app runs (Duplicate Tab); never saved.
     public var pinnedListFilter: PinnedListFilter?
     public var contentScroll = CGPoint.zero
     public var treeScrollTop: Double = 0

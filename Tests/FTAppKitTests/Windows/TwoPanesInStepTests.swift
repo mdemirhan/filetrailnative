@@ -454,6 +454,13 @@ extension ExplorerWindowlessTests {
                 #expect(right.shownFolderPath == folder)
                 #expect(!tab.canPerform(.copyToOtherPane))
                 #expect(!tab.canPerform(.moveToOtherPane))
+                // The right-click menu dims them too, and keeps its shape.
+                let entry = try #require(left.content.entries.first { $0.path == note })
+                let submenu = try #require(
+                    tab.contextMenus.contentMenu(for: [entry])?.items
+                        .first { $0.identifier?.rawValue == "otherPane" }?.submenu)
+                #expect(submenu.items.map(\.title) == ["Open", "Copy", "Move"])
+                #expect(submenu.items.map(\.isEnabled) == [false, false, false])
                 tab.sendToOtherPane([note], copying: true)
                 tab.sendToOtherPane([note], copying: false)
                 await settle()

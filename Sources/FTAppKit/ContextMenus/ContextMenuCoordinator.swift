@@ -190,8 +190,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             return []
         case .content, .search, .trash:
             let oneFolder = subject.entries.count == 1 && subject.entries[0].kind.isDirectoryLike
-            // Into the folder the other pane shows: not when it shows none, search results, or this list's folder.
-            let destination = other.flatMap { $0.searchRootPath == nil ? $0.shownFolderPath : nil } ?? ""
+            // Into the folder the other pane shows: not when it shows none, search results, the Trash, or this list's
+            // folder.
+            let destination = other.flatMap(tab.otherPaneDestination) ?? ""
             let fromHere = tab.searchRootPath != nil || destination != tab.shownFolderPath
             let canSend = !subject.paths.isEmpty && !destination.isEmpty && fromHere && !isWriteOperationLocked
             return [
