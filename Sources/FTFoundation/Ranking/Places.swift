@@ -109,28 +109,26 @@ public enum Places {
     /// The places matching `query`, best first. Each word typed must be found, in the name or failing
     /// that in the path. With nothing typed, the most used places are listed.
     public static func rank(_ places: [Place], query: String) -> [PlaceMatch] {
-        let words = JSString.words(NameFolding.folded(query))
+        let words = JSString.words(query).compactMap { NameMatcher($0, mode: .contains) }
         var ranked: [(place: Place, nameRanges: [Range<Int>], quality: Int)] = []
         for place in places {
             if words.isEmpty {
                 ranked.append((place, [], 0))
                 continue
             }
-            // Matched folded (`NameFolding`); the letters marked are those of the name as stored.
-            let mapped = NameFolding.mapped(place.name)
-            let name = mapped.units
+            // Matched folded (`NameMatcher`); the letters marked are those of the name as stored.
+            let name = FoldedText(place.name)
             // The shortened path, so the name of the home folder does not match every folder in it.
-            let path = Array(NameFolding.folded(place.displayPath).utf16)
+            let path = FoldedText(place.displayPath).letters
             var quality = Int.max
             var nameRanges: [Range<Int>] = []
             for word in words {
-                let wordUnits = Array(word.utf16)
-                if let inName = matchWord(name, word: wordUnits, scalars: word) {
+                if let inName = matchWord(name, word: word) {
                     quality = min(quality, inName.quality)
                     nameRanges.append(contentsOf: inName.ranges)
                     continue
                 }
-                if JSString.index(of: wordUnits, in: path) != nil {
+                if word.firstRun(in: path) != nil {
                     quality = min(quality, matchPathOnly)
                     continue
                 }
@@ -138,7 +136,7 @@ public enum Places {
                 break
             }
             if quality > 0 {
-                ranked.append((place, mergeRanges(nameRanges.map(mapped.original)), quality))
+                ranked.append((place, mergeRanges(nameRanges), quality))
             }
         }
         // A stable sort, so equals keep their order: most recently opened first, then the favorites
@@ -154,46 +152,36 @@ public enum Places {
     }
 
     // Finds `word` in `name`: at the start, at the start of a later word, anywhere, or as letters in
-    // order with other letters between them ("dwn" finds "Downloads").
-    private static func matchWord(_ name: [UInt16], word: [UInt16], scalars: String) -> (
-        quality: Int, ranges: [Range<Int>]
-    )? {
-        if let index = JSString.index(of: word, in: name) {
-            if index == 0 {
-                return (matchPrefix, [0..<word.count])
-            }
-            if let wordStart = findWordStart(name, word: word) {
-                return (matchWordStart, [wordStart..<wordStart + word.count])
-            }
-            return (matchSubstring, [index..<index + word.count])
+    // order with other letters between them ("dwn" finds "Downloads"). The ranges are in the name's units as stored.
+    private static func matchWord(_ name: FoldedText, word: NameMatcher) -> (quality: Int, ranges: [Range<Int>])? {
+        func stored(_ letters: Range<Int>) -> Range<Int> {
+            name.spans[letters.lowerBound].lowerBound..<name.spans[letters.upperBound - 1].upperBound
         }
-        var ranges: [Range<Int>] = []
-        var position = 0
-        for character in scalars.unicodeScalars {
-            let units = Array(String(character).utf16)
-            guard let found = JSString.index(of: units, in: name, from: position) else { return nil }
-            ranges.append(found..<found + units.count)
-            position = found + units.count
+        if let first = word.firstRun(in: name.letters) {
+            if first.lowerBound == 0 {
+                return (matchPrefix, [stored(first)])
+            }
+            var run: Range<Int>? = first
+            while let current = run {
+                if isWordBoundary(name.letters[current.lowerBound - 1]) {
+                    return (matchWordStart, [stored(current)])
+                }
+                run = word.firstRun(in: name.letters, from: current.lowerBound + 1)
+            }
+            return (matchSubstring, [stored(first)])
         }
         // Scattered letters only count when the first one starts the name; otherwise almost anything
         // would match a short query.
-        return ranges.first?.lowerBound == 0 ? (matchScattered, ranges) : nil
-    }
-
-    private static func findWordStart(_ name: [UInt16], word: [UInt16]) -> Int? {
-        var index = JSString.index(of: word, in: name)
-        while let current = index {
-            if current == 0 || isWordBoundary(name[current - 1]) {
-                return current
-            }
-            index = JSString.index(of: word, in: name, from: current + 1)
-        }
-        return nil
+        guard let positions = word.positionsInOrder(in: name.letters), positions.first == 0 else { return nil }
+        return (matchScattered, positions.map { stored($0..<($0 + 1)) })
     }
 
     // /[\s\-_.()[\]]/u
-    private static func isWordBoundary(_ unit: UInt16) -> Bool {
-        JSString.isWhitespace(unit) || [0x2D, 0x5F, 0x2E, 0x28, 0x29, 0x5B, 0x5D].contains(unit)
+    private static func isWordBoundary(_ letter: FoldedLetter) -> Bool {
+        let value = letter.exact & 0x7FFF_FFFF
+        guard value <= 0xFFFF else { return false }
+        let unit = UInt16(value)
+        return JSString.isWhitespace(unit) || [0x2D, 0x5F, 0x2E, 0x28, 0x29, 0x5B, 0x5D].contains(unit)
     }
 
     private static func mergeRanges(_ ranges: [Range<Int>]) -> [Range<Int>] {

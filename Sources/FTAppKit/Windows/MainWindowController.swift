@@ -1602,6 +1602,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
+        content.setFilterMode(preferences.listFilterMatch)
         content.sizeShortcuts = sizeShortcuts
         content.setColumns(ListColumnState(preferences: preferences))
         content.setMode(viewMode)
@@ -2065,6 +2066,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             if !edited.isEmpty { search.session.applyDefaults(preferences, keys: edited) }
         }
         sidebar.applyPreferences()
+        content.setFilterMode(preferences.listFilterMatch)
         refreshColumns()
         notificationsSettingChanged()
         if change.keys.contains(.markClipboardItems) || change.keys.isEmpty { clipboardMarksChanged() }

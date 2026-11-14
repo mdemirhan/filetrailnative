@@ -177,6 +177,11 @@ final class SettingsPageView: NSView {
         toggle(
             views, "Expand folders with a single click", "In the folder tree, a click also opens or closes the folder.",
             \.singleClickExpandTreeItems)
+        popup(
+            views, "Typing filters by",
+            "Fuzzy keeps the names with the letters you type in that order, others between them. Contains keeps "
+                + "the names with the letters side by side.",
+            label: "Typing filters by", options: NameMatchMode.allCases.map { ($0, $0.label) }, \.listFilterMatch)
 
         let columns = section("Columns in List View", note: "Drag the columns into the order you want.")
         columns.card.add(

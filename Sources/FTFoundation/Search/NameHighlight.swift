@@ -55,6 +55,20 @@ public enum NameHighlight {
         return []
     }
 
+    /// Several marks of a name as they show in its label, merged where they meet or overlap.
+    public static func mapToLabel(name: String, label: String, marks: [HighlightRange]) -> [HighlightRange] {
+        let mapped = marks.flatMap { mapToLabel(name: name, label: label, match: $0) }.sorted { $0.start < $1.start }
+        var result: [HighlightRange] = []
+        for range in mapped {
+            if let last = result.last, range.start <= last.end {
+                result[result.count - 1].end = max(last.end, range.end)
+            } else {
+                result.append(range)
+            }
+        }
+        return result
+    }
+
     private static func merged(_ ranges: [HighlightRange]) -> [HighlightRange] {
         var result: [HighlightRange] = []
         for range in ranges {

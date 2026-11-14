@@ -247,7 +247,8 @@ public enum PreferencesSanitizer {
             locationsExpanded: bool(record, "locationsExpanded", defaults.locationsExpanded),
             favoritesInitialized: bool(record, "favoritesInitialized", defaults.favoritesInitialized),
             batchRenameSettings: BatchRename.sanitizeSettings(record["batchRenameSettings"]),
-            batchRenamePresets: BatchRename.sanitizePresets(record["batchRenamePresets"]))
+            batchRenamePresets: BatchRename.sanitizePresets(record["batchRenamePresets"]),
+            listFilterMatch: choice(record, "listFilterMatch", defaults.listFilterMatch))
     }
 
     /// A whole number, zero or more; anything else is zero. A number past what a count can be stops at the largest.

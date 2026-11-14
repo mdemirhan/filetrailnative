@@ -70,6 +70,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     /// The Rename sheet for several items: its settings as last used, and the ones saved by name.
     public var batchRenameSettings: BatchRenameSettings
     public var batchRenamePresets: [BatchRenamePreset]
+    /// How typing in the file list, or over search results, finds names: letters in order, or the text as a run.
+    public var listFilterMatch: NameMatchMode
 
     /// What a new install starts with, given the theme it starts in.
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
@@ -92,7 +94,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             restoreSessionOnStartup: true, openTabs: [], activeTabIndex: 0, treeRootPath: nil, lastVisitedPath: nil,
             lastVisitedFavoritePath: nil, favorites: [], favoritesPlacement: .integrated, favoritesExpanded: true,
             locationsExpanded: true, favoritesInitialized: false,
-            batchRenameSettings: .defaults, batchRenamePresets: [])
+            batchRenameSettings: .defaults, batchRenamePresets: [], listFilterMatch: .fuzzy)
     }
 }
 

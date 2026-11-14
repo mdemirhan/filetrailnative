@@ -170,7 +170,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         label.font = pane.nameFont
         label.stringValue = entry.name
         label.fileExtension = entry.fileExtension
-        label.marks = host.search?.match(in: entry.name).map { [$0] } ?? []
+        label.marks = host.nameMarks(entry.name)
         if changed || iconView.image == nil {
             iconRequest?.cancel()
             iconRequest = GridIcons.show(entry, in: iconView, host: host) { [weak self] in

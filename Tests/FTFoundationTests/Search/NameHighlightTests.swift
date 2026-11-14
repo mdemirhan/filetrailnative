@@ -69,4 +69,16 @@ import Testing
         #expect(NameHighlight.marks(in: ".ts", ranges: ranges, offset: 6) == [HighlightRange(start: 0, end: 2)])
         #expect(NameHighlight.marks(in: "abc", ranges: [HighlightRange(start: 5, end: 9)]) == [])
     }
+
+    @Test func mapsSeveralMarksToALabelShortenedInTheMiddle() {
+        let name = "Annual-Financial-Report.pdf"
+        let label = "Annual-F\u{2026}eport.pdf"
+        // "A" stays, the "F" stays, the "i" falls in the missing middle and marks the "…", the "p" stays.
+        let marks = [0, 7, 8, 19].map { HighlightRange(start: $0, end: $0 + 1) }
+        #expect(
+            NameHighlight.mapToLabel(name: name, label: label, marks: marks) == [
+                HighlightRange(start: 0, end: 1), HighlightRange(start: 7, end: 9), HighlightRange(start: 10, end: 11),
+            ])
+        #expect(NameHighlight.mapToLabel(name: name, label: label, marks: []) == [])
+    }
 }

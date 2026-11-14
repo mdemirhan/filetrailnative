@@ -159,18 +159,17 @@ public enum SidebarKeyboard {
 
     // MARK: Type to select
 
-    /// The first row whose label starts with what was typed, case aside and an accented letter however it is stored
-    /// (`NameFolding`). In the separate
+    /// The first row whose label starts with what was typed, case aside, a plain letter standing for its accented
+    /// forms (`NameMatcher`). In the separate
     /// layout's Favorites list the candidates are the favorites and the open Locations; otherwise the visible tree
     /// rows, headings included (a prefix whose first match is a heading selects nothing). Nil when none matches.
     public static func typeaheadMatch(_ query: String, _ context: SidebarKeyContext) -> TreeItemID? {
-        let normalized = NameFolding.folded(JSString.trimmed(query))
-        if normalized.isEmpty { return nil }
+        guard let matcher = NameMatcher(JSString.trimmed(query), mode: .contains) else { return nil }
         if context.favoritesListActive {
-            return context.favoriteList.first { JSString.hasPrefix(NameFolding.folded($0.label), normalized) }?.id
+            return context.favoriteList.first { matcher.isPrefix(of: $0.label) }?.id
         }
         return context.presentation.visibleItemIDs.first { id in
-            JSString.hasPrefix(NameFolding.folded(context.presentation.items[id]?.label ?? ""), normalized)
+            matcher.isPrefix(of: context.presentation.items[id]?.label ?? "")
         }
     }
 

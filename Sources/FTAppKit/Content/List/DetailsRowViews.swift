@@ -241,7 +241,7 @@ final class DetailsBarView: NSView {
         layoutMetrics = layout
         nameLabel.stringValue = entry.name
         nameLabel.fileExtension = entry.fileExtension
-        nameLabel.marks = host.search?.match(in: entry.name).map { [$0] } ?? []
+        nameLabel.marks = host.nameMarks(entry.name)
         toolTip = entry.path
         showIcon(for: entry, host: host)
         refreshCells()

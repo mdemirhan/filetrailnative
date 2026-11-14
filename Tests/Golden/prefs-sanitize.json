@@ -147,7 +147,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -347,7 +348,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -587,7 +589,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -787,7 +790,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -987,7 +991,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -1201,7 +1206,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -1417,7 +1423,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -1617,7 +1624,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "w",
@@ -1843,7 +1851,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -2104,7 +2113,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -4933,7 +4943,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -5486,7 +5497,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -5713,7 +5725,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -5913,7 +5926,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -6113,7 +6127,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -6318,7 +6333,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -6527,7 +6543,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -6727,7 +6744,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -6922,7 +6940,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -7114,7 +7133,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -7323,7 +7343,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -7523,7 +7544,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -7723,7 +7745,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -7940,7 +7963,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -8243,7 +8267,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -8463,7 +8488,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -8976,7 +9002,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -9157,7 +9184,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -9371,7 +9399,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -9621,7 +9650,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -9863,7 +9893,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -10092,7 +10123,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -10557,7 +10589,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -10833,7 +10866,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -11033,7 +11067,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -11292,7 +11327,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -11610,7 +11646,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -11889,7 +11926,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -12160,7 +12198,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -12636,7 +12675,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -12886,7 +12926,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -13125,7 +13166,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -13307,7 +13349,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -13544,7 +13587,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -13804,7 +13848,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -14188,7 +14233,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -14344,7 +14390,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -14795,7 +14842,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -15244,7 +15292,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -15485,7 +15534,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -15697,7 +15747,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -15925,7 +15976,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -16235,7 +16287,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -16533,7 +16586,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -16758,7 +16812,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -16984,7 +17039,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -17244,7 +17300,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -17466,7 +17523,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -17706,7 +17764,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -17924,7 +17983,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -18131,7 +18191,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -18710,7 +18771,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -18983,7 +19045,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -19253,7 +19316,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -19566,7 +19630,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -19765,7 +19830,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -20002,7 +20068,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -20368,7 +20435,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -20578,7 +20646,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -20818,7 +20887,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -21095,7 +21165,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -21376,7 +21447,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -21576,7 +21648,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -21856,7 +21929,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -22217,7 +22291,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -22485,7 +22560,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -22705,7 +22781,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -23090,7 +23167,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -23344,7 +23422,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -23544,7 +23623,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -23883,7 +23963,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -24154,7 +24235,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -24435,7 +24517,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -24671,7 +24754,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -24887,7 +24971,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -25222,7 +25307,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -25470,7 +25556,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -25680,7 +25767,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -25881,7 +25969,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -26173,7 +26262,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -26503,7 +26593,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -26830,7 +26921,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -27130,7 +27222,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -27589,7 +27682,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -27743,7 +27837,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -28121,7 +28216,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -28362,7 +28458,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -28722,7 +28819,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -29071,7 +29169,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -29321,7 +29420,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -29638,7 +29738,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -29842,7 +29943,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -30057,7 +30159,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -30258,7 +30361,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -30712,7 +30816,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -30931,7 +31036,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -31148,7 +31254,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -31476,7 +31583,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -31880,7 +31988,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -32346,7 +32455,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -32769,7 +32879,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -33028,7 +33139,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -33243,7 +33355,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -33484,7 +33597,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -33811,7 +33925,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -34078,7 +34193,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -34295,7 +34411,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -34494,7 +34611,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -34655,7 +34773,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -34874,7 +34993,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -35097,7 +35217,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -35308,7 +35429,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -35626,7 +35748,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -36179,7 +36302,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -36379,7 +36503,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -36628,7 +36753,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -36803,7 +36929,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -37066,7 +37193,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -37293,7 +37421,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -37561,7 +37690,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -37813,7 +37943,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -38211,7 +38342,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -38630,7 +38762,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -38931,7 +39064,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -39139,7 +39273,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -39366,7 +39501,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -39594,7 +39730,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -39761,7 +39898,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -39977,7 +40115,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -40251,7 +40390,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -40517,7 +40657,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -40718,7 +40859,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -40944,7 +41086,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -41176,7 +41319,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -41461,7 +41605,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -41677,7 +41822,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -41838,7 +41984,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -42135,7 +42282,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -42624,7 +42772,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -42858,7 +43007,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -43052,7 +43202,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -43309,7 +43460,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -43570,7 +43722,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -43833,7 +43986,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -44237,7 +44391,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -44537,7 +44692,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -44808,7 +44964,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -45098,7 +45255,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -45492,7 +45650,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -46010,7 +46169,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -46318,7 +46478,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -46564,7 +46725,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -46948,7 +47110,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -47227,7 +47390,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -47458,7 +47622,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -47703,7 +47868,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -47912,7 +48078,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -48257,7 +48424,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -48655,7 +48823,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -48886,7 +49055,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -49083,7 +49253,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -49386,7 +49557,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -49586,7 +49758,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -49820,7 +49993,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -50078,7 +50252,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -50353,7 +50528,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -50668,7 +50844,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -51101,7 +51278,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -51429,7 +51607,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -51657,7 +51836,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -52032,7 +52212,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -52447,7 +52628,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -52653,7 +52835,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -52854,7 +53037,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -53279,7 +53463,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -53578,7 +53763,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -53805,7 +53991,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -54037,7 +54224,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -54308,7 +54496,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -54597,7 +54786,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -54797,7 +54987,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -55230,7 +55421,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -55430,7 +55622,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -55645,7 +55838,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -55897,7 +56091,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -56212,7 +56407,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -56529,7 +56725,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -56837,7 +57034,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -57087,7 +57285,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -57378,7 +57577,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -57742,7 +57942,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -58051,7 +58252,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -58355,7 +58557,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -58727,7 +58930,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -59048,7 +59252,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -59262,7 +59467,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -59569,7 +59775,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -59769,7 +59976,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -59969,7 +60177,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -60181,7 +60390,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -60520,7 +60730,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -60780,7 +60991,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -61115,7 +61327,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -61394,7 +61607,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -61707,7 +61921,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -61967,7 +62182,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -62219,7 +62435,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -62450,7 +62667,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -62916,7 +63134,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -63157,7 +63376,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -63381,7 +63601,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -63645,7 +63866,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -63881,7 +64103,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -64104,7 +64327,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -64317,7 +64541,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -64892,7 +65117,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -65133,7 +65359,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -65334,7 +65561,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -65573,7 +65801,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -65917,7 +66146,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -66416,7 +66646,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -66691,7 +66922,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -66909,7 +67141,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -67245,7 +67478,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -67520,7 +67754,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -67723,7 +67958,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -67958,7 +68194,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -68325,7 +68562,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -68544,7 +68782,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -68826,7 +69065,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -69071,7 +69311,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -69506,7 +69747,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -69841,7 +70083,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -70041,7 +70284,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -70242,7 +70486,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -70525,7 +70770,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -70816,7 +71062,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -71102,7 +71349,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -71387,7 +71635,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -71592,7 +71841,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -72044,7 +72294,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -72286,7 +72537,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -72778,7 +73030,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -73057,7 +73310,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -73376,7 +73630,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -73702,7 +73957,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -73929,7 +74185,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -74130,7 +74387,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -74330,7 +74588,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -74745,7 +75004,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -75084,7 +75344,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -75285,7 +75546,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -75510,7 +75772,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -75723,7 +75986,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -75923,7 +76187,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -76234,7 +76499,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -76434,7 +76700,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -76646,7 +76913,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -76883,7 +77151,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -77070,7 +77339,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -77482,7 +77752,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -77773,7 +78044,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -78223,7 +78495,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -78735,7 +79008,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -79003,7 +79277,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -79238,7 +79513,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": []
       }
@@ -79416,7 +79692,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -79634,7 +79911,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -79971,7 +80249,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -80389,7 +80668,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -80705,7 +80985,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -80995,7 +81276,8 @@
             "applyTo": "name",
             "onConflict": "number"
           },
-          "batchRenamePresets": []
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
         },
         "windows": [
           {
@@ -81039,6 +81321,408 @@
               "propertiesOpen": false,
               "detailRowOpen": false,
               "treeWidth": 520,
+              "inspectorWidth": 320,
+              "detailColumnWidths": {
+                "name": 320,
+                "modified": 152,
+                "size": 108,
+                "kind": 148,
+                "created": 152,
+                "permissions": 108
+              },
+              "searchColumnWidths": {
+                "name": 300,
+                "folder": 240,
+                "modified": 152,
+                "size": 108,
+                "kind": 148,
+                "created": 152,
+                "permissions": 108
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "300: listFilterMatch contains is kept",
+      "input": {
+        "defaultTheme": null,
+        "text": "{\"preferences\":{\"listFilterMatch\": \"contains\"}}"
+      },
+      "output": {
+        "preferences": {
+          "theme": "auto",
+          "accent": "#007aff",
+          "viewMode": "icons",
+          "searchViewMode": "details",
+          "sortBy": "name",
+          "sortDirection": "asc",
+          "foldersFirst": true,
+          "density": "standard",
+          "singleClickExpandTreeItems": false,
+          "detailColumns": {
+            "modified": true,
+            "size": true,
+            "kind": true,
+            "created": false,
+            "permissions": false
+          },
+          "detailColumnOrder": [
+            "modified",
+            "size",
+            "kind",
+            "created",
+            "permissions"
+          ],
+          "detailColumnWidths": {
+            "name": 320,
+            "modified": 152,
+            "size": 108,
+            "kind": 148,
+            "created": 152,
+            "permissions": 108
+          },
+          "searchColumns": {
+            "folder": true,
+            "modified": true,
+            "size": true,
+            "kind": false,
+            "created": false,
+            "permissions": false
+          },
+          "searchColumnOrder": [
+            "folder",
+            "modified",
+            "size",
+            "kind",
+            "created",
+            "permissions"
+          ],
+          "searchColumnWidths": {
+            "name": 300,
+            "folder": 240,
+            "modified": 152,
+            "size": 108,
+            "kind": 148,
+            "created": 152,
+            "permissions": 108
+          },
+          "compactListWidths": {
+            "standard": 292,
+            "finder": 252
+          },
+          "iconSizes": {
+            "standard": 64,
+            "finder": 64
+          },
+          "notificationsEnabled": true,
+          "markClipboardItems": true,
+          "autoCalculateFolderSizes": true,
+          "folderTreeOpen": true,
+          "propertiesOpen": false,
+          "detailRowOpen": false,
+          "topToolbarItems": [
+            "folderTree",
+            "topSeparator",
+            "back",
+            "forward",
+            "title",
+            "clipboard",
+            "view",
+            "sort",
+            "search",
+            "viewOptions",
+            "infoPanel"
+          ],
+          "terminalApp": null,
+          "defaultTextEditor": {
+            "appPath": "/System/Applications/TextEdit.app",
+            "appName": "TextEdit"
+          },
+          "openWithApplications": [],
+          "fileActivationAction": "open",
+          "diskImageOpensIn": "window",
+          "returnKeyAction": "rename",
+          "shortcutOverrides": {},
+          "openItemLimit": 5,
+          "includeHidden": false,
+          "searchPatternMode": "text",
+          "searchMatchScope": "name",
+          "searchRecursive": true,
+          "searchSkipGitFolders": true,
+          "searchSkipGitIgnored": false,
+          "searchResultsSortBy": "path",
+          "searchResultsSortDirection": "asc",
+          "treeWidth": 280,
+          "inspectorWidth": 320,
+          "restoreSessionOnStartup": true,
+          "openTabs": [],
+          "activeTabIndex": 0,
+          "treeRootPath": null,
+          "lastVisitedPath": null,
+          "lastVisitedFavoritePath": null,
+          "favorites": [],
+          "favoritesPlacement": "integrated",
+          "favoritesExpanded": true,
+          "locationsExpanded": true,
+          "favoritesInitialized": false,
+          "batchRenameSettings": {
+            "mode": "replace",
+            "find": "",
+            "replaceWith": "",
+            "matchCase": false,
+            "useRegex": false,
+            "addText": "",
+            "addWhere": "after",
+            "nameFormat": "index",
+            "formatWhere": "after",
+            "customName": "File",
+            "keepNames": false,
+            "startAt": 1,
+            "step": 1,
+            "digits": 5,
+            "separator": " ",
+            "dateSource": "created",
+            "dateFormat": "ymd",
+            "dateSeparator": "-",
+            "customDatePattern": "YYYY-MM-DD at HH.mm",
+            "caseStyle": "lower",
+            "applyTo": "name",
+            "onConflict": "number"
+          },
+          "batchRenamePresets": [],
+          "listFilterMatch": "contains"
+        },
+        "windows": [
+          {
+            "id": "window-1",
+            "bounds": {
+              "width": 1200,
+              "height": 760,
+              "maximized": false
+            },
+            "session": {
+              "openTabs": [],
+              "activeTabIndex": 0,
+              "treeRootPath": null,
+              "lastVisitedPath": null,
+              "lastVisitedFavoritePath": null,
+              "viewMode": "icons",
+              "searchViewMode": "details",
+              "sortBy": "name",
+              "sortDirection": "asc",
+              "searchResultsSortBy": "path",
+              "searchResultsSortDirection": "asc",
+              "includeHidden": false,
+              "foldersFirst": true,
+              "favoritesExpanded": true,
+              "locationsExpanded": true,
+              "folderTreeOpen": true,
+              "propertiesOpen": false,
+              "detailRowOpen": false,
+              "treeWidth": 280,
+              "inspectorWidth": 320,
+              "detailColumnWidths": {
+                "name": 320,
+                "modified": 152,
+                "size": 108,
+                "kind": 148,
+                "created": 152,
+                "permissions": 108
+              },
+              "searchColumnWidths": {
+                "name": 300,
+                "folder": 240,
+                "modified": 152,
+                "size": 108,
+                "kind": 148,
+                "created": 152,
+                "permissions": 108
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "301: an unknown listFilterMatch falls back to fuzzy",
+      "input": {
+        "defaultTheme": null,
+        "text": "{\"preferences\":{\"listFilterMatch\": \"regex\"}}"
+      },
+      "output": {
+        "preferences": {
+          "theme": "auto",
+          "accent": "#007aff",
+          "viewMode": "icons",
+          "searchViewMode": "details",
+          "sortBy": "name",
+          "sortDirection": "asc",
+          "foldersFirst": true,
+          "density": "standard",
+          "singleClickExpandTreeItems": false,
+          "detailColumns": {
+            "modified": true,
+            "size": true,
+            "kind": true,
+            "created": false,
+            "permissions": false
+          },
+          "detailColumnOrder": [
+            "modified",
+            "size",
+            "kind",
+            "created",
+            "permissions"
+          ],
+          "detailColumnWidths": {
+            "name": 320,
+            "modified": 152,
+            "size": 108,
+            "kind": 148,
+            "created": 152,
+            "permissions": 108
+          },
+          "searchColumns": {
+            "folder": true,
+            "modified": true,
+            "size": true,
+            "kind": false,
+            "created": false,
+            "permissions": false
+          },
+          "searchColumnOrder": [
+            "folder",
+            "modified",
+            "size",
+            "kind",
+            "created",
+            "permissions"
+          ],
+          "searchColumnWidths": {
+            "name": 300,
+            "folder": 240,
+            "modified": 152,
+            "size": 108,
+            "kind": 148,
+            "created": 152,
+            "permissions": 108
+          },
+          "compactListWidths": {
+            "standard": 292,
+            "finder": 252
+          },
+          "iconSizes": {
+            "standard": 64,
+            "finder": 64
+          },
+          "notificationsEnabled": true,
+          "markClipboardItems": true,
+          "autoCalculateFolderSizes": true,
+          "folderTreeOpen": true,
+          "propertiesOpen": false,
+          "detailRowOpen": false,
+          "topToolbarItems": [
+            "folderTree",
+            "topSeparator",
+            "back",
+            "forward",
+            "title",
+            "clipboard",
+            "view",
+            "sort",
+            "search",
+            "viewOptions",
+            "infoPanel"
+          ],
+          "terminalApp": null,
+          "defaultTextEditor": {
+            "appPath": "/System/Applications/TextEdit.app",
+            "appName": "TextEdit"
+          },
+          "openWithApplications": [],
+          "fileActivationAction": "open",
+          "diskImageOpensIn": "window",
+          "returnKeyAction": "rename",
+          "shortcutOverrides": {},
+          "openItemLimit": 5,
+          "includeHidden": false,
+          "searchPatternMode": "text",
+          "searchMatchScope": "name",
+          "searchRecursive": true,
+          "searchSkipGitFolders": true,
+          "searchSkipGitIgnored": false,
+          "searchResultsSortBy": "path",
+          "searchResultsSortDirection": "asc",
+          "treeWidth": 280,
+          "inspectorWidth": 320,
+          "restoreSessionOnStartup": true,
+          "openTabs": [],
+          "activeTabIndex": 0,
+          "treeRootPath": null,
+          "lastVisitedPath": null,
+          "lastVisitedFavoritePath": null,
+          "favorites": [],
+          "favoritesPlacement": "integrated",
+          "favoritesExpanded": true,
+          "locationsExpanded": true,
+          "favoritesInitialized": false,
+          "batchRenameSettings": {
+            "mode": "replace",
+            "find": "",
+            "replaceWith": "",
+            "matchCase": false,
+            "useRegex": false,
+            "addText": "",
+            "addWhere": "after",
+            "nameFormat": "index",
+            "formatWhere": "after",
+            "customName": "File",
+            "keepNames": false,
+            "startAt": 1,
+            "step": 1,
+            "digits": 5,
+            "separator": " ",
+            "dateSource": "created",
+            "dateFormat": "ymd",
+            "dateSeparator": "-",
+            "customDatePattern": "YYYY-MM-DD at HH.mm",
+            "caseStyle": "lower",
+            "applyTo": "name",
+            "onConflict": "number"
+          },
+          "batchRenamePresets": [],
+          "listFilterMatch": "fuzzy"
+        },
+        "windows": [
+          {
+            "id": "window-1",
+            "bounds": {
+              "width": 1200,
+              "height": 760,
+              "maximized": false
+            },
+            "session": {
+              "openTabs": [],
+              "activeTabIndex": 0,
+              "treeRootPath": null,
+              "lastVisitedPath": null,
+              "lastVisitedFavoritePath": null,
+              "viewMode": "icons",
+              "searchViewMode": "details",
+              "sortBy": "name",
+              "sortDirection": "asc",
+              "searchResultsSortBy": "path",
+              "searchResultsSortDirection": "asc",
+              "includeHidden": false,
+              "foldersFirst": true,
+              "favoritesExpanded": true,
+              "locationsExpanded": true,
+              "folderTreeOpen": true,
+              "propertiesOpen": false,
+              "detailRowOpen": false,
+              "treeWidth": 280,
               "inspectorWidth": 320,
               "detailColumnWidths": {
                 "name": 320,

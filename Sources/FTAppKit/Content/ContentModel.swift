@@ -113,6 +113,7 @@ struct FolderContents {
     var listed: [DirectoryEntry]
     /// What the list narrows to (the typed filter, not a search).
     var filter = ""
+    var filterMode = NameMatchMode.fuzzy
 
     /// The entries shown, in order: filtered, and for a size sort finished with the folder sizes the listing could not
     /// know.
@@ -120,7 +121,7 @@ struct FolderContents {
         sortBy: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool,
         folderSizeBytes: (String) -> Int64?
     ) -> [DirectoryEntry] {
-        let matching = ListFilter.filterByName(listed, query: filter)
+        let matching = ListFilter.filterByName(listed, query: filter, mode: filterMode)
         guard sortBy == .size else { return matching }
         return SizeOrder.sorted(
             matching, key: \.sizeSortKey, descending: direction == .desc, foldersFirst: foldersFirst,

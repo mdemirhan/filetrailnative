@@ -331,10 +331,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         label.stringValue = fitted
         label.lines = IconLabelText.lines(fitted, layout: layout, firstLineIndent: indent)
         // The match is marked in what is left of a name shortened in the middle.
-        label.marks =
-            host.search?.match(in: entry.name).map {
-                NameHighlight.mapToLabel(name: entry.name, label: fitted, match: $0)
-            } ?? []
+        label.marks = NameHighlight.mapToLabel(name: entry.name, label: fitted, marks: host.nameMarks(entry.name))
         labelTextWidth = IconLabelText.width(fitted, layout: layout) + Double(indent)
     }
 

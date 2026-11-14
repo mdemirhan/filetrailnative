@@ -59,8 +59,8 @@ final class CompactListViewController: ItemGridPane {
     /// The width the name takes as its label draws it (`SplitName`): an item only as wide as the name measured whole
     /// would cut its stem short. A search's marks pad the name, so a marked one is measured each time.
     private func nameWidth(_ entry: DirectoryEntry) -> Double {
-        if let match = host?.search?.match(in: entry.name) {
-            return Double(SplitName.width(entry.name, extension: entry.fileExtension, marks: [match], font: nameFont))
+        if let marks = host?.nameMarks(entry.name), !marks.isEmpty {
+            return Double(SplitName.width(entry.name, extension: entry.fileExtension, marks: marks, font: nameFont))
         }
         let key = entry.fileExtension.isEmpty ? entry.name : entry.name + "\u{0}" + entry.fileExtension
         if let known = nameWidths[key] { return known }

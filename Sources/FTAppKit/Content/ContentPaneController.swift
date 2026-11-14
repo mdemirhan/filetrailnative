@@ -156,6 +156,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var includeHidden = false
     private(set) var columnState = ListColumnState.standard
     private(set) var listFilter = ListFilterTyping()
+    /// How the typed filter finds names (Settings → Browsing).
+    private(set) var filterMode = NameMatchMode.fuzzy
+    /// The filter as it finds names, and the marks it gave names, kept until the text or the mode changes.
+    private var filterMatcher: NameMatcher?
+    private var filterMarks: [String: [HighlightRange]] = [:]
     /// The filter typed matches nothing: the state says so in place of the view.
     private var nothingMatches = false
     var filter: String { listFilter.query }
@@ -575,16 +580,44 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             updateStatus()
             return
         }
-        let match = ListFilter.selection(in: entries, query: filter)
+        let match = ListFilter.selection(in: entries, query: filter, mode: filterMode)
         setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: true)
         pane?.syncSelection()
         updateStatus()
     }
 
+    /// Settings changed how the filter finds names: a filter typed narrows the list again, the selection kept.
+    func setFilterMode(_ mode: NameMatchMode) {
+        guard mode != filterMode else { return }
+        filterMode = mode
+        guard !filter.isEmpty else { return }
+        refilter(previousPaths: entryPaths)
+    }
+
+    /// The letters to mark in a name: what the filter matched while one is typed, otherwise what the search matched.
+    /// Over search results a name the filter didn't match (its folder did) keeps the search's marks.
+    func nameMarks(_ name: String) -> [HighlightRange] {
+        if let filterMatcher {
+            let found = filterMarks[name] ?? filterMatcher.marks(in: name)
+            if filterMarks.count >= 10_000 { filterMarks.removeAll(keepingCapacity: true) }
+            filterMarks[name] = found
+            if !found.isEmpty { return found }
+        }
+        return search?.match(in: name).map { [$0] } ?? []
+    }
+
+    /// The filter's matcher for the text and mode now, its marks forgotten when either changed.
+    private func refreshFilterMatcher() {
+        let matcher = NameMatcher(filter, mode: filterMode)
+        if matcher?.text != filterMatcher?.text || matcher?.mode != filterMatcher?.mode { filterMarks.removeAll() }
+        filterMatcher = matcher
+    }
+
     private func reorder() {
+        refreshFilterMatcher()
         if let searchDisplay {
             // Results narrow by name or by the folder they are in; their order is the search's own.
-            let filtered = ListFilter.filterSearchResults(searchDisplay.results, query: filter)
+            let filtered = ListFilter.filterSearchResults(searchDisplay.results, query: filter, mode: filterMode)
             entries = filter.isEmpty ? listed : filtered.map(SearchResults.entry)
             entryPaths = entries.map(\.path)
             positionsCache = nil
@@ -592,7 +625,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             updateFilterPill()
             return
         }
-        let contents = FolderContents(path: folderPath, listed: listed, filter: filter)
+        let contents = FolderContents(path: folderPath, listed: listed, filter: filter, filterMode: filterMode)
         let sizes = folderSizes
         entries = contents.shown(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst
@@ -889,7 +922,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         reorder()
         pane?.reload(scrollToTop: false)
         refreshState()
-        let match = ListFilter.selection(in: entries, query: filter)
+        let match = ListFilter.selection(in: entries, query: filter, mode: filterMode)
         setSelection(match.map { ContentSelection.single($0.path) } ?? .empty, notify: true)
         pane?.syncSelection()
         updateStatus()

@@ -310,7 +310,8 @@ extension ExplorerWindowlessTests {
             #expect(copy.searchRootPath == nil)
             #expect(copy.selectedPaths == [chosen])
             #expect(copy.content.filter == "f1")
-            #expect(copy.content.entries.count == 100)
+            // Fuzzy, the default: f100 to f199, and the f2… and f3… names with a 1 after the f.
+            #expect(copy.content.entries.count == 138)
             #expect(copy.content.pane?.scrollPosition.top == scroll.top)
             // The results stay in the tab they are in.
             #expect(tab.searchRootPath != nil)
