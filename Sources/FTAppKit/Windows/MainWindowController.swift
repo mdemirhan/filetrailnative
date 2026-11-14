@@ -204,19 +204,25 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     let windowID: Int
     /// The explorer window it is a tab of.
     weak var group: ExplorerTabGroup?
-    private(set) var folder: URL
-    /// The tab let go of its folder: it shows none until one is opened, and keeps none: its label, snapshot and saved
-    /// tab have an empty path (`shownFolderPath`). `folder` is then only where a new read would start from.
-    private var folderLetGo = false
+    /// The active pane's folder, and how it shows it (`BrowserPane`).
+    var folder: URL { activePane.folder }
+    private var folderLetGo: Bool { activePane.folderLetGo }
     /// How the tab shows its folder, kept between launches with its folder. The sidebar keeps its tree and sections.
     var treeRootPath: String { sidebar.treeRootPath }
     var favoritePath: String? { sidebar.favoritePath }
-    private(set) var viewMode: ExplorerViewMode
-    private(set) var searchViewMode: ExplorerViewMode
-    private(set) var sortBy: SortByPreference
-    private(set) var sortDirection: SortDirectionPreference
-    private(set) var includeHidden: Bool
-    private(set) var foldersFirst: Bool
+    var viewMode: ExplorerViewMode { activePane.viewMode }
+    var searchViewMode: ExplorerViewMode { activePane.searchViewMode }
+    var sortBy: SortByPreference { activePane.sortBy }
+    var sortDirection: SortDirectionPreference { activePane.sortDirection }
+    var includeHidden: Bool {
+        get { activePane.includeHidden }
+        set { activePane.includeHidden = newValue }
+    }
+    var foldersFirst: Bool {
+        get { activePane.foldersFirst }
+        set { activePane.foldersFirst = newValue }
+    }
+    var isNavigating: Bool { activePane.isNavigating }
     var favoritesExpanded: Bool { sidebar.favoritesExpanded }
     var locationsExpanded: Bool { sidebar.locationsExpanded }
 
@@ -232,7 +238,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     private var lastFocusedPane: ExplorerPane?
     /// The sidebar, for the parts of the window that put a menu on a row or follow its selection.
     var sidebarController: SidebarViewController { sidebar }
-    let content: ContentPaneController
+    /// The tab's panes, left to right, and the one the toolbar, the sidebar, the Info panel and the commands follow.
+    private(set) var panes: [BrowserPane]
+    private(set) var activePaneIndex = 0
+    var activePane: BrowserPane { panes[activePaneIndex] }
+    /// The active pane's file list.
+    var content: ContentPaneController { activePane.content }
     /// What this window knows of folder sizes.
     let folderSizes: WindowFolderSizes
     /// The window's grid: sidebar, content, Info panel and the toolbar.
@@ -264,22 +275,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     private(set) var infoController: InfoController?
     /// The system's Customize Toolbar sheet is up.
     var isCustomizingToolbar: Bool { explorerToolbar.isCustomizing }
-    /// The folder a search runs from while the tab shows its results (`TabSearch` sets it).
+    /// The folder a search runs from while the active pane shows its results (`TabSearch` sets it).
     var searchRootPath: String? {
-        didSet {
-            guard searchRootPath != oldValue else { return }
-            updatePathBar()
-            notify(.search)
-        }
+        get { activePane.searchRootPath }
+        set { activePane.searchRootPath = newValue }
     }
-    private var searchStore: TabSearch?
-    /// The tab's search: its session, the toolbar field, the results bar.
-    var search: TabSearch {
-        if let searchStore { return searchStore }
-        let made = TabSearch(tab: self)
-        searchStore = made
-        return made
-    }
+    private var searchStore: TabSearch? { activePane.searchStore }
+    /// The active pane's search: its session, the toolbar field, the results bar.
+    var search: TabSearch { activePane.search }
     /// Services of its own, instead of the app's (a window in a test).
     var servicesOverride: ExplorerServices?
     /// What Edit opens files with; tests give their own, so nothing opens on this Mac.
@@ -287,10 +290,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Opens an activated file or app in what macOS chooses; tests give their own.
     var openFile: @MainActor (URL) -> Void = { NSWorkspace.shared.open($0) }
     private var observers: [(token: Weak<ExplorerWindowObservation>, handler: (ExplorerWindowChange) -> Void)] = []
-    /// The tab's history: folder paths and the one on screen.
-    private(set) var navigationHistory: NavigationHistory
-    /// How the folders in the history were left, for Back and Forward.
-    private(set) var folderMemories: FolderViewMemories = [:]
+    /// The active pane's history: folder paths and the one on screen.
+    var navigationHistory: NavigationHistory { activePane.navigationHistory }
+    /// How the folders in the active pane's history were left, for Back and Forward.
+    var folderMemories: FolderViewMemories { activePane.folderMemories }
     /// The rename being carried out, so a second one does not start meanwhile.
     private var renameTask: Task<Void, Never>?
     /// Told when the folder is used for something (a file opened): the visits the Go To box counts.
@@ -307,41 +310,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.
     var renameItem: ((_ path: String, _ name: String) async -> RenameOutcome)?
-    private var navigationToken = 0
-    private(set) var isNavigating = false
-    /// The folder the navigation under way is opening.
-    private var navigationTarget: URL?
-    /// When changes made outside the app are read: see `FolderChangeGate`.
-    private var folderChanges = FolderChangeGate(maxChangedPaths: FolderWatches.maxChangedPaths)
-    /// The changes waiting to be read.
-    var pendingChange: FolderChangeGate.Pending? { folderChanges.pending }
-    /// A change from outside is being taken in: Show Info's item stays.
-    private(set) var isTakingInOutsideChange = false
-    /// Where the first read of the tab's folder stands. A tab brought back, or merged in, waits unread until it is
-    /// first shown, or first sent somewhere.
-    private enum FirstRead {
-        case notStarted
-        case reading
-        /// Whether it showed the folder.
-        case finished(read: Bool)
-    }
-
-    private var firstRead = FirstRead.notStarted
-    /// Who waits for the first read to finish.
-    private var afterFirstRead: [(Bool) -> Void] = []
-    /// Whether the tab's folder has been, or is being, read.
-    var loaded: Bool {
-        if case .notStarted = firstRead { return false }
-        return true
-    }
-    /// The tab was sent to another folder while in the background (its folder moved, or its disk went): the folder
-    /// is read when the tab is next shown.
-    private(set) var stale = false
     /// A file operation ended with the tab at the back: as it comes back, its open tree branches are read again with
     /// its folder.
     var treeOutOfDate = false
-    /// See `init`.
-    private let startsTheWindow: Bool
 
     /// A tab on `tab`'s folder, with `history` (none: just the folder). It reads its folder when it is first shown,
     /// or at once with `loadNow`. `startsTheWindow`: the tab on screen as its window opens, which falls back to Home.
@@ -351,23 +322,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     ) {
         windowID = Self.nextWindowID
         Self.nextWindowID += 1
-        self.startsTheWindow = startsTheWindow
         let sizes = FolderSizeService.shared.sizes(for: windowID)
         folderSizes = sizes
-        content = ContentPaneController(mode: tab.viewMode, folderSizes: sizes, loaders: .placeholder)
-        folderLetGo = tab.path.isEmpty
-        folder = URL(fileURLWithPath: tab.path.isEmpty ? tab.rootPath : tab.path)
-        viewMode = tab.viewMode
-        searchViewMode = tab.searchViewMode
-        sortBy = tab.sortBy
-        sortDirection = tab.sortDirection
-        includeHidden = tab.includeHidden
-        foldersFirst = tab.foldersFirst
-        if let history, history.paths.indices.contains(history.index) {
-            self.navigationHistory = NavigationHistory(paths: history.paths, index: history.index)
-        } else {
-            self.navigationHistory = tab.path.isEmpty ? NavigationHistory() : NavigationHistory(startingAt: tab.path)
-        }
+        panes = [BrowserPane(tab: tab, history: history, folderSizes: sizes, startsTheWindow: startsTheWindow)]
         let window = ExplorerTabWindow(
             contentRect: NSRect(origin: .zero, size: Self.defaultContentSize),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
@@ -383,6 +340,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         explorerToolbar = ExplorerToolbar(identifier: "filetrail.explorer.\(windowID)")
         WindowChrome.configure(window, toolbar: explorerToolbar.toolbar)
         super.init(window: window)
+        for pane in panes { pane.tab = self }
         window.explorerTab = self
         window.delegate = self
 
@@ -470,8 +428,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The tab starts with the view the other one had. Its folder is read as it first shows, the task
     /// for that not having run yet.
     private func carry(_ view: TabViewState, of snapshot: TabSnapshot) {
-        carriedView = view
-        folderMemories = view.folderViewMemories
+        activePane.carry(view)
         sidebar.holdsScrollPosition = true
         sidebar.restoreView(
             nodes: ExplorerTabs.settleTreeNodes(view.treeNodes), selectedItem: snapshot.selectedTreeItemID,
@@ -514,7 +471,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// The view on screen: search results have one of their own (`shownViewMode`).
-    var shownViewMode: ExplorerViewMode { searchStore?.showsResults == true ? searchViewMode : viewMode }
+    var shownViewMode: ExplorerViewMode { activePane.shownViewMode }
 
     /// Whether a text field of the tab (the search field, the results' filter, a rename) has the keyboard.
     var isTextFieldEditing: Bool {
@@ -556,31 +513,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             locationsExpanded: locationsExpanded, view: liveView)
     }
 
-    /// The view on screen: none for a tab whose folder is yet to be read somewhere else. A tab that
-    /// has not read its first folder still has what it was started with. With search results showing, their selection,
-    /// filter and scroll are what is taken: a tab has one set of them.
+    /// The view on screen: the active pane's (`BrowserPane.liveView`), with the tree as the tab has it. A view the
+    /// pane was started with keeps its scrolls.
     private var liveView: TabViewState? {
-        guard !stale else { return nil }
-        if var carriedView {
-            carriedView.treeNodes = sidebar.model.nodes
-            return carriedView
-        }
-        guard hasShownFolder else { return nil }
-        var view = TabViewState()
+        guard var view = activePane.liveView else { return nil }
         view.treeNodes = sidebar.model.nodes
-        view.treeScrollTop = sidebar.tree.scrollTop
-        view.sidebarSectionsScrollTop = sidebar.sections.scrollTop
-        view.folderViewMemories = folderMemories
-        if case .failed(let error) = content.loadState {
-            view.directoryError = error
-        } else {
-            view.directoryError = content.readError
-        }
-        if let shown = content.captureFolderView() {
-            view.contentSelection = shown.selection
-            view.listFilterQuery = content.filter
-            view.listFilterMode = content.filter.isEmpty ? nil : content.filterMode
-            view.contentScroll = CGPoint(x: shown.scrollLeft, y: shown.scrollTop)
+        if activePane.carriedView == nil {
+            view.treeScrollTop = sidebar.tree.scrollTop
+            view.sidebarSectionsScrollTop = sidebar.sections.scrollTop
         }
         return view
     }
@@ -599,107 +539,30 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// A folder has been on screen in this tab.
-    private var hasShownFolder = false
-    /// The view the tab was started with (`carry`), until its first folder has been shown that way.
-    private var carriedView: TabViewState?
+    private var hasShownFolder: Bool { activePane.hasShownFolder }
     /// The pane the keyboard goes to as the tab shows its first folder: the one the tab it came from had it in.
     var startingPane = TabSnapshot.FocusedPane.content
     /// The tab was opened on a folder: its first folder can count as a visit for the Go To box.
     var opensAsArrival = false
 
-    /// Reads the tab's folder the first time it is shown, or again when it was sent elsewhere in the background.
+    /// Reads the tab's folders the first time it is shown, or again when they were sent elsewhere in the background.
     func ensureLoaded() {
-        if loaded {
-            if stale {
-                stale = false
-                // At once: the tab is being read, and has no need to read again as it comes to the front.
-                isNavigating = true
-                navigationTarget = folder
-                Task {
-                    await openNearestExistingFolder(
-                        folder.path, history: .none, keepingSearch: true, restoringView: true)
-                    sidebar.refreshBranches()
-                }
-            }
-            return
-        }
-        firstRead = .reading
-        Task {
-            let read: Bool
-            if folderLetGo {
-                showNoFolder()
-                sidebar.refreshBranches()
-                read = false
-            } else if startsTheWindow {
-                read = await readStartupFolder()
-            } else {
-                read = await readFirstFolder()
-            }
-            finishFirstRead(read)
-        }
+        for pane in panes { pane.ensureLoaded() }
     }
 
-    /// The first read ended: what waited for it goes on.
-    private func finishFirstRead(_ read: Bool) {
-        guard case .reading = firstRead else { return }
-        if let ready = onReady {
-            onReady = nil
-            ready()
-        }
-        firstRead = .finished(read: read)
-        for action in afterFirstRead { action(read) }
-        afterFirstRead = []
+    /// A pane's first read ended: the tab is ready once its first pane's has.
+    func paneFinishedFirstRead(_ pane: BrowserPane) {
+        guard pane === panes.first, let ready = onReady else { return }
+        onReady = nil
+        ready()
     }
 
-    /// The sidebar's row of the tab's favorite stays selected as its folder opens, the tree filled in on its own: a
-    /// favorite is not looked up in the tree.
-    private func openKeepingFavoriteRow() -> SidebarOpen? {
-        guard let favorite = favoritePath, favorite == folder.path else { return nil }
-        let root = treeRootPath
-        Task { await sidebar.model.loadChildren(root) }
-        return SidebarOpen(origin: .alias)
-    }
+    /// Whether the tab's folder has been, or is being, read.
+    var loaded: Bool { activePane.loaded }
 
-    /// A tab that carries a view has its tree and row as they were (`mode: "none"`): nothing follows the folder.
-    private func openKeepingCarriedTree() -> SidebarOpen? {
-        guard carriedView != nil else { return nil }
-        let root = treeRootPath
-        Task { await sidebar.model.loadChildren(root) }
-        return SidebarOpen(origin: .alias)
-    }
-
-    /// A tab shown for the first time, or one just opened: its folder, or the nearest one above it that can be read.
-    /// Whether its own folder opened.
-    private func readFirstFolder() async -> Bool {
-        let open = openKeepingCarriedTree() ?? openKeepingFavoriteRow() ?? .other
-        return await openNearestExistingFolder(
-            folder.path, history: .none, open: open, readFailure: firstReadFailure, restoringView: true,
-            arrives: opensAsArrival)
-    }
-
-    /// What a failed read does to the tab's first folder. A carried folder stays on screen as it was, with its error if
-    /// it had one; one that was fine and has since gone gives way.
-    private var firstReadFailure: ReadFailure {
-        guard let carriedView else { return .leavesFolderOnScreen }
-        return carriedView.directoryError != nil ? .opens : .opensUnlessGone
-    }
-
-    /// The tab on screen as its window opens: a saved favorite opens even if it can't be read, showing why;
-    /// any other folder that can't be read gives way to Home, with the tree at Home.
-    private func readStartupFolder() async -> Bool {
-        if let open = openKeepingFavoriteRow() {
-            return await attemptNavigation(to: folder, history: .none, open: open, readFailure: .opens).didOpen
-        }
-        switch await attemptNavigation(to: folder, history: .none) {
-        case .opened: return true
-        case .superseded: return false
-        case .failed: break
-        }
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
-        guard folder.path != home else { return false }
-        sidebar.model.initializeTree(home)
-        return await attemptNavigation(to: URL(fileURLWithPath: home), history: .replace).didOpen
-    }
+    /// The tab was sent to another folder while in the background (its folder moved, or its disk went): the folder
+    /// is read when the tab is next shown.
+    var stale: Bool { activePane.stale }
 
     /// The keyboard is in the pane the tab starts with before the tab comes to the front: AppKit would give it the
     /// window's first key view, the sidebar's, whose selected row would then light up until the first folder arrives.
@@ -709,28 +572,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         window.initialFirstResponder = window.firstResponder as? NSView
     }
 
-    /// Runs `action` once the first read of the tab's folder has finished, with whether it showed the folder.
-    func whenFirstReadFinished(_ action: @escaping (Bool) -> Void) {
-        if case .finished(let read) = firstRead {
-            action(read)
-        } else {
-            afterFirstRead.append(action)
-        }
-    }
+    /// Runs `action` once the first read of the active pane's folder has finished, with whether it showed the folder.
+    func whenFirstReadFinished(_ action: @escaping (Bool) -> Void) { activePane.whenFirstReadFinished(action) }
 
     /// `followMovedItems` and `leaveUnmountedDisks` for a tab in the background: it takes the place `snapshot` gives
     /// it (folder, history, tree root) and reads its folder when it is next shown.
     func takePlace(_ snapshot: TabSnapshot) {
-        if snapshot.historyPaths.indices.contains(snapshot.historyIndex) {
-            navigationHistory = NavigationHistory(paths: snapshot.historyPaths, index: snapshot.historyIndex)
-        } else {
-            navigationHistory = NavigationHistory(startingAt: snapshot.currentPath)
-        }
-        let moved = shownFolderPath != snapshot.currentPath
-        if !snapshot.currentPath.isEmpty {
-            folder = URL(fileURLWithPath: snapshot.currentPath)
-            folderLetGo = false
-        }
+        activePane.takePlace(snapshot)
         let favoritePrefix = "favorite:"
         let favorite = snapshot.selectedTreeItemID.flatMap {
             $0.hasPrefix(favoritePrefix) ? String($0.dropFirst(favoritePrefix.count)) : nil
@@ -739,7 +587,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             rootPath: snapshot.treeRootPath, folder: snapshot.currentPath, favoritePath: favorite,
             favoritesExpanded: sidebar.favoritesExpanded, locationsExpanded: sidebar.locationsExpanded,
             includeHidden: includeHidden)
-        if moved, loaded { stale = true }
         updateTitle()
         notify(.history)
         group?.tabChanged(self)
@@ -748,58 +595,45 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The folder on screen, or one it is inside, was renamed or moved: it is read at its new place, in place in the
     /// history.
     func followOnScreen(_ moves: [PathMove]) {
-        let path = shownFolderPath
-        let followed = ExplorerTabs.followMovedPath(path, moves)
-        guard !path.isEmpty, followed != path else { return }
-        let target = URL(fileURLWithPath: followed)
-        if loaded {
-            go(to: target, history: .replace)
-        } else {
-            folder = target
-            updateTitle()
-            group?.tabChanged(self)
-        }
+        for pane in panes { pane.followOnScreen(moves) }
     }
 
-    /// Reads the folder on screen again, quietly: something changed in it. `changedPaths` are the items the change
-    /// touched (nil: anything in it may have).
-    func reload(changedPaths: [String]? = nil) {
-        guard loaded, !folderLetGo else { return }
-        updateFolderChanges { $0.changed(folder.path, changedPaths, $1) }
-    }
+    /// Reads the folder on screen again, quietly: something changed in it (`BrowserPane.reload`).
+    func reload(changedPaths: [String]? = nil) { activePane.reload(changedPaths: changedPaths) }
 
     /// The folder read again because the app asks, not because of a change from outside: Show Info's
     /// item goes.
-    func readAgain() {
-        infoController?.letShowInfosItemGo()
-        // Nothing is said to have changed: the rows keep the details they have, so a folder a write went into shows its
-        // old date until something outside says otherwise.
-        reload(changedPaths: [])
-    }
+    func readAgain() { activePane.readAgain() }
 
     typealias FolderChangeHold = FolderChangeGate.Hold
 
     /// Changes made outside the app wait while something the list changing under would upset is going on: a name being
     /// typed, a menu or a sheet open, a file operation running, a drag.
-    var folderChangesHeld: Bool { folderChanges.isHeld }
+    var folderChangesHeld: Bool { activePane.folderChangesHeld }
 
-    func folderChangesHeld(by hold: FolderChangeHold) -> Bool { folderChanges.holds.contains(hold) }
+    func folderChangesHeld(by hold: FolderChangeHold) -> Bool { activePane.folderChangesHeld(by: hold) }
 
-    /// Puts `hold` on, or takes it off; what waited is read once nothing holds it any more. Each holder lets go of its
-    /// own hold only: a menu that closes leaves a sheet that came up meanwhile holding them.
+    /// Puts `hold` on, or takes it off, in every pane; what waited is read once nothing holds it any more. Each holder
+    /// lets go of its own hold only: a menu that closes leaves a sheet that came up meanwhile holding them.
     func holdFolderChanges(_ hold: FolderChangeHold, _ held: Bool) {
-        updateFolderChanges { $0.hold(hold, held, $1) }
+        for pane in panes { pane.holdFolderChanges(hold, held) }
     }
 
     /// A name was typed, or a file operation here or in another window ended: what waited may be read now.
     func recheckFolderChanges() {
-        updateFolderChanges { $0.recheck($1) }
+        for pane in panes { pane.recheckFolderChanges() }
     }
 
     /// Reads what waited now even though `hold` is on (the result sheet, so what the operation made shows behind it).
     func readFolderChanges(despite hold: FolderChangeHold) {
-        updateFolderChanges { $0.readDespite(hold, $1) }
+        for pane in panes { pane.readFolderChanges(despite: hold) }
     }
+
+    /// The changes waiting to be read in the active pane.
+    var pendingChange: FolderChangeGate.Pending? { activePane.pendingChange }
+
+    /// A change from outside is being taken in: Show Info's item stays.
+    var isTakingInOutsideChange: Bool { activePane.isTakingInOutsideChange }
 
     /// While a dialog is open or a name is being typed a press on the tab bar does nothing and the keyboard stays: the
     /// tabs keep the focus where it is and refuse to change. A left press is still a press on the dialog's scrim, which
@@ -814,110 +648,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    /// The tab as the gate asks about it: the folder on screen and what is going on in it.
-    private var folderChangeSituation: FolderChangeGate.Situation {
-        let opening: FolderChangeGate.Situation.Opening =
-            !isNavigating
-            ? .nothing : navigationTarget?.comparablePath == folder.comparablePath ? .thisFolder : .anotherFolder
-        // A file operation running here or in another window holds them too (WriteOperations/).
-        return FolderChangeGate.Situation(
-            folderPath: folder.path, opening: opening, renaming: content.inlineRename != nil,
-            writeLocked: isWriteLocked)
-    }
-
-    /// Tells the gate what happened, and does what it says.
-    private func updateFolderChanges(
-        _ event: (inout FolderChangeGate, FolderChangeGate.Situation) -> FolderChangeGate.Effect
-    ) {
-        switch event(&folderChanges, folderChangeSituation) {
-        case .none:
-            break
-        case .scheduleRetry:
-            _ = timers.schedule(after: Self.retryDelay) { [weak self] in
-                self?.updateFolderChanges { $0.retryElapsed($1) }
-            }
-        case .read(let changedPaths):
-            Task {
-                await quietRead(changedPaths.map { Array($0) })
-                updateFolderChanges { $0.readEnded($1) }
-            }
-        }
-    }
-
-    /// A folder read again in place: the selection, scroll and details stay; the error clears when the answer arrives.
-    private func quietRead(_ changedPaths: [String]?) async {
-        let url = folder
-        let result = await readFolder(url)
-        // The folder was left meanwhile: the user's folder wins.
-        guard url == folder, !isNavigating, !folderLetGo else { return }
-        switch result.snapshot {
-        case .success(let snapshot):
-            isTakingInOutsideChange = true
-            defer { isTakingInOutsideChange = false }
-            content.show(
-                folder: url.path, entries: snapshot.entries, selecting: nil, keepingScroll: true,
-                changedPaths: changedPaths)
-            notify(.folder)
-        case .failure(let error):
-            if FolderReadFailure.isGone(error) {
-                await openNearestExistingFolder(above: url.path)
-            } else {
-                content.showError(folder: url.path, error: FolderReadFailure.readError(error))
-            }
-        }
-    }
-
-    /// The folder on screen is gone: the nearest folder above it that still exists is opened in its place, and the
-    /// selection is not carried over.
-    @discardableResult
-    private func openNearestExistingFolder(above path: String) async -> Bool {
-        for candidate in ExplorerTabs.pathAndAncestors(path).dropFirst() {
-            switch await attemptNavigation(to: URL(fileURLWithPath: candidate), history: .replace) {
-            case .opened: return true
-            case .superseded: return false
-            case .failed: continue
-            }
-        }
-        return false
-    }
-
-    /// Opens `path`, or the nearest folder above it that can be read. A newer navigation
-    /// that takes over ends the attempt. Whether `path` itself opened.
-    @discardableResult
-    private func openNearestExistingFolder(
-        _ path: String, history: HistoryMove, open: SidebarOpen = .other, keepingSearch: Bool = false,
-        readFailure: ReadFailure = .leavesFolderOnScreen, restoringView: Bool = false, arrives: Bool = false
-    ) async -> Bool {
-        let outcome = await attemptNavigation(
-            to: URL(fileURLWithPath: path), history: history, open: open, keepingSearch: keepingSearch,
-            readFailure: readFailure, restoringView: restoringView, arrives: arrives)
-        if case .failed = outcome {
-            finishCarrying(nil)
-            await openNearestExistingFolder(above: path)
-        }
-        return outcome.didOpen
-    }
-
-    /// `reloadFolderInPlace`: a tab that comes back reads its folder again where it stands, for it may have changed while
-    /// another tab was in front. The selection, the search results and the place in the history stay; one that can't be
-    /// read stays, showing why; one that is gone gives way to the nearest folder above it. `refreshingTree`: the tree's open
-    /// branches are read again too.
-    private func reloadFolderInPlace(refreshingTree: Bool) async {
-        let path = folder.path
-        let outcome = await attemptNavigation(
-            to: folder, history: .none, open: sidebar.model.openReadingAgain(path), keepingSearch: true,
-            readFailure: .opensUnlessGone, quiet: true, keepingSelection: true)
-        var opened = outcome.didOpen
-        if case .failed = outcome { opened = await openNearestExistingFolder(above: path) }
-        if refreshingTree, opened { await sidebar.model.refreshBranches() }
-    }
-
     /// Another tab came to the front. The window's one tracker hears of a folder on screen changing (`showing`), so the
     /// folder this tab was still being decided on was only passed through; each tab here has a tracker of its own.
     func wentToTheBack(for other: MainWindowController) {
         visitTracker.showing(other.shownFolderPath)
-        if waitingReadAgain == .folderAndTree { treeOutOfDate = true }
-        waitingReadAgain = nil
+        for pane in panes where pane.dropWaitingReadAgain() { treeOutOfDate = true }
     }
 
     /// The tab is on screen again after another one, or for the first time. Show Info's item doesn't
@@ -932,49 +667,24 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         RelativeClock.shared.windowStateDidChange()
         let refreshingTree = treeOutOfDate
         treeOutOfDate = false
-        guard loaded, !stale else {
-            ensureLoaded()
-            return
-        }
-        // Just made, it is reading its folder already.
-        guard hasShownFolder, !isNavigating, !folderLetGo else { return }
-        readAgainAfterDrawing(refreshingTree: refreshingTree)
-    }
-
-    /// The folder is read again once the tab has been drawn, so the switch doesn't wait for it, and not at all if another
-    /// tab has come to the front by then.
-    private var waitingReadAgain: ReadAgain?
-
-    private enum ReadAgain {
-        case folder
-        /// The folder with its open tree branches.
-        case folderAndTree
-    }
-
-    private func readAgainAfterDrawing(refreshingTree: Bool) {
-        waitingReadAgain = refreshingTree || waitingReadAgain == .folderAndTree ? .folderAndTree : .folder
-        // The main queue takes what is added while it runs on its next turn of the run loop, after this turn's drawing.
-        DispatchQueue.main.async { [weak self] in
-            DispatchQueue.main.async {
-                MainActor.assumeIsolated {
-                    guard let self, let waiting = self.waitingReadAgain else { return }
-                    let refreshingTree = waiting == .folderAndTree
-                    self.waitingReadAgain = nil
-                    guard self.hasShownFolder, !self.isNavigating, !self.folderLetGo else {
-                        if refreshingTree { self.treeOutOfDate = true }
-                        return
-                    }
-                    Task { await self.reloadFolderInPlace(refreshingTree: refreshingTree) }
-                }
+        for pane in panes {
+            guard pane.loaded, !pane.stale else {
+                pane.ensureLoaded()
+                continue
             }
+            // Just made, it is reading its folder already.
+            pane.cameBack(refreshingTree: refreshingTree && pane.drivesSidebar)
         }
     }
 
     static let retryDelay = 0.25
-    /// What waits out `retryDelay`; tests move it by hand.
-    var timers: any TimerScheduling = TaskTimerScheduler()
+    /// What waits out `retryDelay` in the active pane; tests move it by hand.
+    var timers: any TimerScheduling {
+        get { activePane.timers }
+        set { activePane.timers = newValue }
+    }
 
-    private func updateTitle() {
+    func updateTitle() {
         // The window title is the folder name, which the toolbar shows; the tab bar and the Window menu have the
         // tab's label (ExplorerTabGroup.refreshTitles).
         let name = ExplorerTabs.folderDisplayName(shownFolderPath, startupDiskName: services.startupDisk.name)
@@ -996,273 +706,35 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     // MARK: Navigation
 
     func go(to url: URL, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
-        Task { await navigate(to: url, history: history, open: open, keepingSearch: keepingSearch) }
+        activePane.go(to: url, history: history, open: open, keepingSearch: keepingSearch)
     }
 
-    /// What a read of a folder gave, and how long it took.
-    struct FolderRead {
-        var snapshot: Result<DirectorySnapshot, any Error>
-    }
-
-    /// Reads a folder through the directory service: in the order the tab keeps, with hidden files and folders first
-    /// as the tab has them.
-    private func readFolder(_ url: URL) async -> FolderRead {
-        let service = services.directoryService
-        let path = url.path
-        let key = DirectorySortKey(rawValue: sortBy.rawValue) ?? .name
-        let direction: SortDirection = sortDirection == .asc ? .ascending : .descending
-        let hidden = includeHidden
-        let first = foldersFirst
-        let snapshot = await Result {
-            try await service.snapshot(
-                path: path, includeHidden: hidden, sortBy: key, sortDirection: direction, foldersFirst: first)
-        }
-        return FolderRead(snapshot: snapshot)
-    }
-
-    /// Reads `url`, then shows it. Returns nil when a later navigation replaced this one or the folder didn't open. `open`
-    /// says how the sidebar reached it, which decides how the sidebar's tree follows and which of its rows is selected.
-    /// The listing in front stays on screen until the new one arrives.
-    /// With `goToFailure` it is Go To (`viaGoTo`): a folder that can't be read leaves the one on screen, and the
-    /// read's message goes there instead.
+    /// Reads `url` in the active pane, then shows it (`BrowserPane.navigate`).
     @discardableResult
     func navigate(
         to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil
     ) async -> Bool {
-        let outcome = await attemptNavigation(
+        await activePane.navigate(
             to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
-        if case .opened = outcome { return true }
-        return false
     }
 
-    /// What the folder just shown takes from the tab it was started with, besides what `content.show` restored.
-    private func showCarried(_ carried: TabViewState, folderWasRead: Bool) {
-        content.setFilter(carried.listFilterQuery, mode: carried.listFilterMode)
-        // Something selected outside the filter shows the whole list again.
-        if let lead = content.selection.leadPath, !content.filter.isEmpty,
-            !content.entries.contains(where: { $0.path == lead }), content.listed.contains(where: { $0.path == lead })
-        {
-            content.clearFilter()
-        }
-        // A folder with a message over it (a Go To that failed) has it still.
-        if folderWasRead, let error = carried.directoryError {
-            content.showReadError(error)
-        }
-    }
-
-    /// The tab's first folder has been shown, as `carried` had it if that was its folder.
-    private func finishCarrying(_ carried: TabViewState?) {
-        sidebar.holdsScrollPosition = false
-        guard carriedView != nil else { return }
-        carriedView = nil
-        if let carried {
-            sidebar.restoreScroll(tree: carried.treeScrollTop, sections: carried.sidebarSectionsScrollTop)
-        }
-    }
-
-    /// Search results were left at the place in the history `move` goes to, and that place still holds the same folder.
-    private func searchResultsWereLeft(at move: HistoryMove) -> Bool {
-        guard let session = searchStore?.session, session.hasCachedSearch, let place = session.returnPlace,
-            place.index == move.target(from: navigationHistory.index)
-        else { return false }
-        return navigationHistory.holds(place)
-    }
-
-    /// `readFailure` is what a folder that can't be read does; by default only the sidebar's favorites,
-    /// locations and links open anyway. `quiet`: the folder is on screen and is only
-    /// read again, so no "Loading…". `keepingSelection`: it is read in place, its selection and scroll staying. `arrives`:
-    /// the tab's first folder counts as gone to (the one step of its history is there already).
-    private func attemptNavigation(
-        to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
-        goToFailure: ((String) -> Void)? = nil, readFailure: ReadFailure? = nil, quiet: Bool = false,
-        keepingSelection: Bool = false, restoringView: Bool = false, arrives: Bool = false
-    ) async -> NavigationOutcome {
-        // A tab sent somewhere before it was first read takes this as its first read.
-        if !loaded {
-            firstRead = .reading
-            let outcome = await attemptNavigation(
-                to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure,
-                readFailure: readFailure, quiet: quiet, keepingSelection: keepingSelection,
-                restoringView: restoringView, arrives: arrives)
-            finishFirstRead(outcome.didOpen)
-            return outcome
-        }
-        navigationToken += 1
-        let token = navigationToken
-        isNavigating = true
-        navigationTarget = url
-        defer { if token == navigationToken { isNavigating = false } }
-        let move = open.pushesHistory ? move : HistoryMove.none
-        // The folder being left is remembered first: what was selected and where the list was scrolled.
-        // Nothing is remembered when search results are showing.
-        if !folderLetGo, url.comparablePath != folder.comparablePath, searchRootPath == nil,
-            let memory = content.captureFolderView()
-        {
-            folderMemories = folderMemories.remembering(
-                memory, at: folder.path, historyPaths: navigationHistory.paths + [folder.path])
-        }
-        // Read before anything moves: the place being left is the one in the history now, and the results to come back
-        // are those left where this goes.
-        let bringsResultsBack = !keepingSearch && searchResultsWereLeft(at: move)
-        let leftPlace = NavigationHistory.Place(index: navigationHistory.index, path: folder.path)
-        // Back, Forward and the hold menus move within the history at once, before the folder is read.
-        switch move {
-        case .back: navigationHistory.goBack()
-        case .forward: navigationHistory.goForward()
-        case .jump(let index): navigationHistory.jump(to: index)
-        case .push, .none, .replace: break
-        }
-        let keepsSearch = keepingSearch
-        content.beginLoading(quiet: quiet)
-        let read = await readFolder(url)
-        guard token == navigationToken else { return .superseded }
-
-        var entries: [DirectoryEntry] = []
-        // The folder is known by the real path its listing gives (`response.path`), not the spelling it was asked by; one
-        // that can't be listed has only that spelling.
-        var shown = url
-        var opensWithError = false
-        switch read.snapshot {
-        case .success(let snapshot):
-            entries = snapshot.entries
-            shown = URL(fileURLWithPath: snapshot.path)
-        case .failure(let error):
-            let readError = FolderReadFailure.readError(error)
-            if let goToFailure {
-                content.showReadError(readError)
-                goToFailure(readError.message)
-                return .failed
-            }
-            switch readFailure ?? (open.origin.opensWhenUnreadable ? .opens : .leavesFolderOnScreen) {
-            case .opens: opensWithError = true
-            case .opensUnlessGone: opensWithError = !FolderReadFailure.isGone(error)
-            case .leavesFolderOnScreen: opensWithError = false
-            }
-            guard opensWithError else {
-                // A quiet read shows nothing: the search for a folder that can be read goes on from it.
-                if !quiet { content.showReadError(readError) }
-                sidebar.openFailed()
-                notify(.history)
-                return .failed
-            }
-        }
-
-        // Opening a folder puts search results away, once it has arrived, the folder on screen too (Reveal in
-        // Folder there); only a read in place that asks to keep them (an order, hidden files, a tab coming back)
-        // leaves them.
-        if !keepsSearch, let search = searchStore, search.session.isSearchMode {
-            // Back and Forward can bring them back; choosing the folder they cover closes them.
-            let sameFolder = shown.comparablePath == folder.comparablePath
-            search.session.hideResults(returnPlace: sameFolder ? nil : leftPlace)
-        }
-
-        // A folder is added to the history only after its listing has arrived and been applied.
-        switch move {
-        case .push:
-            navigationHistory.record(shown.path, mode: .push)
-            if !opensWithError { visitTracker.arrive(shown.path, viaGoTo: goToFailure != nil) }
-        case .replace:
-            navigationHistory.record(shown.path, mode: .replace)
-        case .back, .forward, .jump:
-            // Back and Forward never count as a visit.
-            if !opensWithError { visitTracker.showing(shown.path) }
-        case .none:
-            // A tab that starts on a folder by another spelling: its one step is the folder as it is.
-            if navigationHistory.current == url.path, shown.path != url.path {
-                navigationHistory.record(shown.path, mode: .replace)
-            }
-            if arrives, !opensWithError { visitTracker.arrive(shown.path, viaGoTo: false) }
-        }
-        // What the tab was started with is for the folder it was started on, not one that took its place.
-        let carried = url.comparablePath == folder.comparablePath ? carriedView : nil
-        folder = shown
-        folderLetGo = false
-
-        // Opening a folder normally starts with nothing selected, and the list at the top.
-        let memory =
-            carried.map {
-                FolderViewMemory(
-                    selection: $0.contentSelection, scrollTop: $0.contentScroll.y, scrollLeft: $0.contentScroll.x)
-            } ?? ((move.restoresView && !bringsResultsBack) || restoringView ? folderMemories[shown.path] : nil)
-        updateTitle()
-        if !keepsSearch, let search = searchStore, !search.session.isSearchMode { search.session.setDraft("") }
-        // A folder opened from the sidebar leaves the keyboard there. The tab's first folder wasn't: AppKit gives a window
-        // that comes to the front its first key view, which is the sidebar's, and a fresh tab focuses the list.
-        let isFirstFolder = !hasShownFolder
-        hasShownFolder = true
-        let sidebarKeyboard = sidebar.isFocused && !isFirstFolder ? window?.firstResponder : nil
-        switch read.snapshot {
-        case .success:
-            // The rows of a folder read again keep the details they have, and not only when it is read in place:
-            // nothing is said to have changed (hidden files shown, a new sort).
-            content.show(
-                folder: shown.path, entries: entries, selecting: keepingSelection ? nil : [],
-                keepingScroll: keepingSelection, changedPaths: [], restoring: memory)
-            // Before the window draws, so the folder underneath does not flash by. The folder is what they lie over: the
-            // tree and the path bar show it.
-            if bringsResultsBack { searchStore?.session.showCachedResults() }
-        case .failure(let error):
-            content.showError(folder: shown.path, error: FolderReadFailure.readError(error))
-        }
-        if let carried { showCarried(carried, folderWasRead: !opensWithError) }
-        if let sidebarKeyboard {
-            window?.makeFirstResponder(sidebarKeyboard)
-        } else if let window, isFirstFolder, startingPane == .tree, panels.folderTreeOpen {
-            // The keyboard goes back to the pane the tab had it in.
-            sidebar.focusTree()
-            window.initialFirstResponder = window.firstResponder as? NSView
-        } else if let window, isFirstFolder || window.firstResponder == nil || window.firstResponder === window {
-            // When no pane has the keyboard it goes to the file list (a fresh tab focuses the list).
-            content.focusList()
-            if isFirstFolder { window.initialFirstResponder = content.focusView }
-        }
-        if opensWithError {
-            sidebar.folderOpenedWithError(shown, open)
-        } else {
-            sidebar.folderOpened(shown, open)
-        }
-        notify(.history)
-        updatePathBar()
-        notify(.folder)
-        window?.contentView?.layoutSubtreeIfNeeded()
-        if let carried { content.pane?.scrollPosition = (carried.contentScroll.y, carried.contentScroll.x) }
-        if isFirstFolder { finishCarrying(carried) }
-        // The results' list has only now been laid out, so their selection can be brought into view.
-        if bringsResultsBack, searchStore?.session.isSearchMode == true { content.applySelection(content.selection) }
-        window?.displayIfNeeded()
-        group?.tabChanged(self)
-        return .opened
-    }
-
-    /// Where the tab is, history and sidebar row with it (`TabPlace`).
+    /// Where a pane is, history and sidebar row with it.
     struct TabPlace {
         let path: String
         let history: NavigationHistory
         let sidebarRow: TreeItemID?
     }
 
-    var tabPlace: TabPlace {
-        TabPlace(path: folder.path, history: navigationHistory, sidebarRow: sidebar.model.selected)
-    }
+    var tabPlace: TabPlace { activePane.place }
 
-    /// A drag's springs are undone: the folder opens as it was left, and its history and sidebar row come back with it,
-    /// once it has opened. A folder that can't (gone meanwhile) leaves the tab where the drag left it.
-    func comeBack(to place: TabPlace) async {
-        let outcome = await attemptNavigation(
-            to: URL(fileURLWithPath: place.path), history: .none, open: SidebarOpen(origin: .alias),
-            readFailure: .leavesFolderOnScreen, restoringView: true)
-        guard outcome.didOpen else { return }
-        navigationHistory = place.history
-        sidebar.model.restoreSelected(place.sidebarRow)
-        notify(.history)
-        group?.tabChanged(self)
-    }
+    /// A drag's springs are undone (`BrowserPane.comeBack`).
+    func comeBack(to place: TabPlace) async { await activePane.comeBack(to: place) }
 
     // MARK: Opening items
 
     /// The folder visits the Go To box counts.
-    private lazy var visitTracker = FolderVisitTracker { path, kind in
+    lazy var visitTracker = FolderVisitTracker { path, kind in
         MainWindowController.visitStore()?.recordFolderVisit(path, kind: kind)
     }
 
@@ -1351,12 +823,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                     go(to: URL(fileURLWithPath: path))
                 case .resolveThenNavigate(let path):
                     // Another tab may have come to the front while the link was looked up.
-                    let token = navigationToken
+                    let pane = activePane
+                    let token = pane.navigationCount
                     Task {
-                        guard let target = await Self.resolved(path), token == navigationToken, isKeyOrOnly else {
+                        guard let target = await Self.resolved(path), token == pane.navigationCount, isKeyOrOnly else {
                             return
                         }
-                        go(to: URL(fileURLWithPath: target))
+                        pane.go(to: URL(fileURLWithPath: target))
                     }
                 case .resolveThenOpen(let path):
                     Task {
@@ -1690,7 +1163,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// The folder on screen read again brings the tree along; a folder being opened now will do that itself.
-    var treeFollowsReadingAgain: Bool { loaded && !folderLetGo && !isNavigating }
+    var treeFollowsReadingAgain: Bool { activePane.treeFollowsReadingAgain }
 
     /// The folder selected in the file list, if it is the one item selected and a folder.
     private var selectedContentFolder: URL? {
@@ -1796,13 +1269,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         notify(.selection)
     }
 
-    private func showNoFolder() {
-        folderLetGo = true
-        folderChanges.letGo()
-        content.showNoFolder()
-        updateTitle()
-        updatePathBar()
-    }
+    private func showNoFolder() { activePane.showNoFolder() }
 
     // MARK: Menu state
 
@@ -1937,53 +1404,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// The view search results show in, whether they show now or not.
-    func setSearchViewMode(_ mode: ExplorerViewMode) {
-        searchViewMode = mode
-        if let search = searchStore, search.showsResults { content.setMode(mode) }
-        notify(.view)
-        group?.tabChanged(self)
-    }
+    func setSearchViewMode(_ mode: ExplorerViewMode) { activePane.setSearchViewMode(mode) }
 
-    func setMode(_ mode: ExplorerViewMode) {
-        // Search results have a view of their own in each tab (`searchViewMode`).
-        if let search = searchStore, search.showsResults {
-            searchViewMode = mode
-        } else {
-            viewMode = mode
-        }
-        content.setMode(mode)
-        notify(.view)
-        group?.tabChanged(self)
-    }
+    func setMode(_ mode: ExplorerViewMode) { activePane.setMode(mode) }
 
-    /// The sort commands and the column headers: the field already in use reverses the direction;
-    /// another sorts by it, descending for Date Modified and Size and ascending for Name and Kind.
-    func sort(by field: SortByPreference) {
-        let next = DetailsSorting.next(current: sortBy, direction: sortDirection, requested: field)
-        setSort(next.sortBy, next.direction)
-    }
+    func sort(by field: SortByPreference) { activePane.sort(by: field) }
 
-    /// Puts the folder in this order: it is read again ("replace"), and the selection is not kept.
     func setSort(_ field: SortByPreference, _ direction: SortDirectionPreference) {
-        sortBy = field
-        sortDirection = direction
-        viewChanged()
+        activePane.setSort(field, direction)
     }
 
-    /// The tab's order, Folders First or hidden files changed: the content pane shows it, the folder is read again in
-    /// place and the choice is saved with the tab.
-    /// `keepingTree`: the tree sees to itself, and the folder read again leaves it alone.
-    private func viewChanged(keepingTree: Bool = false) {
-        content.setView(
-            sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
-        notify(.view)
-        group?.tabChanged(self)
-        // No folder to read again (`toggleHiddenFiles` with an empty currentPath).
-        guard loaded, !folderLetGo else { return }
-        // The row of a favorite, a location or a link stays, and the tree where it is.
-        let open = keepingTree ? SidebarOpen(origin: .alias) : sidebar.model.openKeepingRow(folder.path) ?? .other
-        Task { await navigate(to: folder, history: .replace, open: open, keepingSearch: true) }
-    }
+    private func viewChanged(keepingTree: Bool = false) { activePane.viewChanged(keepingTree: keepingTree) }
 
     // MARK: Customize Toolbar
 
@@ -2046,7 +1477,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     // MARK: Observers
 
-    fileprivate func notify(_ change: ExplorerWindowChange) {
+    func notify(_ change: ExplorerWindowChange) {
         if change == .folder || change == .search || change == .commands { refreshTrashHeader() }
         // The Trash on screen changed, or came to the screen: what it holds may not be what was last read.
         if change == .folder, content.contentShell.trashHeader != nil { refreshTrashState() }
@@ -2383,11 +1814,7 @@ extension MainWindowController: ExplorerWindowContext {
         return nil
     }
 
-    var viewState: ExplorerViewState {
-        ExplorerViewState(
-            viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
-            includeHidden: includeHidden, foldersFirst: foldersFirst)
-    }
+    var viewState: ExplorerViewState { activePane.viewState }
 
     var panels: TabGroupSession.Panels {
         group?.session.panels ?? TabGroupSession.Panels(preferences.windowSession)
