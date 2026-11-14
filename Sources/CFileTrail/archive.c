@@ -680,6 +680,27 @@ static void finish_folders(struct extraction *extraction) {
     }
 }
 
+/// Moves past the data of an item left out, watching for a stop: 0, ECANCELED, or the reader's failure. libarchive
+/// would pass over it at the next header without a look at the stop, and where the archive is compressed as a whole
+/// (a .tar.gz) or in blocks of several items (7z, RAR) passing over means reading it all through. Of a zip, a xar
+/// and a tar compressed in no other way it only moves on in the file, and is left to.
+static int pass_over(ft_archive_control *control, struct archive *reader) {
+    int format = archive_format(reader) & ARCHIVE_FORMAT_BASE_MASK;
+    if (archive_filter_code(reader, 0) == ARCHIVE_FILTER_NONE
+        && (format == ARCHIVE_FORMAT_ZIP || format == ARCHIVE_FORMAT_XAR || format == ARCHIVE_FORMAT_TAR)) {
+        return 0;
+    }
+    const void *block;
+    size_t length;
+    la_int64_t offset;
+    int status;
+    while ((status = archive_read_data_block(reader, &block, &length, &offset)) == ARCHIVE_OK) {
+        if (is_stopped(control)) return ECANCELED;
+        if (control != NULL) atomic_store(&control->done, archive_filter_bytes(reader, -1));
+    }
+    return status == ARCHIVE_EOF || status >= ARCHIVE_WARN ? 0 : reader_error(reader);
+}
+
 /// The open archive's quarantine, in a buffer the caller frees: 0, with nothing when it has none, or
 /// FT_ARCHIVE_NOT_QUARANTINED when it can't be read, as what came out of a downloaded archive would then be run
 /// unchecked.
@@ -785,6 +806,7 @@ int ft_archive_extract(
         if (named == NAME_NOTHING) continue;
         if (named == NAME_REFUSED) {
             COUNT(control, skipped, 1);
+            result = pass_over(control, reader);
             continue;
         }
         const char *leaf;
@@ -805,6 +827,7 @@ int ft_archive_extract(
         }
         if (made == ITEM_LEFT_OUT) {
             COUNT(control, skipped, 1);
+            result = pass_over(control, reader);
             continue;
         }
         if (made != 0) {
@@ -836,18 +859,23 @@ int ft_archive_extract(
 
 // MARK: Compress
 
-/// The bytes of the regular files under `path`, links not followed.
-static int64_t data_bytes(const char *path) {
+/// Adds to `total` the bytes of the regular files under `path` that go into the zip: links not followed, and a disk
+/// mounted inside not gone into, as compress_item walks them. 0, or ECANCELED when stopped.
+static int add_data_bytes(const char *path, ft_archive_control *control, int64_t *total) {
     char *const roots[] = {(char *)path, NULL};
-    FTS *tree = fts_open(roots, FTS_PHYSICAL | FTS_NOCHDIR, NULL);
+    FTS *tree = fts_open(roots, FTS_PHYSICAL | FTS_NOCHDIR | FTS_XDEV, NULL);
     if (tree == NULL) return 0;
-    int64_t total = 0;
+    int result = 0;
     FTSENT *node;
     while ((node = fts_read(tree)) != NULL) {
-        if (node->fts_info == FTS_F && node->fts_statp != NULL) total += (int64_t)node->fts_statp->st_size;
+        if (is_stopped(control)) {
+            result = ECANCELED;
+            break;
+        }
+        if (node->fts_info == FTS_F && node->fts_statp != NULL) *total += (int64_t)node->fts_statp->st_size;
     }
     fts_close(tree);
-    return total;
+    return result;
 }
 
 /// Finder's place for `relative`'s attributes: `__MACOSX/dir/._name`, `__MACOSX/._name` at the top.
@@ -1023,10 +1051,13 @@ int ft_archive_compress_zip(
     memcpy(folder, base, folder_length);
     folder[folder_length] = '\0';
     char full[PATH_MAX * 2];
+    // The total is counted first, for the progress to have one from the start: a walk of the folders alone, which
+    // also brings what they hold into memory for the walk that writes the zip.
     int64_t total = 0;
     for (size_t index = 0; index < count_names; index++) {
         if (!join(folder, names[index], full, sizeof(full))) return ENAMETOOLONG;
-        total += data_bytes(full);
+        int counted = add_data_bytes(full, control, &total);
+        if (counted != 0) return counted;
     }
     if (control != NULL) atomic_store(&control->total, total);
 

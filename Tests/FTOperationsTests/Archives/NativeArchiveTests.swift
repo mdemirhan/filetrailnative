@@ -370,6 +370,83 @@ import Testing
         #expect(try Self.names(folders.root) == ["out", "test.tar"])
     }
 
+    // MARK: Stop
+
+    /// A tar.gz whose first item is left out (its name climbs out of the folder): passing over its data means
+    /// reading it through, and a Stop pressed meanwhile is seen there, not only once all of it is read.
+    @Test func aStopIsSeenWhileTheDataOfAnItemLeftOutIsPassedOver() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let source = "\(folders.root)/source"
+        try FileManager.default.createDirectory(atPath: source, withIntermediateDirectories: false)
+        try ArchivePipe.noise(2_000_000).write(to: URL(fileURLWithPath: "\(source)/big.bin"))
+        try Data("small".utf8).write(to: URL(fileURLWithPath: "\(source)/small.txt"))
+        let made = "\(folders.root)/made.tar.gz"
+        try ArchiveOperationsTests.run(
+            "/usr/bin/tar", ["-czf", made, "-P", "-s", ",^big.bin$,../big.bin,", "big.bin", "small.txt"], in: source)
+        let archive = try Data(contentsOf: URL(fileURLWithPath: made))
+        let pipe = "\(folders.root)/piped.tar.gz"
+        let control = NativeArchive.Control()
+        let release = DispatchSemaphore(value: 0)
+        defer { release.signal() }
+        try ArchivePipe.feed(pipe, archive, first: 256 << 10, second: 256 << 10, release: release) { control.stop() }
+        let outcome = Mutex<Result<Void, any Error>?>(nil)
+        let extracting = DispatchGroup()
+        DispatchQueue.global().async(group: extracting) {
+            let result = Result {
+                try NativeArchive.extract(pipe, into: folders.out, rawName: nil, quarantine: true, control: control)
+            }
+            outcome.withLock { $0 = result }
+        }
+        // The rest of the archive is held back: only a Stop seen in the middle of the data ends this.
+        #expect(extracting.wait(timeout: .now() + 30) == .success)
+        release.signal()
+        extracting.wait()
+        #expect(throws: StopError.self) { try outcome.withLock { $0 }?.get() }
+        #expect(try Self.names(folders.out).isEmpty)
+    }
+
+    /// A Stop pressed in the middle of a large file's data stops the zip there.
+    @Test func aStopInTheMiddleOfCompressingEndsIt() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        try FileManager.default.createDirectory(atPath: "\(folders.root)/Big", withIntermediateDirectories: false)
+        // A gigabyte with nothing in it: no room taken on the disk, and long to read.
+        let big = "\(folders.root)/Big/zeros.bin"
+        #expect(FileManager.default.createFile(atPath: big, contents: nil))
+        #expect(truncate(big, 1 << 30) == 0)
+        let control = NativeArchive.Control()
+        let compressing = DispatchGroup()
+        let outcome = Mutex<Result<Void, any Error>?>(nil)
+        DispatchQueue.global().async(group: compressing) {
+            let result = Result {
+                try NativeArchive.compressZip(
+                    ["Big"], in: folders.root, to: "\(folders.root)/Big.zip", control: control)
+            }
+            outcome.withLock { $0 = result }
+        }
+        let deadline = ContinuousClock.now + .seconds(30)
+        while control.done == 0, ContinuousClock.now < deadline { usleep(1000) }
+        control.stop()
+        compressing.wait()
+        #expect(throws: StopError.self) { try outcome.withLock { $0 }?.get() }
+        #expect(control.done < control.total)
+    }
+
+    /// A Stop pressed before the items are counted stops the count, and no zip is begun.
+    @Test func aStopBeforeTheCountMakesNoZip() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        try FileManager.default.createDirectory(atPath: "\(folders.root)/Box", withIntermediateDirectories: false)
+        try Data("x".utf8).write(to: URL(fileURLWithPath: "\(folders.root)/Box/x.txt"))
+        let control = NativeArchive.Control()
+        control.stop()
+        #expect(throws: StopError.self) {
+            try NativeArchive.compressZip(["Box"], in: folders.root, to: "\(folders.root)/Box.zip", control: control)
+        }
+        #expect(!FileManager.default.fileExists(atPath: "\(folders.root)/Box.zip"))
+    }
+
     // MARK: Compress
 
     @Test func aFolderGivenWithASlashAtItsEndNamesItsItemsTheSame() throws {

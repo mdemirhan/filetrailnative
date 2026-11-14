@@ -229,6 +229,57 @@ import Testing
         }
     }
 
+    /// Stop pressed while a file's data is being written: the operation ends stopped, and nothing of it is left.
+    @Test func aStopInTheMiddleOfExtractingLeavesNothing() async throws {
+        try await withUndoFolder { root, trashDir in
+            let source = try TemporaryDirectory(prefix: "filetrail-archive-source")
+            defer { source.remove() }
+            try ArchivePipe.noise(2_000_000).write(to: URL(fileURLWithPath: "\(source.path)/big.bin"))
+            try Self.run("/usr/bin/tar", ["-czf", "\(source.path)/big.tar.gz", "big.bin"], in: source.path)
+            let archive = try Data(contentsOf: URL(fileURLWithPath: "\(source.path)/big.tar.gz"))
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let release = DispatchSemaphore(value: 0)
+            defer { release.signal() }
+            try ArchivePipe.feed(
+                "\(root)/big.tar.gz", archive, first: 256 << 10, second: 256 << 10, release: release
+            ) { t.pressStop() }
+            let end = try await t.finish(t.coordinator.extractArchives(["\(root)/big.tar.gz"], window: t.window))
+            release.signal()
+            #expect(end.status == .cancelled)
+            #expect(end.result?.items.map(\.status) == [.cancelled])
+            #expect(try Self.names(root) == ["big.tar.gz"])
+            await t.shutDown()
+        }
+    }
+
+    /// Stop pressed once the zip is being written: the operation ends stopped, and no zip is left.
+    @Test func aStopInTheMiddleOfCompressingLeavesNoZip() async throws {
+        try await withUndoFolder { root, trashDir in
+            try FileManager.default.createDirectory(atPath: "\(root)/Big", withIntermediateDirectories: false)
+            // Long to read, and no room taken on the disk.
+            let big = "\(root)/Big/zeros.bin"
+            #expect(FileManager.default.createFile(atPath: big, contents: nil))
+            #expect(truncate(big, 1 << 32) == 0)
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let handle = try await t.coordinator.compress(["\(root)/Big"], window: t.window)
+            DispatchQueue.global().async {
+                let deadline = ContinuousClock.now + .seconds(30)
+                while ContinuousClock.now < deadline {
+                    let writing = DispatchQueue.main.sync {
+                        MainActor.assumeIsolated { t.events.contains { $0.completedByteCount > 0 } }
+                    }
+                    if writing { break }
+                    usleep(5000)
+                }
+                t.pressStop()
+            }
+            let end = try await t.finish(handle)
+            #expect(end.status == .cancelled)
+            #expect(try Self.names(root) == ["Big"])
+            await t.shutDown()
+        }
+    }
+
     @Test func aProtectedArchiveIsRefusedAndLeavesNothing() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/secret.txt", "secret")

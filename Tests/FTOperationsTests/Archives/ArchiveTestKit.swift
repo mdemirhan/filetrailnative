@@ -4,6 +4,51 @@ import Darwin
 import FTFoundation
 import Foundation
 
+@testable import FTOperations
+
+/// An archive read from a named pipe, written to it a part at a time: what extracting it has read is known, and a
+/// Stop pressed between two parts comes in the middle of it.
+enum ArchivePipe {
+    /// `count` bytes that don't compress.
+    static func noise(_ count: Int) -> Data {
+        var data = Data(count: count)
+        data.withUnsafeMutableBytes { arc4random_buf($0.baseAddress, count) }
+        return data
+    }
+
+    /// Makes the pipe `path` and, on another thread, writes `archive` into it once it is opened to be read: its first
+    /// `first` bytes, then `between` is run, then `second` bytes more; the rest only once `release` is signalled (30 s
+    /// at most), and then it is closed. A write the reader no longer takes ends the writing.
+    static func feed(
+        _ path: String, _ archive: Data, first: Int, second: Int, release: DispatchSemaphore,
+        between: @escaping @Sendable () -> Void
+    ) throws {
+        guard mkfifo(path, 0o644) == 0 else { throw OperationError("mkfifo \(path): \(errno)") }
+        DispatchQueue.global().async {
+            let fd = open(path, O_WRONLY)
+            guard fd >= 0 else { return }
+            defer { close(fd) }
+            _ = fcntl(fd, F_SETNOSIGPIPE, 1)
+            func write(_ range: Range<Int>) -> Bool {
+                archive.subdata(in: range).withUnsafeBytes { bytes in
+                    var offset = 0
+                    while offset < bytes.count {
+                        let written = Darwin.write(fd, bytes.baseAddress! + offset, bytes.count - offset)
+                        if written <= 0 { return false }
+                        offset += written
+                    }
+                    return true
+                }
+            }
+            guard write(0..<first) else { return }
+            between()
+            guard write(first..<(first + second)) else { return }
+            _ = release.wait(timeout: .now() + 30)
+            _ = write((first + second)..<archive.count)
+        }
+    }
+}
+
 /// Archives of a folder "Evil" holding bin/tool, whose items carry access rules that deny writing their attributes
 /// and deleting them, bin's inherited by what is made in it.
 enum AccessRuleArchive {
