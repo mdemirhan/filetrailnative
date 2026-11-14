@@ -114,8 +114,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
 /// Which toolbar and menu commands can run now.
 public enum CommandAvailability {
     /// What a running file operation blocks: anything that would start another one. Copy, Cut and Copy Path only fill
-    /// a clipboard, so they stay available.
-    private static let writeLockedCommands: Set<AppCommand> = [
+    /// a clipboard, so they stay available. A held key runs them once per press (`WriteStartingShortcuts`).
+    static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
         .newFolder, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane, .compressSelection,
         .extractSelection, .extractSelectionTo, .convertImages,
