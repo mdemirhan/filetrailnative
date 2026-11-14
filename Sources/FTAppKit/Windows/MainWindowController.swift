@@ -891,11 +891,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                         detail: result.error ?? "\(editor.appName) didn’t answer."))
             }
         case .steps(let steps):
-            // A held key (Return, ⌘↓, ⌘O) opens again on every repeat, but extracts once per press: each repeat would
-            // take the archive apart again, beside what the first one gave.
-            let extracts = !Self.isKeyRepeat(currentEvent())
-            func extractsOrIsNoArchive(_ path: String) -> Bool {
-                extracts || !ArchiveNames.isArchive(NodePath.basename(path))
+            // A held key (Return, ⌘↓, ⌘O) opens folders and files again on every repeat, but extracts an archive and
+            // mounts a disk image once per press: each repeat would take the archive apart again beside what the
+            // first one gave, or open the image's disk in another window or tab.
+            let firstPress = !Self.isKeyRepeat(currentEvent())
+            func opensOnThisPress(_ path: String) -> Bool {
+                firstPress
+                    || !(ArchiveNames.isArchive(NodePath.basename(path)) || DiskImageNames.isDiskImagePath(path))
             }
             for step in steps {
                 switch step {
@@ -919,15 +921,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                         if ArchiveNames.isArchive(NodePath.basename(target)),
                             ArchiveNames.isArchive(NodePath.basename(path)), !DiskImageNames.isDiskImagePath(target)
                         {
-                            if extracts { extractToOpen([path]) }
-                        } else if extractsOrIsNoArchive(target) {
+                            if firstPress { extractToOpen([path]) }
+                        } else if opensOnThisPress(target) {
                             openExternally(target)
                         }
                     }
                 case .openExternally(let path):
-                    if extractsOrIsNoArchive(path) { openExternally(path) }
+                    if opensOnThisPress(path) { openExternally(path) }
                 case .extract(let paths):
-                    if extracts { extractToOpen(paths) }
+                    if firstPress { extractToOpen(paths) }
                 }
             }
         }

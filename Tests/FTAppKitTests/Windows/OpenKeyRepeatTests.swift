@@ -1,4 +1,5 @@
-// Open held down on the keyboard: an archive is extracted once per press, and a folder opens as it always did
+// Open held down on the keyboard: an archive is extracted and a disk image mounted once per press, and a folder or a
+// file opens as it always did
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -54,6 +55,75 @@ extension ExplorerWindowlessTests {
             #expect(tab.writeActions?.session.activeOperationId == nil)
             #expect(try names(window).filter { $0.hasPrefix("Box") } == ["Box", "Box.zip"])
             await window.close()
+        }
+
+        // Each repeat would open the disk in another window.
+        @Test func aHeldKeyMountsADiskImageOnce() async throws {
+            let harness = try ExplorerHarness.windowless()
+            try "x".write(to: harness.folder.appending("image.dmg"), atomically: true, encoding: .utf8)
+            let tab = try await harness.open()
+            let image = try #require(tab.content.listed.first { $0.name == "image.dmg" })
+            var mounted: [String] = []
+            harness.windows.mountDiskImage = {
+                mounted.append($0)
+                return DiskImageOpenResponse(status: .handedOff)
+            }
+            var handedToMacOS: [URL] = []
+            tab.openFile = { handedToMacOS.append($0) }
+
+            tab.currentEvent = { returnKey(repeating: false) }
+            tab.open([image])
+            #expect(await waitUntil { mounted == [image.path] })
+            tab.currentEvent = { returnKey(repeating: true) }
+            for _ in 0..<3 { tab.open([image]) }
+            try? await Task.sleep(for: .milliseconds(300))
+            #expect(mounted == [image.path])
+
+            // The key let go of and pressed again opens it again.
+            tab.currentEvent = { returnKey(repeating: false) }
+            tab.open([image])
+            #expect(await waitUntil { mounted == [image.path, image.path] })
+            #expect(handedToMacOS.isEmpty)
+            await harness.close()
+        }
+
+        @Test func aHeldKeyMountsADiskImageALinkLeadsToOnce() async throws {
+            let harness = try ExplorerHarness.windowless()
+            try "x".write(to: harness.folder.appending("image.dmg"), atomically: true, encoding: .utf8)
+            try FileManager.default.createSymbolicLink(
+                at: harness.folder.appending("Link"), withDestinationURL: harness.folder.appending("image.dmg"))
+            let tab = try await harness.open()
+            let link = try #require(tab.content.listed.first { $0.name == "Link" })
+            var mounted: [String] = []
+            harness.windows.mountDiskImage = {
+                mounted.append($0)
+                return DiskImageOpenResponse(status: .handedOff)
+            }
+            let image = harness.folder.appending("image.dmg").path
+            tab.currentEvent = { returnKey(repeating: false) }
+            tab.open([link])
+            #expect(await waitUntil { mounted == [image] })
+            tab.currentEvent = { returnKey(repeating: true) }
+            for _ in 0..<3 { tab.open([link]) }
+            try? await Task.sleep(for: .milliseconds(300))
+            #expect(mounted == [image])
+            await harness.close()
+        }
+
+        // macOS is given the file on every repeat, as before: an open document or app comes to the front.
+        @Test func aHeldKeyOpensAFileAsBefore() async throws {
+            let harness = try ExplorerHarness.windowless()
+            try "x".write(to: harness.folder.appending("notes.txt"), atomically: true, encoding: .utf8)
+            let tab = try await harness.open()
+            let file = try #require(tab.content.listed.first { $0.name == "notes.txt" })
+            var handedToMacOS: [URL] = []
+            tab.openFile = { handedToMacOS.append($0) }
+            tab.currentEvent = { returnKey(repeating: false) }
+            tab.open([file])
+            tab.currentEvent = { returnKey(repeating: true) }
+            for _ in 0..<2 { tab.open([file]) }
+            #expect(handedToMacOS.map(\.path) == Array(repeating: file.path, count: 3))
+            await harness.close()
         }
 
         @Test func aHeldKeyOpensAFolderAsBefore() async throws {

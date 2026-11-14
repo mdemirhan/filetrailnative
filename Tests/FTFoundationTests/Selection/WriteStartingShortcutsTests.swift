@@ -8,6 +8,8 @@ import Testing
             "pasteSelection", "duplicateSelection", "trashSelection", "renameSelection", "moveSelection", "newFolder",
             "emptyTrash", "ejectVolume", "editPaste", "pasteAsFile", "compressSelection", "extractSelection",
             "extractSelectionTo", "convertImages", "copyToOtherPane", "moveToOtherPane", "undo", "redo",
+            // Not a write, but each repeat would open another Terminal window.
+            "openInTerminal",
         ] {
             #expect(WriteStartingShortcuts.runs(name, isRepeat: false), "\(name)")
             #expect(!WriteStartingShortcuts.runs(name, isRepeat: true), "\(name)")
