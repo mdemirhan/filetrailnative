@@ -119,7 +119,8 @@ struct FilterNarrowingTests {
                 name: beyondASCIIEvery > 0 && $0 % beyondASCIIEvery == 0
                     ? "Été \($0) holiday photo copié.jpg" : "IMG_\($0) holiday photo copy.jpg")
         }
-        let cache = FoldedNameCache()
+        // As large as a pane makes it for a list this long.
+        let cache = FoldedNameCache(limit: entries.count * 2)
         let matches = ListFilter.filterByName(entries, query: "hpc", mode: .fuzzy, cache: cache)
         #expect(matches.count == entries.count)
         let (picked, seconds) = CPUTime.measureThread {
@@ -127,6 +128,33 @@ struct FilterNarrowingTests {
         }
         #expect(picked?.name == entries[0].name)
         #expect(seconds < 2.5)
+    }
+
+    // The names the filter folded are for the list on screen: they go with the folder or the search results, and no
+    // more are kept than the list could need.
+    @Test func theNamesAFilterFoldedGoWithTheListTheyWereFor() {
+        let names = (0..<3_000).map { "R\u{E9}sum\u{E9} \($0).pdf" }
+        let content = pane(names)
+        #expect(content.foldedNames.limit == 6_000)
+        content.applyFilterKey(.type("r"))
+        #expect(content.foldedNames.count == names.count)
+        // Read again as it was, the folder keeps them.
+        content.show(
+            folder: "/f", entries: names.map { ContentModelTests.entry($0) }, selecting: nil, keepingScroll: true)
+        #expect(content.foldedNames.count == names.count)
+        content.show(
+            folder: "/g", entries: ["Caf\u{E9}.txt"].map { ContentModelTests.entry($0) }, selecting: nil,
+            keepingScroll: false)
+        #expect(content.foldedNames.count == 0)
+        #expect(content.foldedNames.limit == 1_000)
+        content.applyFilterKey(.type("c"))
+        #expect(content.foldedNames.count == 1)
+        content.showSearch(results(["R\u{E9}sum\u{E9}.pdf"]))
+        #expect(content.foldedNames.count == 0)
+        content.setSearchFilter("r")
+        #expect(content.foldedNames.count > 0)
+        content.endSearch()
+        #expect(content.foldedNames.count == 0)
     }
 
     // MARK: What a narrowing filter kept no longer stands

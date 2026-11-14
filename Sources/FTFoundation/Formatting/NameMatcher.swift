@@ -182,17 +182,31 @@ struct FoldedName: Sendable {
 }
 
 /// Names beyond ASCII folded into letters once, for a list filtered keystroke after keystroke: the first keystroke
-/// folds them and the next ones only compare. An ASCII name is compared byte by byte and isn't kept.
+/// folds them and the next ones only compare. An ASCII name is compared byte by byte and isn't kept. A name kept takes
+/// a few hundred bytes, so the cache is let go of with the list it was for, and holds no more names than `limit`.
 public final class FoldedNameCache {
     private var folded: [String: FoldedName] = [:]
-    /// Past this many names the cache starts over, so a long session of searches doesn't keep every name it saw.
-    private static let limit = 200_000
+    /// Past this many names the cache starts over. A pane sets it from the size of the list it filters, so that every
+    /// name of a large folder stays folded while it is typed over, and no more than that list's names are kept.
+    public var limit: Int
+    /// The limit of a cache made for a list of unknown size: some megabytes of names.
+    public static let standardLimit = 20_000
 
-    public init() {}
+    public init(limit: Int = FoldedNameCache.standardLimit) {
+        self.limit = limit
+    }
+
+    /// The names folded and kept.
+    public var count: Int { folded.count }
+
+    /// Lets go of every name kept, and of the room they took.
+    public func removeAll() {
+        folded = [:]
+    }
 
     func name(_ name: String) -> FoldedName {
         if let known = folded[name] { return known }
-        if folded.count >= Self.limit { folded.removeAll(keepingCapacity: true) }
+        if folded.count >= limit { folded.removeAll(keepingCapacity: true) }
         let made = FoldedName(FoldedText(name))
         folded[name] = made
         return made

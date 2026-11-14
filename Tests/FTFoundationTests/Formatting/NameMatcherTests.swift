@@ -239,3 +239,33 @@ struct NameMatcherTests {
         #expect(matcher.matches("d-o-c"))
     }
 }
+
+// The names a filter folds are kept up to a limit, and can be let go of.
+struct FoldedNameCacheTests {
+    struct Entry: ListFilterEntry {
+        var name: String
+    }
+
+    @Test func keepsNoMoreNamesThanItsLimitAndMatchesTheSameAcrossIt() {
+        let entries = (0..<2_500).map { Entry(name: "R\u{E9}sum\u{E9} \($0).pdf") }
+        let cache = FoldedNameCache(limit: 1_000)
+        for query in ["r", "re", "res", "r\u{E9}s"] {
+            let kept = ListFilter.filterByName(entries, query: query, mode: .fuzzy, cache: cache)
+            #expect(kept.count == entries.count, "\(query)")
+            #expect(cache.count <= 1_000)
+        }
+        #expect(ListFilter.filterByName(entries, query: "x", mode: .fuzzy, cache: cache).isEmpty)
+        #expect(cache.count > 0)
+        cache.removeAll()
+        #expect(cache.count == 0)
+    }
+
+    // ASCII names are compared byte by byte and not kept.
+    @Test func keepsOnlyNamesBeyondASCII() {
+        let cache = FoldedNameCache()
+        let entries = ["notes.txt", "Caf\u{E9}.txt", "Plan"].map(Entry.init)
+        _ = ListFilter.filterByName(entries, query: "e", mode: .contains, cache: cache)
+        #expect(cache.count == 1)
+        #expect(FoldedNameCache().limit == FoldedNameCache.standardLimit)
+    }
+}

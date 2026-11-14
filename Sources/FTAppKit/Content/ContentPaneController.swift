@@ -135,7 +135,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var mode: ExplorerViewMode
     private(set) var folderPath = ""
     private(set) var listed: [DirectoryEntry] = [] {
-        didSet { sourceVersion &+= 1 }
+        didSet {
+            sourceVersion &+= 1
+            // Names and, over search results, the folders they are in: no more than the list holds.
+            foldedNames.limit = max(Self.foldedNamesFloor, listed.count * 2)
+        }
     }
     private(set) var entries: [DirectoryEntry] = []
     private(set) var selection = ContentSelection.empty
@@ -218,7 +222,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var sourceVersion = 0
     /// What the filter kept last: for the text, mode and source it was made from. Text that only grows narrows these.
     private var lastFiltered: (text: String, mode: NameMatchMode, version: Int, results: [SearchResultItem]?)?
-    private let foldedNames = FoldedNameCache()
+    /// The names beyond ASCII the filter folded, for the folder or search results on screen: let go of with them.
+    let foldedNames = FoldedNameCache(limit: ContentPaneController.foldedNamesFloor)
+    private static let foldedNamesFloor = 1_000
     private(set) var search: ContentSearchContext?
     private var keptFolder: KeptFolder?
 
@@ -1326,9 +1332,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var isReadingDetails: Bool { details.isReading }
 
     /// Another folder or other search results: nothing is known of the new rows, or what `kept` knew.
+    /// Another folder or other search results: what was read of the items before goes, and the names the filter
+    /// folded with it.
     private func startDetailsOver(keeping kept: PathReadCache<EntryMetadata>? = nil) {
         details.startOver(keeping: kept)
         metadataQueue = []
+        foldedNames.removeAll()
     }
 
     func requestMetadata(for paths: [String]) {
