@@ -132,7 +132,27 @@ private enum Pictures {
         CGImageMetadataSetValueWithPath(metadata, nil, "dc:creator" as CFString, ["Mark Creator"] as CFArray)
         CGImageMetadataSetValueWithPath(metadata, nil, "xmp:CreatorTool" as CFString, "Mark Tool" as CFString)
         CGImageMetadataSetValueWithPath(metadata, nil, "xmp:Label" as CFString, "Mark Label" as CFString)
+        CGImageMetadataSetValueWithPath(metadata, nil, "xmp:Rating" as CFString, 4 as CFNumber)
         return metadata
+    }
+
+    /// A picture in each format that holds metadata, 80 by 60 on its side (orientation 6), with every kind of it and
+    /// XMP of its own, in Display P3.
+    static func marked(in folder: TemporaryDirectory) throws -> [URL] {
+        var sources: [URL] = []
+        for type in [UTType.jpeg, .png, .tiff, .heic] {
+            let url = folder.appending("marked.\(type.preferredFilenameExtension ?? "")")
+            let destination = try #require(
+                CGImageDestinationCreateWithURL(url as CFURL, type.identifier as CFString, 1, nil))
+            CGImageDestinationAddImageAndMetadata(
+                destination, image(width: 80, height: 60, space: CGColorSpace.displayP3), xmp,
+                everyMetadata as CFDictionary)
+            #expect(CGImageDestinationFinalize(destination))
+            // Each carries some of it, as its format holds.
+            #expect(try Written(Data(contentsOf: url)).everything.contains("Mark"), "\(type)")
+            sources.append(url)
+        }
+        return sources
     }
 
     static func write(
@@ -188,6 +208,13 @@ private struct Written {
         }
         return tags
     }
+    /// The XMP tag at `path` ("xmp:Rating"), as text; the first item of a list ("dc:creator").
+    func xmp(_ path: String) -> String? {
+        guard let metadata = CGImageSourceCopyMetadataAtIndex(source, 0, nil) else { return nil }
+        return CGImageMetadataCopyStringValueWithPath(metadata, nil, path as CFString) as String?
+            ?? CGImageMetadataCopyStringValueWithPath(metadata, nil, "\(path)[0]" as CFString) as String?
+    }
+    func dictionary(_ key: CFString) -> [CFString: Any] { properties[key] as? [CFString: Any] ?? [:] }
     var hasGainMap: Bool {
         CGImageSourceCopyAuxiliaryDataInfoAtIndex(source, 0, kCGImageAuxiliaryDataTypeISOGainMap) != nil
             || CGImageSourceCopyAuxiliaryDataInfoAtIndex(source, 0, kCGImageAuxiliaryDataTypeHDRGainMap) != nil
@@ -328,20 +355,7 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
     @Test func withoutMetadataNoneIsWritten() async throws {
         let folder = try TemporaryDirectory()
         defer { folder.remove() }
-        var sources: [URL] = []
-        for type in [UTType.jpeg, .png, .tiff, .heic] {
-            let url = folder.appending("marked.\(type.preferredFilenameExtension ?? "")")
-            let destination = try #require(
-                CGImageDestinationCreateWithURL(url as CFURL, type.identifier as CFString, 1, nil))
-            CGImageDestinationAddImageAndMetadata(
-                destination, Pictures.image(width: 80, height: 60, space: CGColorSpace.displayP3), Pictures.xmp,
-                Pictures.everyMetadata as CFDictionary)
-            #expect(CGImageDestinationFinalize(destination))
-            // Each carries some of it, as its format holds.
-            #expect(try Written(Data(contentsOf: url)).everything.contains("Mark"), "\(type)")
-            sources.append(url)
-        }
-        for url in sources {
+        for url in try Pictures.marked(in: folder) {
             for format in ImageFormat.allCases {
                 for size in [ImageSize.actual, .scale(50)] {
                     let label = "\(url.lastPathComponent) to \(format) \(size)"
@@ -353,6 +367,163 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
                     #expect(written.profileName == "Display P3", "\(label)")
                     let upright = try written.upright
                     #expect(upright.height > upright.width, "\(label)")
+                }
+            }
+        }
+    }
+
+    // Drawn again at a new size, a picture keeps what it keeps written as it is, in every format: the camera's tags,
+    // the location, the caption data, a PNG's text and the XMP; upright and of its new size.
+    @Test func withMetadataAPictureDrawnAgainKeepsWhatOneWrittenAsItIsKeeps() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        // What says how the pixels are stored, not what they show: written again for the new picture.
+        let storage: Set<String> = [
+            "iio:hasIIM", "iio:hasXMP", "exif:ColorSpace", "tiff:Compression", "tiff:PhotometricInterpretation",
+            "tiff:TileWidth", "tiff:TileLength",
+        ]
+        let storageKeys = Set(
+            [
+                kCGImagePropertyTIFFOrientation, kCGImagePropertyExifPixelXDimension,
+                kCGImagePropertyExifPixelYDimension, kCGImagePropertyExifColorSpace, kCGImagePropertyTIFFCompression,
+                kCGImagePropertyTIFFPhotometricInterpretation, kCGImagePropertyTIFFTileWidth,
+                kCGImagePropertyTIFFTileLength, kCGImagePropertyPNGInterlaceType,
+            ].map { $0 as String })
+        let dictionaries = [
+            kCGImagePropertyTIFFDictionary, kCGImagePropertyExifDictionary, kCGImagePropertyGPSDictionary,
+            kCGImagePropertyIPTCDictionary, kCGImagePropertyPNGDictionary,
+        ]
+        // A PNG with its text alone, as most apps write it.
+        let text = folder.appending("text.png")
+        try Pictures.write(
+            [Pictures.image(width: 80, height: 60)], as: .png, to: text,
+            properties: [
+                kCGImagePropertyOrientation: 6,
+                kCGImagePropertyPNGDictionary: [
+                    kCGImagePropertyPNGAuthor: "Text Author", kCGImagePropertyPNGCopyright: "Text Notice",
+                    kCGImagePropertyPNGDescription: "Text Description", kCGImagePropertyPNGTitle: "Text Title",
+                    kCGImagePropertyPNGComment: "Text Comment", kCGImagePropertyPNGSoftware: "Text App",
+                ],
+            ])
+        for url in try Pictures.marked(in: folder) + [text] {
+            for format in ImageFormat.allCases {
+                let asIs = try await Written(converted(url.path, ImageConversionOptions(format: format)))
+                for size in [ImageSize.scale(50), .fitWithin(40)] {
+                    let label = "\(url.lastPathComponent) to \(format) \(size)"
+                    let written = try await Written(
+                        converted(url.path, ImageConversionOptions(format: format, size: size)))
+                    let target = try #require(ImageConversion.targetSize(PixelSize(width: 60, height: 80), size))
+                    #expect(written.size == target, "\(label)")
+                    #expect(written.orientation == 1, "\(label)")
+                    let upright = try written.upright
+                    #expect(PixelSize(width: upright.width, height: upright.height) == target, "\(label)")
+                    let missing = asIs.xmpTags.subtracting(storage).subtracting(written.xmpTags)
+                    #expect(missing.isEmpty, "\(label): \(missing)")
+                    for key in dictionaries {
+                        for (name, value) in asIs.dictionary(key) where !storageKeys.contains(name as String) {
+                            let kept = written.dictionary(key)[name].map { "\($0)" }
+                            if key == kCGImagePropertyIPTCDictionary,
+                                [kCGImagePropertyIPTCDateCreated, kCGImagePropertyIPTCTimeCreated].contains(name),
+                                kept == nil
+                            {
+                                // A HEIC's date as JPEG's caption data writes it from the XMP, which keeps it.
+                                #expect(written.xmp("photoshop:DateCreated") == asIs.xmp("photoshop:DateCreated"))
+                                #expect(written.xmp("photoshop:DateCreated") != nil, "\(label)")
+                                continue
+                            }
+                            #expect(kept == "\(value)", "\(label) \(key) \(name)")
+                        }
+                    }
+                    if let width = written.dictionary(kCGImagePropertyExifDictionary)[
+                        kCGImagePropertyExifPixelXDimension]
+                    {
+                        #expect(width as? Int == target.width, "\(label)")
+                    }
+                    if let tiff = written.dictionary(kCGImagePropertyTIFFDictionary)[kCGImagePropertyTIFFOrientation] {
+                        #expect(tiff as? Int == 1, "\(label)")
+                    }
+                    let camera = written.dictionary(kCGImagePropertyTIFFDictionary)
+                    // A TIFF's own compression doesn't come with its tags.
+                    if format == .tiff {
+                        #expect(camera[kCGImagePropertyTIFFCompression] as? Int == 5, "\(label)")
+                    }
+                    if url == text {
+                        // The text, in what each format holds: its PNG text again, or the XMP that says the same.
+                        #expect(written.xmp("dc:creator") == "Text Author", "\(label)")
+                        #expect(written.xmp("dc:title") == "Text Title", "\(label)")
+                        #expect(written.xmp("dc:description") == "Text Description", "\(label)")
+                        #expect(written.xmp("dc:rights") == "Text Notice", "\(label)")
+                        if format == .png {
+                            let chunks = written.dictionary(kCGImagePropertyPNGDictionary)
+                            #expect(chunks[kCGImagePropertyPNGAuthor] as? String == "Text Author", "\(label)")
+                            #expect(chunks[kCGImagePropertyPNGTitle] as? String == "Text Title", "\(label)")
+                            #expect(
+                                chunks[kCGImagePropertyPNGDescription] as? String == "Text Description", "\(label)")
+                        }
+                        continue
+                    }
+                    // Kept whatever the formats, and the XMP of its own that only XMP says.
+                    #expect(camera[kCGImagePropertyTIFFMake] as? String == "Mark Make", "\(label)")
+                    #expect(camera[kCGImagePropertyTIFFModel] as? String == "Mark Model", "\(label)")
+                    #expect(camera[kCGImagePropertyTIFFArtist] as? String == "Mark Artist", "\(label)")
+                    #expect(written.exifDate == Pictures.exifDate, "\(label)")
+                    #expect(written.hasLocation, "\(label)")
+                    #expect(written.xmp("xmp:Rating") == "4", "\(label)")
+                    #expect(written.xmp("xmp:Label") == "Mark Label", "\(label)")
+                    #expect(written.xmp("dc:creator") == "Mark Artist", "\(label)")
+                    if format == .png, url.pathExtension == "png" {
+                        let chunks = written.dictionary(kCGImagePropertyPNGDictionary)
+                        #expect(chunks[kCGImagePropertyPNGTitle] as? String == "Mark Title", "\(label)")
+                        #expect(chunks[kCGImagePropertyPNGDescription] as? String == "Mark Description", "\(label)")
+                    }
+                }
+            }
+        }
+    }
+
+    // Drawn again with its metadata, a picture is still written at the quality asked for.
+    @Test func withMetadataAPictureDrawnAgainKeepsItsQuality() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let path = try photo(folder, width: 800, height: 600)
+        for format in [ImageFormat.jpeg, .heic] {
+            let low = try await converted(path, ImageConversionOptions(format: format, quality: 0.1, size: .scale(50)))
+            let high = try await converted(
+                path, ImageConversionOptions(format: format, quality: 0.95, size: .scale(50)))
+            #expect(low.count < high.count, "\(format) \(low.count) \(high.count)")
+            #expect(try Written(low).exifDate == Pictures.exifDate, "\(format)")
+        }
+    }
+
+    // Without the location, the GPS position and the place names go, from the caption data and from the XMP that
+    // says the same, whether the picture is written as it is or drawn again; the rest stays.
+    @Test func withoutTheLocationItGoesInEveryFormat() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let names: [CFString] = [
+            kCGImagePropertyIPTCCity, kCGImagePropertyIPTCProvinceState,
+            kCGImagePropertyIPTCCountryPrimaryLocationName, kCGImagePropertyIPTCCountryPrimaryLocationCode,
+            kCGImagePropertyIPTCSubLocation,
+        ]
+        let xmpNames: Set<String> = [
+            "photoshop:City", "photoshop:State", "photoshop:Country", "Iptc4xmpCore:Location",
+            "Iptc4xmpCore:CountryCode",
+        ]
+        for url in try Pictures.marked(in: folder) {
+            for format in ImageFormat.allCases {
+                for size in [ImageSize.actual, .scale(50)] {
+                    let label = "\(url.lastPathComponent) to \(format) \(size)"
+                    let written = try await Written(
+                        converted(url.path, ImageConversionOptions(format: format, size: size, removeLocation: true)))
+                    #expect(!written.hasLocation, "\(label)")
+                    for name in names { #expect(written.caption[name] == nil, "\(label) \(name)") }
+                    #expect(written.xmpTags.isDisjoint(with: xmpNames), "\(label) \(written.xmpTags)")
+                    #expect(!written.xmpTags.contains { $0.hasPrefix("exif:GPS") }, "\(label) \(written.xmpTags)")
+                    #expect(!written.everything.contains("Mark City"), "\(label)")
+                    let camera = written.dictionary(kCGImagePropertyTIFFDictionary)
+                    #expect(camera[kCGImagePropertyTIFFMake] as? String == "Mark Make", "\(label)")
+                    #expect(written.exifDate == Pictures.exifDate, "\(label)")
+                    #expect(written.xmp("xmp:Rating") == "4", "\(label)")
                 }
             }
         }

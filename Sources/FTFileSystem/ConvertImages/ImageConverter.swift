@@ -62,11 +62,14 @@ public enum ImageConverter {
 
         if redraw {
             let image = try picture(source, header, upright: upright, target: target, hdr: hdr)
-            properties.merge(metadata(header.properties, options, newSize: target)) { _, new in new }
             properties[kCGImagePropertyOrientation] = 1
             if hdr { properties[kCGImageDestinationEncodeRequest] = kCGImageDestinationEncodeToISOGainmap }
-            if format == .tiff { properties[kCGImagePropertyTIFFDictionary] = tiffDictionary(properties) }
-            CGImageDestinationAddImage(destination, image, properties as CFDictionary)
+            if format == .tiff { properties[kCGImagePropertyTIFFDictionary] = tiffDictionary([:]) }
+            if let metadata = metadata(source, header.index, options, newSize: target) {
+                CGImageDestinationAddImageAndMetadata(destination, image, metadata, properties as CFDictionary)
+            } else {
+                CGImageDestinationAddImage(destination, image, properties as CFDictionary)
+            }
         } else if options.keepMetadata {
             // The picture as it is, its metadata, orientation and color profile with it.
             properties.merge(removedLocation(options)) { _, new in new }
@@ -189,11 +192,13 @@ public enum ImageConverter {
 
     // MARK: Metadata
 
-    /// The dictionaries that hold the camera's metadata, which a picture drawn again keeps from its source.
-    private static var metadataKeys: [CFString] {
+    /// The tags that say how the source's own pixels are stored, which a picture drawn again doesn't keep: ImageIO
+    /// writes its own (a TIFF's compression among them, which `tiffDictionary` asks for).
+    private static var storageTags: [String] {
         [
-            kCGImagePropertyExifDictionary, kCGImagePropertyExifAuxDictionary, kCGImagePropertyGPSDictionary,
-            kCGImagePropertyIPTCDictionary, kCGImagePropertyTIFFDictionary, kCGImagePropertyMakerAppleDictionary,
+            "tiff:ImageWidth", "tiff:ImageLength", "tiff:TileWidth", "tiff:TileLength", "tiff:Compression",
+            "tiff:PhotometricInterpretation", "tiff:BitsPerSample", "tiff:SamplesPerPixel", "tiff:PlanarConfiguration",
+            "tiff:YCbCrSubSampling", "tiff:YCbCrPositioning", "exif:ColorSpace",
         ]
     }
 
@@ -221,29 +226,49 @@ public enum ImageConverter {
         return removed
     }
 
-    /// For a picture drawn again: the metadata to write with it, now upright and of its new size.
+    /// For a picture drawn again: the source's metadata, now upright and of its new size, and without the location
+    /// when it goes. It is read as XMP, which holds every kind ImageIO reads (the camera's, the caption data, a PNG's
+    /// text, the XMP of its own), as the picture written as it is keeps them; nil when there is none to keep.
     private static func metadata(
-        _ source: [CFString: Any], _ options: ImageConversionOptions, newSize: PixelSize
-    ) -> [CFString: Any] {
-        guard options.keepMetadata else { return [:] }
-        var kept: [CFString: Any] = [:]
-        for key in metadataKeys where !(key == kCGImagePropertyGPSDictionary && options.removeLocation) {
-            if let value = source[key] { kept[key] = value }
+        _ source: CGImageSource, _ index: Int, _ options: ImageConversionOptions, newSize: PixelSize
+    ) -> CGImageMetadata? {
+        guard options.keepMetadata, let read = CGImageSourceCopyMetadataAtIndex(source, index, nil),
+            let metadata = CGImageMetadataCreateMutableCopy(read)
+        else { return nil }
+        var removed = storageTags
+        if options.removeLocation {
+            // The GPS position, and the place names where ImageIO keeps the caption data's in the XMP.
+            CGImageMetadataEnumerateTagsUsingBlock(metadata, nil, nil) { path, tag in
+                if CGImageMetadataTagCopyNamespace(tag) as String? == kCGImageMetadataNamespaceExif as String,
+                    (CGImageMetadataTagCopyName(tag) as String?)?.hasPrefix("GPS") == true
+                {
+                    removed.append(path as String)
+                }
+                return true
+            }
+            for key in locationNameKeys {
+                guard
+                    let tag = CGImageMetadataCopyTagMatchingImageProperty(
+                        metadata, kCGImagePropertyIPTCDictionary, key),
+                    let prefix = CGImageMetadataTagCopyPrefix(tag), let name = CGImageMetadataTagCopyName(tag)
+                else { continue }
+                removed.append("\(prefix):\(name)")
+            }
         }
-        if options.removeLocation, var caption = kept[kCGImagePropertyIPTCDictionary] as? [CFString: Any] {
-            for key in locationNameKeys { caption[key] = nil }
-            kept[kCGImagePropertyIPTCDictionary] = caption.isEmpty ? nil : caption
+        for path in removed { CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString) }
+        CGImageMetadataSetValueMatchingImageProperty(
+            metadata, kCGImagePropertyTIFFDictionary, kCGImagePropertyTIFFOrientation, 1 as CFNumber)
+        if CGImageMetadataCopyTagMatchingImageProperty(
+            metadata, kCGImagePropertyExifDictionary, kCGImagePropertyExifPixelXDimension) != nil
+        {
+            CGImageMetadataSetValueMatchingImageProperty(
+                metadata, kCGImagePropertyExifDictionary, kCGImagePropertyExifPixelXDimension,
+                newSize.width as CFNumber)
+            CGImageMetadataSetValueMatchingImageProperty(
+                metadata, kCGImagePropertyExifDictionary, kCGImagePropertyExifPixelYDimension,
+                newSize.height as CFNumber)
         }
-        if var exif = kept[kCGImagePropertyExifDictionary] as? [CFString: Any] {
-            exif[kCGImagePropertyExifPixelXDimension] = newSize.width
-            exif[kCGImagePropertyExifPixelYDimension] = newSize.height
-            kept[kCGImagePropertyExifDictionary] = exif
-        }
-        if var tiff = kept[kCGImagePropertyTIFFDictionary] as? [CFString: Any] {
-            tiff[kCGImagePropertyTIFFOrientation] = 1
-            kept[kCGImagePropertyTIFFDictionary] = tiff
-        }
-        return kept
+        return metadata
     }
 
     /// A TIFF's own dictionary, compressed with LZW: uncompressed, a photo is about 3 bytes a pixel.
