@@ -1,5 +1,6 @@
 import AppKit
 import Darwin
+import FTFoundation
 import QuickLookThumbnailing
 import UniformTypeIdentifiers
 import os
@@ -69,7 +70,8 @@ public struct FileThumbnailService: ThumbnailProviding {
     }
 
     public func response(path: String, size: Int, knownVersion: String?) async -> ThumbnailResponse {
-        guard let version = version(path) else {
+        let version = self.version
+        guard let version = await BlockingWork.run({ version(path) }) else {
             return ThumbnailResponse(version: nil, unchanged: false, picture: nil)
         }
         if knownVersion == version {
@@ -158,13 +160,18 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     public func renderThumbnail(path: String, size: Int) async -> ThumbnailPicture? {
         let side = min(max(size, 16), 8192)
         let url = URL(fileURLWithPath: path)
-        let showsPicture = Self.showsPicture(url)
+        // The file is read outside Swift's shared pool, as its disk may have stopped answering; Quick Look answers in
+        // its own time.
+        let (showsPicture, imagePixels) = await BlockingWork.run {
+            let showsPicture = Self.showsPicture(url)
+            return (showsPicture, showsPicture ? Self.imagePixels(url, side: side) : nil)
+        }
         var image: CGImage?
-        if showsPicture, let pixels = Self.imagePixels(url, side: side) {
+        if let pixels = imagePixels {
             image = await Self.imagePicture(
                 side: side, pixels: pixels, limits: Self.pictureLimits,
                 request: { await Self.quickLookImage(url, side: $0, iconMode: false) },
-                decode: { Self.decodedImage(url, side: side) })
+                decode: { await BlockingWork.run { Self.decodedImage(url, side: side) } })
         }
         if image == nil, !Task.isCancelled {
             image = await Self.largestPicture(
@@ -237,7 +244,8 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     /// size and Quick Look gives the same file's picture at `alwaysGivenSide`: refused there too, it was refused for
     /// something else (Quick Look busy, a kind of image it does not read), which says nothing of other images.
     static func imagePicture(
-        side: Int, pixels: Int, limits: QuickLookLimits, request: (Int) async -> CGImage?, decode: () -> CGImage?
+        side: Int, pixels: Int, limits: QuickLookLimits, request: (Int) async -> CGImage?,
+        decode: () async -> CGImage?
     ) async -> CGImage? {
         if pixels < limits.refused {
             if let image = await request(side) {
@@ -252,7 +260,7 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
             }
         }
         guard !Task.isCancelled else { return nil }
-        return decode()
+        return await decode()
     }
 
     /// The pixels the image file's picture has when it fits in a square of `side`, never larger than the image

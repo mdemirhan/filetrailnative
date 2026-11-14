@@ -1,9 +1,11 @@
 import AppKit
+import FTFoundation
 import QuickLookThumbnailing
 import UniformTypeIdentifiers
 
 /// Draws the icon macOS has for a path.
 public protocol IconSource: Sendable {
+    /// Reads the item, which may wait on its disk: the store calls it as `BlockingWork`.
     func icon(atPath path: String) -> NSImage?
     /// The icon of a folder as Finder draws it.
     func folderIcon(atPath path: String) async -> NSImage?
@@ -14,7 +16,7 @@ public protocol IconSource: Sendable {
 
 extension IconSource {
     public func folderIcon(atPath path: String) async -> NSImage? {
-        icon(atPath: path)
+        await BlockingWork.run { icon(atPath: path) }
     }
 
     public func typeIcon(forExtension fileExtension: String) -> NSImage? { nil }
@@ -42,7 +44,7 @@ public struct WorkspaceIconSource: IconSource {
             fileAt: URL(fileURLWithPath: path), size: CGSize(width: side, height: side), scale: 2,
             representationTypes: .icon)
         guard let representation = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
-        else { return icon(atPath: path) }
+        else { return await BlockingWork.run { icon(atPath: path) } }
         return NSImage(cgImage: representation.cgImage, size: NSSize(width: side, height: side))
     }
 }
@@ -173,9 +175,7 @@ public final class FileIconStore {
         fetchCount += 1
         let id = fetchCount
         let task = Task { [weak self] () -> NSImage? in
-            let image = await Task.detached(priority: .userInitiated) {
-                await Self.draw(request, source: source, samples: samples)
-            }.value
+            let image = await Self.draw(request, source: source, samples: samples)
             self?.finish(request.cacheKey, image, id: id)
             return image
         }
@@ -190,25 +190,37 @@ public final class FileIconStore {
         cache.write(image, for: cacheKey)
     }
 
-    /// The generic kinds are drawn from sample items; a sample that can't be made gives no icon.
+    /// The generic kinds are drawn from sample items; a sample that can't be made gives no icon. A folder's is asked of
+    /// Quick Look, which answers in its own time; the rest read the disk, as `BlockingWork`, so an item whose disk
+    /// stopped answering holds up no task but its own.
     private nonisolated static func draw(_ request: IconRequest, source: any IconSource, samples: IconSamples) async
         -> NSImage?
     {
-        if let tint = request.tint {
-            let plain: GenericIconKind = request.isEmptyFolder ? .emptyFolder : .folder
-            guard
-                let sample = (try? samples.path(forTint: tint, isEmpty: request.isEmptyFolder))
-                    ?? (try? samples.path(for: plain))
-            else { return nil }
-            return await source.folderIcon(atPath: sample)
+        enum Drawing: Sendable {
+            case drawn(NSImage?)
+            case folder(String)
         }
-        guard let kind = request.generic else {
-            return request.isFolder ? await source.folderIcon(atPath: request.path) : source.icon(atPath: request.path)
+        let drawing = await BlockingWork.run { () -> Drawing in
+            if let tint = request.tint {
+                let plain: GenericIconKind = request.isEmptyFolder ? .emptyFolder : .folder
+                guard
+                    let sample = (try? samples.path(forTint: tint, isEmpty: request.isEmptyFolder))
+                        ?? (try? samples.path(for: plain))
+                else { return .drawn(nil) }
+                return .folder(sample)
+            }
+            guard let kind = request.generic else {
+                return request.isFolder ? .folder(request.path) : .drawn(source.icon(atPath: request.path))
+            }
+            guard let path = try? samples.path(for: kind) else { return .drawn(nil) }
+            switch kind {
+            case .folder, .emptyFolder: return .folder(path)
+            case .file, .executable: return .drawn(source.icon(atPath: path))
+            }
         }
-        guard let path = try? samples.path(for: kind) else { return nil }
-        switch kind {
-        case .folder, .emptyFolder: return await source.folderIcon(atPath: path)
-        case .file, .executable: return source.icon(atPath: path)
+        switch drawing {
+        case .drawn(let image): return image
+        case .folder(let path): return await source.folderIcon(atPath: path)
         }
     }
 }
