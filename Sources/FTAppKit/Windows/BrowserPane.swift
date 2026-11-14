@@ -451,7 +451,7 @@ final class BrowserPane {
                 folder: url.path, entries: snapshot.entries, selecting: nil, keepingScroll: true,
                 changedPaths: changedPaths)
             writeEndShown(in: url.path)
-            tab.notify(.folder)
+            tab.paneFolderChanged(self)
         case .failure(let error):
             if FolderReadFailure.isGone(error) {
                 await openNearestExistingFolder(above: url.path)
@@ -784,7 +784,7 @@ final class BrowserPane {
         updatePathBar()
         // A write's end waiting for this folder shows now; one that waited for the folder just left never will.
         if opensWithError { dropWriteEndRead() } else { writeEndShown(in: shown.path) }
-        tab.notify(.folder)
+        tab.paneFolderChanged(self)
         window?.contentView?.layoutSubtreeIfNeeded()
         if let carried { content.pane?.scrollPosition = (carried.contentScroll.y, carried.contentScroll.x) }
         if isFirstFolder { finishCarrying(carried) }

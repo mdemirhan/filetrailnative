@@ -27,7 +27,12 @@ struct ExplorerViewState: Equatable, Sendable {
 
 /// What changed in a window, for the panes that show it.
 enum ExplorerWindowChange: Equatable, Sendable {
+    /// The active pane's folder opened or was read again in place.
     case folder
+    /// The folder of the pane that isn't active opened or was read again. What follows the active pane (the toolbar's
+    /// folder and history, the Info panel and Info Row) doesn't hear of it; the tree's marks and the commands that
+    /// read the other pane's folder do.
+    case otherPaneFolder
     case history
     case selection
     case focusedPane

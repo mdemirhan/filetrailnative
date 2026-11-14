@@ -19,7 +19,7 @@ final class InfoController {
     private(set) var targetOverride: String?
     private var seenSelection = ContentSelection.empty
     // Properties: what is asked for and shown (`InfoPropertiesLoad`), and the wait before asking.
-    private var propertiesLoad = InfoPropertiesLoad(recentLimit: InfoMetrics.propertiesCacheLimit)
+    private(set) var propertiesLoad = InfoPropertiesLoad(recentLimit: InfoMetrics.propertiesCacheLimit)
     private var fetchTimer: DispatchWorkItem?
     private var properties: InfoItem? { propertiesLoad.shown }
     private var loading: Bool { propertiesLoad.isLoading }

@@ -245,6 +245,12 @@ extension MainWindowController {
 
     // MARK: The active pane
 
+    /// `pane`'s folder opened or was read again in place. The other pane's is told apart, so that what follows the
+    /// active pane keeps what it shows: Show Info's item stays, and the active item isn't read again.
+    func paneFolderChanged(_ pane: BrowserPane) {
+        notify(pane === activePane ? .folder : .otherPaneFolder)
+    }
+
     /// Makes `pane` the active one: the toolbar, the tree, the Info panel and the commands follow it.
     func activate(_ pane: BrowserPane) {
         guard let index = panes.firstIndex(where: { $0 === pane }), index != activePaneIndex else { return }
