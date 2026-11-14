@@ -246,6 +246,69 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         }
     }
 
+    // The same over the names fd's regular expressions (Rust's) take otherwise than the system's: each name stored as
+    // written, several spellings of one letter side by side, each a name of its own by the number it starts with (the
+    // disk takes two spellings of one name as the same name).
+    @Test(.enabled(if: hasFd))
+    func plainTextFindsWhatTheListFilterFindsHoweverANameIsSpelled() throws {
+        struct Entry: ListFilterEntry { var name: String }
+        let spellings = [
+            // Accents composed and decomposed, and marks in another order or partly composed (all of them "ậ").
+            "Caf\u{E9}", "Cafe\u{301}", "CAF\u{C9}", "cafe", "\u{1EAD}", "a\u{323}\u{302}", "a\u{302}\u{323}",
+            "\u{1EA1}\u{302}", "\u{E2}\u{323}", "A\u{323}\u{302}", "Vi\u{1EC7}t", "Vie\u{323}\u{302}t",
+            "Vie\u{302}\u{323}t", "Vi\u{1EBF}t", "Vie\u{301}\u{302}t", "e\u{341}t\u{E9}",
+            // Kana with and without their marks composed, Hangul as syllables, jamo, or a syllable and a jamo.
+            "\u{304C}\u{304F}", "\u{304B}\u{3099}\u{304F}", "\u{304B}\u{304F}", "\u{30D1}\u{30EA}",
+            "\u{30CF}\u{309A}\u{30EA}", "\u{D55C}\u{AE00}", "\u{1112}\u{1161}\u{11AB}\u{1100}\u{1173}\u{11AF}",
+            "\u{D558}\u{11AB}\u{AE00}", "\u{1112}\u{1161}", "\u{D558}",
+            // Case: ß and ss, dotted and dotless i, the long s, the final sigma, the Kelvin sign.
+            "Stra\u{DF}e", "STRASSE", "GRO\u{1E9E}", "\u{130}stanbul", "i\u{307}stanbul", "Istanbul",
+            "\u{131}s\u{131}k", "\u{17F}un", "SUN", "\u{3BB}\u{3CC}\u{3B3}\u{3BF}\u{3C2}",
+            "\u{39B}\u{39F}\u{393}\u{39F}\u{3A3}",
+            "\u{3BB}\u{3BF}\u{301}\u{3B3}\u{3BF}\u{3C2}", "\u{3BB}\u{1F79}\u{3B3}\u{3BF}\u{3C3}", "\u{3B9}\u{344}",
+            "\u{390}", "\u{212A}elvin",
+            // Ligatures, full-width letters, and characters stored as another: a compatibility ideograph, a Hebrew and
+            // a Devanagari letter written as one character with their mark.
+            "\u{FB01}le", "o\u{FB03}ce", "\u{FB01}\u{301}x", "\u{FF21}\u{FF22}\u{FF23}\u{FF11}", "\u{FF41}bc",
+            "\u{F900}", "\u{8C48}", "\u{FB2E}", "\u{5D0}\u{5B7}", "\u{958}", "\u{915}\u{93C}",
+        ]
+        let names = spellings.enumerated().map { "\($0.offset + 10) \($0.element)" }
+        let queries = [
+            "cafe", "caf\u{E9}", "CAF\u{C9}", "cafe\u{301}", "e", "\u{E9}", "\u{1EAD}", "a\u{302}\u{323}", "a",
+            "\u{1EA1}", "\u{E2}", "vi\u{1EC7}t", "viet", "vi\u{EA}t", "vi\u{1EBF}t", "\u{E9}\u{302}", "\u{E9}t\u{E9}",
+            "\u{304C}", "\u{304B}", "\u{304C}\u{304F}", "\u{304B}\u{3099}", "\u{30D1}", "\u{30CF}", "\u{D55C}",
+            "\u{D558}", "\u{D55C}\u{AE00}", "\u{1112}\u{1161}\u{11AB}", "\u{AE00}", "\u{1112}", "ss", "\u{DF}",
+            "\u{1E9E}", "strasse", "stra\u{DF}e", "\u{130}", "\u{131}", "i", "istanbul", "\u{17F}", "s", "sun",
+            "\u{3C3}", "\u{3C2}", "\u{3BB}\u{3BF}\u{3B3}\u{3BF}\u{3C2}", "\u{3BB}\u{3CC}\u{3B3}\u{3BF}\u{3C2}",
+            "\u{3CC}", "\u{390}", "\u{3B9}", "k", "kelvin", "\u{FB01}", "fi", "file", "ffic", "\u{FF41}", "abc",
+            "\u{FF21}\u{FF22}\u{FF23}", "1", "\u{8C48}", "\u{F900}", "\u{5D0}", "\u{FB2E}", "\u{915}", "\u{958}",
+        ]
+        let runtime = try makeRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            for name in names {
+                // Spelled exactly: Foundation would store some of these decomposed.
+                let descriptor = open(folder.path + "/" + name, O_WRONLY | O_CREAT | O_EXCL, 0o644)
+                #expect(descriptor >= 0, "\(Array(name.unicodeScalars))")
+                close(descriptor)
+            }
+            let entries = names.map(Entry.init)
+            var found = 0
+            for query in queries {
+                let (_, items) = try runToEnd(
+                    runtime, SearchRequest(rootPath: folder.path, query: query, patternMode: .text))
+                let filtered = ListFilter.filterByName(entries, query: query, mode: .contains).map(\.name)
+                found += filtered.count
+                let missing = Set(filtered).subtracting(items.map(\.name)).map { Array($0.unicodeScalars) }
+                let extra = Set(items.map(\.name)).subtracting(filtered).map { Array($0.unicodeScalars) }
+                #expect(
+                    missing.isEmpty && extra.isEmpty,
+                    "\(Array(query.unicodeScalars)): missing \(missing), extra \(extra)")
+            }
+            #expect(found > 200)
+        }
+    }
+
     @Test(.enabled(if: hasFd))
     func findsEveryResultOfARealSearch() throws {
         let runtime = try makeRuntime()

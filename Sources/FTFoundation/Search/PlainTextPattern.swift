@@ -8,9 +8,8 @@ import Foundation
 public enum PlainTextPattern {
     /// The pattern for `text`: case ignored; each plain character (a letter, a digit, a sign) as the class of its
     /// accented and full-width forms, followed by any marks a name keeps apart from it; each accented letter as
-    /// itself. Either is found composed or decomposed, in any script: "が" also as "か" and its mark, a Hangul syllable
-    /// also as its jamo. Where the letters typed are those of a ligature ("fi"), the ligature is found in their place
-    /// too.
+    /// itself. Either is found however a name spells it: composed, decomposed, partly composed or with its marks in
+    /// another order. Where the letters typed are those of a ligature ("fi"), the ligature is found in their place too.
     public static func regex(for text: String) -> String {
         var tokens: [Token] = []
         for character in text {
@@ -125,12 +124,71 @@ public enum PlainTextPattern {
         return others.isEmpty ? pattern : "(?:" + ([pattern] + others).joined(separator: "|") + ")"
     }
 
-    /// The other ways a name can spell `scalar`, a composed character, as patterns: decomposed, which the matcher
-    /// composes back into it ("か" and its mark for "が", a Hangul syllable's jamo).
+    /// The other ways a name can spell `scalar`, a composed character, as patterns: decomposed, partly composed, or
+    /// with its marks in another order, all of which the matcher composes back into it ("か" and its mark for "が", "ậ"
+    /// as "ạ" and a circumflex). A Hangul syllable is also its jamo.
     private static func otherSpellings(of scalar: Unicode.Scalar) -> [String] {
-        // Compared scalar by scalar: Swift's `==` takes the two spellings as equal.
         let decomposed = String(scalar).decomposedStringWithCanonicalMapping
-        return decomposed.unicodeScalars.elementsEqual([scalar]) ? [] : [escaped(decomposed)]
+        let parts = Array(decomposed.unicodeScalars)
+        guard parts.count > 1 else { return [] }
+        guard parts.dropFirst().allSatisfy(isMark) else { return [escaped(decomposed)] }
+        let marks = parts.dropFirst().map(\.value)
+        var ways: [String] = []
+        // The letter alone, or composed with some of the marks; the rest after it, in any order.
+        let leads = [(parts[0], [UInt32]())] + (composedForms[parts[0].value] ?? [])
+        for (lead, own) in leads where lead != scalar {
+            var rest = marks
+            let held = own.allSatisfy { mark in
+                guard let at = rest.firstIndex(of: mark) else { return false }
+                rest.remove(at: at)
+                return true
+            }
+            if held { ways.append(escaped(String(lead)) + anyOrder(rest)) }
+        }
+        return ways
+    }
+
+    /// `marks` after a letter, in any order, each also as a character that stands for it (U+0341 for U+0301): as many
+    /// as there are, or one fewer where U+0344 stands for two.
+    private static func anyOrder(_ marks: [UInt32]) -> String {
+        guard !marks.isEmpty else { return "" }
+        var members = Set(marks)
+        for (standIn, stoodFor) in markStandIns where stoodFor.allSatisfy(members.contains) {
+            members.insert(standIn)
+        }
+        let body = members.sorted().map(escapedInClass).joined()
+        let one = members.count == 1 ? body : "[" + body + "]"
+        let fewest = members.contains(0x344) ? marks.count - 1 : marks.count
+        if fewest == marks.count {
+            return marks.count == 1 ? one : one + "{\(marks.count)}"
+        }
+        return one + "{\(fewest),\(marks.count)}"
+    }
+
+    /// Marks written as one character that the matcher reads as others: the tone marks as the accents, the Greek
+    /// dialytika tonos as a diaeresis and an acute.
+    private static let markStandIns: [(UInt32, [UInt32])] = [
+        (0x340, [0x300]), (0x341, [0x301]), (0x343, [0x313]), (0x344, [0x308, 0x301]),
+    ]
+
+    /// For each letter, the composed letters made of it and marks, with their marks: "ạ" with U+0323 for "a". Latin,
+    /// Greek and Cyrillic, lowercase alone, as the pattern ignores case.
+    private static let composedForms: [UInt32: [(Unicode.Scalar, [UInt32])]] = {
+        var forms: [UInt32: [(Unicode.Scalar, [UInt32])]] = [:]
+        for value in [0xC0...0x24F, 0x370...0x52F, 0x1E00...0x1FFF].joined() {
+            guard let scalar = Unicode.Scalar(value), !scalar.properties.changesWhenCaseFolded else { continue }
+            let parts = Array(String(scalar).decomposedStringWithCanonicalMapping.unicodeScalars)
+            guard parts.count > 1, parts.dropFirst().allSatisfy(isMark) else { continue }
+            forms[parts[0].value, default: []].append((scalar, parts.dropFirst().map(\.value)))
+        }
+        return forms
+    }()
+
+    private static func isMark(_ scalar: Unicode.Scalar) -> Bool {
+        switch scalar.properties.generalCategory {
+        case .nonspacingMark, .spacingMark, .enclosingMark: true
+        default: false
+        }
     }
 
     /// Any marks a name keeps apart from the character before them.
@@ -163,11 +221,15 @@ public enum PlainTextPattern {
     }
 
     /// For each plain character, the composed letters (either case) that fold to it with an accent, and its full-width
-    /// form: "é", "É", "ê" and the rest for "e". Latin, Greek and Cyrillic, as `FoldedText` takes accents off those
-    /// alone.
+    /// form: "é", "É", "ê" and the rest for "e", as `FoldedText` takes accents off Latin, Greek and Cyrillic letters
+    /// alone. Also the characters a name may store that the matcher reads as another: a compatibility ideograph as
+    /// its ideograph, the Kelvin sign as "k", a Hebrew or Indic letter stored as one character with its mark.
     private static let accentedForms: [UInt32: String] = {
         var forms: [UInt32: String] = [:]
-        let ranges: [ClosedRange<UInt32>] = [0xC0...0x24F, 0x370...0x52F, 0x1E00...0x1FFF, FoldedText.fullWidth]
+        let ranges: [ClosedRange<UInt32>] = [
+            0xC0...0x24F, 0x370...0x52F, 0x900...0xFFF, 0x1E00...0x1FFF, 0x2126...0x212B, 0xF900...0xFAFF,
+            0xFB1D...0xFB4F, FoldedText.fullWidth, 0x2F800...0x2FA1F,
+        ]
         for value in ranges.joined() {
             guard let scalar = Unicode.Scalar(value) else { continue }
             let letters = FoldedText(String(scalar)).letters
