@@ -64,7 +64,7 @@ struct TooltipsTests {
         let expected: [String: String] = [
             "back": "Back (⌘[)", "forward": "Forward (⌘])", "up": "Enclosing Folder (⌘↑)",
             "refresh": "Refresh (⌘R)", "goToFolder": "Go To (⌘K)", "newTab": "New Tab (⌘T)",
-            "openSelection": "Open (⌘O)", "quickLook": "Quick Look (Space)",
+            "openSelection": "Open (⌘O)", "quickLook": "Quick Look (⌘Y)",
             "editSelection": "Edit in Text Editor (⇧⌘E)", "moveSelection": "Move To (⇧⌘M)",
             "renameSelection": "Rename (↩)", "duplicateSelection": "Duplicate (⌘D)",
             "newFolder": "New Folder (⇧⌘N)", "trashSelection": "Move to Trash (⌘⌫)", "copySelection": "Copy (⌘C)",

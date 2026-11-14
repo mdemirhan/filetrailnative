@@ -122,20 +122,21 @@ import Testing
         #expect(notes(view) == ["Space on its own types into the file list. Add ⌘ or ⌃."])
         #expect(place.isRecording)
         // Quick Look can have Space back, its own default, though no other command can have it.
-        let quickLook = try slot(.quickLookSelection, 0, in: view)
+        // Space is its second key, after ⌘Y.
+        let quickLook = try slot(.quickLookSelection, 1, in: view)
         controller.window?.makeFirstResponder(quickLook)
         quickLook.keyDown(with: Kit.key(Kit.backspace.0, code: Kit.backspace.1, window: controller.window))
-        #expect(try slot(.quickLookSelection, 0, in: view).stringValue == "+")
-        try slot(.quickLookSelection, 0, in: view).perform()
+        #expect(try slot(.quickLookSelection, 1, in: view).stringValue == "+")
+        try slot(.quickLookSelection, 1, in: view).perform()
         press(Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window), in: controller)
-        #expect(try slot(.quickLookSelection, 0, in: view).stringValue == "Space")
+        #expect(try slot(.quickLookSelection, 1, in: view).stringValue == "Space")
         #expect(notes(view).isEmpty)
     }
 
     // A key the command has already, in either place, ends the recording with no change and no note.
     @Test func aKeyTheCommandAlreadyHasEndsTheRecordingWithNoChange() throws {
         let (controller, recorder, view) = try make()
-        // Quick Look's Space and New Folder's ⌘⇧N are their main keys: from the alternate place the key is its own.
+        // New Folder's ⌘⇧N is its main key: from the alternate place the key is its own.
         let place = try slot(.newFolder, 1, in: view)
         place.perform()
         #expect(place.isRecording)

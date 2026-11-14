@@ -100,7 +100,7 @@ import Testing
             ("File", "Open in New Tab", nil, .openSelectionInNewTab),
             ("File", "Open in New Window", nil, .openSelectionInNewWindow),
             ("File", "Edit in Text Editor", "Command+Shift+E", .editSelection),
-            ("File", "Quick Look", nil, .quickLookSelection),
+            ("File", "Quick Look", "Command+Y", .quickLookSelection),
             ("File", "Reveal in Folder", nil, .revealInFolder),
             ("File", "Calculate Size", nil, .calculateSize),
             // Space and F2 work from the window itself: as menu shortcuts they would be taken from text fields and

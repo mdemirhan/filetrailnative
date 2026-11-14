@@ -191,7 +191,7 @@ extension ShortcutCommands {
             id: .editSelection, label: "Edit in Text Editor", group: .files, defaults: ["Cmd+Shift+E"],
             menuPath: "File > Edit in Text Editor"),
         ShortcutCommandDefinition(
-            id: .quickLookSelection, label: "Quick Look", group: .files, defaults: ["Space"],
+            id: .quickLookSelection, label: "Quick Look", group: .files, defaults: ["Cmd+Y", "Space"],
             menuPath: "File > Quick Look"),
         ShortcutCommandDefinition(
             id: .calculateSize, label: "Calculate Size", group: .files, defaults: [], menuPath: "File > Calculate Size"),

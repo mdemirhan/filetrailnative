@@ -7294,6 +7294,9 @@
             "newTab": [
               "Cmd+Y",
               "Cmd+U"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 5,
@@ -13103,7 +13106,10 @@
             "goForward": [
               "Cmd+Y"
             ],
-            "refreshOrApplySearchSort": []
+            "refreshOrApplySearchSort": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 50,
           "includeHidden": false,
@@ -14780,6 +14786,9 @@
           "shortcutOverrides": {
             "refreshOrApplySearchSort": [
               "Cmd+Y"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 11,
@@ -18969,6 +18978,9 @@
           "shortcutOverrides": {
             "newTab": [
               "Cmd+Y"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 50,
@@ -19992,7 +20004,10 @@
               "F5"
             ],
             "refreshOrApplySearchSort": [],
-            "newTab": []
+            "newTab": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 1,
           "includeHidden": true,
@@ -23356,6 +23371,9 @@
           "shortcutOverrides": {
             "newTab": [
               "Cmd+Y"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 7,
@@ -25231,6 +25249,9 @@
             "goBack": [],
             "refreshOrApplySearchSort": [
               "Cmd+Y"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 1,
@@ -31494,7 +31515,10 @@
             "goBack": [
               "Cmd+Y"
             ],
-            "refreshOrApplySearchSort": []
+            "refreshOrApplySearchSort": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 1,
           "includeHidden": true,
@@ -34724,6 +34748,9 @@
             ],
             "refreshOrApplySearchSort": [
               "Cmd+Y"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 11,
@@ -41024,6 +41051,9 @@
             "goForward": [
               "F5",
               "Cmd+Y"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 1,
@@ -41773,7 +41803,10 @@
             "refreshOrApplySearchSort": [
               "Cmd+Shift+K"
             ],
-            "newTab": []
+            "newTab": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 5,
           "includeHidden": false,
@@ -43660,6 +43693,9 @@
             "newTab": [
               "Cmd+Y",
               "F5"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 5,
@@ -48291,7 +48327,10 @@
               "F5",
               "Cmd+Y"
             ],
-            "newTab": []
+            "newTab": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 5,
           "includeHidden": false,
@@ -54390,7 +54429,10 @@
             "refreshOrApplySearchSort": [
               "F5"
             ],
-            "newTab": []
+            "newTab": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 5,
           "includeHidden": true,
@@ -63058,6 +63100,9 @@
             ],
             "newTab": [
               "Cmd+Shift+K"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 50,
@@ -66846,6 +66891,9 @@
             "goForward": [
               "Cmd+Y",
               "F5"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 50,
@@ -69998,6 +70046,9 @@
             "refreshOrApplySearchSort": [],
             "newTab": [
               "Cmd+Y"
+            ],
+            "quickLookSelection": [
+              "Space"
             ]
           },
           "openItemLimit": 11,
@@ -71013,7 +71064,10 @@
             "goForward": [
               "F5"
             ],
-            "refreshOrApplySearchSort": []
+            "refreshOrApplySearchSort": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 1,
           "includeHidden": true,
@@ -79459,7 +79513,10 @@
             "refreshOrApplySearchSort": [
               "Cmd+Y"
             ],
-            "newTab": []
+            "newTab": [],
+            "quickLookSelection": [
+              "Space"
+            ]
           },
           "openItemLimit": 5,
           "includeHidden": false,

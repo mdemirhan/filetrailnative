@@ -6064,7 +6064,7 @@
           "selectedTreeTargetKind": "filesystemFolder"
         }
       },
-      "output": "Space"
+      "output": "⌘Y"
     },
     {
       "name": "shortcut quickLook: content/favorite",
@@ -6080,7 +6080,7 @@
           "selectedTreeTargetKind": "favorite"
         }
       },
-      "output": "Space"
+      "output": "⌘Y"
     },
     {
       "name": "shortcut quickLook: content/favoritesRoot",
@@ -6096,7 +6096,7 @@
           "selectedTreeTargetKind": "favoritesRoot"
         }
       },
-      "output": "Space"
+      "output": "⌘Y"
     },
     {
       "name": "shortcut quickLook: content/null",
@@ -6112,7 +6112,7 @@
           "selectedTreeTargetKind": null
         }
       },
-      "output": "Space"
+      "output": "⌘Y"
     },
     {
       "name": "shortcut quickLook: null/filesystemFolder",
@@ -11600,7 +11600,7 @@
           "selectedTreeTargetKind": "favoritesRoot"
         }
       },
-      "output": "Space"
+      "output": "⌘Y"
     },
     {
       "name": "shortcut random 39: sortBy",
@@ -13312,7 +13312,7 @@
           "selectedTreeTargetKind": null
         }
       },
-      "output": "Space"
+      "output": "⌘Y"
     },
     {
       "name": "shortcut random 146: emptyTrash",
@@ -15872,7 +15872,7 @@
           "selectedTreeTargetKind": "favorite"
         }
       },
-      "output": "Space"
+      "output": "⌘Y"
     },
     {
       "name": "shortcut random 306: duplicate",

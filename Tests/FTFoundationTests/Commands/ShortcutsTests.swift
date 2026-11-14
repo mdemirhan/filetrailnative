@@ -305,7 +305,7 @@ struct ShortcutsTests {
         #expect(ShortcutCommands.checkAssignment(bindings, .newFolder, "Cmd+V") == .refused(.fixedCommand(.paste)))
         #expect(ShortcutCommands.checkAssignment(bindings, .newFolder, "N") == .refused(.needsCommandOrControl))
         // Quick Look can have Space back; nothing else can have it.
-        let withoutSpace = ShortcutCommands.remove(bindings, .quickLookSelection, slot: 0)
+        let withoutSpace = ShortcutCommands.remove(bindings, .quickLookSelection, slot: 1)
         #expect(ShortcutCommands.checkAssignment(withoutSpace, .quickLookSelection, "Space") == .ok)
         let other = ShortcutCommands.checkAssignment(withoutSpace, .newTab, "Space")
         if case .refused = other {} else { Issue.record("Space should be refused for New Tab") }
@@ -393,7 +393,7 @@ struct ShortcutsTests {
             (.selectNextTab, ["Ctrl+Tab", "Cmd+Shift+]"]), (.selectPreviousTab, ["Ctrl+Shift+Tab", "Cmd+Shift+["]),
             (.openSelectionInNewTab, []), (.openSelectionInNewWindow, []), (.moveTabToNewWindow, []),
             (.mergeAllWindows, []), (.openSelection, ["Cmd+O"]), (.openSelectedItem, ["Cmd+Down"]),
-            (.editSelection, ["Cmd+Shift+E"]), (.quickLookSelection, ["Space"]), (.renameSelection, ["F2"]),
+            (.editSelection, ["Cmd+Shift+E"]), (.quickLookSelection, ["Cmd+Y", "Space"]), (.renameSelection, ["F2"]),
             (.duplicateSelection, ["Cmd+D"]), (.moveSelection, ["Cmd+Shift+M"]), (.newFolder, ["Cmd+Shift+N"]),
             (.trashSelection, ["Cmd+Backspace"]), (.ejectVolume, ["Cmd+E"]), (.emptyTrash, ["Cmd+Shift+Backspace"]),
             (.copyPath, ["Cmd+Option+C"]), (.openInTerminal, ["Cmd+Option+T"]), (.calculateSize, []),

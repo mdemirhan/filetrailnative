@@ -294,6 +294,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -477,6 +478,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -2419,6 +2424,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -2602,6 +2608,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -2844,6 +2854,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -3027,6 +3038,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -3263,6 +3278,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -3446,6 +3462,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -3974,6 +3994,9 @@
         "sanitized": {
           "newTab": [
             "Cmd+Y"
+          ],
+          "quickLookSelection": [
+            "Space"
           ]
         },
         "probes": [
@@ -3999,12 +4022,22 @@
             "assigned": {
               "newTab": [
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
-              "newTab": []
+              "newTab": [],
+              "quickLookSelection": [
+                "Space"
+              ]
             },
-            "reset": {},
+            "reset": {
+              "quickLookSelection": [
+                "Space"
+              ]
+            },
             "takenFrom": [],
             "menuShortcut": "Cmd+Y"
           }
@@ -4147,6 +4180,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -4330,6 +4364,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -4570,6 +4608,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -4745,6 +4784,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -5278,6 +5321,9 @@
           "newTab": [
             "Cmd+Y",
             "Cmd+U"
+          ],
+          "quickLookSelection": [
+            "Space"
           ]
         },
         "probes": [],
@@ -5421,6 +5467,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -5604,6 +5651,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -6125,6 +6176,9 @@
         "sanitized": {
           "newTab": [
             "Cmd+Y"
+          ],
+          "quickLookSelection": [
+            "Space"
           ]
         },
         "probes": [],
@@ -6548,7 +6602,11 @@
             "toggleInfoRow"
           ]
         ],
-        "sanitized": {},
+        "sanitized": {
+          "quickLookSelection": [
+            "Space"
+          ]
+        },
         "probes": [],
         "assignments": [],
         "events": []
@@ -6685,6 +6743,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -6864,6 +6923,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -7096,6 +7159,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -7267,6 +7331,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -7510,6 +7578,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -7689,6 +7758,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -8217,6 +8290,9 @@
         "sanitized": {
           "newTab": [
             "Cmd+Y"
+          ],
+          "quickLookSelection": [
+            "Space"
           ]
         },
         "probes": [],
@@ -8353,6 +8429,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -8524,6 +8601,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -9048,7 +9129,10 @@
           "newWindow": [
             "Cmd+Y"
           ],
-          "newTab": []
+          "newTab": [],
+          "quickLookSelection": [
+            "Space"
+          ]
         },
         "probes": [],
         "assignments": [],
@@ -9201,6 +9285,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -9380,6 +9465,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -9766,6 +9855,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -9951,6 +10041,10 @@
             "editSelection"
           ],
           [
+            "Cmd+Y",
+            "quickLookSelection"
+          ],
+          [
             "Space",
             "quickLookSelection"
           ],
@@ -10091,14 +10185,17 @@
             "id": "newTab",
             "shortcut": "Cmd+Y",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "newTab": [
                 "Cmd+T",
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {},
@@ -10110,14 +10207,17 @@
             "id": "newTab",
             "shortcut": "Cmd+Y",
             "slot": 5,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "newTab": [
                 "Cmd+T",
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {},
@@ -10269,13 +10369,19 @@
             "refusal": null,
             "command": null,
             "customized": false,
-            "assigned": {},
+            "assigned": {
+              "quickLookSelection": [
+                "Space"
+              ]
+            },
             "removed": {
-              "quickLookSelection": []
+              "quickLookSelection": [
+                "Space"
+              ]
             },
             "reset": {},
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Cmd+Y"
           },
           {
             "id": "goBack",
@@ -10517,6 +10623,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -10693,6 +10800,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -11021,6 +11132,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -11210,6 +11322,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -11514,6 +11630,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -11697,6 +11814,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -11991,6 +12112,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -12164,6 +12286,10 @@
             "editSelection"
           ],
           [
+            "Cmd+Y",
+            "quickLookSelection"
+          ],
+          [
             "Space",
             "quickLookSelection"
           ],
@@ -12279,9 +12405,9 @@
             "id": "goApplications",
             "shortcut": "Cmd+Y",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "goApplications": [
@@ -12295,6 +12421,9 @@
               ],
               "viewAsList": [
                 "Cmd+K"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -12500,6 +12629,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -12681,6 +12811,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -13068,6 +13202,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -13247,6 +13382,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -13737,6 +13876,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -13935,6 +14075,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -14558,6 +14702,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -14740,6 +14885,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -14939,9 +15088,9 @@
             "id": "pageDown",
             "shortcut": "Cmd+Y",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "goBack": [
@@ -14957,7 +15106,10 @@
                 "F11",
                 "Cmd+PageUp"
               ],
-              "openSelectedItem": []
+              "openSelectedItem": [],
+              "quickLookSelection": [
+                "Space"
+              ]
             },
             "removed": {
               "goBack": [
@@ -14993,9 +15145,9 @@
             "id": "cut",
             "shortcut": "Cmd+Y",
             "slot": -1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "goBack": [
@@ -15008,7 +15160,10 @@
                 "F11",
                 "Cmd+PageUp"
               ],
-              "openSelectedItem": []
+              "openSelectedItem": [],
+              "quickLookSelection": [
+                "Space"
+              ]
             },
             "removed": {
               "goBack": [
@@ -15284,6 +15439,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -15474,6 +15630,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -15779,6 +15939,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -15961,6 +16122,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -16409,6 +16574,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -16594,6 +16760,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -17046,6 +17216,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -17217,6 +17388,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -17796,6 +17971,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -17967,6 +18143,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -18266,6 +18446,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -18453,6 +18634,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -19376,6 +19561,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -19559,6 +19745,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -19874,6 +20064,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -20059,6 +20250,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -20375,6 +20570,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -20557,6 +20753,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -20907,6 +21107,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -21090,6 +21291,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -21423,6 +21628,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -21589,6 +21795,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -22089,6 +22299,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -22274,6 +22485,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -22568,6 +22783,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -22751,6 +22967,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -23748,6 +23968,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -23927,6 +24148,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -25109,6 +25334,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -25292,6 +25518,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -25699,6 +25929,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -25879,6 +26110,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -26292,6 +26527,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -26476,6 +26712,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -27025,6 +27265,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -27210,6 +27451,10 @@
             "editSelection"
           ],
           [
+            "Cmd+Y",
+            "quickLookSelection"
+          ],
+          [
             "Space",
             "quickLookSelection"
           ],
@@ -27383,13 +27628,16 @@
             "id": "paste",
             "shortcut": "Cmd+Y",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "paste": [
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -27612,6 +27860,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -27792,6 +28041,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -29780,6 +30033,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -29967,6 +30221,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -30371,6 +30629,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -30554,6 +30813,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -30919,6 +31182,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -31103,6 +31367,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -31554,6 +31822,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -31734,6 +32003,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -32487,6 +32760,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -32668,6 +32942,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -33122,6 +33400,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -33310,6 +33589,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -34605,6 +34888,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -34786,6 +35070,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -35370,6 +35658,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -35560,6 +35849,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -35930,6 +36223,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -36113,6 +36407,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -36522,6 +36820,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -36705,6 +37004,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -37125,6 +37428,7 @@
             "Cmd+O"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -37300,6 +37604,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -37490,9 +37798,9 @@
             "id": "minimize",
             "shortcut": "Cmd+Y",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "pageUp": [
@@ -37505,6 +37813,9 @@
               "editSelection": [],
               "minimize": [
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -37836,6 +38147,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -38031,6 +38343,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -38633,6 +38949,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -38808,6 +39125,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -39928,6 +40249,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -40109,6 +40431,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -40452,6 +40778,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -40631,6 +40958,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -41017,6 +41348,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -41192,6 +41524,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -41722,6 +42058,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -41908,6 +42245,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -42281,6 +42622,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -42463,6 +42805,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -42872,6 +43218,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -43051,6 +43398,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -43485,6 +43836,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -43674,6 +44026,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -44358,6 +44714,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -44531,6 +44888,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -44886,6 +45247,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -45071,6 +45433,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -45460,6 +45826,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -45626,6 +45993,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -46327,6 +46698,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -46500,6 +46872,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -46869,6 +47245,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -47052,6 +47429,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -48547,6 +48928,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -48731,6 +49113,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -49285,6 +49671,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "duplicateSelection": [],
@@ -49470,6 +49857,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -50814,6 +51205,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -50985,6 +51377,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -51876,6 +52272,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -52059,6 +52456,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -52473,6 +52874,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -52651,6 +53053,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -53413,6 +53819,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -53596,6 +54003,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -53962,6 +54373,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -54145,6 +54557,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -54573,6 +54989,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -54753,6 +55170,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -55156,6 +55577,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -55321,6 +55743,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -55881,6 +56307,7 @@
           ],
           "openSelectedItem": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -56057,6 +56484,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -57404,6 +57835,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "duplicateSelection": [],
@@ -57580,6 +58012,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -58257,6 +58693,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -58426,6 +58863,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -58872,7 +59313,9 @@
                 "Cmd+K"
               ],
               "openSelection": [],
-              "quickLookSelection": [],
+              "quickLookSelection": [
+                "Cmd+Y"
+              ],
               "duplicateSelection": [],
               "showClipboard": [
                 "Cmd+Shift+G",
@@ -59148,6 +59591,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -59326,6 +59770,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -59736,6 +60184,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -59906,6 +60355,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -60622,6 +61075,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -60806,6 +61260,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -61279,6 +61737,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -61455,6 +61914,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -61906,6 +62369,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -62080,6 +62544,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -62606,6 +63074,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -62778,6 +63247,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -63296,6 +63769,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -63480,6 +63954,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -64041,6 +64519,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -64224,6 +64703,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -64713,6 +65196,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -64889,6 +65373,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -65396,9 +65884,9 @@
             "id": "emptyTrash",
             "shortcut": "Cmd+Y",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": true,
             "assigned": {
               "goBack": [
@@ -65451,7 +65939,10 @@
                 "Cmd+Right"
               ],
               "toggleInfoRow": [],
-              "openHelp": []
+              "openHelp": [],
+              "quickLookSelection": [
+                "Space"
+              ]
             },
             "removed": {
               "goBack": [
@@ -65920,6 +66411,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -66103,6 +66595,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -66519,6 +67015,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -66702,6 +67199,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -67071,6 +67572,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -67252,6 +67754,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -67572,6 +68078,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "duplicateSelection": [
@@ -67750,6 +68257,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -68322,6 +68833,7 @@
           ],
           "openSelectedItem": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -68484,6 +68996,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -68746,7 +69262,9 @@
               "editSelection": [
                 "Ctrl+Cmd+S"
               ],
-              "quickLookSelection": [],
+              "quickLookSelection": [
+                "Cmd+Y"
+              ],
               "newFolder": [
                 "Cmd+Shift+I"
               ],
@@ -69253,6 +69771,7 @@
           "openSelectedItem": [],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -69422,6 +69941,10 @@
           [
             "Cmd+Shift+[",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -70722,6 +71245,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -70908,6 +71432,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -71371,6 +71899,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -71554,6 +72083,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -71996,6 +72529,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -72171,6 +72705,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -74378,6 +74916,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -74545,6 +75084,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -75064,6 +75607,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -75247,6 +75791,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -75524,6 +76072,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -75692,6 +76241,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -76010,6 +76563,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -76193,6 +76747,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -77379,6 +77937,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -77565,6 +78124,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -78088,6 +78651,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -78273,6 +78837,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -78716,6 +79284,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -78900,6 +79469,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -79439,6 +80012,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -79622,6 +80196,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -81191,6 +81769,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -81361,6 +81940,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -81986,6 +82569,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -82157,6 +82741,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -82568,6 +83156,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -82742,6 +83331,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -83134,6 +83727,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -83297,6 +83891,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -84067,6 +84665,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -84249,6 +84848,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -85096,6 +85699,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -85279,6 +85883,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -85639,6 +86247,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -85819,6 +86428,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -86212,6 +86825,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -86395,6 +87009,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -86792,6 +87410,7 @@
             "Cmd+O"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -86965,6 +87584,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -87457,7 +88080,7 @@
               ]
             },
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Cmd+Y"
           }
         ],
         "events": [
@@ -87646,6 +88269,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -87821,6 +88445,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -88164,6 +88792,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -88347,6 +88976,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -88848,6 +89481,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -89031,6 +89665,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -89423,6 +90061,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -89600,6 +90239,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -89986,6 +90629,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -90170,6 +90814,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -90520,6 +91168,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -90706,6 +91355,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -90903,9 +91556,9 @@
             "id": "openSelectionInNewWindow",
             "shortcut": "Cmd+Y",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "halfPageDown": [
@@ -90917,6 +91570,9 @@
               ],
               "increaseSize": [
                 "Cmd+="
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -91206,6 +91862,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -91382,6 +92039,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -91816,6 +92477,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -91993,6 +92655,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -92487,6 +93153,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -92659,6 +93326,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -93130,6 +93801,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -93328,6 +94000,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -93894,6 +94570,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -94092,6 +94769,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -94430,6 +95111,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -94613,6 +95295,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -94968,6 +95654,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -95149,6 +95836,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -95512,6 +96203,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -95675,6 +96367,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -96886,6 +97582,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -97061,6 +97758,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -97680,6 +98381,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -97870,6 +98572,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -98823,6 +99529,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -99002,6 +99709,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -99501,6 +100212,7 @@
             "Cmd+O"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -99666,6 +100378,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -100546,6 +101262,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -100730,6 +101447,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -101192,6 +101913,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -101367,6 +102089,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -101936,6 +102662,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -102122,6 +102849,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -102357,7 +103088,9 @@
                 "Cmd+Down",
                 "Space"
               ],
-              "quickLookSelection": [],
+              "quickLookSelection": [
+                "Cmd+Y"
+              ],
               "sortBySize": [
                 "Cmd+F3"
               ]
@@ -102581,6 +103314,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -102766,6 +103500,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -103304,6 +104042,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -103493,6 +104232,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -103931,6 +104674,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -104112,6 +104856,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -104570,6 +105318,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -104750,6 +105499,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -105079,6 +105832,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -105260,6 +106014,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -105726,6 +106484,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -105912,6 +106671,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -107480,6 +108243,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "duplicateSelection": [
@@ -107655,6 +108419,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -107950,6 +108718,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -108133,6 +108902,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -108507,6 +109280,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -108665,6 +109439,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -109144,6 +109922,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -109312,6 +110091,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -109868,6 +110651,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -110053,6 +110837,10 @@
             "editSelection"
           ],
           [
+            "Cmd+Y",
+            "quickLookSelection"
+          ],
+          [
             "Space",
             "quickLookSelection"
           ],
@@ -110202,13 +110990,16 @@
             "id": "viewAsList",
             "shortcut": "Cmd+Y",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "viewAsList": [
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -110534,6 +111325,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -110705,6 +111497,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -111373,6 +112169,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -111553,6 +112350,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -112408,6 +113209,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -112588,6 +113390,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -113021,6 +113827,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -113209,6 +114016,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -113558,6 +114369,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -113740,6 +114552,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -114239,6 +115055,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -114422,6 +115239,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -115027,6 +115848,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -115206,6 +116028,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -115595,6 +116421,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -115778,6 +116605,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -116338,6 +117169,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -116519,6 +117351,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -117122,9 +117958,9 @@
             "id": "goTrash",
             "shortcut": "Cmd+Y",
             "slot": 1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "goForward": [
@@ -117199,6 +118035,9 @@
               "decreaseSize": [],
               "sortBySize": [
                 "Cmd+N"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -117748,6 +118587,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -117931,6 +118771,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -118268,6 +119112,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -118451,6 +119296,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -118826,6 +119675,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -119009,6 +119859,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -119412,6 +120266,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -119595,6 +120450,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -119970,6 +120829,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -120148,6 +121008,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -120451,6 +121315,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -120639,6 +121504,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -121084,6 +121953,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -121274,6 +122144,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -121470,9 +122344,9 @@
             "id": "goHomeRootTree",
             "shortcut": "Cmd+Y",
             "slot": 2,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "goHomeRootTree": [
@@ -121488,6 +122362,9 @@
               "viewAsIcons": [
                 "Cmd+R",
                 "Ctrl+Cmd+Option+Shift+K"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -121777,6 +122654,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -121952,6 +122830,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -122418,6 +123300,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -122596,6 +123479,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -122943,6 +123830,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -123123,6 +124011,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -123591,6 +124483,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -123777,6 +124670,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -124326,6 +125223,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -124511,6 +125409,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -125111,6 +126013,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -125296,6 +126199,10 @@
             "editSelection"
           ],
           [
+            "Cmd+Y",
+            "quickLookSelection"
+          ],
+          [
             "Space",
             "quickLookSelection"
           ],
@@ -125430,13 +126337,16 @@
             "id": "customizeToolbar",
             "shortcut": "Cmd+Y",
             "slot": 2,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "customizeToolbar": [
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {},
@@ -125686,6 +126596,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -125877,6 +126788,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -126388,6 +127303,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -126552,6 +127468,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -127606,6 +128526,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -127788,6 +128709,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -128205,6 +129130,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -128388,6 +129314,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -128672,6 +129602,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -128850,6 +129781,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -129200,6 +130135,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -129379,6 +130315,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -129868,6 +130808,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -130051,6 +130992,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -130494,6 +131439,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -130677,6 +131623,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -130894,10 +131844,14 @@
             "command": null,
             "customized": false,
             "assigned": {},
-            "removed": {},
+            "removed": {
+              "quickLookSelection": [
+                "Cmd+Y"
+              ]
+            },
             "reset": {},
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Cmd+Y"
           }
         ],
         "events": [
@@ -131093,6 +132047,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -131258,6 +132213,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -131630,6 +132589,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -131815,6 +132775,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -132173,6 +133137,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -132356,6 +133321,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -132703,6 +133672,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -132886,6 +133856,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -133320,6 +134294,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -133498,6 +134473,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -133906,6 +134885,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -134091,6 +135071,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -134628,6 +135612,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -134805,6 +135790,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -135130,6 +136119,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -135309,6 +136299,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -135696,6 +136690,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -135876,6 +136871,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -136226,6 +137225,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -136409,6 +137409,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -136887,6 +137891,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -137040,6 +138045,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -138610,6 +139619,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -138780,6 +139790,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -139766,6 +140780,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -139948,6 +140963,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -140227,6 +141246,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -140410,6 +141430,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -140726,6 +141750,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -140909,6 +141934,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -141284,6 +142313,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -141470,6 +142500,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -141997,6 +143031,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -142177,6 +143212,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -142554,6 +143593,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -142742,6 +143782,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -143230,6 +144274,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -143408,6 +144453,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -143866,6 +144915,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -144049,6 +145099,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -144447,6 +145501,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -144620,6 +145675,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -145115,6 +146174,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -145297,6 +146357,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -145735,6 +146799,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -145917,6 +146982,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -146270,6 +147339,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -146457,6 +147527,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -147864,6 +148938,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -148047,6 +149122,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -149227,6 +150306,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -149417,6 +150497,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -149998,6 +151082,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -150180,6 +151265,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -150571,6 +151660,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -150754,6 +151844,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -151124,6 +152218,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -151307,6 +152402,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -151611,6 +152710,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -151794,6 +152894,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -152155,6 +153259,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -152328,6 +153433,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -152779,6 +153888,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -152949,6 +154059,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -153492,6 +154606,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "duplicateSelection": [
@@ -153654,6 +154769,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -153979,6 +155098,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -154153,6 +155273,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -154620,6 +155744,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -154800,6 +155925,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -155246,6 +156375,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -155436,6 +156566,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -155867,6 +157001,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -156047,6 +157182,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -156481,6 +157620,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -156664,6 +157804,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -157052,6 +158196,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -157237,6 +158382,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -157901,6 +159050,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -158084,6 +159234,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -158421,6 +159575,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -158596,6 +159751,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -158987,6 +160146,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -159172,6 +160332,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -159730,6 +160894,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -159917,6 +161082,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -160349,6 +161518,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -160528,6 +161698,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -160822,9 +161996,9 @@
             "id": "sortBySize",
             "shortcut": "Cmd+Y",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "halfPageUp": [
@@ -160839,6 +162013,9 @@
               ],
               "openKeyboardShortcuts": [
                 "Ctrl+Left"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -161095,6 +162272,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -161255,6 +162433,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -161746,6 +162928,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -161915,6 +163098,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -162409,6 +163596,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -162590,6 +163778,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -163098,6 +164290,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -163273,6 +164466,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -163713,6 +164910,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -163896,6 +165094,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -164355,6 +165557,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -164544,6 +165747,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -164918,6 +166125,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -165101,6 +166309,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -165579,6 +166791,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -165767,6 +166980,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -166402,6 +167619,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -166605,6 +167823,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -167347,6 +168569,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -167527,6 +168750,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -168032,6 +169259,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -168216,6 +169444,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -168422,14 +169654,17 @@
             "id": "halfPageDown",
             "shortcut": "Cmd+Y",
             "slot": -1,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "copyPath": [],
               "toggleFoldersFirst": [
                 "Cmd+Option+C"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -169449,6 +170684,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -169632,6 +170868,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -170599,6 +171839,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -170778,6 +172019,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -171256,6 +172501,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -171447,6 +172693,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -171797,6 +173047,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -171981,6 +173232,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -172487,6 +173742,7 @@
           "moveTabToNewWindow": [],
           "openSelectedItem": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -172652,6 +173908,10 @@
           [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -173141,6 +174401,7 @@
           ],
           "editSelection": [],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -173333,6 +174594,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -174455,6 +175720,7 @@
             "Cmd+Down"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -174638,6 +175904,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -175103,6 +176373,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -175289,6 +176560,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -176957,6 +178232,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -177135,6 +178411,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -177559,6 +178839,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -177742,6 +179023,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -178182,6 +179467,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -178365,6 +179651,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -178879,6 +180169,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -179036,6 +180327,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -180536,6 +181831,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -180719,6 +182015,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -180906,13 +182206,16 @@
             "id": "toggleFoldersFirst",
             "shortcut": "Cmd+Y",
             "slot": 2,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "toggleFoldersFirst": [
                 "Cmd+Y"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {},
@@ -181127,6 +182430,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -181303,6 +182607,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -181755,6 +183063,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -181938,6 +183247,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -182294,6 +183607,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -182483,6 +183797,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -184370,6 +185688,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -184543,6 +185862,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -185490,6 +186813,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -185673,6 +186997,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -186016,6 +187344,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -186190,6 +187519,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -186536,6 +187869,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -186719,6 +188053,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -186930,14 +188268,18 @@
             "customized": false,
             "assigned": {
               "quickLookSelection": [
-                "Space",
+                "Cmd+Y",
                 "Ctrl+F4"
               ]
             },
-            "removed": {},
+            "removed": {
+              "quickLookSelection": [
+                "Cmd+Y"
+              ]
+            },
             "reset": {},
             "takenFrom": [],
-            "menuShortcut": null
+            "menuShortcut": "Cmd+Y"
           },
           {
             "id": "quit",
@@ -187151,6 +188493,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -187344,6 +188687,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -187757,6 +189104,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -187940,6 +189288,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -188291,6 +189643,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -188474,6 +189827,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -188919,6 +190276,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -189095,6 +190453,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -189636,6 +190998,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -189811,6 +191174,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -190428,6 +191795,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -190617,6 +191985,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -191075,6 +192447,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -191258,6 +192631,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -191641,6 +193018,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -191817,6 +193195,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -192509,6 +193891,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -192672,6 +194055,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -193325,6 +194712,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -193504,6 +194892,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -193909,6 +195301,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -194080,6 +195473,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -194612,6 +196009,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -194797,6 +196195,10 @@
             "editSelection"
           ],
           [
+            "Cmd+Y",
+            "quickLookSelection"
+          ],
+          [
             "Space",
             "quickLookSelection"
           ],
@@ -194937,9 +196339,9 @@
             "id": "pageUp",
             "shortcut": "Cmd+Y",
             "slot": 0,
-            "status": "ok",
+            "status": "conflict",
             "refusal": null,
-            "command": null,
+            "command": "quickLookSelection",
             "customized": false,
             "assigned": {
               "goEnclosingFolder": [],
@@ -194949,6 +196351,9 @@
               "pageDown": [
                 "Cmd+Up",
                 "Cmd+/"
+              ],
+              "quickLookSelection": [
+                "Space"
               ]
             },
             "removed": {
@@ -195223,6 +196628,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -195398,6 +196804,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -195783,6 +197193,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "duplicateSelection": [
@@ -195953,6 +197364,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -196710,6 +198125,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -196892,6 +198308,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -197476,6 +198896,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -197661,6 +199082,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -198032,6 +199457,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -198211,6 +199637,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -198658,6 +200088,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -198837,6 +200268,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -199280,6 +200715,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "calculateSize": [],
@@ -199472,6 +200908,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",
@@ -200895,6 +202335,7 @@
             "Cmd+Shift+E"
           ],
           "quickLookSelection": [
+            "Cmd+Y",
             "Space"
           ],
           "renameSelection": [
@@ -201079,6 +202520,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Y",
+            "quickLookSelection"
           ],
           [
             "Space",

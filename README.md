@@ -17,7 +17,7 @@ A Mac file browser with fast search, a real folder tree and true cut and paste. 
 - **Fast in big folders, and never stuck.** Scrolling stays smooth with thousands of files, and a slow or unresponsive disk never freezes the window.
 - **Free, open source and private.** MIT licensed, with no accounts, no analytics and nothing sent anywhere.
 
-Switching costs nothing. File Trail keeps most of Finder's shortcuts, Quick Look on Space, drag and drop with other apps, tabs, and the sidebar's Locations.
+Switching costs nothing. File Trail keeps most of Finder's shortcuts, Quick Look on Space and ⌘Y, drag and drop with other apps, tabs, and the sidebar's Locations.
 
 ## Search that keeps up with your typing
 

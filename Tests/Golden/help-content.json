@@ -193,8 +193,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -1529,6 +1529,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -1744,8 +1748,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -2145,8 +2149,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -3480,6 +3484,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -3695,8 +3703,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -4103,8 +4111,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -5425,6 +5433,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -5640,8 +5652,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -9550,8 +9562,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -10901,6 +10913,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -11116,8 +11132,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -11528,8 +11544,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -12843,6 +12859,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -13044,8 +13064,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -13453,8 +13473,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -14778,6 +14798,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -14999,8 +15023,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -17311,8 +17335,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -18651,6 +18675,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -18866,8 +18894,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -21230,8 +21258,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -22539,6 +22567,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -22746,8 +22778,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -23157,8 +23189,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -24498,6 +24530,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -24713,8 +24749,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -25119,8 +25155,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -26466,6 +26502,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -26681,8 +26721,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -27091,8 +27131,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -28398,6 +28438,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -28619,8 +28663,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -29017,8 +29061,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -30353,6 +30397,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -30568,8 +30616,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -30999,8 +31047,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -32354,6 +32402,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -32569,8 +32621,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -32980,8 +33032,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -34303,6 +34355,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -34518,8 +34574,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -34937,8 +34993,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -36246,6 +36302,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -36461,8 +36521,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -36861,8 +36921,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -38179,6 +38239,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -38394,8 +38458,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -38808,8 +38872,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -40139,6 +40203,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -40340,8 +40408,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -40767,8 +40835,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -42101,6 +42169,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -42302,8 +42374,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -44657,8 +44729,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -45994,6 +46066,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -46209,8 +46285,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -46622,8 +46698,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -47914,6 +47990,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -48129,8 +48209,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -48515,8 +48595,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -49846,6 +49926,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -50061,8 +50145,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -50476,8 +50560,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -51829,6 +51913,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -52044,8 +52132,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }
@@ -52453,8 +52541,8 @@
           },
           {
             "group": "files",
-            "shortcut": "Space",
-            "description": "Quick Look"
+            "shortcut": "Cmd+Y",
+            "description": "Quick Look (Space also works)"
           },
           {
             "group": "files",
@@ -53783,6 +53871,10 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Quick Look"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -53998,8 +54090,8 @@
               "shortcuts": [
                 {
                   "group": "files",
-                  "shortcut": "Space",
-                  "description": "Quick Look"
+                  "shortcut": "Cmd+Y",
+                  "description": "Quick Look (Space also works)"
                 }
               ]
             }

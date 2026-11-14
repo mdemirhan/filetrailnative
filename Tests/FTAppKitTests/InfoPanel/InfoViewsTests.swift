@@ -164,7 +164,7 @@ struct InfoPanelViewTests {
         let actions = findViews("infoPanel.action", in: view)
         #expect(actions.count == 6)
         #expect(actions.allSatisfy { $0.frame.size == NSSize(width: 32, height: 28) })
-        #expect((actions.first as? InfoIconButton)?.tooltip == "Quick Look (Space)")
+        #expect((actions.first as? InfoIconButton)?.tooltip == "Quick Look (⌘Y)")
         #expect((actions[1] as? InfoIconButton)?.tooltip == "Edit in Zed (⇧⌘E)")
         #expect(fieldText(try #require(findViews("infoPanel.row.code", in: view).first)) == "644")
     }
@@ -396,7 +396,7 @@ struct InfoPanelViewTests {
         window.contentView?.addSubview(view)
         let button = try #require(findViews("infoPanel.action", in: view).first as? InfoIconButton)
         button.updateTrackingAreas()
-        #expect(button.toolTip == "Quick Look (Space)")
+        #expect(button.toolTip == "Quick Look (⌘Y)")
         #expect(button.trackingAreas.contains { $0.owner !== button && $0.rect == button.bounds })
         #expect(button.trackingAreas.contains { $0.owner === button })
         let close = try #require(findViews("infoPanel.close", in: view).first)
