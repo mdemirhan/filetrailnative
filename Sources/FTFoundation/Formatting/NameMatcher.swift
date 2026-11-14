@@ -341,7 +341,8 @@ public struct NameMatcher: Sendable {
         return isPrefix(of: cache?.letters(of: name) ?? FoldedText(name).letters)
     }
 
-    private func isPrefix(of folded: [FoldedLetter]) -> Bool {
+    /// Whether the folded letters start with the text.
+    func isPrefix(of folded: [FoldedLetter]) -> Bool {
         folded.count >= letters.count && letters.indices.allSatisfy { same($0, folded[$0]) }
     }
 

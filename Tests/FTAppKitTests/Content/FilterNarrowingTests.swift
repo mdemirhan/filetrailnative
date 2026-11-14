@@ -43,6 +43,24 @@ struct FilterNarrowingTests {
         #expect(content.entries.contains { $0.name == "résumé copy.pdf" })
     }
 
+    // A mark typed after a letter makes another letter of it ("ạ" and a circumflex are "ậ"), and a vowel after a jamo
+    // a syllable: names the shorter text didn't keep are found.
+    @Test(arguments: NameMatchMode.allCases)
+    func aKeyThatChangesTheLetterBeforeItFiltersWhole(_ mode: NameMatchMode) {
+        let content = pane(["\u{1EAD}m.txt", "\u{1EA1}m.txt", "\u{AC00}.txt", "\u{1100}.txt"])
+        content.setDefaultFilterMode(mode)
+        content.applyFilterKey(.type("\u{1EA1}"))
+        #expect(content.entries.map(\.name) == ["\u{1EA1}m.txt"])
+        content.applyFilterKey(.type("\u{302}"))
+        #expect(content.entries.map(\.name) == ["\u{1EAD}m.txt"])
+        content.applyFilterKey(.clear)
+        content.applyFilterKey(.type("\u{1100}"))
+        #expect(content.entries.map(\.name) == ["\u{1100}.txt"])
+        content.applyFilterKey(.type("\u{1161}"))
+        #expect(content.filter == "\u{1100}\u{1161}")
+        #expect(content.entries.map(\.name) == ["\u{AC00}.txt"])
+    }
+
     @Test func aFolderReadAgainWhileTypingIsFilteredWhole() {
         let content = pane()
         content.applyFilterKey(.type("r"))

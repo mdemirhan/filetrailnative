@@ -284,3 +284,77 @@ struct ListFilterTests {
         #expect(seconds < 0.4)
     }
 }
+
+/// A filter that only grew looks only through what the shorter text kept: that must be what filtering every name
+/// afresh keeps.
+struct ListFilterNarrowingTests {
+    typealias Entry = ListFilterTests.Entry
+
+    /// The same numbers every run, so a failure can be run again.
+    struct SplitMix: RandomNumberGenerator {
+        var state: UInt64
+
+        mutating func next() -> UInt64 {
+            state &+= 0x9E37_79B9_7F4A_7C15
+            var value = state
+            value = (value ^ (value >> 30)) &* 0xBF58_476D_1CE4_E5B9
+            value = (value ^ (value >> 27)) &* 0x94D0_49BB_1331_11EB
+            return value ^ (value >> 31)
+        }
+    }
+
+    private static let pieces = [
+        "a", "e", "o", "s", "t", "f", "i", "A", "E", "1", " ", "\u{E9}", "\u{E0}", "\u{E2}", "\u{1EA1}", "\u{1EAD}",
+        "\u{301}", "\u{302}", "\u{323}", "\u{300}", "\u{3099}", "\u{304B}", "\u{304C}", "\u{65E5}", "\u{672C}",
+        "\u{1100}", "\u{1161}", "\u{11AB}", "\u{AC00}", "\u{FB01}", "\u{3C3}", "\u{3C2}",
+    ]
+
+    private static func made(_ length: ClosedRange<Int>, _ random: inout SplitMix) -> String {
+        (0..<Int.random(in: length, using: &random)).map { _ in pieces.randomElement(using: &random)! }.joined()
+    }
+
+    private static func filtered(
+        _ entries: [Entry], _ query: String, _ mode: NameMatchMode, results: Bool, cache: FoldedNameCache
+    ) -> [Entry] {
+        results
+            ? ListFilter.filterSearchResults(entries, query: query, mode: mode, cache: cache)
+            : ListFilter.filterByName(entries, query: query, mode: mode, cache: cache)
+    }
+
+    @Test(arguments: NameMatchMode.allCases, [false, true])
+    func narrowingKeepsWhatFilteringAfreshKeeps(_ mode: NameMatchMode, results: Bool) {
+        var random = SplitMix(state: 20_261_115)
+        let entries = (0..<300).map {
+            Entry(id: $0, name: Self.made(1...8, &random), relativeParentPath: Self.made(0...4, &random))
+        }
+        let cache = FoldedNameCache()
+        var checked = 0
+        for _ in 0..<2_000 {
+            let previous = Self.made(1...3, &random)
+            let next = previous + Self.made(1...2, &random)
+            guard ListFilter.narrows(previous, to: next) else { continue }
+            checked += 1
+            let kept = Self.filtered(entries, previous, mode, results: results, cache: cache)
+            let narrowed = Self.filtered(kept, next, mode, results: results, cache: cache)
+            let afresh = Self.filtered(entries, next, mode, results: results, cache: cache)
+            #expect(
+                narrowed.map(\.id) == afresh.map(\.id),
+                "\(Array(previous.unicodeScalars)) then \(Array(next.unicodeScalars))")
+        }
+        #expect(checked > 1_000)
+    }
+
+    // A mark typed after a letter can make another letter of it, which the shorter text doesn't find: the list is
+    // filtered afresh. So does a jamo after a jamo, making a syllable.
+    @Test func textWhoseLastLetterBecameAnotherIsFilteredAfresh() {
+        #expect(!ListFilter.narrows("\u{1EA1}", to: "\u{1EA1}\u{302}"))
+        #expect(!ListFilter.narrows("\u{1100}", to: "\u{1100}\u{1161}"))
+        // An accent added to a plain letter narrows.
+        #expect(ListFilter.narrows("e", to: "e\u{301}"))
+        #expect(!ListFilter.narrows("e\u{301}", to: "ex"))
+        #expect(ListFilter.narrows("\u{1EA1}", to: "\u{1EA1}x"))
+        #expect(ListFilter.narrows("re", to: "res"))
+        #expect(!ListFilter.narrows("", to: "a"))
+        #expect(!ListFilter.narrows("ab", to: "ab"))
+    }
+}

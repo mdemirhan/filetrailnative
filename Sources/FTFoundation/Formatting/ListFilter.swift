@@ -49,10 +49,13 @@ public enum ListFilter {
         }
     }
 
-    /// Whether everything `next` finds in `mode` is among what `previous` found: `next` is `previous` with letters
-    /// added at its end, so a list filtered by `previous` can be narrowed instead of filtered again.
+    /// Whether everything `next` finds, in either mode, is among what `previous` found, so that a list filtered by
+    /// `previous` can be narrowed instead of filtered again: `next` starts with letters that `previous` finds, each
+    /// for one. Not so when what was added changed a letter typed before: a mark after "ạ" makes "ậ", which "ạ"
+    /// doesn't find, and a vowel after a jamo makes a syllable.
     public static func narrows(_ previous: String, to next: String) -> Bool {
-        !previous.isEmpty && next.utf16.count > previous.utf16.count && JSString.hasPrefix(next, previous)
+        guard previous != next, let matcher = NameMatcher(previous, mode: .contains) else { return false }
+        return matcher.isPrefix(of: FoldedText(next).letters)
     }
 
     /// The item a filter selects: the first name that starts with the text, as type-to-select would
