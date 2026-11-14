@@ -243,7 +243,7 @@ public enum InfoPanelModel {
     /// One of the quick actions.
     public struct QuickAction: Equatable, Sendable {
         public enum ID: String, Sendable {
-            case quickLook, edit, copyPath, copyName, terminal, finder, favorite, rootTree
+            case quickLook, edit, copyPath, copyName, copyContents, terminal, finder, favorite, rootTree
         }
         public var id: ID
         public var label: String
@@ -265,6 +265,14 @@ public enum InfoPanelModel {
             QuickAction(
                 id: .copyPath, label: copied == .copyPath ? "Copied" : "Copy Path", shortcut: shortcut(.copyPath)))
         actions.append(QuickAction(id: .copyName, label: copied == .copyName ? "Copied" : "Copy Name", shortcut: nil))
+        // A file's image or text, as the menus offer it.
+        let guess = CopyContents.guess(forName: item.name)
+        if item.kind.isEditableFile, guess.isOffered {
+            actions.append(
+                QuickAction(
+                    id: .copyContents, label: copied == .copyContents ? "Copied" : CopyContents.menuTitle(guess),
+                    shortcut: shortcut(.copyContents)))
+        }
         actions.append(QuickAction(id: .terminal, label: "Open in Terminal", shortcut: shortcut(.openInTerminal)))
         actions.append(QuickAction(id: .finder, label: "Show in Finder", shortcut: shortcut(.showInFinder)))
         if canFavorite && item.kind.isDirectoryLike {

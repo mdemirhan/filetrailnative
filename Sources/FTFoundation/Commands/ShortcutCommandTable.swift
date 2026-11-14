@@ -90,6 +90,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case ejectVolume
     case emptyTrash
     case copyPath
+    case copyContents
     case showClipboard
     case clearClipboard
     case openInTerminal
@@ -307,6 +308,9 @@ extension ShortcutCommands {
             menuPath: "File Trail > Empty Trash…"),
         ShortcutCommandDefinition(
             id: .copyPath, label: "Copy Path", group: .files, defaults: ["Cmd+Option+C"], menuPath: "Edit > Copy Path"),
+        ShortcutCommandDefinition(
+            id: .copyContents, label: "Copy Contents", group: .files, defaults: ["Cmd+Shift+C"],
+            menuPath: "Edit > Copy Contents"),
         ShortcutCommandDefinition(
             id: .showClipboard, label: "Show Clipboard", group: .files, defaults: [], menuPath: "Edit > Show Clipboard"),
         ShortcutCommandDefinition(

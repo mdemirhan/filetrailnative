@@ -262,6 +262,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     let explorerToolbar: ExplorerToolbar
     /// The system's clipboard, which Paste as File writes from.
     let systemClipboard = SystemClipboard()
+    /// Copy Contents, onto the clipboard Paste as File reads.
+    lazy var contentsCopier = CopyContentsAction(
+        pasteboard: { [unowned self] in systemClipboard.pasteboard }, window: { [unowned self] in window },
+        toasts: { [unowned self] in notifications?.toasts })
     /// The right-click menus of the tab. Their file operations go to the write coordinator (WriteOperations/),
     /// Copy, Cut and Paste through the clipboard.
     lazy var contextMenus: ContextMenuCoordinator = {
@@ -1365,7 +1369,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             filterPinned: content.pinnedFilter != nil,
             favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false,
             textEditing: isTextFieldEditing, workspace: workspace.map { ($0.id, $0.name) },
-            pasteAsFileKind: context.systemClipboard?.kind
+            pasteAsFileKind: context.systemClipboard?.kind,
+            copyContentsGuess: context.selectedPathsInViewOrder.count == 1
+                ? context.selectedPathsInViewOrder.first.map { CopyContents.guess(forName: NodePath.basename($0)) }
+                : nil
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -1796,6 +1803,10 @@ extension MainWindowController: ExplorerWindowHandle {
                 contextMenus.copyPath([tree])
             } else {
                 contextMenus.copyPath(selectedPaths)
+            }
+        case .copyContents:
+            if selectedPaths.count == 1, let path = selectedPaths.first {
+                Task { [contentsCopier] in await contentsCopier.copy(path) }
             }
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
             .pasteAsFile, .trashSelection, .emptyTrash, .copySelection, .cutSelection, .pasteSelection:

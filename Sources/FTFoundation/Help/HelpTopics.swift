@@ -195,6 +195,11 @@ extension HelpContent {
                                 "{pasteAsFile} saves an image or text copied in another app, a screenshot or a few paragraphs, as a new file in the folder you are browsing, and selects its name for you to change. An image keeps the format it was copied in; one copied only as TIFF is saved as PNG. Text is saved as plain text (.txt). The Edit menu and the right-click menu of the folder's empty space say which it will be. Undo moves the file to the Trash."
                         ),
                         HelpRow(
+                            label: "A file's image or text",
+                            description:
+                                "{copyContents} puts the image or text of the selected file on the clipboard, to paste in another app: a photo into a message, a file's text into a document. An image keeps its format, with a PNG copy for the apps that read only PNG. Text is copied as it is, and an RTF file keeps its styles. The Edit menu and the file's right-click menu say which it will be. Before copying a file that usually holds a password or a key, such as .env or id_rsa, it asks, and marks the text as private on the clipboard."
+                        ),
+                        HelpRow(
                             label: "From the folder tree",
                             description:
                                 "With the folder tree active, Copy and Cut take the folder the tree is on, with everything in it, and never what is selected in the list."
@@ -662,6 +667,8 @@ extension HelpContent {
         HelpShortcutItem(group: .files, .command(.ejectVolume), "Eject the disk selected in the sidebar"),
         HelpShortcutItem(group: .files, .command(.selectAll), "Select all"),
         HelpShortcutItem(group: .files, .command(.copyPath), "Copy the path"),
+        HelpShortcutItem(
+            group: .files, .command(.copyContents), "Copy the selected file's image or text, to paste in another app"),
         HelpShortcutItem(group: .files, .command(.showClipboard), "See what is waiting to be pasted"),
         HelpShortcutItem(group: .files, .command(.clearClipboard), "Empty the clipboard"),
         HelpShortcutItem(group: .files, .command(.openInTerminal), "Open in Terminal"),

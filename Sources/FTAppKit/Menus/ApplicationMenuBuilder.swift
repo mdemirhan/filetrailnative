@@ -117,6 +117,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.copyToOtherPane, "Copy to Other Pane"))
             menu.addItem(context.command(.moveToOtherPane, "Move to Other Pane"))
             menu.addItem(context.command(.copyPath, "Copy Path"))
+            // Names what it would copy once the menu is synced: "Copy Image", "Copy Text".
+            menu.addItem(context.command(.copyContents, CopyContents.commandLabel))
             menu.addItem(context.command(.editSelectAll, "Select All", fixed: .selectAll))
             menu.addItem(.separator())
             menu.addItem(context.command(.showClipboard, "Show Clipboard"))

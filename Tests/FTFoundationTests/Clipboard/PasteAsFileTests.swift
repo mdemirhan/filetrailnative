@@ -13,6 +13,12 @@ struct PasteAsFileTests {
     @Test func anImageIsTakenInItsOwnFormatAndTIFFOnlyWhenThereIsNoOther() {
         #expect(Self.choose(["public.png", "public.tiff"]) == .image(.png))
         #expect(Self.choose(["public.tiff", "public.jpeg"]) == .image(.jpeg))
+        // The copying app lists its own format first: a HEIC with a PNG copy for other apps is the HEIC.
+        #expect(Self.choose(["public.heic", "public.png"]) == .image(.heic))
+        #expect(Self.choose(["public.jpeg", "public.png"]) == .image(.jpeg))
+        #expect(Self.choose(["com.compuserve.gif", "public.tiff", "public.png"]) == .image(.gif))
+        // A format not written is passed over for the next.
+        #expect(Self.choose(["org.webmproject.webp", "public.png"]) == .image(.png))
         #expect(Self.choose(["public.heic"]) == .image(.heic))
         #expect(Self.choose(["com.compuserve.gif"]) == .image(.gif))
         #expect(Self.choose(["public.tiff"]) == .image(.tiff))

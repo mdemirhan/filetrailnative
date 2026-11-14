@@ -61,6 +61,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -115,6 +116,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -169,6 +171,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -223,6 +226,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -279,6 +283,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -340,6 +345,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -401,6 +407,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -460,6 +467,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -519,6 +527,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -614,7 +623,8 @@
           "pasteAsFile",
           "undoHistory",
           "undo",
-          "redo"
+          "redo",
+          "copyContents"
         ]
       }
     },
@@ -745,7 +755,8 @@
           "pasteAsFile",
           "undoHistory",
           "undo",
-          "redo"
+          "redo",
+          "copyContents"
         ]
       }
     },
@@ -805,6 +816,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -872,6 +884,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -959,6 +972,7 @@
           "renameSelection",
           "newFolder",
           "trashSelection",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -1014,6 +1028,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -1135,6 +1150,7 @@
           "redo",
           "moveSelection",
           "duplicateSelection",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -1235,6 +1251,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -1334,6 +1351,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme"
         ]
       }
@@ -1424,7 +1442,8 @@
           "redo",
           "renameSelection",
           "openInTerminal",
-          "showInFinder"
+          "showInFinder",
+          "copyContents"
         ]
       }
     },
@@ -1516,6 +1535,7 @@
           "duplicateSelection",
           "newFolder",
           "openInTerminal",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -1591,6 +1611,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -1706,6 +1727,7 @@
           "newFolder",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "help"
         ]
       }
@@ -1783,6 +1805,7 @@
           "duplicateSelection",
           "newFolder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -1867,6 +1890,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -1971,6 +1995,7 @@
           "redo",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -2061,6 +2086,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -2122,6 +2148,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -2195,6 +2222,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -2304,6 +2332,7 @@
           "moveSelection",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "theme"
         ]
       }
@@ -2405,6 +2434,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme"
         ]
       }
@@ -2498,6 +2528,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -2598,6 +2629,7 @@
           "redo",
           "renameSelection",
           "openInTerminal",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -2654,6 +2686,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -2767,7 +2800,8 @@
           "duplicateSelection",
           "newFolder",
           "trashSelection",
-          "copyPath"
+          "copyPath",
+          "copyContents"
         ]
       }
     },
@@ -2840,6 +2874,7 @@
           "duplicateSelection",
           "newFolder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -2932,6 +2967,7 @@
           "moveSelection",
           "duplicateSelection",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -3018,6 +3054,7 @@
           "renameSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -3128,6 +3165,7 @@
           "moveSelection",
           "newFolder",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -3208,6 +3246,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -3266,6 +3305,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -3356,6 +3396,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -3437,6 +3478,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -3493,6 +3535,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -3547,6 +3590,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -3644,6 +3688,7 @@
           "renameSelection",
           "duplicateSelection",
           "openInTerminal",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -3701,6 +3746,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -3808,7 +3854,8 @@
           "moveSelection",
           "duplicateSelection",
           "trashSelection",
-          "openInTerminal"
+          "openInTerminal",
+          "copyContents"
         ]
       }
     },
@@ -3871,6 +3918,7 @@
           "trashSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -3976,6 +4024,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -4072,6 +4121,7 @@
           "duplicateSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -4133,6 +4183,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -4234,6 +4285,7 @@
           "redo",
           "duplicateSelection",
           "trashSelection",
+          "copyContents",
           "theme"
         ]
       }
@@ -4288,6 +4340,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -4370,6 +4423,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -4467,6 +4521,7 @@
           "renameSelection",
           "moveSelection",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -4527,6 +4582,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -4613,6 +4669,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -4713,6 +4770,7 @@
           "redo",
           "moveSelection",
           "trashSelection",
+          "copyContents",
           "settings"
         ]
       }
@@ -4808,6 +4866,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -4866,6 +4925,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -4961,6 +5021,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -5050,6 +5111,7 @@
           "duplicateSelection",
           "newFolder",
           "showInFinder",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -5148,6 +5210,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -5238,6 +5301,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -5346,6 +5410,7 @@
           "renameSelection",
           "duplicateSelection",
           "trashSelection",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -5405,6 +5470,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -5483,6 +5549,7 @@
           "duplicateSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -5551,6 +5618,7 @@
           "trashSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -5619,6 +5687,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -5720,6 +5789,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -5799,6 +5869,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -5862,6 +5933,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -5930,6 +6002,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -5984,6 +6057,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -6070,6 +6144,7 @@
           "newFolder",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -6175,7 +6250,8 @@
           "duplicateSelection",
           "trashSelection",
           "showInFinder",
-          "copyPath"
+          "copyPath",
+          "copyContents"
         ]
       }
     },
@@ -6249,6 +6325,7 @@
           "newFolder",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -6331,6 +6408,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -6443,7 +6521,8 @@
           "moveSelection",
           "trashSelection",
           "showInFinder",
-          "copyPath"
+          "copyPath",
+          "copyContents"
         ]
       }
     },
@@ -6495,6 +6574,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -6591,6 +6671,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -6681,6 +6762,7 @@
           "redo",
           "duplicateSelection",
           "trashSelection",
+          "copyContents",
           "settings"
         ]
       }
@@ -6738,6 +6820,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -6801,6 +6884,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -6856,6 +6940,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -6912,6 +6997,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -6990,6 +7076,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -7066,6 +7153,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -7133,6 +7221,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -7252,7 +7341,8 @@
           "renameSelection",
           "moveSelection",
           "openInTerminal",
-          "showInFinder"
+          "showInFinder",
+          "copyContents"
         ]
       }
     },
@@ -7354,7 +7444,8 @@
           "moveSelection",
           "duplicateSelection",
           "trashSelection",
-          "openInTerminal"
+          "openInTerminal",
+          "copyContents"
         ]
       }
     },
@@ -7456,6 +7547,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -7565,6 +7657,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -7676,6 +7769,7 @@
           "trashSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme"
         ]
       }
@@ -7778,6 +7872,7 @@
           "duplicateSelection",
           "trashSelection",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -7866,6 +7961,7 @@
           "trashSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -7946,6 +8042,7 @@
           "renameSelection",
           "newFolder",
           "openInTerminal",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -8005,6 +8102,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -8073,6 +8171,7 @@
           "trashSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -8178,6 +8277,7 @@
           "undo",
           "redo",
           "moveSelection",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -8277,6 +8377,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -8347,6 +8448,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -8454,6 +8556,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme"
         ]
       }
@@ -8561,7 +8664,8 @@
           "moveSelection",
           "duplicateSelection",
           "trashSelection",
-          "showInFinder"
+          "showInFinder",
+          "copyContents"
         ]
       }
     },
@@ -8642,6 +8746,7 @@
           "moveSelection",
           "duplicateSelection",
           "trashSelection",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -8731,6 +8836,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -8812,6 +8918,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -8885,6 +8992,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -8957,6 +9065,7 @@
           "newFolder",
           "trashSelection",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9013,6 +9122,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9067,6 +9177,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9150,6 +9261,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -9210,6 +9322,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9269,6 +9382,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9327,6 +9441,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9423,7 +9538,8 @@
           "moveSelection",
           "newFolder",
           "trashSelection",
-          "copyPath"
+          "copyPath",
+          "copyContents"
         ]
       }
     },
@@ -9475,6 +9591,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9596,6 +9713,7 @@
           "redo",
           "moveSelection",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -9704,6 +9822,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -9810,6 +9929,7 @@
           "renameSelection",
           "duplicateSelection",
           "openInTerminal",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -9895,6 +10015,7 @@
           "moveSelection",
           "duplicateSelection",
           "copyPath",
+          "copyContents",
           "theme"
         ]
       }
@@ -9949,6 +10070,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -10044,6 +10166,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -10143,6 +10266,7 @@
           "newFolder",
           "trashSelection",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -10198,6 +10322,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -10293,6 +10418,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -10350,6 +10476,7 @@
           "trashSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -10442,6 +10569,7 @@
           "newFolder",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "help"
         ]
       }
@@ -10508,6 +10636,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -10617,6 +10746,7 @@
           "renameSelection",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "theme"
         ]
       }
@@ -10672,6 +10802,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -10726,6 +10857,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -10822,6 +10954,7 @@
           "duplicateSelection",
           "trashSelection",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -10879,6 +11012,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -10957,6 +11091,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -11069,6 +11204,7 @@
           "redo",
           "trashSelection",
           "openInTerminal",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -11155,6 +11291,7 @@
           "moveSelection",
           "duplicateSelection",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -11208,6 +11345,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -11310,6 +11448,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -11374,6 +11513,7 @@
           "trashSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -11435,6 +11575,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -11498,6 +11639,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -11584,6 +11726,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -11704,6 +11847,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme"
         ]
       }
@@ -11762,6 +11906,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -11862,6 +12007,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -11969,6 +12115,7 @@
           "redo",
           "moveSelection",
           "duplicateSelection",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -12024,6 +12171,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -12082,6 +12230,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -12191,7 +12340,8 @@
           "duplicateSelection",
           "newFolder",
           "trashSelection",
-          "copyPath"
+          "copyPath",
+          "copyContents"
         ]
       }
     },
@@ -12245,6 +12395,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -12305,6 +12456,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -12372,6 +12524,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -12489,6 +12642,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -12586,6 +12740,7 @@
           "newFolder",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "help"
         ]
       }
@@ -12644,6 +12799,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -12700,6 +12856,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -12754,6 +12911,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -12833,6 +12991,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -12890,6 +13049,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -12983,6 +13143,7 @@
           "moveSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -13068,6 +13229,7 @@
           "duplicateSelection",
           "newFolder",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -13178,6 +13340,7 @@
           "moveSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -13261,6 +13424,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -13313,6 +13477,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -13375,6 +13540,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -13439,6 +13605,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -13512,6 +13679,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -13565,6 +13733,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -13648,6 +13817,7 @@
           "trashSelection",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -13705,6 +13875,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -13803,6 +13974,7 @@
           "renameSelection",
           "duplicateSelection",
           "showInFinder",
+          "copyContents",
           "theme"
         ]
       }
@@ -13862,6 +14034,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -13980,6 +14153,7 @@
           "newFolder",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "help"
         ]
       }
@@ -14032,6 +14206,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -14090,6 +14265,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -14171,6 +14347,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -14275,6 +14452,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -14345,6 +14523,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -14437,6 +14616,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -14538,6 +14718,7 @@
           "duplicateSelection",
           "trashSelection",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -14622,6 +14803,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -14715,6 +14897,7 @@
           "duplicateSelection",
           "openInTerminal",
           "showInFinder",
+          "copyContents",
           "theme"
         ]
       }
@@ -14800,6 +14983,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -14863,6 +15047,7 @@
           "duplicateSelection",
           "trashSelection",
           "showInFinder",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -14974,6 +15159,7 @@
           "newFolder",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme"
         ]
       }
@@ -15036,6 +15222,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -15129,6 +15316,7 @@
           "trashSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "help"
         ]
       }
@@ -15183,6 +15371,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -15237,6 +15426,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -15297,6 +15487,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -15390,6 +15581,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -15459,6 +15651,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -15527,6 +15720,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -15636,6 +15830,7 @@
           "duplicateSelection",
           "trashSelection",
           "copyPath",
+          "copyContents",
           "settings",
           "help"
         ]
@@ -15693,6 +15888,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "settings"
         ]
@@ -15799,6 +15995,7 @@
           "duplicateSelection",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "settings"
         ]
       }
@@ -15880,6 +16077,7 @@
           "openInTerminal",
           "showInFinder",
           "copyPath",
+          "copyContents",
           "theme",
           "help"
         ]
@@ -15952,6 +16150,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme",
           "settings",
           "help"
@@ -16053,6 +16252,7 @@
           "newFolder",
           "openInTerminal",
           "copyPath",
+          "copyContents",
           "theme"
         ]
       }

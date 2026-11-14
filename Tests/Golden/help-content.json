@@ -348,6 +348,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+T",
             "description": "Open in Terminal"
           },
@@ -1673,6 +1678,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -2450,6 +2459,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -3777,6 +3791,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -4561,6 +4579,11 @@
             "group": "files",
             "shortcut": "Cmd+=",
             "description": "Copy the path (Cmd++ also works)"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -5875,6 +5898,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -6657,6 +6684,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -7980,6 +8012,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -8684,6 +8720,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select all"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -9749,6 +9790,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -10467,6 +10512,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -11810,6 +11860,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -12593,6 +12647,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -13905,6 +13964,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -14671,6 +14734,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -15993,6 +16061,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -16788,6 +16860,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -18068,6 +18145,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -18836,6 +18917,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -20168,6 +20254,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -20964,6 +21054,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -22256,6 +22351,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -23042,6 +23141,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -24348,6 +24452,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -25122,6 +25230,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -26450,6 +26563,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -27232,6 +27349,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -28571,6 +28693,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -29357,6 +29483,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -30656,6 +30787,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -31436,6 +31571,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -32764,6 +32904,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -33561,6 +33705,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -34908,6 +35057,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -35695,6 +35848,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -37010,6 +37168,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -37800,6 +37962,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -39106,6 +39273,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -39882,6 +40053,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -41192,6 +41368,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -41972,6 +42152,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -43295,6 +43480,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -44084,6 +44273,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -45410,6 +45604,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -46169,6 +46367,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -47474,6 +47677,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -48266,6 +48473,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -49595,6 +49807,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -50379,6 +50595,11 @@
             "group": "files",
             "shortcut": "Cmd+;",
             "description": "Copy the path (Cmd++ also works)"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -51668,6 +51889,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -52430,6 +52655,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -53753,6 +53983,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -54539,6 +54773,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -55879,6 +56118,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -56664,6 +56907,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -57986,6 +58234,10 @@
                   "Image or text as a file"
                 ],
                 [
+                  "Copying and moving",
+                  "A file's image or text"
+                ],
+                [
                   "Changing",
                   "Move to Trash"
                 ],
@@ -58775,6 +59027,11 @@
             "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the path"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Shift+C",
+            "description": "Copy the selected file's image or text, to paste in another app"
           },
           {
             "group": "files",
@@ -60092,6 +60349,10 @@
                 [
                   "Copying and moving",
                   "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
+                  "A file's image or text"
                 ],
                 [
                   "Changing",

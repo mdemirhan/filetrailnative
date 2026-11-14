@@ -573,6 +573,12 @@ final class InfoController {
             if actions.copy(formatPathForShell(item.path), what: "Path") { flashCopied(.copyPath) }
         case .copyName:
             if actions.copy(item.name, what: "Name") { flashCopied(.copyName) }
+        case .copyContents:
+            Task { [weak self, host] in
+                guard await host.contentsCopier.copy(item.path, announce: false) else { return }
+                self?.flashCopied(.copyContents)
+                self?.update()
+            }
         case .terminal: actions.openInTerminal(item.path)
         case .finder: actions.showInFinder(item.path)
         case .favorite: host.sidebarController.toggleFavorite(item.path)

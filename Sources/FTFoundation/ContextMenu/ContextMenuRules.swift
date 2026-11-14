@@ -117,7 +117,16 @@ public enum ContextMenuRules {
             // Several items are renamed in the Rename sheet, as Finder's Rename does.
             renameLabel: subject.entries.count > 1 ? "Rename \(groupedCount(subject.entries.count)) Items…" : nil,
             ejectLabel: subject.ejectableDiskName.map { "Eject “\($0)”" } ?? ejectLabel,
-            pasteAsFileLabel: PasteAsFile.menuTitle(world.pasteAsFileKind))
+            pasteAsFileLabel: PasteAsFile.menuTitle(world.pasteAsFileKind),
+            copyContentsLabel: CopyContents.menuTitle(copyContentsGuess(subject)))
+    }
+
+    /// What Copy Contents would copy of the one file a menu is for; nil when it is for anything else.
+    public static func copyContentsGuess(_ subject: ContextMenuSubject) -> CopyContentsGuess? {
+        guard subject.scope == .selection, subject.paths.count == 1, subject.entries.count == 1,
+            let entry = subject.entries.first, entry.kind.isEditableFile
+        else { return nil }
+        return CopyContents.guess(forName: NodePath.basename(entry.path))
     }
 
     /// A count with its thousands grouped as in US English, whatever the app's language: "1,234".
@@ -171,6 +180,8 @@ public enum ContextMenuRules {
         if (surface == .content || surface == .search) && (!isSingleFolder || !world.hasPasteDestination) {
             hidden.insert(.paste)
         }
+        // Copy Contents is for one image or text file, or one whose kind isn't known.
+        if !(copyContentsGuess(subject)?.isOffered ?? false) { hidden.insert(.copyContents) }
         // Edit is for text files.
         if entries.isEmpty || entries.count != subject.paths.count || !entries.allSatisfy({ $0.kind.isEditableFile }) {
             hidden.insert(.edit)

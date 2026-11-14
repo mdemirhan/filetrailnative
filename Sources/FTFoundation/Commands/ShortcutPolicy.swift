@@ -130,6 +130,7 @@ public enum ShortcutPolicy {
         "revealInFolder": .revealInFolder, "edit": .editSelection, "cut": .cut, "copy": .copy, "paste": .paste,
         "move": .moveSelection, "rename": .renameSelection, "duplicate": .duplicateSelection, "newFolder": .newFolder,
         "pasteAsFile": .pasteAsFile, "terminal": .openInTerminal, "copyPath": .copyPath,
+        "copyContents": .copyContents,
         "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection,
     ]
 
@@ -184,6 +185,8 @@ public enum ShortcutPolicy {
             return canHandle(.openInTerminal, context)
         case "copyPath":
             return canHandleRaw(.copyPath, context) || canHandle(.copyPath, context)
+        case "copyContents":
+            return canHandle(.copyContents, context)
         case "rootTreeHere":
             return canHandle(.rootTreeAtSelection, context)
         case "trash":

@@ -162,7 +162,7 @@ struct InfoPanelViewTests {
         let titles = findViews("infoPanel.section.title", in: view).map(fieldText)
         #expect(titles == ["Information", "Quick Actions"])
         let actions = findViews("infoPanel.action", in: view)
-        #expect(actions.count == 6)
+        #expect(actions.count == 7)
         #expect(actions.allSatisfy { $0.frame.size == NSSize(width: 32, height: 28) })
         #expect((actions.first as? InfoIconButton)?.tooltip == "Quick Look (⌘Y)")
         #expect((actions[1] as? InfoIconButton)?.tooltip == "Edit in Zed (⇧⌘E)")

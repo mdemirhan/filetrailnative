@@ -376,6 +376,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -640,6 +643,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -2632,6 +2639,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -2896,6 +2906,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -3188,6 +3202,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -3452,6 +3469,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -3738,6 +3759,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -4002,6 +4026,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -4295,6 +4323,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -4555,6 +4586,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -4892,6 +4927,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -5156,6 +5194,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -5446,6 +5488,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -5702,6 +5747,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -5993,6 +6042,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -6253,6 +6305,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -6552,6 +6608,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -6816,6 +6875,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -7102,6 +7165,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -7362,6 +7428,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -7660,6 +7730,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -7921,6 +7994,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -8206,6 +8283,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -8466,6 +8546,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -8748,6 +8832,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -9000,6 +9087,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -9293,6 +9384,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -9553,6 +9647,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -9846,6 +9944,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -10106,6 +10207,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -10396,6 +10501,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -10648,6 +10756,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -10940,6 +11052,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -11196,6 +11311,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -11504,6 +11623,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -11764,6 +11886,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -12200,6 +12326,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -12464,6 +12593,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -13091,6 +13224,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -13347,6 +13483,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -13726,6 +13866,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -13995,6 +14138,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -14353,6 +14500,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -14617,6 +14767,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -14964,6 +15118,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -15213,6 +15370,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -15605,6 +15766,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -15866,6 +16030,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -16303,6 +16471,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -16563,6 +16734,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -17104,6 +17279,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -17382,6 +17560,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -18055,6 +18237,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -18318,6 +18503,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -18914,6 +19103,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -19179,6 +19371,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -19531,6 +19727,9 @@
           ],
           "emptyTrash": [],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -19790,6 +19989,10 @@
           [
             "Cmd+E",
             "ejectVolume"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -20298,6 +20501,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -20562,6 +20768,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -20964,6 +21174,9 @@
           "copyPath": [
             "F11"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+F11"
@@ -21294,6 +21507,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+1",
@@ -21943,6 +22160,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -22195,6 +22415,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -22548,6 +22772,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -22816,6 +23043,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -23162,6 +23393,9 @@
           "ejectVolume": [],
           "copyPath": [
             "Cmd+Plus"
+          ],
+          "copyContents": [
+            "Cmd+Shift+C"
           ],
           "showClipboard": [
             "Cmd+Option+T"
@@ -23515,6 +23749,10 @@
           [
             "Cmd+Backspace",
             "trashSelection"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -23915,6 +24153,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -24179,6 +24420,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -24541,6 +24786,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -24804,6 +25052,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -25174,6 +25426,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -25437,6 +25692,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -25830,6 +26089,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -26087,6 +26349,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -26470,6 +26736,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -26714,6 +26983,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -27276,6 +27549,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -27542,6 +27818,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -27886,6 +28166,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -28150,6 +28433,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -28644,6 +28931,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -28901,6 +29191,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -29320,6 +29614,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -29579,6 +29876,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -30270,6 +30571,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -30507,6 +30811,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -30936,6 +31244,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -31200,6 +31511,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -31657,6 +31972,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -31918,6 +32236,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -32379,6 +32701,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -32642,6 +32967,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -33245,6 +33574,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -33509,6 +33841,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -33966,6 +34302,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -34227,6 +34566,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -34792,6 +35135,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -35051,6 +35397,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+3",
@@ -36395,6 +36745,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -36662,6 +37015,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -37120,6 +37477,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -37384,6 +37744,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -37799,6 +38163,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -38064,6 +38431,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -38557,6 +38928,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -38812,6 +39186,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -39637,6 +40015,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -39898,6 +40279,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -40400,6 +40785,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -40667,6 +41055,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -41272,6 +41664,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -41511,6 +41906,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -42138,6 +42537,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -42397,6 +42799,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -43035,6 +43441,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -43300,6 +43709,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -43728,6 +44141,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -43992,6 +44408,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -44451,6 +44871,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -44715,6 +45138,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -45185,6 +45612,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -45441,6 +45871,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -46025,6 +46459,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "showInFinder": [],
           "focusFileSearch": [],
@@ -46296,6 +46733,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Shift+F",
@@ -46952,6 +47393,9 @@
           ],
           "emptyTrash": [],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -47199,6 +47643,10 @@
           [
             "Cmd+Backspace",
             "trashSelection"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -48382,6 +48830,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -48643,6 +49094,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -49040,6 +49495,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -49300,6 +49758,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -49736,6 +50198,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -49988,6 +50453,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -50572,6 +51041,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -50839,6 +51311,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -51262,6 +51738,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -51525,6 +52004,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -51984,6 +52467,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -52244,6 +52730,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -52729,6 +53219,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -52998,6 +53491,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -53730,6 +54227,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -53980,6 +54480,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Shift+F",
@@ -54386,6 +54890,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -54652,6 +55159,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -55083,6 +55594,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -55326,6 +55840,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -55948,6 +56466,9 @@
           "equalizePanes": [],
           "editSelection": [],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "focusFileSearch": [
             "Cmd+Right"
           ],
@@ -56339,6 +56860,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -56762,6 +57287,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -57026,6 +57554,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -57737,6 +58269,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -57955,6 +58490,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+4",
@@ -58692,6 +59231,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -58956,6 +59498,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -59556,6 +60102,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "openInTerminal": [
             "Cmd+Option+T"
           ],
@@ -59814,6 +60363,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -61218,6 +61771,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "openInTerminal": [
             "Cmd+Option+T"
           ],
@@ -61462,6 +62018,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -62424,6 +62984,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -62688,6 +63251,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -63150,6 +63717,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -63405,6 +63975,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -64225,6 +64799,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -64489,6 +65066,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -64905,6 +65486,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -65169,6 +65753,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -65647,6 +66235,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -65908,6 +66499,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -66358,6 +66953,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -66603,6 +67201,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -67214,6 +67816,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -67470,6 +68075,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -68186,6 +68795,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -68448,6 +69060,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -68988,6 +69604,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -69242,6 +69861,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -69979,6 +70602,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -70227,6 +70853,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -71005,6 +71635,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -71264,6 +71897,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -71717,6 +72354,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -71963,6 +72603,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -72741,6 +73385,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -73006,6 +73653,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -73529,6 +74180,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -73786,6 +74440,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -74287,6 +74945,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -74542,6 +75203,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -74999,6 +75664,9 @@
           "copyPath": [
             "Cmd+Shift+G"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [
             "Cmd+Shift+E",
             "Ctrl+Shift+K"
@@ -75351,6 +76019,10 @@
           [
             "Cmd+Backspace",
             "trashSelection"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -75937,6 +76609,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -76200,6 +76875,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -76815,6 +77494,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -77079,6 +77761,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -77616,6 +78302,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "toggleFavorite": [],
@@ -77861,6 +78550,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -78966,6 +79659,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -79230,6 +79926,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -79696,6 +80396,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -79960,6 +80663,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -80379,6 +81086,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -80641,6 +81351,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -81006,6 +81720,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -81262,6 +81979,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -81881,6 +82602,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -82113,6 +82837,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -82938,6 +83666,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -83174,6 +83905,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+1",
@@ -84561,6 +85296,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -84828,6 +85566,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -85341,6 +86083,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -85605,6 +86350,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -86092,6 +86841,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -86345,6 +87097,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -87244,6 +88000,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "openInTerminal": [
             "Cmd+Option+T"
           ],
@@ -87481,6 +88240,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -88618,6 +89381,9 @@
             "Cmd+PageUp"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "focusFileSearch": [],
           "viewAsIcons": [
@@ -88960,6 +89726,10 @@
           [
             "Cmd+Backspace",
             "trashSelection"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -89549,6 +90319,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -89813,6 +90586,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -90140,6 +90917,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -90389,6 +91169,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -90757,6 +91541,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -91021,6 +91808,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -91458,6 +92249,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -91701,6 +92495,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -92383,6 +93181,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -92650,6 +93451,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -93221,6 +94026,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -93483,6 +94291,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -93975,6 +94787,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -94237,6 +95052,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -94834,6 +95653,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -95098,6 +95920,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -95421,6 +96247,9 @@
           ],
           "copyPath": [
             "Ctrl+D"
+          ],
+          "copyContents": [
+            "Cmd+Shift+C"
           ],
           "showInFinder": [],
           "toggleFavorite": [
@@ -95786,6 +96615,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -96832,6 +97665,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -97076,6 +97912,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -97770,6 +98610,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -98022,6 +98865,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -98481,6 +99328,9 @@
             "Cmd+Shift+Backspace"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -98734,6 +99584,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -99075,6 +99929,9 @@
             "Cmd+3",
             "Cmd+["
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showInFinder": [
             "Cmd+'"
           ],
@@ -99410,6 +100267,10 @@
           [
             "Cmd+E",
             "ejectVolume"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -100236,6 +101097,9 @@
             "Cmd+Shift+Backspace"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "openInTerminal": [
             "Cmd+Option+T"
           ],
@@ -100492,6 +101356,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -101405,6 +102273,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -101669,6 +102540,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -102077,6 +102952,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -102334,6 +103212,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -102790,6 +103672,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -103054,6 +103939,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -103415,6 +104304,9 @@
           "copyPath": [
             "Cmd+Shift+I"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [
             "Cmd+Shift+K"
           ],
@@ -103739,6 +104631,10 @@
           [
             "Cmd+E",
             "ejectVolume"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -104486,6 +105382,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -104742,6 +105641,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -105135,6 +106038,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -105399,6 +106305,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -105950,6 +106860,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -106214,6 +107127,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -106653,6 +107570,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -106910,6 +107830,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -107351,6 +108275,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -107615,6 +108542,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -108015,6 +108946,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -108282,6 +109216,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -108835,6 +109773,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -109092,6 +110033,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -109576,6 +110521,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -109834,6 +110782,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -110375,6 +111327,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -110627,6 +111582,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -111149,6 +112108,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -111427,6 +112389,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -112043,6 +113009,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -112314,6 +113283,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -112704,6 +113677,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -112968,6 +113944,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -113370,6 +114350,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -113631,6 +114614,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -114048,6 +115035,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -114292,6 +115282,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -114904,6 +115898,9 @@
             "Cmd+Backspace"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [
             "Cmd+Up",
             "Cmd+Delete"
@@ -115218,6 +116215,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -115675,6 +116676,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -115927,6 +116931,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -116602,6 +117610,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -116869,6 +117880,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -117337,6 +118352,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "showInFinder": [],
           "toggleFavorite": [],
@@ -117571,6 +118589,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -117999,6 +119021,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -118259,6 +119284,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -118801,6 +119830,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "openInTerminal": [
             "Cmd+Option+T"
           ],
@@ -119042,6 +120074,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -119984,6 +121020,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -120249,6 +121288,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -120761,6 +121804,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -121017,6 +122063,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -121636,6 +122686,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -121903,6 +122956,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -122414,6 +123471,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -122680,6 +123740,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -123266,6 +124330,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -123532,6 +124599,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -124018,6 +125089,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -124278,6 +125352,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -124789,6 +125867,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -125049,6 +126130,10 @@
             "copyPath"
           ],
           [
+            "Cmd+Shift+C",
+            "copyContents"
+          ],
+          [
             "Cmd+Option+T",
             "openInTerminal"
           ],
@@ -125291,6 +126376,9 @@
           "copyPath": [
             "Cmd+Delete",
             "Cmd+K"
+          ],
+          "copyContents": [
+            "Cmd+Shift+C"
           ],
           "showLastSearchResults": [
             "Cmd+Shift+F",
@@ -125692,6 +126780,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -126212,6 +127304,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -126479,6 +127574,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -127116,6 +128215,9 @@
             "Cmd+E"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -127347,6 +128449,10 @@
           [
             "Cmd+E",
             "ejectVolume"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -128147,6 +129253,9 @@
           "renameSelection": [],
           "ejectVolume": [],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showLastSearchResults": [],
           "openHelp": [],
           "goHomeRootTree": [
@@ -128464,6 +129573,10 @@
           [
             "Cmd+Backspace",
             "trashSelection"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -128825,6 +129938,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -129089,6 +130205,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -129422,6 +130542,9 @@
           "copyPath": [
             "Cmd+Left"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showLastSearchResults": [],
           "viewAsIcons": [],
           "sortBySize": [
@@ -129748,6 +130871,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -130278,6 +131405,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -130526,6 +131656,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -131136,6 +132270,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -131400,6 +132537,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -131924,6 +133065,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "toggleFavorite": [],
           "showLastSearchResults": [
@@ -132172,6 +133316,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Shift+F",
@@ -132893,6 +134041,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [],
           "showInFinder": [],
@@ -133145,6 +134296,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Shift+F",
@@ -134073,6 +135228,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -134333,6 +135491,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -134820,6 +135982,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -135089,6 +136254,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -135486,6 +136655,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -135747,6 +136919,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -136298,6 +137474,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -136560,6 +137739,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -137219,6 +138402,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -137479,6 +138665,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -137918,6 +139108,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -138182,6 +139375,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -138784,6 +139981,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -139036,6 +140236,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -140343,6 +141547,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -140607,6 +141814,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -140994,6 +142205,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -141258,6 +142472,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -141683,6 +142901,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -141947,6 +143168,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -142400,6 +143625,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -142664,6 +143892,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -143087,6 +144319,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -143344,6 +144579,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -143696,6 +144935,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -143962,6 +145204,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -144465,6 +145711,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -144736,6 +145985,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -145292,6 +146545,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -145548,6 +146804,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -146061,6 +147321,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -146319,6 +147582,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -146717,6 +147984,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -146977,6 +148247,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -147497,6 +148771,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -147760,6 +149037,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -148367,6 +149648,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -148630,6 +149914,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -149288,6 +150576,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -149552,6 +150843,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -149857,6 +151152,9 @@
           "copyPath": [
             "Cmd+Option+K",
             "Cmd+Plus"
+          ],
+          "copyContents": [
+            "Cmd+Shift+C"
           ],
           "clearClipboard": [
             "PageDown"
@@ -150261,6 +151559,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -150821,6 +152123,9 @@
           ],
           "ejectVolume": [],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -151057,6 +152362,10 @@
           [
             "Cmd+Backspace",
             "trashSelection"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Shift+F",
@@ -152183,6 +153492,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -152445,6 +153757,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -152916,6 +154232,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -153182,6 +154501,10 @@
             "copyPath"
           ],
           [
+            "Cmd+Shift+C",
+            "copyContents"
+          ],
+          [
             "Cmd+Option+T",
             "openInTerminal"
           ],
@@ -153378,6 +154701,9 @@
           ],
           "copyPath": [
             "Cmd+Shift+."
+          ],
+          "copyContents": [
+            "Cmd+Shift+C"
           ],
           "goBack": [
             "Cmd+[",
@@ -153769,6 +155095,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -154173,6 +155503,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -154433,6 +155766,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -154972,6 +156309,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -155236,6 +156576,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -155729,6 +157073,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -155993,6 +157340,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -156467,6 +157818,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -156709,6 +158063,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -157131,6 +158489,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -157397,6 +158758,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -157805,6 +159170,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -158069,6 +159437,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -158466,6 +159838,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -158730,6 +160105,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -159208,6 +160587,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -159465,6 +160847,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -159931,6 +161317,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -160197,6 +161586,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -160782,6 +162175,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -161038,6 +162434,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -161417,6 +162817,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -161677,6 +163080,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -162113,6 +163520,9 @@
             "Cmd+Shift+Backspace"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -162371,6 +163781,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -162775,6 +164189,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -163039,6 +164456,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -163562,6 +164983,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -163793,6 +165217,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -164712,6 +166140,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -164953,6 +166384,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -165543,6 +166978,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -165788,6 +167226,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -166832,6 +168274,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -167095,6 +168540,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -167424,6 +168873,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -167688,6 +169140,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -168054,6 +169510,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -168318,6 +169777,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -168743,6 +170206,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -169010,6 +170476,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -169584,6 +171054,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -169844,6 +171317,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -170270,6 +171747,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -170534,6 +172014,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -171086,6 +172570,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -171345,6 +172832,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -171854,6 +173345,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -172118,6 +173612,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -172559,6 +174057,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "showInFinder": [],
           "toggleFavorite": [],
@@ -172812,6 +174313,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+1",
@@ -173362,6 +174867,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -173624,6 +175132,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -174116,6 +175628,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -174379,6 +175894,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -174778,6 +176297,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -175042,6 +176564,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -175551,6 +177077,9 @@
             "Cmd+Option+K"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [
             "Cmd+Up"
           ],
@@ -175902,6 +177431,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -176633,6 +178166,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -176897,6 +178433,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -177363,6 +178903,9 @@
             "Ctrl+Cmd+S"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [
             "Cmd+Esc",
             "Cmd+K"
@@ -177770,6 +179313,10 @@
           [
             "Cmd+E",
             "ejectVolume"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -178245,6 +179792,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -178510,6 +180060,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -179157,6 +180711,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -179416,6 +180973,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -179861,6 +181422,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -180125,6 +181689,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -180545,6 +182113,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -180809,6 +182380,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -181163,6 +182738,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -181427,6 +183005,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -181836,6 +183418,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -182088,6 +183673,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -182593,6 +184182,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -182840,6 +184432,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -183434,6 +185030,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [],
           "showInFinder": [],
@@ -183672,6 +185271,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -184055,6 +185658,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -184310,6 +185916,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -184827,6 +186437,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -185088,6 +186701,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -185584,6 +187201,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -185855,6 +187475,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -186336,6 +187960,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -186597,6 +188224,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -187081,6 +188712,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -187345,6 +188979,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -187777,6 +189415,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -188041,6 +189682,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -188763,6 +190408,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -189027,6 +190675,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -189414,6 +191066,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -189670,6 +191325,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -190106,6 +191765,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -190369,6 +192031,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -190985,6 +192651,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -191253,6 +192922,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -191735,6 +193408,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -191995,6 +193671,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -192486,6 +194166,9 @@
           "equalizePanes": [],
           "calculateSize": [],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "focusFileSearch": [],
           "viewAsIcons": [
             "Ctrl+Tab"
@@ -192848,6 +194531,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -193398,6 +195085,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "focusFileSearch": [
@@ -193643,6 +195333,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -194183,6 +195877,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -194441,6 +196138,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -195011,6 +196712,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -195267,6 +196971,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -195757,6 +197465,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -196021,6 +197732,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -196530,6 +198245,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -196800,6 +198518,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -197224,6 +198946,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -197488,6 +199213,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -198012,6 +199741,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -198277,6 +200009,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -198817,6 +200553,9 @@
           "copyPath": [
             "Cmd+K"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [
             "Cmd+T",
             "Cmd+Option+K"
@@ -199222,6 +200961,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -200037,6 +201780,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -200291,6 +202037,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -200866,6 +202616,9 @@
             "Cmd+Shift+Backspace"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -201129,6 +202882,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -201634,6 +203391,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -201864,6 +203624,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -202549,6 +204313,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -202813,6 +204580,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -203279,6 +205050,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -203538,6 +205312,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -203955,6 +205733,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -204216,6 +205997,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -204744,6 +206529,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -205016,6 +206804,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -205409,6 +207201,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -205667,6 +207462,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -206123,6 +207922,9 @@
             "Cmd+Shift+[",
             "F12"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [
             "Cmd+R"
@@ -206461,6 +208263,10 @@
           [
             "Cmd+Shift+V",
             "pasteAsFile"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -207008,6 +208814,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [],
@@ -207271,6 +209080,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+1",
@@ -207681,6 +209494,9 @@
             "Cmd+R"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showInFinder": [],
           "showLastSearchResults": [
             "Cmd+W"
@@ -208006,6 +209822,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -208584,6 +210404,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -208848,6 +210671,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -209360,6 +211187,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -209626,6 +211456,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -210276,6 +212110,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -210531,6 +212368,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -210937,6 +212778,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -211185,6 +213029,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -211600,6 +213448,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -211859,6 +213710,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -212333,6 +214188,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -212597,6 +214455,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -213087,6 +214949,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -213351,6 +215216,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -213903,6 +215772,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "showInFinder": [],
           "toggleFavorite": [],
@@ -214133,6 +216005,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -214557,6 +216433,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -214816,6 +216695,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -215343,6 +217226,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -215600,6 +217486,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -215955,6 +217845,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -216219,6 +218112,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -216681,6 +218578,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -216933,6 +218833,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -217439,6 +219343,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -217703,6 +219610,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -218109,6 +220020,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -218379,6 +220293,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -218873,6 +220791,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "clearClipboard": [],
           "openInTerminal": [],
           "showInFinder": [],
@@ -219112,6 +221033,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -220338,6 +222263,9 @@
           "copyPath": [
             "Cmd+]"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "openInTerminal": [],
           "revealInFolder": [
             "Cmd+Shift+R"
@@ -220685,6 +222613,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -221704,6 +223636,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -221968,6 +223903,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -222361,6 +224300,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -222616,6 +224558,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -223012,6 +224958,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -223276,6 +225225,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -223760,6 +225713,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -224030,6 +225986,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -224497,6 +226457,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -224761,6 +226724,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -225162,6 +227129,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -225426,6 +227396,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -225921,6 +227895,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -226174,6 +228151,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -226627,6 +228608,9 @@
             "Cmd+K"
           ],
           "copyPath": [],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "toggleFolderTree": [
             "Cmd+Up"
           ],
@@ -227017,6 +229001,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -227689,6 +229677,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -227958,6 +229949,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+F",
@@ -228470,6 +230465,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -228734,6 +230732,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -229166,6 +231168,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -229420,6 +231425,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -230016,6 +232025,9 @@
             "Cmd+K",
             "Cmd+Option+K"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [
             "Cmd+Right"
           ],
@@ -230390,6 +232402,10 @@
           [
             "Cmd+Shift+V",
             "pasteAsFile"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Shift+F",
@@ -231113,6 +233129,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -231373,6 +233392,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -231828,6 +233851,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -232080,6 +234106,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -232662,6 +234692,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -232926,6 +234959,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -233407,6 +235444,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -233663,6 +235703,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -234083,6 +236127,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -234329,6 +236376,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -235154,6 +237205,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -235415,6 +237469,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -236051,6 +238109,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -236315,6 +238376,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -236740,6 +238805,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -237000,6 +239068,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -237497,6 +239569,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -237757,6 +239832,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -238250,6 +240329,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -238523,6 +240605,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -238999,6 +241085,9 @@
           "copyPath": [
             "Cmd+Option+C"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "showClipboard": [],
           "clearClipboard": [],
           "openInTerminal": [
@@ -239258,6 +241347,10 @@
           [
             "Cmd+Option+C",
             "copyPath"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",
@@ -239979,6 +242072,9 @@
           "copyPath": [
             "Cmd+Shift+F"
           ],
+          "copyContents": [
+            "Cmd+Shift+C"
+          ],
           "sortByModified": [
             "Ctrl+D"
           ],
@@ -240383,6 +242479,10 @@
           [
             "Cmd+Shift+Backspace",
             "emptyTrash"
+          ],
+          [
+            "Cmd+Shift+C",
+            "copyContents"
           ],
           [
             "Cmd+Option+T",

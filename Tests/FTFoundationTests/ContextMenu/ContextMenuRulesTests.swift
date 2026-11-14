@@ -143,7 +143,7 @@ struct ContextMenuRulesTests {
         #expect(
             menu == [
                 "Open", "Open With", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy", "Copy Path",
-                "Rename", "Duplicate", "Move to…", "Open in Terminal", "Show in Finder", "Move to Trash",
+                "Copy Text", "Rename", "Duplicate", "Move to…", "Open in Terminal", "Show in Finder", "Move to Trash",
             ])
         let folder = labels(
             subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))

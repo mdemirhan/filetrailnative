@@ -83,7 +83,7 @@ struct TooltipsTests {
     // The commands Help's shortcut list documents; a tooltip must not promise a key for any other command.
     @Test func promisesNoShortcutThatHelpDoesNotList() {
         let documented: Set<String> = [
-            "calculateSize", "clearClipboard", "closeTab", "closeWindow", "copy", "copyPath", "cut",
+            "calculateSize", "clearClipboard", "closeTab", "closeWindow", "copy", "copyContents", "copyPath", "cut",
             "duplicateSelection", "editSelection", "ejectVolume", "emptyTrash", "focusContentPane", "focusFileSearch",
             "focusTreePane", "fullScreen", "goApplications", "goBack", "goDesktop", "goDocuments", "goDownloads",
             "goEnclosingFolder", "goForward", "goHomeRootTree", "goLibrary", "goMacintoshHD", "goTrash",

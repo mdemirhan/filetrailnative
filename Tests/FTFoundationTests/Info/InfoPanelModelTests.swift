@@ -177,8 +177,17 @@ struct InfoPanelModelTests {
         }
         #expect(
             labels(Self.file()) == [
-                "Quick Look", "Edit in Zed", "Copy Path", "Copy Name", "Open in Terminal", "Show in Finder",
+                "Quick Look", "Edit in Zed", "Copy Path", "Copy Name", "Copy Text", "Open in Terminal",
+                "Show in Finder",
             ])
+        // A file's image or text, by its name; nothing for a kind that is neither.
+        var photo = Self.file()
+        photo.name = "beach.heic"
+        #expect(labels(photo).contains("Copy Image"))
+        #expect(labels(photo, copied: .copyContents).contains("Copied"))
+        var archive = Self.file()
+        archive.name = "backup.zip"
+        #expect(!labels(archive).contains { $0.hasPrefix("Copy ") && $0 != "Copy Path" && $0 != "Copy Name" })
         var folder = Self.file()
         folder.kind = .directory
         #expect(

@@ -5,8 +5,8 @@ public enum PasteAsFileKind: String, Sendable, Equatable, CaseIterable {
     case image, text
 }
 
-/// An image on the system's clipboard, in the order they are taken: the bytes of an encoded image are written as they
-/// are, and TIFF, which is large and opens in fewer apps, is written as PNG.
+/// An image on the system's clipboard: the bytes of an encoded image are written as they are, and TIFF, which is large
+/// and opens in fewer apps, is written as PNG.
 public enum PasteAsFileImageFormat: String, Sendable, Equatable, CaseIterable {
     case png, jpeg, heic, gif, tiff
 
@@ -33,6 +33,12 @@ public enum PasteAsFileImageFormat: String, Sendable, Equatable, CaseIterable {
 
     /// Whether the image is converted before it is written, rather than written as it is.
     public var isConverted: Bool { self == .tiff }
+
+    /// The format of a clipboard type, nil for one that isn't an image written.
+    public init?(typeIdentifier: String) {
+        guard let format = Self.allCases.first(where: { $0.typeIdentifier == typeIdentifier }) else { return nil }
+        self = format
+    }
 }
 
 /// What Paste as File finds on the system's clipboard.
@@ -64,10 +70,13 @@ public enum PasteAsFile {
 
     /// What a file would be made of, from the clipboard's types. Files copied elsewhere are never written. Plain text
     /// wins over an image: a copy from a document or a spreadsheet carries a picture of it as well. An image whose only
-    /// text is its address (a browser's Copy Image) is the image. `text` reads the plain text, and is asked only then.
+    /// text is its address (a browser's Copy Image) is the image. Of several images, the first encoded one in the
+    /// clipboard's order is taken, as the app that copied it lists its own format first, and TIFF only when there is no
+    /// other. `text` reads the plain text, and is asked only then.
     public static func choose(types: [String], text: () -> String?) -> PasteAsFileChoice {
         if types.contains(where: fileTypes.contains) { return .files }
-        let image = PasteAsFileImageFormat.allCases.first { types.contains($0.typeIdentifier) }
+        let formats = types.compactMap(PasteAsFileImageFormat.init(typeIdentifier:))
+        let image = formats.first { $0 != .tiff } ?? formats.first
         if types.contains(textType), let text = text(), !text.isEmpty {
             if let image, isLoneAddress(text) { return .image(image) }
             return .text

@@ -42,6 +42,7 @@ extension CommandIcon {
         case .paste: "document.on.clipboard"
         case .pasteAsFile: "document.badge.plus"
         case .copyPath: "link"
+        case .copyContents: "text.below.photo"
         case .move: "folder"
         case .rename: "pencil"
         case .duplicate: "plus.square.on.square"

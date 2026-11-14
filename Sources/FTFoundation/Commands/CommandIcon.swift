@@ -11,7 +11,7 @@ public enum CommandIcon: String, CaseIterable, Sendable, Hashable {
     case open, openFile, openInNewTab, openInNewWindow, openWith, quickLook, showPackageContents, edit, showInfo
     case calculateSize, revealInFolder, revealInTree, rootTreeHere, showInFinder, terminal
     // Clipboard and organizing
-    case cut, copy, paste, pasteAsFile, copyPath, move, rename, duplicate, newFolder, favorite
+    case cut, copy, paste, pasteAsFile, copyPath, copyContents, move, rename, duplicate, newFolder, favorite
     // Removing
     case trash, deleteImmediately, emptyTrash, eject
     // Undo

@@ -712,6 +712,7 @@ final class InfoPanelContentView: NSView {
         case .edit: .edit
         case .copyPath: copied ? .check : .copy
         case .copyName: copied ? .check : .name
+        case .copyContents: copied ? .check : .contents
         case .terminal: .terminal
         case .finder: .finder
         case .favorite: .favorite

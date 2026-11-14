@@ -249,6 +249,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if let first = subject.paths.first { revealSearchResult(first) }
         case .copyPath:
             copyPath(subject.paths)
+        case .copyContents:
+            if let first = subject.paths.first { holdingTheTab { [tab] in await tab.contentsCopier.copy(first) } }
         case .open:
             holdingTheTab { [self] in await openPaths(subject) }
         case .quickLook:

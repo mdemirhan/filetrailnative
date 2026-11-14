@@ -14,7 +14,7 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case revealInFolder, revealInTree, open, openInNewTab, openInNewWindow, openWith, quickLook
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
     case newFolder
-    case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, rootTreeHere, trash
+    case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, copyContents, rootTreeHere, trash
     case deleteImmediately, emptyTrash, eject
     /// The submenu of what can be done with the tab's other pane, while it shows two.
     case otherPane
@@ -52,10 +52,13 @@ public struct ContextMenuOptions: Equatable, Sendable {
     public var ejectLabel: String?
     /// Paste as File's label, naming what it would write: "Paste Image as File".
     public var pasteAsFileLabel: String?
+    /// Copy Contents' label, naming what it would copy: "Copy Image".
+    public var copyContentsLabel: String?
 
     public init(
         favoriteToggleLabel: String? = nil, textEditorName: String? = nil, targetsFolder: Bool = false,
-        renameLabel: String? = nil, ejectLabel: String? = nil, pasteAsFileLabel: String? = nil
+        renameLabel: String? = nil, ejectLabel: String? = nil, pasteAsFileLabel: String? = nil,
+        copyContentsLabel: String? = nil
     ) {
         self.favoriteToggleLabel = favoriteToggleLabel
         self.textEditorName = textEditorName
@@ -63,6 +66,7 @@ public struct ContextMenuOptions: Equatable, Sendable {
         self.renameLabel = renameLabel
         self.ejectLabel = ejectLabel
         self.pasteAsFileLabel = pasteAsFileLabel
+        self.copyContentsLabel = copyContentsLabel
     }
 }
 
@@ -162,7 +166,10 @@ public enum ContextMenuItems {
                 // For folders, or a selection with folders among it: hidden by the caller otherwise.
                 item(.calculateSize, "Calculate Size", .calculateSize), line("separator-info"),
                 item(.cut, "Cut", .cut), item(.copy, "Copy", .copy), item(.paste, "Paste into Folder", .paste),
-                item(.copyPath, "Copy Path", .copyPath), line("separator-clipboard"),
+                item(.copyPath, "Copy Path", .copyPath),
+                // For one image or text file (hidden by the caller otherwise).
+                item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
+                line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
                 item(.move, "Move to…", .move), item(.newFolder, "New Folder", .newFolder),
                 line("separator-organize"),

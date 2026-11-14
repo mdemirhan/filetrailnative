@@ -25,6 +25,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case pasteSelection
     case pasteAsFile
     case copyPath
+    case copyContents
     case showClipboard
     case clearClipboard
     case refreshOrApplySearchSort

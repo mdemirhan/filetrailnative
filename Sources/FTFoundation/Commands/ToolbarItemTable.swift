@@ -42,6 +42,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case revealInFolder
     case calculateSize
     case copyPath
+    case copyContents
     case theme
     case settings
     case help
@@ -142,6 +143,9 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .copyPath, label: "Copy Path", icon: .copyPath, commandType: .copyPath,
             shortcutCommand: .copyPath),
+        ToolbarItemDefinition(
+            id: .copyContents, label: CopyContents.commandLabel, icon: .copyContents, commandType: .copyContents,
+            shortcutCommand: .copyContents),
         ToolbarItemDefinition(id: .theme, label: "Theme", icon: .theme),
         ToolbarItemDefinition(
             id: .settings, label: "Settings", icon: .settings, commandType: .openSettings,
@@ -206,6 +210,7 @@ extension ToolbarItems {
         .openInTerminal,
         .showInFinder,
         .copyPath,
+        .copyContents,
         .theme,
         .settings,
         .help,

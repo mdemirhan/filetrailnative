@@ -89,6 +89,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -236,6 +241,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -387,6 +397,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -534,6 +549,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -685,6 +705,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -832,6 +857,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -984,6 +1014,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -1140,6 +1175,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -1300,6 +1340,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -1456,6 +1501,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -1616,6 +1666,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -1774,6 +1829,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -1930,6 +1990,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -2091,6 +2156,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -4027,6 +4097,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -4180,6 +4255,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -4337,6 +4417,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -4490,6 +4575,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -4647,6 +4737,11 @@
           "icon": "copyPath"
         },
         {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -4800,6 +4895,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",
@@ -4958,6 +5058,11 @@
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
+        },
+        {
+          "id": "copyContents",
+          "label": "Copy Contents",
+          "icon": "copyContents"
         },
         {
           "type": "separator",

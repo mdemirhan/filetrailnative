@@ -25,6 +25,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var workspaceName: String?
     /// What Paste as File would write, which its item names.
     public var pasteAsFileKind: PasteAsFileKind?
+    /// What the selected file's name says Copy Contents would copy, which its item names.
+    public var copyContentsGuess: CopyContentsGuess?
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
@@ -32,7 +34,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
         textEditing: Bool = false, workspaceID: String? = nil, workspaceName: String? = nil,
-        pasteAsFileKind: PasteAsFileKind? = nil
+        pasteAsFileKind: PasteAsFileKind? = nil, copyContentsGuess: CopyContentsGuess? = nil
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
@@ -49,6 +51,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.workspaceID = workspaceID
         self.workspaceName = workspaceName
         self.pasteAsFileKind = pasteAsFileKind
+        self.copyContentsGuess = copyContentsGuess
     }
 
     /// Before the window has reported: everything is available and nothing checked.
@@ -61,6 +64,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
         workspace: (id: String, name: String)? = nil, pasteAsFileKind: PasteAsFileKind? = nil,
+        copyContentsGuess: CopyContentsGuess? = nil,
         canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
@@ -74,7 +78,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
             infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
             favoriteIsSet: favoriteIsSet,
             textEditing: textEditing, workspaceID: workspace?.id, workspaceName: workspace?.name,
-            pasteAsFileKind: pasteAsFileKind)
+            pasteAsFileKind: pasteAsFileKind, copyContentsGuess: copyContentsGuess)
     }
 }
 
@@ -220,6 +224,8 @@ public enum ApplicationMenu {
             // What it would write, while it can.
             case .pasteAsFile:
                 PasteAsFile.menuTitle(isEnabled(type) ? state.pasteAsFileKind : nil)
+            case .copyContents:
+                CopyContents.menuTitle(isEnabled(type) ? state.copyContentsGuess : nil)
             // With no explorer window to act on, no view is named.
             case .increaseSize, .decreaseSize, .resetSize:
                 ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)

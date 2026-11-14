@@ -347,6 +347,11 @@ public enum CommandAvailability {
                 isSearchMode: context.isSearchMode, homePath: context.homePath ?? "") != nil
         case .showClipboard, .clearClipboard:
             return context.clipboardHasItems
+        case .copyContents:
+            // One file of the list, wherever it is: it is only read.
+            guard focusedPane != .tree, selectedCount == 1 else { return false }
+            return entry(at: context.selectedPathsInViewOrder.first, in: context.activeContentEntries)?.kind
+                .isEditableFile ?? false
         case .copyPath:
             if focusedPane == .tree {
                 return context.selectedTreeTargetPath != nil

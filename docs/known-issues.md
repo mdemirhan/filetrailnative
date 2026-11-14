@@ -13,12 +13,19 @@ A folder holding something shows Finder's sheet of paper, read from the folder's
 
 ## Copy, Cut and Paste of files stay inside File Trail
 
-File Trail keeps the files you copy or cut on a clipboard of its own, by design: the one the toolbar's clipboard button lists. So files copied or cut in File Trail can't be pasted in Finder or other apps, and files copied in Finder or another app can't be pasted in File Trail. Drag them between apps instead. Copy Path puts the paths on the system's clipboard as text, and text in fields is copied and pasted as anywhere else. An image or text copied in another app can be saved as a new file with Edit ▸ Paste as File (⇧⌘V).
+File Trail keeps the files you copy or cut on a clipboard of its own, by design: the one the toolbar's clipboard button lists. So files copied or cut in File Trail can't be pasted in Finder or other apps, and files copied in Finder or another app can't be pasted in File Trail. Drag them between apps instead. Copy Path puts the paths on the system's clipboard as text, and text in fields is copied and pasted as anywhere else. An image or text copied in another app can be saved as a new file with Edit ▸ Paste as File (⇧⌘V), and the image or text of a file put on the system's clipboard with Edit ▸ Copy Contents (⇧⌘C).
 
 Paste as File leaves two things for later:
 
 - **Only into the folder on screen.** It isn't offered on a folder of the list or the tree, and ⌘V with nothing copied in File Trail doesn't point to it.
 - **A file stopped half written** (File Trail quit or crashed while it was being filled) stays next to where it was going, hidden, as `.<id>.filetrail-partial`. Nothing cleans it up at the next start.
+
+Copy Contents leaves these for later:
+
+- **One file at a time.** Several images could go on the clipboard together, as Notes and Keynote paste them.
+- **PDFs aren't copied**, as a picture of a page or as their text.
+- **Text in another encoding** (Latin-1, Windows-1252, Shift JIS) is refused rather than guessed.
+- **A WebP, AVIF or camera RAW copied and saved again with Paste as File comes back as PNG**: Paste as File keeps only PNG, JPEG, HEIC and GIF as they are.
 
 ## The Trash across disks
 
