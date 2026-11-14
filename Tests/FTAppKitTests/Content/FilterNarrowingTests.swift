@@ -175,6 +175,39 @@ struct FilterNarrowingTests {
         #expect(content.foldedNames.count == 0)
     }
 
+    // The same name stored composed in one folder and decomposed in another: each is marked on its own units, by the
+    // filter and by the search, whichever is asked for first.
+    @Test(arguments: [false, true])
+    func twoSpellingsOfOneNameAreEachMarkedAsStored(_ decomposedFirst: Bool) throws {
+        let composed = "\u{E9}mile.txt"
+        let decomposed = "e\u{301}mile.txt"
+        let content = pane()
+        let highlight = HighlightPattern(names: try #require(NameMatcher("mile", mode: .contains)))
+        content.showSearch(
+            ContentSearchDisplay(
+                rootPath: "/f", viewKey: "search:/f:mile",
+                results: ["a/" + composed, "b/" + decomposed].map {
+                    SearchResults.item(rootPath: "/f", outputPath: "/f/" + $0)
+                }, sortBy: .name, sortDirection: .asc, highlight: highlight, isRunning: false, error: nil,
+                errorIsQuiet: false))
+        // By where the name's text starts as stored: a dictionary of the two would take them as one key.
+        let names = decomposedFirst ? [decomposed, composed] : [composed, decomposed]
+        func shift(_ name: String) -> Int { name.utf16.first == 0x65 ? 1 : 0 }
+        for name in names + names {
+            let start = 1 + shift(name)
+            #expect(
+                content.nameMarks(name) == [HighlightRange(start: start, end: start + 4)],
+                "search, \(Array(name.unicodeScalars))")
+        }
+        content.setSearchFilter("mi")
+        for name in names + names {
+            let start = 1 + shift(name)
+            #expect(
+                content.nameMarks(name) == [HighlightRange(start: start, end: start + 2)],
+                "filter, \(Array(name.unicodeScalars))")
+        }
+    }
+
     // MARK: What a narrowing filter kept no longer stands
 
     // The window reads the folder again for another order, and hands it over in that order.

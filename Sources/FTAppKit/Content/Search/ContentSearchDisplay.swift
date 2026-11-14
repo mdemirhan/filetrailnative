@@ -36,7 +36,7 @@ final class ContentSearchContext {
     let setSort: (SearchResultsSortByPreference, SortDirectionPreference) -> Void
     private let startupDiskName: String
     private var folderLabels: [String: String] = [:]
-    private var matches: [String: HighlightRange?] = [:]
+    private var matches: [StoredName: HighlightRange?] = [:]
 
     init(
         display: ContentSearchDisplay, requestSort: @escaping (SearchResultsSortByPreference) -> Void,
@@ -59,12 +59,13 @@ final class ContentSearchContext {
         return made
     }
 
-    /// The match in a whole name, remembered per name.
+    /// The match in a whole name, remembered per name as stored.
     func match(in name: String) -> HighlightRange? {
         guard highlight != nil else { return nil }
-        if let known = matches[name] { return known }
+        let key = StoredName(name)
+        if let known = matches[key] { return known }
         let found = NameHighlight.match(highlight, in: name)
-        matches[name] = found
+        matches[key] = found
         return found
     }
 

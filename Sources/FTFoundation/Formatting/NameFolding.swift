@@ -16,3 +16,23 @@ public enum NameFolding {
         text.utf8.allSatisfy { $0 < 0x80 }
     }
 }
+
+/// A name as stored, told apart from others by its bytes: what is worked out for a name's units as stored (the letters
+/// to mark) is kept by this. Swift's `==` takes "e\u{301}mile.txt" and "\u{E9}mile.txt" as one name, though the same
+/// letters fall on other units in each.
+public struct StoredName: Hashable, Sendable {
+    public let text: String
+
+    public init(_ text: String) {
+        self.text = text
+    }
+
+    public static func == (left: StoredName, right: StoredName) -> Bool {
+        left.text.utf8.elementsEqual(right.text.utf8)
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        var text = text
+        text.withUTF8 { hasher.combine(bytes: UnsafeRawBufferPointer($0)) }
+    }
+}

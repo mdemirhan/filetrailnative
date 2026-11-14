@@ -175,7 +175,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var filterMode: NameMatchMode { filter.isEmpty ? defaultFilterMode : typedFilterMode }
     /// The filter as it finds names, and the marks it gave names, kept until the text or the mode changes.
     private var filterMatcher: NameMatcher?
-    private var filterMarks: [String: [HighlightRange]] = [:]
+    private var filterMarks: [StoredName: [HighlightRange]] = [:]
     /// The filter typed matches nothing: the state says so in place of the view.
     private var nothingMatches = false
     var filter: String { listFilter.query }
@@ -755,9 +755,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// Over search results a name the filter didn't match (its folder did) keeps the search's marks.
     func nameMarks(_ name: String) -> [HighlightRange] {
         if let filterMatcher {
-            let found = filterMarks[name] ?? filterMatcher.marks(in: name)
+            let key = StoredName(name)
+            let found = filterMarks[key] ?? filterMatcher.marks(in: name)
             if filterMarks.count >= 10_000 { filterMarks.removeAll(keepingCapacity: true) }
-            filterMarks[name] = found
+            filterMarks[key] = found
             if !found.isEmpty { return found }
         }
         return search?.match(in: name).map { [$0] } ?? []
