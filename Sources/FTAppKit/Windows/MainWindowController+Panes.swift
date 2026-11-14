@@ -211,18 +211,19 @@ extension MainWindowController {
     }
 
     /// Swap Panes: the panes change places, each keeping its folder, history and view; the active one stays active,
-    /// on the other side.
+    /// on the other side, whichever had the keyboard.
     func swapPanes() {
         guard showsTwoPanes else { return }
-        let keyboard = paneWithKeyboard
-        workspace.showSecondPane(nil, status: nil)
+        let active = activePane
+        // The views move without leaving the window: the keyboard stays where it is, in the tree, a field or either
+        // pane's list, and no pane is made active by it.
+        workspace.swapPanes()
         panes.reverse()
-        workspace.mainCell.content = panes[0].content.view
-        workspace.statusCell.content = panes[0].content.contentShell.pathBarRow
-        workspace.showSecondPane(panes[1].content.view, status: panes[1].content.contentShell.pathBarRow)
-        activePaneIndex = activePaneIndex == 0 ? 1 : 0
+        activePaneIndex = panes.firstIndex { $0 === active } ?? 0
         panesChanged()
-        keepKeyboard(in: keyboard)
+        // A path being typed keeps its suggestions, over the bar where it is now.
+        window?.contentView?.layoutSubtreeIfNeeded()
+        for pane in panes { pane.content.contentShell.pathBarRow.editor.editorMoved() }
     }
 
     /// Make Panes Equal Width, and a double-click on the divider.

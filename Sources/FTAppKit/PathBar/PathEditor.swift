@@ -330,6 +330,14 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
 
     var suggestionsAreShown: Bool { suggestionsView.superview != nil }
 
+    /// Where the suggestions show in the window's content view, while they show.
+    var suggestionsFrame: NSRect? { suggestionsAreShown ? suggestionsView.frame : nil }
+
+    /// The editor moved in the window (Swap Panes): the suggestions open above it where it is now.
+    func editorMoved() {
+        if suggestionsAreShown { showSuggestions() }
+    }
+
     private func clearSuggestions() {
         state.clear()
         hideSuggestions()

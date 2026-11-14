@@ -209,6 +209,16 @@ final class WorkspaceView: NSView {
         needsLayout = true
     }
 
+    /// Swap Panes: the two panes' lists and status bars trade sides without leaving the window, so the keyboard stays
+    /// where it is.
+    func swapPanes() {
+        guard showsTwoPanes else { return }
+        WorkspaceCell.trade(mainCell, secondCell)
+        WorkspaceCell.trade(statusCell, secondStatusCell)
+        contentColumn.needsLayout = true
+        needsLayout = true
+    }
+
     /// Where the divider sits: the left pane's share of the room.
     func setPaneSplit(_ split: Double) {
         let clamped = PaneSplit.clamp(split)
@@ -578,10 +588,20 @@ final class WorkspaceCell: NSView {
         didSet {
             // The view it has already stays where it is: taken out of the window, it would let go of the keyboard.
             guard content !== oldValue else { return }
-            oldValue?.removeFromSuperview()
+            // A view another cell has taken already stays with it.
+            if oldValue?.superview === self { oldValue?.removeFromSuperview() }
             if let content { addSubview(content) }
             needsLayout = true
         }
+    }
+
+    /// `a` and `b` trade their views, each moved straight into the other cell: neither leaves the window, so a list or
+    /// a field in them keeps the keyboard, and a field being edited stays so.
+    static func trade(_ a: WorkspaceCell, _ b: WorkspaceCell) {
+        let first = a.content
+        if let first { b.addSubview(first) }
+        a.content = b.content
+        b.content = first
     }
     /// How far the content is moved to the right (the Info panel sliding).
     var contentOffset = 0.0 {

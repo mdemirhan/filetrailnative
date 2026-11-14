@@ -288,6 +288,100 @@ extension ExplorerWindowlessTests {
             #expect(tab.twoPaneLabel == "Beta | \(name)")
         }
 
+        /// Swap Panes with the keyboard put somewhere by `place`, in a tab whose right pane is active or its left: the
+        /// active pane stays active on the other side, and the keyboard stays with what had it. `then` looks at the tab
+        /// after the swap.
+        private func swapKeepsTheActivePane(
+            rightActive: Bool,
+            _ place: @MainActor (MainWindowController, _ active: BrowserPane, _ other: BrowserPane) async -> Void,
+            then: (MainWindowController, _ active: BrowserPane) -> Void = { _, _ in }
+        ) async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Beta")
+            let (active, other) = rightActive ? (right, left) : (left, right)
+            tab.focusPane(active)
+            await place(tab, active, other)
+            harness.layout(tab)
+            let responder = tab.window?.firstResponder
+            let keyboard = tab.paneWithKeyboard
+            #expect(tab.activePane === active)
+
+            tab.perform(.swapPanes)
+            harness.layout(tab)
+            await settle()
+            #expect(tab.panes.first === right)
+            #expect(tab.activePane === active)
+            #expect(tab.workspace.activePane == (rightActive ? 0 : 1))
+            #expect(tab.window?.firstResponder === responder)
+            #expect(tab.paneWithKeyboard === keyboard)
+            #expect(tab.workspace.mainCell.content === right.content.view)
+            #expect(tab.workspace.statusCell.content === right.content.contentShell.pathBarRow)
+            #expect(tab.workspace.secondCell.content === left.content.view)
+            #expect(tab.workspace.secondStatusCell.content === left.content.contentShell.pathBarRow)
+            then(tab, active)
+        }
+
+        @Test(arguments: [false, true]) func swapPanesWithTheKeyboardInTheActiveList(rightActive: Bool) async throws {
+            try await swapKeepsTheActivePane(rightActive: rightActive) { _, active, _ in active.content.focusList() }
+        }
+
+        // A right-click in the other pane makes it active and leaves the keyboard in the list it was in: it stays
+        // there, and that pane inactive.
+        @Test(arguments: [false, true]) func swapPanesWithTheKeyboardInTheOtherList(rightActive: Bool) async throws {
+            try await swapKeepsTheActivePane(rightActive: rightActive) { tab, active, other in
+                other.content.focusList()
+                tab.activate(active)
+                #expect(tab.paneWithKeyboard === other)
+            }
+        }
+
+        @Test(arguments: [false, true]) func swapPanesWithTheKeyboardInTheTree(rightActive: Bool) async throws {
+            try await swapKeepsTheActivePane(rightActive: rightActive) { tab, _, _ in
+                #expect(tab.sidebarController.focusTree())
+            }
+        }
+
+        @Test(arguments: [false, true]) func swapPanesWithTheKeyboardInTheSearchField(rightActive: Bool) async throws {
+            try await swapKeepsTheActivePane(rightActive: rightActive) { tab, _, _ in
+                #expect(tab.window?.makeFirstResponder(tab.searchField) == true)
+            }
+        }
+
+        // Typing in the list shows the filter pill; the keyboard stays in the list, and the filter with its pane.
+        @Test(arguments: [false, true]) func swapPanesWithAFilterTyped(rightActive: Bool) async throws {
+            try await swapKeepsTheActivePane(rightActive: rightActive) { _, active, _ in
+                active.content.focusList()
+                active.content.setFilter("a")
+            } then: { tab, active in
+                #expect(active.content.filter == "a")
+                #expect(tab.otherPane?.content.filter == "")
+            }
+        }
+
+        // A path being typed in the path bar stays, with the keyboard, and its suggestions open over the bar where it
+        // is now.
+        @Test(arguments: [false, true]) func swapPanesWhileAPathIsTyped(rightActive: Bool) async throws {
+            let timers = ManualTimers()
+            try await swapKeepsTheActivePane(rightActive: rightActive) { tab, active, _ in
+                let row = active.content.contentShell.pathBarRow
+                row.editor.timers = timers
+                row.requestSuggestions = { _ in [PathSuggestionRow(path: "/Applications", name: "Applications")] }
+                row.beginEditing()
+                tab.window?.contentView?.layoutSubtreeIfNeeded()
+                timers.advance(InfoMetrics.suggestionDebounce)
+                #expect(await waitUntil { row.editor.suggestionsAreShown })
+            } then: { tab, active in
+                let editor = active.content.contentShell.pathBarRow.editor
+                #expect(active.content.contentShell.pathBarRow.isEditing)
+                #expect(editor.field.currentEditor() != nil)
+                let host = try? #require(tab.window?.contentView)
+                let bar = host.map { editor.convert(editor.bounds, to: $0) }
+                #expect(editor.suggestionsFrame?.minX == bar?.minX)
+                #expect(editor.suggestionsFrame?.width == bar?.width)
+            }
+        }
+
         @Test func theGoCommandsShowOnePanesFolderInTheOther() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
