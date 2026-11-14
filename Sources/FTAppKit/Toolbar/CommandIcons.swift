@@ -40,6 +40,7 @@ extension CommandIcon {
         case .cut: "scissors"
         case .copy: "document.on.document"
         case .paste: "document.on.clipboard"
+        case .pasteAsFile: "document.badge.plus"
         case .copyPath: "link"
         case .move: "folder"
         case .rename: "pencil"

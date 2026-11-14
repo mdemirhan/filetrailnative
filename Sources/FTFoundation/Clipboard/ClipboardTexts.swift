@@ -49,6 +49,7 @@ public enum ClipboardTexts {
         case .deleteImmediately: return "\(refused) \(subject) being deleted"
         case .rename, .batchRename: return "\(refused) \(subject) being renamed"
         case .newFolder: return "\(refused) a folder is being made"
+        case .pasteAsFile: return "\(refused) a file is being saved"
         // An Undo or Redo may move, rename or put back items: it is named, not what it does to them.
         case .undo: return "\(refused) an Undo is running"
         case .redo: return "\(refused) a Redo is running"

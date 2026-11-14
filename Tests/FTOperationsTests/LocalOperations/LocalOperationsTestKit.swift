@@ -15,6 +15,7 @@ final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
         var lstat: [String] = []
         var stat: [String] = []
         var mkdir: [String] = []
+        var writeNewFile: [String] = []
         var rename: [(String, String)] = []
         var renameExclusive: [(String, String)] = []
         var rm: [(String, Bool, Bool)] = []
@@ -36,6 +37,8 @@ final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
     var realpathImpl: @Sendable (String) throws -> String
     private let getFlagsImpl: @Sendable (String) throws -> UInt32
     var itemSizeImpl: (@Sendable (String) throws -> ItemSize)?
+    /// Every file written works, holding nothing, unless the test says otherwise.
+    var writeNewFileImpl: @Sendable (String, Data) throws -> Void = { _, _ in }
 
     init(
         lstat: @escaping @Sendable (String) throws -> WriteServiceStats,
@@ -80,6 +83,7 @@ final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
             readdir: { try disk.readdir($0) }, realpath: { try disk.realpath($0) },
             getFlags: { try disk.getFlags($0) })
         fileSystem.itemSizeImpl = { try NativeItemSize.of($0) }
+        fileSystem.writeNewFileImpl = { try disk.writeNewFile($0, $1) }
         return fileSystem
     }
 
@@ -121,6 +125,11 @@ final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
     func mkdir(_ path: String) throws {
         record { $0.mkdir.append(path) }
         try mkdirImpl(path)
+    }
+
+    func writeNewFile(_ path: String, _ contents: Data) throws {
+        record { $0.writeNewFile.append(path) }
+        try writeNewFileImpl(path, contents)
     }
 
     func rm(_ path: String, recursive: Bool, force: Bool) throws {

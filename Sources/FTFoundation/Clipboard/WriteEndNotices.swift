@@ -88,7 +88,7 @@ public struct WriteEndToast: Equatable, Sendable {
 /// What is said when an operation ends: a result sheet when there is something to read, else a toast or nothing.
 public enum WriteEndNotices {
     public static func needsResultSheet(_ write: WriteEndSummary) -> Bool {
-        if write.action == .rename || write.action == .newFolder { return write.status == .failed }
+        if [.rename, .newFolder, .pasteAsFile].contains(write.action) { return write.status == .failed }
         if write.isUndoOrRedo {
             // A stop before anything was undone still tells of the items the disk check skipped: they leave the
             // history, so this is the only time they are told.
@@ -135,7 +135,7 @@ public enum WriteEndNotices {
                 kind: .success, title: write.action == .undo ? "Undone" : "Redone",
                 message: undoLabel?.isEmpty == false ? undoLabel : nil)
         }
-        if [.newFolder, .rename, .batchRename, .duplicate].contains(write.action) { return nil }
+        if [.newFolder, .pasteAsFile, .rename, .batchRename, .duplicate].contains(write.action) { return nil }
         let summary = itemSummary(write)
         let target = write.targetPath.map(PathText.leafName)
         let completedTitle: String =
@@ -172,12 +172,14 @@ public enum WriteEndNotices {
         func has(_ path: String?) -> Bool { !(path ?? "").isEmpty }
         let item = write.items.first { item in
             switch write.action {
-            case .newFolder: has(item.destinationPath)
+            case .newFolder, .pasteAsFile: has(item.destinationPath)
             case .trash: has(item.sourcePath)
             default: has(item.sourcePath) || has(item.destinationPath)
             }
         }
-        if write.action == .newFolder { return item?.destinationPath ?? write.currentDestinationPath }
+        if write.action == .newFolder || write.action == .pasteAsFile {
+            return item?.destinationPath ?? write.currentDestinationPath
+        }
         if write.action == .rename {
             return item?.destinationPath ?? item?.sourcePath ?? write.currentDestinationPath ?? write.currentSourcePath
         }

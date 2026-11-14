@@ -303,6 +303,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -497,6 +502,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -554,6 +563,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -1156,6 +1169,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -1520,6 +1537,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -1646,6 +1667,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -2383,6 +2408,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -2577,6 +2607,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -2634,6 +2668,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -3236,6 +3274,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -3599,6 +3641,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -3725,6 +3771,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -4469,6 +4519,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -4663,6 +4718,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -4720,6 +4779,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -5312,6 +5375,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -5676,6 +5743,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -5798,6 +5869,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -6540,6 +6615,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -6734,6 +6814,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -6791,6 +6875,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -7393,6 +7481,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -7756,6 +7848,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -7879,6 +7975,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Changing",
                   "Move to Trash"
@@ -8577,6 +8677,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select all"
           },
@@ -8676,6 +8781,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -8722,6 +8831,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -9202,6 +9315,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -9520,6 +9637,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -9623,6 +9744,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Changing",
                   "Move to Trash"
@@ -10300,6 +10425,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -10494,6 +10624,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -10551,6 +10685,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -11158,6 +11296,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -11532,6 +11674,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -11658,6 +11804,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -12406,6 +12556,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -12590,6 +12745,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -12642,6 +12801,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -13234,6 +13397,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -13598,6 +13765,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -13728,6 +13899,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -14459,6 +14634,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -14653,6 +14833,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -14705,6 +14889,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -15302,6 +15490,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -15665,6 +15857,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -15791,6 +15987,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -16551,6 +16751,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -16725,6 +16930,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -16777,6 +16986,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -17364,6 +17577,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -17715,6 +17932,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -17842,6 +18063,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Changing",
                   "Move to Trash"
@@ -18569,6 +18794,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -18763,6 +18993,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -18820,6 +19054,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -19427,6 +19665,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -19790,6 +20032,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -19916,6 +20162,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -20672,6 +20922,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -20861,6 +21116,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -20918,6 +21177,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -21492,6 +21755,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -21861,6 +22128,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -21980,6 +22251,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Changing",
                   "Move to Trash"
@@ -22730,6 +23005,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -22914,6 +23194,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -22971,6 +23255,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -23573,6 +23861,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -23924,6 +24216,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -24046,6 +24342,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -24780,6 +25080,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -24984,6 +25289,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -25041,6 +25350,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -25633,6 +25946,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -25997,6 +26314,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -26123,6 +26444,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -26865,6 +27190,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -27059,6 +27389,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -27116,6 +27450,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -27730,6 +28068,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -28093,6 +28435,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -28219,6 +28565,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -28965,6 +29315,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -29159,6 +29514,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -29216,6 +29575,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -29802,6 +30165,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -30153,6 +30520,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -30279,6 +30650,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -31019,6 +31394,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -31213,6 +31593,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -31270,6 +31654,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -31872,6 +32260,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -32236,6 +32628,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -32362,6 +32758,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -33124,6 +33524,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -33324,6 +33729,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -33392,6 +33801,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -33996,6 +34409,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -34359,6 +34776,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -34481,6 +34902,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -35228,6 +35653,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -35417,6 +35847,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -35474,6 +35908,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -36081,6 +36519,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -36432,6 +36874,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -36558,6 +37004,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -37313,6 +37763,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -37497,6 +37952,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -37549,6 +38008,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -38129,6 +38592,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -38503,6 +38970,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -38629,6 +39100,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -39365,6 +39840,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -39554,6 +40034,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -39611,6 +40095,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -40213,6 +40701,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -40564,6 +41056,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -40690,6 +41186,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -41435,6 +41935,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -41624,6 +42129,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -41676,6 +42185,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -42273,6 +42786,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -42642,6 +43159,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -42768,6 +43289,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -43517,6 +44042,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -43706,6 +44236,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -43763,6 +44297,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -44365,6 +44903,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -44732,6 +45274,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -44858,6 +45404,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -45577,6 +46127,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -45776,6 +46331,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -45833,6 +46392,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -46415,6 +46978,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -46779,6 +47346,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -46898,6 +47469,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Changing",
                   "Move to Trash"
@@ -47649,6 +48224,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -47843,6 +48423,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -47900,6 +48484,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -48509,6 +49097,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -48867,6 +49459,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -48993,6 +49589,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -49742,6 +50342,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -49931,6 +50536,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -49988,6 +50597,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -50575,6 +51188,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -50927,6 +51544,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -51041,6 +51662,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -51763,6 +52388,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -51957,6 +52587,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -52014,6 +52648,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -52611,6 +53249,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -52975,6 +53617,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -53101,6 +53747,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -53847,6 +54497,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -54052,6 +54707,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -54120,6 +54779,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -54717,6 +55380,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -55080,6 +55747,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -55202,6 +55873,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -55947,6 +56622,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -56136,6 +56816,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -56193,6 +56877,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -56795,6 +57483,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -57158,6 +57850,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -57284,6 +57980,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
                 ],
                 [
                   "Changing",
@@ -58038,6 +58738,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Shift+V",
+            "description": "Save the image or text copied in another app as a file"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+D",
             "description": "Duplicate"
           },
@@ -58227,6 +58932,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "To other apps"
                 ],
                 [
@@ -58284,6 +58993,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Copying and moving",
                   "To other apps"
@@ -58886,6 +59599,10 @@
                 ],
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From the folder tree"
                 ],
                 [
@@ -59245,6 +59962,10 @@
               "rows": [
                 [
                   "Copying and moving",
+                  "Image or text as a file"
+                ],
+                [
+                  "Copying and moving",
                   "From other apps"
                 ],
                 [
@@ -59368,6 +60089,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Copying and moving",
+                  "Image or text as a file"
+                ],
                 [
                   "Changing",
                   "Move to Trash"

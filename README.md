@@ -136,6 +136,7 @@ File Trail follows the macOS Light and Dark setting, or stays in the one you pic
 - Open in Terminal, Copy Path and Edit in your text editor on a key, and Open With for the apps you choose
 - Duplicate, Move To, New Folder and Move to Trash, with the Info panel and Quick Look a key away
 - Drag items in from Finder or other apps, and out to Finder, the desktop or any app, as from Finder
+- A screenshot or text you copied in another app saved as a new file in the folder you are in (⇧⌘V)
 - Eject disks from the sidebar, and open disk images in File Trail instead of a Finder window
 - The folder on screen stays current: what other apps add, rename or remove there shows up as it happens
 - Hidden files on a key (⇧⌘.), and folders kept first when you want them

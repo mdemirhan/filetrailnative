@@ -12,7 +12,8 @@ public enum ContextMenuScope: String, Sendable, Codable {
 
 public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codable {
     case revealInFolder, revealInTree, open, openInNewTab, openInNewWindow, openWith, quickLook
-    case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, move, rename, duplicate, newFolder
+    case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
+    case newFolder
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, rootTreeHere, trash
     case deleteImmediately, emptyTrash, eject
     /// The submenu of what can be done with the tab's other pane, while it shows two.
@@ -49,16 +50,19 @@ public struct ContextMenuOptions: Equatable, Sendable {
     public var renameLabel: String?
     /// Eject's label, naming the disk as Finder does.
     public var ejectLabel: String?
+    /// Paste as File's label, naming what it would write: "Paste Image as File".
+    public var pasteAsFileLabel: String?
 
     public init(
         favoriteToggleLabel: String? = nil, textEditorName: String? = nil, targetsFolder: Bool = false,
-        renameLabel: String? = nil, ejectLabel: String? = nil
+        renameLabel: String? = nil, ejectLabel: String? = nil, pasteAsFileLabel: String? = nil
     ) {
         self.favoriteToggleLabel = favoriteToggleLabel
         self.textEditorName = textEditorName
         self.targetsFolder = targetsFolder
         self.renameLabel = renameLabel
         self.ejectLabel = ejectLabel
+        self.pasteAsFileLabel = pasteAsFileLabel
     }
 }
 
@@ -110,8 +114,10 @@ public enum ContextMenuItems {
                 item(.newFolder, "New Folder", .newFolder), line("separator-background-organize"),
                 item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-background-info"),
-                item(.paste, "Paste", .paste), item(.copyPath, "Copy Path", .copyPath),
-                line("separator-background-clipboard"),
+                item(.paste, "Paste", .paste),
+                // Only with an image or text on the system's clipboard (hidden by the caller otherwise).
+                item(.pasteAsFile, options.pasteAsFileLabel ?? PasteAsFile.commandLabel, .pasteAsFile),
+                item(.copyPath, "Copy Path", .copyPath), line("separator-background-clipboard"),
                 item(.viewAs, "View As", .viewAs, submenu: true), item(.sortBy, "Sort By", .sortBy, submenu: true),
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 line("separator-background-view"),

@@ -160,6 +160,11 @@ enum LocalWriteRules {
 
     /// The question before a name that begins with a dot: Finder's, word for word. Cancel is the default: Return keeps
     /// the name from hiding the item.
+    /// Before Paste as File writes what a password manager marked as private; Cancel is the default.
+    static let concealedPasteQuestion = WriteQuestion(
+        title: PasteAsFile.concealedTitle, message: PasteAsFile.concealedMessage,
+        confirmLabel: PasteAsFile.concealedConfirmLabel, destructive: false, cancelIsDefault: true)
+
     static let dotNameQuestion = WriteQuestion(
         title: "Are you sure you want to use a name that begins with a dot (\u{201C}.\u{201D})?",
         message: "These names are reserved for the system. If you continue, the item will be hidden.",

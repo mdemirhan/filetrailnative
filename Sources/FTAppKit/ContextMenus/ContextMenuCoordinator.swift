@@ -97,6 +97,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             subject, world, clipboardSourcePaths: clipboardSourcePaths())
         world.hasPasteDestination = destination != nil
         world.canPaste = clipboardHasItems && destination != nil
+        world.pasteAsFileKind = tab.systemClipboard.kind
         // Whether the Trash has anything to empty matters only where Empty Trash could show. The menu goes by what the
         // tab last read, as reading the Trashes here would hold the menu up behind a slow disk; it is read again behind
         // the menu, for the Trash's bar and the next menu.
@@ -276,7 +277,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if !subject.paths.isEmpty { holdingTheTab { [self] in await showInFinder(subject.paths) } }
         case .eject:
             if let target = subject.targetPath ?? subject.paths.first { tab.sidebarController.eject(target) }
-        case .cut, .copy, .paste, .move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash:
+        case .cut, .copy, .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately,
+            .emptyTrash:
             fileOperation(action, subject)
         case .openWith, .viewAs, .sortBy, .otherPane:
             break
@@ -293,6 +295,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .rename: return .operation(.rename)
         case .duplicate: return .operation(.duplicate)
         case .newFolder: return .operation(.newFolder)
+        case .pasteAsFile: return .operation(.pasteAsFile)
         case .trash: return .operation(.trash)
         case .deleteImmediately: return .operation(.deleteImmediately)
         default: return .emptyTrash

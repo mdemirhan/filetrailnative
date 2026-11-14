@@ -361,6 +361,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -617,6 +620,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -2610,6 +2617,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -2866,6 +2876,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -3159,6 +3173,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -3415,6 +3432,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -3702,6 +3723,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -3958,6 +3982,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -4252,6 +4280,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -4504,6 +4535,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -4842,6 +4877,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -5098,6 +5136,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -5389,6 +5431,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -5637,6 +5682,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -5929,6 +5978,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -6181,6 +6233,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -6481,6 +6537,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -6737,6 +6796,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -7024,6 +7087,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -7276,6 +7342,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -7575,6 +7645,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -7828,6 +7901,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -8114,6 +8191,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -8366,6 +8446,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -8649,6 +8733,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -8893,6 +8980,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -9187,6 +9278,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -9439,6 +9533,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -9733,6 +9831,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -9985,6 +10086,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -10276,6 +10381,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -10520,6 +10628,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -10813,6 +10925,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -11061,6 +11176,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -11370,6 +11489,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -11622,6 +11744,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -12059,6 +12185,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -12315,6 +12444,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -12946,6 +13079,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -13195,6 +13331,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -13571,6 +13711,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -13832,6 +13975,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -14191,6 +14338,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -14447,6 +14597,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -14795,6 +14949,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -15036,6 +15193,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -15429,6 +15590,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -15682,6 +15846,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -16120,6 +16288,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -16372,6 +16543,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -16914,6 +17089,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -17184,6 +17362,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -17858,6 +18040,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -18113,6 +18298,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -18710,6 +18899,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -18969,6 +19161,10 @@
             "newFolder"
           ],
           [
+            "Cmd+Shift+V",
+            "pasteAsFile"
+          ],
+          [
             "Cmd+Backspace",
             "trashSelection"
           ],
@@ -19197,6 +19393,9 @@
           "calculateSize": [],
           "newFolder": [
             "Cmd+Shift+Backspace"
+          ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
           ],
           "showClipboard": [
             "Cmd+Option+C"
@@ -19579,6 +19778,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -20082,6 +20285,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -20340,6 +20546,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -20748,6 +20958,9 @@
           "newFolder": [
             "Cmd+Right"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "copyPath": [
             "F11"
           ],
@@ -21065,6 +21278,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -21711,6 +21928,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -21955,6 +22175,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -22309,6 +22533,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -22569,6 +22796,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -23044,6 +23275,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -23273,6 +23507,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -23662,6 +23900,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -23918,6 +24159,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -24281,6 +24526,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -24536,6 +24784,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -24907,6 +25159,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -25162,6 +25417,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -25556,6 +25815,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -25805,6 +26067,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -26079,6 +26345,9 @@
             "PageDown"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "goBack": [
             "Cmd+[",
@@ -26429,6 +26698,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -26988,6 +27261,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -27246,6 +27522,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -27591,6 +27871,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -27847,6 +28130,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -28345,6 +28632,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -28595,6 +28885,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -28894,6 +29188,9 @@
           "goToOtherPaneFolder": [],
           "equalizePanes": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "focusFileSearch": [
             "Cmd+/"
           ],
@@ -29262,6 +29559,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -29956,6 +30257,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -30187,6 +30491,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -30613,6 +30921,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -30869,6 +31180,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -31327,6 +31642,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -31580,6 +31898,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -32042,6 +32364,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -32297,6 +32622,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -32901,6 +33230,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -33157,6 +33489,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -33615,6 +33951,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -33868,6 +34207,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -34439,6 +34782,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -34693,6 +35039,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -36033,6 +36383,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -36293,6 +36646,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -36748,6 +37105,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -37004,6 +37364,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -37420,6 +37784,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -37677,6 +38044,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -38173,6 +38544,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -38422,6 +38796,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -39244,6 +39622,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -39497,6 +39878,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -40003,6 +40388,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -40263,6 +40651,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -40865,6 +41257,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -41096,6 +41491,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -41609,6 +42008,9 @@
           "newFolder": [
             "Ctrl+D"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "toggleInfoRow": [],
           "goBack": [
             "Cmd+[",
@@ -41979,6 +42381,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -42616,6 +43022,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -42875,6 +43284,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -43300,6 +43713,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -43556,6 +43972,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -44016,6 +44436,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -44272,6 +44695,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -44743,6 +45170,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -44991,6 +45421,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -45579,6 +46013,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -45843,6 +46280,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -46372,6 +46813,9 @@
           "goToOtherPaneFolder": [],
           "equalizePanes": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+F3",
             "Ctrl+K"
@@ -46747,6 +47191,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -47922,6 +48370,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -48176,6 +48627,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -48570,6 +49025,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -48822,6 +49280,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -49259,6 +49721,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -49503,6 +49968,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -50088,6 +50557,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -50347,6 +50819,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -50771,6 +51247,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -51026,6 +51505,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -51486,6 +51969,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -51738,6 +52224,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -52224,6 +52714,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -52485,6 +52978,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -53218,6 +53715,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -53460,6 +53960,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -53867,6 +54371,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -54125,6 +54632,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -54557,6 +55068,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -54792,6 +55306,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -55556,6 +56074,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -55802,6 +56323,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -56222,6 +56747,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -56478,6 +57006,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -57095,6 +57627,9 @@
             "Cmd+Shift+K",
             "Cmd+Shift+."
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "F11",
@@ -57408,6 +57943,10 @@
           [
             "Cmd+U",
             "swapPanes"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -58138,6 +58677,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -58394,6 +58936,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -58998,6 +59544,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -59249,6 +59798,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -60654,6 +61207,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [],
           "emptyTrash": [
@@ -60894,6 +61450,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -61849,6 +62409,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -62105,6 +62668,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -62571,6 +63138,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -62819,6 +63389,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -63636,6 +64210,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -63892,6 +64469,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -64309,6 +64890,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -64565,6 +65149,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -65044,6 +65632,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -65297,6 +65888,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -65748,6 +66343,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -65985,6 +66583,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -66597,6 +67199,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -66845,6 +67450,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -67562,6 +68171,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -67816,6 +68428,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -68360,6 +68976,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -68607,6 +69226,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -69341,6 +69964,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -69581,6 +70207,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -70360,6 +70990,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -70611,6 +71244,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -71070,6 +71707,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -71311,6 +71951,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -72082,6 +72726,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -72339,6 +72986,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -72863,6 +73514,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -73112,6 +73766,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -73614,6 +74272,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -73861,6 +74522,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -74432,6 +75097,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -74675,6 +75343,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -75250,6 +75922,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -75505,6 +76180,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -76121,6 +76800,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -76377,6 +77059,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -76917,6 +77603,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -77156,6 +77845,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -78258,6 +78951,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -78514,6 +79210,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -78981,6 +79681,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -79237,6 +79940,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -79657,6 +80364,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -79911,6 +80621,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -80277,6 +80991,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -80525,6 +81242,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -81065,6 +81786,9 @@
           "newFolder": [
             "Cmd+Shift+I"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "F13",
             "Cmd+'"
@@ -81381,6 +82105,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Option+C",
@@ -82084,6 +82812,9 @@
           "newFolder": [
             "Cmd+Backspace"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Ctrl+U"
           ],
@@ -82435,6 +83166,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Option+C",
@@ -83811,6 +84546,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -84070,6 +84808,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -84584,6 +85326,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -84840,6 +85585,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -85328,6 +86077,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -85573,6 +86325,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -86372,6 +87128,9 @@
             "Cmd+Backspace"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "emptyTrash": [],
           "showClipboard": [
             "Option+Left"
@@ -86710,6 +87469,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -87954,6 +88717,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -88186,6 +88952,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -88764,6 +89534,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -89020,6 +89793,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -89348,6 +90125,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -89589,6 +90369,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -89958,6 +90742,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -90214,6 +91001,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -90652,6 +91443,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -90887,6 +91681,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -91570,6 +92368,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -91829,6 +92630,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -92401,6 +93206,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -92655,6 +93463,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -93148,6 +93960,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -93402,6 +94217,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -94000,6 +94819,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -94256,6 +95078,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -94709,6 +95535,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -94941,6 +95770,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -95990,6 +96823,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -96228,6 +97064,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -96915,6 +97755,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -97159,6 +98002,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -97621,6 +98468,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -97868,6 +98718,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -98313,6 +99167,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -98541,6 +99398,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -99250,6 +100111,9 @@
           "newFolder": [
             "Cmd+["
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "showClipboard": [
             "Ctrl+Up"
           ],
@@ -99616,6 +100480,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -100522,6 +101390,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -100778,6 +101649,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -101187,6 +102062,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -101436,6 +102314,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -101893,6 +102775,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -102149,6 +103034,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -102592,6 +103481,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -102835,6 +103727,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -103575,6 +104471,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -103823,6 +104722,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -104217,6 +105120,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -104473,6 +105379,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -105025,6 +105935,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -105281,6 +106194,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -105721,6 +106638,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -105970,6 +106890,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -106412,6 +107336,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -106668,6 +107595,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -107069,6 +108000,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -107328,6 +108262,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -107882,6 +108820,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -108131,6 +109072,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -108616,6 +109561,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -108866,6 +109814,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -109411,6 +110363,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -109656,6 +110611,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -110178,6 +111137,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -110449,6 +111411,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -111062,6 +112028,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -111325,6 +112294,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -111716,6 +112689,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -111972,6 +112948,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -112378,6 +113358,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -112632,6 +113615,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -113046,6 +114033,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -113282,6 +114272,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -113980,6 +114974,9 @@
           ],
           "duplicateSelection": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -114209,6 +115206,10 @@
           [
             "F2",
             "renameSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -114659,6 +115660,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -114903,6 +115907,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -115579,6 +116587,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -115838,6 +116849,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -116206,6 +117221,9 @@
             "Cmd+["
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [],
           "clearClipboard": [],
@@ -116541,6 +117559,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -116962,6 +117984,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -117214,6 +118239,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -117760,6 +118789,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -117994,6 +119026,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -118933,6 +119969,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -119190,6 +120229,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -119703,6 +120746,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -119951,6 +120997,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -120571,6 +121621,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -120830,6 +121883,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -121342,6 +122399,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -121600,6 +122660,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -122187,6 +123251,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -122445,6 +123512,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -122808,6 +123879,9 @@
           "goToOtherPaneFolder": [],
           "equalizePanes": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+'"
           ],
@@ -123188,6 +124262,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -123701,6 +124779,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -123954,6 +125035,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -124335,6 +125420,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -124588,6 +125676,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -125105,6 +126197,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -125364,6 +126459,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -125938,6 +127037,9 @@
             "Cmd+N"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "emptyTrash": [],
           "showClipboard": [
             "Cmd+0"
@@ -126233,6 +127335,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -127099,6 +128205,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -127347,6 +128456,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -127697,6 +128810,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -127953,6 +129069,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -128378,6 +129498,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -128609,6 +129732,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -129136,6 +130263,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -129376,6 +130506,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -129987,6 +131121,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -130243,6 +131380,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -130709,6 +131850,9 @@
           "newFolder": [
             "Cmd+Option+J"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "clearClipboard": [
             "Cmd+F11"
           ],
@@ -131008,6 +132152,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -131627,6 +132775,9 @@
           "newFolder": [
             "Cmd+["
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "clearClipboard": [
             "Ctrl+Cmd+S"
@@ -131978,6 +133129,10 @@
           [
             "F2",
             "renameSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -132903,6 +134058,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -133155,6 +134313,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -133643,6 +134805,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -133904,6 +135069,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -134304,6 +135473,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -134559,6 +135731,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -135107,6 +136283,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -135361,6 +136540,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -136021,6 +137204,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -136273,6 +137459,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -136713,6 +137903,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -136969,6 +138162,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -137484,6 +138681,9 @@
           "newFolder": [
             "Cmd+W"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "emptyTrash": [],
           "showInFinder": [
             "Ctrl+Up",
@@ -137820,6 +139020,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -139124,6 +140328,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -139380,6 +140587,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -139768,6 +140979,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -140024,6 +141238,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -140450,6 +141668,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -140706,6 +141927,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -141160,6 +142385,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -141416,6 +142644,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -141840,6 +143072,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -142089,6 +143324,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -142444,6 +143683,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -142704,6 +143946,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -143204,6 +144450,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -143467,6 +144716,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -144024,6 +145277,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -144272,6 +145528,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -144789,6 +146049,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -145040,6 +146303,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -145308,6 +146575,9 @@
           "goToOtherPaneFolder": [],
           "equalizePanes": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "focusFileSearch": [],
           "revealInFolder": [
             "Ctrl+K"
@@ -145687,6 +146957,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -146208,6 +147482,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -146463,6 +147740,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -147074,6 +148355,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -147330,6 +148614,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -147985,6 +149273,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -148241,6 +149532,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -148686,6 +149981,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -148947,6 +150245,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -149511,6 +150813,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -149744,6 +151049,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -150862,6 +152171,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -151117,6 +152429,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -151585,6 +152901,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -151841,6 +153160,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -152176,6 +153499,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -152427,6 +153753,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -152828,6 +154158,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -153080,6 +154413,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -153620,6 +154957,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -153876,6 +155216,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -154370,6 +155714,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -154626,6 +155973,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -155101,6 +156452,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -155335,6 +156689,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -155758,6 +157116,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -156016,6 +157377,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -156425,6 +157790,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -156681,6 +158049,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -157079,6 +158451,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -157335,6 +158710,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -157817,6 +159196,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -158067,6 +159449,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -158530,6 +159916,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -158788,6 +160177,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -159374,6 +160767,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -159622,6 +161018,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -160002,6 +161402,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -160254,6 +161657,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -160693,6 +162100,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -160945,6 +162355,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -161346,6 +162760,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -161602,6 +163019,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -162129,6 +163550,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -162353,6 +163777,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -163271,6 +164699,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -163506,6 +164937,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -163959,6 +165394,9 @@
             "F11"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "showClipboard": [],
           "toggleFavorite": [],
           "revealInFolder": [],
@@ -164330,6 +165768,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -165375,6 +166817,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -165630,6 +167075,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -165960,6 +167409,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -166216,6 +167668,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -166583,6 +168039,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -166839,6 +168298,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -167265,6 +168728,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -167524,6 +168990,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -167982,6 +169452,9 @@
           "equalizePanes": [],
           "openSelection": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "clearClipboard": [],
           "toggleFavorite": [
             "Ctrl+Cmd+S"
@@ -168351,6 +169824,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -168778,6 +170255,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -169034,6 +170514,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -169587,6 +171071,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -169838,6 +171325,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -170348,6 +171839,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -170604,6 +172098,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -171049,6 +172547,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -171295,6 +172796,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -171845,6 +173350,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -172100,6 +173608,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -172589,6 +174101,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -172844,6 +174359,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -173244,6 +174763,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -173500,6 +175022,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -174114,6 +175640,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "emptyTrash": [
             "Cmd+Shift+Backspace"
           ],
@@ -174365,6 +175894,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -175085,6 +176618,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -175341,6 +176877,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -175950,6 +177490,9 @@
           ],
           "moveSelection": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -176215,6 +177758,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -176686,6 +178233,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -176944,6 +178494,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -177588,6 +179142,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -177839,6 +179396,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -178285,6 +179846,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -178541,6 +180105,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -178962,6 +180530,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -179218,6 +180789,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -179573,6 +181148,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -179829,6 +181407,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -180239,6 +181821,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -180483,6 +182068,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -180992,6 +182581,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -181232,6 +182824,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -181825,6 +183421,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -182057,6 +183656,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -182437,6 +184040,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -182684,6 +184290,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -183202,6 +184812,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -183455,6 +185068,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -183952,6 +185569,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -184215,6 +185835,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -184697,6 +186321,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -184950,6 +186577,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -185435,6 +187066,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -185691,6 +187325,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -185999,6 +187637,9 @@
           "equalizePanes": [],
           "newFolder": [
             "Cmd+Shift+E"
+          ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
           ],
           "trashSelection": [
             "Cmd+Shift+K"
@@ -186384,6 +188025,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -187103,6 +188748,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -187359,6 +189007,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -187747,6 +189399,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -187995,6 +189650,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -188313,6 +189972,9 @@
           "equalizePanes": [],
           "newFolder": [
             "Cmd+Shift+["
+          ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
           ],
           "sortBySize": [
             "Ctrl+K"
@@ -188687,6 +190349,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -189304,6 +190970,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -189564,6 +191233,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -190047,6 +191720,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -190299,6 +191975,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -190917,6 +192597,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -191149,6 +192832,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -191696,6 +193383,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -191933,6 +193623,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -192476,6 +194170,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -192728,6 +194425,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -193295,6 +194996,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -193543,6 +195247,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -194034,6 +195742,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -194290,6 +196001,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -194800,6 +196515,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -195062,6 +196780,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -195487,6 +197209,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -195743,6 +197468,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -196270,6 +197999,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -196529,6 +198261,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -197210,6 +198946,9 @@
             "Cmd+D"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [],
           "emptyTrash": [
@@ -197475,6 +199214,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -198157,6 +199900,9 @@
           "newFolder": [
             "Cmd+]"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "emptyTrash": [
             "Cmd+;",
             "Cmd+Esc"
@@ -198529,6 +200275,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -199103,6 +200853,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -199360,6 +201113,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -199763,6 +201520,9 @@
             "Cmd+Down",
             "Cmd+PageDown"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [],
           "sortByName": [],
           "toggleFoldersFirst": [],
@@ -200088,6 +201848,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -200770,6 +202534,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -201026,6 +202793,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -201496,6 +203267,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+E"
           ],
@@ -201748,6 +203522,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -202162,6 +203940,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -202415,6 +204196,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -202944,6 +204729,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -203208,6 +204996,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -203604,6 +205396,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -203856,6 +205651,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -204422,6 +206221,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "openInTerminal": [
             "Cmd+Option+T"
@@ -204655,6 +206457,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Option+T",
@@ -205189,6 +206995,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -205446,6 +207255,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -205943,6 +207756,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -206174,6 +207990,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -206749,6 +208569,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -207005,6 +208828,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -207394,6 +209221,9 @@
             "Cmd+Delete",
             "Cmd+R"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "showInFinder": [
             "Cmd+Option+K",
             "Cmd+K"
@@ -207776,6 +209606,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -208436,6 +210270,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "copyPath": [
             "Cmd+Option+C"
           ],
@@ -208686,6 +210523,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Option+C",
@@ -209081,6 +210922,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -209321,6 +211165,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -209737,6 +211585,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -209988,6 +211839,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -210463,6 +212318,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -210719,6 +212577,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -211210,6 +213072,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -211466,6 +213331,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -212028,6 +213897,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "copyPath": [
             "Cmd+Option+C"
           ],
@@ -212253,6 +214125,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Option+C",
@@ -212666,6 +214542,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -212917,6 +214796,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -213445,6 +215328,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -213694,6 +215580,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -214050,6 +215940,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -214306,6 +216199,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -214769,6 +216666,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -215013,6 +216913,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -215520,6 +217424,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -215776,6 +217683,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -216183,6 +218094,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -216445,6 +218359,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -216943,6 +218861,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -217175,6 +219096,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -218505,6 +220430,9 @@
             "Cmd+Shift+M"
           ],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -218741,6 +220669,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -219757,6 +221689,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -220013,6 +221948,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -220407,6 +222346,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -220654,6 +222596,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -221051,6 +222997,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -221307,6 +223256,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -221792,6 +223745,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -222054,6 +224010,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -222522,6 +224482,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -222778,6 +224741,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -223180,6 +225147,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -223436,6 +225406,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -223932,6 +225906,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -224177,6 +226154,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -224773,6 +226754,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -225021,6 +227005,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -225686,6 +227674,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -225947,6 +227938,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -226460,6 +228455,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -226716,6 +228714,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -227149,6 +229151,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -227395,6 +229400,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -228142,6 +230151,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [],
           "clearClipboard": [],
           "showInFinder": [],
@@ -228374,6 +230386,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Shift+F",
@@ -229082,6 +231098,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -229334,6 +231353,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -229790,6 +231813,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -230034,6 +232060,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -230617,6 +232647,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -230873,6 +232906,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -231355,6 +233392,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -231603,6 +233643,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -231909,6 +233953,9 @@
           ],
           "moveSelection": [],
           "newFolder": [],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "ejectVolume": [
             "Cmd+0"
           ],
@@ -232270,6 +234317,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Shift+Backspace",
@@ -233090,6 +235141,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+E"
@@ -233345,6 +235399,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+E",
@@ -233978,6 +236036,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -234234,6 +236295,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -234660,6 +236725,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -234912,6 +236980,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -235410,6 +237482,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -235662,6 +237737,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -236156,6 +238235,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -236421,6 +238503,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -236903,6 +238989,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -237157,6 +239246,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",
@@ -238013,6 +240106,9 @@
           "newFolder": [
             "Cmd+Shift+N"
           ],
+          "pasteAsFile": [
+            "Cmd+Shift+V"
+          ],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -238271,6 +240367,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Cmd+Shift+V",
+            "pasteAsFile"
           ],
           [
             "Cmd+Backspace",

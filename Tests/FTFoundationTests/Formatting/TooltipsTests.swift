@@ -90,7 +90,7 @@ struct TooltipsTests {
             "halfPageDown", "halfPageUp", "hide", "mergeAllWindows", "minimize", "moveSelection", "moveTabToNewWindow",
             "newFolder", "newTab", "newWindow", "openHelp", "openInTerminal", "openKeyboardShortcuts",
             "openLocationSheet", "openSelectedItem", "openSelection", "openSelectionInNewTab",
-            "openSelectionInNewWindow", "pageDown", "pageUp", "paste", "quickLookSelection", "redo",
+            "openSelectionInNewWindow", "pageDown", "pageUp", "paste", "pasteAsFile", "quickLookSelection", "redo",
             "refreshOrApplySearchSort", "renameSelection", "reopenClosedTab", "revealInFolder", "rootTreeAtSelection",
             "selectAll", "selectNextTab", "selectPreviousTab", "settings", "showClipboard", "showInFinder",
             "showLastSearchResults", "sortByKind", "sortByModified", "sortByName", "sortBySize", "toggleFavorite",

@@ -10,6 +10,7 @@ public enum BusyOperationKind: String, Sendable, CaseIterable {
     case rename
     case batchRename = "batch_rename"
     case newFolder = "new_folder"
+    case newFile = "new_file"
     case undo
     case redo
     case emptyTrash = "empty_trash"
@@ -96,7 +97,7 @@ public enum QuitWhileBusy {
                     "The Trash is still being emptied.",
                     "Finder goes on emptying it after File Trail quits."
                 ) : nil
-        case .rename, .newFolder:
+        case .rename, .newFolder, .newFile:
             return nil
         }
     }

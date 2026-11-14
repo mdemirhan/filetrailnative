@@ -269,6 +269,7 @@ public enum UndoHistoryRows {
         switch entry.action {
         case .rename, .batchRename: .rename
         case .newFolder: .newFolder
+        case .pasteAsFile: .pasteAsFile
         case .trash: .trash
         case .deleteImmediately: .deleteImmediately
         case .duplicate: .duplicate
@@ -295,6 +296,7 @@ public enum UndoHistoryRows {
             case .deleteImmediately: name = "Delete Immediately"
             case .rename, .batchRename: name = "Rename"
             case .newFolder: name = "New Folder"
+            case .pasteAsFile: name = "Paste as File"
             case .undo: name = "Undo"
             case .redo: name = "Redo"
             }

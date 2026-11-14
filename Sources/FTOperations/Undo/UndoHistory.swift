@@ -202,6 +202,8 @@ public final class UndoHistory {
             return count == 1 ? "Rename" : "Rename of \(count) Items"
         case .newFolder:
             return "New Folder"
+        case .pasteAsFile:
+            return "Paste as File"
         case .trash:
             return "Move to Trash of \(itemsName(units))"
         case .duplicate:

@@ -40,6 +40,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var selectedTreeTargetPath: String?
     /// The clipboard holds items to paste.
     public var clipboardHasItems: Bool
+    /// What Paste as File finds on the system's clipboard; nil while it isn't read (a text field has the keyboard).
+    public var systemClipboard: PasteAsFileChoice?
     public var pasteDestinationPath: String?
     public var isSearchMode: Bool
     public var openItemLimit: Int
@@ -80,7 +82,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         trashPath: String? = nil,
         homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
-        viewSizeSteps: ViewSize.Steps? = nil, filterPinnable: Bool? = nil, hasWorkspace: Bool? = nil
+        viewSizeSteps: ViewSize.Steps? = nil, filterPinnable: Bool? = nil, hasWorkspace: Bool? = nil,
+        systemClipboard: PasteAsFileChoice? = nil
     ) {
         self.shortcutContext = shortcutContext
         self.currentPath = currentPath
@@ -107,6 +110,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.viewSizeSteps = viewSizeSteps
         self.filterPinnable = filterPinnable
         self.hasWorkspace = hasWorkspace
+        self.systemClipboard = systemClipboard
     }
 }
 
@@ -115,8 +119,8 @@ public enum CommandAvailability {
     /// What a running file operation blocks: anything that would start another one. Copy, Cut and Copy Path only fill
     /// a clipboard, so they stay available.
     private static let writeLockedCommands: Set<AppCommand> = [
-        .undo, .redo, .pasteSelection, .moveSelection, .renameSelection, .duplicateSelection, .newFolder,
-        .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane,
+        .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
+        .newFolder, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane,
     ]
 
     // MARK: Helpers
@@ -152,8 +156,8 @@ public enum CommandAvailability {
         return "/" + parts.dropLast().joined(separator: "/")
     }
 
-    /// Where New Folder from the keyboard or the menu bar makes a folder: the folder on screen, whatever is selected;
-    /// none in search results or in the Trash. The menu bar dims New Folder when there is none.
+    /// Where New Folder from the keyboard or the menu bar makes a folder, and Paste as File a file: the folder on
+    /// screen, whatever is selected; none in search results or in the Trash. The menu bar dims them when there is none.
     static func newFolderTargetPath(
         currentPath: String, selectedPaths: [String], isSearchMode: Bool, homePath: String
     ) -> String? {
@@ -335,6 +339,12 @@ public enum CommandAvailability {
             return selectedCount > 0
         case .pasteSelection:
             return context.clipboardHasItems && context.pasteDestinationPath != nil
+        case .pasteAsFile:
+            // Files copied in another app leave it on, to say why they aren't written.
+            guard let found = context.systemClipboard, found != .nothing else { return false }
+            return newFolderTargetPath(
+                currentPath: context.currentPath, selectedPaths: context.selectedPathsInViewOrder,
+                isSearchMode: context.isSearchMode, homePath: context.homePath ?? "") != nil
         case .showClipboard, .clearClipboard:
             return context.clipboardHasItems
         case .copyPath:

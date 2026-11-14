@@ -32,7 +32,7 @@ public enum WriteResultNoticeText {
     public static func hasResultSheet(_ action: WriteOperationAction) -> Bool {
         switch action {
         case .paste, .copyTo, .moveTo, .duplicate, .batchRename, .undo, .redo: true
-        case .trash, .deleteImmediately, .rename, .newFolder: false
+        case .trash, .deleteImmediately, .rename, .newFolder, .pasteAsFile: false
         }
     }
 

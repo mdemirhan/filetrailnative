@@ -190,6 +190,11 @@ extension HelpContent {
                                 "Paste and New Folder go into the folder you are browsing, whatever is selected. To paste into another folder, or make a folder inside it, right-click that folder. Files you copy or cut here paste only in File Trail, not in Finder or other apps, and files copied in Finder don't paste here: drag them between apps instead."
                         ),
                         HelpRow(
+                            label: "Image or text as a file",
+                            description:
+                                "{pasteAsFile} saves an image or text copied in another app, a screenshot or a few paragraphs, as a new file in the folder you are browsing, and selects its name for you to change. An image keeps the format it was copied in; one copied only as TIFF is saved as PNG. Text is saved as plain text (.txt). The Edit menu and the right-click menu of the folder's empty space say which it will be. Undo moves the file to the Trash."
+                        ),
+                        HelpRow(
                             label: "From the folder tree",
                             description:
                                 "With the folder tree active, Copy and Cut take the folder the tree is on, with everything in it, and never what is selected in the list."
@@ -647,6 +652,8 @@ extension HelpContent {
         HelpShortcutItem(group: .files, .command(.copy), "Copy"),
         HelpShortcutItem(group: .files, .command(.cut), "Cut"),
         HelpShortcutItem(group: .files, .command(.paste), "Paste"),
+        HelpShortcutItem(
+            group: .files, .command(.pasteAsFile), "Save the image or text copied in another app as a file"),
         HelpShortcutItem(group: .files, .command(.duplicateSelection), "Duplicate"),
         HelpShortcutItem(group: .files, .command(.moveSelection), "Move to another folder"),
         HelpShortcutItem(group: .files, .command(.newFolder), "New folder"),

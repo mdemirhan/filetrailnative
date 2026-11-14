@@ -118,6 +118,7 @@ final class ExplorerHarness {
         tab.contextMenus.opener = opener
         tab.contextMenus.setDefaultApplication = { _, _ in .success }
         tab.contextMenus.pasteboard = pasteboard
+        tab.systemClipboard.pasteboard = pasteboard
         tab.infoController?.actions.opener = opener
         tab.infoController?.actions.setDefaultApplication = { _, _ in .success }
         tab.infoController?.actions.pasteboard = pasteboard

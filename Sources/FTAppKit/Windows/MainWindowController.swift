@@ -260,6 +260,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     let workspace: WorkspaceView
     /// The window's system toolbar, which holds the workspace's toolbar row.
     let explorerToolbar: ExplorerToolbar
+    /// The system's clipboard, which Paste as File writes from.
+    let systemClipboard = SystemClipboard()
     /// The right-click menus of the tab. Their file operations go to the write coordinator (WriteOperations/),
     /// Copy, Cut and Paste through the clipboard.
     lazy var contextMenus: ContextMenuCoordinator = {
@@ -1362,7 +1364,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
             filterPinned: content.pinnedFilter != nil,
             favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false,
-            textEditing: isTextFieldEditing, workspace: workspace.map { ($0.id, $0.name) }
+            textEditing: isTextFieldEditing, workspace: workspace.map { ($0.id, $0.name) },
+            pasteAsFileKind: context.systemClipboard?.kind
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -1795,7 +1798,7 @@ extension MainWindowController: ExplorerWindowHandle {
                 contextMenus.copyPath(selectedPaths)
             }
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
-            .trashSelection, .emptyTrash, .copySelection, .cutSelection, .pasteSelection:
+            .pasteAsFile, .trashSelection, .emptyTrash, .copySelection, .cutSelection, .pasteSelection:
             // The write commands: `performWriteCommand` took them, unless the toolbar is being customized.
             if let selector = MenuCommandRouter.nativeEditSelector(command) {
                 NSApp.sendAction(selector, to: nil, from: nil)
@@ -1888,7 +1891,9 @@ extension MainWindowController: ExplorerWindowContext {
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),
             viewSizeSteps: content.viewSize?.steps ?? .unavailable, filterPinnable: content.canTogglePin,
-            hasWorkspace: group?.workspace != nil)
+            hasWorkspace: group?.workspace != nil,
+            // While a text field has the keyboard, what is on the clipboard is for it.
+            systemClipboard: isTextFieldEditing ? nil : systemClipboard.choice)
     }
 
     /// The folders File > Calculate Size measures now.

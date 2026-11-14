@@ -314,8 +314,8 @@ final class ExplorerWriteSession: WriteOperationWindow {
                 clipboard.set(.empty, follows: clear.capturedAt, from: nil)
             }
         }
-        // The folder made in its row may have been given the next free name.
-        if event.action == .newFolder, pendingInlineRenamePath != nil {
+        // The folder or file made in its row may have been given the next free name.
+        if event.action == .newFolder || event.action == .pasteAsFile, pendingInlineRenamePath != nil {
             let madePath = event.result?.items.first?.destinationPath
             pendingInlineRenamePath = event.status == .completed ? madePath : nil
         }

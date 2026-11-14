@@ -386,6 +386,59 @@ final class WindowWriteActions {
         parent == "/" ? "/\(name)" : "\(parent)/\(name)"
     }
 
+    // MARK: Paste as File
+
+    /// The image or text on the system's clipboard becomes a new file in `folder`, the folder on screen, under a free
+    /// name ("Pasted Image.png"), which is then edited in its row, as New Folder's is. Files copied in another app,
+    /// and a clipboard with nothing to write, are only told of; what a password manager marked as private is asked
+    /// about first.
+    func pasteAsFile(in folder: String, from clipboard: SystemClipboard) async -> CopyLikeOutcome {
+        let contents = clipboard.read()
+        if contents.choice == .files {
+            dialogs.toast(PasteAsFile.filesTitle, PasteAsFile.filesMessage, window)
+            return .cancelled
+        }
+        guard let name = PasteAsFile.fileName(contents.choice), var data = contents.data else {
+            dialogs.toast(PasteAsFile.nothingTitle, nil, window)
+            return .cancelled
+        }
+        if refuseWhileBusy(.operation(.pasteAsFile)) { return .cancelled }
+        if contents.concealed, await !dialogs.confirm(LocalWriteRules.concealedPasteQuestion, window) {
+            return .cancelled
+        }
+        if case .image(let format) = contents.choice, format.isConverted {
+            guard let png = await SystemClipboard.png(fromTIFF: data) else {
+                dialogs.show(
+                    "The image couldn\u{2019}t be saved", "The clipboard\u{2019}s image can\u{2019}t be read.", window)
+                return .cancelled
+            }
+            data = png
+        }
+        // Asked again: a write may have started while the question was open or the image was converted.
+        if refuseWhileBusy(.operation(.pasteAsFile)) { return .cancelled }
+        let free = PasteAsFile.freeName(name, existingNames: tab?.content.listed.map(\.name) ?? [])
+        let pendingPath = Self.childPath(folder, free)
+        session.pendingInlineRenamePath = pendingPath
+        let outcome = await startLocal(
+            .pasteAsFile,
+            card: WriteOperationCardState(
+                action: .pasteAsFile, stage: .starting, targetPath: folder, totalItemCount: 1),
+            showsRefusal: false,
+            beforeAdopting: { [weak self] _ in self?.session.pendingTreeSelectionPath = nil },
+            start: { [coordinator, session, data] in
+                // The listing may not know of a "Pasted Image.png" made elsewhere meanwhile.
+                try await coordinator.createFile(
+                    parentDirectoryPath: folder, fileName: free, contents: data, nextFreeName: true, window: session)
+            })
+        if case .queued = outcome { return outcome }
+        // The file won't be made, so nothing is waiting to be renamed in its row.
+        if session.pendingInlineRenamePath == pendingPath { session.pendingInlineRenamePath = nil }
+        if case .error(let message) = outcome {
+            dialogs.show("The file couldn\u{2019}t be saved", message, window)
+        }
+        return outcome
+    }
+
     // MARK: Trash and Delete Immediately
 
     /// Moves items to the Trash; a folder of the tree asks first. Their disk having no Trash, the items

@@ -14,8 +14,9 @@ extension WriteCoordinator {
             throw WriteCoordinatorError(refusal)
         }
         return try await prepareWithReservedSlot {
-            try await self.prepareCreateFolder(
-                parentDirectoryPath: parentDirectoryPath, folderName: folderName, nextFreeName: nextFreeName)
+            try await self.prepareNewItem(
+                parentDirectoryPath: parentDirectoryPath, name: folderName, nextFreeName: nextFreeName,
+                nextFree: Self.nextFreeFolderPath)
         } then: { destinationPath, reservation in
             let fileSystem = self.fileSystem
             // As for a copy: undoing it would mean deleting it, on a disk without a Trash.
@@ -28,16 +29,17 @@ extension WriteCoordinator {
         }
     }
 
-    /// The folder's path.
-    func prepareCreateFolder(parentDirectoryPath rawParent: String, folderName rawName: String, nextFreeName: Bool)
-        async throws -> String
-    {
+    /// The new folder's or file's path. `nextFree` gives the next free name when it is only a suggestion.
+    func prepareNewItem(
+        parentDirectoryPath rawParent: String, name rawName: String, nextFreeName: Bool,
+        nextFree: @escaping @Sendable (String, String, any LocalWriteFileSystem) throws -> String
+    ) async throws -> String {
         let parentDirectoryPath = NodePath.resolve(rawParent)
         try WriteGuards.assertNotIntoTrash(parentDirectoryPath, verb: "made in", homePath: homePath)
         let fileSystem = self.fileSystem
-        let folderName = InlineRenameRules.trimmedName(rawName)
+        let itemName = InlineRenameRules.trimmedName(rawName)
         return try await LocalOperations.onDisk {
-            let destinationPath = NodePath.join(parentDirectoryPath, folderName)
+            let destinationPath = NodePath.join(parentDirectoryPath, itemName)
             let parentStats: WriteServiceStats
             do {
                 parentStats = try fileSystem.stat(parentDirectoryPath)
@@ -50,9 +52,9 @@ extension WriteCoordinator {
             }
             if LocalOperations.lstatOrNull(fileSystem, destinationPath) != nil {
                 if nextFreeName {
-                    return try Self.nextFreeFolderPath(parentDirectoryPath, folderName, fileSystem)
+                    return try nextFree(parentDirectoryPath, itemName, fileSystem)
                 }
-                throw WriteCoordinatorError("An item named \u{201C}\(folderName)\u{201D} already exists.")
+                throw WriteCoordinatorError("An item named \u{201C}\(itemName)\u{201D} already exists.")
             }
             return destinationPath
         }

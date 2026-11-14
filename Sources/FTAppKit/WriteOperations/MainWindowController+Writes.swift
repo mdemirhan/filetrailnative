@@ -6,8 +6,8 @@ import FTOperations
 extension MainWindowController {
     /// The commands that write, the clipboard's among them: each goes to the file operations.
     static let writeCommands: Set<AppCommand> = [
-        .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .trashSelection, .emptyTrash, .cutSelection,
-        .copySelection, .pasteSelection, .moveSelection, .editCut, .editCopy, .editPaste,
+        .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .pasteAsFile, .trashSelection, .emptyTrash,
+        .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut, .editCopy, .editPaste,
     ]
 
     /// This tab's file operations; nil until the app has started them.
@@ -94,6 +94,10 @@ extension MainWindowController {
                     isSearchMode: searchRootPath != nil, homePath: actions.session.coordinator.homePath)
             else { return true }
             Task { _ = await actions.newFolder(in: target) }
+        case .pasteAsFile:
+            // Into the folder on screen, whatever is selected and whichever pane has the keyboard, as New Folder.
+            guard let target = pasteAsFileTargetPath(actions) else { return true }
+            Task { _ = await actions.pasteAsFile(in: target, from: systemClipboard) }
         case .trashSelection:
             let paths = selectedPaths
             guard !paths.isEmpty else { return true }
@@ -109,6 +113,13 @@ extension MainWindowController {
             break
         }
         return true
+    }
+
+    /// Where Paste as File writes: the folder on screen; none in search results or in the Trash.
+    private func pasteAsFileTargetPath(_ actions: WindowWriteActions) -> String? {
+        LocalWriteRules.newFolderTargetPath(
+            currentPath: shownFolderPath, selectedEntry: nil, selectedPaths: selectedPaths,
+            isSearchMode: searchRootPath != nil, homePath: actions.session.coordinator.homePath)
     }
 
     /// The folder just made in the folder on screen is renamed in its row once it is listed (and selected, see
@@ -161,6 +172,10 @@ extension MainWindowController {
             }
             guard let target else { return }
             Task { _ = await actions.newFolder(in: target, selectInTree: fromTree) }
+        case .pasteAsFile:
+            // Only the background's menu has it: the folder on screen.
+            guard let target = pasteAsFileTargetPath(actions) else { return }
+            Task { _ = await actions.pasteAsFile(in: target, from: systemClipboard) }
         case .trash:
             Task { _ = await actions.trash(paths, askFirst: subject.surface == .treeFolder) }
         case .deleteImmediately:

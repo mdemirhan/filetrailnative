@@ -43,11 +43,13 @@ public struct ContextMenuWorld: Equatable, Sendable {
     public var hasPasteDestination: Bool
     /// The tab shows two panes: the Other Pane submenu shows.
     public var showsTwoPanes: Bool
+    /// What Paste as File would write from the system's clipboard; nil for nothing.
+    public var pasteAsFileKind: PasteAsFileKind?
 
     public init(
         homePath: String, currentPath: String = "", isSearchMode: Bool = false, favoritePaths: [String] = [],
         trashIsEmpty: Bool? = nil, writeLocked: Bool = false, canPaste: Bool = false, hasPasteDestination: Bool = false,
-        showsTwoPanes: Bool = false
+        showsTwoPanes: Bool = false, pasteAsFileKind: PasteAsFileKind? = nil
     ) {
         self.homePath = homePath
         self.currentPath = currentPath
@@ -58,6 +60,7 @@ public struct ContextMenuWorld: Equatable, Sendable {
         self.canPaste = canPaste
         self.hasPasteDestination = hasPasteDestination
         self.showsTwoPanes = showsTwoPanes
+        self.pasteAsFileKind = pasteAsFileKind
     }
 }
 
@@ -65,7 +68,7 @@ public enum ContextMenuRules {
     /// What a running file operation blocks, in every tab: anything that would start another. Copy, Cut and Copy Path
     /// only fill a clipboard, so they stay available.
     public static let writeLockedActions: [ContextMenuActionID] = [
-        .paste, .move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash,
+        .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash,
     ]
 
     /// What the menus leave out in the Trash: nothing is pasted, made or duplicated there, and what is in it is in
@@ -113,7 +116,8 @@ public enum ContextMenuRules {
             targetsFolder: !subject.entries.isEmpty && subject.entries.allSatisfy { $0.kind.isDirectoryLike },
             // Several items are renamed in the Rename sheet, as Finder's Rename does.
             renameLabel: subject.entries.count > 1 ? "Rename \(groupedCount(subject.entries.count)) Items…" : nil,
-            ejectLabel: subject.ejectableDiskName.map { "Eject “\($0)”" } ?? ejectLabel)
+            ejectLabel: subject.ejectableDiskName.map { "Eject “\($0)”" } ?? ejectLabel,
+            pasteAsFileLabel: PasteAsFile.menuTitle(world.pasteAsFileKind))
     }
 
     /// A count with its thousands grouped as in US English, whatever the app's language: "1,234".
@@ -150,6 +154,8 @@ public enum ContextMenuRules {
             for action in writeLockedActions where action != .paste { hidden.insert(action) }
         }
         if favoriteToggleLabel(subject, world) == nil { hidden.insert(.toggleFavorite) }
+        // Paste as File is there only with an image or text to write.
+        if world.pasteAsFileKind == nil { hidden.insert(.pasteAsFile) }
         // Eject is for a disk that can be ejected.
         if subject.ejectableDiskName == nil { hidden.insert(.eject) }
         let isTreeSurface = surface == .treeFolder || surface == .favorite
@@ -194,6 +200,7 @@ public enum ContextMenuRules {
             // Nothing is pasted into or created in the Trash; it can be emptied from there.
             if inTrash(world.currentPath) {
                 hidden.insert(.paste)
+                hidden.insert(.pasteAsFile)
                 hidden.insert(.newFolder)
             } else {
                 hidden.insert(.emptyTrash)

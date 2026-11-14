@@ -10,8 +10,9 @@ extension ShortcutPolicy {
     public static func treeFocusBucket(of command: AppCommand) -> TreeFocusShortcutBucket {
         switch command {
         case .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .focusFileSearch, .openLocationSheet,
-            .openSettings, .emptyTrash, .ejectVolume, .showClipboard, .clearClipboard, .refreshOrApplySearchSort,
-            .toggleFolderTree, .toggleInfoPanel, .toggleInfoRow, .customizeToolbar, .goHomeRootTree, .goDocuments,
+            .openSettings, .emptyTrash, .ejectVolume, .pasteAsFile, .showClipboard, .clearClipboard,
+            .refreshOrApplySearchSort, .toggleFolderTree, .toggleInfoPanel, .toggleInfoRow, .customizeToolbar,
+            .goHomeRootTree, .goDocuments,
             .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash, .rootTreeAtSelection,
             .newWindow, .newTab, .duplicateTab, .reopenClosedTab, .closeTab, .selectNextTab, .selectPreviousTab,
             .moveTabToNewWindow,

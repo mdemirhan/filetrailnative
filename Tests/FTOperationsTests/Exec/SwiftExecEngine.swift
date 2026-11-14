@@ -425,6 +425,10 @@ struct RecordedWriteFileSystem: UndoFileSystem {
         try alive()
         try disk.mkdir(path)
     }
+    func writeNewFile(_ path: String, _ contents: Data) throws {
+        try alive()
+        try disk.writeNewFile(path, contents)
+    }
     func rm(_ path: String, recursive: Bool, force: Bool) throws {
         try alive()
         try disk.rm(path, recursive: recursive, force: force)

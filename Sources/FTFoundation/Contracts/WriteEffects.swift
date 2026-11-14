@@ -104,7 +104,7 @@ public enum WriteEffects {
     public static func movedItems(_ action: WriteOperationAction, cut: Bool) -> Bool {
         switch action {
         case .rename, .batchRename, .moveTo, .undo, .redo: true
-        case .paste, .copyTo, .duplicate, .trash, .deleteImmediately, .newFolder: cut
+        case .paste, .copyTo, .duplicate, .trash, .deleteImmediately, .newFolder, .pasteAsFile: cut
         }
     }
 
@@ -134,7 +134,7 @@ public enum WriteEffects {
         case .undo, .redo:
             return items.compactMap { $0.status == .completed && $0.destinationPath == nil ? source($0) : nil }
                 + replacedPaths
-        case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .batchRename:
+        case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .pasteAsFile, .batchRename:
             return replacedPaths
         }
     }

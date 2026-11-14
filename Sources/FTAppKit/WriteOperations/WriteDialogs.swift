@@ -19,6 +19,7 @@ enum WriteStartAction: Equatable, Sendable {
             case .deleteImmediately: "Couldn\u{2019}t Delete"
             case .rename, .batchRename: "Couldn\u{2019}t Rename"
             case .newFolder: "Couldn\u{2019}t Make a New Folder"
+            case .pasteAsFile: "Couldn\u{2019}t Paste as File"
             case .undo: "Couldn\u{2019}t Undo"
             case .redo: "Couldn\u{2019}t Redo"
             case .paste: "Couldn\u{2019}t Paste"
@@ -41,6 +42,11 @@ struct WriteDialogs {
     /// Shows a notice that only informs (`type: "info"`), the same way.
     var showInfo: (_ title: String, _ message: String, _ window: NSWindow?) -> Void = { title, message, window in
         WriteDialogs.drawNotice(title, message, window, style: .informational)
+    }
+
+    /// A toast that only informs, for what started nothing (Paste as File with nothing to write).
+    var toast: (_ title: String, _ message: String?, _ window: NSWindow?) -> Void = { title, message, window in
+        _ = NotificationOverlay.push(.info, title: title, message: message, in: window)
     }
 
     /// Asks `question` on `window` (or on its own); true when the action was chosen.

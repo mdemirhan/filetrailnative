@@ -85,6 +85,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case duplicateSelection
     case moveSelection
     case newFolder
+    case pasteAsFile
     case trashSelection
     case ejectVolume
     case emptyTrash
@@ -293,6 +294,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .newFolder, label: "New Folder", group: .files, defaults: ["Cmd+Shift+N"], menuPath: "File > New Folder"
         ),
+        ShortcutCommandDefinition(
+            id: .pasteAsFile, label: "Paste as File", group: .files, defaults: ["Cmd+Shift+V"],
+            menuPath: "Edit > Paste as File"),
         ShortcutCommandDefinition(
             id: .trashSelection, label: "Move to Trash", group: .files, defaults: ["Cmd+Backspace"],
             menuPath: "File > Move to Trash"),

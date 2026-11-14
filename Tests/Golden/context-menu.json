@@ -5061,6 +5061,11 @@
           "icon": "paste"
         },
         {
+          "id": "pasteAsFile",
+          "label": "Paste as File",
+          "icon": "pasteAsFile"
+        },
+        {
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
@@ -5150,6 +5155,11 @@
           "id": "paste",
           "label": "Paste",
           "icon": "paste"
+        },
+        {
+          "id": "pasteAsFile",
+          "label": "Paste as File",
+          "icon": "pasteAsFile"
         },
         {
           "id": "copyPath",
@@ -5243,6 +5253,11 @@
           "icon": "paste"
         },
         {
+          "id": "pasteAsFile",
+          "label": "Paste as File",
+          "icon": "pasteAsFile"
+        },
+        {
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
@@ -5332,6 +5347,11 @@
           "id": "paste",
           "label": "Paste",
           "icon": "paste"
+        },
+        {
+          "id": "pasteAsFile",
+          "label": "Paste as File",
+          "icon": "pasteAsFile"
         },
         {
           "id": "copyPath",
@@ -5425,6 +5445,11 @@
           "icon": "paste"
         },
         {
+          "id": "pasteAsFile",
+          "label": "Paste as File",
+          "icon": "pasteAsFile"
+        },
+        {
           "id": "copyPath",
           "label": "Copy Path",
           "icon": "copyPath"
@@ -5514,6 +5539,11 @@
           "id": "paste",
           "label": "Paste",
           "icon": "paste"
+        },
+        {
+          "id": "pasteAsFile",
+          "label": "Paste as File",
+          "icon": "pasteAsFile"
         },
         {
           "id": "copyPath",
@@ -5608,6 +5638,11 @@
           "id": "paste",
           "label": "Paste",
           "icon": "paste"
+        },
+        {
+          "id": "pasteAsFile",
+          "label": "Paste as File",
+          "icon": "pasteAsFile"
         },
         {
           "id": "copyPath",

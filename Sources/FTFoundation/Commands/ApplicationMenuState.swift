@@ -23,13 +23,16 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// it.
     public var workspaceID: String?
     public var workspaceName: String?
+    /// What Paste as File would write, which its item names.
+    public var pasteAsFileKind: PasteAsFileKind?
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
         foldersFirst: Bool = true, hiddenFilesShown: Bool = false, folderTreeOpen: Bool = true,
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
-        textEditing: Bool = false, workspaceID: String? = nil, workspaceName: String? = nil
+        textEditing: Bool = false, workspaceID: String? = nil, workspaceName: String? = nil,
+        pasteAsFileKind: PasteAsFileKind? = nil
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
@@ -45,6 +48,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.textEditing = textEditing
         self.workspaceID = workspaceID
         self.workspaceName = workspaceName
+        self.pasteAsFileKind = pasteAsFileKind
     }
 
     /// Before the window has reported: everything is available and nothing checked.
@@ -56,7 +60,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
         viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
-        workspace: (id: String, name: String)? = nil, canRun: (AppCommand) -> Bool
+        workspace: (id: String, name: String)? = nil, pasteAsFileKind: PasteAsFileKind? = nil,
+        canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
         // change its text.
@@ -68,7 +73,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
             hiddenFilesShown: hiddenFilesShown, folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen,
             infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
             favoriteIsSet: favoriteIsSet,
-            textEditing: textEditing, workspaceID: workspace?.id, workspaceName: workspace?.name)
+            textEditing: textEditing, workspaceID: workspace?.id, workspaceName: workspace?.name,
+            pasteAsFileKind: pasteAsFileKind)
     }
 }
 
@@ -211,6 +217,9 @@ public enum ApplicationMenu {
             case .redo: textUndo ? "Redo" : window.undoLabels?.redo ?? "Redo"
             case .toggleFavorite: state.favoriteIsSet ? "Remove from Favorites" : "Add to Favorites"
             case .toggleFolderTree: state.folderTreeOpen ? "Hide Folder Tree" : "Show Folder Tree"
+            // What it would write, while it can.
+            case .pasteAsFile:
+                PasteAsFile.menuTitle(isEnabled(type) ? state.pasteAsFileKind : nil)
             // With no explorer window to act on, no view is named.
             case .increaseSize, .decreaseSize, .resetSize:
                 ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)

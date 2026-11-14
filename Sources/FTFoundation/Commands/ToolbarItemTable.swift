@@ -34,6 +34,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case copySelection
     case cutSelection
     case pasteSelection
+    case pasteAsFile
     case undo
     case redo
     case openInTerminal
@@ -121,6 +122,9 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .pasteSelection, label: "Paste", icon: .paste, commandType: .pasteSelection,
             shortcutCommand: .paste),
+        ToolbarItemDefinition(
+            id: .pasteAsFile, label: PasteAsFile.commandLabel, icon: .pasteAsFile, commandType: .pasteAsFile,
+            shortcutCommand: .pasteAsFile),
         ToolbarItemDefinition(id: .undo, label: "Undo", icon: .undo, commandType: .undo, shortcutCommand: .undo),
         ToolbarItemDefinition(id: .redo, label: "Redo", icon: .redo, commandType: .redo, shortcutCommand: .redo),
         ToolbarItemDefinition(
@@ -190,6 +194,7 @@ extension ToolbarItems {
         .copySelection,
         .cutSelection,
         .pasteSelection,
+        .pasteAsFile,
         .undoHistory,
         .undo,
         .redo,

@@ -129,8 +129,8 @@ public enum ShortcutPolicy {
         "quickLook": .quickLookSelection, "showInfo": .toggleInfoPanel, "calculateSize": .calculateSize,
         "revealInFolder": .revealInFolder, "edit": .editSelection, "cut": .cut, "copy": .copy, "paste": .paste,
         "move": .moveSelection, "rename": .renameSelection, "duplicate": .duplicateSelection, "newFolder": .newFolder,
-        "terminal": .openInTerminal, "copyPath": .copyPath, "rootTreeHere": .rootTreeAtSelection,
-        "trash": .trashSelection,
+        "pasteAsFile": .pasteAsFile, "terminal": .openInTerminal, "copyPath": .copyPath,
+        "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection,
     ]
 
     /// The shortcut shown beside a context-menu item, only where pressing it now would
@@ -178,6 +178,8 @@ public enum ShortcutPolicy {
             return canHandleRaw(.duplicateSelection, context)
         case "newFolder":
             return canHandleRaw(.newFolder, context)
+        case "pasteAsFile":
+            return canHandle(.pasteAsFile, context)
         case "terminal":
             return canHandle(.openInTerminal, context)
         case "copyPath":

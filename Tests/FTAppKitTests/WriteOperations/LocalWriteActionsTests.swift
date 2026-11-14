@@ -1,4 +1,5 @@
 // What one window asks of the coordinator, and what it asks the person first, driven on a real folder
+import AppKit
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -79,6 +80,10 @@ private final class Fixture {
     /// The reasons a name prompt showed under what was typed.
     var promptRefusals: [String] = []
     var events: [WindowWriteEvent] = []
+    /// The toasts' titles.
+    var toasts: [String] = []
+    /// Stands in for the system's clipboard, which stays the user's.
+    let pasteboard = NSPasteboard.withUniqueName()
     private var observation: ExplorerWindowObservation?
 
     init() throws {
@@ -106,6 +111,7 @@ private final class Fixture {
     var actions: WindowWriteActions {
         var dialogs = WriteDialogs()
         dialogs.show = { [weak self] title, message, _ in self?.shown.append((title, message)) }
+        dialogs.toast = { [weak self] title, _, _ in self?.toasts.append(title) }
         dialogs.confirm = { [weak self] question, _ in
             self?.asked.append(question)
             return self?.answers.isEmpty == false ? self?.answers.removeFirst() ?? false : false
@@ -192,6 +198,7 @@ private final class Fixture {
     func close() async {
         release()
         await coordinator.shutDown(maxWaitMs: 0)
+        pasteboard.releaseGlobally()
         root.remove()
     }
 }
@@ -678,6 +685,107 @@ private final class Fixture {
         #expect(fixture.shown.map(\.title) == ["Couldn’t Rename"])
         #expect(fixture.shown.map(\.message) == [WriteDialogs.busyMessage])
         #expect(fixture.exists("a.txt"))
+        await fixture.close()
+    }
+
+    // MARK: Paste as File
+
+    /// Puts each type with its bytes on the stand-in clipboard, as an app's copy does.
+    private static func copy(_ fixture: Fixture, _ items: [(String, Data)]) {
+        fixture.pasteboard.declareTypes(items.map { NSPasteboard.PasteboardType($0.0) }, owner: nil)
+        for (type, data) in items { fixture.pasteboard.setData(data, forType: NSPasteboard.PasteboardType(type)) }
+    }
+
+    private static func paste(_ fixture: Fixture) async -> CopyLikeOutcome {
+        await fixture.actions.pasteAsFile(in: fixture.root.path, from: SystemClipboard(fixture.pasteboard))
+    }
+
+    @Test func savesCopiedTextAsAFileAndNamesItInItsRow() async throws {
+        let fixture = try Fixture()
+        Self.copy(fixture, [("public.utf8-plain-text", Data("Groceries\nmilk".utf8))])
+        guard case .queued = await Self.paste(fixture) else {
+            Issue.record("not started")
+            return
+        }
+        try await fixture.waitForEnds(1)
+        #expect(try String(contentsOfFile: fixture.path("Pasted Text.txt"), encoding: .utf8) == "Groceries\nmilk")
+        #expect(fixture.session.pendingInlineRenamePath == fixture.path("Pasted Text.txt"))
+        #expect(fixture.ends.first?.action == .pasteAsFile)
+        await fixture.close()
+    }
+
+    @Test func savesAnImageAsCopiedAndATIFFAsPNG() async throws {
+        let fixture = try Fixture()
+        let png = Data([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 1, 2, 3])
+        Self.copy(fixture, [("public.png", png), ("public.tiff", Data([0]))])
+        guard case .queued = await Self.paste(fixture) else {
+            Issue.record("not started")
+            return
+        }
+        try await fixture.waitForEnds(1)
+        #expect(FileManager.default.contents(atPath: fixture.path("Pasted Image.png")) == png)
+
+        let image = try #require(
+            NSBitmapImageRep(
+                bitmapDataPlanes: nil, pixelsWide: 2, pixelsHigh: 2, bitsPerSample: 8, samplesPerPixel: 4,
+                hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0))
+        Self.copy(fixture, [("public.tiff", try #require(image.tiffRepresentation))])
+        guard case .queued = await Self.paste(fixture) else {
+            Issue.record("not started")
+            return
+        }
+        try await fixture.waitForEnds(2)
+        // The next free name, as the window lists nothing here.
+        let converted = try #require(FileManager.default.contents(atPath: fixture.path("Pasted Image 2.png")))
+        #expect(converted.prefix(8) == png.prefix(8))
+        await fixture.close()
+    }
+
+    @Test func filesCopiedInAnotherAppAreOnlyToldOf() async throws {
+        let fixture = try Fixture()
+        fixture.pasteboard.clearContents()
+        fixture.pasteboard.writeObjects([URL(fileURLWithPath: fixture.path("Share")) as NSURL])
+        #expect(await Self.paste(fixture) == .cancelled)
+        #expect(fixture.toasts == [PasteAsFile.filesTitle])
+        #expect(fixture.ends.isEmpty)
+        await fixture.close()
+    }
+
+    @Test func aClipboardWithNothingToWriteIsToldOf() async throws {
+        let fixture = try Fixture()
+        fixture.pasteboard.clearContents()
+        #expect(await Self.paste(fixture) == .cancelled)
+        #expect(fixture.toasts == [PasteAsFile.nothingTitle])
+        await fixture.close()
+    }
+
+    @Test func asksBeforeSavingWhatAPasswordManagerMarkedAndCancelIsTheDefault() async throws {
+        let fixture = try Fixture()
+        Self.copy(
+            fixture, [("public.utf8-plain-text", Data("hunter2".utf8)), (PasteAsFile.concealedType, Data())])
+        #expect(await Self.paste(fixture) == .cancelled)
+        #expect(fixture.asked.map(\.title) == [PasteAsFile.concealedTitle])
+        #expect(fixture.asked.first?.cancelIsDefault == true)
+        #expect(!fixture.exists("Pasted Text.txt"))
+
+        fixture.answers = [true]
+        guard case .queued = await Self.paste(fixture) else {
+            Issue.record("not started")
+            return
+        }
+        try await fixture.waitForEnds(1)
+        #expect(fixture.exists("Pasted Text.txt"))
+        await fixture.close()
+    }
+
+    @Test func pastesNothingWhileAnotherWindowWrites() async throws {
+        let fixture = try Fixture()
+        try fixture.anotherWindowRuns()
+        Self.copy(fixture, [("public.utf8-plain-text", Data("text".utf8))])
+        #expect(await Self.paste(fixture) == .cancelled)
+        #expect(fixture.shown.map(\.title) == ["Couldn\u{2019}t Paste as File"])
+        #expect(fixture.session.pendingInlineRenamePath == nil)
+        #expect(!fixture.exists("Pasted Text.txt"))
         await fixture.close()
     }
 }
