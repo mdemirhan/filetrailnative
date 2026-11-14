@@ -74,6 +74,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var batchRenamePresets: [BatchRenamePreset]
     /// How typing in the file list, or over search results, finds names: letters in order, or the text as a run.
     public var listFilterMatch: NameMatchMode
+    /// Windows' tabs saved by name (Window ▸ Workspaces), in the order the menu lists them.
+    public var workspaces: [Workspace]
 
     /// What a new install starts with, given the theme it starts in.
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
@@ -97,7 +99,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             restoreSessionOnStartup: true, openTabs: [], activeTabIndex: 0, treeRootPath: nil, lastVisitedPath: nil,
             lastVisitedFavoritePath: nil, favorites: [], favoritesPlacement: .integrated, favoritesExpanded: true,
             locationsExpanded: true, favoritesInitialized: false,
-            batchRenameSettings: .defaults, batchRenamePresets: [], listFilterMatch: .fuzzy)
+            batchRenameSettings: .defaults, batchRenamePresets: [], listFilterMatch: .fuzzy, workspaces: [])
     }
 }
 

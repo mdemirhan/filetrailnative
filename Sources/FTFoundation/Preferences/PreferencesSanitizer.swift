@@ -266,7 +266,10 @@ public enum PreferencesSanitizer {
             favoritesInitialized: bool(record, "favoritesInitialized", defaults.favoritesInitialized),
             batchRenameSettings: BatchRename.sanitizeSettings(record["batchRenameSettings"]),
             batchRenamePresets: BatchRename.sanitizePresets(record["batchRenamePresets"]),
-            listFilterMatch: choice(record, "listFilterMatch", defaults.listFilterMatch))
+            listFilterMatch: choice(record, "listFilterMatch", defaults.listFilterMatch),
+            // A record that doesn't hold them (a window's session read over the app's) keeps the ones it has.
+            workspaces: record["workspaces"] == nil
+                ? defaults.workspaces : Workspaces.sanitize(record["workspaces"], defaults: defaults))
     }
 
     /// A whole number, zero or more; anything else is zero. A number past what a count can be stops at the largest.

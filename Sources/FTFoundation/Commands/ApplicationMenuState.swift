@@ -19,13 +19,17 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var favoriteIsSet: Bool
     /// A text field has the keyboard: Undo and Redo are its own, and always on.
     public var textEditing: Bool
+    /// The workspace the window was opened from or saved as, while it is kept: the menu checks it, and Update names
+    /// it.
+    public var workspaceID: String?
+    public var workspaceName: String?
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
         foldersFirst: Bool = true, hiddenFilesShown: Bool = false, folderTreeOpen: Bool = true,
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
-        textEditing: Bool = false
+        textEditing: Bool = false, workspaceID: String? = nil, workspaceName: String? = nil
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
@@ -39,6 +43,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.filterPinned = filterPinned
         self.favoriteIsSet = favoriteIsSet
         self.textEditing = textEditing
+        self.workspaceID = workspaceID
+        self.workspaceName = workspaceName
     }
 
     /// Before the window has reported: everything is available and nothing checked.
@@ -49,7 +55,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public static func build(
         viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
-        filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool, canRun: (AppCommand) -> Bool
+        filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
+        workspace: (id: String, name: String)? = nil, canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
         // change its text.
@@ -61,7 +68,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
             hiddenFilesShown: hiddenFilesShown, folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen,
             infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
             favoriteIsSet: favoriteIsSet,
-            textEditing: textEditing)
+            textEditing: textEditing, workspaceID: workspace?.id, workspaceName: workspace?.name)
     }
 }
 
@@ -214,6 +221,50 @@ public enum ApplicationMenu {
         return AppCommand.allCases.map {
             ApplicationMenuItemState(id: $0.rawValue, enabled: isEnabled($0), checked: checked($0), title: title($0))
         }
+    }
+
+    // MARK: Workspaces
+
+    /// The id of the Window ▸ Workspaces item that opens a workspace, and of the one ⌥ shows in its place, which opens
+    /// it in the window the menu acts on.
+    public static func workspaceItemID(_ workspaceID: String, inThisWindow: Bool = false) -> String {
+        (inThisWindow ? workspaceHerePrefix : workspacePrefix) + workspaceID
+    }
+
+    /// Manage Workspaces…, which opens the list in Settings.
+    public static let manageWorkspacesItemID = "manageWorkspaces"
+
+    /// The workspace a Window ▸ Workspaces item opens, and whether in the window the menu acts on; nil for any other
+    /// item.
+    public static func workspaceItem(_ itemID: String) -> (workspaceID: String, inThisWindow: Bool)? {
+        for (prefix, here) in [(workspaceHerePrefix, true), (workspacePrefix, false)] where itemID.hasPrefix(prefix) {
+            let id = String(itemID.dropFirst(prefix.count))
+            return id.isEmpty ? nil : (id, here)
+        }
+        return nil
+    }
+
+    private static let workspacePrefix = "workspace:"
+    private static let workspaceHerePrefix = "workspaceHere:"
+
+    /// The Workspaces items for the window the menu acts on: the workspace it came from is checked, and Update names
+    /// it. `workspaceIDs` are the workspaces the menu lists.
+    public static func workspaceItemStates(
+        _ state: ApplicationMenuState, window: WindowFacts, workspaceIDs: [String]
+    ) -> [ApplicationMenuItemState] {
+        let linked = window.explorerFocused ? state.workspaceID : nil
+        let name = window.explorerFocused ? state.workspaceName : nil
+        let update = ApplicationMenuItemState(
+            id: AppCommand.updateWorkspace.rawValue,
+            title: name.map { "Update \u{201C}\($0)\u{201D}" } ?? "Update Workspace")
+        return [update]
+            + workspaceIDs.flatMap { id in
+                let checked = linked.map { $0.utf16.elementsEqual(id.utf16) } ?? false
+                return [
+                    ApplicationMenuItemState(id: workspaceItemID(id), checked: checked),
+                    ApplicationMenuItemState(id: workspaceItemID(id, inThisWindow: true), checked: checked),
+                ]
+            }
     }
 
     /// The size commands name what they change in the view on screen: the icons in the Icons view, the columns in the

@@ -585,8 +585,31 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         if let selected { host?.tabNavigated(selected) }
     }
 
-    private func reportMenuStates() {
+    /// What the menu shows of every tab changed.
+    func reportMenuStates() {
         for tab in tabs { host?.reportMenuState(tab) }
+    }
+
+    /// The workspace the window was opened from or saved as, while it is kept.
+    var workspace: Workspace? {
+        guard let store = host?.store, let id = store.explorerWindowWorkspace(recordID) else { return nil }
+        let kept = store.preferences().workspaces
+        return Workspaces.index(id: id, in: kept).map { kept[$0] }
+    }
+
+    /// Workspace 1 to 5, in a new window or in place of `tab`'s, by a key the menu doesn't listen for (a command's
+    /// second key).
+    func openWorkspace(slot: Int, inPlaceOf tab: MainWindowController? = nil) {
+        host?.openWorkspace(slot: slot, inPlaceOf: tab)
+    }
+
+    /// Save Window as Workspace… and Update "Name", from `tab`.
+    func saveWorkspace(from tab: MainWindowController) {
+        host?.saveWorkspace(from: tab)
+    }
+
+    func updateWorkspace(from tab: MainWindowController) {
+        host?.updateWorkspace(from: tab)
     }
 
     /// What the menu shows of `tab` changed.

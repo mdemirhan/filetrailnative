@@ -197,6 +197,117 @@ final class SettingsPageView: NSView {
             options: [(FavoritesPlacement.integrated, "In the folder tree"), (.separate, "In their own section")],
             \.favoritesPlacement)
         favorites.card.add(favoritesList(), fullWidth: true)
+
+        let workspaces = section(
+            "Workspaces",
+            note:
+                "Window \u{203A} Workspaces saves a window\u{2019}s tabs and opens them again. The first five have keys."
+        )
+        workspaces.card.add(workspacesList(), fullWidth: true)
+    }
+
+    /// The workspaces in the menu's order: renamed, removed, dragged or moved into another order. Each row says what it
+    /// holds, and the key of the first five.
+    private func workspacesList() -> SettingsListView {
+        let list = SettingsListView(label: "Workspaces", keys: .items, theme: theme)
+        let remove = SettingsListBarButton(.remove, label: "Remove", tooltip: "Remove")
+        let up = SettingsListBarButton(.moveUp, label: "Move Up", tooltip: "Move Up")
+        let down = SettingsListBarButton(.moveDown, label: "Move Down", tooltip: "Move Down")
+        let rename = SettingsListBarButton(.text("Rename…"), label: "Rename")
+        list.setBar([.segments([remove]), .segments([up, down]), .button(rename), .spacer])
+        list.onSelectionChange = { [weak list, weak self] in
+            guard let list, let self else { return }
+            let workspaces = self.preferences.workspaces
+            let index = list.selectedIndex
+            let selected = index.flatMap { workspaces.indices.contains($0) ? workspaces[$0] : nil }
+            remove.isEnabled = selected != nil
+            rename.isEnabled = selected != nil
+            up.isEnabled = (index ?? 0) > 0
+            down.isEnabled = index.map { $0 < workspaces.count - 1 } ?? false
+            remove.label = selected.map { "Remove \($0.name)" } ?? "Remove"
+            rename.label = selected.map { "Rename \($0.name)" } ?? "Rename"
+            up.label = selected.map { "Move \($0.name) Up" } ?? "Move Up"
+            down.label = selected.map { "Move \($0.name) Down" } ?? "Move Down"
+        }
+        list.onMove = { [weak self] from, to in
+            self?.update { $0.workspaces = SettingsValues.move($0.workspaces, from: from, to: to) }
+        }
+        list.onRemove = { [weak self] index in self?.removeWorkspace(index) }
+        list.onChange = { [weak self] index in self?.renameWorkspace(index) }
+        remove.onPress = { [weak list] in
+            guard let list, let index = list.selectedIndex else { return }
+            list.onRemove(index)
+        }
+        rename.onPress = { [weak list] in
+            guard let list, let index = list.selectedIndex else { return }
+            list.onChange(index)
+        }
+        up.onPress = { [weak list] in
+            guard let list, let index = list.selectedIndex else { return }
+            list.move(index, to: index - 1)
+        }
+        down.onPress = { [weak list] in
+            guard let list, let index = list.selectedIndex else { return }
+            list.move(index, to: index + 1)
+        }
+        onRefresh { [weak list] preferences in
+            guard let list else { return }
+            let bindings = ShortcutCommands.resolve(preferences.shortcutOverrides).bindings
+            list.setRows(
+                preferences.workspaces.enumerated().map { index, workspace in
+                    let key =
+                        Workspaces.slotCommands.indices.contains(index)
+                        ? Shortcuts.menuShortcut(bindings[Workspaces.slotCommands[index]] ?? [])
+                            .map(ShortcutLabels.format) : nil
+                    return SettingsListRow.Spec(
+                        name: workspace.name, key: workspace.id, path: Workspaces.summary(workspace.session),
+                        trailingNote: key)
+                })
+            list.onSelectionChange()
+        }
+        return list
+    }
+
+    /// Asks before a workspace goes: it can't be brought back. A window opened from it stays open as it is.
+    private func removeWorkspace(_ index: Int) {
+        guard preferences.workspaces.indices.contains(index), let window = host?.pageWindow else { return }
+        let workspace = preferences.workspaces[index]
+        let question = WriteQuestion(
+            title: "Remove \u{201C}\(workspace.name)\u{201D}?",
+            message: "Its tabs are no longer kept. A window opened from it stays as it is.", confirmLabel: "Remove",
+            destructive: true, cancelIsDefault: false)
+        Task { @MainActor [weak self] in
+            guard await InWindowAlerts.confirm(question, in: window) else { return }
+            self?.update { preferences in
+                if let at = Workspaces.index(id: workspace.id, in: preferences.workspaces) {
+                    preferences.workspaces.remove(at: at)
+                }
+            }
+        }
+    }
+
+    /// A new name, which no other workspace has.
+    private func renameWorkspace(_ index: Int) {
+        guard preferences.workspaces.indices.contains(index), let window = host?.pageWindow else { return }
+        let workspace = preferences.workspaces[index]
+        let prompt = NamePrompt(
+            title: "Rename \u{201C}\(workspace.name)\u{201D}", message: nil, label: "Workspace name",
+            submitLabel: "Rename", initialName: workspace.name)
+        Task { @MainActor [weak self] in
+            await InWindowAlerts.askName(prompt, in: window) { [weak self] typed in
+                guard let self else { return .close }
+                let name = Workspaces.cleanName(typed)
+                if let refusal = Workspaces.renameRefusal(name, id: workspace.id, in: self.preferences.workspaces) {
+                    return .refuse(refusal)
+                }
+                self.update { preferences in
+                    if let at = Workspaces.index(id: workspace.id, in: preferences.workspaces) {
+                        preferences.workspaces[at].name = name
+                    }
+                }
+                return .close
+            }
+        }
     }
 
     /// Name first and fixed, the other columns checked and in their order.

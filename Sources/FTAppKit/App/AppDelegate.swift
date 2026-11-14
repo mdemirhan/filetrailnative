@@ -266,12 +266,19 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 // A window opened with none open runs the place chosen once it has opened.
                 self?.host.openDefaultWindow(initialCommand: command)
             },
-            openNewWindowFromFront: { [weak self] in self?.host.openNewWindowFromFront() })
+            openNewWindowFromFront: { [weak self] in self?.host.openNewWindowFromFront() },
+            openWorkspace: { [weak self] id, window in
+                self?.explorerWindows.openWorkspace(id: id, inPlaceOf: window as? MainWindowController)
+            },
+            manageWorkspaces: { [weak self] in self?.pageWindows.openSettings(tab: .browsing) })
         menu.shortcuts = { [weak self] in
             self?.store.map { ShortcutCommands.resolve($0.preferences().shortcutOverrides).bindings }
                 ?? ShortcutCommands.defaultBindings
         }
         menu.textEditorName = { [weak self] in self?.store?.preferences().defaultTextEditor.appName }
+        menu.workspaces = { [weak self] in
+            (self?.store?.preferences().workspaces ?? []).map { WorkspaceMenuEntry(id: $0.id, name: $0.name) }
+        }
         menu.build()
         menu.observeFocus()
         mainMenu = menu
@@ -289,7 +296,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         appearance.preferencesChanged(preferences, change)
         explorerWindows.preferencesChanged(preferences, change)
         pageWindows.preferencesChanged(preferences, change)
-        if change.keys.contains(.shortcutOverrides) || change.keys.contains(.defaultTextEditor) {
+        if change.keys.contains(.shortcutOverrides) || change.keys.contains(.defaultTextEditor)
+            || change.keys.contains(.workspaces)
+        {
             mainMenu?.build()
         }
     }

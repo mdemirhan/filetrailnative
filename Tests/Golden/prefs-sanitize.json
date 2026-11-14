@@ -153,7 +153,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -359,7 +360,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -605,7 +607,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -811,7 +814,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -1017,7 +1021,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -1237,7 +1242,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -1459,7 +1465,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -1665,7 +1672,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "w",
@@ -1897,7 +1905,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -2164,7 +2173,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -4999,7 +5009,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -5558,7 +5569,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -5791,7 +5803,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -5997,7 +6010,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -6203,7 +6217,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -6414,7 +6429,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -6629,7 +6645,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -6835,7 +6852,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -7035,7 +7053,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -7232,7 +7251,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -7451,7 +7471,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -7657,7 +7678,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -7863,7 +7885,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -8086,7 +8109,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -8394,7 +8418,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -8620,7 +8645,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -9138,7 +9164,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -9324,7 +9351,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -9544,7 +9572,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -9799,7 +9828,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -10047,7 +10077,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -10281,7 +10312,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -10751,7 +10783,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -11033,7 +11066,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -11239,7 +11273,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -11503,7 +11538,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -11827,7 +11863,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -12112,7 +12149,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -12389,7 +12427,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -12871,7 +12910,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -13126,7 +13166,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -13373,7 +13414,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -13560,7 +13602,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -13805,7 +13848,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -14071,7 +14115,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -14460,7 +14505,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -14622,7 +14668,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -15081,7 +15128,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -15536,7 +15584,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -15783,7 +15832,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -16000,7 +16050,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -16234,7 +16285,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -16549,7 +16601,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -16853,7 +16906,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -17084,7 +17138,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -17315,7 +17370,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -17581,7 +17637,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -17808,7 +17865,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -18053,7 +18111,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -18277,7 +18336,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -18489,7 +18549,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -19074,7 +19135,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -19355,7 +19417,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -19630,7 +19693,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -19948,7 +20012,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -20153,7 +20218,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -20400,7 +20466,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -20772,7 +20839,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -20987,7 +21055,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -21232,7 +21301,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -21515,7 +21585,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -21801,7 +21872,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -22007,7 +22079,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -22293,7 +22366,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -22659,7 +22733,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -22932,7 +23007,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -23158,7 +23234,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -23548,7 +23625,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -23810,7 +23888,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -24016,7 +24095,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -24361,7 +24441,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -24638,7 +24719,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -24924,7 +25006,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -25165,7 +25248,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -25388,7 +25472,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -25731,7 +25816,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -25984,7 +26070,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -26199,7 +26286,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -26406,7 +26494,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -26703,7 +26792,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -27039,7 +27129,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -27371,7 +27462,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -27677,7 +27769,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -28142,7 +28235,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -28301,7 +28395,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -28685,7 +28780,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -28931,7 +29027,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -29298,7 +29395,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -29654,7 +29752,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -29910,7 +30009,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -30232,7 +30332,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -30442,7 +30543,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -30662,7 +30764,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -30869,7 +30972,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -31328,7 +31432,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -31553,7 +31658,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -31776,7 +31882,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -32112,7 +32219,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -32523,7 +32631,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -32994,7 +33103,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -33422,7 +33532,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -33686,7 +33797,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -33907,7 +34019,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -34154,7 +34267,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -34487,7 +34601,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -34759,7 +34874,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -34983,7 +35099,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -35188,7 +35305,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -35357,7 +35475,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -35583,7 +35702,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -35811,7 +35931,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -36027,7 +36148,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -36351,7 +36473,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -36911,7 +37034,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -37117,7 +37241,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -37372,7 +37497,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -37553,7 +37679,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -37822,7 +37949,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -38055,7 +38183,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -38329,7 +38458,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -38586,7 +38716,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -38990,7 +39121,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -39414,7 +39546,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -39720,7 +39853,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -39934,7 +40068,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -40166,7 +40301,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -40399,7 +40535,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -40572,7 +40709,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -40794,7 +40932,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -41074,7 +41213,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -41346,7 +41486,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -41553,7 +41694,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -41788,7 +41930,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -42025,7 +42168,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -42315,7 +42459,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -42539,7 +42684,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -42705,7 +42851,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -43008,7 +43155,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -43503,7 +43651,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -43742,7 +43891,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -43941,7 +44091,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -44204,7 +44355,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -44474,7 +44626,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -44742,7 +44895,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -45151,7 +45305,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -45456,7 +45611,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -45732,7 +45888,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -46027,7 +46184,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -46427,7 +46585,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -46950,7 +47109,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -47263,7 +47423,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -47514,7 +47675,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -47903,7 +48065,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -48188,7 +48351,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -48424,7 +48588,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -48674,7 +48839,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -48889,7 +49055,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -49243,7 +49410,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -49648,7 +49816,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -49884,7 +50053,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -50087,7 +50257,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -50395,7 +50566,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -50601,7 +50773,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -50840,7 +51013,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -51103,7 +51277,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -51383,7 +51558,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -51703,7 +51879,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -52141,7 +52318,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -52475,7 +52653,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -52709,7 +52888,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -53090,7 +53270,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -53511,7 +53692,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -53723,7 +53905,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -53930,7 +54113,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -54360,7 +54544,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -54664,7 +54849,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -54897,7 +55083,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -55135,7 +55322,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -55415,7 +55603,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -55710,7 +55899,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -55916,7 +56106,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -56355,7 +56546,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -56561,7 +56753,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -56781,7 +56974,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -57038,7 +57232,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -57360,7 +57555,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -57682,7 +57878,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -57995,7 +58192,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -58250,7 +58448,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -58546,7 +58745,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -58916,7 +59116,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -59231,7 +59432,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -59541,7 +59743,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -59918,7 +60121,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -60244,7 +60448,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -60463,7 +60668,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -60776,7 +60982,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -60982,7 +61189,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -61188,7 +61396,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -61405,7 +61614,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -61749,7 +61959,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -62014,7 +62225,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -62354,7 +62566,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -62638,7 +62851,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -62956,7 +63170,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -63221,7 +63436,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -63478,7 +63694,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -63715,7 +63932,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -64191,7 +64409,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -64437,7 +64656,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -64667,7 +64887,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -64936,7 +65157,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -65177,7 +65399,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -65405,7 +65628,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -65624,7 +65848,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -66205,7 +66430,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -66452,7 +66678,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -66659,7 +66886,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -66905,7 +67133,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -67255,7 +67484,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -67761,7 +67991,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -68045,7 +68276,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -68268,7 +68500,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -68609,7 +68842,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -68890,7 +69124,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -69098,7 +69333,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -69339,7 +69575,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -69711,7 +69948,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -69935,7 +70173,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -70223,7 +70462,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -70473,7 +70713,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -70914,7 +71155,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -71257,7 +71499,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -71463,7 +71706,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -71670,7 +71914,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -71960,7 +72205,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -72260,7 +72506,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -72551,7 +72798,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -72841,7 +73089,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -73052,7 +73301,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -73509,7 +73759,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -73756,7 +74007,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -74253,7 +74505,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -74538,7 +74791,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -74862,7 +75116,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -75193,7 +75448,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -75426,7 +75682,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -75633,7 +75890,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -75839,7 +76097,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -76260,7 +76519,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -76605,7 +76865,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -76811,7 +77072,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -77041,7 +77303,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -77260,7 +77523,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -77466,7 +77730,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -77782,7 +78047,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -77988,7 +78254,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -78205,7 +78472,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -78449,7 +78717,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -78642,7 +78911,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -79060,7 +79330,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "dup",
@@ -79357,7 +79628,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-1",
@@ -79813,7 +80085,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -80330,7 +80603,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -80604,7 +80878,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -80847,7 +81122,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": []
       }
@@ -81030,7 +81306,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -81253,7 +81530,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -81596,7 +81874,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "lastClosedWindow": {
           "id": "window-9",
@@ -82019,7 +82298,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -82341,7 +82621,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -82637,7 +82918,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {
@@ -82857,7 +83139,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "contains"
+          "listFilterMatch": "contains",
+          "workspaces": []
         },
         "windows": [
           {
@@ -83063,7 +83346,8 @@
             "onConflict": "number"
           },
           "batchRenamePresets": [],
-          "listFilterMatch": "fuzzy"
+          "listFilterMatch": "fuzzy",
+          "workspaces": []
         },
         "windows": [
           {

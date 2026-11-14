@@ -113,6 +113,56 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+\\",
             "description": "Show a second pane beside this one, or close the pane you aren't in"
           },
@@ -775,6 +825,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -1001,6 +1055,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -1246,6 +1304,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -1408,6 +1470,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -1561,6 +1627,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -1655,6 +1725,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -2116,6 +2190,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -2781,6 +2905,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -3007,6 +3135,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -3252,6 +3384,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -3413,6 +3549,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -3566,6 +3706,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -3660,6 +3804,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -4128,6 +4276,56 @@
             "group": "navigation",
             "shortcut": "Cmd+N",
             "description": "New window, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -4805,6 +5003,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -5014,6 +5216,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -5254,6 +5460,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -5416,6 +5626,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -5565,6 +5779,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -5659,6 +5877,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -6125,6 +6347,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -6790,6 +7062,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -7016,6 +7292,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -7261,6 +7541,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -7422,6 +7706,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -7575,6 +7863,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -7665,6 +7957,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -8151,6 +8447,56 @@
         "shortcuts": [
           {
             "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+\\",
             "description": "Show a second pane beside this one, or close the pane you aren't in"
           },
@@ -8613,6 +8959,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -8791,6 +9141,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -8979,6 +9333,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -9110,6 +9468,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Windows",
+                  "Workspaces"
+                ],
                 [
                   "Windows",
                   "Closing"
@@ -9249,6 +9611,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -9313,6 +9679,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -9737,6 +10107,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -10402,6 +10822,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -10628,6 +11052,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -10878,6 +11306,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -11050,6 +11482,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -11203,6 +11639,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -11297,6 +11737,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -11764,6 +12208,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -12414,6 +12908,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -12640,6 +13138,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -12880,6 +13382,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -13042,6 +13548,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -13199,6 +13709,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -13285,6 +13799,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -13748,6 +14266,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -14403,6 +14971,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -14629,6 +15201,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -14874,6 +15450,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -15035,6 +15615,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -15188,6 +15772,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -15282,6 +15870,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -15771,6 +16363,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -16401,6 +17043,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -16630,6 +17276,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ],
                 [
@@ -16856,6 +17506,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -17009,6 +17663,10 @@
             {
               "topic": "navigation",
               "rows": [
+                [
+                  "Windows",
+                  "Workspaces"
+                ],
                 [
                   "Windows",
                   "Closing"
@@ -17168,6 +17826,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -17250,6 +17912,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -17710,6 +18376,56 @@
             "group": "navigation",
             "shortcut": "Cmd+Shift+Y",
             "description": "Open the selected folder in a new tab (Cmd+Up also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -18375,6 +19091,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -18606,6 +19326,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -18851,6 +19575,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -19012,6 +19740,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -19165,6 +19897,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -19259,6 +19995,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -19744,6 +20484,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -20376,6 +21166,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -20602,6 +21396,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -20842,6 +21640,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -21009,6 +21811,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -21162,6 +21968,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -21248,6 +22058,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -21723,6 +22537,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -22378,6 +23242,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -22604,6 +23472,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -22843,6 +23715,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -22998,6 +23874,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -23147,6 +24027,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -23233,6 +24117,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -23704,6 +24592,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -24374,6 +25312,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -24600,6 +25542,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -24835,6 +25781,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -24997,6 +25947,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -25150,6 +26104,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -25244,6 +26202,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -25710,6 +26672,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -26387,6 +27399,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -26613,6 +27629,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -26858,6 +27878,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -27019,6 +28043,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -27172,6 +28200,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -27266,6 +28298,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -27736,6 +28772,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -28390,6 +29476,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -28616,6 +29706,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -28850,6 +29944,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -29005,6 +30103,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -29158,6 +30260,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -29252,6 +30358,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -29721,6 +30831,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -30381,6 +31541,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -30607,6 +31771,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -30852,6 +32020,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -31014,6 +32186,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -31167,6 +32343,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -31261,6 +32441,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -31747,6 +32931,56 @@
             "group": "navigation",
             "shortcut": "Cmd+N",
             "description": "New window, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -32441,6 +33675,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -32662,6 +33900,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -32897,6 +34139,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -33063,6 +34309,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -33212,6 +34462,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -33306,6 +34560,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -33777,6 +35035,56 @@
             "group": "navigation",
             "shortcut": "Cmd+Option+Y",
             "description": "Bring every window's tabs into this window (Ctrl+Cmd+S also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -34437,6 +35745,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -34668,6 +35980,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -34907,6 +36223,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -35062,6 +36382,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -35215,6 +36539,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -35309,6 +36637,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -35788,6 +37120,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -36433,6 +37815,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -36647,6 +38033,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -36892,6 +38282,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -37059,6 +38453,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -37212,6 +38610,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -37306,6 +38708,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -37766,6 +39172,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -38426,6 +39882,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -38652,6 +40112,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -38891,6 +40355,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -39046,6 +40514,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -39199,6 +40671,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -39293,6 +40769,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -39777,6 +41257,56 @@
             "group": "navigation",
             "shortcut": "Cmd+Up",
             "description": "Bring every window's tabs into this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -40412,6 +41942,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -40643,6 +42177,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -40888,6 +42426,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -41050,6 +42592,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -41203,6 +42749,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -41289,6 +42839,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -41770,6 +43324,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -42430,6 +44034,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -42651,6 +44259,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -42895,6 +44507,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -43066,6 +44682,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -43219,6 +44839,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -43305,6 +44929,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -43766,6 +45394,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -44426,6 +46104,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -44655,6 +46337,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ],
                 [
@@ -44877,6 +46563,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -45039,6 +46729,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -45188,6 +46882,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -45278,6 +46976,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -45754,6 +47456,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -46431,6 +48183,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -46657,6 +48413,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -46897,6 +48657,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -47053,6 +48817,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -47206,6 +48974,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -47300,6 +49072,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -47773,6 +49549,56 @@
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
             "description": "Root the folder tree at the selected folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -48433,6 +50259,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -48654,6 +50484,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -48883,6 +50717,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -49039,6 +50877,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -49180,6 +51022,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -49274,6 +51120,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -49725,6 +51575,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -50385,6 +52285,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -50606,6 +52510,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -50851,6 +52759,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -51013,6 +52925,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -51166,6 +53082,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -51260,6 +53180,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -51740,6 +53664,56 @@
             "group": "navigation",
             "shortcut": "Cmd+=",
             "description": "Open the selected folder in a new tab (Cmd+K also works)"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -52417,6 +54391,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -52643,6 +54621,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -52883,6 +54865,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -53044,6 +55030,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -53193,6 +55183,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -53287,6 +55281,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -53756,6 +55754,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -54416,6 +56464,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -54642,6 +56694,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -54887,6 +56943,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -55048,6 +57108,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -55201,6 +57265,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -55295,6 +57363,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []
@@ -55773,6 +57845,56 @@
             "group": "navigation",
             "shortcut": "Cmd+T",
             "description": "New tab, on the same folder"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+1",
+            "description": "Open the first workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+2",
+            "description": "Open the second workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+3",
+            "description": "Open the third workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+4",
+            "description": "Open the fourth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+5",
+            "description": "Open the fifth workspace"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+1",
+            "description": "Open the first workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+2",
+            "description": "Open the second workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+3",
+            "description": "Open the third workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+4",
+            "description": "Open the fourth workspace in this window"
+          },
+          {
+            "group": "navigation",
+            "shortcut": "Ctrl+Cmd+Option+5",
+            "description": "Open the fifth workspace in this window"
           },
           {
             "group": "navigation",
@@ -56433,6 +58555,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Next launch"
                 ]
               ],
@@ -56659,6 +58785,10 @@
                 [
                   "Windows",
                   "Moving tabs"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ],
                 [
                   "Windows",
@@ -56899,6 +59029,10 @@
                   "Each window"
                 ],
                 [
+                  "Windows",
+                  "Workspaces"
+                ],
+                [
                   "Keyboard",
                   "Type in the folder tree"
                 ]
@@ -57061,6 +59195,10 @@
               "rows": [
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ]
               ],
@@ -57214,6 +59352,10 @@
                 ],
                 [
                   "Windows",
+                  "Workspaces"
+                ],
+                [
+                  "Windows",
                   "Closing"
                 ],
                 [
@@ -57304,6 +59446,10 @@
                 [
                   "Windows",
                   "Each window"
+                ],
+                [
+                  "Windows",
+                  "Workspaces"
                 ]
               ],
               "shortcuts": []

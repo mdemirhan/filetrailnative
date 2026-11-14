@@ -55,6 +55,18 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case openSelectionInNewWindow
     case moveTabToNewWindow
     case mergeAllWindows
+    case saveWorkspace
+    case updateWorkspace
+    case openWorkspace1
+    case openWorkspace2
+    case openWorkspace3
+    case openWorkspace4
+    case openWorkspace5
+    case openWorkspace1InThisWindow
+    case openWorkspace2InThisWindow
+    case openWorkspace3InThisWindow
+    case openWorkspace4InThisWindow
+    case openWorkspace5InThisWindow
     case toggleTwoPanes
     case switchToOtherPane
     case openSelectionInOtherPane
@@ -194,6 +206,44 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .mergeAllWindows, label: "Merge All Windows", group: .tabs, defaults: [],
             menuPath: "Window > Merge All Windows"),
+        ShortcutCommandDefinition(
+            id: .saveWorkspace, label: "Save Window as Workspace…", group: .tabs, defaults: [],
+            menuPath: "Window > Workspaces > Save Window as Workspace…"),
+        ShortcutCommandDefinition(
+            id: .updateWorkspace, label: "Update Workspace", group: .tabs, defaults: [],
+            menuPath: "Window > Workspaces > Update Workspace"),
+        // The first five workspaces in the list, whatever they are called.
+        ShortcutCommandDefinition(
+            id: .openWorkspace1, label: "Workspace 1", group: .tabs, defaults: ["Ctrl+Cmd+1"],
+            menuPath: "Window > Workspaces"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace2, label: "Workspace 2", group: .tabs, defaults: ["Ctrl+Cmd+2"],
+            menuPath: "Window > Workspaces"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace3, label: "Workspace 3", group: .tabs, defaults: ["Ctrl+Cmd+3"],
+            menuPath: "Window > Workspaces"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace4, label: "Workspace 4", group: .tabs, defaults: ["Ctrl+Cmd+4"],
+            menuPath: "Window > Workspaces"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace5, label: "Workspace 5", group: .tabs, defaults: ["Ctrl+Cmd+5"],
+            menuPath: "Window > Workspaces"),
+        // The same five in the window the menu acts on: the items ⌥ shows in their place.
+        ShortcutCommandDefinition(
+            id: .openWorkspace1InThisWindow, label: "Workspace 1 in This Window", group: .tabs,
+            defaults: ["Ctrl+Cmd+Option+1"], menuPath: "Window > Workspaces, with Option"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace2InThisWindow, label: "Workspace 2 in This Window", group: .tabs,
+            defaults: ["Ctrl+Cmd+Option+2"], menuPath: "Window > Workspaces, with Option"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace3InThisWindow, label: "Workspace 3 in This Window", group: .tabs,
+            defaults: ["Ctrl+Cmd+Option+3"], menuPath: "Window > Workspaces, with Option"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace4InThisWindow, label: "Workspace 4 in This Window", group: .tabs,
+            defaults: ["Ctrl+Cmd+Option+4"], menuPath: "Window > Workspaces, with Option"),
+        ShortcutCommandDefinition(
+            id: .openWorkspace5InThisWindow, label: "Workspace 5 in This Window", group: .tabs,
+            defaults: ["Ctrl+Cmd+Option+5"], menuPath: "Window > Workspaces, with Option"),
         ShortcutCommandDefinition(
             id: .toggleTwoPanes, label: "Two Panes", group: .tabs, defaults: ["Cmd+\\"],
             menuPath: "View > Two Panes"),

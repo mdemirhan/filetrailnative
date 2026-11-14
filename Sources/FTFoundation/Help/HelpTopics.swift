@@ -101,6 +101,11 @@ extension HelpContent {
                                 "Window > Move Tab to New Window, or the same item in a tab's right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others; a window whose tabs would take this one past \(AppPreferenceLimits.openTabsLimit) stays open."
                         ),
                         HelpRow(
+                            label: "Workspaces",
+                            description:
+                                "Window > Workspaces > Save Window as Workspace… keeps the window's tabs by name: each tab's folders and panes, the folder tree, the Info panel and the window's size. Choose the workspace in Window > Workspaces to open it as it was saved in a new window, or hold Option to open it in this one instead. The first five open with {openWorkspace1} to {openWorkspace5}, and in this window with {openWorkspace1InThisWindow} to {openWorkspace5InThisWindow}. A workspace changes only when you choose Update, and Settings → Browsing renames, removes and orders them."
+                        ),
+                        HelpRow(
                             label: "Between windows",
                             description:
                                 "Copy or cut in one window and paste in another. Drag items from one window into another to move or copy them there: they go where a drop from Finder would. Edit > Undo undoes the last operation, whichever window it was done in."
@@ -579,6 +584,24 @@ extension HelpContent {
             group: .navigation, .command(.openSelectionInNewWindow), "Open the selected folder in a new window"),
         HelpShortcutItem(group: .navigation, .command(.moveTabToNewWindow), "Move the tab to a window of its own"),
         HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window's tabs into this window"),
+        HelpShortcutItem(group: .navigation, .command(.saveWorkspace), "Save the window's tabs as a workspace"),
+        HelpShortcutItem(
+            group: .navigation, .command(.updateWorkspace), "Save the window over the workspace it came from"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace1), "Open the first workspace"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace2), "Open the second workspace"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace3), "Open the third workspace"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace4), "Open the fourth workspace"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace5), "Open the fifth workspace"),
+        HelpShortcutItem(
+            group: .navigation, .command(.openWorkspace1InThisWindow), "Open the first workspace in this window"),
+        HelpShortcutItem(
+            group: .navigation, .command(.openWorkspace2InThisWindow), "Open the second workspace in this window"),
+        HelpShortcutItem(
+            group: .navigation, .command(.openWorkspace3InThisWindow), "Open the third workspace in this window"),
+        HelpShortcutItem(
+            group: .navigation, .command(.openWorkspace4InThisWindow), "Open the fourth workspace in this window"),
+        HelpShortcutItem(
+            group: .navigation, .command(.openWorkspace5InThisWindow), "Open the fifth workspace in this window"),
         HelpShortcutItem(
             group: .navigation, .command(.toggleTwoPanes),
             "Show a second pane beside this one, or close the pane you aren't in"),

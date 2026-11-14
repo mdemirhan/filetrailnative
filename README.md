@@ -114,7 +114,7 @@ Select several items and choose Rename. The Rename sheet replaces or adds text, 
 
 Icons view shows Quick Look previews of photos, PDFs and other documents. List view has columns for date, size and kind, and optionally date created and permissions. Compact List packs a folder into columns of names. Space opens Quick Look on whatever is selected.
 
-Every tab has its own folder, history, folder tree, view and search, and every window its own tabs. Move a tab into a window of its own, or merge every window back into one.
+Every tab has its own folder, history, folder tree, view and search, and every window its own tabs. Move a tab into a window of its own, or merge every window back into one. Save a window's tabs, panes and all, as a workspace, and open it again from Window ▸ Workspaces, the first five with ⌃⌘1 to ⌃⌘5.
 
 ## Make it yours
 

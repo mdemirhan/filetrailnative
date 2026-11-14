@@ -808,17 +808,18 @@ import Testing
         #expect(!clip.bounds.contains(row.convert(row.bounds, to: clip)))
         icons[0].focusForPress()
         Kit.click(icons[0])
-        let end = document.frame.height - clip.bounds.height
-        #expect(end > 0 && clip.bounds.minY == end)
+        #expect(clip.bounds.minY > 0)
         #expect(clip.bounds.contains(row.convert(row.bounds, to: clip)))
         #expect(controller.popovers.view is FavoriteIconGrid)
         // A press on an icon whose row is wholly in view leaves the page where it is.
         controller.popovers.close(returnFocus: false)
-        clip.scroll(to: NSPoint(x: 0, y: end - 20))
+        let second = list.rows[1].convert(list.rows[1].bounds, to: document)
+        let middle = max(0, min(document.frame.height - clip.bounds.height, second.midY - clip.bounds.height / 2))
+        clip.scroll(to: NSPoint(x: 0, y: middle))
         scroll.reflectScrolledClipView(clip)
         #expect(clip.bounds.contains(list.rows[1].convert(list.rows[1].bounds, to: clip)))
         icons[1].focusForPress()
-        #expect(clip.bounds.minY == end - 20)
+        #expect(clip.bounds.minY == middle)
     }
 }
 

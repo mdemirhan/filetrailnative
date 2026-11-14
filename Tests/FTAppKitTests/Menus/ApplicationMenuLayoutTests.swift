@@ -54,13 +54,82 @@ import Testing
         #expect(
             titles(submenu(main, "Window")) == [
                 "Minimize", "Zoom", "-", "Show Previous Tab", "Show Next Tab", "Switch to Other Pane",
-                "Move Tab to New Window", "Merge All Windows", "-", "Bring All to Front",
+                "Move Tab to New Window", "Merge All Windows", "-", "Workspaces", "-", "Bring All to Front",
+            ])
+        #expect(
+            titles(item(submenu(main, "Window"), "Workspaces").submenu!) == [
+                "Save Window as Workspace…", "Update Workspace", "-", "Manage Workspaces…",
             ])
         #expect(titles(submenu(main, "Help")) == ["File Trail Help", "Keyboard Shortcuts"])
         // The system's own menus are the ones AppKit adds the services, the windows and the search field to.
         #expect(built.windowsMenu === submenu(main, "Window"))
         #expect(built.helpMenu === submenu(main, "Help"))
         #expect(built.servicesMenu === item(submenu(main, "File Trail"), "Services").submenu)
+    }
+
+    @Test func listsTheWorkspacesTheFirstFiveWithTheirKeysEachWithAnItemForThisWindow() {
+        let entries = (1...6).map { WorkspaceMenuEntry(id: "w\($0)", name: "Work \($0)") }
+        let (built, router) = build(.init(workspaces: entries))
+        let menu = item(submenu(built.menu, "Window"), "Workspaces").submenu ?? NSMenu()
+        #expect(
+            titles(menu)
+                == ["Save Window as Workspace…", "Update Workspace", "-"]
+                + entries.flatMap { [$0.name, "\($0.name) in This Window"] } + ["-", "Manage Workspaces…"])
+        let first = item(menu, "Work 1")
+        #expect(first.keyEquivalent == "1")
+        #expect(first.keyEquivalentModifierMask == [.control, .command])
+        #expect(!first.isAlternate)
+        // ⌥ shows the item that opens it in this window in its place, on the same key with ⌥.
+        let here = item(menu, "Work 1 in This Window")
+        #expect(here.isAlternate)
+        #expect(here.keyEquivalent == "1")
+        #expect(here.keyEquivalentModifierMask == [.control, .option, .command])
+        #expect(item(menu, "Work 5").keyEquivalent == "5")
+        #expect(item(menu, "Work 6").keyEquivalent == "")
+        #expect(item(menu, "Work 6 in This Window").keyEquivalentModifierMask == [.option])
+
+        var opened: [String] = []
+        router.onOpenWorkspace = { id, _ in opened.append(id) }
+        router.choose(itemID: ApplicationMenu.workspaceItemID("w2"))
+        #expect(opened == ["w2"])
+        var managed = 0
+        router.onManageWorkspaces = { managed += 1 }
+        router.choose(itemID: ApplicationMenu.manageWorkspacesItemID)
+        #expect(managed == 1)
+    }
+
+    @Test func keysThatDontDifferByOptionAloneShowBothItemsEachWithItsKey() {
+        let bindings = ShortcutCommands.resolve([
+            "openWorkspace1": ["Cmd+Option+1"], "openWorkspace2InThisWindow": ["Ctrl+Cmd+F1"],
+            "openWorkspace3InThisWindow": ["Ctrl+Cmd+Option+Shift+3"],
+        ]).bindings
+        let entries = (1...3).map { WorkspaceMenuEntry(id: "w\($0)", name: "Work \($0)") }
+        let (built, _) = build(.init(shortcuts: bindings, workspaces: entries))
+        let menu = item(submenu(built.menu, "Window"), "Workspaces").submenu ?? NSMenu()
+        // Its key has ⌥ already: nothing can be ⌥ away from it.
+        #expect(item(menu, "Work 1").keyEquivalentModifierMask == [.option, .command])
+        #expect(!item(menu, "Work 1 in This Window").isAlternate)
+        #expect(item(menu, "Work 1 in This Window").keyEquivalentModifierMask == [.control, .option, .command])
+        // Another key altogether.
+        let second = item(menu, "Work 2 in This Window")
+        #expect(!second.isAlternate)
+        #expect(second.keyEquivalentModifierMask == [.control, .command])
+        #expect(item(menu, "Work 2").keyEquivalent == "2")
+        // ⌥ and more.
+        #expect(!item(menu, "Work 3 in This Window").isAlternate)
+    }
+
+    @Test func aKeyChangedForBothStillPairsWhileTheyDifferByOptionAlone() {
+        let bindings = ShortcutCommands.resolve([
+            "openWorkspace1": ["Cmd+Shift+F1"], "openWorkspace1InThisWindow": ["Cmd+Option+Shift+F1"],
+        ]).bindings
+        let (built, _) = build(
+            .init(shortcuts: bindings, workspaces: [WorkspaceMenuEntry(id: "w1", name: "Work 1")]))
+        let menu = item(submenu(built.menu, "Window"), "Workspaces").submenu ?? NSMenu()
+        let here = item(menu, "Work 1 in This Window")
+        #expect(here.isAlternate)
+        #expect(here.keyEquivalent == item(menu, "Work 1").keyEquivalent)
+        #expect(here.keyEquivalentModifierMask == [.option, .shift, .command])
     }
 
     @Test func namesTheChosenTextEditorInFile() {
@@ -201,7 +270,9 @@ import Testing
         let states = ApplicationMenu.itemStates(.initial, window: .init(explorerFocused: true))
         let stateIDs = Set(states.map(\.id))
         for found in flatten(built.menu) where found.action == #selector(MenuCommandRouter.chooseMenuItem(_:)) {
-            guard let id = found.identifier?.rawValue, id != "about", id != "settings" else { continue }
+            guard let id = found.identifier?.rawValue, id != "about", id != "settings",
+                id != ApplicationMenu.manageWorkspacesItemID, ApplicationMenu.workspaceItem(id) == nil
+            else { continue }
             #expect(stateIDs.contains(id), "\(found.title)")
         }
     }

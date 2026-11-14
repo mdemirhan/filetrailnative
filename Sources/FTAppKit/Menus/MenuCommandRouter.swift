@@ -40,6 +40,11 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
     /// New Window chosen while another window (Settings) has the keyboard: the host opens it beside the explorer window
     /// in front, which may not be able to take the command.
     var onNewWindowFromOtherWindow: (() -> Void)?
+    /// A workspace chosen in Window ▸ Workspaces, by its id: in a window of its own, or in place of the explorer window
+    /// given (the item ⌥ shows), which has the keyboard. It opens with no explorer window open too.
+    var onOpenWorkspace: ((String, (any ExplorerWindowHandle)?) -> Void)?
+    /// Manage Workspaces…: the list in Settings.
+    var onManageWorkspaces: (() -> Void)?
 
     /// The ids of the items the explorer window's state dims. AppKit asks `validateMenuItem` for each as it opens.
     private(set) var disabledItemIDs: Set<String> = []
@@ -77,10 +82,29 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
             if let onOpenAbout { onOpenAbout() } else { NSApp.orderFrontStandardAboutPanel(nil) }
         case ApplicationMenuBuilder.settingsItemID:
             if let onOpenSettings { onOpenSettings() } else { send(.openSettings, focusedWindow: focusedWindow()) }
+        case ApplicationMenu.manageWorkspacesItemID:
+            onManageWorkspaces?()
         default:
+            if let workspace = ApplicationMenu.workspaceItem(itemID) {
+                openWorkspace(workspace.workspaceID, inThisWindow: workspace.inThisWindow)
+                return
+            }
             guard let command = AppCommand(rawValue: itemID) else { return }
             send(command, focusedWindow: focusedWindow())
         }
+    }
+
+    private func openWorkspace(_ id: String, inThisWindow: Bool) {
+        // A held key opens it once.
+        if let event = currentEvent(), event.type == .keyDown, event.isARepeat { return }
+        // In this window only when an explorer window has the keyboard: not one behind Settings.
+        let target = explorerFor(focusedWindow())
+        let window = inThisWindow && target?.focused == true ? target?.handle : nil
+        if inThisWindow, window == nil {
+            NSSound.beep()
+            return
+        }
+        onOpenWorkspace?(id, window)
     }
 
     static func nativeEditSelector(_ command: AppCommand) -> Selector? {

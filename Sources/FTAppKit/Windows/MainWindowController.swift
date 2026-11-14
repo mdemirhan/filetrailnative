@@ -947,6 +947,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// asked): a command that can't start says why itself.
     private func runKeyCommand(_ id: ShortcutCommandID) -> Bool {
         if id == .openSelectedItem { return openSelectedItem() }
+        if let slot = Workspaces.slot(of: id) {
+            group?.openWorkspace(slot: slot)
+            return true
+        }
+        if let slot = Workspaces.inThisWindowSlot(of: id) {
+            group?.openWorkspace(slot: slot, inPlaceOf: self)
+            return true
+        }
         guard let command = AppCommand(rawValue: id.rawValue), ShortcutPolicy.canHandle(command, shortcutContext)
         else { return false }
         perform(command)
@@ -1347,13 +1355,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var menuState: ApplicationMenuState {
         let context = commandContext
         let panels = group?.session.panels
+        let workspace = group?.workspace
         return ApplicationMenuState.build(
             viewMode: shownViewMode, sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
             filterPinned: content.pinnedFilter != nil,
             favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false,
-            textEditing: isTextFieldEditing
+            textEditing: isTextFieldEditing, workspace: workspace.map { ($0.id, $0.name) }
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -1718,6 +1727,8 @@ extension MainWindowController: ExplorerWindowHandle {
             if let target = selectedFolder { openSelectedFolder(target, place: .window) }
         case .moveTabToNewWindow: group?.moveTabToNewWindow(self)
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
+        case .saveWorkspace: group?.saveWorkspace(from: self)
+        case .updateWorkspace: group?.updateWorkspace(from: self)
         case .toggleTwoPanes: toggleTwoPanes()
         case .switchToOtherPane: switchToOtherPane()
         case .openSelectionInOtherPane:
@@ -1876,7 +1887,8 @@ extension MainWindowController: ExplorerWindowContext {
             trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),
-            viewSizeSteps: content.viewSize?.steps ?? .unavailable, filterPinnable: content.canTogglePin)
+            viewSizeSteps: content.viewSize?.steps ?? .unavailable, filterPinnable: content.canTogglePin,
+            hasWorkspace: group?.workspace != nil)
     }
 
     /// The folders File > Calculate Size measures now.

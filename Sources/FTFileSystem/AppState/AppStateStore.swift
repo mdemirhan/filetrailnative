@@ -141,7 +141,9 @@ public final class AppStateStore: @unchecked Sendable {
             let session = next.windowSession
             let windowKeys = next.keys(differingFrom: seen).filter(\.isWindowSessionKey)
             if !windowKeys.isEmpty {
-                replaceWindow(StoredExplorerWindow(id: window.id, bounds: window.bounds, session: session))
+                var changed = window
+                changed.session = session
+                replaceWindow(changed)
             }
             // The app's copy of a session key is only the last window's value: a window sending its own again, after
             // another window sent a different one, is no new choice.
@@ -161,12 +163,34 @@ public final class AppStateStore: @unchecked Sendable {
 
     /// Adds a window in front of the others. Only open windows are kept, so none is dropped to keep to
     /// `AppStateReader.windowsLimit`: that is for reading a damaged file.
-    public func addExplorerWindow(id: String, bounds: StoredWindowState, session: WindowSession? = nil) {
+    /// `workspaceID`: the workspace it opens, which it is known by while it is open.
+    public func addExplorerWindow(
+        id: String, bounds: StoredWindowState, session: WindowSession? = nil, workspaceID: String? = nil
+    ) {
         locked {
             let session = newWindowSession { if let session { $0 = session } }
             let added = StoredExplorerWindow(
-                id: id, bounds: AppStateReader.windowState(try? JSONNode.of(bounds)), session: session)
+                id: id, bounds: AppStateReader.windowState(try? JSONNode.of(bounds)), session: session,
+                workspaceID: workspaceID)
             setWindows([added] + windows.filter { !Self.sameID($0.id, id) })
+        }
+    }
+
+    /// The workspace the window `windowID` was opened from or saved as; nil for none, or a window not known.
+    public func explorerWindowWorkspace(_ windowID: String) -> String? {
+        locked { windows.first { Self.sameID($0.id, windowID) }?.workspaceID }
+    }
+
+    /// The window `windowID` is known by the workspace `workspaceID` from now on, or by none.
+    public func setExplorerWindowWorkspace(_ windowID: String, _ workspaceID: String?) {
+        locked {
+            guard var window = windows.first(where: { Self.sameID($0.id, windowID) }),
+                window.workspaceID != workspaceID
+            else { return }
+            window.workspaceID = workspaceID
+            replaceWindow(window)
+            markUnsaved(.state)
+            saveLater()
         }
     }
 
@@ -217,7 +241,9 @@ public final class AppStateStore: @unchecked Sendable {
             guard let window = windows.first(where: { Self.sameID($0.id, windowID) }) else { return }
             let bounds = AppStateReader.windowState(try? JSONNode.of(value))
             if bounds == window.bounds { return }
-            replaceWindow(StoredExplorerWindow(id: window.id, bounds: bounds, session: window.session))
+            var moved = window
+            moved.bounds = bounds
+            replaceWindow(moved)
             markUnsaved(.state)
             saveLater()
         }

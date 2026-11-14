@@ -339,6 +339,70 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return true
     }
 
+    // MARK: Workspaces
+
+    /// What a workspace saved from the window `windowID` keeps: its id, its size (its place too, which the workspace
+    /// drops) and its session as the store has it. Nil for a window not open.
+    public func workspaceSnapshot(of windowID: Int?) -> (id: String, bounds: StoredWindowState, session: WindowSession)?
+    {
+        guard let entry = windows.byWindowID(windowID), isStayingOpen(entry.window) else { return nil }
+        return (entry.id, Self.stored(entry.window), host.store.windowPreferences(entry.id).windowSession)
+    }
+
+    /// The window `windowID` is known by the workspace `workspaceID` from now on (it was saved as it), or by none.
+    public func setWorkspace(_ workspaceID: String?, of windowID: Int?) {
+        guard let entry = windows.byWindowID(windowID) else { return }
+        host.store.setExplorerWindowWorkspace(entry.id, workspaceID)
+    }
+
+    /// `openWorkspace`: a window with the workspace's tabs, panels and size, placed as New Window places one, known by
+    /// the workspace while it is open. It opens anew even while a window opened from it is open, as that window may
+    /// have changed since. With `replacing`, it opens in that window's place and size, and the window closes once it is shown, as a merged one
+    /// does: not remembered as the window closed last, its running operation going on in the new one. `shown` runs once
+    /// the new window is on screen. The window that shows it; nil when nothing opened.
+    @discardableResult
+    public func openWorkspace(
+        _ workspace: Workspace, replacing replacingID: Int? = nil, shown: @escaping () -> Void = {}
+    )
+        -> W?
+    {
+        guard !shuttingDown else { return nil }
+        let replaced = replacingID.flatMap { windows.byWindowID($0) }
+        if replacingID != nil {
+            guard let replaced, isStayingOpen(replaced.window) else { return nil }
+        }
+        let bounds = replaced.map { Self.stored($0.window) } ?? workspaceBounds(workspace.bounds)
+        var record = createRecord(bounds) { $0 = workspace.session }
+        record.workspaceID = workspace.id
+        host.store.addExplorerWindow(
+            id: record.id, bounds: record.bounds, session: record.session, workspaceID: workspace.id)
+        let window = open(record, launch: ExplorerLaunchContext(restoreTabs: true), place: .front)
+        let show = window.events.readyToShow
+        window.events.readyToShow = { [weak self, weak replacedWindow = replaced?.window] in
+            show()
+            if let self, let replacedWindow, !replacedWindow.isDestroyed {
+                closingWithoutAsking.insert(ObjectIdentifier(replacedWindow))
+                merged.insert(ObjectIdentifier(replacedWindow))
+                replacedWindow.close()
+            }
+            shown()
+        }
+        return window
+    }
+
+    // A workspace's size, a step down and to the right of the window in front as New Window places one; centered
+    // with no window open.
+    private func workspaceBounds(_ size: StoredWindowState) -> StoredWindowState {
+        guard let front = openWindows().first?.window, !front.isDestroyed else {
+            return StoredWindowState(width: size.width, height: size.height, maximized: size.maximized)
+        }
+        let normal = front.normalBounds
+        let from = WindowBounds(x: normal.x, y: normal.y, width: size.width, height: size.height)
+        let placed = ExplorerWindowPlacement.placeNewWindow(from: from, workArea: host.workArea(normal))
+        return StoredWindowState(
+            x: placed.x, y: placed.y, width: placed.width, height: placed.height, maximized: size.maximized)
+    }
+
     // MARK: Windows the system made
 
     /// A window the system made of a tab dragged out of another: it becomes an explorer window of its own, with the

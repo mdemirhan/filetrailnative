@@ -71,10 +71,16 @@ enum ScreenGeometry {
 enum WindowNotice: Equatable {
     /// "A window can have up to 25 tabs".
     case tabLimit
+    /// A workspace opened with tabs whose folders are gone.
+    case workspaceFoldersGone(tabs: Int)
 
     var title: String {
         switch self {
         case .tabLimit: "A window can have up to \(AppPreferenceLimits.openTabsLimit) tabs"
+        case .workspaceFoldersGone(let tabs):
+            tabs == 1
+                ? "A tab\u{2019}s folder is gone: it shows the folder above it"
+                : "\(tabs) tabs\u{2019} folders are gone: they show the folders above them"
         }
     }
 }
@@ -255,6 +261,10 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
         for tab in allTabs {
             tab.preferencesChanged(change)
+        }
+        // Renamed or removed: the menu says again which each window came from.
+        if change.keys.contains(.workspaces) {
+            for group in liveGroups { group.reportMenuStates() }
         }
     }
 

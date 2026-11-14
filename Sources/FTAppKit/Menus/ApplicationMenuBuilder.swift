@@ -9,6 +9,14 @@ struct ApplicationMenuOptions {
     var textEditorName: String?
     /// What the startup disk is called, which Go names.
     var startupDiskName = VolumePaths.defaultStartupDiskName
+    /// The workspaces Window ▸ Workspaces lists, in order.
+    var workspaces: [WorkspaceMenuEntry] = []
+}
+
+/// A workspace as Window ▸ Workspaces lists it.
+struct WorkspaceMenuEntry: Equatable {
+    var id: String
+    var name: String
 }
 
 /// The menu bar and where its parts are.
@@ -187,6 +195,10 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.moveTabToNewWindow, "Move Tab to New Window"))
             menu.addItem(context.command(.mergeAllWindows, "Merge All Windows"))
             menu.addItem(.separator())
+            let workspaces = NSMenuItem(title: "Workspaces", action: nil, keyEquivalent: "")
+            workspaces.submenu = context.workspacesMenu()
+            menu.addItem(workspaces)
+            menu.addItem(.separator())
             menu.addItem(context.native("Bring All to Front", #selector(NSApplication.arrangeInFront(_:)), nil))
         }
 
@@ -198,6 +210,17 @@ enum ApplicationMenuBuilder {
         return BuiltApplicationMenu(
             menu: main, servicesMenu: servicesMenu, windowsMenu: windowsMenu, helpMenu: helpMenu,
             itemsByID: context.itemsByID)
+    }
+
+    /// Whether a workspace's item for this window can be the one ⌥ shows in place of its item: macOS swaps two items
+    /// only when their keys differ by ⌥ alone, or neither has one. Otherwise both show, each with its own key.
+    nonisolated static func pairs(_ key: MenuKeyEquivalent?, _ inThisWindow: MenuKeyEquivalent?) -> Bool {
+        switch (key, inThisWindow) {
+        case (nil, nil): true
+        case (let key?, let other?):
+            !key.modifiers.contains(.option) && other.key == key.key && other.modifiers == key.modifiers.union(.option)
+        default: false
+        }
     }
 
     // MARK: Items
@@ -255,6 +278,47 @@ enum ApplicationMenuBuilder {
                 apply(chosenKey(shortcutID), to: item)
             }
             register(item, id: type.rawValue)
+            return item
+        }
+
+        /// Window ▸ Workspaces: saving and updating, the workspaces, the first five with their keys, and Manage. Each
+        /// workspace has an item ⌥ shows in its place, which opens it in this window, with ⌥ added to its key.
+        func workspacesMenu() -> NSMenu {
+            let menu = NSMenu(title: "Workspaces")
+            menu.addItem(command(.saveWorkspace, "Save Window as Workspace…"))
+            menu.addItem(command(.updateWorkspace, "Update Workspace"))
+            if !options.workspaces.isEmpty { menu.addItem(.separator()) }
+            for (index, entry) in options.workspaces.enumerated() {
+                let keyed = Workspaces.slotCommands.indices.contains(index)
+                let key = keyed ? chosenKey(Workspaces.slotCommands[index]) : nil
+                let hereKey = keyed ? chosenKey(Workspaces.inThisWindowSlotCommands[index]) : nil
+                let open = workspaceItem(entry, inThisWindow: false)
+                let here = workspaceItem(entry, inThisWindow: true)
+                apply(key, to: open)
+                apply(hereKey, to: here)
+                if ApplicationMenuBuilder.pairs(key, hereKey) {
+                    if key == nil {
+                        open.keyEquivalentModifierMask = []
+                        here.keyEquivalentModifierMask = .option
+                    }
+                    here.isAlternate = true
+                }
+                menu.addItem(open)
+                menu.addItem(here)
+            }
+            menu.addItem(.separator())
+            menu.addItem(plain("Manage Workspaces…", id: ApplicationMenu.manageWorkspacesItemID))
+            return menu
+        }
+
+        private func workspaceItem(_ entry: WorkspaceMenuEntry, inThisWindow: Bool) -> NSMenuItem {
+            let id = ApplicationMenu.workspaceItemID(entry.id, inThisWindow: inThisWindow)
+            let item = NSMenuItem(
+                title: inThisWindow ? "\(entry.name) in This Window" : entry.name,
+                action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")
+            item.target = target
+            item.identifier = NSUserInterfaceItemIdentifier(id)
+            register(item, id: id)
             return item
         }
 
