@@ -108,8 +108,15 @@ final class QuickLookLimits: Sendable {
         }
     }
 
-    /// A refusal at a size given before is not for the size (a file that cannot be read, Quick Look busy).
+    /// A picture of this many pixels or fewer is never refused for its size: as many as a square
+    /// `QuickLookThumbnailRenderer.alwaysGivenSide` across.
+    static let alwaysGivenPixels =
+        QuickLookThumbnailRenderer.alwaysGivenSide * QuickLookThumbnailRenderer.alwaysGivenSide
+
+    /// A refusal at a size given before, or at one never refused for its size, is not for the size (a file that cannot
+    /// be read, Quick Look busy).
     func refused(pixels: Int) {
+        guard pixels > Self.alwaysGivenPixels else { return }
         seen.withLock { if pixels > $0.given { $0.refused = min($0.refused, pixels) } }
     }
 }
@@ -142,7 +149,10 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         let showsPicture = Self.showsPicture(url)
         var image: CGImage?
         if showsPicture, let pixels = Self.imagePixels(url, side: side) {
-            image = await Self.imagePicture(url, side: side, pixels: pixels)
+            image = await Self.imagePicture(
+                side: side, pixels: pixels, limits: Self.pictureLimits,
+                request: { await Self.quickLookImage(url, side: $0, iconMode: false) },
+                decode: { Self.decodedImage(url, side: side) })
         }
         if image == nil {
             image = await Self.largestPicture(
@@ -162,21 +172,27 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         return try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request).cgImage
     }
 
-    /// An image's picture: Quick Look's, which it keeps on disk and gives again fast, unless it would have as many
-    /// pixels as one Quick Look refused; then, and when Quick Look refuses this one, ImageIO's.
-    private static func imagePicture(_ url: URL, side: Int, pixels: Int) async -> CGImage? {
-        let limits = pictureLimits
+    /// An image's picture of `pixels` that fits in a square of `side`: Quick Look's (`request`), which it keeps on disk
+    /// and gives again fast, unless it would have as many pixels as one Quick Look refused; then, and when Quick Look
+    /// refuses this one, ImageIO's (`decode`).
+    ///
+    /// A refusal is taken for the size only when the picture would have more pixels than one never refused for its
+    /// size and Quick Look gives the same file's picture at `alwaysGivenSide`: refused there too, it was refused for
+    /// something else (Quick Look busy, a kind of image it does not read), which says nothing of other images.
+    static func imagePicture(
+        side: Int, pixels: Int, limits: QuickLookLimits, request: (Int) async -> CGImage?, decode: () -> CGImage?
+    ) async -> CGImage? {
         if pixels < limits.refused {
-            if let image = await quickLookImage(url, side: side, iconMode: false) {
+            if let image = await request(side) {
                 limits.gave(pixels: image.width * image.height)
                 return image
             }
-            guard let image = decodedImage(url, side: side) else { return nil }
-            // The file is one that can be read, so the refusal was for the size.
-            limits.refused(pixels: pixels)
-            return image
+            if pixels > QuickLookLimits.alwaysGivenPixels, let small = await request(alwaysGivenSide) {
+                limits.gave(pixels: small.width * small.height)
+                limits.refused(pixels: pixels)
+            }
         }
-        return decodedImage(url, side: side)
+        return decode()
     }
 
     /// The pixels the image file's picture has when it fits in a square of `side`, never larger than the image

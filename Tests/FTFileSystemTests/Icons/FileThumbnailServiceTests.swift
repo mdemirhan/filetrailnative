@@ -233,6 +233,50 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(limits.refused == Int.max && limits.given == 5_000_000)
     }
 
+    // A picture no larger than one never refused for its size, refused all the same (Quick Look busy), is read by
+    // ImageIO and teaches nothing: the next image is asked of Quick Look again.
+    @Test func aRefusalOfASmallPictureIsNotTakenForTheLimit() async throws {
+        let limits = QuickLookLimits()
+        let decoded = try #require(Budget(width: 256, height: 256, limit: .max).picture(256))
+        var asked: [Int] = []
+        let image = await QuickLookThumbnailRenderer.imagePicture(
+            side: 256, pixels: 256 * 256, limits: limits,
+            request: {
+                asked.append($0)
+                return nil
+            }, decode: { decoded })
+        #expect(image === decoded)
+        #expect(asked == [256])
+        #expect(limits.refused == Int.max)
+        // At no size: nothing is learned either.
+        limits.refused(pixels: QuickLookLimits.alwaysGivenPixels)
+        #expect(limits.refused == Int.max)
+    }
+
+    // A large picture refused is taken for the limit once Quick Look gives the same file's picture at a size it never
+    // refuses; refused there too, the file is one Quick Look does not draw now, and nothing is learned.
+    @Test func aRefusalOfALargePictureIsTakenForTheLimitOnlyWhenASmallOneIsGiven() async throws {
+        let limits = QuickLookLimits()
+        let photo = Budget(width: 4000, height: 3000)
+        let decoded = try #require(Budget(width: 4, height: 3, limit: .max).picture(4))
+        let pixels = 4096 * 3072
+        let unread = await QuickLookThumbnailRenderer.imagePicture(
+            side: 4096, pixels: pixels, limits: limits, request: { _ in nil }, decode: { decoded })
+        #expect(unread === decoded)
+        #expect(limits.refused == Int.max)
+
+        let read = await QuickLookThumbnailRenderer.imagePicture(
+            side: 4096, pixels: pixels, limits: limits, request: { photo.picture($0) }, decode: { decoded })
+        #expect(read === decoded)
+        #expect(photo.asked == [4096, QuickLookThumbnailRenderer.alwaysGivenSide])
+        #expect(limits.refused == pixels)
+        // The next image as large goes to ImageIO at once.
+        let next = await QuickLookThumbnailRenderer.imagePicture(
+            side: 4096, pixels: pixels, limits: limits, request: { photo.picture($0) }, decode: { decoded })
+        #expect(next === decoded)
+        #expect(photo.asked.count == 2)
+    }
+
     @Test func anImagesPictureHasThePixelsOfItsSizeFittedAndNeverMoreThanTheImage() throws {
         try withTemporaryDirectory { directory in
             let file = directory.appending("photo.jpg")
