@@ -23,6 +23,20 @@ struct CopyContentsTests {
         }
     }
 
+    // A `.pem` or a `.csr` is always text, though the system calls a `.pem` a certificate; a `.key` is a private key
+    // or a Keynote document, and a `.crt` or a `.cer` a certificate in text or in binary, so they are read to tell.
+    @Test func keysAndCertificatesAreOfferedAsTheTextTheyUsuallyAre() {
+        for name in ["server.pem", "Request.CSR"] {
+            #expect(CopyContents.guess(forName: name) == .text, "\(name)")
+        }
+        for name in ["tls.key", "Talk.key", "site.crt", "root.CER"] {
+            #expect(CopyContents.guess(forName: name) == .unknown, "\(name)")
+            #expect(CopyContents.guess(forName: name).isOffered, "\(name)")
+        }
+        // A certificate named as binary is neither.
+        #expect(CopyContents.guess(forName: "root.der") == .other)
+    }
+
     @Test func aNameThatDoesntSayIsFoundOutAsItIsRead() {
         for name in ["Makefile", "LICENSE", ".gitignore", ".env", "notes.zzqx"] {
             #expect(CopyContents.guess(forName: name) == .unknown, "\(name)")
@@ -194,6 +208,8 @@ struct CopyContentsTests {
         #expect(labels.firstIndex(of: "Copy Image") == labels.firstIndex(of: "Copy Path").map { $0 + 1 })
         #expect(menu([CommandEntry(path: "/Users/me/Documents/notes.md", kind: .symlinkFile)]).contains("Copy Text"))
         #expect(menu([CommandEntry(path: "/Users/me/Documents/Makefile", kind: .file)]).contains("Copy Contents"))
+        #expect(menu([CommandEntry(path: "/Users/me/Documents/server.pem", kind: .file)]).contains("Copy Text"))
+        #expect(menu([CommandEntry(path: "/Users/me/Documents/tls.key", kind: .file)]).contains("Copy Contents"))
         #expect(menu([photo], surface: .search).contains("Copy Image"))
         #expect(
             menu([CommandEntry(path: "/Users/me/.Trash/beach.heic", kind: .file)], surface: .trash).contains(
@@ -201,6 +217,8 @@ struct CopyContentsTests {
         for entries in [
             [CommandEntry(path: "/Users/me/Documents/report.pdf", kind: .file)],
             [CommandEntry(path: "/Users/me/Documents/Folder", kind: .directory)],
+            // A Keynote document saved as a package.
+            [CommandEntry(path: "/Users/me/Documents/Talk.key", kind: .bundle)],
             [photo, CommandEntry(path: "/Users/me/Documents/b.png", kind: .file)],
         ] {
             #expect(!menu(entries).contains { $0.hasPrefix("Copy ") && $0 != "Copy" && $0 != "Copy Path" })

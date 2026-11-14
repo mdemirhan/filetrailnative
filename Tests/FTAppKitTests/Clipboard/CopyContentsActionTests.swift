@@ -125,6 +125,29 @@ import UniformTypeIdentifiers
                 == .failure(.notImageOrText))
     }
 
+    // A `.key` is read to tell a private key from a Keynote document, whether one file (a zip archive) or a package.
+    @Test func aKeyIsCopiedAsTextAndAKeynoteDocumentIsNeither() throws {
+        let folder = Folder()
+        let key = "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIA==\n-----END PRIVATE KEY-----\n"
+        #expect(
+            FileContents.readNow(folder.write("tls.key", Data(key.utf8)), guess: CopyContents.guess(forName: "tls.key"))
+                == .success(.text(key, rtf: nil)))
+        let zip = Data([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00, 0x08, 0x00])
+        #expect(FileContents.readNow(folder.write("Talk.key", zip), guess: .unknown) == .failure(.notImageOrText))
+        let package = "\(folder.path)/Deck.key"
+        try FileManager.default.createDirectory(atPath: package, withIntermediateDirectories: false)
+        FileManager.default.createFile(atPath: "\(package)/Index.zip", contents: zip)
+        #expect(FileContents.readNow(package, guess: .unknown) == .failure(.notImageOrText))
+        // A link to it too.
+        try FileManager.default.createSymbolicLink(atPath: "\(folder.path)/link.key", withDestinationPath: package)
+        #expect(FileContents.readNow("\(folder.path)/link.key", guess: .unknown) == .failure(.notImageOrText))
+        // A certificate in binary.
+        #expect(
+            FileContents.readNow(
+                folder.write("root.cer", Data([0x30, 0x82, 0x01, 0x0A, 0x02, 0x01, 0x00])), guess: .unknown)
+                == .failure(.notImageOrText))
+    }
+
     @Test func anEmptyOrTooLargeFileIsNotRead() throws {
         let folder = Folder()
         #expect(FileContents.readNow(folder.write("empty.txt", Data()), guess: .text) == .failure(.empty))

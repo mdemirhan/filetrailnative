@@ -41,6 +41,8 @@ enum FileContents: Equatable {
     nonisolated static func readNow(_ path: String, guess: CopyContentsGuess) -> Result<FileContents, Failure> {
         var info = stat()
         guard stat(path, &info) == 0 else { return .failure(.unreadable(String(cString: strerror(errno)))) }
+        // A package (a Keynote document, an app) or a folder named as a file, or a pipe, holds no image or text.
+        guard info.st_mode & S_IFMT == S_IFREG else { return .failure(.notImageOrText) }
         let size = Int64(info.st_size)
         switch guess {
         case .text where size > CopyContents.textLimit: return .failure(.tooLarge(.text))

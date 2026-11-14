@@ -38,13 +38,19 @@ public enum CopyContents {
     /// The largest image file copied.
     public static let imageLimit: Int64 = 100 * 1_000_000
 
-    /// Extensions of text the system calls something else (`.ts` is a video to it, `.svg` an image) or doesn't know.
-    /// An SVG is copied as its markup, which is what is pasted into code.
+    /// Extensions of text the system calls something else (`.ts` is a video to it, `.svg` an image, `.pem` a
+    /// certificate, which in a `.pem` file is always text) or doesn't know. An SVG is copied as its markup, which is
+    /// what is pasted into code.
     static let textExtensions: Set<String> = [
         "ts", "tsx", "jsx", "mjs", "cjs", "svg", "md", "markdown", "rs", "go", "kt", "kts", "toml", "yaml", "yml",
         "ini", "cfg", "conf", "env", "log", "vue", "svelte", "gradle", "lock", "tf", "proto", "graphql", "sql", "csv",
-        "tsv",
+        "tsv", "pem", "csr",
     ]
+
+    /// Extensions that name text or something else: `.key` is a private key or a Keynote document, and `.crt` and
+    /// `.cer` a certificate in text (PEM) or in binary (DER). What it holds is found out as it is read, so a Keynote
+    /// document or a binary certificate is "Not an image or text", never refused as text in an unknown encoding.
+    static let eitherExtensions: Set<String> = ["key", "crt", "cer"]
 
     /// The extension, lowercased and without its dot; "" for none, as for a name that starts with its only dot.
     static func extensionName(_ name: String) -> String {
@@ -56,6 +62,7 @@ public enum CopyContents {
         let ext = extensionName(name)
         guard !ext.isEmpty else { return .unknown }
         if textExtensions.contains(ext) { return .text }
+        if eitherExtensions.contains(ext) { return .unknown }
         guard let type = UTType(filenameExtension: ext), type.isDeclared else { return .unknown }
         if type.conforms(to: .image) { return .image }
         if type.conforms(to: .text) { return .text }
