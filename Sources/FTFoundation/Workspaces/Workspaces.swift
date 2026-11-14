@@ -50,15 +50,16 @@ public enum Workspaces {
         "workspace-\(UUID().uuidString.lowercased())"
     }
 
-    /// A name as it is kept: trimmed, and cut at `nameLimit`.
+    /// A name as it is kept: trimmed, each accented letter composed (a folder's name on disk, which Save offers, may
+    /// keep a letter and its accent apart), and cut at `nameLimit`.
     public static func cleanName(_ typed: String) -> String {
-        BatchRenameTextRules.limited(JSString.trimmed(typed), to: nameLimit)
+        BatchRenameTextRules.limited(JSString.trimmed(typed).precomposedStringWithCanonicalMapping, to: nameLimit)
     }
 
-    /// The workspace with this name, ignoring case.
+    /// The workspace with this name, ignoring case and how an accented letter is stored.
     public static func index(named name: String, in workspaces: [Workspace]) -> Int? {
-        let key = JSString.lowercased(cleanName(name))
-        return workspaces.firstIndex { JSString.lowercased($0.name).utf16.elementsEqual(key.utf16) }
+        let key = NameFolding.folded(cleanName(name))
+        return workspaces.firstIndex { NameFolding.folded($0.name).utf16.elementsEqual(key.utf16) }
     }
 
     /// The workspace with this id.

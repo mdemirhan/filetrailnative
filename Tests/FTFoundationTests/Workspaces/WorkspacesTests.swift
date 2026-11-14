@@ -110,6 +110,41 @@ struct WorkspacesTests {
         #expect(Workspaces.renameRefusal("Releases", id: "a", in: kept) == nil)
     }
 
+    // A folder's name on disk may keep an accent apart from its letter ("Cafe\u{301}"), and what is typed has the
+    // letter composed ("Café"): the two are one name, and it is kept composed.
+    @Test func namesCompareTheSameHoweverAnAccentedLetterIsStored() throws {
+        let decomposed = "Cafe\u{301}"
+        let composed = "Caf\u{E9}"
+        #expect(Workspaces.cleanName(" \(decomposed) ").unicodeScalars.elementsEqual(composed.unicodeScalars))
+        let kept = [Self.workspace("a", "Photos"), Self.workspace("b", composed)]
+        #expect(Workspaces.index(named: decomposed, in: kept) == 1)
+        #expect(Workspaces.index(named: "CAFE\u{301}", in: kept) == 1)
+        // One kept from before, uncomposed, is still found by the name typed.
+        let old = [Self.workspace("a", decomposed)]
+        #expect(Workspaces.index(named: composed, in: old) == 0)
+
+        // Saving replaces the workspace of that name; renaming to it is refused.
+        let saved = Self.workspace("c", Workspaces.cleanName(decomposed), ["/new"])
+        let after = Workspaces.saving(saved, in: kept)
+        #expect(after.map(\.id) == ["a", "c"])
+        #expect(after[1].name.unicodeScalars.elementsEqual(composed.unicodeScalars))
+        #expect(
+            Workspaces.renameRefusal(decomposed, id: "a", in: kept)
+                == "There\u{2019}s already a workspace called \u{201C}\(composed)\u{201D}.")
+        #expect(Workspaces.renameRefusal("cafe\u{301}", id: "b", in: kept) == nil)
+
+        // A file with both keeps the first, composed.
+        let read = try Self.read(
+            """
+            {"workspaces": [
+              {"id": "a", "name": "\(decomposed)", "session": {"openTabs": [{"path": "/x"}]}},
+              {"id": "b", "name": "\(composed)", "session": {"openTabs": [{"path": "/y"}]}}
+            ]}
+            """)
+        #expect(read.map(\.id) == ["a"])
+        #expect(read[0].name.unicodeScalars.elementsEqual(composed.unicodeScalars))
+    }
+
     @Test func savingUnderANameTakenReplacesThatWorkspaceInItsPlace() {
         let kept = [Self.workspace("a", "Photos"), Self.workspace("b", "Clients")]
         let replacing = Self.workspace("b", "clients", ["/new"])
