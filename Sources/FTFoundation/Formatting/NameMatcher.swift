@@ -129,6 +129,24 @@ struct FoldedText: Sendable {
     }
 }
 
+/// Names beyond ASCII folded into letters once, for a list filtered keystroke after keystroke: the first keystroke
+/// folds them and the next ones only compare. An ASCII name is compared byte by byte and isn't kept.
+public final class FoldedNameCache {
+    private var folded: [String: [FoldedLetter]] = [:]
+    /// Past this many names the cache starts over, so a long session of searches doesn't keep every name it saw.
+    private static let limit = 200_000
+
+    public init() {}
+
+    func letters(of name: String) -> [FoldedLetter] {
+        if let known = folded[name] { return known }
+        if folded.count >= Self.limit { folded.removeAll(keepingCapacity: true) }
+        let letters = FoldedText(name).letters
+        folded[name] = letters
+        return letters
+    }
+}
+
 /// Typed text, ready to find names: Contains or Fuzzy, an accented letter found only as itself and a plain one with
 /// or without an accent ("e" finds "é"; "é" doesn't find "e"), case aside, however the name stores its accents.
 public struct NameMatcher: Sendable {
@@ -160,10 +178,10 @@ public struct NameMatcher: Sendable {
 
     // MARK: Matching
 
-    /// Whether `name` matches.
-    public func matches(_ name: String) -> Bool {
+    /// Whether `name` matches; a name beyond ASCII is folded through `cache` when one is given.
+    public func matches(_ name: String, cache: FoldedNameCache? = nil) -> Bool {
         if let fast = asciiMatches(name) { return fast }
-        return matches(FoldedText(name).letters)
+        return matches(cache?.letters(of: name) ?? FoldedText(name).letters)
     }
 
     /// Whether the folded name matches: the form a list keeps once for each name.

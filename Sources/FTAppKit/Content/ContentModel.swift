@@ -114,6 +114,10 @@ struct FolderContents {
     /// What the list narrows to (the typed filter, not a search).
     var filter = ""
     var filterMode = NameMatchMode.fuzzy
+    /// The entries the filter can find among, when the text only grew: those the shorter text kept, in the order shown.
+    var candidates: [DirectoryEntry]?
+    /// Names beyond ASCII, folded once for the keystrokes to come.
+    var foldedNames: FoldedNameCache?
 
     /// The entries shown, in order: filtered, and for a size sort finished with the folder sizes the listing could not
     /// know.
@@ -121,7 +125,8 @@ struct FolderContents {
         sortBy: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool,
         folderSizeBytes: (String) -> Int64?
     ) -> [DirectoryEntry] {
-        let matching = ListFilter.filterByName(listed, query: filter, mode: filterMode)
+        let matching = ListFilter.filterByName(
+            candidates ?? listed, query: filter, mode: filterMode, cache: foldedNames)
         guard sortBy == .size else { return matching }
         return SizeOrder.sorted(
             matching, key: \.sizeSortKey, descending: direction == .desc, foldersFirst: foldersFirst,

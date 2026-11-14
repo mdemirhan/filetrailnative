@@ -15,22 +15,32 @@ public enum ListFilter {
     /// is Quick Look again, so a filtered item can be previewed.
     public static let spaceWindow: TimeInterval = 1
 
-    /// The names that match `query` in `mode`, in the list's order.
-    public static func filterByName<T: ListFilterEntry>(_ entries: [T], query: String, mode: NameMatchMode) -> [T] {
+    /// The names that match `query` in `mode`, in the list's order; names beyond ASCII are folded through `cache`.
+    public static func filterByName<T: ListFilterEntry>(
+        _ entries: [T], query: String, mode: NameMatchMode, cache: FoldedNameCache? = nil
+    ) -> [T] {
         guard let matcher = NameMatcher(query, mode: mode) else { return entries }
-        return entries.filter { matcher.matches($0.name) }
+        return entries.filter { matcher.matches($0.name, cache: cache) }
     }
 
     /// Search results are spread over many folders, so their filter also looks at the folder a
     /// result is in: "src" keeps the results under a folder named src as well as names with it. The name is matched
     /// in `mode`; the folder always as Contains, as letters scattered over a path would match nearly every one.
     public static func filterSearchResults<T: ListFilterSearchResult>(
-        _ results: [T], query: String, mode: NameMatchMode
+        _ results: [T], query: String, mode: NameMatchMode, cache: FoldedNameCache? = nil
     ) -> [T] {
         guard let name = NameMatcher(query, mode: mode), let folder = NameMatcher(query, mode: .contains) else {
             return results
         }
-        return results.filter { name.matches($0.name) || folder.matches($0.relativeParentPath) }
+        return results.filter {
+            name.matches($0.name, cache: cache) || folder.matches($0.relativeParentPath, cache: cache)
+        }
+    }
+
+    /// Whether everything `next` finds in `mode` is among what `previous` found: `next` is `previous` with letters
+    /// added at its end, so a list filtered by `previous` can be narrowed instead of filtered again.
+    public static func narrows(_ previous: String, to next: String) -> Bool {
+        !previous.isEmpty && next.utf16.count > previous.utf16.count && JSString.hasPrefix(next, previous)
     }
 
     /// The item a filter selects: the first name that starts with the text, as type-to-select would

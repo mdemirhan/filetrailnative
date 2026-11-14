@@ -47,8 +47,8 @@ done this file is deleted and `docs/decisions.md` keeps what it decided.
       (fuzzy | contains, default fuzzy), sanitized, with a pop-up in Settings → Browsing. Marks for the list filter in
       the List, Icons and Compact List; `NameHighlight` and `MarkedName` take several ranges. The sidebar's
       type-to-select and Go To fold accents the same one way.
-- [ ] **2. Search results at 50,000.** Each result's folded name and folder computed once as it is read, off the main
-      thread. The filter narrows the previous matches when the new text extends the old (both filters). The limit
+- [x] **2. Search results at 50,000.** Each result's folded name and folder computed once (names beyond ASCII; an
+      ASCII name is compared byte by byte and needs no folding), the first time a filter looks at it. The filter narrows the previous matches when the new text extends the old (both filters). The limit
       is 50,000. A CPU-time test bounds one keystroke over 50,000 results.
 - [ ] **3. Plain Text search as the filters match.** `FdSearchArgs` gives fd the accent-aware, case-ignoring pattern
       for Plain Text; the runtime's reading of results drops what the matcher rejects before it counts toward the
@@ -81,3 +81,6 @@ Help, its golden and the tests change with the phase whose behavior they describ
   didn't match (its folder did) keeps the search's marks. Checked in a debug build: "trpcd" in a fixture folder marks
   T, r, p, C and d in the List, Icons and Compact List, and Contains then shows no matches. `CommandRoutesTests`'
   `theMenuDimsWhatCantRunAsTheWindowIsWhenAsked` failed once in a full AppKit run and passed alone.
+- 2026-11-14: Phase 2. Folding is kept per pane (`FoldedNameCache`) for names beyond ASCII only, on the main thread the
+  first time a filter looks at a name: ASCII names, nearly all of them, are compared byte by byte with no copy. The
+  narrowing starts over whenever the folder's items or the search's results change.

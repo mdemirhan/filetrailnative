@@ -129,7 +129,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     let folderSizes: WindowFolderSizes
     private(set) var mode: ExplorerViewMode
     private(set) var folderPath = ""
-    private(set) var listed: [DirectoryEntry] = []
+    private(set) var listed: [DirectoryEntry] = [] {
+        didSet { sourceVersion &+= 1 }
+    }
     private(set) var entries: [DirectoryEntry] = []
     private(set) var selection = ContentSelection.empty
     /// What the pane shows in place of items: `loading` while a read is under way, otherwise what the last one
@@ -195,7 +197,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var orderBeforeRemoval: [String]?
     /// While search results show: what is shown in place of the folder, and the folder as it was, which comes
     /// back when the results are put away.
-    private(set) var searchDisplay: ContentSearchDisplay?
+    private(set) var searchDisplay: ContentSearchDisplay? {
+        didSet { sourceVersion &+= 1 }
+    }
+    /// Counts the changes to what the filter looks through (the folder's items, the search's results), so a narrowing
+    /// filter knows whether what it kept still stands.
+    private var sourceVersion = 0
+    /// What the filter kept last: for the text, mode and source it was made from. Text that only grows narrows these.
+    private var lastFiltered: (text: String, mode: NameMatchMode, version: Int, results: [SearchResultItem]?)?
+    private let foldedNames = FoldedNameCache()
     private(set) var search: ContentSearchContext?
     private var keptFolder: KeptFolder?
 
@@ -615,9 +625,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     private func reorder() {
         refreshFilterMatcher()
+        // Text that only grew, in the same mode over the same items, finds among what it kept before.
+        let narrowing =
+            lastFiltered.map {
+                $0.mode == filterMode && $0.version == sourceVersion && ListFilter.narrows($0.text, to: filter)
+            } ?? false
         if let searchDisplay {
             // Results narrow by name or by the folder they are in; their order is the search's own.
-            let filtered = ListFilter.filterSearchResults(searchDisplay.results, query: filter, mode: filterMode)
+            let pool = narrowing ? lastFiltered?.results ?? searchDisplay.results : searchDisplay.results
+            let filtered = ListFilter.filterSearchResults(pool, query: filter, mode: filterMode, cache: foldedNames)
+            lastFiltered = filter.isEmpty ? nil : (filter, filterMode, sourceVersion, filtered)
             entries = filter.isEmpty ? listed : filtered.map(SearchResults.entry)
             entryPaths = entries.map(\.path)
             positionsCache = nil
@@ -625,7 +642,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             updateFilterPill()
             return
         }
-        let contents = FolderContents(path: folderPath, listed: listed, filter: filter, filterMode: filterMode)
+        var contents = FolderContents(path: folderPath, listed: listed, filter: filter, filterMode: filterMode)
+        contents.candidates = narrowing ? entries : nil
+        contents.foldedNames = foldedNames
+        lastFiltered = filter.isEmpty ? nil : (filter, filterMode, sourceVersion, nil)
         let sizes = folderSizes
         entries = contents.shown(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst

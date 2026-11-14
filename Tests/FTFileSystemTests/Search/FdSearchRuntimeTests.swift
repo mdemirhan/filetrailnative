@@ -396,10 +396,12 @@ private final class AskedWhileLooking: @unchecked Sendable {
         }
     }
 
-    @Test func stopsAtTwentyThousandResultsAndSaysTheyWereCutOff() throws {
+    @Test func stopsAtTheResultLimitAndSaysTheResultsWereCutOff() throws {
+        #expect(SearchLimits.resultLimit == 50_000)
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("f"))
-        let many = (0..<20_005).map { "/Users/demo/project/f\($0)" }.joined(separator: "\0") + "\0"
+        let many =
+            (0..<(SearchLimits.resultLimit + 5)).map { "/Users/demo/project/f\($0)" }.joined(separator: "\0") + "\0"
         process.write(many)
         #expect(process.terminateCount == 1)
         process.close(code: nil, signal: SIGTERM)
