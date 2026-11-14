@@ -216,6 +216,9 @@ public enum PreferencesSanitizer {
                 AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
             },
             iconSizes: densitySizes(record["iconSizes"], defaults.iconSizes) { AppPreferenceLimits.clampIconSize($0) },
+            previewSizes: densitySizes(record["previewSizes"], defaults.previewSizes) {
+                AppPreferenceLimits.clampPreviewSize($0)
+            },
             notificationsEnabled: bool(record, "notificationsEnabled", defaults.notificationsEnabled),
             markClipboardItems: bool(record, "markClipboardItems", defaults.markClipboardItems),
             autoCalculateFolderSizes: bool(record, "autoCalculateFolderSizes", defaults.autoCalculateFolderSizes),

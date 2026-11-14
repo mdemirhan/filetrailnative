@@ -431,7 +431,7 @@ extension ExplorerWindowlessTests {
             #expect(switcher.selected == .icons)
             #expect(
                 (0..<switcher.segmentCount).map { switcher.toolTip(forSegment: $0) } == [
-                    "View as Icons (⌘1)", "View as List (⌘2)", "View as Compact List (⌘3)",
+                    "View as Icons (⌘1)", "View as List (⌘2)", "View as Compact List (⌘3)", "View as Previews",
                 ])
             switcher.choose(segment: 1)
             #expect(tab.viewState.viewMode == .details)

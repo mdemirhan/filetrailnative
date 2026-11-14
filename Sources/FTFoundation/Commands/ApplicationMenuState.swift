@@ -183,6 +183,7 @@ public enum ApplicationMenu {
             case .viewAsIcons: state.viewMode == .icons
             case .viewAsList: state.viewMode == .list
             case .viewAsDetails: state.viewMode == .details
+            case .viewAsPreviews: state.viewMode == .previews
             case .sortByName: state.sortBy == .name
             case .sortByModified: state.sortBy == .modified
             case .sortBySize: state.sortBy == .size
@@ -225,6 +226,9 @@ public enum ApplicationMenu {
         case (.increaseSize, .list): "Make Columns Wider"
         case (.decreaseSize, .list): "Make Columns Narrower"
         case (.resetSize, .list): "Default Column Width"
+        case (.increaseSize, .previews): "Make Previews Bigger"
+        case (.decreaseSize, .previews): "Make Previews Smaller"
+        case (.resetSize, .previews): "Default Preview Size"
         case (.increaseSize, .details): "Make Bigger"
         case (.decreaseSize, .details): "Make Smaller"
         case (.resetSize, .details): "Default Size"

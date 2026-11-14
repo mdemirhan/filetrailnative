@@ -12,6 +12,8 @@ struct ListColumnState: Equatable {
     var compactListWidths: DensitySizes = .compactListDefaults
     /// The Icons view's icon size at each density.
     var iconSizes: DensitySizes = .iconDefaults
+    /// The Previews view's preview size at each density.
+    var previewSizes: DensitySizes = .previewDefaults
 
     /// A folder's columns, from Settings and the window's saved widths.
     init(preferences: AppPreferences) {
@@ -21,6 +23,7 @@ struct ListColumnState: Equatable {
         density = preferences.density
         compactListWidths = preferences.compactListWidths
         iconSizes = preferences.iconSizes
+        previewSizes = preferences.previewSizes
     }
 
     init(columns: [DetailColumn], widths: [DetailColumn: Double], density: Density) {
@@ -223,6 +226,7 @@ enum ContentViewRegistry {
         .details: { ListViewController() },
         .icons: { IconViewController() },
         .list: { CompactListViewController() },
+        .previews: { PreviewsViewController() },
     ]
 
     /// A view for the mode; a mode with none registered shows the List.

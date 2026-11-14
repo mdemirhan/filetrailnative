@@ -10,12 +10,13 @@ public enum ThemePreference: String, Codable, CaseIterable, Sendable, Hashable {
     case auto, light, dark
 }
 
-/// The file list's views. "details" is the one called List, the table; "list" is Compact List, names in columns.
+/// The file list's views. "details" is the one called List, the table; "list" is Compact List, names in columns;
+/// "previews" is a grid of large previews of the files' content.
 public enum ExplorerViewMode: String, Codable, CaseIterable, Sendable, Hashable {
-    case icons, list, details
+    case icons, list, details, previews
 
     /// The views in the order every menu lists them.
-    public static let menuOrder: [ExplorerViewMode] = [.icons, .details, .list]
+    public static let menuOrder: [ExplorerViewMode] = [.icons, .details, .list, .previews]
 
     /// The names the menus give the views.
     public var menuName: String {
@@ -23,6 +24,7 @@ public enum ExplorerViewMode: String, Codable, CaseIterable, Sendable, Hashable 
         case .icons: "Icons"
         case .details: "List"
         case .list: "Compact List"
+        case .previews: "Previews"
         }
     }
 }
@@ -228,6 +230,8 @@ public struct DensitySizes: Codable, Equatable, Sendable {
     public static let compactListDefaults = DensitySizes(standard: 292, finder: 252)
     /// The Icons view's icon sizes before they are changed.
     public static let iconDefaults = DensitySizes(standard: 64, finder: 64)
+    /// The Previews view's preview sizes before they are changed.
+    public static let previewDefaults = DensitySizes(standard: 240, finder: 240)
 
     public subscript(density: Density) -> Int {
         get {
@@ -480,6 +484,18 @@ public enum AppPreferenceLimits {
         let step = Double(iconSizeStep)
         let stepped = (value / step).rounded() * step
         return clampRounded(stepped, Double(iconSizeRange.lowerBound), Double(iconSizeRange.upperBound))
+    }
+
+    /// The Previews view's previews, as wide as this many points: the pane's width decides how many fit in a row.
+    public static let previewSizeRange = 160...640
+    /// Preview sizes go in steps of this many points.
+    public static let previewSizeStep = 40
+
+    /// A preview size within its range, at a whole step.
+    public static func clampPreviewSize(_ value: Double) -> Int {
+        let step = Double(previewSizeStep)
+        let stepped = (value / step).rounded() * step
+        return clampRounded(stepped, Double(previewSizeRange.lowerBound), Double(previewSizeRange.upperBound))
     }
 
     /// The order of the columns before any is moved: the order `OptionalDetailColumnKey` lists them in.

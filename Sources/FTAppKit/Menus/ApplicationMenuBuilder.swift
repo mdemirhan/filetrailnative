@@ -120,6 +120,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.viewAsIcons, "as Icons"))
             menu.addItem(context.command(.viewAsDetails, "as List"))
             menu.addItem(context.command(.viewAsList, "as Compact List"))
+            menu.addItem(context.command(.viewAsPreviews, "as Previews"))
             menu.addItem(.separator())
             // Named for the view on screen once the menu is synced: "Make Icons Bigger", "Make Columns Wider".
             menu.addItem(context.command(.increaseSize, "Make Bigger"))

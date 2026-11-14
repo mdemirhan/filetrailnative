@@ -1150,6 +1150,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.onIconSizeChanged = { [weak self] density, size in
             self?.updatePreferences { $0.iconSizes[density] = size }
         }
+        content.onPreviewSizeChanged = { [weak self] density, size in
+            self?.updatePreferences { $0.previewSizes[density] = size }
+        }
         content.setView(
             sortBy: pane.sortBy, direction: pane.sortDirection, foldersFirst: pane.foldersFirst,
             includeHidden: pane.includeHidden)
@@ -1642,6 +1645,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .viewAsIcons: setMode(.icons)
         case .viewAsDetails: setMode(.details)
         case .viewAsList: setMode(.list)
+        case .viewAsPreviews: setMode(.previews)
         case .increaseSize, .decreaseSize, .resetSize:
             if let change = ViewSize.Change(command) { content.stepViewSize(change) }
         // Search results have an order of their own, chosen in the List view's headers.

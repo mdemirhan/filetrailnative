@@ -32,7 +32,7 @@ public enum SelectionNavigation {
             // A step by a row (icons) or a column (list) goes from that place.
             let movesByStep: Bool
             switch viewMode {
-            case .icons: movesByStep = key == .up || key == .down
+            case .icons, .previews: movesByStep = key == .up || key == .down
             case .list: movesByStep = key == .left || key == .right
             case .details: movesByStep = false
             }
@@ -51,7 +51,7 @@ public enum SelectionNavigation {
         switch viewMode {
         case .details:
             return clamp(key == .up || key == .left ? index - 1 : index + 1, itemCount)
-        case .icons:
+        case .icons, .previews:
             // Icon view reads left to right, then down: Left and Right move one item, Up and Down one row. Down from the
             // row above a shorter last row goes to the last item.
             switch key {

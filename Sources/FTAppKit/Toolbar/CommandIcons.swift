@@ -14,6 +14,7 @@ extension CommandIcon {
         case .icons, .viewAs: "square.grid.2x2"
         case .details: "list.bullet"
         case .list: "rectangle.split.3x1"
+        case .previews: "squares.below.rectangle"
         case .sortBy: "arrow.up.arrow.down"
         case .foldersFirst: "text.below.folder"
         case .hidden: "eye.slash"

@@ -17,9 +17,14 @@ public struct ViewSize: Equatable, Sendable {
 
     /// The size of a view at a density; nil for the List.
     public static func of(
-        _ mode: ExplorerViewMode, density: Density, iconSizes: DensitySizes, compactListWidths: DensitySizes
+        _ mode: ExplorerViewMode, density: Density, iconSizes: DensitySizes, compactListWidths: DensitySizes,
+        previewSizes: DensitySizes = .previewDefaults
     ) -> ViewSize? {
         switch mode {
+        case .previews:
+            ViewSize(
+                value: previewSizes[density], range: AppPreferenceLimits.previewSizeRange,
+                step: AppPreferenceLimits.previewSizeStep, defaultValue: DensitySizes.previewDefaults[density])
         case .icons:
             ViewSize(
                 value: iconSizes[density], range: AppPreferenceLimits.iconSizeRange,

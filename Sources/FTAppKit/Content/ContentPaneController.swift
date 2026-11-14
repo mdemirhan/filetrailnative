@@ -91,6 +91,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onColumnWidthsChanged: (([DetailColumn: Double]) -> Void)?
     var onCompactListWidthChanged: ((Density, Int) -> Void)?
     var onIconSizeChanged: ((Density, Int) -> Void)?
+    var onPreviewSizeChanged: ((Density, Int) -> Void)?
     /// The keys the size slider's tooltip names, as chosen in Settings.
     var sizeShortcuts = ShortcutDisplay.defaults {
         didSet { if sizeShortcuts != oldValue { syncSizeSlider() } }
@@ -1199,11 +1200,27 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         }
     }
 
+    /// The status bar's slider set the Previews view's preview size, in steps of 40 points: the previews follow it
+    /// while it moves, and the size is saved once it is let go (or set by a click or a key).
+    func previewSizeChanged(_ size: Double, save: Bool) {
+        let density = columnState.density
+        let stepped = AppPreferenceLimits.clampPreviewSize(size)
+        shell.pathBarRow.sizeValue = stepped
+        if stepped != columnState.previewSizes[density] {
+            columnState.previewSizes[density] = stepped
+            pane?.columnsChanged()
+        }
+        if save {
+            syncSizeSlider()
+            onPreviewSizeChanged?(density, stepped)
+        }
+    }
+
     /// The size of the view on screen, which View ▸ Make Bigger, Make Smaller and Default Size change; nil in the List.
     var viewSize: ViewSize? {
         ViewSize.of(
             mode, density: columnState.density, iconSizes: columnState.iconSizes,
-            compactListWidths: columnState.compactListWidths)
+            compactListWidths: columnState.compactListWidths, previewSizes: columnState.previewSizes)
     }
 
     /// View ▸ Make Bigger, Make Smaller or Default Size: the icons or the columns go a step bigger or smaller, or back
@@ -1215,6 +1232,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         switch mode {
         case .icons: iconSizeChanged(next, save: true)
         case .list: compactListWidthChanged(next, save: true)
+        case .previews: previewSizeChanged(next, save: true)
         case .details: return
         }
         syncSizeSlider()
@@ -1225,6 +1243,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         switch mode {
         case .icons: iconSizeChanged(value, save: save)
         case .list: compactListWidthChanged(value, save: save)
+        case .previews: previewSizeChanged(value, save: save)
         case .details: break
         }
     }
@@ -1251,6 +1270,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             slider.doubleValue = Double(columnState.compactListWidths[density])
             bar.sizeValue = columnState.compactListWidths[density]
             slider.toolTip = Tooltips.sizeSliderTooltip(.list, shortcuts: sizeShortcuts)
+            bar.showsSizeSlider = true
+        case .previews:
+            let range = AppPreferenceLimits.previewSizeRange
+            slider.minValue = Double(range.lowerBound)
+            slider.maxValue = Double(range.upperBound)
+            slider.doubleValue = Double(columnState.previewSizes[density])
+            bar.sizeValue = columnState.previewSizes[density]
+            slider.toolTip = Tooltips.sizeSliderTooltip(.previews, shortcuts: sizeShortcuts)
             bar.showsSizeSlider = true
         case .details:
             bar.showsSizeSlider = false

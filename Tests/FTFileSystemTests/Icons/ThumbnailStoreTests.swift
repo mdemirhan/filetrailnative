@@ -100,6 +100,34 @@ private func request(
         #expect(ThumbnailStore.pixelSize(forIconSize: 128) == 256)
     }
 
+    // The Previews view asks for twice its size in pixels, in steps of 64, at most 1280.
+    @Test func previewsAskForTwiceTheirSizeUpTo1280Pixels() {
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 160) == 320)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 240) == 512)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 640) == 1280)
+        #expect(ThumbnailStore.pixelSize(forPreviewSize: 900) == 1280)
+    }
+
+    // A store with a memory limit drops the least recently used previews once those it keeps would take more; one
+    // without keeps as many as it may count.
+    @Test func aMemoryLimitDropsTheOldestPreviewsFirst() async {
+        let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1", unchanged: false, picture: picture()) }
+        let queue = ThumbnailLoadQueue()
+        // Room for two previews of 512 pixels (1 MB each) and not three.
+        let store = ThumbnailStore(provider: provider, queue: queue, memoryLimit: 2 * 512 * 512 * 4 + 1)
+        let listing = Listing()
+        for name in ["a", "b", "c"] {
+            _ = store.load(path: "/\(name).png", kind: .file, size: 512, listing: listing) { _ in }
+            await idle(queue)
+        }
+        #expect(store.count == 2)
+        #expect(store.memoryUsed == 2 * 512 * 512 * 4)
+        #expect(store.loadedPicture(forPath: "/a.png") == nil)
+        #expect(store.loadedPicture(forPath: "/c.png") != nil)
+        store.reset()
+        #expect(store.memoryUsed == 0)
+    }
+
     // A preview cached too small is given at once and made again at the larger size, the file being as it was; one
     // cached large enough serves a smaller size without asking again.
     @Test func aPreviewTooSmallIsMadeAgainAtTheLargerSize() async {

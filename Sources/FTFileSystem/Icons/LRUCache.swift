@@ -24,13 +24,24 @@ struct LRUCache<Key: Hashable, Value> {
     /// The value for `key`, without changing the order.
     func peek(_ key: Key) -> Value? { entries[key]?.value }
 
-    mutating func write(_ value: Value, for key: Key) {
+    /// Writes `value` for `key`; returns the least recently used entry dropped to make room, if one was.
+    @discardableResult
+    mutating func write(_ value: Value, for key: Key) -> Value? {
         entries[key] = nil
+        var dropped: Value?
         if entries.count >= capacity, let oldest = entries.min(by: { $0.value.stamp < $1.value.stamp })?.key {
+            dropped = entries[oldest]?.value
             entries[oldest] = nil
         }
         clock += 1
         entries[key] = (value, clock)
+        return dropped
+    }
+
+    /// Drops the least recently used entry and returns it.
+    mutating func removeOldest() -> Value? {
+        guard let oldest = entries.min(by: { $0.value.stamp < $1.value.stamp })?.key else { return nil }
+        return entries.removeValue(forKey: oldest)?.value
     }
 
     mutating func remove(_ key: Key) {

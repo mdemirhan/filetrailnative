@@ -306,7 +306,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         nameField.stringValue = entry.name
         root.setAccessibilityLabel(entry.name)
         // `title={entry.name}`: the whole name, for one shortened in the middle.
-        root.toolTip = entry.name
+        root.toolTip = pane.toolTip(for: entry)
         label.tagDots.colors = host.tagColors(for: entry)
         fitName(entry, host: host, layout: layout)
         tile.radius = CGFloat(style.tileRadius)
@@ -342,9 +342,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         thumbnailRequest = nil
         let theme = pane.host?.theme ?? AppearanceModel.shared.theme
         let style = pane.style
-        thumbnailRequest = IconThumbnails.store.load(
-            path: entry.path, kind: entry.iconEntry.kind, size: ThumbnailStore.pixelSize(forIconSize: layout.iconSize),
-            listing: pane.listing
+        thumbnailRequest = pane.thumbnailStore.load(
+            path: entry.path, kind: entry.iconEntry.kind, size: pane.thumbnailPixelSize, listing: pane.listing
         ) { [weak self] picture in
             guard let self, self.path == entry.path else { return }
             if let picture {
@@ -408,7 +407,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         root.drop = dropState
         dropMarker.isHidden = dropState == nil || dropState == .invalid
         DropHighlight.setWiggle(iconBox, on: dropState == .springing)
-        if hasThumbnail, !thumbnail.isHidden, let picture = IconThumbnails.store.loadedPicture(forPath: entry.path) {
+        if hasThumbnail, !thumbnail.isHidden, let picture = pane.thumbnailStore.loadedPicture(forPath: entry.path) {
             thumbnail.show(picture, theme: theme, style: pane.style)
         }
     }

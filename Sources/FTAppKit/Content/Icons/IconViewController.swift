@@ -6,7 +6,7 @@ import FTFoundation
 
 /// The Icon view: large icons that read left to right and scroll down, in columns that share the pane's width. Files show
 /// the Quick Look preview of their content where there is one.
-final class IconViewController: ItemGridPane {
+class IconViewController: ItemGridPane {
     private(set) var density = Density.standard
     private(set) var layout = DesignTokens.iconGrid(density: .standard)
     private(set) var style = IconItemStyle.make(density: .standard)
@@ -16,10 +16,25 @@ final class IconViewController: ItemGridPane {
     override var navigationViewMode: ExplorerViewMode { .icons }
     override var itemIdentifier: NSUserInterfaceItemIdentifier { IconItem.identifier }
 
+    /// The grid's name for automation.
+    var gridIdentifier: String { "icons.grid" }
+
+    /// The size the grid is drawn at for `density`, as the preferences have it: the icon's side.
+    func savedSize(for density: Density) -> Double {
+        Double(host?.columnState.iconSizes[density] ?? DensitySizes.iconDefaults[density])
+    }
+
+    /// Where the previews of the files' content come from, and the pixels they are asked for at.
+    var thumbnailStore: ThumbnailStore { IconThumbnails.store }
+    var thumbnailPixelSize: Int { ThumbnailStore.pixelSize(forIconSize: layout.iconSize) }
+
+    /// What shows when the pointer rests on an item: its whole name, for one shortened in the middle.
+    func toolTip(for entry: DirectoryEntry) -> String { entry.name }
+
     override func loadView() {
         super.loadView()
         collection.register(IconItem.self, forItemWithIdentifier: IconItem.identifier)
-        collection.setAccessibilityIdentifier("icons.grid")
+        collection.setAccessibilityIdentifier(gridIdentifier)
         scroll.hasVerticalScroller = true
         scroll.hasHorizontalScroller = false
         collection.wantsLayer = true
@@ -28,7 +43,7 @@ final class IconViewController: ItemGridPane {
     /// The density's grid, at the icon size saved for it.
     override func metricsChanged() -> Bool {
         let next = host?.columnState.density ?? .standard
-        let size = Double(host?.columnState.iconSizes[next] ?? DensitySizes.iconDefaults[next])
+        let size = savedSize(for: next)
         guard next != density || size != layout.iconSize else { return false }
         density = next
         layout = DesignTokens.iconGrid(density: next).sized(iconSize: size)

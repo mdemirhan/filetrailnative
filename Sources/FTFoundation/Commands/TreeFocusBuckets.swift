@@ -19,7 +19,8 @@ extension ShortcutPolicy {
             .showFolderInOtherPane, .goToOtherPaneFolder, .equalizePanes, .calculateSize, .toggleFavorite,
             .showInFinder,
             .showLastSearchResults, .viewAsIcons,
-            .viewAsList, .viewAsDetails, .increaseSize, .decreaseSize, .resetSize, .sortByName, .sortByModified,
+            .viewAsList, .viewAsDetails, .viewAsPreviews, .increaseSize, .decreaseSize, .resetSize, .sortByName,
+            .sortByModified,
             .sortBySize, .sortByKind, .toggleFoldersFirst,
             .toggleHiddenFiles, .togglePinFilter, .goBack, .goForward, .goEnclosingFolder, .focusTreePane,
             .focusContentPane, .openHelp, .openKeyboardShortcuts:

@@ -135,7 +135,7 @@ struct AppPreferencesTests {
         // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 56)
+        #expect(PreferenceKey.allCases.count == 57)
     }
 
     // The Compact List keeps a width for each density; a saved one is kept within 160…600, a missing one is the
@@ -164,6 +164,17 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.clampIconSize(75.9) == 72)
         #expect(AppPreferenceLimits.clampIconSize(76) == 80)
         #expect(!PreferenceKey.iconSizes.isWindowSessionKey)
+    }
+
+    @Test func previewSizesAreKeptPerDensityInStepsWithinTheirLimits() throws {
+        #expect(AppPreferences.defaults().previewSizes == DensitySizes(standard: 240, finder: 240))
+        let read = PreferencesSanitizer.sanitize(
+            try JSONNode.parse(Data(#"{"previewSizes": {"standard": 299, "finder": 20}}"#.utf8)), defaults: .defaults())
+        #expect(read.previewSizes == DensitySizes(standard: 280, finder: 160))
+        let large = PreferencesSanitizer.sanitize(
+            try JSONNode.parse(Data(#"{"previewSizes": {"finder": 5000}}"#.utf8)), defaults: .defaults())
+        #expect(large.previewSizes == DensitySizes(standard: 240, finder: 640))
+        #expect(!PreferenceKey.previewSizes.isWindowSessionKey)
     }
 
     @Test func filesRoundTripWithTheSameJSONKeys() throws {

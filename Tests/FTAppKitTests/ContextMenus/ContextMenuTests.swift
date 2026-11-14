@@ -229,7 +229,7 @@ extension ExplorerWindowlessTests {
             let viewAs = try #require(item(menu, "View As")?.submenu)
             #expect(viewAs.items.map(\.title) == ExplorerViewMode.menuOrder.map(\.menuName))
             #expect(tab.viewMode == .icons)
-            #expect(viewAs.items.map(\.state) == [.on, .off, .off])
+            #expect(viewAs.items.map(\.state) == [.on, .off, .off, .off])
             let sortBy = try #require(item(menu, "Sort By")?.submenu)
             #expect(sortBy.items.map(\.title) == ["Name", "Kind", "Date Modified", "Size"])
             #expect(sortBy.items.map(\.state) == [.on, .off, .off, .off])

@@ -59,6 +59,7 @@ public enum Tooltips {
         switch mode {
         case .icons: (label, bigger, smaller) = ("Icon Size", "bigger", "smaller")
         case .list: (label, bigger, smaller) = ("Column Width", "wider", "narrower")
+        case .previews: (label, bigger, smaller) = ("Preview Size", "bigger", "smaller")
         case .details: return nil
         }
         let keys = [(ShortcutCommandID.increaseSize, bigger), (.decreaseSize, smaller), (.resetSize, "default")]

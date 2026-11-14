@@ -82,7 +82,7 @@ struct ApplicationMenuTests {
                 "viewAsIcons": false, "viewAsList": false, "viewAsDetails": true, "sortByName": false,
                 "sortByModified": false, "sortBySize": true, "sortByKind": false, "toggleFoldersFirst": false,
                 "toggleHiddenFiles": true, "toggleInfoPanel": true, "toggleInfoRow": false, "toggleTwoPanes": false,
-                "togglePinFilter": false,
+                "togglePinFilter": false, "viewAsPreviews": false,
             ])
     }
 

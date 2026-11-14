@@ -40,8 +40,8 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "View")) == [
-                "as Icons", "as List", "as Compact List", "-", "Make Bigger", "Make Smaller", "Default Size", "-",
-                "Sort By", "Folders First", "Hidden Files", "Pin Filter", "Refresh",
+                "as Icons", "as List", "as Compact List", "as Previews", "-", "Make Bigger", "Make Smaller",
+                "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…",
             ])

@@ -403,7 +403,7 @@ struct ShortcutsTests {
             (.copyPath, ["Cmd+Option+C"]), (.openInTerminal, ["Cmd+Option+T"]), (.calculateSize, []),
             (.showClipboard, []), (.clearClipboard, []), (.showInFinder, []), (.toggleFavorite, []),
             (.focusFileSearch, ["Cmd+F"]), (.showLastSearchResults, ["Cmd+Shift+F"]), (.revealInFolder, []),
-            (.viewAsIcons, ["Cmd+1"]), (.viewAsDetails, ["Cmd+2"]), (.viewAsList, ["Cmd+3"]),
+            (.viewAsIcons, ["Cmd+1"]), (.viewAsDetails, ["Cmd+2"]), (.viewAsList, ["Cmd+3"]), (.viewAsPreviews, []),
             (.increaseSize, ["Cmd+Plus", "Cmd+="]), (.decreaseSize, ["Cmd+-"]), (.resetSize, ["Cmd+0"]),
             (.toggleHiddenFiles, ["Cmd+Shift+."]), (.togglePinFilter, []), (.toggleFolderTree, ["Ctrl+Cmd+S"]),
             (.toggleInfoPanel, ["Cmd+I"]),

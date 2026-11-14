@@ -71,12 +71,13 @@ final class ToolbarTitleView: NSView, TextStyleSource {
     }
 }
 
-/// The view switch, the system's segmented control: three icons, one selected. Search results are one table: it is
+/// The view switch, the system's segmented control: four icons, one selected. Search results are one table: it is
 /// disabled in search mode.
 final class ToolbarViewSwitch: NSSegmentedControl {
     static let modes: [(ExplorerViewMode, CommandIcon, String, ShortcutCommandID)] = [
         (.icons, .icons, "View as Icons", .viewAsIcons), (.details, .details, "View as List", .viewAsDetails),
         (.list, .list, "View as Compact List", .viewAsList),
+        (.previews, .previews, "View as Previews", .viewAsPreviews),
     ]
     /// Finder's selected segment, read from its screenshots; the system's fit around these icons is 30.
     static let segmentWidth = 34.0

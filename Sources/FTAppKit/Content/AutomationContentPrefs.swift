@@ -36,6 +36,7 @@
                 case "icons": controller.perform(.viewAsIcons)
                 case "details": controller.perform(.viewAsDetails)
                 case "list": controller.perform(.viewAsList)
+                case "previews": controller.perform(.viewAsPreviews)
                 default: return .failed("viewMode \(value)")
                 }
                 return .applied

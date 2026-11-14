@@ -162,12 +162,15 @@ extension ExplorerWindowlessTests {
             switcher.keyDown(with: try tab(key: 36, "\r", window))
             #expect(opened.viewMode == .list)
             switcher.keyDown(with: try tab(key: 48, "\t", window))
+            #expect(switcher.keyboardSegment == 3)
+            switcher.keyDown(with: try tab(key: 48, "\t", window))
             #expect(window.firstResponder === sort)
 
             // Back in, at the last segment, and on out by the first.
             sort.keyDown(with: try tab(key: 48, "\t", shift: true, window))
             #expect(window.firstResponder === switcher)
-            #expect(switcher.keyboardSegment == 2)
+            #expect(switcher.keyboardSegment == 3)
+            switcher.keyDown(with: try tab(key: 48, "\t", shift: true, window))
             switcher.keyDown(with: try tab(key: 48, "\t", shift: true, window))
             switcher.keyDown(with: try tab(key: 48, "\t", shift: true, window))
             #expect(switcher.keyboardSegment == 0)

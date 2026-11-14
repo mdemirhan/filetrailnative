@@ -1,10 +1,11 @@
 import Foundation
 
-/// Previews of the content of files, for icon view.
+/// Previews of the content of files, for icon view and the Previews view.
 ///
 /// Previews are asked for at `pixelSize(forIconSize:)` on their longest side: twice the icon, for a Retina display.
 /// Previews are kept in memory only (Quick Look has its own cache on disk), most recently used last. 500 cover
-/// several screens of icon view; older ones are asked for again.
+/// several screens of icon view; older ones are asked for again. A store of large previews also keeps under a memory
+/// limit, counting each preview as a square of the size it was asked for.
 @MainActor
 public final class ThumbnailStore {
     /// Previews for icons up to 64 points.
@@ -30,16 +31,44 @@ public final class ThumbnailStore {
         var checkedFor: AnyObject
     }
 
+    /// The size of a preview `size` points wide in the Previews view on a Retina display: twice as many pixels, in
+    /// whole steps of 64, at most 1280.
+    public nonisolated static func pixelSize(forPreviewSize size: Double) -> Int {
+        min(1280, Int((size * 2 / 64).rounded(.up)) * 64)
+    }
+
     private let provider: any ThumbnailProviding
     private let queue: ThumbnailLoadQueue
-    private var cache = LRUCache<String, Cached>(capacity: ThumbnailStore.maxEntries)
+    private var cache: LRUCache<String, Cached>
+    /// The bytes the previews kept may take at most (nil: only the count is limited), and what they take now.
+    private let memoryLimit: Int?
+    public private(set) var memoryUsed = 0
 
     public init(
         provider: any ThumbnailProviding = FileThumbnailService(),
-        queue: ThumbnailLoadQueue = ThumbnailLoadQueue()
+        queue: ThumbnailLoadQueue = ThumbnailLoadQueue(), maxEntries: Int = ThumbnailStore.maxEntries,
+        memoryLimit: Int? = nil
     ) {
         self.provider = provider
         self.queue = queue
+        self.cache = LRUCache(capacity: maxEntries)
+        self.memoryLimit = memoryLimit
+    }
+
+    /// How many previews are kept.
+    public var count: Int { cache.count }
+
+    /// What a preview asked for at `size` pixels may take: four bytes a pixel of its square.
+    private static func cost(_ cached: Cached) -> Int { cached.picture == nil ? 0 : cached.size * cached.size * 4 }
+
+    private func keep(_ cached: Cached, for path: String) {
+        if let old = cache.peek(path) { memoryUsed -= Self.cost(old) }
+        if let dropped = cache.write(cached, for: path) { memoryUsed -= Self.cost(dropped) }
+        memoryUsed += Self.cost(cached)
+        guard let memoryLimit else { return }
+        while memoryUsed > memoryLimit, cache.count > 1, let dropped = cache.removeOldest() {
+            memoryUsed -= Self.cost(dropped)
+        }
     }
 
     /// Only files have previews of their content; folders, apps and other bundles keep the icons macOS
@@ -56,6 +85,7 @@ public final class ThumbnailStore {
     /// Forgets every cached preview and queued request.
     public func reset() {
         cache.removeAll()
+        memoryUsed = 0
         queue.removeAll()
     }
 
@@ -98,7 +128,7 @@ public final class ThumbnailStore {
             {
                 thumbnail = current
             } else {
-                self.cache.write(thumbnail, for: path)
+                self.keep(thumbnail, for: path)
             }
             if !cancelled.value {
                 completion(thumbnail.picture)

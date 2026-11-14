@@ -602,6 +602,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         case .icons: .viewAsIcons
         case .details: .viewAsDetails
         case .list: .viewAsList
+        case .previews: .viewAsPreviews
         }
     }
 

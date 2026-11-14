@@ -88,6 +88,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case viewAsIcons
     case viewAsDetails
     case viewAsList
+    case viewAsPreviews
     case increaseSize
     case decreaseSize
     case resetSize
@@ -281,6 +282,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .viewAsList, label: "View as Compact List", group: .view, defaults: ["Cmd+3"],
             menuPath: "View > as Compact List"),
+        ShortcutCommandDefinition(
+            id: .viewAsPreviews, label: "View as Previews", group: .view, defaults: [],
+            menuPath: "View > as Previews"),
         // ⌘+ is pressed as ⌘= on most keyboards, so ⌘= is its other key.
         ShortcutCommandDefinition(
             id: .increaseSize, label: "Make Bigger", group: .view, defaults: ["Cmd+Plus", "Cmd+="],

@@ -655,6 +655,7 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.viewAsIcons), "View as icons"),
         HelpShortcutItem(group: .views, .command(.viewAsDetails), "View as a list, with columns"),
         HelpShortcutItem(group: .views, .command(.viewAsList), "View as a compact list of names"),
+        HelpShortcutItem(group: .views, .command(.viewAsPreviews), "View as large previews of the files"),
         HelpShortcutItem(
             group: .views, .command(.increaseSize), "Bigger icons in the Icons view, wider columns in the Compact List"),
         HelpShortcutItem(group: .views, .command(.decreaseSize), "Smaller icons, or narrower columns"),

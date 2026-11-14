@@ -72,6 +72,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -272,6 +276,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -516,6 +524,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -716,6 +728,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -919,6 +935,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -1120,6 +1140,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -1353,6 +1377,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -1554,6 +1582,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -1782,6 +1814,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -2046,6 +2082,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -4551,6 +4591,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -5405,6 +5449,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -5661,6 +5709,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -5862,6 +5914,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6065,6 +6121,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -6266,6 +6326,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6473,6 +6537,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -6685,6 +6753,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -6887,6 +6959,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -7083,6 +7159,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -7275,6 +7355,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -7491,6 +7575,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -7693,6 +7781,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -7894,6 +7986,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -8190,6 +8286,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -8431,6 +8531,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -8941,6 +9045,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -9105,6 +9213,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -9351,6 +9463,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -9551,6 +9667,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -9846,6 +9966,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -10046,6 +10170,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -10514,6 +10642,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -10820,6 +10952,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -11022,6 +11158,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -11222,6 +11362,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -11521,6 +11665,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -11883,6 +12031,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -12083,6 +12235,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -12593,6 +12749,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -12862,6 +13022,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -13099,6 +13263,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -13280,6 +13448,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -13528,6 +13700,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -13766,6 +13942,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -14181,6 +14361,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -14351,6 +14535,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -14779,6 +14967,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -15219,6 +15411,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -15506,6 +15702,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -15707,6 +15907,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -15948,6 +16152,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -16246,6 +16454,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -16556,6 +16768,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -16760,6 +16976,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -17000,6 +17220,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -17256,6 +17480,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -17491,6 +17719,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -17714,6 +17946,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -17943,6 +18179,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -18160,6 +18400,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -18718,6 +18962,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -18997,6 +19245,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -19253,6 +19505,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -19579,6 +19835,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -19812,6 +20072,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -20012,6 +20276,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -20423,6 +20691,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -20623,6 +20895,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -20835,6 +21111,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -21154,6 +21434,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -21422,6 +21706,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -21638,6 +21926,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -21839,6 +22131,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -22288,6 +22584,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -22549,6 +22849,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -22752,6 +23056,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -23116,6 +23424,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -23387,6 +23699,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": false,
@@ -23618,6 +23934,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -23957,6 +24277,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -24160,6 +24484,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -24474,6 +24802,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": false,
@@ -24744,6 +25076,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -24952,6 +25288,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -25268,6 +25608,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -25538,6 +25882,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -25761,6 +26109,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -25971,6 +26323,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -26208,6 +26564,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -26495,6 +26855,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -26838,6 +27202,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -27205,6 +27573,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -27662,6 +28034,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -27841,6 +28217,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -28209,6 +28589,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -28424,6 +28808,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -28792,6 +29180,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -29145,6 +29537,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -29409,6 +29805,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -29743,6 +30143,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -29952,6 +30356,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -30157,6 +30565,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -30375,6 +30787,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -30815,6 +31231,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": false,
@@ -31041,6 +31461,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -31252,6 +31676,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -31560,6 +31988,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -31981,6 +32413,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -32427,6 +32863,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -32894,6 +33334,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -33150,6 +33594,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -33362,6 +33810,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -33592,6 +34044,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -33950,6 +34406,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -34214,6 +34674,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -34420,6 +34884,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -34590,6 +35058,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -34791,6 +35263,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -35020,6 +35496,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -35228,6 +35708,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -35464,6 +35948,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -35737,6 +36225,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -36316,6 +36808,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -36540,6 +37036,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -36742,6 +37242,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -36943,6 +37447,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -37182,6 +37690,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": false,
@@ -37462,6 +37974,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -37662,6 +38178,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -37972,6 +38492,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -38385,6 +38909,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -38710,6 +39238,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -39095,6 +39627,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -39317,6 +39853,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -39517,6 +40057,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -39760,6 +40304,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -39926,6 +40474,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -40152,6 +40704,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -40361,6 +40917,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -40705,6 +41265,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -40907,6 +41471,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -41108,6 +41676,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -41339,6 +41911,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -41649,6 +42225,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -41860,6 +42440,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -42030,6 +42614,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -42240,6 +42828,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -42830,6 +43422,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -43030,6 +43626,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -43225,6 +43825,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -43474,6 +44078,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -43761,6 +44369,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -43998,6 +44610,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -44387,6 +45003,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -44722,6 +45342,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -44982,6 +45606,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -45267,6 +45895,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -45698,6 +46330,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -46217,6 +46853,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -46515,6 +47155,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -46755,6 +47399,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -47074,6 +47722,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -47455,6 +48107,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -47655,6 +48311,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -47901,6 +48561,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -48133,6 +48797,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -48401,6 +49069,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -48873,6 +49545,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": false,
@@ -49111,6 +49787,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -49327,6 +50007,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -49622,6 +50306,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -49832,6 +50520,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -50032,6 +50724,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -50295,6 +50991,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -50553,6 +51253,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -50829,6 +51533,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -51324,6 +52032,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -51682,6 +52394,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -51884,6 +52600,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -52192,6 +52912,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -52706,6 +53430,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -52907,6 +53635,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -53116,6 +53848,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -53503,6 +54239,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -53792,6 +54532,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -54072,6 +54816,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -54274,6 +55022,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -54506,6 +55258,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -54873,6 +55629,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -55074,6 +55834,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -55510,6 +56274,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -55712,6 +56480,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -55912,6 +56684,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -56130,6 +56906,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -56444,6 +57224,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": false,
@@ -56741,6 +57525,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -57084,6 +57872,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -57354,6 +58146,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -57577,6 +58373,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -57949,6 +58749,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -58315,6 +59119,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": false,
@@ -58560,6 +59368,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -59007,6 +59819,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -59328,6 +60144,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -59548,6 +60368,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -59859,6 +60683,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -60073,6 +60901,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -60275,6 +61107,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -60476,6 +61312,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -60811,6 +61651,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -61036,6 +61880,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -61378,6 +62226,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -61666,6 +62518,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -61969,6 +62825,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -62261,6 +63121,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -62496,6 +63360,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -62685,6 +63553,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -63192,6 +64064,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -63466,6 +64342,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -63681,6 +64561,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -63928,6 +64812,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -64187,6 +65075,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -64423,6 +65315,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -64633,6 +65529,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -65175,6 +66075,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -65467,6 +66371,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -65670,6 +66578,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -65870,6 +66782,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -66235,6 +67151,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -66712,6 +67632,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -67001,6 +67925,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -67241,6 +68169,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -67524,6 +68456,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -67873,6 +68809,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -68073,6 +69013,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -68277,6 +69221,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -68636,6 +69584,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -68884,6 +69836,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -69166,6 +70122,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -69387,6 +70347,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -69849,6 +70813,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -70160,6 +71128,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -70409,6 +71381,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -70612,6 +71588,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -70860,6 +71840,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -71188,6 +72172,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -71396,6 +72384,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -71749,6 +72741,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": false,
@@ -71968,6 +72964,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": false,
@@ -72408,6 +73408,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -72656,6 +73660,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -73076,6 +74084,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -73445,6 +74457,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -73772,6 +74788,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -74061,6 +75081,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": false,
@@ -74307,6 +75331,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -74522,6 +75550,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -74725,6 +75757,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -75119,6 +76155,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": true,
@@ -75471,6 +76511,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": false,
           "autoCalculateFolderSizes": false,
@@ -75686,6 +76730,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -75887,6 +76935,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -76127,6 +77179,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -76328,6 +77384,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -76626,6 +77686,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -76843,6 +77907,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -77043,6 +78111,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -77257,6 +78329,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": false,
@@ -77448,6 +78524,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -77899,6 +78979,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -78168,6 +79252,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -78544,6 +79632,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -79099,6 +80191,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -79386,6 +80482,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": false,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -79657,6 +80757,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -79818,6 +80922,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -80045,6 +81153,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": false,
           "markClipboardItems": true,
@@ -80402,6 +81514,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -80782,6 +81898,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -81063,6 +82183,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
@@ -81407,6 +82531,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": false,
@@ -81648,6 +82776,10 @@
             "standard": 64,
             "finder": 64
           },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
+          },
           "notificationsEnabled": true,
           "markClipboardItems": true,
           "autoCalculateFolderSizes": true,
@@ -81849,6 +82981,10 @@
           "iconSizes": {
             "standard": 64,
             "finder": 64
+          },
+          "previewSizes": {
+            "standard": 240,
+            "finder": 240
           },
           "notificationsEnabled": true,
           "markClipboardItems": true,
