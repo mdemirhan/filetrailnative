@@ -305,6 +305,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var opener: SystemOpener = .workspace
     /// Opens an activated file or app in what macOS chooses; tests give their own.
     var openFile: @MainActor (URL) -> Void = { NSWorkspace.shared.open($0) }
+    /// The event being handled, which says whether a key is held down; tests give their own.
+    var currentEvent: @MainActor () -> NSEvent? = { NSApp.currentEvent }
     private var observers: [(token: Weak<ExplorerWindowObservation>, handler: (ExplorerWindowChange) -> Void)] = []
     /// The active pane's history: folder paths and the one on screen.
     var navigationHistory: NavigationHistory { activePane.navigationHistory }
@@ -888,6 +890,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                         detail: result.error ?? "\(editor.appName) didn’t answer."))
             }
         case .steps(let steps):
+            // A held key (Return, ⌘↓, ⌘O) opens again on every repeat, but extracts once per press: each repeat would
+            // take the archive apart again, beside what the first one gave.
+            let extracts = !Self.isKeyRepeat(currentEvent())
+            func extractsOrIsNoArchive(_ path: String) -> Bool {
+                extracts || !ArchiveNames.isArchive(NodePath.basename(path))
+            }
             for step in steps {
                 switch step {
                 case .navigate(let path):
@@ -910,15 +918,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                         if ArchiveNames.isArchive(NodePath.basename(target)),
                             ArchiveNames.isArchive(NodePath.basename(path)), !DiskImageNames.isDiskImagePath(target)
                         {
-                            extractToOpen([path])
-                        } else {
+                            if extracts { extractToOpen([path]) }
+                        } else if extractsOrIsNoArchive(target) {
                             openExternally(target)
                         }
                     }
                 case .openExternally(let path):
-                    openExternally(path)
+                    if extractsOrIsNoArchive(path) { openExternally(path) }
                 case .extract(let paths):
-                    extractToOpen(paths)
+                    if extracts { extractToOpen(paths) }
                 }
             }
         }
