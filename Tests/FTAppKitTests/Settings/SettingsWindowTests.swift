@@ -71,6 +71,34 @@ import Testing
         pages.settingsWindow?.close()
     }
 
+    @Test func manageWorkspacesOpensBrowsingScrolledToTheWorkspaces() throws {
+        let (pages, _) = PageWindowsTests.make(.defaults(theme: .light))
+        pages.openSettings(section: .workspaces)
+        let controller = try #require(pages.settingsWindow)
+        let view = controller.settingsView
+        #expect(controller.activeTab == .browsing)
+        func workspacesAtTop() throws -> Bool {
+            let section = try #require(view.page?.sections[.workspaces])
+            let clip = view.scroll.contentView
+            let document = try #require(clip.documentView)
+            let rect = section.convert(section.bounds, to: document)
+            // The group goes to just under the title, or, last on the page, the page's end comes to the pane's.
+            let top = min(rect.minY - SettingsMetrics.pagePaddingTop, document.frame.height - clip.bounds.height)
+            return top > 0 && clip.bounds.minY == top && clip.bounds.contains(rect)
+        }
+        #expect(try workspacesAtTop())
+        #expect(view.headerShowsLine)
+        // Scrolled away on the same page, or left on another, the menu item brings the list back.
+        view.scroll.contentView.scroll(to: .zero)
+        pages.openSettings(section: .workspaces)
+        #expect(try workspacesAtTop())
+        view.select(tab: .general)
+        pages.openSettings(section: .workspaces)
+        #expect(controller.activeTab == .browsing)
+        #expect(try workspacesAtTop())
+        controller.close()
+    }
+
     @Test func escapeClosesAnOpenPopUpBeforeTheWindow() throws {
         let preferences = AppPreferences.defaults(theme: .light).with {
             $0.favorites = Favorites.defaults(homePath: "/Users/demo")

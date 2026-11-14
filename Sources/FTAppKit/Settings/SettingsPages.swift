@@ -24,6 +24,8 @@ final class SettingsPageView: NSView {
     let theme: Theme
     /// The Shortcuts tab's view, whose search field goes beside the title.
     private(set) var shortcuts: ShortcutSettingsView?
+    /// The groups other places open Settings at.
+    private(set) var sections: [SettingsSection: SettingsSectionView] = [:]
 
     init(tab: SettingsTab, host: any SettingsPageHost, theme: Theme) {
         self.tab = tab
@@ -204,6 +206,7 @@ final class SettingsPageView: NSView {
                 "Window \u{203A} Workspaces saves a window\u{2019}s tabs and opens them again. The first five have keys."
         )
         workspaces.card.add(workspacesList(), fullWidth: true)
+        sections[.workspaces] = workspaces
     }
 
     /// The workspaces in the menu's order: renamed, removed, dragged or moved into another order. Each row says what it

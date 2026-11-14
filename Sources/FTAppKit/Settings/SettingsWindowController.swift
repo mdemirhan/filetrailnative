@@ -87,6 +87,12 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
         settingsView.select(tab: tab)
     }
 
+    /// Shows the page `section` is on, scrolled to it.
+    public func show(section: SettingsSection) {
+        settingsView.select(tab: section.tab)
+        settingsView.scroll(to: section)
+    }
+
     public override func present() {
         super.present()
         guard monitor == nil else { return }

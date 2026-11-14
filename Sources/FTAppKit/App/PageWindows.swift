@@ -72,6 +72,12 @@ public final class PageWindows {
         controller.present()
     }
 
+    /// Settings opens, or comes forward, on the page `section` is on, scrolled to it.
+    public func openSettings(section: SettingsSection) {
+        openSettings(tab: section.tab)
+        settings?.show(section: section)
+    }
+
     // MARK: Help
 
     /// The keys the commands have now (Settings → Shortcuts), and what Return does.

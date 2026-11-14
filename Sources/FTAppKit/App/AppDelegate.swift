@@ -270,7 +270,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             openWorkspace: { [weak self] id, window in
                 self?.explorerWindows.openWorkspace(id: id, inPlaceOf: window as? MainWindowController)
             },
-            manageWorkspaces: { [weak self] in self?.pageWindows.openSettings(tab: .browsing) })
+            manageWorkspaces: { [weak self] in self?.pageWindows.openSettings(section: .workspaces) })
         menu.shortcuts = { [weak self] in
             self?.store.map { ShortcutCommands.resolve($0.preferences().shortcutOverrides).bindings }
                 ?? ShortcutCommands.defaultBindings

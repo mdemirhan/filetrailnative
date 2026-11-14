@@ -389,6 +389,19 @@ final class SettingsView: ThemedView {
         scroll.reflectScrolledClipView(clip)
     }
 
+    /// Scrolls the page on screen so `section` starts at the top of the pane, or as near it as the page's end lets it.
+    func scroll(to section: SettingsSection) {
+        guard let view = page?.sections[section] else { return }
+        layoutSubtreeIfNeeded()
+        let clip = scroll.contentView
+        let rect = view.convert(view.bounds, to: document)
+        let top = min(
+            max(rect.minY - SettingsMetrics.pagePaddingTop, 0), max(0, document.frame.height - clip.bounds.height))
+        clip.scroll(to: NSPoint(x: clip.bounds.minX, y: top))
+        scroll.reflectScrolledClipView(clip)
+        isScrolled = top > 0
+    }
+
     /// Where the page's top goes for `rect` to show: what shows whole stays, what is cut off comes to the near edge,
     /// and
     /// what is out of sight comes to the middle.

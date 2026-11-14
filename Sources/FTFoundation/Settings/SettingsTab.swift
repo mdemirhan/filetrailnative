@@ -39,3 +39,15 @@ public enum SettingsTab: String, CaseIterable, Sendable, Hashable {
         }
     }
 }
+
+/// A group on a Settings page that another place opens Settings at, as Manage Workspaces… opens the list of workspaces.
+public enum SettingsSection: Sendable, Hashable {
+    case workspaces
+
+    /// The page it is on.
+    public var tab: SettingsTab {
+        switch self {
+        case .workspaces: .browsing
+        }
+    }
+}
