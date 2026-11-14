@@ -348,8 +348,8 @@ extension MainWindowController {
 
 extension MainWindowController {
     /// What an Extract made where no pane of the tab shows it (Extract To another folder, archives in search
-    /// results) opens in a new tab, or a new window, as Settings says for disk images and archives: a folder opens on
-    /// itself, a file in its folder, selected. What went into a folder on screen is selected there instead.
+    /// results) opens in a new tab, or a new window, as Settings says for disk images and archives: one for each
+    /// folder it went into (`extractedOpenings`). What went into a folder on screen is selected there instead.
     func showExtractedElsewhere(_ made: [String]) {
         guard !made.isEmpty, let group else { return }
         let shown = panes.compactMap { pane -> String? in
@@ -357,22 +357,42 @@ extension MainWindowController {
         }
         let inNewWindow = preferences.diskImageOpensIn == .window
         Task { [weak self] in
+            // A link is opened as a file, in its folder: what it points to isn't looked at, which may be on a disk
+            // that has to be reached first, or anywhere else.
             let kinds = await Task.detached(priority: .userInitiated) {
-                made.map { (try? NativeFileSystem().stat($0))?.isDirectory ?? false }
+                made.map { (try? NativeFileSystem().lstat($0))?.isDirectory ?? false }
             }.value
             guard let self else { return }
-            for (path, isFolder) in zip(made, kinds) {
-                guard let folder = ExplorerTabs.parentDirectoryPath(path),
-                    !shown.contains(where: { samePath($0, folder) })
-                else { continue }
-                let target = isFolder ? path : folder
-                let item: OpenedItem = isFolder ? .folder : .selecting(path)
+            for opening in Self.extractedOpenings(made, isFolder: kinds, shown: shown) {
                 if inNewWindow {
-                    group.openNewWindow(from: self, path: target, openedItem: item)
+                    group.openNewWindow(from: self, path: opening.path, openedItem: opening.item)
                 } else {
-                    group.openTab(path: target, from: self, openedItem: item)
+                    group.openTab(path: opening.path, from: self, openedItem: opening.item)
                 }
             }
+        }
+    }
+
+    /// The tabs or windows that show what an Extract made, `isFolder` saying which of `made` are folders: one for
+    /// each folder something went into that isn't one of `shown`, in the order of what was made, with all of it
+    /// selected. A folder made alone in its folder opens on itself.
+    static func extractedOpenings(_ made: [String], isFolder: [Bool], shown: [String]) -> [(
+        path: String, item: OpenedItem
+    )] {
+        var groups: [(folder: String, paths: [String], folders: Int)] = []
+        for (path, folder) in zip(made, isFolder) {
+            guard let parent = ExplorerTabs.parentDirectoryPath(path), !shown.contains(where: { samePath($0, parent) })
+            else { continue }
+            if let index = groups.firstIndex(where: { samePath($0.folder, parent) }) {
+                groups[index].paths.append(path)
+                groups[index].folders += folder ? 1 : 0
+            } else {
+                groups.append((parent, [path], folder ? 1 : 0))
+            }
+        }
+        return groups.map { group in
+            if group.paths.count == 1, group.folders == 1 { return (group.paths[0], .folder) }
+            return (group.folder, .made(group.paths))
         }
     }
 }
