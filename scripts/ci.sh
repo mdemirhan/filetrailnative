@@ -240,6 +240,38 @@ run_bundle() {
         --test-bundle-path ".build/debug/$target.xctest/Contents/MacOS/$target" --testing-library swift-testing "$@"
 }
 
+# watch_stalls <log> <pid>: while the test process started as <pid> runs, a log that hasn't grown for
+# FILETRAIL_STALL_SECONDS (10) has the process's threads sampled into <log>'s name with .stall-<n>.txt, at most three
+# times, and a line in the log saying so: a stall then shows where every thread waits, not only the timeouts it causes.
+watch_stalls() {
+    local log="$1" pid="$2" last=-1 still=0 taken=0 size helper child
+    while kill -0 "$pid" 2>/dev/null && [ "$taken" -lt 3 ]; do
+        sleep 1
+        size="$(stat -f %z "$log" 2>/dev/null || echo 0)"
+        if [ "$size" != "$last" ]; then
+            last="$size"
+            still=0
+            continue
+        fi
+        still=$((still + 1))
+        [ "$still" -lt "${FILETRAIL_STALL_SECONDS:-10}" ] && continue
+        # The testing helper is the process started or a child of it; another worktree's has the same arguments.
+        helper=""
+        for child in "$pid" $(pgrep -P "$pid"); do
+            if ps -o command= -p "$child" 2>/dev/null | grep -q swiftpm-testing-helper; then
+                helper="$child"
+                break
+            fi
+        done
+        [ -z "$helper" ] && continue
+        taken=$((taken + 1))
+        sample "$helper" 3 -file "${log%.log}.stall-$taken.txt" >/dev/null 2>&1
+        echo "ci.sh: no output for ${still} s; the process's threads are in $(basename "${log%.log}").stall-$taken.txt" >>"$log"
+        still=0
+        last="$(stat -f %z "$log" 2>/dev/null || echo 0)"
+    done
+}
+
 # A --scope run: `swift test` from the toolchain itself, as /usr/bin/swift is one of the system's programs, which drop
 # the DYLD_ variables.
 scoped_tests() {
@@ -265,6 +297,8 @@ full_tests() {
         follow_tests "$dir/$name.log"
         run_bundle "$@" --xunit-output "$dir/$name.xml" >"$dir/$name.log" 2>&1 &
         pids+=($!)
+        watch_stalls "$dir/$name.log" "$!" &
+        disown $!
     }
     # finish <index>: waits for that process once; a failed one fails the run.
     finish() {
@@ -356,7 +390,8 @@ elif [ "$bundles" = none ]; then
     echo "PASS test (nothing affected)" >>"$out"
 else
     export logs windowless_processes windowless_times bundles silent_alerts
-    export -f full_tests run_bundle windowless_groups record_windowless_times test_lines follow_tests stop_following
+    export -f full_tests run_bundle watch_stalls windowless_groups record_windowless_times test_lines follow_tests \
+        stop_following
     step test "$test_failures" bash -c full_tests
 fi
 # Test counts, from Swift Testing's summaries.
@@ -387,6 +422,7 @@ if grep -q '^FAIL test ' "$out"; then
     cp "$logs/test.log" "$kept/" 2>/dev/null
     [ -z "$scope" ] && [ -d "$logs/bundles" ] && cp -R "$logs/bundles" "$kept/"
     echo "logs kept in $kept" >>"$out"
+    find "$kept" -name '*.stall-*.txt' 2>/dev/null | sed 's/^/a test process stalled; its threads: /' >>"$out"
     find "$HOME/Library/Logs/DiagnosticReports" -name 'swiftpm-testing-helper-*.ips' -newer "$started" 2>/dev/null |
         sed 's/^/crash report since the run began: /' >>"$out"
     # The five latest are enough.
