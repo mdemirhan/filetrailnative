@@ -386,6 +386,17 @@ struct ExplorerServiceTests {
         #expect(response.suggestions.map(\.path) == ["/Users/demo/Pictures/Screenshots"])
     }
 
+    // What is typed finds a folder however the disk stores its accents, and a plain letter finds the accented one, as
+    // the list's filter does; an accented letter finds only itself. The folder is suggested as it is stored.
+    @Test func suggestsFoldersWhateverWayTheirAccentsAreStored() async throws {
+        let decomposed = "Cafe\u{301}-photos"
+        let fake = suggestionFileSystem(["/Users/demo": [decomposed, "cafeteria", "Cabinet"]])
+        let composed = try await service(fake).pathSuggestions(inputPath: "/Users/demo/caf\u{E9}")
+        #expect(composed.suggestions.map(\.name).map { Array($0.unicodeScalars) } == [Array(decomposed.unicodeScalars)])
+        let plain = try await service(fake).pathSuggestions(inputPath: "/Users/demo/cafe")
+        #expect(Set(plain.suggestions.map(\.path)) == ["/Users/demo/" + decomposed, "/Users/demo/cafeteria"])
+    }
+
     @Test func filtersAgainstImmediateChildrenOfTheNearestExistingParentWhenTheFinalSegmentIsPartial() async throws {
         let fake = suggestionFileSystem([
             "/Users/demo/src/pythonproj": ["cch", "dux", "lotus123", "OutlookMcp_AppleScript"]

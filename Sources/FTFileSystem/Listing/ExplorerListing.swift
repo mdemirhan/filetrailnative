@@ -459,7 +459,7 @@ enum ExplorerListing {
     // MARK: Suggestions
 
     /// Suggestions resolve the deepest existing directory prefix, then match only directory-like children
-    /// under that base path.
+    /// under that base path whose names start with what is typed, accents and case as `NameMatcher` takes them.
     static func pathSuggestions(
         inputPath: String, includeHidden: Bool, limit: Int, trash: TrashFolders? = nil,
         _ fileSystem: any ExplorerFileSystem, order: NameOrder
@@ -471,13 +471,13 @@ enum ExplorerListing {
             return PathSuggestions(inputPath: inputPath, basePath: query.basePath, suggestions: [])
         }
         let records = try fileSystem.readDirectory(query.basePath)
-        let typed = Array(query.typedName.lowercased().utf16)
+        let typed = NameMatcher(query.typedName, mode: .contains)
         var matches: [PathSuggestion] = []
         var keys = NameKeys(order: order)
         for record in records {
             if !includeHidden && isHidden(record) { continue }
             if trash?.isAlwaysHidden(record.name, in: query.basePath) == true { continue }
-            if !typed.isEmpty && !Array(record.name.lowercased().utf16).starts(with: typed) { continue }
+            if let typed, !typed.isPrefix(of: record.name) { continue }
             let entryPath = join(query.basePath, record.name)
             let kind = classify(record, path: entryPath, fileSystem)
             guard kind == .directory || kind == .symlinkDirectory else { continue }
