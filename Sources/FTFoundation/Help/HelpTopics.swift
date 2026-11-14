@@ -202,6 +202,11 @@ extension HelpContent {
                                 "{copyContents} puts the image or text of the selected file on the clipboard, to paste in another app: a photo into a message, a file's text into a document. An image keeps its format, with a PNG copy for the apps that read only PNG. Text is copied as it is, and an RTF file keeps its styles. The Edit menu and the file's right-click menu say which it will be. Before copying a file that usually holds a password or a key, such as .env or id_rsa, it asks, and marks the text as private on the clipboard."
                         ),
                         HelpRow(
+                            label: "Converting images",
+                            description:
+                                "Choose Convert Images from the right-click menu, the Info panel or {convertImages} to make a copy of the selected images in another format (JPEG, HEIC, PNG, TIFF or AVIF), or smaller, beside each original: Photo.HEIC as JPEG becomes Photo.jpg, numbered when that name is taken. It is offered only when every selected item is an image. The size can fit within a longest side, be a percentage or be a width and height of your own, and no image is ever made larger. Keep metadata keeps the camera's details, and Remove location takes out where the photo was taken. The originals stay as they are, and Undo moves the new files to the Trash."
+                        ),
+                        HelpRow(
                             label: "From the folder tree",
                             description:
                                 "With the folder tree active, Copy and Cut take the folder the tree is on, with everything in it, and never what is selected in the list."
@@ -684,6 +689,8 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.pasteAsFile), "Save the image or text copied in another app as a file"),
         HelpShortcutItem(group: .files, .command(.duplicateSelection), "Duplicate"),
+        HelpShortcutItem(
+            group: .files, .command(.convertImages), "Convert the selected images to another format or size"),
         HelpShortcutItem(group: .files, .command(.moveSelection), "Move to another folder"),
         HelpShortcutItem(group: .files, .command(.newFolder), "New folder"),
         HelpShortcutItem(group: .files, .command(.trashSelection), "Move to Trash"),

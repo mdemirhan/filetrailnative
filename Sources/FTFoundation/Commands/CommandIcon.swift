@@ -12,6 +12,7 @@ public enum CommandIcon: String, CaseIterable, Sendable, Hashable {
     case calculateSize, revealInFolder, revealInTree, rootTreeHere, showInFinder, terminal
     // Clipboard and organizing
     case cut, copy, paste, pasteAsFile, copyPath, copyContents, move, rename, duplicate, newFolder, favorite
+    case convertImages
     // Archives
     case compress, extract
     // Removing

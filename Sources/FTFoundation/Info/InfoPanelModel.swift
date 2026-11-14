@@ -243,7 +243,7 @@ public enum InfoPanelModel {
     /// One of the quick actions.
     public struct QuickAction: Equatable, Sendable {
         public enum ID: String, Sendable {
-            case quickLook, edit, copyPath, copyName, copyContents, terminal, finder, favorite, rootTree
+            case quickLook, edit, copyPath, copyName, copyContents, convertImages, terminal, finder, favorite, rootTree
         }
         public var id: ID
         public var label: String
@@ -254,7 +254,7 @@ public enum InfoPanelModel {
     /// Which quick actions an item gets, in the order the panel shows them.
     public static func quickActions(
         item: InfoItem, textEditorName: String, isFavorite: Bool, canFavorite: Bool, copied: QuickAction.ID?,
-        shortcut: (ShortcutCommandID) -> String?
+        inTrash: Bool = false, shortcut: (ShortcutCommandID) -> String?
     ) -> [QuickAction] {
         var actions = [QuickAction(id: .quickLook, label: "Quick Look", shortcut: shortcut(.quickLookSelection))]
         if item.kind.isEditableFile {
@@ -272,6 +272,13 @@ public enum InfoPanelModel {
                 QuickAction(
                     id: .copyContents, label: copied == .copyContents ? "Copied" : CopyContents.menuTitle(guess),
                     shortcut: shortcut(.copyContents)))
+        }
+        // An image, as the menus offer Convert for it; nothing is made in the Trash.
+        if item.kind.isEditableFile, !inTrash, ImageConversion.isConvertible(name: item.name) {
+            actions.append(
+                QuickAction(
+                    id: .convertImages, label: ConvertImagesText.menuTitle(count: 1),
+                    shortcut: shortcut(.convertImages)))
         }
         actions.append(QuickAction(id: .terminal, label: "Open in Terminal", shortcut: shortcut(.openInTerminal)))
         actions.append(QuickAction(id: .finder, label: "Show in Finder", shortcut: shortcut(.showInFinder)))

@@ -82,6 +82,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case calculateSize
     case renameSelection
     case duplicateSelection
+    case convertImages
     case moveSelection
     case compressSelection
     case extractSelection
@@ -288,6 +289,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .duplicateSelection, label: "Duplicate", group: .files, defaults: ["Cmd+D"],
             menuPath: "File > Duplicate"),
+        ShortcutCommandDefinition(
+            id: .convertImages, label: "Convert Images\u{2026}", group: .files, defaults: [],
+            menuPath: "File > Convert Images\u{2026}"),
         ShortcutCommandDefinition(
             id: .moveSelection, label: "Move to…", group: .files, defaults: ["Cmd+Shift+M"], menuPath: "File > Move to…"
         ),

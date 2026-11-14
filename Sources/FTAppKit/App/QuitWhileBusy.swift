@@ -12,6 +12,7 @@ public enum BusyOperationKind: String, Sendable, CaseIterable {
     case newFolder = "new_folder"
     case newFile = "new_file"
     case compress, extract
+    case convertImages = "convert_images"
     case undo
     case redo
     case emptyTrash = "empty_trash"
@@ -90,6 +91,11 @@ public enum QuitWhileBusy {
             return (
                 "Items are still being renamed.",
                 "\(stops) Items already renamed keep their new names; the rest keep their old ones."
+            )
+        case .convertImages:
+            return (
+                "Images are still being converted.",
+                "\(stops) The images already converted stay; the rest aren\u{2019}t converted."
             )
         case .emptyTrash:
             // Finder empties the Trash and goes on after File Trail quits; closing a window has nothing to do with it.

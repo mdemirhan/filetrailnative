@@ -275,6 +275,7 @@ public enum UndoHistoryRows {
         case .trash: .trash
         case .deleteImmediately: .deleteImmediately
         case .duplicate: .duplicate
+        case .convertImages: .convertImages
         case .moveTo: .move
         case .copyTo: .copy
         case .paste, .undo, .redo: entry.moves ? .move : .copy
@@ -301,6 +302,7 @@ public enum UndoHistoryRows {
             case .pasteAsFile: name = "Paste as File"
             case .compress: name = "Compress"
             case .extract: name = "Extract"
+            case .convertImages: name = ConvertImagesText.actionName
             case .undo: name = "Undo"
             case .redo: name = "Redo"
             }

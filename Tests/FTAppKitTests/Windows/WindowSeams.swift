@@ -7,8 +7,9 @@ import Testing
 @testable import FTAppKit
 
 /// The window's static seams a test may replace (the visited folders' store, the dialogs' timers, the folder picker,
-/// the batch rename runner), as they were before each test, put back after it whether it passed or threw. The suites
-/// that replace them are inside ExplorerWindowlessTests, which runs one test at a time, so no two of them overlap.
+/// the batch rename and image conversion runners), as they were before each test, put back after it whether it
+/// passed or threw. The suites that replace them are inside ExplorerWindowlessTests, which runs one test at a time,
+/// so no two of them overlap.
 @MainActor
 enum WindowSeams {
     private struct Saved {
@@ -16,6 +17,8 @@ enum WindowSeams {
         var dialogTimers: any TimerScheduling
         var pickDirectory: @MainActor (_ defaultPath: String?, _ window: NSWindow?) async -> String?
         var runBatchRename: @MainActor (WindowWriteActions, BatchRenameRequest) async -> Void
+        var runConvertImages: @MainActor (WindowWriteActions, [String], ImageConversionOptions) async -> Void
+        var readImageInfos: @Sendable ([String]) async -> [ImageInfo?]
     }
 
     private static var saved: [Int: Saved] = [:]
@@ -25,7 +28,9 @@ enum WindowSeams {
         next += 1
         saved[next] = Saved(
             visitStore: MainWindowController.visitStore, dialogTimers: MainWindowController.dialogTimers,
-            pickDirectory: MainWindowController.pickDirectory, runBatchRename: MainWindowController.runBatchRename)
+            pickDirectory: MainWindowController.pickDirectory, runBatchRename: MainWindowController.runBatchRename,
+            runConvertImages: MainWindowController.runConvertImages,
+            readImageInfos: MainWindowController.readImageInfos)
         return next
     }
 
@@ -35,6 +40,8 @@ enum WindowSeams {
         MainWindowController.dialogTimers = seams.dialogTimers
         MainWindowController.pickDirectory = seams.pickDirectory
         MainWindowController.runBatchRename = seams.runBatchRename
+        MainWindowController.runConvertImages = seams.runConvertImages
+        MainWindowController.readImageInfos = seams.readImageInfos
     }
 }
 

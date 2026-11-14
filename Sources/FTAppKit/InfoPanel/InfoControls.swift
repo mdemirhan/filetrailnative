@@ -25,7 +25,8 @@ func textExtent(_ text: String, _ font: NSFont?) -> Double {
 
 /// The icons of the Info panel, system symbols in the text color; a quick action shows its command's symbol.
 enum InfoGlyph {
-    case close, quickLook, edit, name, contents, favorite, rootTree, finder, terminal, copy, check, refresh
+    case close, quickLook, edit, name, contents, convertImages, favorite, rootTree, finder, terminal, copy, check,
+        refresh
     case openChevron, popupChevron
 
     var symbolName: String {
@@ -35,6 +36,7 @@ enum InfoGlyph {
         case .edit: CommandIcon.edit.symbolName
         case .name: "textformat"
         case .contents: CommandIcon.copyContents.symbolName
+        case .convertImages: CommandIcon.convertImages.symbolName
         case .favorite: CommandIcon.favorite.symbolName
         case .rootTree: CommandIcon.rootTreeHere.symbolName
         case .finder: CommandIcon.showInFinder.symbolName

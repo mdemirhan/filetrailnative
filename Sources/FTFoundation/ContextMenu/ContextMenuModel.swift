@@ -14,6 +14,7 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case revealInFolder, revealInTree, open, openInNewTab, openInNewWindow, openWith, quickLook
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
     case newFolder, compress, extract, extractTo
+    case convertImages
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, copyContents, rootTreeHere, trash
     case deleteImmediately, emptyTrash, eject
     /// The submenu of what can be done with the tab's other pane, while it shows two.
@@ -56,11 +57,13 @@ public struct ContextMenuOptions: Equatable, Sendable {
     public var copyContentsLabel: String?
     /// Compress's label, naming what it makes a zip of: Compress “Photos”, Compress 3 Items.
     public var compressLabel: String?
+    /// Convert Images' label, counting what it would convert: "Convert 3 Images…".
+    public var convertImagesLabel: String?
 
     public init(
         favoriteToggleLabel: String? = nil, textEditorName: String? = nil, targetsFolder: Bool = false,
         renameLabel: String? = nil, ejectLabel: String? = nil, pasteAsFileLabel: String? = nil,
-        copyContentsLabel: String? = nil, compressLabel: String? = nil
+        copyContentsLabel: String? = nil, compressLabel: String? = nil, convertImagesLabel: String? = nil
     ) {
         self.favoriteToggleLabel = favoriteToggleLabel
         self.textEditorName = textEditorName
@@ -70,6 +73,7 @@ public struct ContextMenuOptions: Equatable, Sendable {
         self.pasteAsFileLabel = pasteAsFileLabel
         self.copyContentsLabel = copyContentsLabel
         self.compressLabel = compressLabel
+        self.convertImagesLabel = convertImagesLabel
     }
 }
 
@@ -174,6 +178,8 @@ public enum ContextMenuItems {
                 item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
                 line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
+                // For images only, every one of them (hidden by the caller otherwise).
+                item(.convertImages, options.convertImagesLabel ?? ConvertImagesText.commandLabel, .convertImages),
                 item(.move, "Move to…", .move),
                 // Compress for any items of one folder; Extract and Extract To for archives (hidden otherwise).
                 item(.compress, options.compressLabel ?? "Compress", .compress),

@@ -1384,7 +1384,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 : nil,
             compressTitle: ArchiveNames.compressTitle(
                 count: context.selectedPathsInViewOrder.count,
-                firstName: context.selectedPathsInViewOrder.first.map(NodePath.basename))
+                firstName: context.selectedPathsInViewOrder.first.map(NodePath.basename)),
+            convertImagesCount: context.selectedPathsInViewOrder.count
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -1819,6 +1820,8 @@ extension MainWindowController: ExplorerWindowHandle {
             if selectedPaths.count == 1, let path = selectedPaths.first {
                 Task { [contentsCopier] in await contentsCopier.copy(path) }
             }
+        case .convertImages:
+            openConvertImagesSheet(selectedPaths)
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
             .pasteAsFile, .trashSelection, .emptyTrash, .copySelection, .cutSelection, .pasteSelection,
             .compressSelection, .extractSelection, .extractSelectionTo:
@@ -1885,7 +1888,7 @@ extension MainWindowController: ExplorerWindowContext {
         ShortcutContext(
             actionNoticeOpen: frontAlert != nil,
             // `copyPasteModalOpen` holds the Rename sheet and a name being typed in its row too.
-            copyPasteModalOpen: isBatchRenameOpen || CopyPasteDialogs.isOpen(in: window)
+            copyPasteModalOpen: isBatchRenameOpen || isConvertImagesOpen || CopyPasteDialogs.isOpen(in: window)
                 || content.inlineRename != nil,
             focusedPane: commandPane,
             // Customizing the toolbar is a sheet over the window: the commands wait for it to end.

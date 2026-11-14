@@ -354,6 +354,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -2619,6 +2620,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -3184,6 +3186,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -3743,6 +3746,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -4309,6 +4313,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -4915,6 +4920,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -5478,6 +5484,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -6034,6 +6041,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -6602,6 +6610,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -7161,6 +7170,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -7728,6 +7738,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -8283,6 +8294,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -8834,6 +8846,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -9388,6 +9401,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -9950,6 +9964,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -10509,6 +10524,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -11062,6 +11078,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -11635,6 +11652,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -12340,6 +12358,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -13243,6 +13262,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -13884,6 +13904,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -14520,6 +14541,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -15140,6 +15162,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -15790,6 +15813,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -16497,6 +16521,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -17307,6 +17332,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -18267,6 +18293,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -19135,6 +19162,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -19771,6 +19799,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -20539,6 +20568,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -21321,6 +21351,7 @@
           ],
           "calculateSize": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -22095,6 +22126,7 @@
           "duplicateSelection": [
             "Cmd+Shift+E"
           ],
+          "convertImages": [],
           "showInFinder": [],
           "goBack": [
             "Cmd+[",
@@ -22814,6 +22846,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -23574,6 +23607,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -24199,6 +24233,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -24834,6 +24869,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -25476,6 +25512,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -26147,6 +26184,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -26799,6 +26837,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -27605,6 +27644,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -28224,6 +28264,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -28994,6 +29035,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -29682,6 +29724,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -30637,6 +30680,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -31310,6 +31354,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -32040,6 +32085,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -32773,6 +32819,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -33646,6 +33693,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -34376,6 +34424,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -35111,6 +35160,7 @@
           ],
           "quickLookSelection": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "emptyTrash": [
             "F13",
             "Cmd+Backspace"
@@ -36826,6 +36876,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -37557,6 +37608,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -38245,6 +38297,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -39020,6 +39073,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -40101,6 +40155,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -40876,6 +40931,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -41754,6 +41810,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -42637,6 +42694,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -43537,6 +43595,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -44237,6 +44296,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -44969,6 +45029,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -45712,6 +45773,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -46564,6 +46626,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -47510,6 +47573,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -48939,6 +49003,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -49603,6 +49668,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -50310,6 +50376,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -51153,6 +51220,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -51852,6 +51920,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -52583,6 +52652,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -53337,6 +53407,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -54347,6 +54418,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -55012,6 +55084,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -55724,6 +55797,7 @@
           ],
           "calculateSize": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -56736,6 +56810,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -57415,6 +57490,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -58417,6 +58493,7 @@
           "calculateSize": [],
           "renameSelection": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "emptyTrash": [
             "Cmd+Shift+Backspace"
           ],
@@ -59363,6 +59440,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -60241,6 +60319,7 @@
             "Space"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -61911,6 +61990,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -63122,6 +63202,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -63860,6 +63941,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -64941,6 +65023,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -65630,6 +65713,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -66381,6 +66465,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -67101,6 +67186,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -67972,6 +68058,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -68947,6 +69034,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -69761,6 +69849,7 @@
             "Space"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -70649,6 +70738,7 @@
           "equalizePanes": [],
           "openSelection": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "showClipboard": [
             "Cmd+Shift+G",
             "Cmd+Plus"
@@ -71793,6 +71883,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -72521,6 +72612,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -73547,6 +73639,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -74344,6 +74437,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -75111,6 +75205,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -75844,6 +75939,7 @@
             "Cmd+1"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Ctrl+Cmd+S",
             "Cmd+Shift+Backspace"
@@ -76781,6 +76877,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -77666,6 +77763,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -78480,6 +78578,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -79835,6 +79934,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -80574,6 +80674,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -81266,6 +81367,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -81904,6 +82006,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -82801,6 +82904,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -83745,6 +83849,7 @@
             "Cmd+Shift+H"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Backspace"
           ],
@@ -85484,6 +85589,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -86273,6 +86379,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -87035,6 +87142,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -88099,6 +88207,7 @@
             "Cmd+-",
             "Cmd+Backspace"
           ],
+          "convertImages": [],
           "newFolder": [],
           "pasteAsFile": [
             "Cmd+Shift+V"
@@ -89694,6 +89803,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -90517,6 +90627,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -91117,6 +91228,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -91743,6 +91855,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -92453,6 +92566,7 @@
             "F2"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -93387,6 +93501,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -94234,6 +94349,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -94880,6 +94996,7 @@
             "Cmd+Esc",
             "F2"
           ],
+          "convertImages": [],
           "revealInFolder": [
             "Cmd+Shift+H"
           ],
@@ -95865,6 +95982,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -96595,6 +96713,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -97887,6 +98006,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -98828,6 +98948,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -99550,6 +99671,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -100261,6 +100383,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -101331,6 +101454,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -102499,6 +102623,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -103180,6 +103305,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -103902,6 +104028,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -104620,6 +104747,7 @@
           ],
           "calculateSize": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -105616,6 +105744,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -106274,6 +106403,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -107098,6 +107228,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -107810,6 +107941,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -108517,6 +108649,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -109190,6 +109323,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -110019,6 +110153,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -110769,6 +110904,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -111580,6 +111716,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -112363,6 +112500,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -113263,6 +113401,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -113933,6 +114072,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -114611,6 +114751,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -115295,6 +115436,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -116256,6 +116398,7 @@
             "F2"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "newFolder": [],
           "pasteAsFile": [
             "Cmd+Shift+V"
@@ -116942,6 +117085,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -117876,6 +118020,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -118638,6 +118783,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "emptyTrash": [
             "Cmd+Shift+Backspace"
           ],
@@ -119291,6 +119437,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -120105,6 +120252,7 @@
           ],
           "calculateSize": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -121294,6 +121442,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -122080,6 +122229,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -122964,6 +123114,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -123751,6 +123902,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -124612,6 +124764,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -125382,6 +125535,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -126158,6 +126312,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -126811,6 +126966,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -127594,6 +127750,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -128518,6 +128675,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -129623,6 +129781,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -130234,6 +130393,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -130934,6 +131094,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -131705,6 +131866,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -132572,6 +132734,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -133310,6 +133473,7 @@
             "Cmd+Shift+N"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Ctrl+D"
           ],
@@ -134248,6 +134412,7 @@
           "duplicateSelection": [
             "Cmd+Shift+K"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+["
           ],
@@ -135419,6 +135584,7 @@
           "goToOtherPaneFolder": [],
           "equalizePanes": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -136292,6 +136458,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -136969,6 +137136,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -137790,6 +137958,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -138718,6 +138887,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -139426,6 +139596,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -140216,6 +140387,7 @@
             "Cmd+F"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "newFolder": [
             "Cmd+W"
           ],
@@ -141869,6 +142041,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -142529,6 +142702,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -143227,6 +143401,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -143953,6 +144128,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -144651,6 +144827,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -145275,6 +145452,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -146045,6 +146223,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -146881,6 +147060,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -147662,6 +147842,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -148330,6 +148511,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -149113,6 +149295,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -149997,6 +150180,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -150922,6 +151106,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -151642,6 +151827,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -152480,6 +152666,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -153847,6 +154034,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -154586,6 +154774,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -155196,6 +155385,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -155861,6 +156051,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -156669,6 +156860,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -157435,6 +157627,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -158182,6 +158375,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -158855,6 +159049,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -159538,6 +159733,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -160208,6 +160404,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -160968,6 +161165,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -161691,6 +161889,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -162553,6 +162752,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -163195,6 +163395,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -163902,6 +164103,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -164571,6 +164773,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -165376,6 +165579,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -166534,6 +166738,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -167372,6 +167577,7 @@
             "F2"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -168664,6 +168870,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -169265,6 +169472,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -169904,6 +170112,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -170602,6 +170811,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -171458,6 +171668,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -172147,6 +172358,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -172972,6 +173184,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -173749,6 +173962,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -174472,6 +174686,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -175278,6 +175493,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -176038,6 +176254,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -176711,6 +176928,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -177506,6 +177724,7 @@
             "Cmd+Shift+G"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "trashSelection": [],
           "ejectVolume": [
             "Cmd+Backspace",
@@ -178582,6 +178801,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -179470,6 +179690,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -180215,6 +180436,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -181133,6 +181355,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -181846,6 +182069,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -182539,6 +182763,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -183166,6 +183391,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -183850,6 +184076,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -184617,6 +184844,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -185466,6 +185694,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -186094,6 +186323,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -186875,6 +187105,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -187641,6 +187872,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -188402,6 +188634,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -189156,6 +189389,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -189870,6 +190104,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -190856,6 +191091,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -191516,6 +191752,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -192223,6 +192460,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -193105,6 +193343,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -193864,6 +194103,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -194753,6 +194993,7 @@
             "F2"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -195547,6 +195788,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -196347,6 +196589,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -197176,6 +197419,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -197931,6 +198175,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -198713,6 +198958,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -199416,6 +199662,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -200217,6 +200464,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -201182,6 +201430,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [],
           "pasteAsFile": [
             "Cmd+Shift+V"
@@ -202271,6 +202520,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "trashSelection": [
             "Cmd+Backspace"
           ],
@@ -203096,6 +203346,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -203880,6 +204131,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -204795,6 +205047,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -205537,6 +205790,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -206219,6 +206473,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -207017,6 +207272,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -207699,6 +207955,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "newFolder": [
             "Cmd+Shift+N"
           ],
@@ -208532,6 +208789,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -209251,6 +209509,7 @@
             "Cmd+-",
             "Ctrl+Shift+K"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -210010,6 +210269,7 @@
             "Cmd+Down",
             "Cmd+R"
           ],
+          "convertImages": [],
           "copyPath": [],
           "copyContents": [
             "Cmd+Shift+C"
@@ -210902,6 +211162,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -211693,6 +211954,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -212621,6 +212883,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -213174,6 +213437,7 @@
             "Cmd+Shift+E"
           ],
           "duplicateSelection": [],
+          "convertImages": [],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -213954,6 +214218,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -214696,6 +214961,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -215459,6 +215725,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -216171,6 +216438,7 @@
           "duplicateSelection": [
             "Cmd+Shift+M"
           ],
+          "convertImages": [],
           "moveSelection": [],
           "compressSelection": [],
           "extractSelection": [],
@@ -216947,6 +217215,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -217742,6 +218011,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -218363,6 +218633,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -219100,6 +219371,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -219865,6 +220137,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -220544,6 +220817,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -221320,6 +221594,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -222903,6 +223178,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -224166,6 +224442,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -224832,6 +225109,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -225492,6 +225770,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -226249,6 +226528,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -226995,6 +227275,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -227669,6 +227950,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -228437,6 +228719,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -229297,6 +229580,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -230223,6 +230507,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -231013,6 +231298,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -231718,6 +232004,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -232591,6 +232878,7 @@
           "goToOtherPaneFolder": [],
           "equalizePanes": [],
           "duplicateSelection": [],
+          "convertImages": [],
           "trashSelection": [
             "Ctrl+Cmd+S"
           ],
@@ -233683,6 +233971,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -234407,6 +234696,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -235250,6 +235540,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -236004,6 +236295,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -236706,6 +236998,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "trashSelection": [],
           "emptyTrash": [
             "Cmd+Shift+Backspace"
@@ -237771,6 +238064,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -238675,6 +238969,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -239373,6 +239668,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -240139,6 +240435,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -240901,6 +241198,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -241664,6 +241962,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],
@@ -242793,6 +243092,7 @@
           "duplicateSelection": [
             "Cmd+D"
           ],
+          "convertImages": [],
           "moveSelection": [
             "Cmd+Shift+M"
           ],

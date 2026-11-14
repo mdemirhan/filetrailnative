@@ -22,6 +22,7 @@ enum WriteStartAction: Equatable, Sendable {
             case .pasteAsFile: "Couldn\u{2019}t Paste as File"
             case .compress: "Couldn\u{2019}t Compress"
             case .extract: "Couldn\u{2019}t Extract"
+            case .convertImages: "Couldn\u{2019}t Convert the Images"
             case .undo: "Couldn\u{2019}t Undo"
             case .redo: "Couldn\u{2019}t Redo"
             case .paste: "Couldn\u{2019}t Paste"

@@ -83,6 +83,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(.separator())
             menu.addItem(context.command(.renameSelection, "Rename"))
             menu.addItem(context.command(.duplicateSelection, "Duplicate"))
+            // "Convert 3 Images…" for the images selected.
+            menu.addItem(context.command(.convertImages, ConvertImagesText.commandLabel))
             menu.addItem(context.command(.moveSelection, "Move to…"))
             // Names what it makes a zip of once the menu is synced: Compress “Photos”, Compress 3 Items.
             menu.addItem(context.command(.compressSelection, "Compress"))

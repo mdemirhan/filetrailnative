@@ -118,7 +118,7 @@ public enum CommandAvailability {
     private static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
         .newFolder, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane, .compressSelection,
-        .extractSelection, .extractSelectionTo,
+        .extractSelection, .extractSelectionTo, .convertImages,
     ]
 
     // MARK: Helpers
@@ -329,6 +329,11 @@ public enum CommandAvailability {
                 && (!context.isSearchMode
                     || Set(context.selectedPathsInViewOrder.map { parentDirectoryPath($0).map { Array($0.utf8) } })
                         .count == 1)
+        case .convertImages:
+            // Every item chosen an image, or none is converted; nothing is made in the Trash.
+            guard focusedPane != .tree, selectedCount > 0, !selectionIsInTrash(context) else { return false }
+            let selected = entries(at: context.selectedPathsInViewOrder, in: context.activeContentEntries)
+            return selected.count == selectedCount && ImageConversion.canConvert(selected)
         case .renameSelection:
             // One item in its row; several in the Rename sheet.
             return selectedCount > 0

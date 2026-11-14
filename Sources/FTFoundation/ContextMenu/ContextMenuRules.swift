@@ -68,15 +68,15 @@ public enum ContextMenuRules {
     /// What a running file operation blocks, in every tab: anything that would start another. Copy, Cut and Copy Path
     /// only fill a clipboard, so they stay available.
     public static let writeLockedActions: [ContextMenuActionID] = [
-        .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash,
-        .compress, .extract, .extractTo,
+        .paste, .pasteAsFile, .move, .rename, .duplicate, .convertImages, .newFolder, .trash, .deleteImmediately,
+        .emptyTrash, .compress, .extract, .extractTo,
     ]
 
-    /// What the menus leave out in the Trash: nothing is pasted, made, duplicated, compressed or extracted there, and
-    /// what is in it is in the Trash already (Delete Immediately is offered instead). Extract To takes an archive's
-    /// items elsewhere.
+    /// What the menus leave out in the Trash: nothing is pasted, made, duplicated, converted, compressed or extracted
+    /// there, and what is in it is in the Trash already (Delete Immediately is offered instead). Extract To takes an
+    /// archive's items elsewhere.
     public static let trashHiddenActions: [ContextMenuActionID] = [
-        .paste, .newFolder, .duplicate, .trash, .compress, .extract,
+        .paste, .newFolder, .duplicate, .convertImages, .trash, .compress, .extract,
     ]
 
     /// Background-menu actions that act on the folder on screen rather than on a selection.
@@ -124,7 +124,8 @@ public enum ContextMenuRules {
             pasteAsFileLabel: PasteAsFile.menuTitle(world.pasteAsFileKind),
             copyContentsLabel: CopyContents.menuTitle(copyContentsGuess(subject)),
             compressLabel: ArchiveNames.compressTitle(
-                count: subject.paths.count, firstName: subject.paths.first.map(NodePath.basename)))
+                count: subject.paths.count, firstName: subject.paths.first.map(NodePath.basename)),
+            convertImagesLabel: ConvertImagesText.menuTitle(count: subject.entries.count))
     }
 
     /// What Copy Contents would copy of the one file a menu is for; nil when it is for anything else.
@@ -194,6 +195,10 @@ public enum ContextMenuRules {
         {
             hidden.insert(.extract)
             hidden.insert(.extractTo)
+        }
+        // Convert Images is for images, every one of the items: with anything else among them, none is converted.
+        if subject.scope != .selection || entries.count != subject.paths.count || !ImageConversion.canConvert(entries) {
+            hidden.insert(.convertImages)
         }
         // Edit is for text files.
         if entries.isEmpty || entries.count != subject.paths.count || !entries.allSatisfy({ $0.kind.isEditableFile }) {

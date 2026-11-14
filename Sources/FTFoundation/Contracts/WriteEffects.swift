@@ -106,6 +106,7 @@ public enum WriteEffects {
         case .rename, .batchRename, .moveTo, .undo, .redo: true
         case .paste, .copyTo, .duplicate, .trash, .deleteImmediately, .newFolder, .pasteAsFile, .compress, .extract:
             cut
+        case .convertImages: false
         }
     }
 
@@ -135,7 +136,8 @@ public enum WriteEffects {
         case .undo, .redo:
             return items.compactMap { $0.status == .completed && $0.destinationPath == nil ? source($0) : nil }
                 + replacedPaths
-        case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .pasteAsFile, .batchRename, .compress, .extract:
+        case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .pasteAsFile, .batchRename, .compress, .extract,
+            .convertImages:
             return replacedPaths
         }
     }

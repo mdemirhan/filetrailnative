@@ -268,7 +268,8 @@ public enum PreferencesSanitizer {
             listFilterMatch: choice(record, "listFilterMatch", defaults.listFilterMatch),
             // A record that doesn't hold them (a window's session read over the app's) keeps the ones it has.
             workspaces: record["workspaces"] == nil
-                ? defaults.workspaces : Workspaces.sanitize(record["workspaces"], defaults: defaults))
+                ? defaults.workspaces : Workspaces.sanitize(record["workspaces"], defaults: defaults),
+            convertImagesSettings: ConvertImagesSettings.sanitize(record["convertImagesSettings"]))
     }
 
     /// A whole number, zero or more; anything else is zero. A number past what a count can be stops at the largest.

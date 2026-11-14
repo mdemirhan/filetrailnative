@@ -108,6 +108,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -275,6 +280,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -446,6 +456,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -613,6 +628,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -784,6 +804,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -951,6 +976,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -1123,6 +1153,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -1299,6 +1334,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -1479,6 +1519,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -1655,6 +1700,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -1835,6 +1885,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -2013,6 +2068,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -2189,6 +2249,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -2370,6 +2435,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -4326,6 +4396,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -4499,6 +4574,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -4676,6 +4756,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -4849,6 +4934,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -5026,6 +5116,11 @@
           "icon": "duplicate"
         },
         {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
+        },
+        {
           "id": "move",
           "label": "Move to…",
           "icon": "move"
@@ -5199,6 +5294,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",
@@ -5377,6 +5477,11 @@
           "id": "duplicate",
           "label": "Duplicate",
           "icon": "duplicate"
+        },
+        {
+          "id": "convertImages",
+          "label": "Convert Images…",
+          "icon": "convertImages"
         },
         {
           "id": "move",

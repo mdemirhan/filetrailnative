@@ -48,6 +48,7 @@ extension CommandIcon {
         case .move: "folder"
         case .rename: "pencil"
         case .duplicate: "plus.square.on.square"
+        case .convertImages: "photo.on.rectangle.angled"
         case .newFolder: "folder.badge.plus"
         case .favorite: "star"
         case .trash, .emptyTrash: "trash"

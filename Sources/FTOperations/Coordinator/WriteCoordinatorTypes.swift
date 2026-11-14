@@ -57,6 +57,7 @@ public enum WriteOperationKind: String, Sendable, CaseIterable {
     case newFolder = "new_folder"
     case newFile = "new_file"
     case compress, extract
+    case convertImages = "convert_images"
     case undo
     case redo
     case emptyTrash = "empty_trash"
@@ -71,6 +72,7 @@ public enum WriteOperationKind: String, Sendable, CaseIterable {
         case .pasteAsFile: self = .newFile
         case .compress: self = .compress
         case .extract: self = .extract
+        case .convertImages: self = .convertImages
         case .undo: self = .undo
         case .redo: self = .redo
         default: self = .copy

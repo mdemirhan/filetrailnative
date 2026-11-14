@@ -25,6 +25,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var copyContentsGuess: CopyContentsGuess?
     /// Compress's title for the items selected: Compress “Photos”, Compress 3 Items; nil with none.
     public var compressTitle: String?
+    /// How many images Convert Images would convert, which its item counts.
+    public var convertImagesCount: Int
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
@@ -32,7 +34,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
         textEditing: Bool = false, pasteAsFileKind: PasteAsFileKind? = nil, copyContentsGuess: CopyContentsGuess? = nil,
-        compressTitle: String? = nil
+        compressTitle: String? = nil, convertImagesCount: Int = 0
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
@@ -49,6 +51,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.pasteAsFileKind = pasteAsFileKind
         self.copyContentsGuess = copyContentsGuess
         self.compressTitle = compressTitle
+        self.convertImagesCount = convertImagesCount
     }
 
     /// Before the window has reported: everything is available and nothing checked.
@@ -61,7 +64,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
         pasteAsFileKind: PasteAsFileKind? = nil,
-        copyContentsGuess: CopyContentsGuess? = nil, compressTitle: String? = nil,
+        copyContentsGuess: CopyContentsGuess? = nil, compressTitle: String? = nil, convertImagesCount: Int = 0,
         canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
@@ -75,7 +78,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
             infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
             favoriteIsSet: favoriteIsSet,
             textEditing: textEditing, pasteAsFileKind: pasteAsFileKind, copyContentsGuess: copyContentsGuess,
-            compressTitle: compressTitle)
+            compressTitle: compressTitle, convertImagesCount: convertImagesCount)
     }
 }
 
@@ -225,6 +228,8 @@ public enum ApplicationMenu {
                 CopyContents.menuTitle(isEnabled(type) ? state.copyContentsGuess : nil)
             case .compressSelection:
                 isEnabled(type) ? state.compressTitle ?? "Compress" : "Compress"
+            case .convertImages:
+                ConvertImagesText.menuTitle(count: isEnabled(type) ? state.convertImagesCount : 0)
             // With no explorer window to act on, no view is named.
             case .increaseSize, .decreaseSize, .resetSize:
                 ApplicationMenu.sizeTitle(type, viewMode: window.explorerFocused ? state.viewMode : .details)

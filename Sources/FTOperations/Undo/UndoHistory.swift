@@ -208,6 +208,9 @@ public final class UndoHistory {
             return "Compress"
         case .extract:
             return "Extract"
+        case .convertImages:
+            let count = itemStepCount(units)
+            return count == 1 ? "Convert Image" : "Convert \(count) Images"
         case .trash:
             return "Move to Trash of \(itemsName(units))"
         case .duplicate:

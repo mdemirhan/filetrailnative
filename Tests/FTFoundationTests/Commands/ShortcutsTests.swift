@@ -404,7 +404,7 @@ struct ShortcutsTests {
             (.goToOtherPaneFolder, []), (.equalizePanes, []),
             (.openSelection, ["Cmd+O"]), (.openSelectedItem, ["Cmd+Down"]),
             (.editSelection, ["Cmd+Shift+E"]), (.quickLookSelection, ["Cmd+Y", "Space"]), (.renameSelection, ["F2"]),
-            (.duplicateSelection, ["Cmd+D"]), (.moveSelection, ["Cmd+Shift+M"]),
+            (.duplicateSelection, ["Cmd+D"]), (.convertImages, []), (.moveSelection, ["Cmd+Shift+M"]),
             (.compressSelection, []), (.extractSelection, []), (.extractSelectionTo, []), (.newFolder, ["Cmd+Shift+N"]),
             (.pasteAsFile, ["Cmd+Shift+V"]), (.trashSelection, ["Cmd+Backspace"]), (.ejectVolume, ["Cmd+E"]),
             (.emptyTrash, ["Cmd+Shift+Backspace"]),

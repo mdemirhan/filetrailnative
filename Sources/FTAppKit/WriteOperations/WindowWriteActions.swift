@@ -749,6 +749,24 @@ final class WindowWriteActions {
         }
     }
 
+    // MARK: Convert Images
+
+    /// Converts the pictures the Convert Images sheet was opened for, each beside its original.
+    func convertImages(_ paths: [String], options: ImageConversionOptions) async -> CopyLikeOutcome {
+        let first = paths.first
+        if refuseWhileBusy(.operation(.convertImages)) { return .cancelled }
+        let folders = Set(paths.map(NodePath.dirname))
+        return await startLocal(
+            .convertImages,
+            card: WriteOperationCardState(
+                action: .convertImages, stage: .starting, targetPath: folders.count == 1 ? folders.first : nil,
+                totalItemCount: paths.count, currentSourcePath: first),
+            showsRefusal: true
+        ) { [coordinator, session] in
+            try await coordinator.convertImages(paths: paths, options: options, window: session)
+        }
+    }
+
     // MARK: Helpers
 
     /// A start the coordinator refused: busy says so as every write does, anything else names its reason.

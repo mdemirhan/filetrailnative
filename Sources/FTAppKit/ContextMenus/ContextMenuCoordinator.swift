@@ -251,6 +251,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             copyPath(subject.paths)
         case .copyContents:
             if let first = subject.paths.first { holdingTheTab { [tab] in await tab.contentsCopier.copy(first) } }
+        case .convertImages:
+            tab.openConvertImagesSheet(subject.paths)
         case .open:
             holdingTheTab { [self] in await openPaths(subject) }
         case .quickLook:
@@ -296,6 +298,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .move: return .operation(.moveTo)
         case .rename: return .operation(.rename)
         case .duplicate: return .operation(.duplicate)
+        case .convertImages: return .operation(.convertImages)
         case .newFolder: return .operation(.newFolder)
         case .pasteAsFile: return .operation(.pasteAsFile)
         case .compress: return .operation(.compress)

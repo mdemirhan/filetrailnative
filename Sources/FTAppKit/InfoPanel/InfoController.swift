@@ -422,7 +422,7 @@ final class InfoController {
         let actionList = InfoPanelModel.quickActions(
             item: item, textEditorName: preferences.defaultTextEditor.appName,
             isFavorite: host.sidebarController.isFavorite(item.path), canFavorite: canFavorite, copied: copied,
-            shortcut: { shortcuts.label($0) })
+            inTrash: Paths.isInsideTrash(item.path, homePath: homePath), shortcut: { shortcuts.label($0) })
         return InfoPanelDisplay(
             body: .item(
                 .init(
@@ -579,6 +579,7 @@ final class InfoController {
                 self?.flashCopied(.copyContents)
                 self?.update()
             }
+        case .convertImages: host.openConvertImagesSheet([item.path])
         case .terminal: actions.openInTerminal(item.path)
         case .finder: actions.showInFinder(item.path)
         case .favorite: host.sidebarController.toggleFavorite(item.path)
