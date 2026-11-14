@@ -6,6 +6,15 @@ The plan for archives in File Trail. The owner's decisions behind it are in [dec
 
 File ▸ Compress, Extract and Extract To…, also in the right-click menu, run as write operations with the progress card, Stop and Undo. What they do is in decisions.md and in Help (Working with files › Archives).
 
+How Extract writes what it reads (`Sources/CFileTrail/archive.c`):
+
+- libarchive reads the archive; the items are written by File Trail itself, not by libarchive's writer to disk. That writer clears the process's umask around every item, so a file or folder made anywhere else in the app at that moment would be open to everyone. Compress walks the folders itself for the same kind of reason: libarchive's walk makes each folder the process's working directory while it reads it.
+- Each item is reached from the hidden folder one part of its path at a time, no part followed when it is a link, and made with a call that fails when the name is taken. So nothing is written through a link an earlier item of the archive made, nothing is replaced, and of two items of one name (or of two names a disk that ignores case takes for one) the first stays as it was.
+- Left out, and counted in the note the result shows ("2 items were left out…"): a name from the root or with `..`, an item whose path runs through a link or a file, a second item of a name, a hard link to anything but a file already extracted, a name the disk won't take, and pipes, sockets and devices (a Linux root file system comes out without its `/dev`). A `./` item, the folder a tar was made in, is nothing and isn't counted.
+- A name whose bytes aren't UTF-8 (a zip made on Windows in Japanese or Russian, which doesn't say which encoding it used) is kept with each such byte written as `%XX`; names that are UTF-8 stay as they are.
+- A file is its owner's alone while it is written. Its extended attributes, its resource fork and the rest of what `__MACOSX` or a tar's `._` file keeps for it, then the archive's quarantine, then its permissions (without setuid, setgid and sticky) and dates are put on it in that order, so a read-only item is quarantined too. Folders get their permissions and dates once the whole archive is out. The folder the items are handed over in is quarantined as well.
+- After a failure or a Stop the hidden folder is removed with everything in it; folders are given back to their owner on the way down, so an archive's read-only folders don't keep it there.
+
 ## Phase 2: Browsing an archive as a read-only folder
 
 ### Opening
@@ -63,9 +72,10 @@ File ▸ Compress, Extract and Extract To…, also in the right-click menu, run 
 
 What Phase 1 does as Finder and Archive Utility do, and where it differs. Archive Utility's formats are the document types in its `Info.plist`.
 
-- Same: Compress's names (`Photos.zip`, `Archive.zip`, `Archive 2.zip`); Finder's `__MACOSX` for extended attributes and resource forks; one item out as itself, several in a folder named after the archive, the next number when taken; the archive's quarantine on what comes out; the archive left where it is.
+- Same: Compress's names (`Photos.zip`, `Archive.zip`, `Archive 2.zip`); Finder's `__MACOSX` for extended attributes and resource forks; one item out as itself, several in a folder named after the archive, the next number when taken; the archive's quarantine on everything that comes out, read-only items included; the archive left where it is.
 - Opening an archive (double-click and the rest) extracts it in File Trail; what it gives is selected where it went, or opens in a new window or tab when that folder isn't on screen, where Archive Utility shows it in Finder.
 - More than Finder: RAR and xar; Extract To…; Stop part way with nothing half made left; Undo of Compress and Extract; names in zips marked UTF-8, which Windows reads right.
 - Less than Finder:
-  - Protected zips: Archive Utility asks for the password; Extract refuses them (Phase 3).
+  - Protected zips: Archive Utility asks for the password; Extract refuses them (Phase 3). An archive with one protected item among plain ones is refused whole, and nothing of it is left.
+  - Names that aren't UTF-8: Archive Utility guesses their encoding; Extract writes the bytes it can't read as `%XX`.
   - Formats only Archive Utility opens: cpio and cpgz, `.Z`, Apple Archive (`.aar`) and its encrypted kind, XIP, MacBinary, BinHex, AppleSingle and uuencoded files.

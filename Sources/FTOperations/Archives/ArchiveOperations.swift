@@ -126,15 +126,21 @@ extension WriteCoordinator {
         let kind = ArchiveNames.kind(of: archiveName) ?? .items
         let rawName = kind == .singleFile ? ArchiveNames.extractedName(archiveName) : nil
         let staging = try Staging(near: folder, fileSystem)
-        defer { staging.remove(fileSystem) }
+        defer { staging.remove() }
         try NativeArchive.extract(
             archivePath, into: staging.work, rawName: rawName, quarantine: true, control: control)
         let children = try fileSystem.readdir(staging.work)
         let placed: String
         if children.count == 1, let only = children.first {
             let source = NodePath.join(staging.work, only)
-            let isFolder = (try? fileSystem.lstat(source))?.type == .directory
+            let stats = try? fileSystem.lstat(source)
+            let isFolder = stats?.type == .directory
+            // A folder its owner can't write to can't be moved into another folder (the move changes what its
+            // `..` is), so it gets its permissions back once it is in place.
+            let lockedMode = stats.flatMap { isFolder && $0.mode & 0o200 == 0 ? $0.mode & 0o7777 : nil }
+            if let lockedMode { try fileSystem.chmod(source, lockedMode | 0o200) }
             placed = try place(source, in: folder, named: only, isFolder: isFolder, fileSystem)
+            if let lockedMode { try? fileSystem.chmod(placed, lockedMode) }
         } else {
             placed = try place(
                 staging.work, in: folder, named: ArchiveNames.extractedName(archiveName), isFolder: true, fileSystem)
@@ -158,7 +164,7 @@ extension WriteCoordinator {
                 currentDestinationPath: NodePath.join(folder, zipName), doneBefore: 0
             ) { control in
                 let staging = try Staging(near: folder, fileSystem)
-                defer { staging.remove(fileSystem) }
+                defer { staging.remove() }
                 let partial = NodePath.join(staging.work, zipName)
                 try NativeArchive.compressZip(names, in: folder, to: partial, control: control)
                 let placed = try place(partial, in: folder, named: zipName, isFolder: false, fileSystem)
@@ -315,7 +321,10 @@ struct Staging {
         try fileSystem.mkdir(root)
     }
 
-    func remove(_ fileSystem: any LocalWriteFileSystem) {
-        try? fileSystem.rm(root, recursive: true, force: true)
+    /// Removes it with whatever is left in it: nothing when what was made was put in place, and what a failed or
+    /// stopped extraction had written so far. An archive's read-only folders can be among that (when its result
+    /// couldn't be put in place), so folders are made their owner's to change on the way down.
+    func remove() {
+        try? NativeRemoval.rm(root, recursive: true, force: true, unlockingFolders: true)
     }
 }

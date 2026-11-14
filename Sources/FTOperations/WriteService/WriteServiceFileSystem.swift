@@ -160,7 +160,10 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
 
 /// `rm` and `rmdir` on the disk.
 enum NativeRemoval {
-    static func rm(_ path: String, recursive: Bool, force: Bool) throws {
+    /// `unlockingFolders`, for a folder of the app's own making that is being cleared away: a folder its owner
+    /// can't list or change (an archive's read-only folder, extracted) is first made so, as otherwise nothing in
+    /// it could be removed. Never for a delete someone asked for, which stops at such a folder.
+    static func rm(_ path: String, recursive: Bool, force: Bool, unlockingFolders: Bool = false) throws {
         var info = Darwin.stat()
         if lstat(path, &info) != 0 {
             let errnum = errno
@@ -184,13 +187,18 @@ enum NativeRemoval {
                 message: "Path is a directory: rm returned EISDIR (is a directory) \(path)", code: .errno(EISDIR),
                 path: path)
         }
-        try removeTree(path, dev: info.st_dev)
+        try removeTree(path, dev: info.st_dev, mode: unlockingFolders ? info.st_mode : nil)
     }
 
     /// What is inside first, deepest first, then the folder. Only what is on the folder's own disk: a folder inside
     /// that another disk is mounted on stops the delete before anything on that disk is touched (its items are
     /// someone's other disk, not part of what was asked to be deleted).
-    private static func removeTree(_ path: String, dev: dev_t) throws {
+    /// `mode`: the folder's permissions when folders are to be unlocked, nil when not.
+    private static func removeTree(_ path: String, dev: dev_t, mode: mode_t?) throws {
+        if let mode, mode & S_IRWXU != S_IRWXU {
+            // When this fails, what follows fails with the reason.
+            _ = chmod(path, (mode & 0o7777) | S_IRWXU)
+        }
         for name in try PosixFileSystem().readdir(path) {
             let child = path + "/" + name
             var info = Darwin.stat()
@@ -205,7 +213,7 @@ enum NativeRemoval {
                             "\u{201C}\(name)\u{201D} is another disk, mounted inside the folder being deleted, so the delete stopped there. Eject it and try again.",
                         path: child)
                 }
-                try removeTree(child, dev: dev)
+                try removeTree(child, dev: dev, mode: mode == nil ? nil : info.st_mode)
             } else if unlink(child) != 0 && errno != ENOENT {
                 throw NativeError.errno(errno, syscall: "rm", path: child)
             }

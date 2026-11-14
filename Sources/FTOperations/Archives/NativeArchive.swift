@@ -57,21 +57,19 @@ enum NativeArchive {
     static func extract(
         _ archivePath: String, into folder: String, rawName: String?, quarantine: Bool, control: Control
     ) throws {
-        var message = [CChar](repeating: 0, count: 512)
-        let code = ft_archive_extract(archivePath, folder, rawName, quarantine ? 1 : 0, control.raw, &message, 512)
+        let code = ft_archive_extract(archivePath, folder, rawName, quarantine ? 1 : 0, control.raw)
         try throwIfFailed(code, path: archivePath, syscall: "extract")
     }
 
     /// Makes the zip `zipPath` (which must not exist) of the items `names` of `folder`, as Finder's Compress does.
     /// A zip left partly written by a failure or a stop is the caller's to remove.
     static func compressZip(_ names: [String], in folder: String, to zipPath: String, control: Control) throws {
-        var message = [CChar](repeating: 0, count: 512)
         let pointers = names.map { strdup($0) }
         defer {
             for pointer in pointers { free(pointer) }
         }
         let code = pointers.map { UnsafePointer($0) }.withUnsafeBufferPointer { buffer in
-            ft_archive_compress_zip(folder, buffer.baseAddress, buffer.count, zipPath, control.raw, &message, 512)
+            ft_archive_compress_zip(folder, buffer.baseAddress, buffer.count, zipPath, control.raw)
         }
         try throwIfFailed(code, path: zipPath, syscall: "compress")
     }

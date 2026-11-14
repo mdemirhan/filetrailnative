@@ -32,27 +32,30 @@ int64_t ft_archive_control_done(const ft_archive_control *control);
 int64_t ft_archive_control_total(const ft_archive_control *control);
 /// Items written so far.
 int64_t ft_archive_control_items(const ft_archive_control *control);
-/// Items of an archive left out: a name that would reach outside the folder (`/…`, `..`), a second item of a
-/// name already written, or a kind a zip can't hold (a socket, a device).
+/// Items left out. Of an archive: a name that would reach outside the folder (`/…`, `..`) or runs through a link
+/// or a file an earlier item made, a second item of a name already written (or of one a disk that ignores case
+/// takes for it), a hard link to anything but a file already extracted, a name the disk won't take, and a pipe,
+/// socket or device. Of a zip being made: a kind it can't hold (a pipe, a socket, a device).
 int64_t ft_archive_control_skipped(const ft_archive_control *control);
 
 /// Takes `archive` apart into `destination`, an empty folder that exists. Names that would reach outside it are
-/// left out, so are `__MACOSX` and the resource forks and extended attributes it holds are put back on their items,
-/// permissions lose their setuid, setgid and sticky bits, and nothing is replaced. When `quarantine` is set, every
-/// item gets the archive's quarantine, so what came from the internet is checked as the archive would be.
-/// `raw_name`, for a single compressed file (`.gz`, `.bz2`, `.xz` not holding a tar), is the name the file is
-/// written as. Returns 0, an errno (ECANCELED when stopped), or one of the FT_ARCHIVE_ codes; `message` gets
-/// libarchive's own words, for the log.
+/// left out; so is `__MACOSX`, and the resource forks and extended attributes it holds are put back on their items.
+/// Permissions lose their setuid, setgid and sticky bits, nothing is replaced, and nothing is written through a
+/// link. Bytes of a name that aren't UTF-8 are written as `%XX`. A folder's permissions and dates are set once
+/// everything in it is written, and only when the whole archive came out: after a failure or a stop the folders
+/// are left their owner's to write, for the caller to remove. When `quarantine` is set, every item and
+/// `destination` itself get the archive's quarantine, read-only items too, so what came from the internet is
+/// checked as the archive would be. The process's umask is never changed. `raw_name`, for a single compressed
+/// file (`.gz`, `.bz2`, `.xz` not holding a tar), is the name the file is written as. Returns 0, an errno
+/// (ECANCELED when stopped), or one of the FT_ARCHIVE_ codes.
 int ft_archive_extract(
-    const char *archive, const char *destination, const char *raw_name, int quarantine,
-    ft_archive_control *control, char *message, size_t message_size);
+    const char *archive, const char *destination, const char *raw_name, int quarantine, ft_archive_control *control);
 
-/// Makes the zip `destination` (which must not exist) of the items `names` of the folder `base`, as Finder's
-/// Compress does: each item's extended attributes and resource fork go into `__MACOSX` as `._` files, names are
-/// marked UTF-8, links stay links. Returns 0, an errno (ECANCELED when stopped), and leaves the zip partly written
-/// when it fails: the caller removes it.
+/// Makes the zip `destination` (which must not exist) of the items `names` of the folder `base` (with or without
+/// a slash at its end), as Finder's Compress does: each item's extended attributes and resource fork go into
+/// `__MACOSX` as `._` files, names are marked UTF-8, links stay links. Returns 0, an errno (ECANCELED when
+/// stopped), and leaves the zip partly written when it fails: the caller removes it.
 int ft_archive_compress_zip(
-    const char *base, const char *const *names, size_t count, const char *destination,
-    ft_archive_control *control, char *message, size_t message_size);
+    const char *base, const char *const *names, size_t count, const char *destination, ft_archive_control *control);
 
 #endif
