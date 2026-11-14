@@ -60,6 +60,13 @@ public final class ThumbnailStore {
     /// How many previews are kept.
     public var count: Int { cache.count }
 
+    /// The memory the Previews view's previews may take on a Mac with `physicalMemory` bytes: 1 GB, or a sixteenth of
+    /// the Mac's memory when that is less.
+    public nonisolated static func previewMemoryLimit(physicalMemory: UInt64) -> Int {
+        let gigabyte = 1 << 30
+        return Int(min(UInt64(gigabyte), physicalMemory / 16))
+    }
+
     /// What a preview takes: four bytes a pixel of the picture Quick Look made.
     private static func cost(_ cached: Cached) -> Int {
         guard let image = cached.picture?.image else { return 0 }
@@ -85,6 +92,13 @@ public final class ThumbnailStore {
     /// The preview already loaded for the file, if any; a drag shows it instead of the icon.
     public func loadedPicture(forPath path: String) -> ThumbnailPicture? {
         cache.peek(path)?.picture
+    }
+
+    /// Lets go of every preview kept (macOS is short of memory); loads under way still answer, and the pictures on
+    /// screen stay where they are drawn.
+    public func dropCached() {
+        cache.removeAll()
+        memoryUsed = 0
     }
 
     /// Forgets every cached preview and queued request.

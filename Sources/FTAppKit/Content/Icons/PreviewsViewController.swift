@@ -4,13 +4,26 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The previews of the Previews view: large ones, so they are kept apart from the icons' and under a memory limit of
-/// their own. Those scrolled far away are asked of Quick Look again, whose cache on disk makes that cheap.
+/// The previews of the Previews view: large ones, so they are kept apart from the Icons view's (List and Compact List
+/// show only icons) and under a memory limit of their own: 1 GB, less on a Mac with under 16 GB. When macOS is short
+/// of memory they all go. Those scrolled far away, or let go, are asked of Quick Look again, whose cache on disk makes
+/// that cheap.
 @MainActor
 enum PreviewThumbnails {
-    /// 256 MB: a few dozen previews at the largest size, a few hundred at the default one.
-    static let memoryLimit = 256 * 1024 * 1024
-    static let store = ThumbnailStore(maxEntries: ThumbnailStore.maxEntries, memoryLimit: memoryLimit)
+    static let memoryLimit = ThumbnailStore.previewMemoryLimit(
+        physicalMemory: ProcessInfo.processInfo.physicalMemory)
+    static let store: ThumbnailStore = {
+        let store = ThumbnailStore(maxEntries: ThumbnailStore.maxEntries, memoryLimit: memoryLimit)
+        let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .main)
+        source.setEventHandler {
+            MainActor.assumeIsolated { store.dropCached() }
+        }
+        source.resume()
+        memoryPressure = source
+        return store
+    }()
+    /// Tells of macOS running short of memory, for as long as the app runs.
+    private static var memoryPressure: (any DispatchSourceMemoryPressure)?
 }
 
 /// Large previews of the files' content in a grid that scrolls down: 9, 4, 2 or 1 of them fill the pane at a time

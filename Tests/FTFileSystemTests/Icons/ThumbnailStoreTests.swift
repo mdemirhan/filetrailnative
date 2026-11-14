@@ -130,6 +130,33 @@ private func request(
         #expect(store.memoryUsed == 0)
     }
 
+    // The Previews view's previews may take 1 GB, or a sixteenth of a Mac's memory when that is less.
+    @Test func previewsMayTakeAGigabyteOrASixteenthOfTheMacsMemory() {
+        let gigabyte = 1 << 30
+        #expect(ThumbnailStore.previewMemoryLimit(physicalMemory: 128 << 30) == gigabyte)
+        #expect(ThumbnailStore.previewMemoryLimit(physicalMemory: 16 << 30) == gigabyte)
+        #expect(ThumbnailStore.previewMemoryLimit(physicalMemory: 8 << 30) == gigabyte / 2)
+    }
+
+    // Short of memory, every preview kept goes at once; a load under way still answers.
+    @Test func memoryPressureLetsGoOfEveryPreview() async {
+        let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1", unchanged: false, picture: picture()) }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue, memoryLimit: 1 << 20)
+        let listing = Listing()
+        for name in ["a", "b"] {
+            _ = store.load(path: "/\(name).png", kind: .file, size: 512, listing: listing) { _ in }
+        }
+        await idle(queue)
+        #expect(store.count == 2 && store.memoryUsed > 0)
+        store.dropCached()
+        #expect(store.count == 0 && store.memoryUsed == 0)
+        let receiver = Receiver()
+        _ = store.load(path: "/a.png", kind: .file, size: 512, listing: listing) { receiver.answers.append($0) }
+        await idle(queue)
+        #expect(receiver.last != nil && store.count == 1)
+    }
+
     // A preview cached too small is given at once and made again at the larger size, the file being as it was; one
     // cached large enough serves a smaller size without asking again.
     @Test func aPreviewTooSmallIsMadeAgainAtTheLargerSize() async {

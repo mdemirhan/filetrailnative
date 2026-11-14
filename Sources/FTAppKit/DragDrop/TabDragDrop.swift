@@ -123,8 +123,10 @@ final class TabDragDrop {
             images = FileDragImages.measure(paths, placements: placed.placements)
         }
         let directories = Self.dragDirectories(session.sourceItems)
+        // The pictures the view on screen holds: the Icons view's or the Previews view's.
+        let store = (tab.activePane.content.pane as? IconViewController)?.thumbnailStore ?? IconThumbnails.store
         let thumbnails = Self.dragThumbnails(paths, images: images) {
-            IconThumbnails.store.loadedPicture(forPath: $0)?.image
+            store.loadedPicture(forPath: $0)?.image
         }
         Self.ownDrag = OwnDrag(session: session, windowNumber: window.windowNumber, tab: tab, pane: tab.activePane)
         tab.holdFolderChanges(.drag, true)
