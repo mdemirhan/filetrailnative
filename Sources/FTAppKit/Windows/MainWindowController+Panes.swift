@@ -45,10 +45,18 @@ extension MainWindowController {
         } else {
             start = startupTab(of: source, path: path ?? source.shownFolderPath)
         }
+        let keyboard = paneWithKeyboard
         let pane = addSecondPane(start: start, history: history)
         pane.ensureLoaded()
         panesChanged()
+        keepKeyboard(in: keyboard)
         return pane
+    }
+
+    /// The list that had the keyboard before the panes changed has it still: a view moved in the window lets go of it.
+    private func keepKeyboard(in pane: BrowserPane?) {
+        guard let pane, panes.contains(where: { $0 === pane }), paneWithKeyboard !== pane else { return }
+        focusPane(pane)
     }
 
     /// The second pane, made and put in place unread.
@@ -89,7 +97,7 @@ extension MainWindowController {
     func closeOtherPane() {
         guard let gone = otherPane else { return }
         let keep = activePane
-        let hadKeyboard = paneWithKeyboard === gone
+        let keyboard = paneWithKeyboard
         closedSecondPane = (startupTab(of: gone, path: gone.shownFolderPath), gone.navigationHistory)
         closedPaneWatchID = gone.watchID
         gone.searchStore?.session.close()
@@ -101,9 +109,10 @@ extension MainWindowController {
         panes = [keep]
         activePaneIndex = 0
         window?.minSize = minimumWindowSize
-        if hadKeyboard { keep.content.focusList() }
         activePaneChanged()
         panesChanged()
+        // The list that had the keyboard keeps it; the pane that went gives it to the one that stays.
+        if keyboard != nil { keepKeyboard(in: keep) }
     }
 
     /// The panes changed: the window's watches, title and saved state follow.
@@ -186,9 +195,8 @@ extension MainWindowController {
         workspace.statusCell.content = panes[0].content.contentShell.pathBarRow
         workspace.showSecondPane(panes[1].content.view, status: panes[1].content.contentShell.pathBarRow)
         activePaneIndex = activePaneIndex == 0 ? 1 : 0
-        // A view taken out of the window lets go of the keyboard: it goes back to the list that had it.
-        keyboard?.content.focusList()
         panesChanged()
+        keepKeyboard(in: keyboard)
     }
 
     /// Make Panes Equal Width, and a double-click on the divider.

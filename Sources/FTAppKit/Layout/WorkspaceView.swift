@@ -576,6 +576,8 @@ final class WorkspaceContentColumn: NSView {
 final class WorkspaceCell: NSView {
     var content: NSView? {
         didSet {
+            // The view it has already stays where it is: taken out of the window, it would let go of the keyboard.
+            guard content !== oldValue else { return }
             oldValue?.removeFromSuperview()
             if let content { addSubview(content) }
             needsLayout = true

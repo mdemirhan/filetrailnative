@@ -372,5 +372,37 @@ extension ExplorerWindowlessTests {
             #expect(back.panes.count == 2)
             #expect(back.panes[1].shownFolderPath == real(harness, "Alpha/Inner"))
         }
+        // ⌘\ to open or close the second pane leaves the keyboard in a list, so Tab goes on between the panes.
+        @Test func openingAndClosingTheSecondPaneKeepTheKeyboardInAList() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let left = tab.activePane
+            left.content.focusList()
+
+            tab.perform(.toggleTwoPanes)
+            let right = try #require(tab.otherPane)
+            #expect(tab.paneWithKeyboard === left)
+            await arrived(right)
+            left.content.switchPane()
+            #expect(tab.paneWithKeyboard === right)
+
+            // The left pane goes; the right one moves into its place with the keyboard.
+            tab.perform(.toggleTwoPanes)
+            #expect(tab.panes.count == 1)
+            #expect(tab.paneWithKeyboard === right)
+
+            tab.perform(.toggleTwoPanes)
+            #expect(tab.paneWithKeyboard === right)
+            let other = try #require(tab.otherPane)
+            await arrived(other)
+            right.content.switchPane()
+            #expect(tab.paneWithKeyboard === other)
+
+            // The left pane stays: its list keeps the keyboard where it is.
+            tab.perform(.toggleTwoPanes)
+            #expect(tab.panes.count == 1)
+            #expect(tab.paneWithKeyboard === other)
+        }
     }
 }
