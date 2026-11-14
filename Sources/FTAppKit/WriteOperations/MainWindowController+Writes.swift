@@ -293,6 +293,12 @@ extension MainWindowController {
         } else {
             go(to: URL(fileURLWithPath: refresh.path), history: .replace, open: open)
         }
+        // The tab's other pane is read again now too, instead of when the folder watch tells of the change: a copy, a
+        // move or a drag between the panes changed both. What arrived there is selected.
+        for pane in panes where pane !== activePane && pane.loaded && !pane.shownFolderPath.isEmpty {
+            let arrived = refresh.arrived.flatMap { samePath($0.folder, pane.shownFolderPath) ? $0.paths : nil }
+            pane.readAgain(selecting: arrived)
+        }
         // The folder stays, so the tree only follows, opening nothing; then what it shows is read again.
         Task { [path = refresh.path] in
             if treeFollows { await model.folderOpened(path, open) }

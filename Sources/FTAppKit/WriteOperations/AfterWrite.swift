@@ -107,6 +107,19 @@ enum AfterWrite {
 
     /// The selection a write leaves: the items it made or moved, when they are in the
     /// folder on screen, nothing is searched, and the person didn't pick something else meanwhile.
+    /// What a write made, all in one folder.
+    struct Arrived: Equatable, Sendable {
+        var folder: String
+        var paths: [String]
+    }
+
+    /// What the write made and the folder it is in, when it made something; nil for a write with nothing to select.
+    static func arrived(_ result: WriteOperationResult) -> Arrived? {
+        let made = result.items.compactMap { $0.status == .completed ? $0.destinationPath : nil }
+        guard !made.isEmpty, let folder = selectionDirectoryPath(result, selectedPaths: made) else { return nil }
+        return Arrived(folder: folder, paths: made)
+    }
+
     static func selection(
         _ result: WriteOperationResult, currentPath: String, isSearching: Bool, selectionChanged: Bool
     ) -> [String]? {

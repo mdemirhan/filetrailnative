@@ -37,6 +37,9 @@ struct WriteEndRefresh: Equatable, Sendable {
     var treeReloadPaths: [String]
     /// What the write took out of its folder, which goes from the selection at once.
     var leftPaths: [String] = []
+    /// What the write made and the folder it made it in, for a pane that shows that folder but isn't the one the tab
+    /// has active (a copy, a move or a drag between a tab's panes); nil when it made nothing to select.
+    var arrived: AfterWrite.Arrived? = nil
 }
 
 /// The explorer window a session belongs to, as the session sees it: its tab on screen, and what a write's end does
@@ -334,7 +337,8 @@ final class ExplorerWriteSession: WriteOperationWindow {
                 treeSelectionPath: completedTreeSelectionPath(event, result),
                 treeReloadPaths: AfterWrite.treeReloadPaths(result),
                 // What a Replace removed has another item at its path, which stays selected.
-                leftPaths: AfterWrite.pathsLeftByWrite(result).filter { !replaced.contains($0) })
+                leftPaths: AfterWrite.pathsLeftByWrite(result).filter { !replaced.contains($0) },
+                arrived: startedInTabOnScreen ? AfterWrite.arrived(result) : nil)
         } else {
             refresh = WriteEndRefresh(path: currentPath, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [])
         }

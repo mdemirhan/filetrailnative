@@ -331,6 +331,15 @@ final class BrowserPane {
         reload(changedPaths: [])
     }
 
+    /// A write that ended made these in the folder: they are selected once the read that shows them lands.
+    private var selectAfterRead: [String]?
+
+    /// The folder read again after a write that touched it, `selecting` what the write made there.
+    func readAgain(selecting: [String]?) {
+        if let selecting, !selecting.isEmpty { selectAfterRead = selecting }
+        reload(changedPaths: [])
+    }
+
     var folderChangesHeld: Bool { folderChanges.isHeld }
 
     func folderChangesHeld(by hold: FolderChangeHold) -> Bool { folderChanges.holds.contains(hold) }
@@ -390,6 +399,10 @@ final class BrowserPane {
             content.show(
                 folder: url.path, entries: snapshot.entries, selecting: nil, keepingScroll: true,
                 changedPaths: changedPaths)
+            if let selecting = selectAfterRead {
+                selectAfterRead = nil
+                content.select(paths: selecting)
+            }
             tab.notify(.folder)
         case .failure(let error):
             if FolderReadFailure.isGone(error) {

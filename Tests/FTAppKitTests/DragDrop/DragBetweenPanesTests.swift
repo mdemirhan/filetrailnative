@@ -40,6 +40,10 @@ extension ExplorerWindowlessTests {
             drags.paneUnderDrag = right
             #expect(drags.automationDrop(dragged, entry: nil, allowed: [.copy, .move, .generic]))
             #expect(await waitUntil { window.exists("Beta/note.txt") && !window.exists("note.txt") })
+            // Both panes show the move at once, without waiting for a folder watch; what arrived is selected.
+            let moved = url(window, "Beta/note.txt").path
+            #expect(await waitUntil { right.content.selection.paths.contains { samePath($0, moved) } })
+            #expect(await waitUntil { !left.content.listed.contains { $0.name == "note.txt" } })
             await window.close()
         }
 
