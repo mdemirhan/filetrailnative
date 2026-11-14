@@ -497,6 +497,46 @@ private func request(
         #expect(store.loadedPicture(forPath: "/Users/demo/photo.jpeg") != nil)
     }
 
+    // A load scrolled past once it started stops after the step under way and frees its place, so the next one starts;
+    // it keeps nothing, and the file asked for again gets its preview.
+    @Test func aLoadTakenBackOnceStartedStopsAndLetsTheNextOneStart() async {
+        let renderer = SteppedRenderer(steps: 3)
+        let queue = ThumbnailLoadQueue(maxConcurrent: 1)
+        let store = ThumbnailStore(
+            provider: FileThumbnailService(renderer: renderer, version: { _ in "1:1" }), queue: queue)
+        let listing = Listing()
+        let passed = Receiver()
+        let shown = Receiver()
+        let handle = request(store, "/a.mov", listing: listing, into: passed)
+        _ = request(store, "/b.mov", listing: listing, into: shown)
+        await pollUntil { renderer.waiting == 1 }
+        #expect(renderer.started == ["/a.mov"])
+        handle.cancel()
+        renderer.step()
+        await pollUntil { renderer.started.count == 2 }
+        #expect(renderer.started == ["/a.mov", "/b.mov"])
+        #expect(renderer.stopped == ["/a.mov"])
+        #expect(queue.activeCount == 1 && queue.queuedCount == 0)
+        func finish() async {
+            for _ in 0..<3 {
+                await pollUntil { renderer.waiting == 1 }
+                renderer.step()
+            }
+            await idle(queue)
+        }
+        await finish()
+        #expect(shown.last != nil)
+        #expect(passed.answers.count == 1 && passed.last == nil)
+        #expect(store.loadedPicture(forPath: "/a.mov") == nil)
+
+        let back = Receiver()
+        _ = request(store, "/a.mov", listing: listing, into: back)
+        await finish()
+        #expect(renderer.started == ["/a.mov", "/b.mov", "/a.mov"])
+        #expect(back.last != nil)
+        #expect(store.loadedPicture(forPath: "/a.mov") != nil)
+    }
+
     // An edit changes nothing a listing shows: a file named as changed is checked again in the same listing, and gets
     // its new preview. One not named is not asked again.
     @Test func aFileNamedAsChangedIsCheckedAgainInTheSameListing() async {
@@ -749,6 +789,48 @@ private final class ResponseQueue: @unchecked Sendable {
         defer { lock.unlock() }
         return remaining.isEmpty
             ? ThumbnailResponse(version: nil, unchanged: false, picture: nil) : remaining.removeFirst()
+    }
+}
+
+/// A renderer that makes each picture in `steps` steps, each waiting for the test, and stops after a step once its task
+/// is cancelled.
+private final class SteppedRenderer: ThumbnailRendering, @unchecked Sendable {
+    private let lock = NSLock()
+    private var continuations: [CheckedContinuation<Void, Never>] = []
+    private var startedPaths: [String] = []
+    private var stoppedPaths: [String] = []
+    private let steps: Int
+
+    init(steps: Int) {
+        self.steps = steps
+    }
+
+    var waiting: Int { lock.withLock { continuations.count } }
+    var started: [String] { lock.withLock { startedPaths } }
+    var stopped: [String] { lock.withLock { stoppedPaths } }
+
+    func renderThumbnail(path: String, size: Int) async -> ThumbnailPicture? {
+        lock.withLock { startedPaths.append(path) }
+        for _ in 0..<steps {
+            await withCheckedContinuation { continuation in
+                lock.withLock { continuations.append(continuation) }
+            }
+            if Task.isCancelled {
+                lock.withLock { stoppedPaths.append(path) }
+                return nil
+            }
+        }
+        return picture()
+    }
+
+    /// Lets the steps waiting go on.
+    func step() {
+        let going = lock.withLock {
+            let going = continuations
+            continuations = []
+            return going
+        }
+        for continuation in going { continuation.resume() }
     }
 }
 

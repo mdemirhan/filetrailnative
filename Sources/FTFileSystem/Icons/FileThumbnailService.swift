@@ -48,7 +48,8 @@ public protocol ThumbnailProviding: Sendable {
     func response(path: String, size: Int, knownVersion: String?) async -> ThumbnailResponse
 }
 
-/// Makes the picture of a file that fits in a square of `size` pixels.
+/// Makes the picture of a file that fits in a square of `size` pixels. A task cancelled stops after the step under way
+/// and gives nil.
 public protocol ThumbnailRendering: Sendable {
     func renderThumbnail(path: String, size: Int) async -> ThumbnailPicture?
 }
@@ -165,12 +166,12 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
                 request: { await Self.quickLookImage(url, side: $0, iconMode: false) },
                 decode: { Self.decodedImage(url, side: side) })
         }
-        if image == nil {
+        if image == nil, !Task.isCancelled {
             image = await Self.largestPicture(
                 side: side, limits: showsPicture ? Self.pictureLimits : Self.iconLimits
             ) { await Self.quickLookImage(url, side: $0, iconMode: !showsPicture) }
         }
-        guard let image, let kept = Self.eightBitImage(image) else { return nil }
+        guard let image, !Task.isCancelled, let kept = Self.eightBitImage(image) else { return nil }
         return ThumbnailPicture(cgImage: kept, isOpaque: Self.isOpaque(kept))
     }
 
@@ -219,7 +220,13 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         let request = QLThumbnailGenerator.Request(
             fileAt: url, size: CGSize(width: side, height: side), scale: 1.0, representationTypes: .thumbnail)
         request.iconMode = iconMode
-        return try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request).cgImage
+        // A task cancelled stops waiting for Quick Look, which drops the request.
+        nonisolated(unsafe) let asked = request
+        return await withTaskCancellationHandler {
+            try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: asked).cgImage
+        } onCancel: {
+            QLThumbnailGenerator.shared.cancel(asked)
+        }
     }
 
     /// An image's picture of `pixels` that fits in a square of `side`: Quick Look's (`request`), which it keeps on disk
@@ -237,11 +244,14 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
                 limits.gave(pixels: image.width * image.height)
                 return image
             }
+            // Stopped: refused or not, Quick Look said nothing of the size.
+            guard !Task.isCancelled else { return nil }
             if pixels > QuickLookLimits.alwaysGivenPixels, let small = await request(alwaysGivenSide) {
                 limits.gave(pixels: small.width * small.height)
                 limits.refused(pixels: pixels)
             }
         }
+        guard !Task.isCancelled else { return nil }
         return decode()
     }
 
@@ -279,6 +289,8 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     /// there shows the file's shape. The search then halves the sizes between that one and `side`, to within
     /// `searchStep`. `limits` holds what earlier files were given and refused, which a file of any shape starts
     /// from, so that after the first one a search is one more request.
+    ///
+    /// A task cancelled asks for nothing more, learns nothing from the request it stopped, and gives nil.
     static func largestPicture(
         side: Int, limits: QuickLookLimits, request: (Int) async -> CGImage?
     ) async -> CGImage? {
@@ -286,7 +298,9 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
             limits.gave(pixels: image.width * image.height)
             return image
         }
-        guard side > alwaysGivenSide, var best = await request(alwaysGivenSide) else { return nil }
+        guard side > alwaysGivenSide, !Task.isCancelled, var best = await request(alwaysGivenSide),
+            !Task.isCancelled
+        else { return nil }
         // The pixels of this file's picture at a size, and the size of this file's picture of some pixels.
         let shape = Double(best.width * best.height) / Double(alwaysGivenSide * alwaysGivenSide)
         func pixels(_ side: Int) -> Int { Int(Double(side * side) * shape) }
@@ -294,23 +308,29 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         limits.refused(pixels: pixels(side))
         var given = alwaysGivenSide
         var refused = side
-        func ask(_ size: Int) async {
+        /// False once the task is cancelled.
+        func ask(_ size: Int) async -> Bool {
+            guard !Task.isCancelled else { return false }
             if let image = await request(size) {
                 limits.gave(pixels: image.width * image.height)
                 best = image
                 given = size
             } else {
+                guard !Task.isCancelled else { return false }
                 limits.refused(pixels: pixels(size))
                 refused = size
             }
+            return true
         }
         // What other files were given and refused, when it is between this file's two sizes.
         let known = across(pixels: limits.given)
-        if known > given, known < refused { await ask(known) }
+        if known > given, known < refused {
+            guard await ask(known) else { return nil }
+        }
         let knownRefused = limits.refused == Int.max ? refused : across(pixels: limits.refused)
         if given == known, knownRefused > given { refused = min(refused, knownRefused) }
         while refused - given > searchStep {
-            await ask((given + refused) / 2)
+            guard await ask((given + refused) / 2) else { return nil }
         }
         return best
     }

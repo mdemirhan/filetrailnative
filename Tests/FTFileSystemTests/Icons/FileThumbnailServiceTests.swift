@@ -357,6 +357,54 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(QuickLookThumbnailRenderer.eightBitImage(kept) === kept)
     }
 
+    // A search cancelled part way asks for nothing more and gives nothing, and the request it stopped teaches nothing;
+    // the same file searched again is found.
+    @Test func aSearchCancelledStopsAfterTheRequestUnderWay() async throws {
+        let video = Budget(width: 3840, height: 2160)
+        let limits = QuickLookLimits()
+        let stopped = await Task {
+            await QuickLookThumbnailRenderer.largestPicture(side: 4096, limits: limits) { side in
+                // Scrolled past while Quick Look draws the third: it gives nothing.
+                if video.asked.count == 2 {
+                    video.asked.append(side)
+                    withUnsafeCurrentTask { $0?.cancel() }
+                    return nil
+                }
+                return video.picture(side)
+            }
+        }.value
+        #expect(stopped == nil)
+        #expect(video.asked == [4096, 1024, 2560])
+        // Only the refusal at 4096, from before.
+        #expect(limits.refused == 4096 * 2304)
+        let found = try #require(
+            await QuickLookThumbnailRenderer.largestPicture(side: 4096, limits: limits) { video.picture($0) })
+        #expect(found.width <= 2494 && found.width > 2494 - QuickLookThumbnailRenderer.searchStep)
+    }
+
+    // An image's picture cancelled while Quick Look draws it is not read by ImageIO, and teaches nothing.
+    @Test func anImageCancelledIsNotReadAndTeachesNothing() async {
+        let limits = QuickLookLimits()
+        let (image, asked, decodes) = await Task {
+            var asked: [Int] = []
+            var decodes = 0
+            let image = await QuickLookThumbnailRenderer.imagePicture(
+                side: 4096, pixels: 4096 * 3072, limits: limits,
+                request: {
+                    asked.append($0)
+                    withUnsafeCurrentTask { $0?.cancel() }
+                    return nil
+                },
+                decode: {
+                    decodes += 1
+                    return nil
+                })
+            return (image, asked, decodes)
+        }.value
+        #expect(image == nil && asked == [4096] && decodes == 0)
+        #expect(limits.refused == Int.max)
+    }
+
     @Test func anImagesPictureHasThePixelsOfItsSizeFittedAndNeverMoreThanTheImage() throws {
         try withTemporaryDirectory { directory in
             let file = directory.appending("photo.jpg")
@@ -437,21 +485,25 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
 }
 
 @MainActor @Suite struct ThumbnailLoadQueueTests {
-    @Test func aHandleTakesAJobOutOfTheQueueOnlyBeforeItStarts() async {
+    // A job not started yet is taken out of the queue; one started is told to stop, and ends when it does.
+    @Test func aHandleTakesAJobOutOfTheQueueOrTellsItToStop() async {
         let queue = ThumbnailLoadQueue(maxConcurrent: 1)
         let gate = Gate()
         let ran = Counter()
+        let stopped = Counter()
         let running = queue.enqueue {
             ran.count += 1
             await gate.wait()
+            if Task.isCancelled { stopped.count += 1 }
         }
         let dropped = queue.enqueue { ran.count += 100 }
         await pollUntil { ran.count == 1 }
         dropped.cancel()
-        running.cancel()  // already started: no effect
+        running.cancel()
+        #expect(queue.activeCount == 1)
         gate.open()
         await pollUntil { queue.activeCount == 0 && queue.queuedCount == 0 }
-        #expect(ran.count == 1)
+        #expect(ran.count == 1 && stopped.count == 1)
         #expect(queue.activeCount == 0 && queue.queuedCount == 0)
     }
 }

@@ -292,7 +292,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         super.prepareForReuse()
         iconRequest?.cancel()
         iconRequest = nil
-        // A preview not loaded yet is dropped from the queue when its item is reused.
+        // A preview not loaded yet is dropped from the queue when its item is reused, or stops if it started.
         thumbnailRequest?.cancel()
         thumbnailRequest = nil
         iconWait?.cancel()

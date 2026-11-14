@@ -47,7 +47,7 @@ public final class ThumbnailStore {
         /// The size it asks for, and the listing it checks the file for.
         let size: Int
         let listing: AnyObject
-        /// Its job's number in the queue; whether it was taken out of the queue before it started.
+        /// Its job's number in the queue; whether it was taken back: out of the queue, or told to stop.
         var job = 0
         var isRemoved = false
         /// Whether it is wanted only ahead of need: the next page of the Previews view.
@@ -260,6 +260,8 @@ public final class ThumbnailStore {
                 path: path, size: wanted, knownVersion: knownVersion)
             guard let self else { return }
             self.finished(load, path: path)
+            // Stopped part way, scrolled past: no picture says nothing of the file, and nothing is kept.
+            if Task.isCancelled, response.picture == nil, !response.unchanged { return }
             // Told of a change while it was being read: given all the same, and checked again the next time.
             let checkedFor: AnyObject? = load.fileChanged ? nil : listing
             var thumbnail =
@@ -298,13 +300,14 @@ public final class ThumbnailStore {
         return handle(waiter, of: load)
     }
 
-    /// Takes the waiter's request back, and the load out of the queue once no one waits for it.
+    /// Takes the waiter's request back, and the load once no one waits for it: out of the queue, or told to stop if it
+    /// started (a picture it makes all the same is kept). Either way it serves no request made since.
     private func handle(_ waiter: Waiter, of load: PendingLoad) -> LoadHandle {
         LoadHandle { [weak self, weak load] in
             waiter.cancelled = true
             guard let self, let load, load.waiters.allSatisfy(\.cancelled) else { return }
-            // One already started goes on, and keeps what it makes.
-            load.isRemoved = self.queue.remove(load.job)
+            if !self.queue.remove(load.job) { self.queue.stop(load.job) }
+            load.isRemoved = true
         }
     }
 }

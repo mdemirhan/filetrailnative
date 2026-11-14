@@ -2,7 +2,8 @@ import Foundation
 
 /// Previews wanted at once are loaded a few at a time, so one scrolled past before its turn can still be
 /// dropped from the queue. Those asked for ahead of need (the next page of the Previews view) wait behind every
-/// one wanted now, and move up among them once one is wanted after all.
+/// one wanted now, and move up among them once one is wanted after all. One scrolled past once it started is told to
+/// stop (its task is cancelled), and its place goes to the next once it has.
 @MainActor
 public final class ThumbnailLoadQueue {
     public nonisolated static let maxConcurrentLoads = 4
@@ -17,6 +18,8 @@ public final class ThumbnailLoadQueue {
     private var queued: [Job] = []
     private var active = 0
     private var nextID = 0
+    /// The jobs started, by their numbers.
+    private var running: [Int: Task<Void, Never>] = [:]
 
     public init(maxConcurrent: Int = ThumbnailLoadQueue.maxConcurrentLoads) {
         self.maxConcurrent = maxConcurrent
@@ -27,11 +30,15 @@ public final class ThumbnailLoadQueue {
     /// How many of those queued were asked for ahead of need.
     public var queuedAheadCount: Int { queued.count(where: \.isAhead) }
 
-    /// Queues `work`; the handle takes it out of the queue again if it has not started yet.
+    /// Queues `work`; the handle takes it out of the queue again if it has not started yet, and tells it to stop if it
+    /// has.
     @discardableResult
     public func enqueue(_ work: @escaping @MainActor () async -> Void) -> LoadHandle {
         let id = add(ahead: false, work)
-        return LoadHandle { [weak self] in self?.remove(id) }
+        return LoadHandle { [weak self] in
+            guard let self, !self.remove(id) else { return }
+            self.stop(id)
+        }
     }
 
     /// Queues `work`, after every job wanted now when `ahead` (it is asked for ahead of need), and gives the job's
@@ -54,6 +61,11 @@ public final class ThumbnailLoadQueue {
         guard let index = queued.firstIndex(where: { $0.id == id }) else { return false }
         queued.remove(at: index)
         return true
+    }
+
+    /// Tells the job to stop if it started: its task is cancelled, and its place goes to the next once its work returns.
+    func stop(_ id: Int) {
+        running[id]?.cancel()
     }
 
     /// A job asked for ahead of need is wanted now: it goes after those wanted now, before the other ones ahead.
@@ -79,8 +91,9 @@ public final class ThumbnailLoadQueue {
         {
             let job = queued.removeFirst()
             active += 1
-            Task { [weak self] in
+            running[job.id] = Task { [weak self] in
                 await job.work()
+                self?.running[job.id] = nil
                 self?.active -= 1
                 self?.startQueued()
             }
