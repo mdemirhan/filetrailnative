@@ -156,20 +156,64 @@ final class SearchSession {
     /// What the walk found, narrowed to the committed text when it has grown since the walk began, in the chosen order.
     var shownResults: [SearchResultItem] {
         if let cache = shownCache, cache.version == resultsVersion { return cache.items }
-        // Narrowing keeps the order, so the sorted results are narrowed: the same list as sorting the narrowed ones.
-        let sorted = sortedResults()
-        let shown =
-            baseQuery == committedQuery
-            ? sorted
-            : sorted.filter {
-                SearchRefinement.matchesTextQuery($0, query: committedQuery, scope: refinementScope)
-            }
+        let shown = baseQuery == committedQuery ? sortedResults() : refinedResults()
         shownCache = (resultsVersion, shown)
         return shown
     }
 
     private var resultsVersion = 0
     private var shownCache: (version: Int, items: [SearchResultItem])?
+    /// What the committed text kept of the results, in order, and what it was judged for: the text, the results (their
+    /// generation and how many had come), the order and the scope.
+    private var refinedCache: Refined?
+    /// The names (or paths) beyond ASCII the committed text was judged against, folded once for all its keystrokes:
+    /// room for every result and those a search kept from the one before.
+    private let foldedNames = FoldedNameCache(limit: SearchLimits.resultLimit * 2)
+
+    private struct Refined {
+        var query: String
+        var generation: Int
+        var count: Int
+        var sortBy: SearchResultsSortByPreference
+        var direction: SortDirectionPreference
+        var scope: SearchMatchScope
+        var items: [SearchResultItem]
+    }
+
+    /// The results the committed text keeps, when it has grown since the walk began, in the chosen order. A result is
+    /// judged once for a text: those that came since are judged and merged in, and text that grew again judges only
+    /// what the shorter text kept. Narrowing keeps the order, so this is the list sorting the narrowed results gives.
+    private func refinedResults() -> [SearchResultItem] {
+        let scope = refinementScope
+        let query = committedQuery
+        if let cache = refinedCache, cache.generation == resultsGeneration, cache.count <= results.count,
+            cache.sortBy == sortBy, cache.direction == sortDirection, cache.scope == scope,
+            cache.query == query || SearchRefinement.isNarrower(base: cache.query, next: query)
+        {
+            let kept =
+                cache.query == query
+                ? cache.items
+                : SearchRefinement.matching(cache.items, query: query, scope: scope, cache: foldedNames)
+            let added = SearchRefinement.matching(
+                Array(results[cache.count...]), query: query, scope: scope, cache: foldedNames)
+            let items =
+                added.isEmpty
+                ? kept
+                : SearchResults.merge(
+                    kept, SearchResults.sort(added, by: sortBy, direction: sortDirection), by: sortBy,
+                    direction: sortDirection)
+            refinedCache = Refined(
+                query: query, generation: resultsGeneration, count: results.count, sortBy: sortBy,
+                direction: sortDirection, scope: scope, items: items)
+            return items
+        }
+        let items = SearchRefinement.matching(sortedResults(), query: query, scope: scope, cache: foldedNames)
+        refinedCache = Refined(
+            query: query, generation: resultsGeneration, count: results.count, sortBy: sortBy,
+            direction: sortDirection, scope: scope, items: items)
+        return items
+    }
+
     /// Bumped when the results are replaced rather than added to.
     private var resultsGeneration = 0
     private var sortedCache:
@@ -321,6 +365,8 @@ final class SearchSession {
         results = []
         resultsGeneration += 1
         keptResultPaths = []
+        refinedCache = nil
+        foldedNames.removeAll()
         resultsChanged()
         status = nil
         error = nil
@@ -552,8 +598,12 @@ final class SearchSession {
         let wasVisible = resultsVisible
         let kept =
             keepMatching && resultsVisible && patternMode == .text && root == rootPath && searchedOptions == options
-            ? SearchRefinement.keepMatching(results, previousQuery: baseQuery, query: trimmed, scope: refinementScope)
+            ? SearchRefinement.keepMatching(
+                results, previousQuery: baseQuery, query: trimmed, scope: refinementScope, cache: foldedNames)
             : []
+        // The names folded are those of the results kept, or of none.
+        if kept.isEmpty { foldedNames.removeAll() }
+        refinedCache = nil
         keptResultPaths = Set(kept.map(\.path))
         results = kept
         resultsGeneration += 1

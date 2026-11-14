@@ -24,6 +24,15 @@ public enum SearchRefinement {
         return matcher.matches(scope == .path ? item.path : item.name)
     }
 
+    /// The results a plain-text search for `query` would find, in their order: judged by one matcher, the names (or
+    /// paths) beyond ASCII folded through `cache`, so that a list judged again for longer text folds none of them again.
+    public static func matching<T: SearchRefinementItem>(
+        _ results: [T], query: String, scope: SearchMatchScope, cache: FoldedNameCache? = nil
+    ) -> [T] {
+        guard let matcher = NameMatcher(query, mode: .contains) else { return results }
+        return results.filter { matcher.matches(scope == .path ? $0.path : $0.name, cache: cache) }
+    }
+
     /// Whether everything a plain-text search for `next` finds is also found by one for `base`: `next` holds `base`
     /// as a run of letters, a plain letter of `base` standing for its accented forms in `next`.
     public static func isNarrower(base: String, next: String) -> Bool {
@@ -37,10 +46,10 @@ public enum SearchRefinement {
     /// two is the narrower decides. Used to keep, across a change of query, the results on screen that
     /// still belong there. Unrelated queries share nothing that is known.
     public static func keepMatching<T: SearchRefinementItem>(
-        _ results: [T], previousQuery: String, query: String, scope: SearchMatchScope
+        _ results: [T], previousQuery: String, query: String, scope: SearchMatchScope, cache: FoldedNameCache? = nil
     ) -> [T] {
         if isNarrower(base: previousQuery, next: query) {
-            return results.filter { matchesTextQuery($0, query: query, scope: scope) }
+            return matching(results, query: query, scope: scope, cache: cache)
         }
         // The new text is the shorter one: everything found so far still matches it.
         if isNarrower(base: query, next: previousQuery) {

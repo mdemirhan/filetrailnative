@@ -1,5 +1,6 @@
 import FTFileSystem
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -192,6 +193,69 @@ final class FakeSearchHost: SearchSessionHost {
         timers.advance(0.4)
         #expect(engine.starts.count == 2)
         #expect(Set(names(search)) == ["sonar.txt", "one.txt"])
+    }
+
+    /// What the session shows, worked out afresh: every result in the chosen order, narrowed to the committed text.
+    private func afresh(_ search: SearchSession) -> [String] {
+        let sorted = SearchResults.sort(search.results, by: search.sortBy, direction: search.sortDirection)
+        return SearchRefinement.matching(sorted, query: search.committedQuery, scope: .name).map(\.path)
+    }
+
+    // Narrowed text over a search still running: results that come between keystrokes, another order and text taken
+    // back each give the list worked out afresh.
+    @Test func narrowedResultsAreWhatNarrowingThemAfreshGivesAsMoreComeIn() {
+        finding(["so": ["Soci\u{E9}t\u{E9}.txt", "sonar.txt", "soup.md", "So\u{301}cio.txt"]], running: true)
+        let search = session()
+        search.updateDraft("so")
+        timers.advance(0.4)
+        search.updateDraft("soc")
+        #expect(search.shownResults.map(\.path) == afresh(search))
+        engine.progress(engine.lastJobID, add: ["a/social.txt", "a/sofa.txt", "b/Soci\u{E9}t\u{E9} 2.txt"])
+        timers.advance(SearchTiming.pollInterval)
+        #expect(search.shownResults.map(\.path) == afresh(search))
+        #expect(search.shownResults.count == 4)
+        search.updateDraft("soci\u{E9}")
+        #expect(search.shownResults.map(\.path) == afresh(search))
+        engine.progress(engine.lastJobID, add: ["c/associ\u{E9}.txt", "c/soci\u{E9}t\u{E9}.md"])
+        timers.advance(SearchTiming.pollInterval)
+        #expect(search.shownResults.map(\.path) == afresh(search))
+        search.sortByColumn(.name)
+        #expect(search.shownResults.map(\.path) == afresh(search))
+        engine.progress(engine.lastJobID, add: ["d/Soci\u{E9}t\u{E9} 0.txt"], finish: true)
+        timers.advance(SearchTiming.pollInterval)
+        #expect(search.shownResults.map(\.path) == afresh(search))
+        #expect(search.shownResults.count == 5)
+        search.updateDraft("soc")
+        #expect(search.shownResults.map(\.path) == afresh(search))
+        #expect(search.shownResults.count == 7)
+        #expect(engine.starts.count == 1)
+    }
+
+    // Keystrokes that narrow 50,000 results beyond ASCII, and polls that bring more, judge only what they have to:
+    // the names folded once, the results already judged for the text not judged again. Judging all of them again
+    // with names folded afresh took about a second each time in an unoptimized build, eight seconds in all; now about a
+    // quarter of a second in all.
+    @Test func narrowingFiftyThousandResultsBeyondASCIIJudgesOnlyWhatItHasToEvenUnoptimized() {
+        let names = (0..<50_000).map { "Soci\u{E9}t\u{E9} \($0) r\u{E9}sum\u{E9}.txt" }
+        engine.finds = { _ in (names, true, false) }
+        let search = session()
+        search.updateDraft("so")
+        timers.advance(0.4)
+        #expect(search.shownResults.count == names.count)
+        search.updateDraft("soc")
+        #expect(search.shownResults.count == names.count)
+        var seconds = 0.0
+        for (index, text) in ["soci", "soci\u{E9}", "soci\u{E9}t", "soci\u{E9}t\u{E9}"].enumerated() {
+            seconds += CPUTime.measureThread { search.updateDraft(text) }.seconds
+            seconds += CPUTime.measureThread { _ = search.shownResults }.seconds
+            engine.progress(engine.lastJobID, add: (0..<100).map { "new/Soci\u{E9}t\u{E9} \(index)-\($0).txt" })
+            seconds += CPUTime.measureThread { timers.advance(SearchTiming.pollInterval) }.seconds
+            seconds += CPUTime.measureThread { _ = search.shownResults }.seconds
+        }
+        #expect(search.committedQuery == "soci\u{E9}t\u{E9}")
+        #expect(search.shownResults.count == names.count + 400)
+        #expect(engine.starts.count == 1)
+        #expect(seconds < 1, "\(seconds)")
     }
 
     // Results found with other options than those set now (Settings changed them, which runs nothing again) are not
