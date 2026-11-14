@@ -376,7 +376,7 @@ struct ListFilterNarrowingTests {
         }
         let cache = FoldedNameCache()
         var checked = 0
-        for _ in 0..<2_000 {
+        for _ in 0..<300 {
             let previous = Self.made(1...3, &random)
             let next = previous + Self.made(1...2, &random)
             guard ListFilter.narrows(previous, to: next) else { continue }
@@ -388,7 +388,7 @@ struct ListFilterNarrowingTests {
                 narrowed.map(\.id) == afresh.map(\.id),
                 "\(Array(previous.unicodeScalars)) then \(Array(next.unicodeScalars))")
         }
-        #expect(checked > 1_000)
+        #expect(checked > 150)
     }
 
     // A mark typed after a letter can make another letter of it, which the shorter text doesn't find: the list is

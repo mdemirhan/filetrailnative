@@ -177,10 +177,11 @@ struct UndoHistoryRowsTests {
         #expect(history.entries(.undo).count == 2)
     }
 
-    // An operation on a million items is told at once: where it happened is read from its first 1,000 items, and
-    // the rest are only counted.
-    @Test func tellsAnOperationOnAMillionItemsFromItsFirstThousand() {
-        let count = 1_000_000
+    // An operation on 100,000 items is told at once: where it happened is read from its first 1,000 items, and the
+    // rest are only counted. A hundred times what is read is enough to tell; how many are read is
+    // `readsTheFoldersOfExactlyTheFirstThousandItems`'s.
+    @Test func tellsAnOperationOnAHundredThousandItemsFromItsFirstThousand() {
+        let count = 100_000
         let big = entry(.trash, (0..<count).map { [trashed("/Users/demo/d\($0 / 1_000)/f\($0)")] })
         // CPU time of this thread, not wall time, so a busy machine does not fail it.
         let (told, seconds) = CPUTime.measureThread { row(big) }

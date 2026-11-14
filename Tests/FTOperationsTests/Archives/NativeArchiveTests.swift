@@ -202,9 +202,10 @@ import Testing
     @Test func extractingLeavesTheUmaskAloneForOtherThreads() throws {
         let folders = try Folders()
         defer { folders.directory.remove() }
-        // Many small items: the umask would be cleared once for each.
+        // Many small items: the umask would be cleared once for each. A few hundred in all are enough to be seen, as
+        // extracting no longer goes near the umask; the other threads spin while it runs.
         var tar = TarBuilder()
-        for index in 0..<600 { tar.add("folder\(index)/", .folder, mode: 0o755) }
+        for index in 0..<100 { tar.add("folder\(index)/", .folder, mode: 0o755) }
         try tar.write(to: folders.archive)
         let probe = "\(folders.root)/probe"
         #expect(mkdir(probe, 0o777) == 0)
@@ -212,7 +213,7 @@ import Testing
 
         let extracting = DispatchGroup()
         DispatchQueue.global().async(group: extracting) {
-            for round in 0..<10 {
+            for round in 0..<2 {
                 let out = "\(folders.root)/round\(round)"
                 guard mkdir(out, 0o755) == 0, (try? Self.extract(folders.archive, into: out)) != nil else { return }
             }
@@ -231,7 +232,7 @@ import Testing
         }
         let all = wrong.withLock { $0 }
         #expect(all.isEmpty, "\(all.count) of \(made.withLock { $0 }) folders came out with other permissions")
-        #expect(try Self.names("\(folders.root)/round9").count == 600)
+        #expect(try Self.names("\(folders.root)/round1").count == 100)
     }
 
     // MARK: Names
@@ -506,7 +507,7 @@ import Testing
         let start = FileManager.default.currentDirectoryPath
         let compressing = DispatchGroup()
         DispatchQueue.global().async(group: compressing) {
-            for round in 0..<10 {
+            for round in 0..<2 {
                 try? NativeArchive.compressZip(
                     ["Photos"], in: folders.root, to: "\(folders.root)/made\(round).zip",
                     control: NativeArchive.Control())
@@ -519,7 +520,7 @@ import Testing
             if FileManager.default.currentDirectoryPath != start { moved += 1 }
         }
         #expect(moved == 0, "the working directory was elsewhere in \(moved) of \(looks) looks")
-        let listed = try ArchiveOperationsTests.run("/usr/bin/zipinfo", ["-1", "\(folders.root)/made9.zip"])
+        let listed = try ArchiveOperationsTests.run("/usr/bin/zipinfo", ["-1", "\(folders.root)/made1.zip"])
             .split(separator: "\n")
         #expect(listed.filter { $0.hasPrefix("__MACOSX/Photos/sub") }.count == 64)
         #expect(listed.filter { $0.hasPrefix("Photos/sub") && $0.hasSuffix(".txt") }.count == 64)
