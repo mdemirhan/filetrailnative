@@ -211,6 +211,10 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
             // A letter with a mark it has no composed form with, a digit with one, ligatures and full-width letters.
             "q\u{303}1x.txt", "7\u{301}up.txt", "\u{FB01}le.txt", "o\u{FB03}ce.txt", "wa\u{FB04}e.txt",
             "\u{FF21}\u{FF22}\u{FF23} \u{FF11}\u{FF12}.txt", "be\u{FB06} of.txt",
+            // Kana and Hangul composed and decomposed: a kana and its mark, jamo, a syllable and a jamo.
+            "\u{304B}\u{3099}\u{304F}.txt", "\u{304C}\u{304F} 2.txt", "\u{304B}\u{304F} 3.txt",
+            "\u{1112}\u{1161}\u{11AB}\u{1100}\u{1173}\u{11AF}.txt", "\u{D55C}\u{AE00} 2.txt", "\u{D558}\u{11AB} 3.txt",
+            "\u{D558} 4.txt",
         ]
         let queries = [
             "cafe", "caf\u{E9}", "CAF\u{C9}", "cafe\u{301}", "e", "\u{E9}", "ss", "\u{DF}",
@@ -220,6 +224,8 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
             "naive", "na\u{EF}ve", "readme", "README", "Rep", "2.t",
             "q1", "7u", "fi", "file", "ffi", "fic", "offic", "of", "ff", "fl", "affle", "st", "est o", "t",
             "abc", "ABC 12", "\u{FF41}\u{FF42}", "\u{FB01}", "1", ".",
+            "\u{304C}", "\u{304C}\u{304F}", "\u{304B}\u{3099}", "\u{304B}", "\u{D55C}", "\u{D55C}\u{AE00}",
+            "\u{1112}\u{1161}\u{11AB}", "\u{D558}", "\u{AE00}",
         ]
         let runtime = try makeRuntime()
         defer { runtime.close() }

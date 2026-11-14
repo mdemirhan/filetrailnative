@@ -82,6 +82,25 @@ struct PlainTextPatternTests {
         #expect(PlainTextPattern.regex(for: "q") == "(?i)[q\u{FF31}\u{FF51}]\\p{M}*")
     }
 
+    // A character beyond Latin, Greek and Cyrillic that a name may store decomposed is found either way: a kana and
+    // its mark, a Hangul syllable as its jamo.
+    @Test func aComposedCharacterOfAnyScriptIsFoundDecomposed() throws {
+        let names = [
+            "\u{304B}\u{3099}\u{304F}", "\u{30CF}\u{309A}\u{30EA}", "\u{1112}\u{1161}\u{11AB}\u{1100}\u{1173}\u{11AF}",
+            "\u{D558}\u{11AB}\u{AE00}", "\u{1112}\u{1161}",
+        ]
+        let queries = ["\u{304C}", "\u{304C}\u{304F}", "\u{30D1}\u{30EA}", "\u{D55C}", "\u{D55C}\u{AE00}", "\u{D558}"]
+        var kept = 0
+        for query in queries {
+            let matcher = try #require(NameMatcher(query, mode: .contains))
+            for name in names where matcher.matches(name) {
+                kept += 1
+                #expect(try finds(query, name), "\(query) in \(Array(name.unicodeScalars))")
+            }
+        }
+        #expect(kept == 7)
+    }
+
     @Test func aLigatureStandsForTheLettersTypedAndTheLettersForIt() throws {
         #expect(try finds("fi", "\u{FB01}le"))
         #expect(try finds("ffic", "o\u{FB03}ce"))

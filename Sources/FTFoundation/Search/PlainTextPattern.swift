@@ -8,24 +8,21 @@ import Foundation
 public enum PlainTextPattern {
     /// The pattern for `text`: case ignored; each plain character (a letter, a digit, a sign) as the class of its
     /// accented and full-width forms, followed by any marks a name keeps apart from it; each accented letter as
-    /// itself, composed or decomposed. Where the letters typed are those of a ligature ("fi"), the ligature is found
-    /// in their place too.
+    /// itself. Either is found composed or decomposed, in any script: "が" also as "か" and its mark, a Hangul syllable
+    /// also as its jamo. Where the letters typed are those of a ligature ("fi"), the ligature is found in their place
+    /// too.
     public static func regex(for text: String) -> String {
         var tokens: [Token] = []
         for character in text {
-            let letters = FoldedText(String(character)).letters
-            // A letter typed with a mark it has no composed form with finds that letter under any such mark, so it is
-            // looked for as the plain letter is, and the matcher tells the names apart.
-            let loose = letters.allSatisfy { $0.exact == $0.base || $0.exact == 0x3C2 || $0.exact & 0x8000_0000 != 0 }
-            if !letters.isEmpty, loose {
-                tokens.append(contentsOf: letters.map { .plain($0.base) })
-                continue
+            for letter in FoldedText(String(character)).letters {
+                // A letter typed with a mark it has no composed form with finds that letter under any such mark, so it
+                // is looked for as the plain letter is, and the matcher tells the names apart.
+                if letter.exact == letter.base || letter.exact == 0x3C2 || letter.exact & 0x8000_0000 != 0 {
+                    tokens.append(.plain(letter.base))
+                } else if let scalar = Unicode.Scalar(letter.exact) {
+                    tokens.append(.literal(either(escaped(String(scalar)), scalar)))
+                }
             }
-            let composed = String(character).precomposedStringWithCanonicalMapping
-            let decomposed = String(character).decomposedStringWithCanonicalMapping
-            // Compared scalar by scalar: Swift's `==` takes the two spellings as equal.
-            let same = composed.unicodeScalars.elementsEqual(decomposed.unicodeScalars)
-            tokens.append(.literal(same ? escaped(composed) : "(?:\(escaped(composed))|\(escaped(decomposed)))"))
         }
         let ligatures = Ligatures(tokens)
         var pattern = "(?i)"
@@ -117,8 +114,23 @@ public enum PlainTextPattern {
         case .literal(let pattern): return pattern
         case .plain(let base):
             let more = (accentedForms[base] ?? "") + ligatures.single[index]
-            return (more.isEmpty ? escapedInClass(base) : "[" + escapedInClass(base) + more + "]") + marks
+            let one = more.isEmpty ? escapedInClass(base) : "[" + escapedInClass(base) + more + "]"
+            return (Unicode.Scalar(base).map { either(one, $0) } ?? one) + marks
         }
+    }
+
+    /// `pattern`, which finds the composed character `scalar`, or one of the other ways a name can spell it.
+    private static func either(_ pattern: String, _ scalar: Unicode.Scalar) -> String {
+        let others = otherSpellings(of: scalar)
+        return others.isEmpty ? pattern : "(?:" + ([pattern] + others).joined(separator: "|") + ")"
+    }
+
+    /// The other ways a name can spell `scalar`, a composed character, as patterns: decomposed, which the matcher
+    /// composes back into it ("か" and its mark for "が", a Hangul syllable's jamo).
+    private static func otherSpellings(of scalar: Unicode.Scalar) -> [String] {
+        // Compared scalar by scalar: Swift's `==` takes the two spellings as equal.
+        let decomposed = String(scalar).decomposedStringWithCanonicalMapping
+        return decomposed.unicodeScalars.elementsEqual([scalar]) ? [] : [escaped(decomposed)]
     }
 
     /// Any marks a name keeps apart from the character before them.
@@ -140,11 +152,13 @@ public enum PlainTextPattern {
     /// One token of a long chain of ligature letters: itself or a ligature that begins with it, and nothing at all
     /// where a ligature before it may have taken it. This finds more names than the matcher keeps, never fewer.
     private static func loose(_ tokens: [Token], _ ligatures: Ligatures, at index: Int) -> String {
-        guard let body = classBody(tokens, ligatures, at: index) else {
+        guard let body = classBody(tokens, ligatures, at: index), case .plain(let base) = tokens[index],
+            let scalar = Unicode.Scalar(base)
+        else {
             return element(tokens, ligatures, at: index)
         }
         let longer = ligatures.runs[index].map(\.ligatures).joined()
-        let one = "[" + body + longer + "]" + marks
+        let one = either("[" + body + longer + "]", scalar) + marks
         return ligatures.reachesAcross[index] ? "(?:" + one + ")?" : one
     }
 
