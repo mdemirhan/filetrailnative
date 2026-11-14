@@ -27,6 +27,11 @@ public final class ThumbnailStore {
         var picture: ThumbnailPicture?
         /// The size it was asked for at.
         var size: Int
+        /// Whether it answers a request at `size`: a picture serves any size up to its own; none at one size says
+        /// nothing of a smaller size, where there may be one (Quick Look refuses pictures too large).
+        func covers(_ size: Int) -> Bool {
+            picture != nil ? self.size >= size : self.size <= size
+        }
         /// The listing the preview was last checked against the file for; nil once the file may have changed since,
         /// so that it is checked again the next time it is asked for.
         var checkedFor: AnyObject?
@@ -159,7 +164,8 @@ public final class ThumbnailStore {
     /// Calls `completion` with the item's preview (nil while it is loading or when there is none). A cached
     /// preview is given at once and checked against the file once per `listing`, so a file that changed
     /// gets a new preview the next time its folder is read, or once `markChanged` names it. One cached at a smaller
-    /// `size` is given at once too, and asked for again at this size. `listing` stands for one reading of the folder:
+    /// `size` is given at once too, and asked for again at this size; a file with no preview at a larger size is asked
+    /// for again at this one. `listing` stands for one reading of the folder:
     /// any object that changes when the list of items does.
     @discardableResult
     public func load(
@@ -172,12 +178,13 @@ public final class ThumbnailStore {
         }
         let cached = cache.read(path)
         completion(cached?.picture)
-        if let cached, cached.checkedFor === listing, cached.size >= size {
+        if let cached, cached.checkedFor === listing, cached.covers(size) {
             return LoadHandle()
         }
-        // A preview too small is made again even when the file is as it was.
-        let knownVersion = cached.flatMap { $0.size >= size ? $0.version : nil }
-        let wanted = max(size, cached?.size ?? 0)
+        // A preview too small is made again even when the file is as it was, and so is one there was none of at a
+        // larger size.
+        let knownVersion = cached.flatMap { $0.covers(size) ? $0.version : nil }
+        let wanted = cached?.picture != nil ? max(size, cached?.size ?? 0) : size
         let cancelled = CancelFlag()
         let provider = self.provider
         loadCount += 1
@@ -199,17 +206,23 @@ public final class ThumbnailStore {
                 : Cached(
                     version: response.version, picture: response.picture, size: wanted, checkedFor: checkedFor,
                     loadNumber: number)
-            if let current = self.cache.peek(path), current.size > wanted, current.checkedFor === listing,
-                current.version == thumbnail.version
+            if thumbnail.picture == nil, let cached, cached.picture != nil, cached.version == thumbnail.version {
+                // No picture at the larger size of a file that is as it was: the smaller one stays.
+                thumbnail.picture = cached.picture
+            }
+            if let current = self.cache.peek(path), current.picture != nil, current.size > wanted,
+                current.checkedFor === listing, current.version == thumbnail.version
             {
                 // A load of a larger size, asked for since and ended first, made a sharper picture of the file as it
                 // is: it stays, and serves this load too.
                 thumbnail = current
             } else if let current = self.cache.peek(path), current.loadNumber > number,
-                current.size >= wanted || current.version != thumbnail.version
+                current.version != thumbnail.version
+                    || (current.size >= wanted && (current.picture != nil || thumbnail.picture == nil))
             {
                 // A load begun later ended first, having read the file later: its picture stays, and serves this load
-                // too, unless this one is a sharper picture of the file as that one found it.
+                // too, unless this one is a sharper picture of the file as that one found it, or a picture where that
+                // one, at a larger size, found none.
                 thumbnail = current
             } else {
                 self.keep(thumbnail, for: path)

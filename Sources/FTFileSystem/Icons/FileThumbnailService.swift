@@ -2,6 +2,7 @@ import AppKit
 import Darwin
 import QuickLookThumbnailing
 import UniformTypeIdentifiers
+import os
 
 /// Quick Look's picture of a file's content.
 public struct ThumbnailPicture: @unchecked Sendable {
@@ -83,6 +84,36 @@ public struct FileThumbnailService: ThumbnailProviding {
     }
 }
 
+/// The pixels of the pictures Quick Look has given and refused while the app runs. Quick Look makes no picture of a
+/// photo, a video or a drawing above some number of pixels, and has no way to ask what that number is, so it is found
+/// by asking: the largest picture given and the smallest refused close in on it.
+final class QuickLookLimits: Sendable {
+    private struct Seen {
+        var given = 0
+        var refused = Int.max
+    }
+
+    private let seen = OSAllocatedUnfairLock(initialState: Seen())
+
+    /// The most pixels a picture given had.
+    var given: Int { seen.withLock { $0.given } }
+    /// The fewest pixels a picture refused would have had; `Int.max` while none was.
+    var refused: Int { seen.withLock { $0.refused } }
+
+    /// A picture given at a size refused before shows that refusal was not for the size.
+    func gave(pixels: Int) {
+        seen.withLock {
+            $0.given = max($0.given, pixels)
+            if $0.given >= $0.refused { $0.refused = Int.max }
+        }
+    }
+
+    /// A refusal at a size given before is not for the size (a file that cannot be read, Quick Look busy).
+    func refused(pixels: Int) {
+        seen.withLock { if pixels > $0.given { $0.refused = min($0.refused, pixels) } }
+    }
+}
+
 /// Asks Quick Look for a picture of the file's content (an image, a PDF page, a video frame, a document
 /// page) that fits in a square of `size` pixels (at most 8192), keeping its proportions. Gives nil when Quick Look has no
 /// preview; the system icon is not returned as a stand-in (see `FileIconStore` for that).
@@ -90,21 +121,130 @@ public struct FileThumbnailService: ThumbnailProviding {
 /// Pictures and videos come back as they are. Everything else (text, PDFs, documents) is drawn the way
 /// Finder draws its icons: a page with its own outline and shadow on a clear background, so a white page
 /// stays visible on a white window.
+///
+/// Quick Look refuses a picture of too many pixels (about 3.5 million: a wide photo 2500 across, a square one 1870).
+/// An image larger than that is read by ImageIO instead, at the size asked for. Of any other file the largest picture
+/// Quick Look gives is found by asking at sizes between one it gives and one it refuses.
 public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     public init() {}
 
+    /// A picture this size across or smaller is never refused for its size: one refused has no preview at all.
+    static let alwaysGivenSide = 1024
+    /// How close to the largest size Quick Look gives the search comes.
+    static let searchStep = 128
+
+    private static let pictureLimits = QuickLookLimits()
+    private static let iconLimits = QuickLookLimits()
+
     public func renderThumbnail(path: String, size: Int) async -> ThumbnailPicture? {
-        let side = CGFloat(min(max(size, 16), 8192))
+        let side = min(max(size, 16), 8192)
         let url = URL(fileURLWithPath: path)
-        let request = QLThumbnailGenerator.Request(
-            fileAt: url, size: CGSize(width: side, height: side), scale: 1.0, representationTypes: .thumbnail)
-        request.iconMode = !Self.showsPicture(url)
-        guard let representation = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
-        else { return nil }
-        let image = representation.cgImage
+        let showsPicture = Self.showsPicture(url)
+        var image: CGImage?
+        if showsPicture, let pixels = Self.imagePixels(url, side: side) {
+            image = await Self.imagePicture(url, side: side, pixels: pixels)
+        }
+        if image == nil {
+            image = await Self.largestPicture(
+                side: side, limits: showsPicture ? Self.pictureLimits : Self.iconLimits
+            ) { await Self.quickLookImage(url, side: $0, iconMode: !showsPicture) }
+        }
+        guard let image else { return nil }
         return ThumbnailPicture(
             image: NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height)),
             isOpaque: Self.isOpaque(image))
+    }
+
+    private static func quickLookImage(_ url: URL, side: Int, iconMode: Bool) async -> CGImage? {
+        let request = QLThumbnailGenerator.Request(
+            fileAt: url, size: CGSize(width: side, height: side), scale: 1.0, representationTypes: .thumbnail)
+        request.iconMode = iconMode
+        return try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request).cgImage
+    }
+
+    /// An image's picture: Quick Look's, which it keeps on disk and gives again fast, unless it would have as many
+    /// pixels as one Quick Look refused; then, and when Quick Look refuses this one, ImageIO's.
+    private static func imagePicture(_ url: URL, side: Int, pixels: Int) async -> CGImage? {
+        let limits = pictureLimits
+        if pixels < limits.refused {
+            if let image = await quickLookImage(url, side: side, iconMode: false) {
+                limits.gave(pixels: image.width * image.height)
+                return image
+            }
+            guard let image = decodedImage(url, side: side) else { return nil }
+            // The file is one that can be read, so the refusal was for the size.
+            limits.refused(pixels: pixels)
+            return image
+        }
+        return decodedImage(url, side: side)
+    }
+
+    /// The pixels the image file's picture has when it fits in a square of `side`, never larger than the image
+    /// itself; nil when the file is not an image ImageIO reads (a video, a drawing).
+    static func imagePixels(_ url: URL, side: Int) -> Int? {
+        guard let source = CGImageSourceCreateWithURL(url.resolvingSymlinksInPath() as CFURL, nil),
+            let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+            let width = properties[kCGImagePropertyPixelWidth] as? Int,
+            let height = properties[kCGImagePropertyPixelHeight] as? Int, width > 0, height > 0
+        else { return nil }
+        let longest = max(width, height)
+        let scale = min(1, Double(side) / Double(longest))
+        return Int(Double(width) * scale) * Int(Double(height) * scale)
+    }
+
+    /// The image file's picture read by ImageIO, upright, its longer side at most `side` and never larger than the
+    /// image itself; nil when the file is not an image ImageIO reads. For the sizes Quick Look refuses.
+    static func decodedImage(_ url: URL, side: Int) -> CGImage? {
+        guard let source = CGImageSourceCreateWithURL(url.resolvingSymlinksInPath() as CFURL, nil),
+            CGImageSourceGetCount(source) > 0
+        else { return nil }
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: side, kCGImageSourceShouldCacheImmediately: true,
+        ]
+        return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+    }
+
+    /// The largest picture `request` gives that fits in a square of `side`; nil when it gives none at any size.
+    ///
+    /// Refused at `side`, it is asked at `alwaysGivenSide`: nothing there is a file with no preview, and a picture
+    /// there shows the file's shape. The search then halves the sizes between that one and `side`, to within
+    /// `searchStep`. `limits` holds what earlier files were given and refused, which a file of any shape starts
+    /// from, so that after the first one a search is one more request.
+    static func largestPicture(
+        side: Int, limits: QuickLookLimits, request: (Int) async -> CGImage?
+    ) async -> CGImage? {
+        if let image = await request(side) {
+            limits.gave(pixels: image.width * image.height)
+            return image
+        }
+        guard side > alwaysGivenSide, var best = await request(alwaysGivenSide) else { return nil }
+        // The pixels of this file's picture at a size, and the size of this file's picture of some pixels.
+        let shape = Double(best.width * best.height) / Double(alwaysGivenSide * alwaysGivenSide)
+        func pixels(_ side: Int) -> Int { Int(Double(side * side) * shape) }
+        func across(pixels: Int) -> Int { Int((Double(pixels) / shape).squareRoot()) }
+        limits.refused(pixels: pixels(side))
+        var given = alwaysGivenSide
+        var refused = side
+        func ask(_ size: Int) async {
+            if let image = await request(size) {
+                limits.gave(pixels: image.width * image.height)
+                best = image
+                given = size
+            } else {
+                limits.refused(pixels: pixels(size))
+                refused = size
+            }
+        }
+        // What other files were given and refused, when it is between this file's two sizes.
+        let known = across(pixels: limits.given)
+        if known > given, known < refused { await ask(known) }
+        let knownRefused = limits.refused == Int.max ? refused : across(pixels: limits.refused)
+        if given == known, knownRefused > given { refused = min(refused, knownRefused) }
+        while refused - given > searchStep {
+            await ask((given + refused) / 2)
+        }
+        return best
     }
 
     /// Whether the file is a picture or a video, whose preview is the content itself. A symlink counts as

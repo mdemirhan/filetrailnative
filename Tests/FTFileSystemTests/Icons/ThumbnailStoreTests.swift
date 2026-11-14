@@ -182,6 +182,56 @@ private func request(
         #expect(provider.calls.count == 2)
     }
 
+    // No picture comes at the larger size of a file that is as it was: the smaller one stays, and is not asked for
+    // again at that size.
+    @Test func aLargerSizeWithNoPictureKeepsTheSmallerPreview() async {
+        let provider = ScriptedProvider { call in
+            ThumbnailResponse(version: "10:20", unchanged: false, picture: call.size > 128 ? nil : picture())
+        }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let path = "/Users/demo/photo.jpeg"
+        _ = store.load(path: path, kind: .file, size: 128, listing: listing) { _ in }
+        await idle(queue)
+        let larger = Receiver()
+        _ = store.load(path: path, kind: .file, size: 4096, listing: listing) { larger.answers.append($0) }
+        await idle(queue)
+        #expect(larger.answers.count == 2 && larger.last != nil)
+        #expect(store.loadedPicture(forPath: path) != nil)
+        _ = store.load(path: path, kind: .file, size: 4096, listing: listing) { _ in }
+        await idle(queue)
+        #expect(provider.calls.count == 2)
+    }
+
+    // The Previews view filling a large screen got no picture; with more, smaller previews in the pane the file is
+    // asked for again and shows. No picture at a small size is not asked for again at a larger one.
+    @Test func aFileWithNoPictureAtALargeSizeIsAskedForAgainAtASmallerOne() async {
+        let provider = ScriptedProvider { call in
+            ThumbnailResponse(version: "10:20", unchanged: false, picture: call.size > 1024 ? nil : picture())
+        }
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        let listing = Listing()
+        let path = "/Users/demo/clip.mov"
+        _ = store.load(path: path, kind: .file, size: 4096, listing: listing) { _ in }
+        await idle(queue)
+        #expect(store.loadedPicture(forPath: path) == nil)
+        let smaller = Receiver()
+        _ = store.load(path: path, kind: .file, size: 768, listing: listing) { smaller.answers.append($0) }
+        await idle(queue)
+        #expect(smaller.answers.count == 2 && smaller.last != nil)
+        #expect(provider.calls.map(\.size) == [4096, 768])
+
+        let none = ScriptedProvider { _ in ThumbnailResponse(version: "10:20", unchanged: false, picture: nil) }
+        let other = ThumbnailStore(provider: none, queue: queue)
+        _ = other.load(path: path, kind: .file, size: 256, listing: listing) { _ in }
+        await idle(queue)
+        _ = other.load(path: path, kind: .file, size: 4096, listing: listing) { _ in }
+        await idle(queue)
+        #expect(none.calls.map(\.size) == [256])
+    }
+
     // Two loads of one file at different sizes, the larger ending first: the smaller one's picture never takes the
     // larger one's place.
     @Test func neverReplacesALargerPreviewWithASmallerOne() async {
