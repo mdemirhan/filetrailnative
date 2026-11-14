@@ -78,10 +78,6 @@ public enum FavoritesPlacement: String, Codable, CaseIterable, Sendable, Hashabl
     case integrated, separate
 }
 
-public enum FileActivationAction: String, Codable, CaseIterable, Sendable, Hashable {
-    case open, edit
-}
-
 /// Where a disk image's disk opens once it is mounted.
 public enum DiskImageOpensIn: String, Codable, CaseIterable, Sendable, Hashable {
     case window, tab

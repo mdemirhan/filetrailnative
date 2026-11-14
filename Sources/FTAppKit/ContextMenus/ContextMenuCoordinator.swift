@@ -385,8 +385,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     private var openItemLimit: Int { tab.preferences.openItemLimit }
 
-    /// `openPaths`: one item on screen goes through what it is; anything else, folders included, is handed to the system
-    /// item by item. Unlike a double-click, "Double-click a file to" has no say here.
+    /// `openPaths`: one item on screen goes through what it is; of several, the archives are extracted together and the
+    /// rest, folders included, handed to the system item by item.
     private func openPaths(_ subject: ContextMenuSubject) async {
         let paths = subject.paths
         guard !paths.isEmpty else { return }
@@ -401,7 +401,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             await openEntry(entry)
             return
         }
-        for path in paths { await openExternally(path) }
+        let archives = paths.filter { ArchiveNames.isArchive(NodePath.basename($0)) }
+        for path in paths where !archives.contains(path) { await openExternally(path) }
+        tab.extractToOpen(archives)
     }
 
     /// Opens one item: a folder, or a symbolic link to one, opens in the tab; anything else is handed to the system, a
@@ -416,12 +418,18 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if let target { await openExternally(target) }
         case .openExternally(let path):
             await openExternally(path)
+        case .extract(let paths):
+            tab.extractToOpen(paths)
         }
     }
 
     /// A failure is only logged.
     private func openExternally(_ path: String) async {
         if tab.noteUseAndOpenDiskImage(path) { return }
+        if ArchiveNames.isArchive(NodePath.basename(path)) {
+            tab.extractToOpen([path])
+            return
+        }
         ActionNoticeText.logOpenFailure(await SystemActions.openPath(path, opener: opener))
     }
 

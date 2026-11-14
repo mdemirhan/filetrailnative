@@ -401,34 +401,6 @@ extension ExplorerWindowlessTests {
 
         // MARK: Opening results
 
-        // With Double-click set to Edit a result still opens, by the activation the list's
-        // own double-click uses; in the folder's list the same press edits.
-        @Test func aResultNeverEdits() async throws {
-            let opened = try await open()
-            let (tab, list) = (opened.tab, opened.list)
-            let spy = OpenSpy()
-            tab.opener = spy.opener
-            var files: [String] = []
-            tab.openFile = { files.append($0.lastPathComponent) }
-            tab.updatePreferences { $0.fileActivationAction = .edit }
-            #expect(tab.preferences.fileActivationAction == .edit)
-            opened.engine.finds = { _ in (["note.txt"], false, false) }
-
-            let inFolder = try #require(tab.content.entries.first { $0.name == "note.txt" })
-            tab.open([inFolder])
-            #expect(await waitUntil { spy.all.contains { $0.hasPrefix("open -a") } })
-            #expect(files.isEmpty)
-
-            let edits = spy.all.count
-            try search("no", opened)
-            harnessLayout(opened)
-            await list.click(name: "note.txt", count: 2)
-            #expect(files == ["note.txt"])
-            #expect(spy.all.count == edits)
-            #expect(tab.search.session.isSearchMode)
-            await opened.harness.close()
-        }
-
         private func harnessLayout(_ opened: Opened) {
             opened.harness.layout(opened.tab)
         }

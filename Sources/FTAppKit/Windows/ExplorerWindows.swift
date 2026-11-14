@@ -94,6 +94,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// What Copy or Cut put on the clipboard, which every window pastes.
     let clipboard = SharedClipboard()
     private var groups: [ExplorerTabGroup] = []
+    /// The window opened last.
+    var newestGroup: ExplorerTabGroup? { groups.last }
     private var nextGroupNumber = 1_000_000
     private var reconcileScheduled = false
 

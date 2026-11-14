@@ -494,15 +494,19 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     // MARK: Windows
 
     /// New Window (⌘N) on the folder on screen, or Open in New Window on `path`, with this tab's view and tree root.
-    func openNewWindow(from tab: MainWindowController, path: String?) {
+    /// `openedItem`: what the new window's tab does once it has read its folder (an item selected in it).
+    func openNewWindow(from tab: MainWindowController, path: String?, openedItem: OpenedItem? = nil) {
         // A new window has one pane: the active one's.
         var preference = tab.activePaneTab
         if let path {
             preference.path = path
             preference.favoritePath = nil
         }
-        guard preference.path?.isEmpty == false else { return }
-        host?.controller.openWindowFrom(windowID, tabs: [preference], activeTabIndex: 0)
+        guard preference.path?.isEmpty == false, let host else { return }
+        guard host.controller.openWindowFrom(windowID, tabs: [preference], activeTabIndex: 0) else { return }
+        if let openedItem, let opened = host.newestGroup, opened !== self {
+            opened.selected?.showOpenedItem(openedItem)
+        }
     }
 
     /// `moveTabToNewWindow`: the tab leaves for a window of its own, its folder, tree and view along; its history

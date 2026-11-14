@@ -167,7 +167,9 @@ extension HelpContent {
                     rows: [
                         HelpRow(
                             label: "Double-click a file",
-                            description: "Opens it, or edits it in your text editor: your choice in Settings → Files."),
+                            description:
+                                "Opens it in its app. A disk image is mounted and an archive is extracted, here in File Trail. To open a text file in your text editor, choose Edit in the File menu or in its right-click menu."
+                        ),
                         HelpRow(
                             label: "Open With",
                             description:
@@ -265,11 +267,13 @@ extension HelpContent {
                         HelpRow(
                             label: "Extract",
                             description:
-                                "File › Extract, or right-click, takes the selected archives apart next to themselves: zip, tar (also .tar.gz, .tgz, .tar.bz2 and .tar.xz), 7z, RAR and xar, and single files compressed with gzip, bzip2 or xz. An archive holding one item gives that item; one holding several gives a folder named after the archive. A name already taken gets the next number, so nothing is replaced. What comes out of a downloaded archive is checked by macOS as the archive would be. Undo moves what was made to the Trash."
+                                "Double-click an archive, or choose File › Extract, to take it apart next to itself: zip, tar (also .tar.gz, .tgz, .tar.bz2 and .tar.xz), 7z, RAR and xar, and single files compressed with gzip, bzip2 or xz. An archive holding one item gives that item; one holding several gives a folder named after the archive. A name already taken gets the next number, so nothing is replaced. What comes out of a downloaded archive is checked by macOS as the archive would be. Undo moves what was made to the Trash. To open an archive in Archive Utility or another app instead, right-click it and choose Open With."
                         ),
                         HelpRow(
                             label: "Extract To",
-                            description: "File › Extract To… takes the archives apart in a folder you choose."),
+                            description:
+                                "File › Extract To… takes the archives apart in a folder you choose. What isn't in a folder you're looking at opens in a new window, or a new tab, as Settings → Files says for disk images and archives."
+                        ),
                         HelpRow(
                             label: "What isn’t extracted",
                             description:

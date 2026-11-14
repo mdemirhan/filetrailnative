@@ -40,6 +40,8 @@ struct WriteEndRefresh: Equatable, Sendable {
     /// What the write made and the folder it made it in, for a pane that shows that folder but isn't the one the tab
     /// has active (a copy, a move or a drag between a tab's panes); nil when it made nothing to select.
     var arrived: AfterWrite.Arrived? = nil
+    /// What an Extract started in this tab made: what of it is in no folder the tab shows opens in a new tab or window.
+    var extracted: [String] = []
 }
 
 /// The explorer window a session belongs to, as the session sees it: its tab on screen, and what a write's end does
@@ -338,7 +340,9 @@ final class ExplorerWriteSession: WriteOperationWindow {
                 treeReloadPaths: AfterWrite.treeReloadPaths(result),
                 // What a Replace removed has another item at its path, which stays selected.
                 leftPaths: AfterWrite.pathsLeftByWrite(result).filter { !replaced.contains($0) },
-                arrived: startedInTabOnScreen ? AfterWrite.arrived(result) : nil)
+                arrived: startedInTabOnScreen ? AfterWrite.arrived(result) : nil,
+                extracted: startedInTabOnScreen && result.action == .extract
+                    ? result.items.compactMap { $0.status == .completed ? $0.destinationPath : nil } : [])
         } else {
             refresh = WriteEndRefresh(path: currentPath, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [])
         }

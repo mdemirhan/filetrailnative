@@ -17,13 +17,15 @@ public enum OpenItems {
         case resolveThenOpen(String)
         /// An app or package, a file, or anything else: the system opens it.
         case openExternally(String)
+        /// Archives: File Trail takes them apart, all in one run, rather than handing them to Archive Utility.
+        case extract([String])
     }
 
     public enum Plan: Equatable, Sendable {
         case nothing
         /// More items than "open at most N items" allows: a notice, and nothing opens.
         case tooMany(action: Action, selected: Int, limit: Int)
-        /// Every item is an editable file and Settings says files are edited: they open in the text editor.
+        /// Edit (⇧⌘E): the files open in the text editor.
         case edit([String])
         /// The items, one after another in list order.
         case steps([Step])
@@ -38,17 +40,6 @@ public enum OpenItems {
     /// The notice's title.
     public static func limitTitle(action: Action) -> String { "Too Many Items to \(action.rawValue)" }
 
-    /// Double-click, Return (set to Open) and ⌘↓ on the selected items, in list order.
-    public static func activation(
-        _ items: [CommandEntry], fileActivation: FileActivationAction, limit: Int
-    ) -> Plan {
-        guard !items.isEmpty else { return .nothing }
-        if fileActivation == .edit, items.allSatisfy({ $0.kind.isEditableFile }) {
-            return editPlan(items.map(\.path), limit: limit)
-        }
-        return openPlan(items, limit: limit)
-    }
-
     /// The files open in the text editor, unless there are more than `limit`.
     public static func editPlan(_ paths: [String], limit: Int) -> Plan {
         guard !paths.isEmpty else { return .nothing }
@@ -56,21 +47,33 @@ public enum OpenItems {
         return .edit(paths)
     }
 
-    /// Only a single selected item is opened by what it is; several are each handed to the system, folders included.
+    /// Double-click, Return (set to Open), ⌘↓ and Open, on the selected items in list order. Only a single selected
+    /// item is opened by what it is; of several, the archives are extracted together and the rest are each handed to
+    /// the system, folders included.
     public static func openPlan(_ items: [CommandEntry], limit: Int) -> Plan {
         guard !items.isEmpty else { return .nothing }
         if items.count > limit { return .tooMany(action: .open, selected: items.count, limit: limit) }
         if items.count == 1 { return .steps([step(for: items[0])]) }
-        return .steps(items.map { .openExternally($0.path) })
+        let archives = items.filter(isArchive).map(\.path)
+        let others: [Step] = items.filter { !isArchive($0) }.map { .openExternally($0.path) }
+        return .steps(others + (archives.isEmpty ? [] : [.extract(archives)]))
     }
 
-    /// What opening one item does: a folder opens in place, a link is followed first, anything else the system opens.
+    /// What opening one item does: a folder opens in place, a link is followed first, an archive is extracted,
+    /// anything else the system opens.
     public static func step(for item: CommandEntry) -> Step {
+        if isArchive(item) { return .extract([item.path]) }
         switch item.kind {
-        case .directory: .navigate(item.path)
-        case .symlinkDirectory: .resolveThenNavigate(item.path)
-        case .symlinkFile: .resolveThenOpen(item.path)
-        case .bundle, .file, .other: .openExternally(item.path)
+        case .directory: return .navigate(item.path)
+        case .symlinkDirectory: return .resolveThenNavigate(item.path)
+        case .symlinkFile: return .resolveThenOpen(item.path)
+        case .bundle, .file, .other: return .openExternally(item.path)
         }
+    }
+
+    /// A file whose name is an archive's Extract takes apart. A link to one is followed first, and its target
+    /// extracted then.
+    static func isArchive(_ item: CommandEntry) -> Bool {
+        item.kind == .file && ArchiveNames.isArchive(NodePath.basename(item.path))
     }
 }

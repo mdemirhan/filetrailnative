@@ -405,25 +405,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // File ▸ Open and ⌘O open; only activation follows "Double-click a file to".
-        @Test func fileOpenOpensWhatActivationWouldEdit() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, _) = try await harness.openList()
-            let spy = spy(tab)
-            var opened: [String] = []
-            tab.openFile = { opened.append($0.path) }
-            tab.updatePreferences { $0.fileActivationAction = .edit }
-            #expect(tab.preferences.fileActivationAction == .edit)
-            try select(["note.txt"], tab)
-            let note = try path("note.txt", tab)
-            let menu = RealMenu(harness, tab)
-            menu.choose("openSelection")
-            #expect(await waitUntil { !opened.isEmpty })
-            #expect(opened == [note])
-            #expect(!spy.all.contains { $0.hasPrefix("open -a") })
-            await harness.close()
-        }
-
         // MARK: What the keys of the write commands take
 
         /// A row clicked as the press reaches the list, in the folder of a window with the app's file operations.

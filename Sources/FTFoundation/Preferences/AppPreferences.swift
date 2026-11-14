@@ -39,7 +39,6 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     @NullEncoded public var terminalApp: ApplicationSelection?
     public var defaultTextEditor: ApplicationSelection
     public var openWithApplications: [OpenWithApplication]
-    public var fileActivationAction: FileActivationAction
     public var diskImageOpensIn: DiskImageOpensIn
     public var returnKeyAction: ReturnKeyAction
     /// The keyboard shortcuts that differ from their defaults, by command.
@@ -92,7 +91,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
             autoCalculateFolderSizes: true, folderTreeOpen: true, propertiesOpen: false, detailRowOpen: false,
             topToolbarItems: ToolbarItems.defaultTopItems, terminalApp: nil,
             defaultTextEditor: AppPreferenceLimits.defaultTextEditor, openWithApplications: [],
-            fileActivationAction: .open, diskImageOpensIn: .window, returnKeyAction: .rename, shortcutOverrides: [:],
+            diskImageOpensIn: .window, returnKeyAction: .rename, shortcutOverrides: [:],
             openItemLimit: 5, includeHidden: false, searchPatternMode: .text, searchMatchScope: .name,
             searchRecursive: true, searchSkipGitFolders: true, searchSkipGitIgnored: false,
             searchResultsSortBy: .path, searchResultsSortDirection: .asc, treeWidth: 280, inspectorWidth: 320,

@@ -562,9 +562,6 @@ final class SettingsPageView: NSView {
 
     private func buildFiles() {
         let opening = section("Opening Files")
-        popup(
-            opening, "Double-click a file to", "Folders always open.", label: "Double-click a file to",
-            options: [(FileActivationAction.open, "Open"), (.edit, "Edit")], \.fileActivationAction)
         let returnKey = SettingsPopup(
             label: "Return key",
             options: [
@@ -585,9 +582,10 @@ final class SettingsPageView: NSView {
             returnRow.setDescription(SettingsValues.returnKeyDescription(display))
         }
         popup(
-            opening, "Open disk images in", "Where a disk opens when you open its disk image.",
-            label: "Open disk images in", options: [(DiskImageOpensIn.window, "New Window"), (.tab, "New Tab")],
-            \.diskImageOpensIn)
+            opening, "Open disk images and archives in",
+            "Where a disk opens, and what an archive gives when it goes to a folder you aren\u{2019}t looking at.",
+            label: "Open disk images and archives in",
+            options: [(DiskImageOpensIn.window, "New Window"), (.tab, "New Tab")], \.diskImageOpensIn)
         let limit = SettingsNumberField(
             value: preferences.openItemLimit, unit: "items", label: "Open and Edit item limit", theme: theme)
         limit.onChange = { [weak self] value in self?.update { $0.openItemLimit = value } }

@@ -230,7 +230,6 @@ public enum PreferencesSanitizer {
             terminalApp: application(record["terminalApp"]),
             defaultTextEditor: application(record["defaultTextEditor"]) ?? defaults.defaultTextEditor,
             openWithApplications: openWithApplications(record["openWithApplications"], defaults.openWithApplications),
-            fileActivationAction: choice(record, "fileActivationAction", defaults.fileActivationAction),
             diskImageOpensIn: choice(record, "diskImageOpensIn", defaults.diskImageOpensIn),
             returnKeyAction: choice(record, "returnKeyAction", defaults.returnKeyAction),
             shortcutOverrides: ShortcutCommands.sanitizeOverrides(record["shortcutOverrides"]),

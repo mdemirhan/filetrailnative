@@ -137,16 +137,9 @@ public enum WriteEndNotices {
                 kind: .success, title: write.action == .undo ? "Undone" : "Redone",
                 message: undoLabel?.isEmpty == false ? undoLabel : nil)
         }
-        if [.newFolder, .pasteAsFile, .rename, .batchRename, .duplicate, .compress].contains(write.action) {
+        // What was extracted is selected where it went, or opens in a new tab or window when no pane shows it.
+        if [.newFolder, .pasteAsFile, .rename, .batchRename, .duplicate, .compress, .extract].contains(write.action) {
             return nil
-        }
-        // What was extracted is selected where it went; only another folder than the one on screen is told of.
-        if write.action == .extract {
-            guard write.status == .completed, let target = write.targetPath, !isSearchMode,
-                !JSString.equals(target, currentPath)
-            else { return nil }
-            return WriteEndToast(
-                kind: .success, title: "Extracted into \(PathText.leafName(target))", message: itemSummary(write))
         }
         let summary = itemSummary(write)
         let target = write.targetPath.map(PathText.leafName)

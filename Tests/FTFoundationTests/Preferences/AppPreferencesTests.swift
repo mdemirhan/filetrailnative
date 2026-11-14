@@ -68,7 +68,6 @@ struct AppPreferencesTests {
         #expect(
             defaults.defaultTextEditor
                 == ApplicationSelection(appPath: "/System/Applications/TextEdit.app", appName: "TextEdit"))
-        #expect(defaults.fileActivationAction == .open)
         #expect(defaults.diskImageOpensIn == .window)
         #expect(defaults.returnKeyAction == .rename)
         #expect(defaults.openItemLimit == 5)
@@ -135,7 +134,7 @@ struct AppPreferencesTests {
         // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
-        #expect(PreferenceKey.allCases.count == 58)
+        #expect(PreferenceKey.allCases.count == 57)
     }
 
     // The Compact List keeps a width for each density; a saved one is kept within 160…600, a missing one is the

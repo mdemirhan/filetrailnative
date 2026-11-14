@@ -900,6 +900,16 @@
               ]
             },
             {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "search",
               "rows": [
                 [
@@ -2042,8 +2052,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -3054,6 +3072,16 @@
               ]
             },
             {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "search",
               "rows": [
                 [
@@ -4195,8 +4223,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -5219,6 +5255,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -6342,8 +6388,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -7357,6 +7411,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -8496,8 +8560,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -9303,6 +9375,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -10269,8 +10351,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -11265,6 +11355,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -12424,8 +12524,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -13425,6 +13533,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -14554,8 +14672,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -15562,6 +15688,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -16711,8 +16847,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -17708,6 +17852,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -18815,8 +18969,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -19835,6 +19997,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -20978,8 +21150,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -21979,6 +22159,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -23115,8 +23305,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -24129,6 +24327,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -25248,8 +25456,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -26273,6 +26489,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -27407,8 +27633,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -28434,6 +28668,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -29577,8 +29821,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -30585,6 +30837,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -31717,8 +31979,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -32724,6 +32994,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -33868,8 +34148,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -34927,6 +35215,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -36061,8 +36359,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -37081,6 +37387,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -38212,8 +38528,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -39220,6 +39544,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -40357,8 +40691,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -41361,6 +41703,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -42492,8 +42844,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -43500,6 +43860,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -44630,8 +45000,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -45656,6 +46034,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -46794,8 +47182,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -47805,6 +48201,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -48927,8 +49333,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -49958,6 +50372,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -51091,8 +51515,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -52103,6 +52535,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -53213,8 +53655,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -54203,6 +54653,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -55347,8 +55807,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -56388,6 +56856,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -57522,8 +58000,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -58535,6 +59021,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -59678,8 +60174,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",
@@ -60700,6 +61204,16 @@
                   "description": "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"
                 }
               ]
+            },
+            {
+              "topic": "files",
+              "rows": [
+                [
+                  "Archives",
+                  "Extract To"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "search",
@@ -61835,8 +62349,16 @@
               "topic": "files",
               "rows": [
                 [
+                  "Opening",
+                  "Double-click a file"
+                ],
+                [
                   "Copying and moving",
                   "Drag"
+                ],
+                [
+                  "Archives",
+                  "Extract To"
                 ],
                 [
                   "Undo and Redo",

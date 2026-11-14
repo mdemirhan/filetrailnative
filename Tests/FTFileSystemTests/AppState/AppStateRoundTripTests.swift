@@ -36,7 +36,6 @@ struct AppStateRoundTripTests {
             "terminalApp": {"appPath": "/Applications/iTerm.app", "appName": "iTerm"},
             "defaultTextEditor": {"appPath": "/Applications/Zed.app", "appName": "Zed"},
             "openWithApplications": [{"id": "a1", "appPath": "/Applications/Zed.app", "appName": "Zed"}],
-            "fileActivationAction": "edit",
             "diskImageOpensIn": "tab",
             "returnKeyAction": "open",
             "shortcutOverrides": {},

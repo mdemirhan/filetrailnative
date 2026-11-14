@@ -567,14 +567,13 @@ import Testing
         }
         #expect(
             titles == [
-                "Double-click a file to", "Return key", "Open disk images in", "Ask before opening more than",
-                "Text editor", "Terminal",
+                "Return key", "Open disk images and archives in", "Ask before opening more than", "Text editor",
+                "Terminal",
             ])
         let returnRow = try Kit.row("Return key", in: controller)
         #expect(returnRow.descriptionText?.stringValue == "⌘O and ⌘↓ always open.")
-        try Kit.control("Double-click a file to", SettingsPopup.self, in: controller).choose("edit")
         try Kit.control("Return key", SettingsPopup.self, in: controller).choose("open")
-        try Kit.control("Open disk images in", SettingsPopup.self, in: controller).choose("tab")
+        try Kit.control("Open disk images and archives in", SettingsPopup.self, in: controller).choose("tab")
         let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)
         #expect(limit.field.stringValue == "5")
         // Not whole digits: the default; else brought into 1 to 50.
@@ -588,8 +587,8 @@ import Testing
         limit.commit()
         #expect(
             recorder.saved == [
-                "fileActivationAction": .string("edit"), "returnKeyAction": .string("open"),
-                "diskImageOpensIn": .string("tab"), "openItemLimit": .number(12),
+                "returnKeyAction": .string("open"), "diskImageOpensIn": .string("tab"),
+                "openItemLimit": .number(12),
             ])
     }
 

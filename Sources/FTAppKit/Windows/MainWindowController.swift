@@ -805,18 +805,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         entries.map { CommandEntry(path: $0.path, kind: FTFoundation.EntryKind(rawValue: $0.kind.rawValue) ?? .other) }
     }
 
-    /// Double-click, Return (set to Open) and ⌘↓: opens the items, or edits them as "Double-click a file to" says.
-    /// ⌘-double-click on a folder opens it in a new tab, as in Finder.
+    /// Double-click, Return (set to Open) and ⌘↓: opens the items, archives extracted. ⌘-double-click on a folder
+    /// opens it in a new tab, as in Finder.
     func open(_ entries: [DirectoryEntry], inNewTab: Bool = false) {
         if inNewTab, entries.count == 1, entries[0].isDirectoryLike {
             openFolderInNewTab(entries[0])
             return
         }
-        let prefs = preferences
-        // Search results always open, never the edit-in-editor activation.
-        let activation = searchRootPath != nil ? FileActivationAction.open : prefs.fileActivationAction
-        perform(
-            OpenItems.activation(commandEntries(entries), fileActivation: activation, limit: prefs.openItemLimit))
+        perform(OpenItems.openPlan(commandEntries(entries), limit: preferences.openItemLimit))
     }
 
     /// A selected folder opens in a new tab or window; a symbolic link to a folder opens the folder it points to, as it
@@ -901,15 +897,29 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                     }
                 case .openExternally(let path):
                     openExternally(path)
+                case .extract(let paths):
+                    extractToOpen(paths)
                 }
             }
         }
     }
 
-    /// A file or app opens in what macOS chooses, a disk image here, as in Finder.
-    /// Either counts as using the folder.
+    /// A file or app opens in what macOS chooses; a disk image is mounted here and an archive extracted here, rather
+    /// than by Archive Utility (Open With still hands it to an app). Either counts as using the folder.
     func openExternally(_ path: String) {
-        if !noteUseAndOpenDiskImage(path) { openFile(URL(fileURLWithPath: path)) }
+        if noteUseAndOpenDiskImage(path) { return }
+        if ArchiveNames.isArchive(NodePath.basename(path)) {
+            extractToOpen([path])
+            return
+        }
+        openFile(URL(fileURLWithPath: path))
+    }
+
+    /// Opening archives: they are extracted, each next to itself, as File ▸ Extract does.
+    func extractToOpen(_ paths: [String]) {
+        guard !paths.isEmpty, let actions = writeActions else { return }
+        onFolderUsed?()
+        Task { _ = await actions.extract(paths) }
     }
 
     /// The start of opening a path, whichever control asks. True when `path` was a disk image, and is dealt with here.

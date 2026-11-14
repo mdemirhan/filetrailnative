@@ -450,23 +450,16 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        /// Sets "Double-click a file to" to Edit: Open from the menu must not listen to it.
-        func editOnDoubleClick(_ tab: MainWindowController) {
-            tab.updatePreferences { $0.fileActivationAction = .edit }
-            tab.preferencesChanged(PreferencesChange(keys: [.fileActivationAction], senderID: nil))
-        }
-
         func openSubject(_ paths: [String], entries: [DirectoryEntry]) -> ContextMenuSubject {
             ContextMenuSubject(
                 surface: .content, paths: paths, targetPath: paths.first,
                 entries: entries.map(ContextMenuCoordinator.commandEntry))
         }
 
-        // `openPaths`: the one file on screen opens in what macOS chooses, whatever a double-click is set to.
-        @Test func openFromTheMenuOpensAFileEvenWhenDoubleClickEdits() async throws {
+        // `openPaths`: the one file on screen opens in what macOS chooses.
+        @Test func openFromTheMenuOpensTheFileInItsApp() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
-            editOnDoubleClick(tab)
             let spy = OpenSpy()
             tab.opener = spy.opener
             tab.contextMenus.opener = spy.opener
@@ -543,16 +536,14 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A failed Edit is told as the menu tells it, whichever control asked: a double-click set to Edit, Return or
-        // the Edit command.
-        @Test func aFailedEditFromADoubleClickOrTheCommandIsToldInANotice() async throws {
+        // A failed Edit is told as the menu tells it, for one file or several.
+        @Test func aFailedEditFromTheCommandIsToldInANotice() async throws {
             struct Refused: LocalizedError {
                 var errorDescription: String? { "The editor is gone." }
             }
             let harness = try ExplorerHarness.windowless()
             try "x".write(to: harness.folder.appending("second.txt"), atomically: true, encoding: .utf8)
             let tab = try await opened(harness)
-            editOnDoubleClick(tab)
             let editor = tab.preferences.defaultTextEditor
             tab.opener = SystemOpener(
                 openPath: { _ in "" }, openWithApplication: { _, _ in throw Refused() }, reveal: { _ in },
@@ -560,7 +551,8 @@ extension ExplorerWindowlessTests {
             let note = try entry(tab, "note.txt")
             let second = try entry(tab, "second.txt")
 
-            tab.open([note])
+            tab.content.select(paths: [note.path])
+            tab.perform(.editSelection)
             #expect(await waitUntil { tab.frontAlert != nil })
             #expect(tab.frontAlert?.titleLabel.stringValue == "Couldn’t Open in \(editor.appName)")
             #expect(

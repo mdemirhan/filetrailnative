@@ -79,20 +79,20 @@ struct OpenItemsTests {
 
     @Test func oneItemIsOpenedAccordingToWhatItIs() {
         func steps(_ item: CommandEntry) -> OpenItems.Plan {
-            OpenItems.activation([item], fileActivation: .open, limit: 5)
+            OpenItems.openPlan([item], limit: 5)
         }
         #expect(steps(folder) == .steps([.navigate("/f/folder")]))
         #expect(steps(app) == .steps([.openExternally("/f/App.app")]))
         #expect(steps(file) == .steps([.openExternally("/f/a.txt")]))
         #expect(steps(folderAlias) == .steps([.resolveThenNavigate("/f/link")]))
         #expect(steps(fileAlias) == .steps([.resolveThenOpen("/f/alias.txt")]))
-        #expect(OpenItems.activation([], fileActivation: .open, limit: 5) == .nothing)
+        #expect(OpenItems.openPlan([], limit: 5) == .nothing)
     }
 
     // Several items go to the system one after another, folders included.
     @Test func severalItemsAreEachHandedToTheSystem() {
         #expect(
-            OpenItems.activation([folder, file], fileActivation: .open, limit: 5)
+            OpenItems.openPlan([folder, file], limit: 5)
                 == .steps([.openExternally("/f/folder"), .openExternally("/f/a.txt")]))
     }
 
@@ -100,7 +100,7 @@ struct OpenItemsTests {
     @Test func moreThanTheLimitOpensNone() {
         let many = (0..<6).map { CommandEntry(path: "/f/\($0)", kind: .file) }
         #expect(
-            OpenItems.activation(many, fileActivation: .open, limit: 5)
+            OpenItems.openPlan(many, limit: 5)
                 == .tooMany(action: .open, selected: 6, limit: 5))
         #expect(OpenItems.limitTitle(action: .open) == "Too Many Items to Open")
         #expect(
@@ -111,18 +111,21 @@ struct OpenItemsTests {
                 == "File Trail edits up to 1 item at a time, and 3 are selected. You can change this in Settings.")
     }
 
-    // Files are edited when Settings says so and every selected item is an editable file.
-    @Test func filesAreEditedWhenSettingsSaysSoAndEveryItemIsEditable() {
+    // Archives are taken apart by File Trail, several in one run, after the other items are handed on; a folder named
+    // like an archive is a folder, and a link to an archive is followed first.
+    @Test func archivesAreExtractedTogether() {
+        let zip = CommandEntry(path: "/f/Photos.zip", kind: .file)
+        let tgz = CommandEntry(path: "/f/src.tar.gz", kind: .file)
+        #expect(OpenItems.openPlan([zip], limit: 5) == .steps([.extract(["/f/Photos.zip"])]))
         #expect(
-            OpenItems.activation([file, fileAlias], fileActivation: .edit, limit: 5)
-                == .edit(["/f/a.txt", "/f/alias.txt"]))
-        // Folders and mixed selections are opened.
-        #expect(OpenItems.activation([folder], fileActivation: .edit, limit: 5) == .steps([.navigate("/f/folder")]))
-        #expect(
-            OpenItems.activation([file, folder], fileActivation: .edit, limit: 5)
-                == .steps([.openExternally("/f/a.txt"), .openExternally("/f/folder")]))
-        #expect(
-            OpenItems.activation([file, fileAlias], fileActivation: .edit, limit: 1)
-                == .tooMany(action: .edit, selected: 2, limit: 1))
+            OpenItems.openPlan([zip, file, tgz], limit: 5)
+                == .steps([.openExternally("/f/a.txt"), .extract(["/f/Photos.zip", "/f/src.tar.gz"])]))
+        let folderNamedLikeOne = CommandEntry(path: "/f/Old.zip", kind: .directory)
+        #expect(OpenItems.openPlan([folderNamedLikeOne], limit: 5) == .steps([.navigate("/f/Old.zip")]))
+        let link = CommandEntry(path: "/f/link.zip", kind: .symlinkFile)
+        #expect(OpenItems.openPlan([link], limit: 5) == .steps([.resolveThenOpen("/f/link.zip")]))
+        // A document that is a zip inside opens in its app.
+        let book = CommandEntry(path: "/f/book.epub", kind: .file)
+        #expect(OpenItems.openPlan([book], limit: 5) == .steps([.openExternally("/f/book.epub")]))
     }
 }

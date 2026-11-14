@@ -1,5 +1,6 @@
 // What a tab does with a write command, and with a write's end
 import AppKit
+import FTFileSystem
 import FTFoundation
 import FTOperations
 
@@ -338,10 +339,42 @@ extension MainWindowController {
             let arrived = refresh.arrived.flatMap { samePath($0.folder, pane.shownFolderPath) ? $0.paths : nil }
             pane.readAgain(selecting: arrived)
         }
+        showExtractedElsewhere(refresh.extracted)
         // The folder stays, so the tree only follows, opening nothing; then what it shows is read again.
         Task { [path = refresh.path] in
             if treeFollows { await model.folderOpened(path, open) }
             if !refresh.treeReloadPaths.isEmpty { await model.refreshWriteBranches(refresh.treeReloadPaths) }
+        }
+    }
+}
+
+extension MainWindowController {
+    /// What an Extract made where no pane of the tab shows it (Extract To another folder, archives in search
+    /// results) opens in a new tab, or a new window, as Settings says for disk images and archives: a folder opens on
+    /// itself, a file in its folder, selected. What went into a folder on screen is selected there instead.
+    func showExtractedElsewhere(_ made: [String]) {
+        guard !made.isEmpty, let group else { return }
+        let shown = panes.compactMap { pane -> String? in
+            pane.loaded && pane.searchRootPath == nil && !pane.shownFolderPath.isEmpty ? pane.shownFolderPath : nil
+        }
+        let inNewWindow = preferences.diskImageOpensIn == .window
+        Task { [weak self] in
+            let kinds = await Task.detached(priority: .userInitiated) {
+                made.map { (try? NativeFileSystem().stat($0))?.isDirectory ?? false }
+            }.value
+            guard let self else { return }
+            for (path, isFolder) in zip(made, kinds) {
+                guard let folder = ExplorerTabs.parentDirectoryPath(path),
+                    !shown.contains(where: { samePath($0, folder) })
+                else { continue }
+                let target = isFolder ? path : folder
+                let item: OpenedItem = isFolder ? .folder : .selecting(path)
+                if inNewWindow {
+                    group.openNewWindow(from: self, path: target, openedItem: item)
+                } else {
+                    group.openTab(path: target, from: self, openedItem: item)
+                }
+            }
         }
     }
 }

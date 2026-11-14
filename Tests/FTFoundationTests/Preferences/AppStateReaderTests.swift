@@ -185,7 +185,6 @@ struct AppStateReaderTests {
         #expect(reloaded.searchColumnWidths.folder == 80)
         #expect(reloaded.searchColumnWidths.size == 108)
         #expect(reloaded.searchResultsSortBy == .kind)
-        #expect(reloaded.fileActivationAction == .open)
         #expect(reloaded.diskImageOpensIn == .window)
         #expect(reloaded.openItemLimit == 50)
         #expect(reloaded.treeRootPath == nil)
