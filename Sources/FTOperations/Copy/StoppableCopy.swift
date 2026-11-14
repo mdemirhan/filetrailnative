@@ -79,9 +79,13 @@ public struct StoppableCopy: Sendable {
             try copy(source, destination, nil)
             return
         }
-        try stop?.throwIfStopped()
         let control = CopyControl()
-        let token = stop?.onStop { control.stop() }
+        var token: Int?
+        if let stop {
+            // Refused once the signal has stopped, a Stop that came just before too: the copy doesn't start.
+            guard let registered = stop.onStop({ control.stop() }) else { throw StopError() }
+            token = registered
+        }
         let ticking = onProgress.map { onProgress in
             let reported = OSAllocatedUnfairLock(initialState: Int64(0))
             return ticker.start(every: Self.progressInterval) {

@@ -121,6 +121,31 @@ struct StoppableCopyTests {
         #expect(calls.all.isEmpty)
     }
 
+    // A Stop that comes from another thread as the copy starts either keeps it from starting or stops it: never a
+    // copy left running to its end after Stop.
+    @Test func aStopAsTheCopyStartsIsNeverMissed() {
+        let missed = OSAllocatedUnfairLock(initialState: 0)
+        DispatchQueue.concurrentPerform(iterations: 4_000) { _ in
+            let stop = StopSignal()
+            let started = DispatchSemaphore(value: 0)
+            let copy = StoppableCopy(copy: { _, _, control in
+                // The other thread's Stop has come by the time it is looked at.
+                started.wait()
+                if control?.isStopped != true { missed.withLock { $0 += 1 } }
+            })
+            DispatchQueue.global().async {
+                stop.stop()
+                started.signal()
+            }
+            do {
+                try copy.copyFile("/a", to: "/b", stop: stop)
+            } catch {
+                started.wait()
+            }
+        }
+        #expect(missed.withLock { $0 } == 0)
+    }
+
     // The real ticker tells the bytes copied so far while the copy runs.
     @Test func reportsProgressOnTheRealTicker() throws {
         let progress = OSAllocatedUnfairLock(initialState: [Int64]())
