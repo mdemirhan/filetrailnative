@@ -399,6 +399,8 @@ struct AppStateReaderTests {
             #expect(tab?.secondPane?.viewSizes?.detailColumnWidths.name == name)
             #expect(tab?.secondPane?.viewSizes?.searchColumnWidths.folder == folder)
             #expect(tab?.secondPane?.viewSizes?.iconSizes.standard == 48)
+            // Saved before a pane kept its filter mode: it starts with the one chosen last.
+            #expect(tab?.filterMode == nil && tab?.secondPane?.filterMode == nil)
         }
         #expect(state.preferences?.detailColumnWidths.name == 300)
     }

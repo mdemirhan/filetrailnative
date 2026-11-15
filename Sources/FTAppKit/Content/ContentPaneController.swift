@@ -746,6 +746,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// The mode the view starts in, as it opens: a filter already typed keeps its own.
+    /// The mode of the folder's own view, which the pane is saved with: while search results show, the one the folder
+    /// comes back in.
+    var folderFilterMode: NameMatchMode { keptFolder?.filterMode ?? viewFilterMode }
+
     func setViewFilterMode(_ mode: NameMatchMode) {
         viewFilterMode = mode
     }

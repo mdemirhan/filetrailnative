@@ -44,6 +44,23 @@ struct SavedPanesTests {
         #expect(read[1].includeHidden && read[1].secondPane?.includeHidden == true)
     }
 
+    // Each pane keeps how typing filters its folders. A file saved before that has none, and so has one naming a
+    // mode this build doesn't know: the pane starts with the mode chosen last. What is read is written the same.
+    @Test func readsEachPanesOwnFilterMode() throws {
+        let read = try tabs(
+            #"[{"path": "/a", "filterMode": "contains", "secondPane": {"path": "/b", "filterMode": "fuzzy"}}, {"path": "/c", "secondPane": {"path": "/d", "filterMode": "contains"}}, {"path": "/e", "filterMode": "soundsLike", "secondPane": {"path": "/f", "filterMode": 3}}]"#
+        )
+        #expect(read[0].filterMode == .contains && read[0].secondPane?.filterMode == .fuzzy)
+        #expect(read[1].filterMode == nil && read[1].secondPane?.filterMode == .contains)
+        #expect(read[2].filterMode == nil && read[2].secondPane?.filterMode == nil)
+        let again = PreferencesSanitizer.openTabs(
+            try JSONNode.of(read), includeHidden: false, foldersFirst: true, favoritesExpanded: true,
+            locationsExpanded: true)
+        #expect(again == read)
+        // A window opened from a tab's active pane has a new pane: it carries no mode.
+        #expect(read[0].activePaneAlone.filterMode == nil)
+    }
+
     @Test func aDamagedDividerIsKeptInItsRangeAndAnUnknownActivePaneIsTheFirst() throws {
         let read = try tabs(
             #"[{"path": "/a", "secondPane": {"path": ""}, "activePane": 7, "paneSplit": 3}, {"path": "/b", "secondPane": {}, "paneSplit": -1}]"#

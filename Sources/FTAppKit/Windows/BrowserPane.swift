@@ -100,6 +100,10 @@ final class BrowserPane {
         return header
     }()
 
+    /// The filter mode the pane was saved with, which its list starts in; nil for a new pane, which starts with the
+    /// mode chosen last.
+    let startFilterMode: NameMatchMode?
+
     init(
         tab startup: StartupTab, history: (paths: [String], index: Int)?, folderSizes: WindowFolderSizes,
         startsTheWindow: Bool
@@ -115,6 +119,7 @@ final class BrowserPane {
         includeHidden = startup.includeHidden
         foldersFirst = startup.foldersFirst
         viewSizes = startup.viewSizes
+        startFilterMode = startup.filterMode
         if let history, history.paths.indices.contains(history.index) {
             navigationHistory = NavigationHistory(paths: history.paths, index: history.index)
         } else {

@@ -458,7 +458,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             viewMode: snapshot.viewMode, searchViewMode: snapshot.searchViewMode, sortBy: snapshot.sortBy,
             sortDirection: snapshot.sortDirection, includeHidden: snapshot.includeHidden,
             foldersFirst: snapshot.foldersFirst, favoritesExpanded: snapshot.favoritesExpanded,
-            locationsExpanded: snapshot.locationsExpanded, viewSizes: snapshot.viewSizes)
+            locationsExpanded: snapshot.locationsExpanded, viewSizes: snapshot.viewSizes,
+            filterMode: snapshot.filterMode)
         self.init(tab: startup, history: (snapshot.historyPaths, snapshot.historyIndex), frame: frame)
         startingPane = snapshot.focusedPane
         if let view = snapshot.view { carry(view, of: snapshot) }
@@ -507,8 +508,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return tab
     }
 
-    /// The active pane alone, as a new window starts from it.
-    var activePaneTab: OpenTabPreference { paneTab(activePane) }
+    /// The active pane alone, as a new window starts from it: its pane is a new one, which starts with the filter
+    /// mode chosen last.
+    var activePaneTab: OpenTabPreference {
+        var tab = paneTab(activePane)
+        tab.filterMode = nil
+        return tab
+    }
 
     private func paneTab(_ pane: BrowserPane) -> OpenTabPreference {
         let path = pane.shownFolderPath
@@ -517,7 +523,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             favoritePath: favoritePath == path ? favoritePath : nil, viewMode: pane.viewMode,
             searchViewMode: pane.searchViewMode, sortBy: pane.sortBy, sortDirection: pane.sortDirection,
             includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded, viewSizes: savedViewSizes(pane))
+            locationsExpanded: locationsExpanded, viewSizes: savedViewSizes(pane),
+            filterMode: pane.content.folderFilterMode)
     }
 
     /// The sizes a pane is saved with: its own, or for one not shown yet the app's as they are now, so a workspace
@@ -532,7 +539,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return OpenPanePreference(
             path: path.isEmpty ? nil : path, viewMode: pane.viewMode, searchViewMode: pane.searchViewMode,
             sortBy: pane.sortBy, sortDirection: pane.sortDirection, includeHidden: pane.includeHidden,
-            foldersFirst: pane.foldersFirst, viewSizes: savedViewSizes(pane))
+            foldersFirst: pane.foldersFirst, viewSizes: savedViewSizes(pane),
+            filterMode: pane.content.folderFilterMode)
     }
 
     /// The tab as a new tab or a reopened one starts from it.
@@ -590,6 +598,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             includeHidden: first.includeHidden, foldersFirst: first.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, view: liveView)
         snapshot.viewSizes = first.viewSizes
+        snapshot.filterMode = first.content.folderFilterMode
         if panes.count > 1 {
             let second = panes[1]
             snapshot.secondPane = PaneSnapshot(
@@ -1301,6 +1310,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             let mode = pane.content.toggleFilterMode()
             pane.searchStore?.header.showFilterMode(pane.content.filterMode)
             self.updatePreferences { $0.listFilterMatch = mode }
+            // The pane's mode is saved with it.
+            self.group?.tabChanged(self)
         }
         content.onColumnWidthsChanged = { [weak self, weak pane] widths in
             guard let pane else { return }
@@ -1326,7 +1337,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.setView(
             sortBy: pane.sortBy, direction: pane.sortDirection, foldersFirst: pane.foldersFirst,
             includeHidden: pane.includeHidden)
-        content.setViewFilterMode(preferences.listFilterMatch)
+        content.setViewFilterMode(pane.startFilterMode ?? preferences.listFilterMatch)
         content.sizeShortcuts = sizeShortcuts
         content.setColumns(pane.columns(from: preferences))
         content.setMode(pane.viewMode)

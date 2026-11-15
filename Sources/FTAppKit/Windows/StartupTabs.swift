@@ -20,6 +20,9 @@ public struct StartupTab: Equatable, Sendable {
     public var paneSplit: Double? = nil
     /// The sizes its pane shows its views at; nil to start from the app's.
     public var viewSizes: PaneViewSizes? = nil
+    /// How typing filters its pane's folders, for a pane that comes back; nil for a new one, which starts with the
+    /// mode chosen last.
+    public var filterMode: NameMatchMode? = nil
 
     /// The tab as it is saved between launches.
     public var openTab: OpenTabPreference {
@@ -28,7 +31,7 @@ public struct StartupTab: Equatable, Sendable {
             favoritePath: favoritePath, viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy,
             sortDirection: sortDirection, includeHidden: includeHidden, foldersFirst: foldersFirst,
             favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded, secondPane: secondPane,
-            activePane: activePane, paneSplit: paneSplit, viewSizes: viewSizes)
+            activePane: activePane, paneSplit: paneSplit, viewSizes: viewSizes, filterMode: filterMode)
     }
 }
 
@@ -61,6 +64,7 @@ public enum StartupTabs {
         start.activePane = tab.activePane
         start.paneSplit = tab.paneSplit
         start.viewSizes = tab.viewSizes
+        start.filterMode = tab.filterMode
         return start
     }
 
@@ -113,7 +117,7 @@ public enum StartupTabs {
             favoritePath: nil, viewMode: second.viewMode, searchViewMode: second.searchViewMode,
             sortBy: second.sortBy, sortDirection: second.sortDirection, includeHidden: second.includeHidden,
             foldersFirst: second.foldersFirst, favoritesExpanded: tab.favoritesExpanded,
-            locationsExpanded: tab.locationsExpanded, viewSizes: second.viewSizes)
+            locationsExpanded: tab.locationsExpanded, viewSizes: second.viewSizes, filterMode: second.filterMode)
     }
 
     /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it.

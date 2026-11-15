@@ -72,6 +72,50 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Each pane is saved with its own mode, the folder's while results show in it, and comes back in it at the
+        // next launch, from a workspace, by Reopen Closed Tab and Duplicate Tab, whatever was chosen last elsewhere;
+        // a tab or a window opened from it has a new pane, which starts with the mode chosen last.
+        @Test func aPaneIsSavedWithItsModeAndComesBackInIt() async throws {
+            let (harness, tab) = try await twoPanes()
+            let (left, right) = (tab.panes[0], tab.panes[1])
+            left.content.onToggleFilterMode?()
+            #expect(tab.openTab.filterMode == .contains)
+            #expect(tab.openTab.secondPane?.filterMode == .fuzzy)
+            // Results in the left pane switched to Fuzzy: the folder's Contains is what is saved.
+            await search(tab, left)
+            left.content.onToggleFilterMode?()
+            #expect(left.content.filterMode == .fuzzy)
+            #expect(tab.openTab.filterMode == .contains)
+            #expect(tab.snapshot.filterMode == .contains)
+            #expect(tab.preferences.listFilterMatch == .fuzzy)
+
+            // As the next launch or a workspace opens it, and as Reopen Closed Tab or Duplicate Tab does.
+            let home = FileManager.default.homeDirectoryForCurrentUser.path
+            let relaunched = MainWindowController(
+                tab: StartupTabs.startupTab(tab.openTab, homePath: home), frame: nil)
+            let copy = MainWindowController(snapshot: tab.snapshot, frame: nil)
+            for restored in [relaunched, copy] {
+                // Each list has its mode from the start, before its folder is read.
+                #expect(restored.panes.count == 2)
+                #expect(restored.panes[0].content.filterMode == .contains)
+                #expect(restored.panes[1].content.filterMode == .fuzzy)
+            }
+            // The other way round: the right pane's Contains comes back while Fuzzy was chosen last.
+            tab.activate(right)
+            right.content.onToggleFilterMode?()
+            tab.activate(left)
+            left.search.session.hideResults()
+            left.content.onToggleFilterMode?()
+            #expect(tab.preferences.listFilterMatch == .fuzzy)
+            #expect(tab.openTab.filterMode == .fuzzy && tab.openTab.secondPane?.filterMode == .contains)
+
+            // A new tab and a new window from it carry no mode.
+            #expect(tab.startupTab.filterMode == nil)
+            #expect(tab.activePaneTab.filterMode == nil)
+            #expect(ExplorerTabs.newTab(from: tab.snapshot).filterMode == nil)
+            await harness.close()
+        }
+
         // The setting changes no view open: not one with nothing typed, nor one in another folder after; a pane opened
         // after it starts in it.
         @Test func theSettingChangesNoViewOpen() async throws {

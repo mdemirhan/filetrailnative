@@ -455,13 +455,16 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
     /// The sizes its first pane shows its views at; nil in a file saved before panes kept their own, which then
     /// start from the app's.
     public var viewSizes: PaneViewSizes?
+    /// How typing filters its first pane's folders, Fuzzy or Contains; nil in a file saved before panes kept
+    /// theirs, and for a tab a new window starts from: the pane then starts with the mode chosen last.
+    public var filterMode: NameMatchMode?
 
     public init(
         path: String?, treeRootPath: String?, favoritePath: String?, viewMode: ExplorerViewMode,
         searchViewMode: ExplorerViewMode, sortBy: SortByPreference, sortDirection: SortDirectionPreference,
         includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool,
         secondPane: OpenPanePreference? = nil, activePane: Int? = nil, paneSplit: Double? = nil,
-        viewSizes: PaneViewSizes? = nil
+        viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil
     ) {
         self.path = path
         self.treeRootPath = treeRootPath
@@ -478,9 +481,11 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         self.activePane = secondPane == nil ? nil : activePane
         self.paneSplit = secondPane == nil ? nil : paneSplit
         self.viewSizes = viewSizes
+        self.filterMode = filterMode
     }
 
     /// The tab with its active pane alone, as a new window starts from it: that pane's folder, view, order and sizes.
+    /// Its pane is a new one, which starts with the filter mode chosen last.
     public var activePaneAlone: OpenTabPreference {
         var alone = self
         if activePane == 1, let second = secondPane {
@@ -497,6 +502,7 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         alone.secondPane = nil
         alone.activePane = nil
         alone.paneSplit = nil
+        alone.filterMode = nil
         return alone
     }
 }
@@ -513,11 +519,13 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
     public var foldersFirst: Bool
     /// The sizes the pane shows its views at; nil in a file saved before panes kept their own.
     public var viewSizes: PaneViewSizes?
+    /// How typing filters the pane's folders; nil in a file saved before panes kept theirs.
+    public var filterMode: NameMatchMode?
 
     public init(
         path: String?, viewMode: ExplorerViewMode, searchViewMode: ExplorerViewMode, sortBy: SortByPreference,
         sortDirection: SortDirectionPreference, includeHidden: Bool, foldersFirst: Bool,
-        viewSizes: PaneViewSizes? = nil
+        viewSizes: PaneViewSizes? = nil, filterMode: NameMatchMode? = nil
     ) {
         self.path = path
         self.viewMode = viewMode
@@ -527,6 +535,7 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
         self.includeHidden = includeHidden
         self.foldersFirst = foldersFirst
         self.viewSizes = viewSizes
+        self.filterMode = filterMode
     }
 }
 

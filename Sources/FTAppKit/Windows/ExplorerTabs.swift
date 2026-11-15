@@ -56,6 +56,8 @@ public struct TabSnapshot: Equatable, Sendable {
     public var paneSplit: Double?
     /// The sizes its first pane shows its views at; the second pane's are with it.
     public var viewSizes: PaneViewSizes?
+    /// How typing filters its first pane's folders; the second pane's is with it.
+    public var filterMode: NameMatchMode?
 
     public init(
         currentPath: String, historyPaths: [String], historyIndex: Int, viewMode: ExplorerViewMode = .icons,
@@ -264,6 +266,8 @@ public enum ExplorerTabs {
             // What the first pane had on screen isn't this folder's.
             new.view?.directoryError = nil
         }
+        // Its pane is a new one: it starts with the filter mode chosen last.
+        new.filterMode = nil
         new.secondPane = nil
         new.activePane = 0
         new.paneSplit = nil

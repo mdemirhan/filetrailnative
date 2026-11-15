@@ -84,7 +84,7 @@ extension MainWindowController {
             path: saved.path ?? "", rootPath: treeRootPath, favoritePath: nil, viewMode: saved.viewMode,
             searchViewMode: saved.searchViewMode, sortBy: saved.sortBy, sortDirection: saved.sortDirection,
             includeHidden: includeHidden, foldersFirst: saved.foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded, viewSizes: saved.viewSizes)
+            locationsExpanded: locationsExpanded, viewSizes: saved.viewSizes, filterMode: saved.filterMode)
         let pane = addSecondPane(start: start, history: history)
         if let split { workspace.setPaneSplit(split) }
         if loaded { pane.ensureLoaded() }
