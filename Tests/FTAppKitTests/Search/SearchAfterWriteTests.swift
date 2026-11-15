@@ -102,6 +102,36 @@ private func keys(_ paths: [String]) -> Set<ExactPath> { Set(paths.map(ExactPath
         #expect(!effect.addsInside(root))
     }
 
+    // A folder renamed with items inside it, in one batch: the folder takes them along, so the one renamed with it
+    // and the one only selected with it are renamed, not moved away, and nothing arrived; the Undo too.
+    @Test func aFolderRenamedWithItemsInsideItRenamesThem() {
+        let effect = write(
+            .batchRename,
+            [
+                item(docs + "/inner.txt", root + "/Papers/renamed.txt"),
+                item(docs + "/Deep/c.txt", root + "/Papers/Low/C.txt"),
+                item(docs + "/other.txt", root + "/Papers/other.txt", .skipped),
+                item(docs + "/Deep", root + "/Papers/Low"),
+                item(docs, root + "/Papers"),
+            ])
+        #expect(effect.removed == [])
+        #expect(
+            Set(effect.renamed.map(\.to))
+                == [
+                    root + "/Papers", root + "/Papers/renamed.txt", root + "/Papers/other.txt", root + "/Papers/Low",
+                    root + "/Papers/Low/C.txt",
+                ])
+        #expect(!effect.addsInside(root))
+        let undone = write(
+            .undo, [item(root + "/Papers/renamed.txt", docs + "/inner.txt"), item(root + "/Papers", docs)])
+        #expect(undone.removed == [])
+        #expect(undone.renamed.count == 2)
+        // An item moved into a folder renamed by the same write went somewhere else.
+        let moved = write(.undo, [item(a, root + "/Papers/a.txt"), item(docs, root + "/Papers")])
+        #expect(moved.removed == [a])
+        #expect(moved.addsInside(root))
+    }
+
     // An Undo that renames back renames; one that moves back into the search's folder adds inside it; one that moved
     // an item to the Trash removes it.
     @Test func undoRenamesMovesAndRemoves() {

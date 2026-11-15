@@ -13,7 +13,7 @@ typealias ExactPath = FTFoundation.NameKeys.Exact
 struct SearchAfterWrite: Equatable {
     /// What the write took away: moved to the Trash, deleted, or moved into another folder.
     var removed: [String] = []
-    /// What it renamed in its own folder.
+    /// What it renamed in its own folder, a folder renamed with it taking it along.
     var renamed: [SearchResultRename] = []
     /// What it put somewhere, outside the Trash: what it copied, moved into another folder, made or brought back.
     var arrived: [String] = []
@@ -25,9 +25,18 @@ struct SearchAfterWrite: Equatable {
         let completed = result.items.filter { $0.status == .completed }
         var renamedTo = Set<ExactPath>()
         if AfterWrite.movedItems(result) {
-            for move in WriteEffects.followedMoves(result.action, items: result.items) {
-                if NodePath.dirname(move.from).utf8.elementsEqual(NodePath.dirname(move.to).utf8) {
-                    renamed.append(SearchResultRename(from: move.from, to: move.to))
+            // The shallowest first: a folder renamed with items inside it is known before they are, so an item
+            // whose folder took it along under its new name is renamed (or stays as it is) rather than moved away.
+            let moves = WriteEffects.followedMoves(result.action, items: result.items)
+                .sorted { $0.from.utf8.count < $1.from.utf8.count }
+            var renames = SearchResultRenames()
+            for move in moves {
+                let folder = NodePath.dirname(move.from)
+                let folderNow = renames.path(folder) ?? folder
+                if folderNow.utf8.elementsEqual(NodePath.dirname(move.to).utf8) {
+                    let rename = SearchResultRename(from: move.from, to: move.to)
+                    renamed.append(rename)
+                    renames.add(rename)
                     renamedTo.insert(ExactPath(move.to))
                 } else {
                     removed.append(move.from)

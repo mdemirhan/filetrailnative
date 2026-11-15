@@ -180,6 +180,41 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
+        // A found folder and results inside it renamed by one Rename of several: the folder's row is renamed, and the
+        // result renamed with it and the one only selected with it keep their rows under it; nothing says the list
+        // may be missing anything. Undo puts every row back.
+        @Test func aFolderAndResultsInsideItRenamedTogetherKeepTheirRows() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let pane = tab.activePane
+            try make(window, "Alpha/inner.txt")
+            try make(window, "Alpha/other.txt")
+            let engine = try await searching(
+                window, finding: ["note.txt", "Alpha/", "Alpha/inner.txt", "Alpha/other.txt", "Alpha/Inner/"])
+            let searches = engine.starts.count
+            let actions = try #require(tab.writeActions)
+
+            _ = await actions.batchRename(
+                BatchRenameRequest(items: [
+                    .init(sourcePath: path(window, "Alpha"), destinationName: "Omega", isFolder: true),
+                    .init(sourcePath: path(window, "Alpha/inner.txt"), destinationName: "renamed.txt", isFolder: false),
+                    .init(sourcePath: path(window, "Alpha/other.txt"), destinationName: "other.txt", isFolder: false),
+                ]))
+            #expect(await waitUntil { window.exists("Omega/renamed.txt") })
+            await idle(window)
+            #expect(rows(pane) == ["Omega", "Omega/Inner", "Omega/other.txt", "Omega/renamed.txt", "note.txt"])
+            #expect(tellsNothing(pane))
+
+            _ = await actions.undo()
+            #expect(await waitUntil { window.exists("Alpha/inner.txt") })
+            await idle(window)
+            #expect(rows(pane) == ["Alpha", "Alpha/Inner", "Alpha/inner.txt", "Alpha/other.txt", "note.txt"])
+            #expect(engine.starts.count == searches)
+            #expect(tellsNothing(pane))
+            pane.search.session.hideResults()
+            await window.close()
+        }
+
         // MARK: Put inside
 
         // A result dragged onto a folder found leaves its row; the list says it may be missing it, and Search Again
