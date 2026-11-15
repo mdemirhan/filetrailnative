@@ -18,12 +18,18 @@ int ft_copy_control_is_stopped(const ft_copy_control *control);
 
 /// The bytes of the file's data copied so far (COPYFILE_STATE_COPIED), 0 for a clone.
 int64_t ft_copy_control_copied(const ft_copy_control *control);
+
+/// What copyfile reported to the copy that used this control: each step that failed (its number, the extended
+/// attribute's name, the errno, and whether it was skipped), then what copyfile returned and what the copy returns.
+/// Read once the copy returned.
+const char *ft_copy_control_trace(const ft_copy_control *control);
 void ft_copy_control_set_copied(ft_copy_control *control, int64_t copied);
 
 /// copyfile(3) with COPYFILE_ALL | CLONE | NOFOLLOW_SRC | EXCL | DATA_SPARSE. Without a
 /// control the copy has no status callback and can't be stopped part way. Returns 0, or the errno:
 /// ECANCELED when stopped (or stopped before it began), the write's own errno when the resource fork
-/// couldn't be written.
+/// couldn't be written. A failure copyfile gives no errno for is never 0: ENOSPC or EIO as the fork's check says,
+/// EIO when the fork is whole.
 int ft_copyfile(const char *source, const char *destination, ft_copy_control *control);
 
 /// 0 when `source` has no resource fork or `destination` has the same one in full; otherwise the errno a copy that

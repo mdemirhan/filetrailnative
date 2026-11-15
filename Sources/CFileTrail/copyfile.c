@@ -3,7 +3,7 @@
 // `stop` is the caller's stop flag: once set, copyfile's status callback quits the copy between chunks
 // and the copy fails with ECANCELED. Without it a large file can only be stopped once it has been copied
 // in full. `copied` holds the bytes of data copied so far, so the caller can show progress inside a
-// large file.
+// large file. `trace` says what copyfile reported, for a test that failed to name it.
 //
 // Uses COPYFILE_ALL (preserve stat, xattrs, ACLs) | COPYFILE_CLONE (attempt CoW clone on APFS, fall back
 // to full copy) | COPYFILE_EXCL (never replace an existing destination) | COPYFILE_DATA_SPARSE (keep the
@@ -13,6 +13,8 @@
 
 #include <copyfile.h>
 #include <errno.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -23,6 +25,10 @@
 struct ft_copy_control {
     _Atomic int32_t stop;
     _Atomic int64_t copied;
+    /* What copyfile reported: each failed step, then what it returned and what the copy made of it. Written by the
+       thread running the copy, read once the copy returned. */
+    char trace[512];
+    size_t trace_length;
 };
 
 typedef struct {
@@ -48,6 +54,23 @@ void ft_copy_control_stop(ft_copy_control *control) {
 
 int ft_copy_control_is_stopped(const ft_copy_control *control) {
     return atomic_load_explicit(&((ft_copy_control *)control)->stop, memory_order_relaxed) != 0;
+}
+
+const char *ft_copy_control_trace(const ft_copy_control *control) { return control->trace; }
+
+/* Adds to the trace while it has room; what doesn't fit is cut off. */
+static void add_trace(ft_copy_control *control, const char *format, ...) {
+    size_t room = sizeof(control->trace) - control->trace_length;
+    if (room <= 1) {
+        return;
+    }
+    va_list arguments;
+    va_start(arguments, format);
+    int written = vsnprintf(control->trace + control->trace_length, room, format, arguments);
+    va_end(arguments);
+    if (written > 0) {
+        control->trace_length += (size_t)written < room ? (size_t)written : room - 1;
+    }
 }
 
 int64_t ft_copy_control_copied(const ft_copy_control *control) {
@@ -93,11 +116,19 @@ static int copy_status(int what, int stage, copyfile_state_t state, const char *
         }
     }
     if (stage == COPYFILE_ERR) {
-        if (what == COPYFILE_COPY_XATTR && !at_resource_fork(state)) {
+        int errnum = errno;
+        const char *name = NULL;
+        if (what == COPYFILE_COPY_XATTR) {
+            copyfile_state_get(state, COPYFILE_STATE_XATTRNAME, &name);
+        }
+        bool skip = what == COPYFILE_COPY_XATTR && !at_resource_fork(state);
+        add_trace(w->control, "step %d%s%s failed with errno %d, %s; ", what, name != NULL ? " " : "",
+                  name != NULL ? name : "", errnum, skip ? "skipped" : "quit");
+        if (skip) {
             return COPYFILE_SKIP;
         }
         if (what == COPYFILE_COPY_XATTR) {
-            w->errnum = errno != 0 ? errno : EIO;
+            w->errnum = errnum != 0 ? errnum : EIO;
         }
         return COPYFILE_QUIT;
     }
@@ -107,12 +138,16 @@ static int copy_status(int what, int stage, copyfile_state_t state, const char *
 /* The resource fork is an old Mac file's content, and copyfile has been seen to report a copy as done with none in
    it (once, writing to a full disk while the Mac was busy): a move would then remove the original with it. So a
    copy reported as done is checked for it, by its size. */
-int ft_check_resource_fork(const char *source, const char *destination) {
+static int check_resource_fork(const char *source, const char *destination, ssize_t *wanted_out,
+                               ssize_t *found_out) {
     ssize_t wanted = getxattr(source, XATTR_RESOURCEFORK_NAME, NULL, 0, 0, XATTR_NOFOLLOW);
+    *wanted_out = wanted;
+    *found_out = -1;
     if (wanted <= 0) {
         return 0;
     }
     ssize_t found = getxattr(destination, XATTR_RESOURCEFORK_NAME, NULL, 0, 0, XATTR_NOFOLLOW);
+    *found_out = found;
     if (found == wanted) {
         return 0;
     }
@@ -121,6 +156,19 @@ int ft_check_resource_fork(const char *source, const char *destination) {
         return ENOSPC;
     }
     return EIO;
+}
+
+int ft_check_resource_fork(const char *source, const char *destination) {
+    ssize_t wanted, found;
+    return check_resource_fork(source, destination, &wanted, &found);
+}
+
+/* copyfile failed without saying why: it can leave errno as it was, and the callback saw no write of the fork fail.
+   It is a failure all the same, never a copy that is done: the fork's check says why when the fork is short, EIO
+   otherwise. */
+static int unexplained_failure(const char *source, const char *destination, ssize_t *wanted, ssize_t *found) {
+    int errnum = check_resource_fork(source, destination, wanted, found);
+    return errnum != 0 ? errnum : EIO;
 }
 
 int ft_copyfile(const char *source, const char *destination, ft_copy_control *control) {
@@ -132,7 +180,12 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
     const copyfile_flags_t flags =
         COPYFILE_ALL | COPYFILE_CLONE | COPYFILE_NOFOLLOW_SRC | COPYFILE_EXCL | COPYFILE_DATA_SPARSE;
     if (control == NULL) {
-        return copyfile(source, destination, NULL, flags) == 0 ? ft_check_resource_fork(source, destination) : errno;
+        errno = 0;
+        if (copyfile(source, destination, NULL, flags) == 0) {
+            return ft_check_resource_fork(source, destination);
+        }
+        ssize_t wanted, found;
+        return errno != 0 ? errno : unexplained_failure(source, destination, &wanted, &found);
     }
     if (ft_copy_control_is_stopped(control)) {
         return ECANCELED;
@@ -144,19 +197,38 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
     copy_work_t work = {.control = control, .errnum = 0};
     copyfile_state_set(state, COPYFILE_STATE_STATUS_CB, (const void *)&copy_status);
     copyfile_state_set(state, COPYFILE_STATE_STATUS_CTX, (const void *)&work);
+    errno = 0;
     int rc = copyfile(source, destination, state, flags);
     int saved = errno;
     copyfile_state_free(state);
+    ssize_t wanted = -1;
+    ssize_t found = -1;
+    bool checked = false;
+    int result;
     if (rc == 0) {
-        return ft_check_resource_fork(source, destination);
-    }
-    if (ft_copy_control_is_stopped(control)) {
+        checked = true;
+        result = check_resource_fork(source, destination, &wanted, &found);
+    } else if (ft_copy_control_is_stopped(control)) {
         /* A copy told to quit reports ECANCELED, though some versions leave errno as it was: a stop
            asked for is a stop. */
-        return ECANCELED;
+        result = ECANCELED;
+    } else if (work.errnum != 0) {
+        /* copy_status ended it over the resource fork and kept that write's errno. */
+        result = work.errnum;
+    } else if (saved != 0) {
+        result = saved;
+    } else {
+        checked = true;
+        result = unexplained_failure(source, destination, &wanted, &found);
     }
-    /* Unless copy_status ended it over the resource fork and kept that write's errno. */
-    return work.errnum != 0 ? work.errnum : saved;
+    add_trace(control, "copyfile returned %d with errno %d; ", rc, saved);
+    if (checked) {
+        add_trace(control, "the copy's fork %zd of the source's %zd bytes; ", found, wanted);
+    } else {
+        add_trace(control, "the fork not checked; ");
+    }
+    add_trace(control, "the copy returns %d", result);
+    return result;
 }
 
 /* Copies only a folder's own metadata (mode, flags, dates, extended attributes such as Finder tags and

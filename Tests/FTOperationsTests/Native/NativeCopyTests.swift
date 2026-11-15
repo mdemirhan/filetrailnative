@@ -220,8 +220,9 @@ struct NativeCopyStopFlagTests {
                 try Files.write(source + "/..namedfork/rsrc", [UInt8](repeating: 7, count: forkSize))
 
                 let destination = volume.path + "/old.rsrc"
+                let control = CopyControl()
                 let error = #expect(throws: NativeError.self) {
-                    try NativeFS.copyFile(source, destination, control: CopyControl())
+                    try NativeFS.copyFile(source, destination, control: control)
                 }
                 #expect(
                     error?.code == .errno(ENOSPC),
@@ -229,7 +230,7 @@ struct NativeCopyStopFlagTests {
                     copied \(Files.size(destination + "/..namedfork/rsrc")) of \(forkSize) bytes of the fork; \
                     the copy \(Files.exists(destination) ? "is there, \(Files.size(destination)) bytes" : "isn't there"); \
                     the source's fork \(Files.size(source + "/..namedfork/rsrc")) bytes; \
-                    \(Files.freeBytes(volume.path)) bytes free on the disk
+                    \(Files.freeBytes(volume.path)) bytes free on the disk; \(control.trace)
                     """)
             }
         }
@@ -251,10 +252,11 @@ struct NativeCopyStopFlagTests {
                 try Files.write(source + "/..namedfork/rsrc", fork)
                 let destination = volume.path + "/small.rsrc"
 
+                let control = CopyControl()
                 let error = #expect(throws: NativeError.self) {
-                    try NativeFS.copyFile(source, destination, control: CopyControl())
+                    try NativeFS.copyFile(source, destination, control: control)
                 }
-                #expect(error?.code == .errno(fullCode))
+                #expect(error?.code == .errno(fullCode), "\(control.trace)")
                 // The copy got as far as the fork: it left the file it made, for the caller to remove, without the
                 // whole fork.
                 #expect(Files.exists(destination))

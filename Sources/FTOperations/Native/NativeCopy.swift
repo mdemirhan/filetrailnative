@@ -30,6 +30,9 @@ public final class CopyControl: @unchecked Sendable {
         set { ft_copy_control_set_copied(pointer, newValue) }
     }
 
+    /// What copyfile reported to the copy: each step that failed, then what it returned. Read once the copy returned.
+    public var trace: String { String(cString: ft_copy_control_trace(pointer)) }
+
     fileprivate var raw: OpaquePointer { pointer }
 }
 
