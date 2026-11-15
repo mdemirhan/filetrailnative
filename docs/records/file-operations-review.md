@@ -37,7 +37,7 @@ Paths are under `Sources/FTOperations/` unless they start with `Sources/`.
   applied only to a folder's children (`:337`), never to the picked items.
 - **Scenario:** on exFAT, FAT32 or a share that uses `._` files, with hidden files shown, select all and move to
   another disk. `._foo.txt` goes first as an ordinary file and its original is deleted; `foo.txt` then arrives bare.
-  In the other order nothing is lost but each companion raises a "source deleted" question. `docs/known-issues.md`
+  In the other order nothing is lost but each companion raises a "source deleted" question. `docs/state/known-issues.md`
   says these are treated as part of their item; that holds only inside a pasted folder.
 - **Fix:** in the review, drop a picked `._x` when `x` exists beside it and `isAppleDouble(._x)` is true.
 

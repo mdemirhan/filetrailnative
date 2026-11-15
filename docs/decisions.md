@@ -1,6 +1,6 @@
 # Decisions
 
-The owner's decisions about how File Trail behaves and how its code is kept, each with its reason. A change that goes against one of them needs the owner's yes first; [principles.md](principles.md) says how a decision is weighed, and when to ask about making an exception or relaxing one. Open issues are in [known-issues.md](known-issues.md), background work in [battery.md](battery.md).
+The owner's decisions about how File Trail behaves and how its code is kept, each with its reason. A change that goes against one of them needs the owner's yes first; [principles.md](principles.md) says how a decision is weighed, and when to ask about making an exception or relaxing one. Open issues are in [state/known-issues.md](state/known-issues.md), background work in [state/battery.md](state/battery.md).
 
 The decisions are kept by area. An entry names another by its title in quotes, which may be in another of these files.
 

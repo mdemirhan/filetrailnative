@@ -1,6 +1,6 @@
 # Principles
 
-The few rules that stand over everything else in File Trail: how its decisions are read, how safety is weighed, and how work is done with the owner. Read this first. The decisions themselves, each with its reason, are in [decisions.md](decisions.md); how a review is reported is in [reviews.md](reviews.md).
+The few rules that stand over everything else in File Trail: how its decisions are read, how safety is weighed, and how work is done with the owner. Read this first. The decisions themselves, each with its reason, are in [decisions.md](decisions.md); how a review is reported is in [working/reviews.md](working/reviews.md).
 
 They hold for anyone, person or agent, who works here.
 
@@ -24,4 +24,4 @@ They hold for anyone, person or agent, who works here.
 - **Do what was asked.** A list of things to fix is that list: what else is found goes into the report, not into the change. When what was asked leaves something out that looks as if it belonged, say which things stay untouched, and ask.
 - **The owner is asked only what is the owner's to say.** A choice of how the app behaves, a decision to change, a cost to accept. What can be found out or tried is found out or tried: a change that needs trying in the app is tried by whoever made it (see [tools/capture/README.md](../tools/capture/README.md)), and the report says what was checked and how, not what the owner might try.
 - **Work goes on between its parts.** At the end of one part of a plan, report, ask what the next part leaves open in one go, and carry on with what needs no answer. Stop only for an answer that is truly needed.
-- **A report says what is so.** What was done, what was checked and how, what was not, and what failed, in that plainness. A review's findings come as [reviews.md](reviews.md) lays out.
+- **A report says what is so.** What was done, what was checked and how, what was not, and what failed, in that plainness. A review's findings come as [working/reviews.md](working/reviews.md) lays out.

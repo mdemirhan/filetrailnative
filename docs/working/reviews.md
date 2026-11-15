@@ -1,6 +1,6 @@
 # Reviews
 
-How a review of File Trail's code is reported, whoever makes it. A reviewer asked to look at one part hands its findings back laid out this way, so the report is not sorted again afterwards. [principles.md](principles.md) says how safety is weighed, which the bar below follows.
+How a review of File Trail's code is reported, whoever makes it. A reviewer asked to look at one part hands its findings back laid out this way, so the report is not sorted again afterwards. [principles.md](../principles.md) says how safety is weighed, which the bar below follows.
 
 ## Each finding
 
@@ -41,5 +41,5 @@ Each finding left goes into one group, by why it was left, with a line saying so
 - **Harmless.**
 - **Couldn't be tested.** The fix or the claim needs a disk, a device or a setup the machine hasn't; it may be cheap, but it can't be shown to work.
 - **Older than the change.** A real fault, but not from the work under review.
-- **Already decided.** In [decisions.md](decisions.md) or [known-issues.md](known-issues.md), so it isn't raised in every review.
+- **Already decided.** In [decisions.md](../decisions.md) or [known-issues.md](../state/known-issues.md), so it isn't raised in every review.
 - **Could simply have been done.** Nothing stood in the way. This group is empty when a review ends: those are fixed, not listed.

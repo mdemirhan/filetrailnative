@@ -201,7 +201,7 @@ scripts/ci.sh --full               # all of it built from clean, and the release
 
 Each step prints one line, and the full logs are in `build/logs/`.
 
-Open issues are in [docs/known-issues.md](docs/known-issues.md) and [docs/battery.md](docs/battery.md).
+Open issues are in [docs/state/known-issues.md](docs/state/known-issues.md) and [docs/state/battery.md](docs/state/battery.md).
 
 `scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk), and the tests that put real windows, menus and disks on screen. Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh` and `FILETRAIL_GUI_TESTS=1 swift test --filter GUITests` before a release; `scripts/release.sh` runs both.
 
