@@ -361,7 +361,9 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             let document = scroll.documentView?.frame.size ?? .zero
             let maxX = max(0, document.width - clip.bounds.width)
             let maxY = max(0, document.height - clip.bounds.height)
-            clip.scroll(to: NSPoint(x: min(maxX, max(0, newValue.left)), y: min(maxY, max(0, newValue.top))))
+            // Through the scroll view, which keeps AppKit's own record of where the list is: scrolled past it, by the
+            // clip view alone, the list goes back to where a trackpad left it the next time its width changes.
+            scroll.scroll(clip, to: NSPoint(x: min(maxX, max(0, newValue.left)), y: min(maxY, max(0, newValue.top))))
             scroll.reflectScrolledClipView(clip)
         }
     }
@@ -681,7 +683,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         let visible = clip.bounds
         guard CGFloat(edge) > visible.maxX else { return }
         let maxX = max(0, table.frame.width - visible.width)
-        clip.scroll(to: NSPoint(x: min(maxX, CGFloat(edge) - visible.width), y: visible.origin.y))
+        // Through the scroll view, as `scrollPosition` does.
+        scroll.scroll(clip, to: NSPoint(x: min(maxX, CGFloat(edge) - visible.width), y: visible.origin.y))
         scroll.reflectScrolledClipView(clip)
     }
 

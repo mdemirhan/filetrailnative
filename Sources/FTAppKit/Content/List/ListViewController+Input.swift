@@ -219,7 +219,7 @@ extension ListViewController: LayoutNavigation {
                 viewportSize: Double(clip.bounds.height), scrollSize: Double(document.height),
                 currentOffset: Double(clip.bounds.origin.y), delta: delta)
         else { return false }
-        clip.scroll(to: NSPoint(x: clip.bounds.origin.x, y: next))
+        scroll.scroll(clip, to: NSPoint(x: clip.bounds.origin.x, y: next))
         scroll.reflectScrolledClipView(clip)
         return true
     }
