@@ -50,6 +50,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case newTab
     case reopenClosedTab
     case duplicateTab
+    case closePane
     case closeTab
     case selectNextTab
     case selectPreviousTab

@@ -14,7 +14,7 @@
             "clearClipboard", "refreshOrApplySearchSort", "toggleFolderTree", "toggleInfoPanel", "toggleInfoRow",
             "customizeToolbar", "goHomeRootTree", "goDocuments", "goDesktop", "goDownloads", "goLibrary",
             "goMacintoshHD", "goApplications", "goTrash", "rootTreeAtSelection", "newWindow", "newTab",
-            "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
+            "reopenClosedTab", "closePane", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
             "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows", "toggleTwoPanes", "switchToOtherPane",
             "quickLookSelection",
             "calculateSize", "revealInFolder", "toggleFavorite", "showInFinder", "showLastSearchResults",

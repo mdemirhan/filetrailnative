@@ -145,6 +145,7 @@ import Testing
         // ⌘⌫ or ⌘W would act on a window that can't be seen.
         #expect(f.sync.explorerFor(nil) == nil)
         #expect(!f.item("trashSelection").isEnabled)
+        #expect(!f.item("closePane").isEnabled)
         #expect(!f.item("closeTab").isEnabled)
         #expect(!f.item("renameSelection").isEnabled)
         #expect(!f.item("undo").isEnabled)

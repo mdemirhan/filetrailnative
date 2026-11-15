@@ -106,8 +106,9 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.ejectVolume, "Eject"))
             menu.addItem(.separator())
             menu.addItem(context.command(.reopenClosedTab, "Reopen Closed Tab"))
-            // Closes the window when it has a single view.
-            menu.addItem(context.command(.closeTab, "Close Tab"))
+            // Closes the pane it is in while the tab shows two, the tab otherwise, and the window on its last tab.
+            // Close Tab, with ⌥, closes the tab with both its panes.
+            for item in context.closeItems() { menu.addItem(item) }
             menu.addItem(context.native("Close Window", #selector(NSWindow.performClose(_:)), .closeWindow))
         }
 
@@ -311,6 +312,20 @@ enum ApplicationMenuBuilder {
             }
             register(item, id: type.rawValue)
             return item
+        }
+
+        /// File ▸ Close Pane, and Close Tab in its place while ⌥ is held, when their keys differ by ⌥ alone.
+        func closeItems() -> [NSMenuItem] {
+            let pane = command(.closePane, "Close Tab")
+            let tab = command(.closeTab, "Close Tab")
+            if ApplicationMenuBuilder.pairs(chosenKey(.closePane), chosenKey(.closeTab)) {
+                if chosenKey(.closePane) == nil {
+                    pane.keyEquivalentModifierMask = []
+                    tab.keyEquivalentModifierMask = .option
+                }
+                tab.isAlternate = true
+            }
+            return [pane, tab]
         }
 
         /// Window ▸ Workspaces: saving, the workspaces, the first five with their keys, and Manage. Each

@@ -47,6 +47,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case newWindow
     case newTab
     case duplicateTab
+    case closePane
     case closeTab
     case reopenClosedTab
     case selectNextTab
@@ -194,7 +195,11 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .duplicateTab, label: "Duplicate Tab", group: .tabs, defaults: [], menuPath: "File > Duplicate Tab"),
         ShortcutCommandDefinition(
-            id: .closeTab, label: "Close Tab", group: .tabs, defaults: ["Cmd+W"], menuPath: "File > Close Tab"),
+            id: .closePane, label: "Close Pane", group: .tabs, defaults: ["Cmd+W"], menuPath: "File > Close Pane"),
+        // The item ⌥ shows in Close Pane's place: the whole tab at once, both its panes.
+        ShortcutCommandDefinition(
+            id: .closeTab, label: "Close Tab", group: .tabs, defaults: ["Cmd+Option+W"],
+            menuPath: "File > Close Tab, with Option"),
         ShortcutCommandDefinition(
             id: .reopenClosedTab, label: "Reopen Closed Tab", group: .tabs, defaults: ["Cmd+Shift+T"],
             menuPath: "File > Reopen Closed Tab"),

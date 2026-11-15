@@ -70,8 +70,8 @@ public enum ShortcutPolicy {
         if context.actionNoticeOpen || context.locationSheetOpen || context.copyPasteModalOpen {
             return false
         }
-        // ⌘W closes the tab, or the window, from the Help page as well.
-        if command == .closeTab || helpCommands.contains(command) {
+        // ⌘W closes the pane, the tab or the window from the Help page as well.
+        if command == .closePane || command == .closeTab || helpCommands.contains(command) {
             return true
         }
         // Like Finder, Paste goes into the folder on screen even when no pane has focus (for example right after

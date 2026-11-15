@@ -31,7 +31,8 @@ import Testing
                 "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-",
                 "Add to Favorites", "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-",
                 "Reopen Closed Tab",
-                "Close Tab", "Close Window",
+                // Close Pane until synced, then Close Tab, the item ⌥ shows in its place.
+                "Close Tab", "Close Tab", "Close Window",
             ])
         #expect(
             titles(submenu(main, "Edit")) == [
@@ -136,6 +137,29 @@ import Testing
         #expect(here.keyEquivalentModifierMask == [.option, .shift, .command])
     }
 
+    @Test func closeTabIsTheItemOptionShowsInClosePanesPlace() {
+        let (built, _) = build()
+        let file = submenu(built.menu, "File")
+        let pane = flatten(file).first { $0.identifier?.rawValue == "closePane" }
+        let tab = flatten(file).first { $0.identifier?.rawValue == "closeTab" }
+        #expect(pane?.keyEquivalent == "w")
+        #expect(pane?.keyEquivalentModifierMask == [.command])
+        #expect(pane?.isAlternate == false)
+        #expect(tab?.isAlternate == true)
+        #expect(tab?.keyEquivalent == "w")
+        #expect(tab?.keyEquivalentModifierMask == [.option, .command])
+        // The alternate comes right after the item it stands in for.
+        if let pane, let tab { #expect(file.index(of: tab) == file.index(of: pane) + 1) }
+    }
+
+    @Test func closeTabGivenAnotherKeyShowsAsAnItemOfItsOwn() {
+        let bindings = ShortcutCommands.resolve(["closeTab": ["Cmd+Shift+J"]]).bindings
+        let (built, _) = build(.init(shortcuts: bindings))
+        let tab = flatten(submenu(built.menu, "File")).first { $0.identifier?.rawValue == "closeTab" }
+        #expect(tab?.isAlternate == false)
+        #expect(tab?.keyEquivalent == "j")
+    }
+
     @Test func namesTheChosenTextEditorInFile() {
         let file = { (name: String?) in titles(submenu(self.build(.init(textEditorName: name)).0.menu, "File")) }
         #expect(file("Zed").contains("Edit in Zed"))
@@ -191,7 +215,8 @@ import Testing
             ("File", "Move to Trash", "Command+Backspace", .trashSelection),
             ("File", "Eject", "Command+E", .ejectVolume),
             ("File", "Reopen Closed Tab", "Command+Shift+T", .reopenClosedTab),
-            ("File", "Close Tab", "Command+W", .closeTab),
+            // Close Pane, named Close Tab until the menu is synced with a tab of two panes.
+            ("File", "Close Tab", "Command+W", .closePane),
             ("File", "Close Window", "Command+Shift+W", .closeTab),
             ("Edit", "Cut", "Command+X", .editCut),
             ("Edit", "Copy", "Command+C", .editCopy),

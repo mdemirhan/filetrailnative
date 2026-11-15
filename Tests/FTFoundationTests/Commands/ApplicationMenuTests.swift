@@ -30,7 +30,7 @@ struct ApplicationMenuTests {
         #expect(
             Self.enabledCommands(Window(explorerFocused: false, explorerWindowCount: 0, otherWindowFocused: true))
                 == [.undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll]
-                + placesAndNewWindow.dropLast() + [.newWindow, .closeTab])
+                + placesAndNewWindow.dropLast() + [.newWindow, .closePane, .closeTab])
     }
 
     @Test func offersMergeAllWindowsOnlyWithAnotherExplorerWindowOpen() {
@@ -110,6 +110,14 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("toggleFavorite", added).title == "Remove from Favorites")
     }
 
+    @Test func namesTheCmdWItemClosePaneWhileTheTabShowsTwoPanesAndCloseTabOtherwise() {
+        var two = Self.initial
+        two.twoPanesShown = true
+        #expect(Self.stateOf("closePane", Self.initial).title == "Close Tab")
+        #expect(Self.stateOf("closePane", two).title == "Close Pane")
+        #expect(Self.stateOf("closeTab", two).title == nil)
+    }
+
     @Test func offersHideFolderTreeWhileTheTreeIsShownAndShowFolderTreeWhileHidden() {
         var hidden = Self.initial
         hidden.folderTreeOpen = false
@@ -187,7 +195,7 @@ struct ApplicationMenuTests {
         let settingsFocused = Window(explorerFocused: false)
         #expect(
             Self.enabledCommands(settingsFocused) == [
-                .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .newWindow, .closeTab,
+                .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .newWindow, .closePane, .closeTab,
             ])
         #expect(Self.stateOf("toggleFavorite", Self.initial, settingsFocused).enabled == false)
     }

@@ -66,7 +66,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Closing",
                             description:
-                                "{closeTab} closes the tab, and the window when it is the last tab. {reopenClosedTab} brings back the tab closed last. Right-click a tab for Close Other Tabs and Move Tab to New Window. Duplicate Tab is in the File menu, and Merge All Windows in the Window menu."
+                                "{closePane} closes the tab, and the window when it is the last tab; in a tab with two panes it closes the pane you are in first. {closeTab} closes a tab with both its panes at once: in the File menu, hold Option. {reopenClosedTab} brings back the tab closed last. Right-click a tab for Close Other Tabs and Move Tab to New Window. Duplicate Tab is in the File menu, and Merge All Windows in the Window menu."
                         ),
                         HelpRow(
                             label: "Between tabs",
@@ -88,7 +88,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Two Panes",
                             description:
-                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active."
+                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
                         ),
                         HelpRow(
                             label: "Moving between panes",
@@ -719,7 +719,11 @@ extension HelpContent {
             group: .navigation, .command(.goToOtherPaneFolder), "Open the other pane's folder in this pane too"),
         HelpShortcutItem(group: .navigation, .command(.equalizePanes), "Make the two panes equally wide"),
         HelpShortcutItem(
-            group: .navigation, .command(.closeTab), "Close this tab, or the window when it is the last tab"),
+            group: .navigation, .command(.closePane),
+            "Close the pane you are in, or this tab when it shows only one"),
+        HelpShortcutItem(
+            group: .navigation, .command(.closeTab),
+            "Close this tab with both its panes, or the window when it is the last tab"),
         HelpShortcutItem(group: .navigation, .command(.selectNextTab), "Show the tab to the right of this one"),
         HelpShortcutItem(group: .navigation, .command(.selectPreviousTab), "Show the tab to the left of this one"),
         HelpShortcutItem(group: .navigation, .command(.reopenClosedTab), "Reopen the tab you closed last"),

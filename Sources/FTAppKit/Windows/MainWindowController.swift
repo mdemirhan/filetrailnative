@@ -1880,6 +1880,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .ejectVolume:
             if let target = ejectTargetPath { ejectCoordinator.requestEject(path: target) }
         case .newTab: group?.openNewTab(from: self)
+        case .closePane: closePane()
         case .closeTab: group?.closeTab(self)
         case .reopenClosedTab: group?.reopenClosedTab(from: self)
         case .duplicateTab: group?.duplicateTab(self)

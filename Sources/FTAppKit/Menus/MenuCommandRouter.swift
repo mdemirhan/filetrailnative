@@ -140,7 +140,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
                 performNativeEdit(selector, focused)
             }
             // Only the explorer has tabs; ⌘W in any other window closes that window.
-            if command == .closeTab {
+            if command == .closePane || command == .closeTab {
                 focused.performClose(nil)
             }
             if command == .newWindow {

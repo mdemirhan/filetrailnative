@@ -210,7 +210,7 @@ struct AppStateReaderTests {
                 """
                 {"theme": "dark",
                  "shortcutOverrides": {"newTab": ["option+cmd+n", "Cmd+C", "D"], "duplicateSelection": [],
-                                       "closeTab": ["Cmd+W"], "noSuchCommand": ["Cmd+J"]},
+                                       "closePane": ["Cmd+W"], "noSuchCommand": ["Cmd+J"]},
                  "accent": "#2cb5a0", "viewMode": "details", "sortBy": "modified",
                  "sortDirection": "desc", "foldersFirst": false, "density": "finder",
                  "detailColumns": {"size": true, "modified": false, "permissions": true, "kind": true, "created": false},

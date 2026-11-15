@@ -120,6 +120,25 @@ extension MainWindowController {
         if keyboard != nil { keepKeyboard(in: keep) }
     }
 
+    /// File ▸ Close Pane (⌘W): while the tab shows two panes, the active one closes and the other takes the whole
+    /// width, active, with the keyboard if the closed one had it; ⌘\ opens the closed one again, on the right. With one
+    /// pane the tab closes, and the window on its last tab.
+    func closePane() {
+        guard showsTwoPanes else {
+            group?.closeTab(self)
+            return
+        }
+        // A rename being typed or a dialog open holds the tab, as it holds Close Tab.
+        guard group?.isBlocked != true, let other = otherPane,
+            let index = panes.firstIndex(where: { $0 === other })
+        else { return }
+        // The other pane becomes the active one, and what follows the active pane follows it; the one that was active is
+        // then the other pane, closed as ⌘\ closes it.
+        activePaneIndex = index
+        activePaneChanged(saving: false)
+        closeOtherPane()
+    }
+
     /// The panes changed: the window's watches, title and saved state follow, the Info Row goes to the active pane, and
     /// the tab's magnifier to the searches still there.
     private func panesChanged() {

@@ -302,6 +302,45 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // ⌘W through the menu bar closes the pane it is in while the tab shows two, and ⌥⌘W the whole tab.
+        @Test func cmdWClosesThePaneItIsInAndOptionCmdWTheTab() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let first = try await harness.open()
+            let group = try #require(first.group)
+            group.openNewTab(from: first)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            let tab = try #require(group.tabs.last)
+            tab.servicesOverride = first.servicesOverride
+            #expect(await waitUntil { tab.panes.allSatisfy { $0.loaded && !$0.isNavigating } })
+            let menu = RealMenu(harness, tab)
+            let window = try #require(tab.window)
+            #expect(menu.item("closePane").title == "Close Tab")
+
+            let right = tab.openSecondPane()
+            #expect(await waitUntil { right.loaded && !right.isNavigating })
+            menu.report()
+            #expect(menu.item("closePane").title == "Close Pane")
+            #expect(menu.isEnabled("closePane"))
+            tab.focusPane(right)
+            #expect(
+                KeyEvents.performKeyEquivalent(try key("w", [.command], in: tab), window: window, menu: menu.built.menu)
+            )
+            #expect(tab.panes.count == 1)
+            #expect(group.tabs.count == 2)
+            menu.report()
+            #expect(menu.item("closePane").title == "Close Tab")
+
+            let again = tab.openSecondPane()
+            #expect(await waitUntil { again.loaded && !again.isNavigating })
+            menu.report()
+            #expect(
+                KeyEvents.performKeyEquivalent(
+                    try key("w", [.command, .option], in: tab), window: window, menu: menu.built.menu))
+            #expect(await waitUntil { group.tabs.count == 1 })
+            #expect(group.tabs.first === first)
+            await harness.close()
+        }
+
         // ⌘↑ and ⌘⌫ stay with a field that has the keyboard: the menu leaves them.
         @Test func aFieldKeepsTheKeysItEditsWith() async throws {
             let harness = try ExplorerHarness.windowless()

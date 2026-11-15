@@ -234,7 +234,7 @@ struct ShortcutsTests {
         #expect(resolved.bindings[.newTab] == ["Cmd+Option+N"])
         #expect(resolved.bindings[.showInFinder] == ["Cmd+Shift+J", "F5"])
         #expect(resolved.bindings[.duplicateSelection] == [])
-        #expect(resolved.bindings[.closeTab] == ["Cmd+W"])
+        #expect(resolved.bindings[.closePane] == ["Cmd+W"])
         #expect(resolved.commandByShortcut["Cmd+T"] == nil)
         #expect(resolved.commandByShortcut["Cmd+D"] == nil)
         #expect(resolved.commandByShortcut["F5"] == .showInFinder)
@@ -252,6 +252,12 @@ struct ShortcutsTests {
         #expect(both[.closeTab] == ["Cmd+W"])
     }
 
+    @Test func aTabGivenCmdWBeforeClosePaneKeepsItAndClosePaneHasNone() {
+        let bindings = ShortcutCommands.resolve(["closeTab": ["Cmd+W"]]).bindings
+        #expect(bindings[.closeTab] == ["Cmd+W"])
+        #expect(bindings[.closePane] == [])
+    }
+
     @Test func dropsWhatMakesNoSenseUnknownCommandsUnusableKeysAThirdKey() {
         let bindings = ShortcutCommands.resolve(
             .object([
@@ -261,12 +267,12 @@ struct ShortcutsTests {
                     [
                         "Cmd+C", "D", "Cmd+Tab", nil, "cmd+shift+y", "Cmd+Shift+Y", "Cmd+U", "Cmd+Y",
                     ].map { $0.map(JSONNode.string) ?? .number(7) }),
-                "closeTab": .string("Cmd+J"),
+                "closePane": .string("Cmd+J"),
             ])
         ).bindings
         #expect(bindings[.copy] == ["Cmd+C"])
         #expect(bindings[.newTab] == ["Cmd+Shift+Y", "Cmd+U"])
-        #expect(bindings[.closeTab] == ["Cmd+W"])
+        #expect(bindings[.closePane] == ["Cmd+W"])
     }
 
     @Test func letsACommandKeepAKeyOfItsOwnDefaultsThatCouldNotBeGivenOutToday() {
@@ -284,7 +290,7 @@ struct ShortcutsTests {
         #expect(ShortcutCommands.overrides(for: Self.defaults) == [:])
         let saved = ShortcutCommands.sanitizeOverrides(
             .object([
-                "newTab": .array([.string("option+cmd+n")]), "closeTab": .array([.string("Cmd+W")]),
+                "newTab": .array([.string("option+cmd+n")]), "closePane": .array([.string("Cmd+W")]),
                 "duplicateSelection": .array([]), "noSuchCommand": .array([.string("Cmd+J")]),
             ]))
         #expect(saved == ["newTab": ["Cmd+Option+N"], "duplicateSelection": []])
@@ -388,8 +394,8 @@ struct ShortcutsTests {
             (.rootTreeAtSelection, ["Cmd+Shift+R"]), (.refreshOrApplySearchSort, ["Cmd+R"]),
             (.goDocuments, []), (.goDesktop, []), (.goDownloads, []), (.goLibrary, []), (.goMacintoshHD, []),
             (.goApplications, []), (.goTrash, []), (.focusTreePane, []), (.focusContentPane, []),
-            (.newWindow, ["Cmd+N"]), (.newTab, ["Cmd+T"]), (.duplicateTab, []), (.closeTab, ["Cmd+W"]),
-            (.reopenClosedTab, ["Cmd+Shift+T"]),
+            (.newWindow, ["Cmd+N"]), (.newTab, ["Cmd+T"]), (.duplicateTab, []), (.closePane, ["Cmd+W"]),
+            (.closeTab, ["Cmd+Option+W"]), (.reopenClosedTab, ["Cmd+Shift+T"]),
             (.selectNextTab, ["Ctrl+Tab", "Cmd+Shift+]"]), (.selectPreviousTab, ["Ctrl+Shift+Tab", "Cmd+Shift+["]),
             (.openSelectionInNewTab, []), (.openSelectionInNewWindow, []), (.moveTabToNewWindow, []),
             (.mergeAllWindows, []), (.saveWorkspace, []),

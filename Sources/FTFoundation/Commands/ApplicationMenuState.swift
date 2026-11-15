@@ -109,7 +109,8 @@ public enum ApplicationMenu {
     /// the edit commands act on its text field, ⌘W closes it, and New Window opens one beside the explorer window in
     /// front.
     public static let commandsForAnyWindow: Set<AppCommand> = [
-        .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .closeTab, .newWindow,
+        .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .closePane, .closeTab,
+        .newWindow,
     ]
 
     /// What the menu still does with no explorer window open, as Finder's does: New Window, and the Go menu's places,
@@ -230,6 +231,8 @@ public enum ApplicationMenu {
             case .redo: textUndo ? "Redo" : window.undoLabels?.redo ?? "Redo"
             case .toggleFavorite: state.favoriteIsSet ? "Remove from Favorites" : "Add to Favorites"
             case .toggleFolderTree: state.folderTreeOpen ? "Hide Folder Tree" : "Show Folder Tree"
+            // ⌘W closes the pane it is in while the tab shows two, and the tab otherwise.
+            case .closePane: state.twoPanesShown ? "Close Pane" : "Close Tab"
             // What it would write, while it can.
             case .pasteAsFile:
                 PasteAsFile.menuTitle(isEnabled(type) ? state.pasteAsFileKind : nil)
