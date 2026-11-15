@@ -9,7 +9,7 @@ public struct ThemePalette: Equatable, Sendable {
     /// The background of the content: Help, About, Acknowledgements, the rename field.
     public let bgBase: RGBA
 
-    /// Cards above the window and what sits on them: alerts, sheets, Go To, the list filter's pill.
+    /// Cards above the window and what sits on them: alerts, sheets, Go To.
     public let bgElevated: RGBA
 
     /// A row or button under the pointer.

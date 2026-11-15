@@ -335,7 +335,7 @@ struct FilterNarrowingTests {
         content.pinFilter()
         #expect(content.filter.isEmpty)
         #expect(status.stringValue.hasPrefix("3 of 4 items"))
-        #expect(content.container.filterPill.isPinned)
+        #expect(content.container.filterBar.isPinned)
         content.removeFilter()
         #expect(status.stringValue.hasPrefix("4 items"))
     }

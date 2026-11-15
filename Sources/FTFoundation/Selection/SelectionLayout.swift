@@ -2,35 +2,27 @@ import Foundation
 
 /// The measures of what this package draws on top of the file list.
 public enum SelectionLayout {
-    /// The filter pill: floats over the foot of the list it narrows.
-    public enum FilterPill {
-        /// 14 above the list's bottom edge.
-        public static let bottom = 14.0
-        /// The gap between the label, the text, the count and the clear button.
+    /// The filter bar: across the foot of the list it narrows, which ends above it.
+    public enum FilterBar {
+        /// 30 tall, its 1 pt top edge included.
+        public static let height = 30.0
+        public static let edgeWidth = 1.0
+        /// The gap between the symbol, the text, the count, the modes, the pin and the clear button.
         public static let gap = 8.0
-        public static let paddingTop = 4.0
-        public static let paddingRight = 6.0
-        public static let paddingBottom = 4.0
         public static let paddingLeft = 12.0
-        public static let borderWidth = 1.0
-        /// At least 32 narrower than the list.
-        public static let maxWidthInset = 32.0
-        /// The filter symbol before the mode chip.
+        public static let paddingRight = 8.0
+        /// The filter symbol before the text, and the pin.
         public static let symbolSize = 13.0
-        /// The mode chip (Fuzzy or Contains): a capsule of the accent around its word.
+        /// The red wash over the bar while nothing matches.
+        public static let dangerWashAlpha = 0.1
+    }
+
+    /// The mode chip in the search results' filter field (Fuzzy or Contains): a capsule of the accent around its word.
+    public enum FilterChip {
         public static let chipPaddingHorizontal = 7.0
         public static let chipPaddingVertical = 1.0
         public static let chipFillAlpha = 0.14
         public static let chipHoverFillAlpha = 0.24
-        /// The pill's own shadow, lighter than a menu's: it sits low over the list.
-        public static let shadowOpacity = 0.14
-        public static let shadowRadius = 6.0
-        public static let shadowOffset = 2.0
-        /// How far below its place the pill starts as it springs up, and drops to as it goes.
-        public static let travel = 14.0
-        /// The shake when nothing matches: how far it goes each way, and for how long.
-        public static let shakeDistance = 5.0
-        public static let shakeDuration = 0.32
     }
 
     /// The marquee: a grey tint with a grey edge, mixed from the text colour.

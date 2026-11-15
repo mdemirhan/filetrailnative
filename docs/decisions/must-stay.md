@@ -18,7 +18,7 @@ Things that look removable and are not. Don't change them; if a change seems to 
 - The `density` migration; `PreferencesSanitizer.sanitize`; `@NullEncoded`; the app-state file format.
 - The `vtool` restamp in `build-app.sh`, as SwiftPM still stamps the SDK as 26.0 while the app is built with a later one; `FTTestSupport` as a regular target; the release-script tests; `AppClock` and `FILETRAIL_NOW`.
 - The app's own clipboard and the rules that keep it truthful.
-- Glass only on toasts, the progress card, plain alerts and the filter pill; sheets, Go To and alerts with lists or fields stay opaque.
+- Glass only on toasts, the progress card and plain alerts; sheets, Go To and alerts with lists or fields stay opaque.
 - Accessibility identifiers and `accessibilityPerformPress()`; the read-only test seams.
 - `adopt`/`absorb` and the `ExplorerWindowLike` generic with `FakeWindow`.
 - The rule that no paste review starts while a write runs, and that only one runs at a time.

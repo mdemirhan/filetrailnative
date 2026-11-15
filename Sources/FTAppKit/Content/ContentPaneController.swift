@@ -37,8 +37,8 @@ final class ContentContainerView: NSView {
     let stateView = ContentStateView()
     /// The ring of a pane that takes a drop into the folder on screen.
     let dropRing = PaneDropRingView()
-    /// What has been typed to narrow the list, floating over its foot.
-    let filterPill = ListFilterPillView()
+    /// What has been typed to narrow the list, in a bar across its foot.
+    let filterBar = ListFilterBarView()
     var topInset = 0.0 {
         didSet { needsLayout = true }
     }
@@ -47,7 +47,7 @@ final class ContentContainerView: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         addSubview(stateView)
-        addSubview(filterPill)
+        addSubview(filterBar)
         addSubview(dropRing)
         setAccessibilityIdentifier("content")
     }
@@ -58,21 +58,19 @@ final class ContentContainerView: NSView {
 
     override func layout() {
         super.layout()
-        paneView?.frame = bounds
-        stateView.frame = NSRect(x: 0, y: topInset, width: bounds.width, height: max(0, bounds.height - topInset))
+        layoutFilterBar()
         (paneView as? RowsBelowCard)?.roomAboveRows = stateView.roomAboveRows(width: bounds.width)
         dropRing.frame = bounds
-        layoutFilterPill()
     }
 
-    /// The filter pill: centered, 14 above the foot of the list.
-    func layoutFilterPill() {
-        guard !filterPill.isHidden else { return }
-        let size = filterPill.fittingSize(in: bounds.width)
-        filterPill.frame = NSRect(
-            x: (bounds.width - size.width) / 2,
-            y: bounds.height - CGFloat(SelectionLayout.FilterPill.bottom) - size.height, width: size.width,
-            height: size.height)
+    /// The view and the states end above the filter bar while it shows, so nothing in the list is under it. Done at
+    /// once when a filter comes or goes, so the selection is brought into view in the list's new height.
+    func layoutFilterBar() {
+        let bar = filterBar.isShowingFilter ? min(bounds.height, CGFloat(ListFilterBarView.height)) : 0
+        let above = max(0, bounds.height - bar)
+        paneView?.frame = NSRect(x: 0, y: 0, width: bounds.width, height: above)
+        stateView.frame = NSRect(x: 0, y: topInset, width: bounds.width, height: max(0, above - topInset))
+        filterBar.frame = NSRect(x: 0, y: above, width: bounds.width, height: bar)
     }
 
     override func menu(for event: NSEvent) -> NSMenu? { backgroundMenu() }
@@ -103,7 +101,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var clipboardMarks: ClipboardMarks?
     var dropTarget: (path: String, state: DropTargetState)?
     var onSearchSubfolders: (() -> Void)?
-    /// The filter pill's chip was pressed: the other way of matching is wanted (Settings → Browsing).
+    /// The filter bar's other mode was chosen: that way of matching is wanted (Settings → Browsing).
     var onToggleFilterMode: (() -> Void)?
     /// The keys of the commands, as Settings has them (the window wires its own).
     var shortcutsProvider: () -> ResolvedShortcuts = { ShortcutCommands.defaultResolved }
@@ -276,10 +274,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         shell.list = container
         container.backgroundMenu = { [weak self] in self?.contextMenu(for: nil) }
         container.stateView.onOpenPrivacySettings = { [weak self] in self?.loaders.openPrivacySettings() }
-        // The pill's ✕ brings the list back as Esc does, a pinned filter too; the list keeps the keyboard.
-        container.filterPill.onClear = { [weak self] in self?.removeFilter() }
-        container.filterPill.onTogglePin = { [weak self] in self?.togglePin() }
-        container.filterPill.onToggleMode = { [weak self] in self?.onToggleFilterMode?() }
+        // The bar's ✕ brings the list back as Esc does, a pinned filter too; the list keeps the keyboard.
+        container.filterBar.onClear = { [weak self] in self?.removeFilter() }
+        container.filterBar.onTogglePin = { [weak self] in self?.togglePin() }
+        container.filterBar.onToggleMode = { [weak self] in self?.onToggleFilterMode?() }
         container.stateView.onSearchSubfolders = onSearchSubfolders
         shell.onMovedToWindow = { [weak self] window in self?.observeWindow(window) }
         shell.pathBarRow.onSizeSlide = { [weak self] value, done in self?.sizeSlid(to: value, save: done) }
@@ -315,7 +313,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     private func lookChanged() {
         pane?.refreshLook()
-        updateFilterPill()
+        updateFilterBar()
         refreshState()
     }
 
@@ -605,7 +603,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// Whether View ▸ Pin Filter can act: a filter typed in a folder can be pinned, and a pinned one unpinned.
     var canTogglePin: Bool { pinnedFilter != nil || (!filter.isEmpty && searchDisplay == nil) }
 
-    /// View ▸ Pin Filter and the pill's pin: the filter typed in the folder is pinned, or the pinned one goes back to
+    /// View ▸ Pin Filter and the filter bar's pin: the filter typed in the folder is pinned, or the pinned one goes back to
     /// being typed text.
     func togglePin() {
         if pinnedFilter != nil { unpinFilter() } else { pinFilter() }
@@ -635,7 +633,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         filterChanged(.keptWhereShown(previousPaths: previous))
     }
 
-    /// The pill's ✕: the filter goes, pinned or typed.
+    /// The filter bar's ✕: the filter goes, pinned or typed.
     func removeFilter() {
         guard pinnedFilter != nil || !filter.isEmpty else { return }
         let previous = entryPaths
@@ -749,8 +747,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         defaultFilterMode = mode
     }
 
-    /// The chip: the typed filter switches to the other mode and narrows the list again, the selection kept. Returns
-    /// the mode, which the caller makes the default for the filters to come.
+    /// The other mode, from the filter bar or a chip: the typed filter switches to it and narrows the list again, the
+    /// selection kept. Returns the mode, which the caller makes the default for the filters to come.
     func toggleFilterMode() -> NameMatchMode {
         let next = filterMode.toggled
         guard !filter.isEmpty else { return next }
@@ -799,7 +797,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             entryPaths = entries.map(\.path)
             positionsCache = nil
             barScaleCache = nil
-            updateFilterPill()
+            updateFilterBar()
             return
         }
         var contents = FolderContents(path: folderPath, listed: listed, filter: filter, filterMode: filterMode)
@@ -814,7 +812,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         entryPaths = entries.map(\.path)
         positionsCache = nil
         barScaleCache = nil
-        updateFilterPill()
+        updateFilterBar()
     }
 
     /// The pinned filter keeps the folders and the files it matches of what the typed filter left.
@@ -823,18 +821,18 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         entries = ListFilter.filterPinned(entries, pin: pinnedFilter, isFolder: \.isDirectoryLike, cache: foldedNames)
     }
 
-    private func updateFilterPill() {
+    private func updateFilterBar() {
         // Search results are narrowed in the results bar's own field; a pinned filter shows over them too.
         if let pinnedFilter {
-            container.filterPill.show(
+            container.filterBar.show(
                 query: pinnedFilter.query, mode: pinnedFilter.mode, shown: entries.count, total: listed.count,
                 theme: theme, pinned: true)
         } else {
-            container.filterPill.show(
+            container.filterBar.show(
                 query: searchDisplay == nil ? filter : "", mode: filterMode, shown: entries.count,
                 total: listed.count, theme: theme)
         }
-        container.layoutFilterPill()
+        container.layoutFilterBar()
     }
 
     private func refreshState() {

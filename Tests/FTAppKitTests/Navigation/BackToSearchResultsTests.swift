@@ -181,7 +181,7 @@ extension ExplorerWindowlessTests {
             await place.harness.close()
         }
 
-        // A filter keeps its mode: results filtered in Fuzzy come back in Fuzzy though the folder's chip made Contains
+        // A filter keeps its mode: results filtered in Fuzzy come back in Fuzzy though the folder's filter bar made Contains
         // the default meanwhile, with the same matches and the opened one selected. The default stays Contains.
         @Test func resultsComeBackInTheModeTheirFilterHad() async throws {
             let place = try await start()
@@ -192,9 +192,9 @@ extension ExplorerWindowlessTests {
             content.setSearchFilter("inr")
             #expect(content.entries.map(\.name) == ["Inner"])
             try await openResult(place)
-            // In the folder, a filter switched to Contains with its chip.
+            // In the folder, a filter switched to Contains in its bar.
             content.applyFilterKey(.type("x"))
-            #expect(content.container.filterPill.chip.accessibilityPerformPress())
+            content.container.filterBar.modes.press(.contains)
             #expect(place.tab.preferences.listFilterMatch == .contains)
             #expect(content.filterMode == .contains)
 

@@ -54,7 +54,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.pinnedFilter == nil)
             #expect(tab.content.filter.isEmpty)
             #expect(!tab.menuState.filterPinned)
-            #expect(!tab.content.container.filterPill.isShowingFilter)
+            #expect(!tab.content.container.filterBar.isShowingFilter)
             #expect(toasts(tab).contains(Self.unpinnedToast))
             #expect(shownFiles(tab).contains("Pasted Text.txt"))
             withExtendedLifetime(operations) {}
@@ -157,7 +157,7 @@ extension ExplorerWindowlessTests {
             #expect(shownFiles(tab) == ["nomad.txt", "note.txt"])
             // Folders show whatever their names.
             #expect(tab.content.entries.contains { $0.name == "Zoo" })
-            #expect(tab.content.container.filterPill.isPinned)
+            #expect(tab.content.container.filterBar.isPinned)
             tab.content.applySelection(.empty)
             let status = tab.content.contentShell.pathBarRow.status.stringValue
             #expect(status.hasPrefix("\(tab.content.entries.count) of \(listedBefore + 3) items"))

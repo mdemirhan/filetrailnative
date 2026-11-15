@@ -92,7 +92,7 @@ The files you cut or copy are on File Trail's own clipboard, the one the toolbar
 - **Pin the filter** and it stays while you go to other folders: type `pdf`, pin it, and every folder you open shows its folders and its PDFs.
 
 <p align="center">
-  <img src="docs/screenshots/filter.png" alt="A folder of components narrowed by typing trtime to TripTimeline.jsx and its test, with Tr and Time marked in each name and the filter pill saying Fuzzy and 2 of 14" width="900">
+  <img src="docs/screenshots/filter.png" alt="A folder of components narrowed by typing trtime to TripTimeline.jsx and its test, with Tr and Time marked in each name and the filter bar under the list saying 2 of 14, Fuzzy chosen" width="900">
 </p>
 
 ## Keyboard first

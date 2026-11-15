@@ -57,21 +57,24 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.filter.isEmpty)
             #expect(names(tab) == ["Projects", "Screenshot 09.12.png", "Screenshot 10.02.png"])
             #expect(tab.menuState.filterPinned)
-            let pill = tab.content.container.filterPill
-            #expect(pill.isShowingFilter)
-            #expect(pill.isPinned)
-            #expect(pill.pin.isPinned)
+            let bar = tab.content.container.filterBar
+            #expect(bar.isShowingFilter)
+            #expect(bar.isPinned)
+            #expect(bar.pin.isPinned)
 
-            // The chip is locked while pinned.
-            #expect(pill.chip.accessibilityPerformPress())
+            // The modes are locked while pinned: Contains can't be chosen.
+            #expect(!bar.modes.isEnabled(forSegment: 1))
+            bar.modes.press(.contains)
             #expect(tab.content.pinnedFilter?.mode == .fuzzy)
+            #expect(bar.modes.selectedSegment == 0)
 
             // Unpinned, it is the typed filter again: folders it doesn't match go, and Esc clears it.
-            #expect(pill.pin.accessibilityPerformPress())
+            #expect(bar.pin.accessibilityPerformPress())
             #expect(tab.content.pinnedFilter == nil)
             #expect(tab.content.filter == "scr")
             #expect(names(tab) == ["Screenshot 09.12.png", "Screenshot 10.02.png"])
-            #expect(!pill.isPinned)
+            #expect(!bar.isPinned)
+            #expect(bar.modes.isEnabled(forSegment: 1))
             tab.content.applyFilterKey(.clear)
             #expect(tab.content.filter.isEmpty)
             #expect(names(tab).count == 4)
@@ -188,10 +191,10 @@ extension ExplorerWindowlessTests {
 
             type("scr", tab.content)
             tab.perform(.togglePinFilter)
-            tab.content.container.filterPill.onClear()
+            tab.content.container.filterBar.onClear()
             #expect(tab.content.pinnedFilter == nil)
             #expect(tab.content.filter.isEmpty)
-            #expect(!tab.content.container.filterPill.isShowingFilter)
+            #expect(!tab.content.container.filterBar.isShowingFilter)
             #expect(names(tab).count == 4)
         }
 

@@ -236,9 +236,9 @@ extension ExplorerWindowlessTests {
             list.type("re")
             #expect(list.rowNames == ["Readme.md", "Report.txt"])
             #expect(list.selectedNames == ["Readme.md"])
-            let pill = try #require(shown("listFilter", tab).first)
-            #expect(!pill.isHidden)
-            let count = identified("listFilter.count", in: pill).compactMap { ($0 as? NSTextField)?.stringValue }
+            let bar = try #require(shown("listFilter", tab).first)
+            #expect(!bar.isHidden)
+            let count = identified("listFilter.count", in: bar).compactMap { ($0 as? NSTextField)?.stringValue }
             #expect(count == ["2 of 5"])
             #expect(tab.content.filter == "re")
             // Backspace takes a character back; the first name starting with the text is selected again.
@@ -251,8 +251,8 @@ extension ExplorerWindowlessTests {
             list.key("Escape")
             #expect(list.rowNames.count == 5)
             #expect(list.selectedNames == selected)
-            // The pill drops away.
-            #expect(!tab.content.container.filterPill.isShowingFilter)
+            // The bar goes.
+            #expect(!tab.content.container.filterBar.isShowingFilter)
             #expect(await waitUntil { shown("listFilter", tab).isEmpty })
             // The filter belongs to the folder: it goes when another folder opens.
             list.type("a")

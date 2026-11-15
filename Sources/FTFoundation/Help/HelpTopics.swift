@@ -184,7 +184,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Type in the list",
                             description:
-                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The chip in the filter's pill says Fuzzy: click it for Contains, which keeps only the names with the letters side by side; the filters you type next start in the mode you chose, as Settings → Browsing sets it. Backspace takes a character back, and Option-Backspace a word. Space types a space while you type and is Quick Look after a pause. Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
+                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The bar under the list shows what you typed, with Fuzzy and Contains: click Contains to keep only the names with the letters side by side; the filters you type next start in the mode you chose, as Settings → Browsing sets it. Backspace takes a character back, and Option-Backspace a word. Space types a space while you type and is Quick Look after a pause. Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
                         ),
                         HelpRow(
                             label: "Type in the folder tree",
@@ -601,7 +601,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Pin Filter",
                             description:
-                                "View > Pin Filter, or the pin in the filter’s pill, keeps the filter you typed while the pane goes to other folders and searches. A pinned filter narrows files only, so folders always show, and typing selects a name instead of changing it. Choose Pin Filter again or click the pin to unpin it; the ✕ in the pill removes the filter."
+                                "View > Pin Filter, or the pin in the filter bar, keeps the filter you typed while the pane goes to other folders and searches. A pinned filter narrows files only, so folders always show, and typing selects a name instead of changing it. Choose Pin Filter again or click the pin to unpin it; the ✕ in the bar removes the filter."
                         ),
                         HelpRow(
                             label: "Dates",

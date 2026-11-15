@@ -1,5 +1,5 @@
 // A List selection made from outside reaches the window, Edit › Select All selects the list, Space is the filter's text
-// while typing, the filter pill's ✕ clears it, and a filter nothing matches is said in place of the whole view
+// while typing, the filter bar's ✕ clears it, and a filter nothing matches is said in place of the whole view
 import AppKit
 import FTFoundation
 import Foundation
