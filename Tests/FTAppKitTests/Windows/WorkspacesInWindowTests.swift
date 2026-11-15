@@ -233,6 +233,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.panes[0].content.columnState.iconSizes.standard == 72)
             #expect(second.content.columnState.previewCounts.standard == 9)
             try await save(tab, as: "Sized", in: harness)
+            #expect(await waitUntil { workspaces(harness).count == 1 })
             let kept = try #require(workspaces(harness).first)
             #expect(kept.session.openTabs.first?.viewSizes?.iconSizes.standard == 72)
             #expect(kept.session.openTabs.first?.secondPane?.viewSizes?.previewCounts.standard == 9)
