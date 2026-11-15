@@ -99,6 +99,7 @@ final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     func setAcl(_ path: String, _ acl: String?) throws {}
     func trash(_ path: String) throws -> String? { throw noTrashHere() }
     func canModifyFolder(_ path: String) throws {}
+    func flushToDisk(_ path: String, wholeDisk: Bool) throws {}
 
     func copyFile(
         _ source: String, _ destination: String, stop: StopSignal?, onProgress: (@Sendable (Int64) -> Void)?

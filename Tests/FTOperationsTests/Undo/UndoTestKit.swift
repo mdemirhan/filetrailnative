@@ -101,6 +101,7 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
         return try base.trash(path)
     }
     func canModifyFolder(_ path: String) throws { try base.canModifyFolder(path) }
+    func flushToDisk(_ path: String, wholeDisk: Bool) throws { try base.flushToDisk(path, wholeDisk: wholeDisk) }
     func writeNewFile(_ path: String, _ contents: Data) throws { try base.writeNewFile(path, contents) }
     func itemSize(_ path: String) throws -> ItemSize {
         if let itemSizeImpl = impl(\.itemSizeImpl) { return try itemSizeImpl(path) }

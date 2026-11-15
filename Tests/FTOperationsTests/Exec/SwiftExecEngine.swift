@@ -479,6 +479,8 @@ struct RecordedWriteFileSystem: UndoFileSystem {
         try alive()
         try disk.canModifyFolder(path)
     }
+    /// Not a step of the recordings: the disk here keeps what it is given at once.
+    func flushToDisk(_ path: String, wholeDisk: Bool) throws {}
     // What Undo asks besides, as the app's own.
     func rename(_ from: String, _ to: String) throws {
         try alive()

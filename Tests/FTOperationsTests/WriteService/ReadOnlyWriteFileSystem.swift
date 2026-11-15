@@ -31,6 +31,7 @@ extension ReadOnlyWriteFileSystem {
     func setAcl(_ path: String, _ acl: String?) throws { throw refused(path) }
     func trash(_ path: String) throws -> String? { throw refused(path) }
     func canModifyFolder(_ path: String) throws { throw refused(path) }
+    func flushToDisk(_ path: String, wholeDisk: Bool) throws { throw refused(path) }
 }
 
 extension MockAnalysisFileSystem: ReadOnlyWriteFileSystem {}

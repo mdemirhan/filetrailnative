@@ -27,6 +27,66 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(fileSystem.exists("/target/a.txt"))
     }
 
+    // A file moved to another disk is written out to that disk before its original is deleted: copied, it may be
+    // only in memory still, and a power cut after the delete would leave it nowhere.
+    @Test func aFileMovedToAnotherDiskIsWrittenOutBeforeItsOriginalGoes() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 2)),
+        ])
+        fileSystem.copyFileImpl = copyingSize(fileSystem)
+        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
+        await execute(fileSystem, operation, operationId: "flush-file")
+        #expect(fileSystem.flushes.map(\.path) == ["/target/a.txt"])
+        #expect(fileSystem.flushes.map(\.wholeDisk) == [false])
+        // Both were there when it was written out.
+        #expect(fileSystem.flushes.first?.paths.contains("/source/a.txt") == true)
+        #expect(fileSystem.flushes.first?.paths.contains("/target/a.txt") == true)
+        #expect(!fileSystem.exists("/source/a.txt") && fileSystem.exists("/target/a.txt"))
+    }
+
+    // A folder moved to another disk is written out once, whole, before any of its originals goes.
+    @Test func aFolderMovedToAnotherDiskIsWrittenOutOnceBeforeItsOriginalsGo() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
+            ("/source/dir/sub", .directory()), ("/source/dir/sub/b.txt", .file(size: 2)), ("/target", .directory()),
+        ])
+        fileSystem.copyFileImpl = copyingSize(fileSystem)
+        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/dir"], into: "/target")
+        await execute(fileSystem, operation, operationId: "flush-folder")
+        #expect(fileSystem.flushes.count == 1)
+        let flush = try #require(fileSystem.flushes.first)
+        #expect(flush.wholeDisk && flush.path == "/target/dir")
+        for path in ["/source/dir/a.txt", "/source/dir/sub/b.txt", "/target/dir/a.txt", "/target/dir/sub/b.txt"] {
+            #expect(flush.paths.contains(path), "\(path)")
+        }
+        #expect(!fileSystem.exists("/source/dir") && fileSystem.exists("/target/dir/sub/b.txt"))
+    }
+
+    // A copy that can't be written out keeps its original, and says so; nothing of it is lost either way.
+    @Test func aCopyThatCantBeWrittenOutKeepsItsOriginal() async throws {
+        let file: [(String, MockWriteServiceFileSystem.Seed)] = [
+            ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 2)),
+        ]
+        let folder: [(String, MockWriteServiceFileSystem.Seed)] = [
+            ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
+            ("/target", .directory()),
+        ]
+        for (seed, source, kept) in [
+            (file, "/source/a.txt", ["/source/a.txt", "/target/a.txt"]),
+            (folder, "/source/dir", ["/source/dir/a.txt", "/target/dir/a.txt"]),
+        ] {
+            let fileSystem = MockWriteServiceFileSystem(seed)
+            fileSystem.copyFileImpl = copyingSize(fileSystem)
+            fileSystem.flushToDiskImpl = { path, _ in throw NativeError.errno(EIO, syscall: "fsync", path: path) }
+            let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: [source], into: "/target")
+            let events = await execute(fileSystem, operation, operationId: "flush-fails")
+            for path in kept { #expect(fileSystem.exists(path), "\(path)") }
+            let failed = events.last?.result?.items.filter { $0.status == .failed } ?? []
+            let said = failed.contains { $0.error?.contains("couldn't be written out to the disk") == true }
+            #expect(said, "\(source): \(failed.map(\.error))")
+        }
+    }
+
     @Test func mergeWithRenamedChildrenAndCopyFileFallbackMixesPathsInOneOperation() async throws {
         // Some items on the same disk (renamed), some on another (copied).
         let fileSystem = MockWriteServiceFileSystem([

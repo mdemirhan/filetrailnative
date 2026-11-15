@@ -57,6 +57,7 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
         return try base.trash(path)
     }
     func canModifyFolder(_ path: String) throws { try base.canModifyFolder(path) }
+    func flushToDisk(_ path: String, wholeDisk: Bool) throws { try base.flushToDisk(path, wholeDisk: wholeDisk) }
     func renameExclusive(_ from: String, _ to: String) throws {
         if let renameExclusiveImpl { return try renameExclusiveImpl(from, to) }
         try base.renameExclusive(from, to)

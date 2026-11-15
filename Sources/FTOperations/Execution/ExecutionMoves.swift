@@ -6,6 +6,19 @@ import Foundation
 let copyNotWholeMessage =
     "It changed while it was being moved, or its copy didn't come out whole, so the original was kept."
 
+/// A move's copy written out to the disk before its original goes: nil when it is, else why the original is kept.
+/// Copied, the item may still be only in memory or in the drive's cache; deleted then, a power cut leaves it
+/// nowhere.
+func flushMovedCopy(_ fileSystem: some WriteServiceFileSystem, _ path: String, wholeDisk: Bool) -> String? {
+    do {
+        try fileSystem.flushToDisk(path, wholeDisk: wholeDisk)
+        return nil
+    } catch {
+        return "It was copied, but the copy couldn't be written out to the disk, so the original was kept. "
+            + describeCopyPasteError(error)
+    }
+}
+
 /// After a move to another disk was copied into place (built under `stagingPath`, now at `finalPath`), removes
 /// the sources that were copied. Anything changed in the meantime stays, as in the per-file move flow, and so
 /// does an original whose copy went away, changed or was cut short since it was written.
@@ -14,6 +27,8 @@ func removeMovedSources(
     _ stagingPath: String, _ finalPath: String
 ) -> (error: String?, childItems: [CopyPasteItemResult]) {
     let fileSystem = context.fileSystem
+    // Everything it copied is written out in one go before any of its originals goes.
+    if let kept = flushMovedCopy(fileSystem, finalPath, wholeDisk: true) { return (kept, childItems) }
     func removeCopied(_ current: ResolvedCopyPasteNode) -> String? {
         let copied = context.shared.copiedForMove.removeValue(forKey: NameKeys.Exact(current.node.sourcePath))
         guard let copied,

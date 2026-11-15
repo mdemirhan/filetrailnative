@@ -45,6 +45,11 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
     /// Whether items can be added to or removed from a folder (access(2) with W_OK; throws when not). A move to
     /// another disk asks before copying anything, so it never copies what it then can't remove.
     func canModifyFolder(_ path: String) throws
+    /// Has the disk write out what a move copied to it, the drive's own cache too, before the original is deleted:
+    /// until then the copy may be only in memory, and a power cut would leave neither. For a file, the file at
+    /// `path` (`F_FULLFSYNC`); `wholeDisk`, for a folder put in place, everything waiting for the disk `path` is on,
+    /// in one go. A disk that can't be told to (some network disks) is left to itself; any other failure throws.
+    func flushToDisk(_ path: String, wholeDisk: Bool) throws
     /// Throws when items can be added to a folder but not renamed or removed there (an access rule against it, as
     /// on a drop box): what a paste builds there under a hidden name could then be neither put in place nor cleared
     /// away. A folder nothing can be added to passes: writing to it fails with its own reason.
@@ -155,6 +160,20 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
         if access(path, W_OK) != 0 {
             throw NativeError.errno(errno, syscall: "access", path: path)
         }
+    }
+
+    public func flushToDisk(_ path: String, wholeDisk: Bool) throws {
+        if wholeDisk, sync_volume_np(path, SYNC_VOLUME_FULLSYNC | SYNC_VOLUME_WAIT) == 0 { return }
+        // A link, a pipe or a device has nothing of its own to write out: the folder it is in is flushed, as is a
+        // folder whose disk has no call for the whole of it.
+        var descriptor = open(path, O_RDONLY | O_NONBLOCK | O_NOFOLLOW | O_CLOEXEC)
+        if descriptor < 0 { descriptor = open(NodePath.dirname(path), O_RDONLY | O_CLOEXEC) }
+        guard descriptor >= 0 else { throw NativeError.errno(errno, syscall: "open", path: path) }
+        defer { close(descriptor) }
+        if fcntl(descriptor, F_FULLFSYNC) == 0 || fsync(descriptor) == 0 { return }
+        // Not something this disk does: it keeps what it was given as it sees fit.
+        if [ENOTSUP, EINVAL, ENOTTY].contains(errno) { return }
+        throw NativeError.errno(errno, syscall: "fsync", path: path)
     }
 }
 

@@ -208,6 +208,16 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     /// Every folder here can be written to.
     func canModifyFolder(_ path: String) throws {}
 
+    /// What a move had written out to the disk before deleting an original, in order, with what was there then.
+    private(set) var flushes: [(path: String, wholeDisk: Bool, paths: [String])] = []
+    /// A test's own flush, to fail it.
+    var flushToDiskImpl: ((String, Bool) throws -> Void)?
+    func flushToDisk(_ path: String, wholeDisk: Bool) throws {
+        try flushToDiskImpl?(path, wholeDisk)
+        let there = paths
+        locked { flushes.append((path, wholeDisk, there)) }
+    }
+
     func mkdir(_ path: String) throws {
         try locked { try ensureDirectory(path, recursive: false) }
     }

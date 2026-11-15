@@ -299,9 +299,13 @@ private func executeLeafNode(_ context: ExecutionContext, _ currentNode: Resolve
             path: currentNode.destinationPath, source: source)
     }
     if context.mode == .cut {
-        deleteError =
-            copyStillWhole(context.fileSystem, currentNode.destinationPath, source)
-            ? tryDeleteMovedSource(currentNode.node.sourcePath, source, context.fileSystem) : copyNotWholeMessage
+        if !copyStillWhole(context.fileSystem, currentNode.destinationPath, source) {
+            deleteError = copyNotWholeMessage
+        } else {
+            deleteError =
+                flushMovedCopy(context.fileSystem, currentNode.destinationPath, wholeDisk: false)
+                ?? tryDeleteMovedSource(currentNode.node.sourcePath, source, context.fileSystem)
+        }
     }
     emitProgress(context, .running, currentNode, nil)
     return ExecuteNodeResult(
