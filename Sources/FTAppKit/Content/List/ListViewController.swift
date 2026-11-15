@@ -227,7 +227,6 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         header.onPress = { [weak self] in self?.giveKeyboard() }
         header.onBegin = { [weak self] column in self?.beginResize(column) ?? (0, [:]) }
         header.onDrag = { [weak self] column, width, saved in self?.resize(column, to: width, from: saved) }
-        header.onEnd = { [weak self] in self?.endResize() }
         header.onNudge = { [weak self] column, direction in self?.nudge(column, direction) }
         header.onFit = { [weak self] column in self?.fitToContent(column) }
         root.addSubview(scroll)
@@ -411,11 +410,17 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         columnSet = DetailsColumnSet(columns: state.columns, widths: state.widths)
         let table = DetailsColumns.tableWidth(
             widths: columnSet.widths, columns: columnSet.columns, layout: layoutMetrics)
-        // While a divider is dragged the list keeps the room it shows to the right: a column narrowed with the list
-        // scrolled to its right end would otherwise scroll the list back under the pointer, which the drag would
-        // take for the pointer moving on, and the column would close up to its smallest at once.
-        let held = isResizingColumn ? Double(scroll.contentView.bounds.maxX) : 0
-        let documentWidth = max(root.bounds.width, table + 2 * layoutMetrics.rowInset, held)
+        // The list never gets narrower than what it shows to the right: a column narrowed with the list scrolled to
+        // its right end leaves empty room there, during the drag and after it, which goes as the list is scrolled back
+        // (`scrolled`). Were the list to close up at once it would scroll back under the pointer, which the drag would
+        // take for the pointer moving on, and the column would close up to its smallest. The room never grows: a
+        // list pulled past its end and springing back shows more than it has.
+        let fitted = max(Double(root.bounds.width), table + 2 * layoutMetrics.rowInset)
+        // By the width given last, not the table's frame, which AppKit sets to its own between two layouts.
+        let shown = min(givenWidth, Double(scroll.contentView.bounds.maxX))
+        let documentWidth = max(fitted, shown)
+        givenWidth = documentWidth
+        holdsRoom = documentWidth > fitted
         column.width = documentWidth
         column.minWidth = documentWidth
         column.maxWidth = documentWidth
@@ -452,7 +457,14 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         positionHeader()
     }
 
+    /// The list is wider than its columns, for what it showed to the right when a column was narrowed.
+    private var holdsRoom = false
+    /// The width `sizeColumns` gave the list last.
+    private var givenWidth = 0.0
+
     private func scrolled() {
+        // Scrolled back, the list gives up the empty room it no longer shows.
+        if holdsRoom { sizeColumns() }
         positionHeader()
         requestMetadata()
         // Scrolling moves the row away from the reason a name was refused, so it is dropped until the next try.
@@ -602,25 +614,15 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     // MARK: Columns
 
-    /// A divider is being dragged (`sizeColumns` keeps the list's room meanwhile).
-    private var isResizingColumn = false
-
     private func beginResize(_ column: DetailColumn) -> (width: Double, saved: [DetailColumn: Double]) {
-        isResizingColumn = true
-        return (columnSet.width(column), host?.columnState.widths ?? [:])
-    }
-
-    /// The drag ended: the list is as wide as its columns again, and scrolls back to its end if it was past it.
-    private func endResize() {
-        guard isResizingColumn else { return }
-        isResizingColumn = false
-        root.needsLayout = true
-        root.layoutSubtreeIfNeeded()
+        (columnSet.width(column), host?.columnState.widths ?? [:])
     }
 
     private func resize(_ column: DetailColumn, to width: Double, from saved: [DetailColumn: Double]) {
         let clamped = DetailsColumns.clamp(width, column: column, search: host?.search != nil)
-        guard clamped != saved[column] else { return }
+        // Against the width it has now, not the one the drag began with: dragged back to where it started, the
+        // column takes that width again.
+        guard clamped != columnSet.width(column) else { return }
         var next = saved
         next[column] = clamped
         host?.columnWidthsChanged(next)

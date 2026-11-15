@@ -129,8 +129,9 @@ extension ExplorerWindowlessTests {
         }
 
         // The list scrolled to its right end, a divider dragged left: the column narrows by as much as the pointer
-        // moved and stays so while the pointer rests, the divider under it. The list keeps its room to the right
-        // until the drag ends, so nothing moves under the pointer; then it closes up to its columns again.
+        // moved and stays so while the pointer rests, the divider under it. The list keeps the room it shows to the
+        // right, during the drag and after it, so nothing moves under the pointer or when it lets go; scrolled back,
+        // the list gives the room up, and it never shows more of it than was left.
         @Test func aColumnNarrowedAtTheListsRightEndFollowsThePointer() async throws {
             let (harness, tab, list) = try await openNarrow()
             let window = try #require(tab.window)
@@ -138,26 +139,55 @@ extension ExplorerWindowlessTests {
             scrollSideways(list, to: 10_000)
             harness.layout(tab)
             let end = clip.bounds.minX
-            #expect(end > 0 && clip.bounds.maxX == list.table.frame.width)
+            let fitted = list.table.frame.width
+            #expect(end > 0 && clip.bounds.maxX == fitted)
             let cell = try #require(header(tab)?.cell(for: .size))
             let separator = cell.separator
             let width = cell.frame.width
             let dividerX = { separator.convert(NSPoint(x: separator.bounds.midX, y: 0), to: nil).x }
             let start = NSPoint(x: dividerX(), y: separator.convert(separator.bounds, to: nil).midY)
-            separator.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: start, in: window)))
-            let left = NSPoint(x: start.x - 10, y: start.y)
-            // The pointer moves once and then rests: the events that follow say the same place.
-            for _ in 0..<6 {
-                separator.mouseDragged(with: try #require(MouseEvents.event(.leftMouseDragged, at: left, in: window)))
+            func drag(to offset: CGFloat) throws {
+                let point = NSPoint(x: start.x + offset, y: start.y)
+                separator.mouseDragged(with: try #require(MouseEvents.event(.leftMouseDragged, at: point, in: window)))
                 harness.layout(tab)
             }
+            separator.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: start, in: window)))
+            // The pointer moves once and then rests: the events that follow say the same place.
+            for _ in 0..<6 { try drag(to: -10) }
             #expect(cell.frame.width == width - 10)
-            #expect(abs(dividerX() - left.x) <= 1)
+            #expect(abs(dividerX() - (start.x - 10)) <= 1)
             #expect(clip.bounds.minX == end)
+            #expect(list.table.frame.width == fitted)
+            // Further in, back out to where it began, which it takes again, and past it: the divider stays under the
+            // pointer and the list where it was, growing only once the columns need more than it has.
+            let steps: [(CGFloat, CGFloat)] = [
+                (-30, fitted), (-10, fitted), (0, fitted), (6, fitted + 6), (-10, fitted),
+            ]
+            for (offset, wide) in steps {
+                try drag(to: offset)
+                let expected = width + offset
+                #expect(cell.frame.width == expected, "\(offset)")
+                #expect(abs(dividerX() - (start.x + offset)) <= 1, "\(offset)")
+                #expect(clip.bounds.minX == end, "\(offset)")
+                #expect(list.table.frame.width == wide, "\(offset)")
+            }
+            let left = NSPoint(x: start.x - 10, y: start.y)
             separator.mouseUp(with: try #require(MouseEvents.event(.leftMouseUp, at: left, in: window)))
             harness.layout(tab)
+            // Let go: nothing moves, and the room is still there.
             #expect(cell.frame.width == width - 10)
-            #expect(clip.bounds.maxX == list.table.frame.width)
+            #expect(clip.bounds.minX == end)
+            #expect(list.table.frame.width == fitted)
+            // Scrolled back by less than the room, the list gives up that much; scrolled back further, all of it, and
+            // it then ends at its columns as before.
+            scrollSideways(list, to: Double(end) - 4)
+            harness.layout(tab)
+            #expect(list.table.frame.width == fitted - 4)
+            scrollSideways(list, to: Double(end) - 50)
+            harness.layout(tab)
+            #expect(list.table.frame.width == fitted - 10)
+            scrollSideways(list, to: 10_000)
+            harness.layout(tab)
             #expect(clip.bounds.minX == end - 10)
             await harness.close()
         }
