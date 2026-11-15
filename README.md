@@ -77,7 +77,7 @@ The files you cut or copy are on File Trail's own clipboard, the one the toolbar
   <img src="docs/screenshots/convert-images.png" alt="The Convert Images sheet for five selected photos, with its format, quality, size and metadata choices" width="900">
 </p>
 
-- **Paste as File (⇧⌘V)** saves a screenshot or text you copied in another app as a new file in the folder you are in, with its name selected for you to change. Finder has nothing like it.
+- **Paste as File (⇧⌘V)** saves a screenshot or text you copied in another app as a new file in the folder you are in, with its name selected for you to change.
 - **Copy Contents (⇧⌘C)** puts a file's image or text on the clipboard, ready to paste into a message or a document, without opening the file.
 - **Convert Images** makes copies of the selected images as JPEG, HEIC, PNG, TIFF or AVIF, at their size or smaller, with or without their metadata and location. One Undo takes the copies back.
 
@@ -89,7 +89,7 @@ The files you cut or copy are on File Trail's own clipboard, the one the toolbar
 
 - **Go To (⌘K)** lists the folders you use most lately, with your favorites, and finds any folder you have opened from a few letters of its name. The folders you go to often come first, the way a browser's address bar ranks the sites you visit. Start with `/` or `~` to type a path, and Tab completes it.
 - **Type in the file list** to narrow it, with no field to click first. A name is kept when it has the letters you type in that order, so `trtime` finds TripTimeline.jsx, and the best match is selected. Press ⌘F and the same text becomes a search of the subfolders.
-- **Pin the filter** and it stays while you go to other folders: type `pdf`, pin it, and every folder you open shows its folders and its PDFs. Finder has no filter that follows you.
+- **Pin the filter** and it stays while you go to other folders: type `pdf`, pin it, and every folder you open shows its folders and its PDFs.
 
 <p align="center">
   <img src="docs/screenshots/filter.png" alt="A folder of components narrowed by typing trtime to TripTimeline.jsx and its test, with Tr and Time marked in each name and the filter pill saying Fuzzy and 2 of 14" width="900">
