@@ -174,7 +174,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             pane.refreshColumns()
             return
         }
-        if !showsResults {
+        let opening = !showsResults
+        if opening {
             showsResults = true
             content.setMode(pane.searchViewMode)
             content.contentShell.searchHeader = header
@@ -188,6 +189,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
                 results: session.shownResults, sortBy: session.sortBy, sortDirection: session.sortDirection,
                 highlight: session.highlightPattern, isRunning: session.isRunning, error: session.error,
                 errorIsQuiet: session.errorIsQuiet, startupDiskName: disk))
+        // Results opened start in the mode new views start with; results brought back are given theirs after.
+        if opening { content.setViewFilterMode(tab.preferences.listFilterMatch) }
         header.show(
             scopes: SearchBarText.scopeOptions(
                 currentPath: pane.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),

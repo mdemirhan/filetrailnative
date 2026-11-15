@@ -165,12 +165,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var includeHidden = false
     private(set) var columnState = ListColumnState.standard
     private(set) var listFilter = ListFilterTyping()
-    /// How a filter starts finding names (Settings → Browsing), and how the one typed now does: a filter keeps the mode
-    /// it started with, or that its chip gave it, whatever the setting says since.
-    private(set) var defaultFilterMode = NameMatchMode.fuzzy
+    /// The view's own mode, which its next filter starts in, and the mode of the filter typed now. A view takes the
+    /// mode new views start with when it opens (a pane, a tab, a window, the results of a new search); after that only
+    /// its own Fuzzy and Contains change it, never the setting or another view.
+    private(set) var viewFilterMode = NameMatchMode.fuzzy
     private var typedFilterMode = NameMatchMode.fuzzy
-    /// The typed filter's mode, or with none typed the one the next will start with.
-    var filterMode: NameMatchMode { filter.isEmpty ? defaultFilterMode : typedFilterMode }
+    /// The typed filter's mode, or with none typed the view's.
+    var filterMode: NameMatchMode { filter.isEmpty ? viewFilterMode : typedFilterMode }
     /// The filter as it finds names, and the marks it gave names, kept until the text or the mode changes.
     private var filterMatcher: NameMatcher?
     private var filterMarks: [StoredName: [HighlightRange]] = [:]
@@ -227,6 +228,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var keptFolder: KeptFolder?
 
     private struct KeptFolder {
+        var filterMode: NameMatchMode
         var listed: [DirectoryEntry]
         var loadState: ContentLoadState
         var hiddenItemCount: Int
@@ -586,7 +588,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// A filter starting from nothing takes the default mode, or the one it is given.
     private func startFilter(_ mode: NameMatchMode? = nil, ifEmpty: Bool = true) {
-        if !ifEmpty || filter.isEmpty { typedFilterMode = mode ?? defaultFilterMode }
+        if !ifEmpty || filter.isEmpty { typedFilterMode = mode ?? viewFilterMode }
     }
 
     /// Esc, the ✕, or leaving the folder: the whole list returns and the selection is kept, so something found by
@@ -742,15 +744,17 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         filterChanged(.bestMatch)
     }
 
-    /// Settings changed how a filter starts finding names. A filter already typed keeps its own mode.
-    func setDefaultFilterMode(_ mode: NameMatchMode) {
-        defaultFilterMode = mode
+    /// The mode the view starts in, as it opens: a filter already typed keeps its own.
+    func setViewFilterMode(_ mode: NameMatchMode) {
+        viewFilterMode = mode
     }
 
-    /// The other mode, from the filter bar or a chip: the typed filter switches to it and narrows the list again, the
-    /// selection kept. Returns the mode, which the caller makes the default for the filters to come.
+    /// The other mode, from the filter bar or a chip: the view takes it, and the typed filter switches to it and
+    /// narrows the list again, the selection kept. Returns the mode, which the caller makes the one new views start
+    /// with; other views keep theirs.
     func toggleFilterMode() -> NameMatchMode {
         let next = filterMode.toggled
+        viewFilterMode = next
         guard !filter.isEmpty else { return next }
         typedFilterMode = next
         filterChanged(.keptWhereShown(previousPaths: entryPaths))
@@ -1044,7 +1048,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if entering {
             endLoading()
             keptFolder = KeptFolder(
-                listed: listed, loadState: settled,
+                filterMode: viewFilterMode, listed: listed, loadState: settled,
                 hiddenItemCount: hiddenItemCount, details: details,
                 scroll: pane?.scrollPosition ?? (0, 0))
         }
@@ -1088,6 +1092,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             listFilter.clear()
             onFilterChanged?(filter)
         }
+        // The folder's view comes back in its own mode, whatever the results' was.
+        if let kept { viewFilterMode = kept.filterMode }
         listed = kept?.listed ?? []
         settle(kept?.loadState ?? .idle)
         hiddenItemCount = kept?.hiddenItemCount ?? 0
@@ -1117,6 +1123,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// selection is applied, also when its lead was out of view.
     func restoreSearchView(filter text: String, mode: NameMatchMode, scroll: (top: Double, left: Double)?) {
         guard searchDisplay != nil else { return }
+        viewFilterMode = mode
         if text != filter || (!text.isEmpty && mode != filterMode) {
             startFilter(mode, ifEmpty: false)
             listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)

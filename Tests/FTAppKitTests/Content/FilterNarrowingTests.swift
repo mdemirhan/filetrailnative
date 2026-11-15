@@ -33,7 +33,7 @@ struct FilterNarrowingTests {
     @Test(arguments: NameMatchMode.allCases)
     func typingALetterAtATimeFindsWhatFilteringAfreshFinds(_ mode: NameMatchMode) {
         let content = pane()
-        content.setDefaultFilterMode(mode)
+        content.setViewFilterMode(mode)
         for letter in "re" + "sume" {
             content.applyFilterKey(.type(String(letter)))
             #expect(content.entries.map(\.name) == afresh(content), "\(content.filter)")
@@ -50,7 +50,7 @@ struct FilterNarrowingTests {
     @Test(arguments: NameMatchMode.allCases)
     func aKeyThatChangesTheLetterBeforeItFiltersWhole(_ mode: NameMatchMode) {
         let content = pane(["\u{1EAD}m.txt", "\u{1EA1}m.txt", "\u{AC00}.txt", "\u{1100}.txt"])
-        content.setDefaultFilterMode(mode)
+        content.setViewFilterMode(mode)
         content.applyFilterKey(.type("\u{1EA1}"))
         #expect(content.entries.map(\.name) == ["\u{1EA1}m.txt"])
         content.applyFilterKey(.type("\u{302}"))
@@ -77,7 +77,7 @@ struct FilterNarrowingTests {
 
     @Test func anotherModeFiltersWhole() {
         let content = pane()
-        content.setDefaultFilterMode(.contains)
+        content.setViewFilterMode(.contains)
         content.applyFilterKey(.type("r"))
         content.applyFilterKey(.type("m"))
         #expect(content.entries.isEmpty)
@@ -89,7 +89,7 @@ struct FilterNarrowingTests {
     // The chip can hide what is selected: it leaves the selection then, so no key acts on an item out of sight.
     @Test func anotherModeLetsGoOfASelectionItHides() {
         let content = pane()
-        content.setDefaultFilterMode(.fuzzy)
+        content.setViewFilterMode(.fuzzy)
         content.applyFilterKey(.type("r"))
         content.applyFilterKey(.type("m"))
         content.select(paths: ["/f/Readme.md"])
@@ -108,16 +108,16 @@ struct FilterNarrowingTests {
         #expect(content.selection.paths == ["/f/Readme.md"])
     }
 
-    // A filter keeps the mode it started with: the default changed meanwhile (Settings, another window's chip) is for
-    // the filters to come. Cleared, the next one starts from the default.
-    @Test func aFilterKeepsItsModeWhenTheDefaultChanges() {
+    // A filter keeps the mode it started with though the view's changes under it. Cleared, the next one starts in the
+    // view's.
+    @Test func aFilterKeepsItsModeWhenTheViewsChanges() {
         let content = pane()
-        content.setDefaultFilterMode(.fuzzy)
+        content.setViewFilterMode(.fuzzy)
         content.applyFilterKey(.type("r"))
         content.applyFilterKey(.type("m"))
         let found = content.entries.map(\.name)
         #expect(!found.isEmpty)
-        content.setDefaultFilterMode(.contains)
+        content.setViewFilterMode(.contains)
         #expect(content.filterMode == .fuzzy)
         #expect(content.entries.map(\.name) == found)
         content.applyFilterKey(.clear)

@@ -184,7 +184,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Type in the list",
                             description:
-                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The bar under the list shows what you typed, with Fuzzy and Contains: click Contains to keep only the names with the letters side by side; the filters you type next start in the mode you chose, as Settings → Browsing sets it. Backspace takes a character back, and Option-Backspace a word. Space types a space while you type and is Quick Look after a pause. Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
+                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The bar under the list shows what you typed, with Fuzzy and Contains: click Contains to keep only the names with the letters side by side. The list keeps the mode you chose for the filters you type in it next; other panes and windows keep theirs, and those you open later start in it. Backspace takes a character back, and Option-Backspace a word. Space types a space while you type and is Quick Look after a pause. Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
                         ),
                         HelpRow(
                             label: "Type in the folder tree",

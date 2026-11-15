@@ -1295,7 +1295,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.onSearchSubfolders = { [weak self] in self?.focusFileSearch() }
         // Pin Filter follows the filter typed, cleared or pinned.
         content.onFilterStateChanged = { [weak self] in self?.notify(.commands) }
-        // The chip switches the filter on screen and makes its mode the default for the filters to come.
+        // The chip switches the view on screen and its filter, and makes its mode the one new views start with.
         content.onToggleFilterMode = { [weak self, weak pane] in
             guard let self, let pane else { return }
             let mode = pane.content.toggleFilterMode()
@@ -1326,7 +1326,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.setView(
             sortBy: pane.sortBy, direction: pane.sortDirection, foldersFirst: pane.foldersFirst,
             includeHidden: pane.includeHidden)
-        content.setDefaultFilterMode(preferences.listFilterMatch)
+        content.setViewFilterMode(preferences.listFilterMatch)
         content.sizeShortcuts = sizeShortcuts
         content.setColumns(pane.columns(from: preferences))
         content.setMode(pane.viewMode)
@@ -1766,10 +1766,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             for pane in panes { pane.searchStore?.session.applyDefaults(preferences, keys: edited) }
         }
         sidebar.applyPreferences()
-        for pane in panes {
-            pane.content.setDefaultFilterMode(preferences.listFilterMatch)
-            pane.searchStore?.header.showFilterMode(pane.content.filterMode)
-        }
         refreshColumns()
         notificationsSettingChanged()
         if change.keys.contains(.markClipboardItems) || change.keys.isEmpty { clipboardMarksChanged() }

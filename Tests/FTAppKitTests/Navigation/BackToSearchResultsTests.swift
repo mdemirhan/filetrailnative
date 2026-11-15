@@ -182,7 +182,8 @@ extension ExplorerWindowlessTests {
         }
 
         // A filter keeps its mode: results filtered in Fuzzy come back in Fuzzy though the folder's filter bar made Contains
-        // the default meanwhile, with the same matches and the opened one selected. The default stays Contains.
+        // the mode new views start with meanwhile, with the same matches and the opened one selected. That stays
+        // Contains, and the results' view keeps Fuzzy for the filters typed in it.
         @Test func resultsComeBackInTheModeTheirFilterHad() async throws {
             let place = try await start()
             place.engine.finds = { _ in (["Inner/", "index.txt"], false, false) }
@@ -206,16 +207,16 @@ extension ExplorerWindowlessTests {
             #expect(content.entries.map(\.name) == ["Inner"])
             #expect(place.tab.preferences.listFilterMatch == .contains)
             // The filter emptied, every result is back and the opened one still selected; the next filter starts in
-            // the default.
+            // the results' own mode.
             let filter = place.tab.search.header.filter
             filter.input.stringValue = ""
             filter.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: filter.input))
             #expect(content.selection.paths == [place.found])
             #expect(content.entryPaths.contains(place.found))
-            #expect(filter.modeChip.mode == .contains)
+            #expect(filter.modeChip.mode == .fuzzy)
             content.setSearchFilter("inr")
-            #expect(content.filterMode == .contains)
-            #expect(content.entries.isEmpty)
+            #expect(content.filterMode == .fuzzy)
+            #expect(content.entries.map(\.name) == ["Inner"])
             await place.harness.close()
         }
 
