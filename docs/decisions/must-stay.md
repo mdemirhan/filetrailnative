@@ -11,7 +11,7 @@ Things that look removable and are not. Don't change them; if a change seems to 
 - Byte-exact path comparison (`sameText`, `NameKeys.Exact`): Swift's `==` treats NFC and NFD as equal.
 - The `copyfile` status callback in `Sources/CFileTrail/copyfile.c`; the large-file tests.
 - Undo and Redo as they are; `UndoFuzzTests`, `BatchRenameFuzzTests`.
-- `JSRegExp.swift` and `expandReplacement` (batch rename's rules, above); `NodePath`; `CopyPasteNames.detectCaseSensitivity`.
+- `JSRegExp.swift` and `expandReplacement` (batch rename's rules, in [the standing decisions](../decisions.md)); `NodePath`; `CopyPasteNames.detectCaseSensitivity`.
 - The `fd` binary, `FdProcess`'s `posix_spawn`, the trailing `"--"` in its arguments, `HiddenFilter`.
 - FSEvents for folder watching; `ExplorerWindows.reconcile()`; `WorkspaceSplitView`/`WorkspaceSplitController`; `FileRefusingFieldEditor`; `FirstClickGate`; `SecondInstance`; `RenameDrafts`.
 - `ExplorerToolbar`'s `applying`/`commitPending` flags; `ContextMenuSession` holding itself on its menu; `holdingTheTab`; `SidebarModel`'s request numbering; `WriteStartingShortcuts.runs(… isRepeat:)`.
