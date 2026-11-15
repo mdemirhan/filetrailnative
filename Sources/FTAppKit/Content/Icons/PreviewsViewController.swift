@@ -112,10 +112,26 @@ final class PreviewsViewController: IconViewController {
         collection.reloadData()
         // The previews come at another size now.
         dropPrefetches()
-        DispatchQueue.main.async { [weak self] in
-            anchor?()
-            self?.prefetchSoon()
-        }
+        // The row goes back to the top as soon as the items are placed (`didPlaceItems`), in the same layout: put
+        // back a turn of the main loop later, it was drawn out of place in between, and undid a place the pane was
+        // scrolled to right after the layout (a tab brought back, search results shown again).
+        anchorOncePlaced = anchor
+        prefetchSoon()
+    }
+
+    /// What puts the top row back once the items are placed for the pane's new size.
+    private var anchorOncePlaced: (() -> Void)?
+
+    override func didPlaceItems() {
+        super.didPlaceItems()
+        let anchor = anchorOncePlaced
+        anchorOncePlaced = nil
+        anchor?()
+    }
+
+    /// A name being edited stays under its picture when the picture comes or changes.
+    override func pictureShapeChanged(of path: String) {
+        if renamingPath == path { positionRenameField() }
     }
 
     /// The places follow the pane's width and its height.
@@ -137,6 +153,9 @@ final class PreviewsViewController: IconViewController {
 
     override func columnsChanged() {
         placing { super.columnsChanged() }
+        // The previews come at another size now: those asked for ahead at the old one are asked for again.
+        dropPrefetches()
+        prefetchSoon()
     }
 
     // MARK: Whole rows

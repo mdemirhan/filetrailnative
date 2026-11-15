@@ -78,6 +78,11 @@ private func idle(_ queue: ThumbnailLoadQueue, sourceLocation: SourceLocation = 
 
 private final class Listing {}
 
+/// One turn of the main loop: what was put on the main queue before has run.
+private func mainLoopTurn() async {
+    await withCheckedContinuation { continuation in DispatchQueue.main.async { continuation.resume() } }
+}
+
 @MainActor
 private final class Receiver {
     var answers: [ThumbnailPicture?] = []
@@ -512,6 +517,8 @@ private func request(
         await pollUntil { renderer.waiting == 1 }
         #expect(renderer.started == ["/a.mov"])
         handle.cancel()
+        // It is told to stop once the main loop turns, in case its file is asked for again at once.
+        await mainLoopTurn()
         renderer.step()
         await pollUntil { renderer.started.count == 2 }
         #expect(renderer.started == ["/a.mov", "/b.mov"])
@@ -535,6 +542,71 @@ private func request(
         #expect(renderer.started == ["/a.mov", "/b.mov", "/a.mov"])
         #expect(back.last != nil)
         #expect(store.loadedPicture(forPath: "/a.mov") != nil)
+    }
+
+    // A pane that shows its items again (its folder read again while a download adds files to it, a step of a window
+    // being resized) takes every request back and makes it again at once, for a new listing: the load under way goes
+    // on and answers it, where it was stopped, its picture thrown away, and begun again each time, so a preview slow
+    // to make never came while the folder kept changing. The file is then checked for the new listing.
+    @Test func aLoadUnderWayAnswersTheSameFileAskedForAgainForANewListing() async {
+        let renderer = SteppedRenderer(steps: 2)
+        let queue = ThumbnailLoadQueue(maxConcurrent: 1)
+        let store = ThumbnailStore(
+            provider: FileThumbnailService(renderer: renderer, version: { _ in "1:1" }), queue: queue)
+        var handle = request(store, "/a.mov", listing: Listing(), into: Receiver())
+        await pollUntil { renderer.waiting == 1 }
+        var last = Receiver()
+        // The folder is read again three times while the first step is under way.
+        for _ in 0..<3 {
+            handle.cancel()
+            last = Receiver()
+            handle = request(store, "/a.mov", listing: Listing(), into: last)
+            await mainLoopTurn()
+        }
+        #expect(renderer.stopped.isEmpty)
+        renderer.step()
+        await pollUntil { renderer.waiting == 1 }
+        renderer.step()
+        await idle(queue)
+        // Made once, never stopped, and given to the request that still waits.
+        #expect(renderer.started == ["/a.mov"])
+        #expect(renderer.stopped.isEmpty)
+        #expect(last.last != nil)
+        #expect(store.loadedPicture(forPath: "/a.mov") != nil)
+        withExtendedLifetime(handle) {}
+    }
+
+    // What was taken back and not asked for again does stop, a turn of the main loop later.
+    @Test func aLoadTakenBackAndNotAskedForAgainStopsOnceTheMainLoopTurns() async {
+        let renderer = SteppedRenderer(steps: 2)
+        let queue = ThumbnailLoadQueue(maxConcurrent: 1)
+        let store = ThumbnailStore(
+            provider: FileThumbnailService(renderer: renderer, version: { _ in "1:1" }), queue: queue)
+        let handle = request(store, "/a.mov", listing: Listing(), into: Receiver())
+        await pollUntil { renderer.waiting == 1 }
+        handle.cancel()
+        await mainLoopTurn()
+        renderer.step()
+        await idle(queue)
+        #expect(renderer.stopped == ["/a.mov"])
+        #expect(store.loadedPicture(forPath: "/a.mov") == nil)
+    }
+
+    // A file changed while its preview was being made is not answered by that load for a later listing: it is read
+    // again.
+    @Test func aLoadOfAFileSinceChangedDoesntAnswerALaterListing() async {
+        let provider = ScriptedProvider()
+        let queue = ThumbnailLoadQueue()
+        let store = ThumbnailStore(provider: provider, queue: queue)
+        _ = request(store, "/Users/demo/photo.jpeg", listing: Listing(), into: Receiver())
+        await pollUntil { provider.calls.count == 1 }
+        store.markChanged(["/Users/demo/photo.jpeg"])
+        let later = Receiver()
+        _ = request(store, "/Users/demo/photo.jpeg", listing: Listing(), into: later)
+        await pollUntil { provider.calls.count == 2 }
+        provider.release(ThumbnailResponse(version: "2:2", unchanged: false, picture: picture()))
+        await idle(queue)
+        #expect(later.last != nil)
     }
 
     // An edit changes nothing a listing shows: a file named as changed is checked again in the same listing, and gets

@@ -202,6 +202,10 @@ class IconViewController: ItemGridPane {
         placesBefore = places
     }
 
+    /// An item's picture came, or gave way to its icon, and its place has another shape (the Previews view, where
+    /// the name follows the picture).
+    func pictureShapeChanged(of path: String) {}
+
     override func didPlaceItems() {
         guard let before = placesBefore else { return }
         placesBefore = nil

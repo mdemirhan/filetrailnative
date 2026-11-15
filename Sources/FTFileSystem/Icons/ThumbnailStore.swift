@@ -65,6 +65,12 @@ public final class ThumbnailStore {
         func serves(size: Int, listing: AnyObject) -> Bool {
             !isRemoved && !fileChanged && self.size >= size && self.listing === listing
         }
+
+        /// Whether its picture can be shown meanwhile to a request at `size` for another listing: the same file, read
+        /// a moment before that listing was. The file is then checked for that listing (`Waiter.recheck`).
+        func showsMeanwhile(size: Int) -> Bool {
+            !isRemoved && !fileChanged && self.size >= size
+        }
     }
 
     /// One request waiting for a load.
@@ -72,6 +78,11 @@ public final class ThumbnailStore {
     private final class Waiter {
         let completion: @MainActor (ThumbnailPicture?) -> Void
         var cancelled = false
+        /// The request it made, when the load it waits for is another listing's: once that load answers, the file is
+        /// checked for this one.
+        var recheck: (kind: IconEntryKind, size: Int, listing: AnyObject)?
+        /// That check, once asked for.
+        var followUp: LoadHandle?
 
         init(_ completion: @escaping @MainActor (ThumbnailPicture?) -> Void) {
             self.completion = completion
@@ -249,6 +260,18 @@ public final class ThumbnailStore {
             }
             return handle(waiter, of: running)
         }
+        // The folder was read again while the file's preview was being made (a download adding files to it, a step
+        // of a window being resized): that load goes on and answers this request too, rather than being taken back
+        // and begun again, which a folder that keeps changing would do to it over and over.
+        if !ahead, let other = loads?.first(where: { $0.showsMeanwhile(size: wanted) }) {
+            waiter.recheck = (kind, size, listing)
+            other.waiters.append(waiter)
+            if other.isAhead {
+                other.isAhead = false
+                queue.wantNow(other.job)
+            }
+            return handle(waiter, of: other)
+        }
         let provider = self.provider
         loadCount += 1
         let number = loadCount
@@ -295,19 +318,40 @@ public final class ThumbnailStore {
             }
             for waiter in load.waiters where !waiter.cancelled {
                 waiter.completion(thumbnail.picture)
+                // One of a later listing: the file is checked for it now, which costs a look at the file unless it
+                // changed.
+                if let recheck = waiter.recheck {
+                    waiter.recheck = nil
+                    waiter.followUp = self.load(
+                        path: path, kind: recheck.kind, size: recheck.size, listing: recheck.listing, ahead: false,
+                        completion: waiter.completion)
+                }
             }
         }
         return handle(waiter, of: load)
     }
 
     /// Takes the waiter's request back, and the load once no one waits for it: out of the queue, or told to stop if it
-    /// started (a picture it makes all the same is kept). Either way it serves no request made since.
+    /// started (a picture it makes all the same is kept). One that started is told only once the main loop turns:
+    /// a pane that shows its items again (the folder read again, the pane resized) takes every request back and
+    /// makes it again at once, and the load under way then goes on for the new one.
     private func handle(_ waiter: Waiter, of load: PendingLoad) -> LoadHandle {
         LoadHandle { [weak self, weak load] in
             waiter.cancelled = true
-            guard let self, let load, load.waiters.allSatisfy(\.cancelled) else { return }
-            if !self.queue.remove(load.job) { self.queue.stop(load.job) }
-            load.isRemoved = true
+            waiter.followUp?.cancel()
+            waiter.followUp = nil
+            guard let self, let load, !load.isRemoved, load.waiters.allSatisfy(\.cancelled) else { return }
+            if self.queue.remove(load.job) {
+                load.isRemoved = true
+                return
+            }
+            DispatchQueue.main.async { [weak self, weak load] in
+                MainActor.assumeIsolated {
+                    guard let self, let load, !load.isRemoved, load.waiters.allSatisfy(\.cancelled) else { return }
+                    self.queue.stop(load.job)
+                    load.isRemoved = true
+                }
+            }
         }
     }
 }

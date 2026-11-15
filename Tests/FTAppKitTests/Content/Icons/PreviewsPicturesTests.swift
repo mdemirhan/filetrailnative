@@ -186,6 +186,34 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The row is back at the top within the layout that gave the rows another height, not a turn of the main
+        // loop later: a place the pane is scrolled to right after that layout (a tab brought back, search results
+        // shown again) stays.
+        @Test func aPlaceScrolledToRightAfterAnotherSizeStays() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 24)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 0.02
+            try? await Task.sleep(for: .milliseconds(50))
+            let clip = previews.scroll.contentView
+            previews.scrollPosition = (top: 3 * previews.layout.rowHeight, left: 0)
+            #expect(Double(clip.bounds.origin.y) == 3 * previews.layout.rowHeight)
+
+            let window = try #require(tab.window)
+            let before = previews.layout.rowHeight
+            window.setContentSize(NSSize(width: window.frame.width, height: window.frame.height + 200))
+            harness.layout(tab)
+            probe.layout()
+            #expect(previews.layout.rowHeight > before)
+            // Already there, with nothing waited for.
+            #expect(abs(Double(clip.bounds.origin.y) - 3 * previews.layout.rowHeight) < 0.5)
+            previews.scrollPosition = (top: 5 * previews.layout.rowHeight, left: 0)
+            try? await Task.sleep(for: .milliseconds(100))
+            _ = await waitUntil { !previews.isSettling }
+            #expect(abs(Double(clip.bounds.origin.y) - 5 * previews.layout.rowHeight) < 0.5)
+            await harness.close()
+        }
+
         // MARK: The previews kept
 
         // The panes are counted, and what they share is let go a little after the last one went, unless one came
@@ -272,6 +300,45 @@ extension ExplorerWindowlessTests {
             }
             #expect(await waitUntil { previews.prefetchedPaths == Set(paths[8...] + paths[..<4]) })
             #expect(await waitUntil { paths[8...].allSatisfy { store.loadedPicture(forPath: $0) != nil } })
+            await harness.close()
+        }
+
+        // Make Bigger shows fewer, larger previews: the page after the one on screen is another, and its previews are
+        // asked for at the new size, where those asked for at the old one were kept and came up blurred.
+        @Test func anotherCountAsksForItsNextPageAgain() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let names = "abcdefghijkl".map { "\($0).png" }
+            let (tab, probe, previews) = try await openPictures(harness, names, width: 300, height: 200, shown: 4)
+            let paths = try names.map { try path(tab, $0) }
+            #expect(await waitUntil { previews.prefetchedPaths == Set(paths[4..<8]) })
+            tab.perform(.increaseSize)
+            probe.layout()
+            #expect(previews.count == 2)
+            #expect(await waitUntil { previews.prefetchedPaths == Set(paths[2..<4]) })
+            await harness.close()
+        }
+
+        // The name sits right under the picture, whatever its shape: a name being edited follows when the picture
+        // comes or changes.
+        @Test func aNameBeingEditedStaysUnderItsPictureWhenThePictureChanges() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe, previews) = try await openPictures(harness, ["a.png"], width: 600, height: 150)
+            let entry = try #require(tab.content.entries.first)
+            let item = try #require(probe.iconItems["a.png"])
+            tab.content.select(paths: [entry.path])
+            #expect(tab.content.beginRename(path: entry.path))
+            let field = try #require(previews.renameField)
+            let wide = field.frame
+            #expect(wide == previews.renameFrame(at: 0))
+
+            // The file is another picture now, tall where it was wide.
+            try writePicture(URL(fileURLWithPath: entry.path), width: 150, height: 600)
+            PreviewThumbnails.store.markChanged([entry.path])
+            let shape = item.pictureShape
+            item.loadThumbnail(entry, pane: previews)
+            #expect(await waitUntil { item.pictureShape != shape })
+            #expect(field.frame == previews.renameFrame(at: 0))
+            #expect(field.frame != wide)
             await harness.close()
         }
 
