@@ -1,10 +1,10 @@
 # Archives
 
-The plan for archives in File Trail. The owner's decisions behind it are in [decisions.md](decisions.md) ("Archives are made and taken apart with the system's libarchive", "Archives will be browsed as read-only folders", and "Search inside archives" under "Left out on purpose").
+The plan for archives in File Trail. The owner's decisions behind it are in [decisions/archives.md](decisions/archives.md) ("Archives are made and taken apart with the system's libarchive", "Archives will be browsed as read-only folders", and "Search inside archives" under "Left out on purpose").
 
 ## Phase 1: Compress and Extract (done)
 
-File ▸ Compress, Extract and Extract To…, also in the right-click menu, run as write operations with the progress card, Stop and Undo. What they do is in decisions.md and in Help (Working with files › Archives).
+File ▸ Compress, Extract and Extract To…, also in the right-click menu, run as write operations with the progress card, Stop and Undo. What they do is in decisions/archives.md and in Help (Working with files › Archives).
 
 How Extract writes what it reads (`Sources/CFileTrail/archive.c`):
 

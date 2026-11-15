@@ -4,11 +4,11 @@ Written as instructions for the model that does the work. Each work package belo
 
 ## Rules for whoever does this work
 
-- Read `CLAUDE.md` and `docs/decisions.md` first. Where this file and `decisions.md` disagree, `decisions.md` wins, and the item goes back to the owner.
+- Read `CLAUDE.md`, `docs/principles.md` and `docs/decisions.md` (with the files under `docs/decisions/`) first. Where this file and `decisions.md` disagree, `decisions.md` wins, and the item goes back to the owner.
 - Never change, regenerate or delete a file in `Tests/Golden/`. Removing a hand-written test that a golden already covers is allowed; removing the golden is not.
 - These stay whatever else happens: `UndoFuzzTests`, `BatchRenameFuzzTests`, the release-script tests, the large-file tests, the shape tests of the stop and crash recordings, `ExplorerWindowControllerTests` with `FakeWindow`, the `PlainLabel` and `SearchTextCell` drawing tests, the dialog framework's tests, the dozen Settings layout tests.
 - No benchmarks, no timing hooks. A speed guard is a `CPUTime.measureThread` bound.
-- `decisions.md` lists these under "Left out on purpose": duplicate tests of the same behavior, suite and folder names that no longer match their contents, the roughly 30 "nothing happened after a fixed sleep" checks, tests that depend on installed apps, the appearance or the keyboard layout. Packages 4 and 5 touch the first of these; they are marked "needs the owner's yes". Do not rename or move suites, and do not touch the fixed-sleep checks except the few named in package 2.
+- `decisions/left-out.md` lists these as left out on purpose: duplicate tests of the same behavior, suite and folder names that no longer match their contents, the roughly 30 "nothing happened after a fixed sleep" checks, tests that depend on installed apps, the appearance or the keyboard layout. Packages 4 and 5 touch the first of these; they are marked "needs the owner's yes". Do not rename or move suites, and do not touch the fixed-sleep checks except the few named in package 2.
 - Line numbers are from commit `d545af2`. Most findings came from readers that did not run the code. Before deleting or merging a test, open both tests and confirm the claim; if it doesn't hold, skip the item and say so.
 - Before a removal, confirm the surviving test fails when the behavior is broken (break the code by hand once, see it fail, undo).
 - After each package: `scripts/ci.sh`, then compare the test count and the time with the baseline below.
@@ -139,7 +139,7 @@ FTAppKitTests (under `Tests/FTAppKitTests/`). The owner decided matching the ear
 
 ## Package 5: duplicates (needs the owner's yes)
 
-`decisions.md` lists "duplicate tests of the same behavior" as left out on purpose. Offer this list to the owner; do only what is approved. The biggest groups:
+`decisions/left-out.md` lists "duplicate tests of the same behavior" as left out on purpose. Offer this list to the owner; do only what is approved. The biggest groups:
 
 1. Write engine, same scenario many times (under `Tests/FTOperationsTests/Execution/`):
    - "A same-disk move is a rename", 8 times: `CopyPasteExecutionRenameTests.swift:28, 209`; `CopyPasteExecutionMetadataTests.swift:172, 184`; `CopyPasteExecutionIntegrationTests.swift:10, 63`; `CopyPasteExecutionRealFSTests.swift:136, 212`. Keep `RealFS:136` and `Rename:209`.

@@ -9,6 +9,23 @@ What the debug app's `--automation` mode (`Sources/FTAppKit/Automation/`) needs:
 A scenario is a JSON file with `name`, `root` and `steps`; `Sources/FTAppKit/Automation/Scenario.swift` lists every step.
 The script freezes the clock with `FILETRAIL_NOW`.
 
+## Checking a change by hand
+
+A change that needs trying in the app (how it behaves, looks or feels) is tried by whoever made it, in a debug build driven
+by a scratch scenario:
+
+- `scripts/build-app.sh debug --out build/check-app` (a release build takes over a minute and is for `scripts/release.sh`
+  and `scripts/ci.sh --full`). Quit a running copy first.
+- Write a throwaway scenario on a scratch folder and run the app's binary with `--automation <scenario> --out <folder>
+  --elements tools/capture/elements.json --user-data-dir <folder>`, with `CFFIXED_USER_HOME` set to a scratch home, as
+  `scripts/readme-screenshots.sh` does. `report.json` in the out folder says how each step went.
+- `menu` steps fail when a title is missing or dimmed, so they check titles; `key` steps with modifiers go through the menu
+  bar's keys; `snapshot` and `windowShot` give pictures to look at. System Events has no accessibility permission here:
+  don't ask for it.
+- No before and after pictures for the owner, and no waiting for a look to be approved: look, say in the report what was
+  checked and anything that seems off, and commit.
+- While trying, build and run; the full `scripts/ci.sh` is for once the behavior is right, before committing.
+
 ## Timing a scroll, once
 
 The `scroll` step (`{"step": "scroll", "distance": 4000, "ms": 1500}`) moves the folder's view a step each frame at
