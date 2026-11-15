@@ -167,7 +167,7 @@ extension WindowWriteActions {
         _ report: CopyPasteAnalysisReport, mode: FTOperations.CopyPasteMode, sources: [String], destination: String,
         action: WriteOperationAction, clearsCutClipboard: String?, initiator: CopyLikeInitiator?,
         onSourcesMissing: (([String]) -> Void)?, reportsRefusals: Bool, defaultPolicy: CopyPastePolicy,
-        moveFromSearchResults: Bool
+        moveFromSearchResults: ObjectIdentifier?
     ) async -> CopyLikeOutcome {
         let issues = report.issues.map {
             ClipboardTexts.Issue(

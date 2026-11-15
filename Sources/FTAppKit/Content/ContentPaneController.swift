@@ -946,7 +946,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func select(paths: [String]) {
         let existing = paths.filter { rowsByPath[$0] != nil }
         let selecting = ContentSelection.of(existing)
-        if let lead = selecting.leadPath { showHidden(lead) }
+        // Every one a filter hides is shown, not only the lead: one left hidden would stay selected unseen, and be
+        // deleted or moved with the others.
+        for path in existing where position(of: path) == nil { showHidden(path) }
         setSelection(selecting, notify: true)
         pane?.syncSelection()
     }

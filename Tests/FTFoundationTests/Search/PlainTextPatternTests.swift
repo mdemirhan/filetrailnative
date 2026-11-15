@@ -51,6 +51,15 @@ struct PlainTextPatternTests {
         #expect(kept > 150)
     }
 
+    // A slash, plain or typed full-width, is never written out in the pattern: fd takes a pattern with one for a
+    // path and refuses it. A name with the full-width one is still found.
+    @Test func aSlashIsWrittenByItsNumber() throws {
+        for query in ["a\u{FF0F}b", "a/b", "\u{FF0F}"] {
+            #expect(!PlainTextPattern.regex(for: query).contains("/"), "\(query)")
+        }
+        #expect(try finds("a\u{FF0F}b", "a\u{FF0F}b.txt"))
+    }
+
     // The same over names and texts put together at random from letters, marks, ligatures and full-width forms.
     @Test func findsEveryNameTheFilterKeepsAmongNamesMadeAtRandom() throws {
         let pieces = [

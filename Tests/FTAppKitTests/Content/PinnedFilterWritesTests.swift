@@ -61,6 +61,29 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Several items selected at once (a paste, a move's results), the lead one shown and another hidden by the
+        // pin: the pin goes for the hidden one too, so nothing is selected out of sight.
+        @Test func selectingSeveralShowsEveryOneThePinHides() async throws {
+            let (harness, tab, operations) = try await pinned()
+            let shown = try #require(tab.content.entries.first { $0.name == "note.txt" }?.path)
+            let hidden = tab.folder.path + "/zebra.txt"
+            try "x".write(toFile: hidden, atomically: true, encoding: .utf8)
+            tab.services.directoryService.cache.clear()
+            harness.windows.folderChanged(
+                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: [hidden]))
+            #expect(await waitUntil { tab.content.listedEntry(at: hidden) != nil })
+            #expect(tab.content.position(of: hidden) == nil)
+
+            // The lead, the last one, is in sight.
+            tab.content.select(paths: [hidden, shown])
+            #expect(tab.content.pinnedFilter == nil)
+            #expect(tab.content.entries.contains { samePath($0.path, hidden) })
+            #expect(tab.content.selection.paths.count == 2)
+            #expect(toasts(tab) == [Self.unpinnedToast])
+            withExtendedLifetime(operations) {}
+            await harness.close()
+        }
+
         // An item renamed to a name the pin doesn't match is selected where it is now: the pin goes, with its toast.
         @Test func renamingAnItemToANameThePinHidesUnpins() async throws {
             let (harness, tab, operations) = try await pinned()

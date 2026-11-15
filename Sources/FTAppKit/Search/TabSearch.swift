@@ -126,10 +126,11 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
                 let result = ended.result, result.summary.completedItemCount > 0,
                 self.tab.group?.selected === self.tab
             else { return }
-            // Those a move was dragged out of are this pane's only when they hold what was moved: the other pane's
-            // search, put away earlier, stays put away.
+            // Those a move was taken out of are this pane's only when the move began in this pane and they hold what
+            // was moved: the other pane's search, put away earlier, stays put away.
             if !self.session.isSearchMode {
-                guard writeSession?.isMoveFromSearchResults(ended.operationId) == true else { return }
+                guard writeSession?.isMoveFromSearchResults(ended.operationId, of: ObjectIdentifier(self.pane)) == true
+                else { return }
                 let moved = Set(result.items.compactMap { $0.sourcePath.map(PathBox.init) })
                 guard self.session.results.contains(where: { moved.contains(PathBox($0.path)) }) else { return }
             }

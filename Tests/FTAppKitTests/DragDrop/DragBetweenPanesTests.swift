@@ -180,6 +180,43 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
+        // Both panes searched and found the same file, and the right one's results were put away since. A move of
+        // that file out of the left pane's results finds those again; the right pane's search stays put away.
+        @Test func aMoveOutOfOnePanesResultsLeavesTheOtherPanesSearchPutAway() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let left = tab.activePane
+            let right = try await twoPanes(window, right: "Gamma")
+            let folder = window.folder.path
+            var engines: [FakeSearchEngine] = []
+            for pane in [right, left] {
+                tab.activate(pane)
+                let engine = FakeSearchEngine()
+                engine.finds = { _ in (["note.txt"], false, false) }
+                pane.search.session.engine = engine
+                pane.search.session.submit("note")
+                pane.search.session.changeRoot(folder)
+                #expect(
+                    await waitUntil {
+                        pane.search.session.results.contains { samePath($0.path, folder + "/note.txt") }
+                    })
+                engines.append(engine)
+                if pane === right { pane.search.session.hideResults() }
+            }
+            #expect(!right.search.session.isSearchMode)
+            #expect(left.search.session.isSearchMode)
+            let searches = engines.map(\.starts.count)
+
+            tab.sendToOtherPane([folder + "/note.txt"], copying: false)
+            #expect(await waitUntil { window.exists("Gamma/note.txt") && !window.exists("note.txt") })
+            #expect(await waitUntil { engines[1].starts.count == searches[1] + 1 })
+            for _ in 0..<5 { await Task.yield() }
+            #expect(engines[0].starts.count == searches[0])
+            #expect(!right.search.session.isSearchMode)
+            left.search.session.hideResults()
+            await window.close()
+        }
+
         // A search result dragged to the other pane's folder goes there: only the results' own list refuses it.
         @Test func aSearchResultDraggedToTheOtherPaneGoesIntoItsFolder() async throws {
             let window = try await WritingWindow.open()

@@ -261,6 +261,9 @@ public enum PlainTextPattern {
 
     private static func escapedInClass(_ value: UInt32) -> String {
         guard let scalar = Unicode.Scalar(value) else { return "" }
+        // A slash typed full-width ("／") is looked for as the plain one, which no name holds; written out, fd takes
+        // the pattern for a path and refuses it, so it is written by its number.
+        if scalar == "/" { return "\\x2F" }
         return escaped(String(scalar))
     }
 }

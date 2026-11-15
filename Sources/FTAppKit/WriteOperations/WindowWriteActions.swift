@@ -99,7 +99,7 @@ final class WindowWriteActions {
         mode: FTOperations.CopyPasteMode, sources: [String], destination: String, action: WriteOperationAction,
         clearsCutClipboard: String? = nil, initiator: CopyLikeInitiator? = nil,
         onSourcesMissing: (([String]) -> Void)? = nil, reportsRefusals: Bool = true, checksBusy: Bool = true,
-        defaultPolicy: CopyPastePolicy = WindowWriteActions.safePolicy, moveFromSearchResults: Bool = false
+        defaultPolicy: CopyPastePolicy = WindowWriteActions.safePolicy, moveFromSearchResults: ObjectIdentifier? = nil
     ) async -> CopyLikeOutcome {
         if checksBusy, refuseWhileBusy(.operation(action)) { return .cancelled }
         session.applyCard(
@@ -155,7 +155,9 @@ final class WindowWriteActions {
             if reportsRefusals { dialogs.showRefusal(.operation(action), message: message, in: window) }
             return .error(message: message)
         }
-        if moveFromSearchResults { session.noteMoveFromSearchResults(analysisId: report.analysisId) }
+        if let pane = moveFromSearchResults {
+            session.noteMoveFromSearchResults(analysisId: report.analysisId, pane: pane)
+        }
         if !report.issues.isEmpty {
             return await leaveOut(
                 report, mode: mode, sources: sources, destination: destination, action: action,

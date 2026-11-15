@@ -186,7 +186,7 @@ extension MainWindowController {
         guard let other = otherPane, let destination = otherPaneDestination(other), let actions = writeActions else {
             return
         }
-        let fromSearchResults = searchRootPath != nil
+        let searchPane = searchRootPath != nil ? ObjectIdentifier(activePane) : nil
         guard !sources.isEmpty else { return }
         let action: WriteOperationAction = copying ? .copyTo : .moveTo
         if actions.refuseWhileBusy(.operation(action)) { return }
@@ -197,7 +197,7 @@ extension MainWindowController {
             }
             let outcome = await actions.copyLike(
                 mode: copying ? .copy : .cut, sources: sources, destination: destination, action: action,
-                initiator: .otherPane, moveFromSearchResults: !copying && fromSearchResults)
+                initiator: .otherPane, moveFromSearchResults: copying ? nil : searchPane)
             actions.reviewIfAsked(outcome, action: action)
         }
     }
