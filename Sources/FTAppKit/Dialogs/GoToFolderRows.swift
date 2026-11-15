@@ -224,12 +224,15 @@ final class GoToFieldShell: NSView, ThemeApplying {
     let clearButton: ClearButton
     private var theme = AppearanceModel.shared.theme
     static let font = ThemeFonts.sans(DesignTokens.typeScale.body)
+    private let placeholder: String
 
-    init(label: String) {
+    /// `identifier` names the shell, the field and the ✕ for the tests: "goToFolder.field".
+    init(label: String, placeholder: String = GoToFolderBox.placeholder, identifier: String = "goToFolder") {
         field = GoToField()
         clearButton = ClearButton()
+        self.placeholder = placeholder
         super.init(frame: .zero)
-        setAccessibilityIdentifier("goToFolder.fieldShell")
+        setAccessibilityIdentifier("\(identifier).fieldShell")
         field.font = Self.font
         field.isBordered = false
         field.drawsBackground = false
@@ -238,14 +241,14 @@ final class GoToFieldShell: NSView, ThemeApplying {
         field.lineBreakMode = .byClipping
         field.cell?.isScrollable = true
         field.cell?.wraps = false
-        field.placeholderString = GoToFolderBox.placeholder
+        field.placeholderString = placeholder
         field.setAccessibilityLabel(label)
-        field.setAccessibilityIdentifier("goToFolder.field")
+        field.setAccessibilityIdentifier("\(identifier).field")
         // No spelling, completion or correction in a path.
         field.isAutomaticTextCompletionEnabled = false
         field.onFocusChange = { [weak self] in self?.needsDisplay = true }
         clearButton.setAccessibilityLabel("Clear")
-        clearButton.setAccessibilityIdentifier("goToFolder.clear")
+        clearButton.setAccessibilityIdentifier("\(identifier).clear")
         clearButton.toolTip = "Clear"
         // A plain button of the dialog: Tab goes from the field to here.
         clearButton.isTabStop = true
@@ -269,7 +272,7 @@ final class GoToFieldShell: NSView, ThemeApplying {
         clearButton.applyTheme(theme)
         field.textColor = NSColor(theme.palette.textPrimary)
         field.placeholderAttributedString = NSAttributedString(
-            string: GoToFolderBox.placeholder,
+            string: placeholder,
             attributes: [.font: Self.font, .foregroundColor: NSColor(theme.palette.textPlaceholder)])
         needsDisplay = true
     }

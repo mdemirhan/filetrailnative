@@ -245,6 +245,26 @@ struct AppStateStoreTests {
         }
     }
 
+    // The commands run from the command palette have a file of their own, the last first, each once.
+    @Test func remembersTheCommandsRunFromThePaletteAcrossRestarts() throws {
+        try Kit.withFolder { folder in
+            let path = Kit.statePath(folder)
+            let store = Kit.store(path)
+            store.recordCommand("toggleHiddenFiles")
+            store.recordCommand("workspace:workspace-a/b")
+            store.recordCommand("toggleHiddenFiles")
+            store.flush()
+            let file = folder + "/recent-commands.json"
+            #expect(
+                try String(contentsOfFile: file, encoding: .utf8)
+                    == "{\"commands\":[\n\"toggleHiddenFiles\",\n\"workspace:workspace-a/b\"\n]}\n")
+            #expect(Kit.store(path).recentCommands() == ["toggleHiddenFiles", "workspace:workspace-a/b"])
+            // A file that isn't the app's reads as none.
+            try "[1, 2]".write(toFile: file, atomically: true, encoding: .utf8)
+            #expect(Kit.store(path).recentCommands().isEmpty)
+        }
+    }
+
     @Test func remembersTheFoldersThatAreOpenedAcrossRestarts() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)

@@ -437,6 +437,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -710,6 +713,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -2703,6 +2710,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -2976,6 +2986,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -3269,6 +3283,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -3542,6 +3559,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -3829,6 +3850,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -4102,6 +4126,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -4396,6 +4424,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -4665,6 +4696,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -5003,6 +5038,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -5276,6 +5314,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -5567,6 +5609,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -5832,6 +5877,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -6124,6 +6173,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -6393,6 +6445,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -6693,6 +6749,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -6966,6 +7025,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -7253,6 +7316,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -7522,6 +7588,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -7821,6 +7891,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -8091,6 +8164,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -8377,6 +8454,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -8646,6 +8726,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -8929,6 +9013,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -9190,6 +9277,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -9484,6 +9575,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -9753,6 +9847,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -10047,6 +10145,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -10316,6 +10417,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -10607,6 +10712,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -10868,6 +10976,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -11161,6 +11273,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -11426,6 +11541,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -11735,6 +11854,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -12004,6 +12126,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -12441,6 +12567,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -12714,6 +12843,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -13152,6 +13285,9 @@
           ],
           "customizeToolbar": [
             "Cmd+K"
+          ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
           ],
           "goBack": [
             "Cmd+[",
@@ -13605,6 +13741,10 @@
             "toggleInfoRow"
           ],
           [
+            "Cmd+Shift+P",
+            "showCommandPalette"
+          ],
+          [
             "?",
             "openHelp"
           ]
@@ -13980,6 +14120,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -14253,6 +14396,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -14624,6 +14771,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -14897,6 +15047,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -15226,6 +15380,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -15495,6 +15652,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -15889,6 +16050,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -16158,6 +16322,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -16600,6 +16768,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -16869,6 +17040,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -17408,6 +17583,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -17690,6 +17868,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -18181,6 +18363,9 @@
           "equalizePanes": [],
           "openSelectedItem": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+Left"
           ],
@@ -18648,6 +18833,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -19242,6 +19431,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -19515,6 +19707,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -19871,6 +20067,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -20140,6 +20339,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -20649,6 +20852,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -20922,6 +21128,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -21297,6 +21507,9 @@
           "sortByModified": [],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -21636,6 +21849,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -22310,6 +22527,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -22567,6 +22787,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -22929,6 +23153,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -23206,6 +23433,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -23657,6 +23888,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -23895,6 +24129,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -24316,6 +24554,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -24589,6 +24830,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -24950,6 +25195,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -25220,6 +25468,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -25594,6 +25846,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -25867,6 +26122,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -26254,6 +26513,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -26519,6 +26781,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -26911,6 +27177,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -27164,6 +27433,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -27725,6 +27998,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -27998,6 +28274,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -28347,6 +28627,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -28620,6 +28903,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -29108,6 +29395,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -29369,6 +29659,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -29796,6 +30090,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -30061,6 +30358,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -30733,7 +31034,10 @@
           "sortByName": [],
           "sortByKind": [],
           "sortByModified": [],
-          "customizeToolbar": []
+          "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ]
         },
         "commandByShortcut": [
           [
@@ -30971,6 +31275,10 @@
           [
             "Cmd+0",
             "resetSize"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -31437,6 +31745,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -31710,6 +32021,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -32165,6 +32480,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -32434,6 +32752,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -32899,6 +33221,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -33172,6 +33497,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -33776,6 +34105,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -34049,6 +34381,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -34504,6 +34840,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -34773,6 +35112,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -35323,6 +35666,9 @@
           "toggleInfoPanel": [],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -35583,6 +35929,10 @@
           [
             "Ctrl+Cmd+S",
             "toggleFolderTree"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -36955,6 +37305,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -37232,6 +37585,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -37691,6 +38048,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -37964,6 +38324,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -38377,6 +38741,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -38650,6 +39017,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -39139,6 +39510,9 @@
           ],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -39400,6 +39774,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -40231,6 +40609,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -40500,6 +40881,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -41006,6 +41391,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -41283,6 +41671,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -41872,6 +42264,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -42129,6 +42524,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -42764,6 +43163,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -43029,6 +43431,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -43673,6 +44079,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -43946,6 +44355,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -44379,6 +44792,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -44652,6 +45068,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -45112,6 +45532,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -45385,6 +45808,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -45856,6 +46283,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -46121,6 +46551,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -46697,6 +47131,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -46974,6 +47411,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -47609,6 +48050,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -47875,6 +48319,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -49080,6 +49528,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -49349,6 +49800,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -49751,6 +50206,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -50020,6 +50478,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -50429,6 +50891,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -50694,6 +51159,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -51302,6 +51771,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -51579,6 +52051,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -51998,6 +52474,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -52267,6 +52746,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -52735,6 +53218,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -53004,6 +53490,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -53325,6 +53815,9 @@
           "customizeToolbar": [
             "Ctrl+F4",
             "Cmd+2"
+          ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
           ],
           "goBack": [
             "Cmd+["
@@ -53752,6 +54245,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -54495,6 +54992,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -54752,6 +55252,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -55165,6 +55669,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -55438,6 +55945,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -55862,6 +56373,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -56106,6 +56620,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -56884,6 +57402,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -57145,6 +57666,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -57573,6 +58098,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -57846,6 +58374,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -58516,6 +59048,9 @@
           "toggleHiddenFiles": [],
           "togglePinFilter": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -58737,6 +59272,10 @@
           [
             "Cmd+0",
             "resetSize"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -59323,6 +59862,9 @@
           ],
           "sortByName": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -59792,6 +60334,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -60367,6 +60913,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -60636,6 +61185,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -62061,6 +62614,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -62314,6 +62870,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -63285,6 +63845,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -63558,6 +64121,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -64008,6 +64575,9 @@
           ],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -64269,6 +64839,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -65106,6 +65680,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -65379,6 +65956,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -65796,6 +66377,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -66069,6 +66653,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -66545,6 +67133,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -66814,6 +67405,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -67266,6 +67861,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -67519,6 +68117,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -68132,6 +68734,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -68396,6 +69001,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -69114,6 +69723,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -69384,6 +69996,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -69793,6 +70409,9 @@
           ],
           "toggleFolderTree": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": [],
           "goBack": [
             "Cmd+[",
@@ -70164,6 +70783,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -70918,6 +71541,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -71171,6 +71797,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -71965,6 +72595,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -72234,6 +72867,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -72687,6 +73324,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -72943,6 +73583,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -73719,6 +74363,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -73992,6 +74639,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -74517,6 +75168,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -74782,6 +75436,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -75284,6 +75942,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -75548,6 +76209,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -76098,6 +76763,9 @@
           "toggleFolderTree": [],
           "toggleInfoPanel": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -76347,6 +77015,10 @@
           [
             "Cmd+0",
             "resetSize"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -76957,6 +77629,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -77230,6 +77905,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -77846,6 +78525,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -78119,6 +78801,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -78625,6 +79311,9 @@
           "toggleFolderTree": [],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -78887,6 +79576,10 @@
           [
             "Cmd+0",
             "resetSize"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -80017,6 +80710,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -80290,6 +80986,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -80757,6 +81457,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -81030,6 +81733,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -81444,6 +82151,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -81713,6 +82423,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -82083,6 +82797,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -82348,6 +83065,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -82851,6 +83572,9 @@
             "Cmd+Shift+E",
             "Delete"
           ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": [
             "Ctrl+U",
             "PageDown"
@@ -83185,6 +83909,10 @@
           [
             "Cmd+Shift+.",
             "toggleHiddenFiles"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -84006,6 +84734,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -84256,6 +84987,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -85663,6 +86398,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -85936,6 +86674,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -86462,6 +87204,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -86735,6 +87480,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -87219,6 +87968,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -87481,6 +88233,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -88366,6 +89122,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -88611,6 +89370,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -89860,6 +90623,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -90100,6 +90866,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -90710,6 +91480,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -90983,6 +91756,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -91308,6 +92085,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -91565,6 +92345,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -91938,6 +92722,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -92211,6 +92998,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -92641,6 +93432,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -92889,6 +93683,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -93583,6 +94381,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -93860,6 +94661,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -94422,6 +95227,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -94691,6 +95499,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -95195,6 +96007,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -95467,6 +96282,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -96065,6 +96884,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -96338,6 +97160,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -96775,6 +97601,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -97020,6 +97849,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -98067,6 +98900,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -98316,6 +99152,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -99031,6 +99871,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -99292,6 +100135,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -99749,6 +100596,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -100010,6 +100860,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -100430,6 +101284,9 @@
           ],
           "toggleInfoPanel": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -100684,6 +101541,10 @@
           [
             "Ctrl+Cmd+S",
             "toggleFolderTree"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -101515,6 +102376,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -101780,6 +102644,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -102706,6 +103574,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -102979,6 +103850,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -103385,6 +104260,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -103650,6 +104528,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -104111,6 +104993,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -104384,6 +105269,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -104810,6 +105699,9 @@
           ],
           "toggleInfoPanel": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -105067,6 +105959,10 @@
           [
             "Ctrl+Cmd+S",
             "toggleFolderTree"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -105827,6 +106723,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -106092,6 +106991,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -106482,6 +107385,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -106755,6 +107661,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -107311,6 +108221,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -107584,6 +108497,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -108021,6 +108938,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -108286,6 +109206,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -108728,6 +109652,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -109001,6 +109928,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -109405,6 +110336,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -109678,6 +110612,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -110233,6 +111171,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -110498,6 +111439,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -110981,6 +111926,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -111246,6 +112194,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -111785,6 +112737,9 @@
           ],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -112041,6 +112996,10 @@
           [
             "Ctrl+Cmd+S",
             "toggleFolderTree"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -112391,6 +113350,9 @@
             "Cmd+Home"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -112851,6 +113813,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -113484,6 +114450,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -113764,6 +114733,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -114155,6 +115128,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -114428,6 +115404,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -114828,6 +115808,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -115097,6 +116080,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -115511,6 +116498,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -115760,6 +116750,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -116450,6 +117444,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -116692,6 +117689,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -117158,6 +118159,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -117419,6 +118423,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -118102,6 +119110,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -118375,6 +119386,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -118696,6 +119711,9 @@
           "toggleFoldersFirst": [],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": [],
           "goBack": [
             "Cmd+Left"
@@ -119071,6 +120089,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -119520,6 +120542,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -119789,6 +120814,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -120203,6 +121232,9 @@
           "togglePinFilter": [],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "PageUp"
           ],
@@ -120566,6 +121598,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -121523,6 +122559,9 @@
           ],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -121795,6 +122834,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -122312,6 +123355,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -122577,6 +123623,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -123196,6 +124246,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -123473,6 +124526,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -123983,6 +125040,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -124260,6 +125320,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -124845,6 +125909,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -125118,6 +126185,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -125605,6 +126676,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -125870,6 +126944,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -126384,6 +127462,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -126649,6 +127730,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -127034,6 +128119,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -127300,6 +128388,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -127832,6 +128924,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -128109,6 +129204,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -128626,6 +129725,9 @@
             "Cmd+Option+K"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+["
           ],
@@ -128967,6 +130069,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -129848,6 +130954,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -130106,6 +131215,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -130476,6 +131589,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -130749,6 +131865,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -131161,6 +132281,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -131406,6 +132529,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -131945,6 +133072,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -132202,6 +133332,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -132817,6 +133951,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -133090,6 +134227,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -133603,6 +134744,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -133856,6 +135000,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -134578,6 +135726,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -134831,6 +135982,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -135784,6 +136939,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -136053,6 +137211,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -136538,6 +137700,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -136815,6 +137980,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -137214,6 +138383,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -137483,6 +138655,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -137848,6 +139024,9 @@
           "customizeToolbar": [
             "Cmd+W",
             "Ctrl+A"
+          ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
           ],
           "goBack": [
             "Cmd+[",
@@ -138306,6 +139485,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -138970,6 +140153,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -139239,6 +140425,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -139679,6 +140869,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -139952,6 +141145,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -140428,6 +141625,9 @@
             "Cmd+N"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -140788,6 +141988,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -142124,6 +143328,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -142397,6 +143604,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -142785,6 +143996,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -143058,6 +144272,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -143484,6 +144702,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -143757,6 +144978,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -144211,6 +145436,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -144484,6 +145712,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -144906,6 +146138,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -145170,6 +146405,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -145525,6 +146764,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -145798,6 +147040,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -146301,6 +147547,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -146578,6 +147827,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -147143,6 +148396,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -147408,6 +148664,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -147919,6 +149179,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -148181,6 +149444,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -148584,6 +149851,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -148853,6 +150123,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -149373,6 +150647,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -149642,6 +150919,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -150245,6 +151526,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -150510,6 +151794,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -151189,6 +152477,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -151462,6 +152753,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -151896,6 +153191,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -152169,6 +153467,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -152577,6 +153879,9 @@
           "customizeToolbar": [
             "Cmd+Option+C"
           ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [],
           "goForward": [
             "Cmd+]",
@@ -152967,6 +154272,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -154112,6 +155421,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -154381,6 +155693,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -154857,6 +156173,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -155130,6 +156449,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -155460,6 +156783,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -155725,6 +157051,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -156134,6 +157464,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -156403,6 +157736,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -156943,6 +158280,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -157216,6 +158556,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -157710,6 +159054,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -157983,6 +159330,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -158436,6 +159787,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -158701,6 +160055,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -159130,6 +160488,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -159403,6 +160764,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -159816,6 +161181,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -160089,6 +161457,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -160487,6 +161859,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -160760,6 +162135,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -161060,6 +162439,9 @@
           "showLastSearchResults": [],
           "customizeToolbar": [
             "Cmd+Return"
+          ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
           ],
           "goBack": [
             "Cmd+[",
@@ -161497,6 +162879,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -161966,6 +163352,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -162239,6 +163628,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -162825,6 +164218,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -163082,6 +164478,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -163478,6 +164878,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -163747,6 +165150,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -164178,6 +165585,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -164443,6 +165853,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -164856,6 +166270,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -165129,6 +166546,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -165639,6 +167060,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -165881,6 +167305,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -166802,6 +168230,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -167047,6 +168478,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -167482,6 +168917,9 @@
             "Cmd+Shift+I",
             "Cmd+D"
           ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -167884,6 +169322,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -168952,6 +170394,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -169225,6 +170670,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -169555,6 +171004,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -169828,6 +171280,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -170195,6 +171651,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -170468,6 +171927,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -170893,6 +172356,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -171166,6 +172632,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -171730,6 +173200,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -171994,6 +173467,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -172441,6 +173918,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -172714,6 +174194,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -173262,6 +174746,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -173527,6 +175014,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -174045,6 +175536,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -174318,6 +175812,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -174738,6 +176236,9 @@
           ],
           "toggleInfoPanel": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -174986,6 +176487,10 @@
           [
             "Ctrl+Cmd+S",
             "toggleFolderTree"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -175571,6 +177076,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -175840,6 +177348,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -176336,6 +177848,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -176609,6 +178124,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -177009,6 +178528,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -177282,6 +178804,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -177750,6 +179276,9 @@
           "customizeToolbar": [
             "Cmd+PageUp"
           ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": [
             "Ctrl+U"
           ],
@@ -178140,6 +179669,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -178884,6 +180417,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -179157,6 +180693,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -179728,6 +181268,9 @@
           "togglePinFilter": [],
           "toggleFolderTree": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -180012,6 +181555,10 @@
           [
             "Cmd+Shift+.",
             "toggleHiddenFiles"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -180513,6 +182060,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -180786,6 +182336,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -181437,6 +182991,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -181706,6 +183263,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -182152,6 +183713,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -182425,6 +183989,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -182846,6 +184414,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -183119,6 +184690,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -183474,6 +185049,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -183747,6 +185325,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -184157,6 +185739,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -184418,6 +186003,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -184902,6 +186491,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -185172,6 +186764,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -185746,6 +187342,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -186002,6 +187601,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -186405,6 +188008,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -186670,6 +188276,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -187185,6 +188795,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -187454,6 +189067,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -187955,6 +189572,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -188235,6 +189855,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -188710,6 +190334,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -188975,6 +190602,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -189472,6 +191103,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -189745,6 +191379,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -190177,6 +191815,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -190451,6 +192092,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -191174,6 +192819,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -191447,6 +193095,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -191835,6 +193487,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -192100,6 +193755,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -192536,6 +194195,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -192809,6 +194471,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -193426,6 +195092,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -193703,6 +195372,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -194183,6 +195856,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ]
@@ -194451,6 +196127,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -195056,6 +196736,9 @@
           "toggleInfoPanel": [],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -195294,6 +196977,10 @@
           [
             "Ctrl+Cmd+S",
             "toggleFolderTree"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -195846,6 +197533,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -196111,6 +197801,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -196662,6 +198356,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -196931,6 +198628,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -197502,6 +199203,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -197767,6 +199471,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -198258,6 +199966,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -198531,6 +200242,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -199035,6 +200750,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -199312,6 +201030,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -199741,6 +201463,9 @@
           ],
           "toggleInfoRow": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -200010,6 +201735,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -200540,6 +202269,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -200813,6 +202545,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -201478,6 +203214,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -201748,6 +203487,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -202582,6 +204325,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -202843,6 +204589,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -203426,6 +205176,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -203699,6 +205452,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -204199,6 +205956,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -204436,6 +206196,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -205130,6 +206894,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -205403,6 +207170,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -205857,6 +207628,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -206122,6 +207896,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -206553,6 +208331,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -206818,6 +208599,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -207355,6 +209140,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -207636,6 +209424,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -208024,6 +209816,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -208289,6 +210084,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -208733,6 +210532,9 @@
           "customizeToolbar": [
             "F20"
           ],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [],
           "goForward": [
             "Cmd+]"
@@ -209085,6 +210887,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -209628,6 +211434,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -209893,6 +211702,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -210397,6 +212210,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -210642,6 +212458,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -211245,6 +213065,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -211518,6 +213341,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -212025,6 +213852,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -212298,6 +214128,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -212952,6 +214786,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -213217,6 +215054,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -213628,6 +215469,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -213885,6 +215729,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -214300,6 +216148,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -214569,6 +216420,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -215044,6 +216899,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -215317,6 +217175,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -215808,6 +217670,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -216081,6 +217946,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -216604,6 +218473,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -216849,6 +218721,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -217293,6 +219169,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -217558,6 +219437,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -218087,6 +219970,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -218352,6 +220238,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -218716,6 +220606,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -218989,6 +220882,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -219436,6 +221333,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -219709,6 +221609,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -220220,6 +222124,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -220493,6 +222400,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -220897,6 +222808,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -221175,6 +223089,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -221550,6 +223468,9 @@
             "Ctrl+Left"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "goBack": [
             "Cmd+[",
             "Cmd+Left"
@@ -221910,6 +223831,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -223116,6 +225041,9 @@
           ],
           "toggleFoldersFirst": [],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "Cmd+Plus"
           ],
@@ -223481,6 +225409,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -224525,6 +226457,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -224798,6 +226733,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -225191,6 +227130,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -225456,6 +227398,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -225853,6 +227799,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -226126,6 +228075,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -226609,6 +228562,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -226886,6 +228842,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -227358,6 +229318,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -227631,6 +229594,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -228029,6 +229996,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -228302,6 +230272,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -228779,6 +230753,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -229048,6 +231025,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -229648,6 +231629,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -229909,6 +231893,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -230586,6 +232574,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -230860,6 +232851,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -231381,6 +233376,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -231654,6 +233652,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -232081,6 +234083,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -232342,6 +234347,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -233057,6 +235066,9 @@
             "Cmd+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -233302,6 +235314,10 @@
           [
             "Cmd+I",
             "toggleInfoPanel"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -234054,6 +236070,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -234323,6 +236342,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -234778,6 +236801,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openKeyboardShortcuts": []
         },
         "commandByShortcut": [
@@ -235040,6 +237066,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ]
         ],
         "sanitized": {
@@ -235623,6 +237653,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -235896,6 +237929,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -236378,6 +238415,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -236643,6 +238683,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -237054,6 +239098,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -237307,6 +239354,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -238142,6 +240193,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -238415,6 +240469,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -239052,6 +241110,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -239325,6 +241386,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -239751,6 +241816,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -240020,6 +242088,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -240514,6 +242586,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -240783,6 +242858,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -241278,6 +243357,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -241563,6 +243645,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -242031,6 +244117,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -242296,6 +244385,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",
@@ -243166,6 +245259,9 @@
             "Cmd+Shift+I"
           ],
           "customizeToolbar": [],
+          "showCommandPalette": [
+            "Cmd+Shift+P"
+          ],
           "openHelp": [
             "?"
           ],
@@ -243439,6 +245535,10 @@
           [
             "Cmd+Shift+I",
             "toggleInfoRow"
+          ],
+          [
+            "Cmd+Shift+P",
+            "showCommandPalette"
           ],
           [
             "?",

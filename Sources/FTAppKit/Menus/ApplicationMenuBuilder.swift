@@ -37,6 +37,8 @@ enum ApplicationMenuBuilder {
     /// Ids of the items that are not a window's command (`AppCommand`).
     static let aboutItemID = "about"
     static let settingsItemID = "settings"
+    /// View ▸ Command Palette…, which the menu opens itself rather than the window.
+    static let commandPaletteItemID = ShortcutCommandID.showCommandPalette.rawValue
 
     static func build(target: MenuCommandRouter, options: ApplicationMenuOptions = .init()) -> BuiltApplicationMenu {
         let context = Context(target: target, options: options)
@@ -176,6 +178,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.equalizePanes, "Make Panes Equal Width"))
             menu.addItem(.separator())
             menu.addItem(context.command(.customizeToolbar, "Customize Toolbar…"))
+            menu.addItem(context.plain("Command Palette…", id: commandPaletteItemID, chosen: .showCommandPalette))
             // No Zoom In, Zoom Out or Actual Size of the whole window, and no hidden full screen item: AppKit adds its
             // own Enter Full Screen to this menu, with ⌃⌘F.
         }
@@ -341,13 +344,17 @@ enum ApplicationMenuBuilder {
             return item
         }
 
-        /// An item that is not a window's command and has its own handler (About, Settings).
-        func plain(_ title: String, id: String, fixed: ShortcutCommandID? = nil) -> NSMenuItem {
+        /// An item that is not a window's command and has its own handler (About, Settings, the command palette), with
+        /// its fixed key or the one chosen in Settings.
+        func plain(
+            _ title: String, id: String, fixed: ShortcutCommandID? = nil, chosen: ShortcutCommandID? = nil
+        ) -> NSMenuItem {
             let item = NSMenuItem(
                 title: title, action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")
             item.target = target
             item.identifier = NSUserInterfaceItemIdentifier(id)
             if let fixed { apply(fixedKey(fixed), to: item) }
+            if let chosen { apply(chosenKey(chosen), to: item) }
             register(item, id: id)
             return item
         }

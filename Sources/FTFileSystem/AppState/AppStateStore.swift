@@ -3,7 +3,7 @@ import Foundation
 import os
 
 /// The app's own files: `app-state.json` (preferences, the explorer windows, the window closed last) and, beside it,
-/// `visited-folders.json`. Sanitizing and migration are `AppStateReader`'s and `PreferencesSanitizer`'s.
+/// `visited-folders.json`, `destination-folders.json` and `recent-commands.json`. Sanitizing and migration are `AppStateReader`'s and `PreferencesSanitizer`'s.
 ///
 /// Changes are written in two tiers. A deliberate change (a setting, a favorite) is written 150 ms later, one write for
 /// a burst. What only follows where the user is (the navigation keys, folder visits, the windows and their bounds) waits
@@ -23,12 +23,13 @@ public final class AppStateStore: @unchecked Sendable {
         .foldersFirst, .favoritesExpanded, .locationsExpanded,
     ]
 
-    private enum StoreFile: Hashable { case state, visits, destinations }
+    private enum StoreFile: Hashable { case state, visits, destinations, recentCommands }
 
     private let lock = NSLock()
     public let filePath: String
     private let visitsFilePath: String
     private let destinationsFilePath: String
+    private let recentCommandsFilePath: String
     private let defaults: AppPreferences
     private let fileSystem: any StateFileSystem
     private let timer: any StateTimer
@@ -36,6 +37,7 @@ public final class AppStateStore: @unchecked Sendable {
     private var state: AppState
     private var visitedFolders: [VisitedFolder]
     private var destinationFolders: [VisitedFolder]
+    private var commands: [String]
     private var unsavedFiles: Set<StoreFile> = []
     private var cancelPromptSave: (@Sendable () -> Void)?
     private var cancelDeferredSave: (@Sendable () -> Void)?
@@ -62,9 +64,11 @@ public final class AppStateStore: @unchecked Sendable {
         defaults = AppPreferences.defaults(theme: defaultTheme)
         visitsFilePath = AppStatePaths.visitedFolders(besideAppState: URL(fileURLWithPath: filePath)).path
         destinationsFilePath = AppStatePaths.destinationFolders(besideAppState: URL(fileURLWithPath: filePath)).path
+        recentCommandsFilePath = AppStatePaths.recentCommands(besideAppState: URL(fileURLWithPath: filePath)).path
         state = Self.readState(filePath, fileSystem, defaults, readFailed)
         visitedFolders = Self.readVisitedFolders(visitsFilePath, fileSystem, readFailed)
         destinationFolders = Self.readVisitedFolders(destinationsFilePath, fileSystem, readFailed)
+        commands = Self.readRecentCommands(recentCommandsFilePath, fileSystem, readFailed)
     }
 
     // MARK: Preferences
@@ -133,6 +137,24 @@ public final class AppStateStore: @unchecked Sendable {
             if recorded == destinationFolders { return }
             destinationFolders = recorded
             markUnsaved(.destinations)
+            saveLater()
+        }
+    }
+
+    // MARK: Recent commands
+
+    /// The commands run from the command palette, the last first.
+    public func recentCommands() -> [String] {
+        locked { commands }
+    }
+
+    /// A command run from the command palette: it comes first. Written with the next write, as the visited folders.
+    public func recordCommand(_ id: String) {
+        locked {
+            let recorded = CommandPalette.remembering(id, in: commands)
+            if recorded == commands { return }
+            commands = recorded
+            markUnsaved(.recentCommands)
             saveLater()
         }
     }
@@ -370,6 +392,11 @@ public final class AppStateStore: @unchecked Sendable {
         {
             unsavedFiles.remove(.destinations)
         }
+        if unsavedFiles.contains(.recentCommands),
+            writeAtomically(recentCommandsFilePath, Self.serializeRecentCommands(commands))
+        {
+            unsavedFiles.remove(.recentCommands)
+        }
         if unsavedFiles.contains(.state) {
             do {
                 if writeAtomically(filePath, try AppStateJSON.serialize(state)) {
@@ -409,6 +436,28 @@ public final class AppStateStore: @unchecked Sendable {
             onReadError(error)
             return AppState()
         }
+    }
+
+    private static func readRecentCommands(
+        _ path: String, _ fileSystem: any StateFileSystem, _ onReadError: @Sendable (any Error) -> Void
+    ) -> [String] {
+        guard fileSystem.exists(path) else { return [] }
+        do {
+            let parsed = try JSONSerialization.jsonObject(with: try fileSystem.read(path))
+            return CommandPalette.sanitizeRecent((parsed as? [String: Any])?["commands"])
+        } catch {
+            onReadError(error)
+            return []
+        }
+    }
+
+    /// The file's text: one id to a line, as the visited folders are written.
+    static func serializeRecentCommands(_ commands: [String]) -> String {
+        let lines = commands.compactMap { id in
+            (try? JSONSerialization.data(withJSONObject: id, options: [.fragmentsAllowed, .withoutEscapingSlashes]))
+                .flatMap { String(data: $0, encoding: .utf8) }
+        }
+        return lines.isEmpty ? "{\"commands\":[]}\n" : "{\"commands\":[\n\(lines.joined(separator: ",\n"))\n]}\n"
     }
 
     private static func readVisitedFolders(

@@ -120,6 +120,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case toggleInfoPanel
     case toggleInfoRow
     case customizeToolbar
+    case showCommandPalette
     case openHelp
     case openKeyboardShortcuts
     case undo
@@ -390,6 +391,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .customizeToolbar, label: "Customize Toolbar…", group: .view, defaults: [],
             menuPath: "View > Customize Toolbar…"),
+        ShortcutCommandDefinition(
+            id: .showCommandPalette, label: "Command Palette…", group: .view, defaults: ["Cmd+Shift+P"],
+            menuPath: "View > Command Palette…"),
         ShortcutCommandDefinition(
             id: .openHelp, label: "File Trail Help", group: .view, defaults: ["?"], menuPath: "Help > File Trail Help"),
         ShortcutCommandDefinition(

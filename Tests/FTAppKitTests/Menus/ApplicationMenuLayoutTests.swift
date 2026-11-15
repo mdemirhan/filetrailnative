@@ -44,7 +44,7 @@ import Testing
                 "as Icons", "as List", "as Compact List", "as Previews", "-", "Make Bigger", "Make Smaller",
                 "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "-", "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Swap Panes",
-                "Make Panes Equal Width", "-", "Customize Toolbar…",
+                "Make Panes Equal Width", "-", "Customize Toolbar…", "Command Palette…",
             ])
         #expect(
             titles(submenu(main, "Go")) == [
@@ -276,7 +276,8 @@ import Testing
         let stateIDs = Set(states.map(\.id))
         for found in flatten(built.menu) where found.action == #selector(MenuCommandRouter.chooseMenuItem(_:)) {
             guard let id = found.identifier?.rawValue, id != "about", id != "settings",
-                id != ApplicationMenu.manageWorkspacesItemID, ApplicationMenu.workspaceItem(id) == nil
+                id != ApplicationMenu.manageWorkspacesItemID, id != ApplicationMenuBuilder.commandPaletteItemID,
+                ApplicationMenu.workspaceItem(id) == nil
             else { continue }
             #expect(stateIDs.contains(id), "\(found.title)")
         }

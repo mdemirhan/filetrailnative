@@ -55,6 +55,30 @@ public enum DialogLayout {
         public static let errorLineHeight = 1.4
     }
 
+    /// The command palette: Go To's field and rows, a heading above each group while nothing is typed, and a line of
+    /// keys at the foot.
+    public enum CommandPalette {
+        /// 580 wide; Go To's insets from the window.
+        public static let width = 580.0
+        /// The list shows at most 12 rows of the large control height.
+        public static let visibleRows = 12
+        /// A group's heading: 26 high, its text inset 10 like a row's.
+        public static let headingHeight = 26.0
+        /// A row: its symbol 16 square, its parts 8 apart; the check 12 wide before the keys.
+        public static let rowIconSize = 16.0
+        public static let rowGap = 8.0
+        public static let checkWidth = 12.0
+        /// The title takes at most 60% of the row.
+        public static let titleMaxFraction = 0.6
+        /// The foot: 1 pt line on top, its text 8 below it and 10 above the bottom, inset 16.
+        public static let footerTop = 8.0
+        public static let footerBottom = 10.0
+        public static let footerHorizontal = 16.0
+        /// Nothing matches: 18 above the words, 22 below.
+        public static let emptyTop = 18.0
+        public static let emptyBottom = 22.0
+    }
+
     /// The Go To / Move To box.
     public enum GoTo {
         /// 560 wide, at least 32 narrower and 84 shorter than the window, 12 of padding on top.

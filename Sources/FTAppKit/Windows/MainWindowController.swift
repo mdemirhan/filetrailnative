@@ -1053,6 +1053,29 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return true
     }
 
+    /// A command of the window's keys run from the command palette, which no menu item has: Open Selected Item and
+    /// the page moves, in the pane that has the keyboard. Whether it did anything.
+    @discardableResult
+    func runPaletteKeyCommand(_ id: ShortcutCommandID) -> Bool {
+        let page: (forward: Bool, half: Bool)? =
+            switch id {
+            case .pageUp: (false, false)
+            case .pageDown: (true, false)
+            case .halfPageUp: (false, true)
+            case .halfPageDown: (true, true)
+            default: nil
+            }
+        guard let page else { return runKeyCommand(id, isRepeat: false) }
+        guard ShortcutPolicy.canHandleExplorerKeyboardShortcuts(shortcutContext) else { return false }
+        switch focusedPane {
+        case .tree: return sidebar.movePage(forward: page.forward, size: page.half ? .half : .full)
+        case .content:
+            let keyboard = (content.pane as? ListViewController)?.keyboard ?? (content.pane as? ItemGridPane)?.keyboard
+            return keyboard?.movePage(forward: page.forward, size: page.half ? .half : .full) ?? false
+        case nil: return false
+        }
+    }
+
     /// A key whose menu item is dimmed: the item would keep it and do nothing, so the window takes the key before the
     /// menu and runs the command, which shows why it can't start: the busy notice, the open limit's notice,
     /// Duplicate's toast. An item that is on keeps its own key.

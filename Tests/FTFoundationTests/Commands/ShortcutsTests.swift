@@ -419,6 +419,7 @@ struct ShortcutsTests {
             (.toggleInfoPanel, ["Cmd+I"]),
             (.toggleInfoRow, ["Cmd+Shift+I"]), (.openHelp, ["?"]), (.sortByName, []), (.sortByKind, []),
             (.sortByModified, []), (.sortBySize, []), (.toggleFoldersFirst, []), (.customizeToolbar, []),
+            (.showCommandPalette, ["Cmd+Shift+P"]),
             (.openKeyboardShortcuts, []), (.pageUp, ["PageUp"]), (.pageDown, ["PageDown"]), (.halfPageUp, ["Ctrl+U"]),
             (.halfPageDown, ["Ctrl+D"]), (.undo, ["Cmd+Z"]), (.redo, ["Cmd+Shift+Z"]), (.cut, ["Cmd+X"]),
             (.copy, ["Cmd+C"]), (.paste, ["Cmd+V"]), (.selectAll, ["Cmd+A"]), (.settings, ["Cmd+,"]),

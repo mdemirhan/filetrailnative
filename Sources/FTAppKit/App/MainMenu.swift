@@ -19,6 +19,10 @@ public final class MainMenu {
     var startupDiskName: () -> String = { StartupDisk.shared.name }
     /// The workspaces Window ▸ Workspaces lists; the menu is built again when they change.
     var workspaces: () -> [WorkspaceMenuEntry] = { [] }
+    /// The commands run from the command palette, the last first, and what to do when one is run (the app's state
+    /// file keeps them).
+    var recentCommands: () -> [String] = { [] }
+    var recordCommand: (String) -> Void = { _ in }
     private var renameObserver: (any NSObjectProtocol)?
 
     /// `focusedWindow` is the window that has the keyboard; a test whose windows are never shown names its own.
@@ -30,6 +34,79 @@ public final class MainMenu {
         router.explorerFor = { [weak sync] window in sync?.explorerFor(window) }
         router.isTextEditing = { [weak sync] target in sync?.state(of: target).textEditing ?? false }
         router.beforeValidating = { [weak sync] in sync?.readWindowState() }
+        router.onShowCommandPalette = { [weak self] in self?.toggleCommandPalette() }
+    }
+
+    // MARK: Command palette
+
+    /// ⇧⌘P: the palette over the explorer window that has the keyboard, or closed when it is up there. From another
+    /// window (Settings, Help) the explorer window in front comes forward and opens it; with none, or with a dialog
+    /// up, it beeps.
+    func toggleCommandPalette() {
+        let focused = router.focusedWindow()
+        guard let target = sync.explorerFor(focused) ?? sync.explorerFor(nil),
+            let window = target.handle.window, let controller = window.windowController as? MainWindowController
+        else {
+            NSSound.beep()
+            return
+        }
+        if let box = controller.commandPaletteBox {
+            box.onClose()
+            return
+        }
+        if !target.focused || focused !== window {
+            window.makeKeyAndOrderFront(nil)
+        }
+        let bindings = shortcuts()
+        let entries = commandPaletteEntries(for: ExplorerCommandTarget(handle: target.handle, focused: true), bindings)
+        let ownKey = bindings[.showCommandPalette]?.first
+        let opened = controller.presentCommandPalette(entries, recent: recentCommands(), ownKey: ownKey) {
+            [weak self, weak controller] entry in
+            guard let self, let controller else { return }
+            self.recordCommand(entry.id)
+            // Once the key that chose it is done with, as a menu item runs after its menu has closed.
+            DispatchQueue.main.async {
+                MainActor.assumeIsolated { self.runPaletteCommand(entry, in: controller) }
+            }
+        }
+        if opened == nil { NSSound.beep() }
+    }
+
+    /// Every command as the palette lists it for `target`: what the menu would show with the keyboard there, the menu's
+    /// titles, the keys and the workspaces.
+    func commandPaletteEntries(for target: ExplorerCommandTarget, _ bindings: ShortcutBindings)
+        -> [CommandPaletteEntry]
+    {
+        let states = sync.itemStates(for: target)
+        var titles = (built?.itemsByID ?? [:]).mapValues(\.title)
+        for state in states {
+            if let title = state.title { titles[state.id] = title }
+        }
+        return CommandPalette.entries(
+            bindings: bindings, states: Dictionary(states.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a }),
+            menuTitles: titles,
+            workspaces: workspaces().map { CommandPaletteWorkspace(id: $0.id, name: $0.name) })
+    }
+
+    /// Runs a command chosen in the palette, as its menu item, its key or the system's own item would.
+    func runPaletteCommand(_ entry: CommandPaletteEntry, in controller: MainWindowController) {
+        let window = controller.window
+        switch entry.run {
+        case .menuItem(let id): router.choose(itemID: id)
+        case .windowKey(let id): controller.runPaletteKeyCommand(id)
+        case .system(let item):
+            switch item {
+            case .closeWindow: window?.performClose(nil)
+            case .minimize: window?.performMiniaturize(nil)
+            case .zoom: window?.performZoom(nil)
+            case .fullScreen: window?.toggleFullScreen(nil)
+            case .bringAllToFront: NSApp.arrangeInFront(nil)
+            case .hide: NSApp.hide(nil)
+            case .hideOthers: NSApp.hideOtherApplications(nil)
+            case .showAll: NSApp.unhideAllApplications(nil)
+            case .quit: NSApp.terminate(nil)
+            }
+        }
     }
 
     /// The window actions of the menu: About, Settings, Help and the windows the Go menu and New Window open with

@@ -189,13 +189,25 @@ final class ApplicationMenuSync {
     func sync() {
         guard let menu = dependencies.menu() else { return }
         let current = currentExplorer()
-        let facts = ApplicationMenu.WindowFacts(
-            explorerFocused: current.explorerFocused, explorerWindowCount: dependencies.windows.count,
-            otherWindowFocused: current.otherWindowFocused,
+        let facts = windowFacts(
+            explorerFocused: current.explorerFocused, otherWindowFocused: current.otherWindowFocused)
+        ApplicationMenu.apply(ApplicationMenu.itemStates(current.state, window: facts)) { menu.control($0) }
+    }
+
+    /// What the menu's items would show for `target` with the keyboard in it, as it is now: the command palette's
+    /// list, read before the palette opens, as a dialog dims every command.
+    func itemStates(for target: ExplorerCommandTarget) -> [ApplicationMenuItemState] {
+        let state = target.handle.currentMenuState ?? states[target.handle.windowID] ?? .initial
+        return ApplicationMenu.itemStates(state, window: windowFacts(explorerFocused: true, otherWindowFocused: false))
+    }
+
+    private func windowFacts(explorerFocused: Bool, otherWindowFocused: Bool) -> ApplicationMenu.WindowFacts {
+        ApplicationMenu.WindowFacts(
+            explorerFocused: explorerFocused, explorerWindowCount: dependencies.windows.count,
+            otherWindowFocused: otherWindowFocused,
             undoAvailable: (undo: undoHistory.undo != nil, redo: undoHistory.redo != nil),
             undoLabels: ApplicationMenu.undoLabels(
                 undo: undoHistory.undo, redo: undoHistory.redo, cantUndo: undoHistory.cantUndo))
-        ApplicationMenu.apply(ApplicationMenu.itemStates(current.state, window: facts)) { menu.control($0) }
     }
 
     /// The explorer window the menu shows, and whether it has the keyboard. With no window focused (the app is in the

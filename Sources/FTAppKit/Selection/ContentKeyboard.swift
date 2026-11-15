@@ -153,6 +153,12 @@ final class ContentKeyboard {
 
     // MARK: Pages
 
+    /// A page move asked for by a command rather than a key (the command palette's Move One Page Down).
+    func movePage(forward: Bool, size: SelectionNavigation.PageSize) -> Bool {
+        guard let host, let navigation else { return false }
+        return pagedMove(forward: forward, size: size, extend: false, host: host, navigation: navigation)
+    }
+
     /// Moves the selection by half a page or a page. Where it lands is on screen, the view stays still; otherwise it
     /// scrolls as far as the selection moved, so the selection keeps its place on screen. ⇧ extends the selection
     /// instead. Whether it moved (a key that cannot move is not taken, so the native scroll can happen).

@@ -279,6 +279,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.workspaces = { [weak self] in
             (self?.store?.preferences().workspaces ?? []).map { WorkspaceMenuEntry(id: $0.id, name: $0.name) }
         }
+        menu.recentCommands = { [weak self] in self?.store?.recentCommands() ?? [] }
+        menu.recordCommand = { [weak self] id in self?.store?.recordCommand(id) }
         menu.build()
         menu.observeFocus()
         mainMenu = menu

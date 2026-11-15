@@ -31,6 +31,11 @@ public enum AppStatePaths {
         appState.deletingLastPathComponent().appendingPathComponent("destination-folders.json")
     }
 
+    /// The commands run from the command palette, the last first, next to the state file.
+    public static func recentCommands(besideAppState appState: URL) -> URL {
+        appState.deletingLastPathComponent().appendingPathComponent("recent-commands.json")
+    }
+
     /// `logs/app.log` in the user data folder.
     public static func appLog(in userData: URL) -> URL {
         userData.appendingPathComponent("logs", isDirectory: true).appendingPathComponent("app.log")

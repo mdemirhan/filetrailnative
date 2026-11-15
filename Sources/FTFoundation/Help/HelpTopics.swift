@@ -140,6 +140,11 @@ extension HelpContent {
                                 "Copy or cut in one window and paste in another. Drag items from one window into another to move or copy them there: they go where a drop from Finder would. Edit > Undo undoes the last operation, whichever window it was done in."
                         ),
                         HelpRow(
+                            label: "Command palette",
+                            description:
+                                "{showCommandPalette}, or View > Command Palette…, lists every command with its keys and where it is in the menus, also the ones only keys run. Type some letters of a command's name, in order, and press Return or click it to run it; Esc closes the list. A command that can't run now is dimmed and listed last. With nothing typed, the commands you ran from it lately come first."
+                        ),
+                        HelpRow(
                             label: "Closing",
                             description:
                                 "{closeWindow} closes the window. File Trail stays open with no window, as Finder does: click its icon in the Dock, or use {newWindow} or the Go menu, and a window opens where the last one you closed was. While a copy, move, delete or rename of several items runs, closing the last window asks first, since it would stop it."
@@ -797,6 +802,8 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail"),
         HelpShortcutItem(group: .views, .command(.hideOthers), "Hide other apps"),
         HelpShortcutItem(group: .views, .command(.customizeToolbar), "Customize the toolbar"),
+        HelpShortcutItem(
+            group: .views, .command(.showCommandPalette), "Find any command by its name, and run it"),
         HelpShortcutItem(group: .views, .command(.settings), "Settings"),
         HelpShortcutItem(group: .views, .command(.openHelp), "Help"),
         HelpShortcutItem(group: .views, .command(.openKeyboardShortcuts), "Keyboard shortcuts"),

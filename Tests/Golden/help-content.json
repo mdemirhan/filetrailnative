@@ -463,6 +463,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -1004,6 +1009,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -1535,6 +1544,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -1780,6 +1793,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -2737,6 +2754,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -3278,6 +3300,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -3809,6 +3835,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -4053,6 +4083,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -5017,6 +5051,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -5553,6 +5592,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -6079,6 +6122,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -6320,6 +6367,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -7282,6 +7333,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -7823,6 +7879,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -8354,6 +8414,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -8598,6 +8662,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -9423,6 +9491,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -9864,6 +9937,10 @@
                 [
                   "Folders",
                   "Go to Folder"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Path bar",
@@ -10323,6 +10400,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -10540,6 +10621,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -11430,6 +11515,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -11971,6 +12061,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -12507,6 +12601,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -12762,6 +12860,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -13720,6 +13822,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -14251,6 +14358,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -14777,6 +14888,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -15026,6 +15141,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -15977,6 +16096,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -16506,6 +16630,10 @@
                 [
                   "Folders",
                   "Go to Folder"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Path bar",
@@ -17039,6 +17167,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -17283,6 +17415,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -18243,6 +18379,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -18774,6 +18915,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -19283,6 +19428,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -19531,6 +19680,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -20475,6 +20628,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -21021,6 +21179,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -21552,6 +21714,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -21796,6 +21962,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -22767,6 +22937,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -23283,6 +23458,10 @@
                 [
                   "Folders",
                   "Go to Folder"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Path bar",
@@ -23811,6 +23990,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": [
@@ -24061,6 +24244,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -25014,6 +25201,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -25555,6 +25747,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -26074,6 +26270,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -26314,6 +26514,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -27273,6 +27477,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -27819,6 +28028,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -28340,6 +28553,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -28585,6 +28802,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -29547,6 +29768,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -30100,6 +30326,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -30631,6 +30861,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -30875,6 +31109,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -31841,6 +32079,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -32371,6 +32614,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -32885,6 +33132,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -33129,6 +33380,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -34089,6 +34344,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -34630,6 +34890,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -35161,6 +35425,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -35406,6 +35674,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -36383,6 +36655,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -36953,6 +37230,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -37479,6 +37760,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -37719,6 +38004,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -38681,6 +38970,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -39227,6 +39521,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -39746,6 +40044,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -39990,6 +40292,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -40955,6 +41261,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -41472,6 +41783,10 @@
                 [
                   "Folders",
                   "Go to Folder"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Path bar",
@@ -42005,6 +42320,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -42255,6 +42574,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -43206,6 +43529,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -43747,6 +44075,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -44266,6 +44598,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -44510,6 +44846,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -45470,6 +45810,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -46006,6 +46351,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -46537,6 +46886,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -46782,6 +47135,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -47746,6 +48103,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -48282,6 +48644,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -48811,6 +49177,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -49066,6 +49436,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -50010,6 +50384,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -50551,6 +50930,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -51062,6 +51445,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -51303,6 +51690,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -52271,6 +52662,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -52824,6 +53220,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -53345,6 +53745,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -53589,6 +53993,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -54553,6 +54961,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -55089,6 +55502,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -55598,6 +56015,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -55831,6 +56252,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -56773,6 +57198,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -57309,6 +57739,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -57840,6 +58274,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -58085,6 +58523,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -59051,6 +59493,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -59614,6 +60061,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -60140,6 +60591,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -60380,6 +60835,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -61340,6 +61799,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -61881,6 +62345,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -62412,6 +62880,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -62656,6 +63128,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",
@@ -63625,6 +64101,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Shift+P",
+            "description": "Find any command by its name, and run it"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -64166,6 +64647,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Windows",
+                  "Command palette"
+                ],
+                [
                   "Path bar",
                   "Double-click the bar"
                 ],
@@ -64692,6 +65177,10 @@
                 [
                   "Folders",
                   "Tree root"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ]
               ],
               "shortcuts": []
@@ -64937,6 +65426,10 @@
                 [
                   "Windows",
                   "Workspaces"
+                ],
+                [
+                  "Windows",
+                  "Command palette"
                 ],
                 [
                   "Windows",

@@ -45,6 +45,8 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
     var onOpenWorkspace: ((String, (any ExplorerWindowHandle)?) -> Void)?
     /// Manage Workspaces…: the list in Settings.
     var onManageWorkspaces: (() -> Void)?
+    /// View ▸ Command Palette…: the menu opens it over the explorer window, or closes it when it is up.
+    var onShowCommandPalette: (() -> Void)?
 
     /// The ids of the items the explorer window's state dims. AppKit asks `validateMenuItem` for each as it opens.
     private(set) var disabledItemIDs: Set<String> = []
@@ -84,6 +86,8 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
             if let onOpenSettings { onOpenSettings() } else { send(.openSettings, focusedWindow: focusedWindow()) }
         case ApplicationMenu.manageWorkspacesItemID:
             onManageWorkspaces?()
+        case ApplicationMenuBuilder.commandPaletteItemID:
+            onShowCommandPalette?()
         default:
             if let workspace = ApplicationMenu.workspaceItem(itemID) {
                 openWorkspace(workspace.workspaceID, inThisWindow: workspace.inThisWindow)

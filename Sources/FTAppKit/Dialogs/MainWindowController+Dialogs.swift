@@ -36,6 +36,32 @@ extension MainWindowController {
     /// Whether a box or an alert is up: the tab's commands and keys wait.
     var isDialogOpen: Bool { !dialogs.isEmpty }
 
+    // MARK: Command palette
+
+    /// The command palette, while it is up.
+    var commandPaletteBox: CommandPaletteBox? { dialogs.lazy.compactMap { $0.panel as? CommandPaletteBox }.first }
+
+    /// Shows the command palette over the tab with `entries`; `run` is told the command chosen once the box has gone
+    /// and the keyboard is back where it was. Nil when a dialog is up already.
+    @discardableResult
+    func presentCommandPalette(
+        _ entries: [CommandPaletteEntry], recent: [String], ownKey: String?,
+        run: @escaping (CommandPaletteEntry) -> Void
+    ) -> CommandPaletteBox? {
+        guard let window, !isDialogOpen else { return nil }
+        AppMenuPresenter.shared.close()
+        let box = CommandPaletteBox(entries: entries, recent: recent, ownKey: ownKey)
+        let scrim = DialogScrim(panel: box, placement: .sheet)
+        scrim.onScrimPress = { [weak box] in box?.onClose() }
+        box.onClose = { [weak scrim] in scrim?.dismiss() }
+        box.onRun = { [weak scrim] entry in
+            scrim?.dismiss()
+            run(entry)
+        }
+        scrim.present(in: window)
+        return box
+    }
+
     // MARK: Go To
 
     /// `openLocationSheet` (⌘K, ⇧⌘G, the toolbar's Go To): the box opens empty over the explorer, and no pane has the
