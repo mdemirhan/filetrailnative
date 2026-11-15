@@ -244,8 +244,12 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { second.folder.path == other.appending("Sub").path })
         let firstLabel = "Sub — \(folder.url.lastPathComponent)"
         let secondLabel = "Sub — \(other.url.lastPathComponent)"
-        #expect(await waitUntil { windowsMenuTitle(of: second.window) == secondLabel })
-        #expect(windowsMenuTitle(of: first.window) == firstLabel)
+        // The menu shortens a label this long in the middle; the tab keeps it whole.
+        let firstInMenu = MenuName.shortened(firstLabel)
+        let secondInMenu = MenuName.shortened(secondLabel)
+        #expect(secondInMenu != secondLabel)
+        #expect(await waitUntil { windowsMenuTitle(of: second.window) == secondInMenu })
+        #expect(windowsMenuTitle(of: first.window) == firstInMenu)
         #expect(second.window?.tab.title == secondLabel)
         // The toolbar keeps the folder's own name.
         #expect(second.window?.title == "Sub")
@@ -253,8 +257,8 @@ struct NativeWindowsGUITests {
         // Bringing the other tab to the front leaves the names as they are.
         group.select(first)
         #expect(await waitUntil { group.selected === first })
-        #expect(windowsMenuTitle(of: first.window) == firstLabel)
-        #expect(windowsMenuTitle(of: second.window) == secondLabel)
+        #expect(windowsMenuTitle(of: first.window) == firstInMenu)
+        #expect(windowsMenuTitle(of: second.window) == secondInMenu)
         await app.closeAll()
     }
 
