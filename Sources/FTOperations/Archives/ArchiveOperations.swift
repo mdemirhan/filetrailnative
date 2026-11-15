@@ -53,7 +53,7 @@ extension WriteCoordinator {
         _ fileSystem: any LocalWriteFileSystem, undoable: @MainActor (String) -> Bool
     ) async {
         let startedAt = Date()
-        let sizes = await LocalOperations.onDisk { archivePaths.map { (try? fileSystem.lstat($0))?.size ?? 0 } }
+        let sizes = await LocalOperations.onDisk { archivePaths.map { (try? fileSystem.stat($0))?.size ?? 0 } }
         let totalBytes = sizes.reduce(0, +)
         var doneBytes: Int64 = 0
         var items: [WriteOperationItem] = []

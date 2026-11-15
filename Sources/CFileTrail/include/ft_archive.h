@@ -44,6 +44,9 @@ int64_t ft_archive_control_items(const ft_archive_control *control);
 /// takes for it), a hard link to anything but a file already extracted, a name the disk won't take, and a pipe,
 /// socket or device. Of a zip being made: a kind it can't hold (a pipe, a socket, a device).
 int64_t ft_archive_control_skipped(const ft_archive_control *control);
+/// The item a compress failed on (it can't be read, it went away); NULL when none was noted. Read once the work
+/// returned; it is the control's own.
+const char *ft_archive_control_failed_path(const ft_archive_control *control);
 
 /// Takes `archive` apart into `destination`, an empty folder that exists. Names that would reach outside it are
 /// left out; so is `__MACOSX`, and the resource forks and extended attributes it holds are put back on their items.

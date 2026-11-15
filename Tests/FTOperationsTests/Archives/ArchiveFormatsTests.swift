@@ -182,6 +182,76 @@ import Testing
         }
     }
 
+    /// A name with an accented letter or a Hangul syllable comes out composed, as the archive has it and as Windows,
+    /// Linux and most network disks expect it: the reader hands every name it converts over decomposed, which looks the
+    /// same on a Mac and is another name elsewhere.
+    @Test(arguments: [
+        ("Names.zip", ["-c", "--format", "zip"]), ("Names.7z", ["-c", "--format", "7zip"]),
+        ("Names.tar.gz", ["-cz", "--format", "pax"]),
+    ])
+    func namesBeyondASCIIComeOutComposed(name: String, options: [String]) throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let composed = "caf\u{E9} \u{D55C}.txt"
+        try Data("x".utf8).write(to: URL(fileURLWithPath: "\(folders.source)/\(composed)"))
+        let archive = try folders.archive(name, options, of: [composed])
+        let made = try Self.extract(archive, into: folders.out)
+        let names = try FileManager.default.contentsOfDirectory(atPath: folders.out)
+        #expect(names.map { Array($0.utf8) } == [Array(composed.utf8)], "\(names.map { Array($0.unicodeScalars) })")
+        #expect(try Self.text(made) == "x")
+    }
+
+    /// Nothing comes out writable by anyone but its owner, whatever the archive says (a zip made on Windows says
+    /// nothing, and the reader's stand-in would let every account of the Mac write to it); what the owner may do
+    /// stays as the archive has it.
+    @Test func whatComesOutIsWritableByItsOwnerAlone() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        chmod("\(folders.source)/notes.txt", 0o666)
+        chmod("\(folders.source)/Photos", 0o777)
+        chmod("\(folders.source)/Photos/a.txt", 0o750)
+        let archive = try folders.archive("Open.tar", ["-c"])
+        let made = try Self.extract(archive, into: folders.out)
+        func mode(_ path: String) -> mode_t {
+            var stats = stat()
+            return stat(path, &stats) == 0 ? stats.st_mode & 0o777 : 0
+        }
+        #expect(mode("\(made)/notes.txt") == 0o644)
+        #expect(mode("\(made)/Photos") == 0o755)
+        #expect(mode("\(made)/Photos/a.txt") == 0o750)
+    }
+
+    /// An extraction done has read all of its archive, as its progress says: a zip's list of items, at its end, is
+    /// never read, and the card ended part of the way.
+    @Test func aZipExtractedIsAllDone() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        for index in 0..<200 {
+            try Data("x".utf8).write(to: URL(fileURLWithPath: "\(folders.source)/Photos/\(index).txt"))
+        }
+        let archive = try folders.archive("Many.zip", ["-c", "--format", "zip"], of: ["Photos"])
+        let control = NativeArchive.Control()
+        _ = try WriteCoordinator.extractOne(archive, into: folders.out, NativeWriteFileSystem(), control)
+        #expect(control.total > 0)
+        #expect(control.done == control.total)
+    }
+
+    /// A Compress that fails on an item names that item, not the zip it was making.
+    @Test func aCompressThatFailsNamesTheItemItFailedOn() throws {
+        let folders = try Folders()
+        defer {
+            chmod("\(folders.source)/Photos/sub", 0o755)
+            folders.directory.remove()
+        }
+        chmod("\(folders.source)/Photos/sub", 0o000)
+        #expect {
+            try NativeArchive.compressZip(
+                ["Photos"], in: folders.source, to: "\(folders.root)/Photos.zip", control: NativeArchive.Control())
+        } throws: { error in
+            errorMessage(error).contains("\(folders.source)/Photos/sub")
+        }
+    }
+
     /// RAR can't be written by libarchive: two files stored in a folder "notes", as a RAR 5 and a RAR 4 archive
     /// hold them, written byte by byte from the format's description, are read.
     @Test(arguments: [

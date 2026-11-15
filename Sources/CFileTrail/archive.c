@@ -11,6 +11,7 @@
 #include "archive.h"
 #include "archive_entry.h"
 
+#include <CoreFoundation/CoreFoundation.h>
 #include <copyfile.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -34,6 +35,8 @@ struct ft_archive_control {
     _Atomic int64_t skipped;
     /// The destination is taken for a disk that keeps no extended attributes (for tests).
     _Atomic int32_t no_attributes;
+    /// The item compressing failed on, written before the work returns and read after it.
+    char failed_path[PATH_MAX];
 };
 
 ft_archive_control *ft_archive_control_create(void) {
@@ -45,6 +48,7 @@ ft_archive_control *ft_archive_control_create(void) {
         atomic_init(&control->items, 0);
         atomic_init(&control->skipped, 0);
         atomic_init(&control->no_attributes, 0);
+        control->failed_path[0] = '\0';
     }
     return control;
 }
@@ -65,6 +69,10 @@ int64_t ft_archive_control_total(const ft_archive_control *control) {
 
 int64_t ft_archive_control_items(const ft_archive_control *control) {
     return control == NULL ? 0 : atomic_load(&control->items);
+}
+
+const char *ft_archive_control_failed_path(const ft_archive_control *control) {
+    return control == NULL || control->failed_path[0] == '\0' ? NULL : control->failed_path;
 }
 
 void ft_archive_control_take_disk_as_keeping_no_attributes(ft_archive_control *control) {
@@ -276,6 +284,8 @@ static int left_out_or(int error) {
     case EILSEQ:
     case ENOENT:
     case EINVAL:
+    // A link on a disk that keeps none (a USB stick, an SD card).
+    case ENOTSUP:
     case EMLINK: return ITEM_LEFT_OUT;
     default: return error;
     }
@@ -577,6 +587,11 @@ static int leave_hole(struct extraction *extraction, int fd, off_t from, off_t t
     return ftruncate(fd, to) == 0 ? 0 : errno;
 }
 
+/// The permissions an item comes out with: the archive's, but never writable by anyone but its owner, as a new file
+/// is not. A zip made on Windows names none, and what the reader says in their place (664, 775) would let every
+/// account of the Mac write to what came out.
+static mode_t item_mode(struct archive_entry *entry) { return archive_entry_perm(entry) & 0777 & ~(mode_t)022; }
+
 /// Makes the file `leaf` in the open folder `parent` and writes the item's data to it.
 static int make_file(
     struct extraction *extraction, struct archive *reader, struct archive_entry *entry, int parent, const char *leaf) {
@@ -610,7 +625,7 @@ static int make_file(
     }
     if (result == 0) result = dress_item(extraction, fd, entry);
     if (result == 0) {
-        if (fchmod(fd, archive_entry_perm(entry) & 0777) != 0) result = errno;
+        if (fchmod(fd, item_mode(entry)) != 0 && errno != ENOTSUP && errno != EPERM) result = errno;
         struct item_times times = times_of(entry);
         set_times(fd, &times);
     }
@@ -647,7 +662,7 @@ static int make_folder(
         }
     }
     folder->given = 1;
-    folder->mode = archive_entry_perm(entry) & 0777;
+    folder->mode = item_mode(entry);
     folder->times = times_of(entry);
     int result = dress_item(extraction, fd, entry);
     close(fd);
@@ -665,7 +680,7 @@ static int make_symlink(struct extraction *extraction, struct archive_entry *ent
     int fd = openat(parent, leaf, O_RDONLY | O_SYMLINK | O_CLOEXEC);
     if (fd >= 0) {
         dress_item(extraction, fd, entry);
-        fchmod(fd, archive_entry_perm(entry) & 0777);
+        fchmod(fd, item_mode(entry));
         struct item_times times = times_of(entry);
         set_times(fd, &times);
         close(fd);
@@ -676,9 +691,50 @@ static int make_symlink(struct extraction *extraction, struct archive_entry *ent
 /// Makes `leaf` in the open folder `parent` another name of the file `target` (a path inside the archive), which an
 /// earlier item made. Only of a regular file under the destination, reached without following a link: a second name
 /// for a link that points outside would be a way out.
+/// `name` with each accented letter composed, as the archive most likely has it: the reader hands every name it
+/// converts over decomposed ("é" as "e" and its accent, a Hangul syllable as its jamo), which looks the same on a Mac
+/// and is another name on Windows, Linux and most network disks. A name that isn't UTF-8, or has none beyond ASCII,
+/// is given as it is.
+static const char *composed(const char *name, char *buffer, size_t room) {
+    const unsigned char *byte = (const unsigned char *)name;
+    while (*byte != '\0' && *byte < 0x80) byte++;
+    if (*byte == '\0') return name;
+    CFStringRef text = CFStringCreateWithCString(kCFAllocatorDefault, name, kCFStringEncodingUTF8);
+    if (text == NULL) return name;
+    CFMutableStringRef whole = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, text);
+    CFRelease(text);
+    if (whole == NULL) return name;
+    CFStringNormalize(whole, kCFStringNormalizationFormC);
+    Boolean fits = CFStringGetCString(whole, buffer, (CFIndex)room, kCFStringEncodingUTF8);
+    CFRelease(whole);
+    return fits ? buffer : name;
+}
+
+/// The file `target_leaf` of the open folder `folder` copied as `leaf` into `parent`, with what it carries.
+static int copy_in_place_of_link(
+    struct extraction *extraction, int folder, const char *target_leaf, int parent, const char *leaf) {
+    int from = openat(folder, target_leaf, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    if (from < 0) return left_out_or(errno);
+    int to = openat(parent, leaf, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0600);
+    if (to < 0) {
+        int error = errno;
+        close(from);
+        return left_out_or(error);
+    }
+    int result = fcopyfile(from, to, NULL, COPYFILE_DATA | COPYFILE_XATTR | COPYFILE_STAT) == 0 ? 0 : errno;
+    if (result == 0) result = quarantine_item(extraction, to);
+    close(from);
+    if (close(to) != 0 && result == 0) result = errno;
+    if (result != 0) unlinkat(parent, leaf, 0);
+    return result;
+}
+
 static int make_hard_link(struct extraction *extraction, const char *target, int parent, const char *leaf) {
     char clean[PATH_MAX];
-    if (safe_name(target, clean, sizeof(clean)) != NAME_USED) return ITEM_LEFT_OUT;
+    char spelled[PATH_MAX];
+    if (safe_name(composed(target, spelled, sizeof(spelled)), clean, sizeof(clean)) != NAME_USED) {
+        return ITEM_LEFT_OUT;
+    }
     const char *slash = strrchr(clean, '/');
     const char *target_leaf = slash == NULL ? clean : slash + 1;
     int folder = open_folder(extraction, clean, slash == NULL ? 0 : (size_t)(slash - clean), 0);
@@ -691,7 +747,12 @@ static int make_hard_link(struct extraction *extraction, const char *target, int
     } else if (!S_ISREG(first.st_mode)) {
         result = ITEM_LEFT_OUT;
     } else if (linkat(folder, target_leaf, parent, leaf, 0) != 0) {
-        result = left_out_or(errno);
+        // A disk that keeps no hard links (a USB stick, an SD card) gets a second file with the same contents: the
+        // archive comes out whole, as it would with the link.
+        result = errno == ENOTSUP ? copy_in_place_of_link(extraction, folder, target_leaf, parent, leaf)
+                                  : left_out_or(errno);
+        close(folder);
+        return result;
     } else if (fstatat(parent, leaf, &second, AT_SYMLINK_NOFOLLOW) != 0 || !S_ISREG(second.st_mode)
                || second.st_ino != first.st_ino) {
         // Something else took the file's place between the look and the link.
@@ -882,8 +943,12 @@ int ft_archive_extract(
             break;
         }
         const char *given = raw_name;
-        if (given == NULL) given = archive_entry_pathname(entry);
-        if (given == NULL) given = archive_entry_pathname_utf8(entry);
+        char spelled[PATH_MAX];
+        if (given == NULL) {
+            given = archive_entry_pathname(entry);
+            if (given == NULL) given = archive_entry_pathname_utf8(entry);
+            if (given != NULL) given = composed(given, spelled, sizeof(spelled));
+        }
         int named = given == NULL ? NAME_REFUSED : safe_name(given, name, sizeof(name));
         if (named == NAME_NOTHING) continue;
         if (named == NAME_REFUSED) {
@@ -920,6 +985,8 @@ int ft_archive_extract(
         COUNT(control, items, 1);
         if (control != NULL) atomic_store(&control->done, archive_filter_bytes(reader, -1));
     }
+    // What a zip keeps at its end (its list of items) is never read: done, the archive is all done.
+    if (result == 0 && control != NULL) atomic_store(&control->done, atomic_load(&control->total));
     // An item without the quarantine fails the whole archive, whatever its failure was taken for on the way.
     if (extraction.unquarantined) result = FT_ARCHIVE_NOT_QUARANTINED;
     // After a failure the folders stay their owner's to write, for what was made to be cleared away.
@@ -958,6 +1025,23 @@ static int add_data_bytes(const char *path, ft_archive_control *control, int64_t
     }
     fts_close(tree);
     return result;
+}
+
+/// Whether the file at `path` is a "._name" file holding the attributes of the "name" beside it (AppleDouble).
+static int is_attributes_file(const char *path) {
+    const char *slash = strrchr(path, '/');
+    const char *leaf = slash == NULL ? path : slash + 1;
+    if (leaf[0] != '.' || leaf[1] != '_' || leaf[2] == '\0') return 0;
+    char item[PATH_MAX];
+    int written = snprintf(item, sizeof(item), "%.*s%s", (int)(leaf - path), path, leaf + 2);
+    struct stat stats;
+    if (written <= 0 || (size_t)written >= sizeof(item) || lstat(item, &stats) != 0) return 0;
+    int fd = open(path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    if (fd < 0) return 0;
+    unsigned char magic[4];
+    ssize_t got = read(fd, magic, sizeof(magic));
+    close(fd);
+    return got == 4 && magic[0] == 0x00 && magic[1] == 0x05 && magic[2] == 0x16 && magic[3] == 0x07;
 }
 
 /// Finder's place for `relative`'s attributes: `__MACOSX/dir/._name`, `__MACOSX/._name` at the top.
@@ -1033,6 +1117,9 @@ static int compress_item(
     int result = entry == NULL || sidecar == NULL ? ENOMEM : 0;
     char relative[PATH_MAX + 1];
     char sidecar_path[PATH_MAX + 16];
+    // The item being written, to say which one when it fails.
+    char at[PATH_MAX];
+    at[0] = '\0';
     while (result == 0) {
         errno = 0;
         FTSENT *node = fts_read(tree);
@@ -1044,6 +1131,7 @@ static int compress_item(
             result = ECANCELED;
             break;
         }
+        strlcpy(at, node->fts_path, sizeof(at));
         mode_t type;
         // A disk mounted inside is written as the empty folder it is here, and what it holds counts as left out.
         if (node->fts_info == FTS_D && node->fts_level > FTS_ROOTLEVEL && node->fts_statp != NULL
@@ -1072,6 +1160,9 @@ static int compress_item(
             result = EINVAL;
             break;
         }
+        // On a disk that keeps attributes in a "._name" file beside each item (a USB stick, an SD card), that file
+        // is no item: what it holds goes into __MACOSX with its item, as Finder's Compress puts it.
+        if (type == AE_IFREG && is_attributes_file(path)) continue;
         archive_entry_clear(entry);
         archive_entry_copy_pathname(entry, path);
         archive_entry_copy_sourcepath(entry, path);
@@ -1119,6 +1210,9 @@ static int compress_item(
             }
         }
         free(metadata_copy);
+    }
+    if (result != 0 && result != ECANCELED && control != NULL && at[0] != '\0') {
+        strlcpy(control->failed_path, at, sizeof(control->failed_path));
     }
     if (sidecar != NULL) archive_entry_free(sidecar);
     if (entry != NULL) archive_entry_free(entry);

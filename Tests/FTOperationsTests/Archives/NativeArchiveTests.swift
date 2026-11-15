@@ -98,7 +98,8 @@ import Testing
         try tar.write(to: folders.archive)
         try Self.extract(folders.archive, into: folders.out)
         #expect(try Self.mode("\(folders.out)/tool") == 0o755)
-        #expect(try Self.mode("\(folders.out)/shared") == 0o777)
+        // Nor is anything left writable by anyone but its owner.
+        #expect(try Self.mode("\(folders.out)/shared") == 0o755)
     }
 
     // MARK: Access rules

@@ -75,7 +75,9 @@ enum NativeArchive {
         let code = pointers.map { UnsafePointer($0) }.withUnsafeBufferPointer { buffer in
             ft_archive_compress_zip(folder, buffer.baseAddress, buffer.count, zipPath, control.raw)
         }
-        try throwIfFailed(code, path: zipPath, syscall: "compress")
+        // The item it failed on is the one to name, not the zip that was being made.
+        let failed = ft_archive_control_failed_path(control.raw).map { String(cString: $0) }
+        try throwIfFailed(code, path: failed ?? zipPath, syscall: "compress")
     }
 
     private static func throwIfFailed(_ code: Int32, path: String, syscall: String) throws {
