@@ -107,26 +107,62 @@ final class PreviewsViewController: IconViewController {
     /// at the top stays there.
     override func fitGrid(to new: NSSize) {
         guard new != fittedTo else { return }
+        let hadASize = fittedTo.width > 0 && fittedTo.height > 0
         let anchor = scrollAnchor()
         guard metricsChanged() else { return }
         collection.reloadData()
-        // The previews come at another size now.
         dropPrefetches()
-        // The row goes back to the top as soon as the items are placed (`didPlaceItems`), in the same layout: put
-        // back a turn of the main loop later, it was drawn out of place in between, and undid a place the pane was
-        // scrolled to right after the layout (a tab brought back, search results shown again).
+        // The row goes back to the top as soon as the items are placed, in the same layout and before the selection
+        // is brought into view (`keepInView`), which then has the last word: put back a turn of the main loop later,
+        // the row was drawn out of place in between, and undid a place the pane was scrolled to right after the
+        // layout (a tab brought back, search results shown again, the selected item of a view just switched to).
         anchorOncePlaced = anchor
+        if hadASize {
+            // A window growing to full size, or dragged by its edge, changes the pane's size many times a second:
+            // the previews keep the pictures they have, drawn at each size, and are asked for at the new one only
+            // once the size rests, rather than made again at every step on the way.
+            sharpenOnceTheSizeRests()
+        } else {
+            pixelSizeInUse = nil
+        }
         prefetchSoon()
     }
 
     /// What puts the top row back once the items are placed for the pane's new size.
     private var anchorOncePlaced: (() -> Void)?
 
-    override func didPlaceItems() {
-        super.didPlaceItems()
+    private func putTopRowBack() {
         let anchor = anchorOncePlaced
         anchorOncePlaced = nil
         anchor?()
+    }
+
+    override func keepInView(_ change: RevealKeeper.Change) {
+        putTopRowBack()
+        super.keepInView(change)
+    }
+
+    override func didPlaceItems() {
+        super.didPlaceItems()
+        putTopRowBack()
+    }
+
+    /// How long the pane's size rests before its previews are asked for at it.
+    static var sizeRest: TimeInterval = 0.25
+    private var sharpen: DispatchWorkItem?
+
+    private func sharpenOnceTheSizeRests() {
+        sharpen?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.sharpen = nil
+                guard self.pixelSizeForThePane != self.pixelSizeInUse else { return }
+                self.screenChanged()
+            }
+        }
+        sharpen = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.sizeRest, execute: work)
     }
 
     /// A name being edited stays under its picture when the picture comes or changes.
@@ -152,6 +188,8 @@ final class PreviewsViewController: IconViewController {
     }
 
     override func columnsChanged() {
+        // Another count is asked for at its size at once.
+        pixelSizeInUse = nil
         placing { super.columnsChanged() }
         // The previews come at another size now: those asked for ahead at the old one are asked for again.
         dropPrefetches()
@@ -359,6 +397,7 @@ final class PreviewsViewController: IconViewController {
     isolated deinit {
         for observer in observers { NotificationCenter.default.removeObserver(observer) }
         settle?.cancel()
+        sharpen?.cancel()
         for handle in prefetched.values { handle.cancel() }
         if isCounted { PreviewThumbnails.panes.disappeared() }
     }
@@ -377,6 +416,16 @@ final class PreviewsViewController: IconViewController {
     /// The pixels a picture is asked for at: its place's longer side on this screen, at most the screen's own longer
     /// side, so a preview filling a large screen is as sharp as the screen.
     override var thumbnailPixelSize: Int {
+        if let pixelSizeInUse { return pixelSizeInUse }
+        let size = pixelSizeForThePane
+        pixelSizeInUse = size
+        return size
+    }
+
+    /// The size the previews are asked for at now: the pane's, as it was when its size last rested.
+    private var pixelSizeInUse: Int?
+
+    private var pixelSizeForThePane: Int {
         let box = PreviewGrid.pictureBox(layout)
         let screen = view.window?.screen ?? NSScreen.main
         let scale = Self.screenForTests?.scale ?? Double(screen?.backingScaleFactor ?? 2)
@@ -389,6 +438,7 @@ final class PreviewsViewController: IconViewController {
     /// for again at its size, each keeping its picture until a sharper one comes. Those kept sharp enough are given
     /// as they are, and the others are asked for as they come into view.
     func screenChanged() {
+        pixelSizeInUse = nil
         forEachVisibleItem { item, entry in
             (item as? IconItem)?.loadThumbnail(entry, pane: self)
         }

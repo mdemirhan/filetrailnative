@@ -214,6 +214,58 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A file selected in another view is on screen when the pane switches to Previews, as it is in every other
+        // view: the row the pane began on is not put back over it.
+        @Test func theSelectedFileIsInViewWhenThePaneSwitchesToPreviews() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openGrid(.viewAsList, files: 24)
+            let chosen = tab.content.entries[17]
+            tab.content.select(paths: [chosen.path])
+            tab.perform(.viewAsPreviews)
+            let probe = GridProbe(tab: tab)
+            #expect(await waitUntil { probe.pane is PreviewsViewController })
+            harness.layout(tab)
+            probe.layout()
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 0.02
+            try? await Task.sleep(for: .milliseconds(100))
+            _ = await waitUntil { !previews.isSettling }
+            #expect(tab.content.selection.paths == [chosen.path])
+            #expect(previews.isWhollyInView(index: 17))
+            // On a row's top, as the pane always rests.
+            let row = Double(previews.scroll.contentView.bounds.origin.y) / previews.layout.rowHeight
+            #expect(abs(row - row.rounded()) < 0.001)
+            #expect(row >= 1)
+            await harness.close()
+        }
+
+        // A window growing to full size changes the pane's size at every frame on the way: the previews keep the
+        // pictures they have and are asked for at the new size once it rests, not made again at each step.
+        @Test func previewsAreAskedForAtAnotherSizeOnlyOnceThePanesSizeRests() async throws {
+            let rest = PreviewsViewController.sizeRest
+            defer { PreviewsViewController.sizeRest = rest }
+            PreviewsViewController.sizeRest = 0.3
+            let harness = try ExplorerHarness.windowless()
+            let names = "abcd".map { "\($0).png" }
+            let (tab, probe, previews) = try await openPictures(harness, names, width: 300, height: 200)
+            let before = previews.thumbnailPixelSize
+            let window = try #require(tab.window)
+            let size = window.frame.size
+            // Steps of a window growing, a few points at a time and then a lot.
+            for grown in [40.0, 80, 200, 500, 900] {
+                window.setContentSize(NSSize(width: size.width + grown, height: size.height + grown))
+                harness.layout(tab)
+                probe.layout()
+                #expect(previews.thumbnailPixelSize == before, "\(grown)")
+                for name in names {
+                    let item = try #require(probe.iconItems[name])
+                    #expect(item.thumbnail.image != nil && !item.isWaitingForPicture, "\(name) \(grown)")
+                }
+            }
+            #expect(await waitUntil { previews.thumbnailPixelSize > before })
+            await harness.close()
+        }
+
         // MARK: The previews kept
 
         // The panes are counted, and what they share is let go a little after the last one went, unless one came
@@ -380,9 +432,11 @@ extension ExplorerWindowlessTests {
             #expect(width <= CGFloat(soft))
 
             PreviewsViewController.screenForTests = (scale: 3, longestSide: 10_000)
+            // The size in use is the pane's until it is told of the screen.
+            #expect(previews.thumbnailPixelSize == soft)
+            NotificationCenter.default.post(name: NSWindow.didChangeBackingPropertiesNotification, object: tab.window)
             let sharp = previews.thumbnailPixelSize
             #expect(sharp > soft + 256)
-            NotificationCenter.default.post(name: NSWindow.didChangeBackingPropertiesNotification, object: tab.window)
             #expect(await waitUntil { (item.thumbnail.image?.size.width ?? 0) > CGFloat(soft) })
             #expect((item.thumbnail.image?.size.width ?? 0) <= CGFloat(sharp))
             // Another window's screen changes nothing here.
