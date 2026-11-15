@@ -56,7 +56,7 @@ A set of folders that is one piece of work can be saved as a workspace: the wind
   <img src="docs/screenshots/cut-paste.png" alt="Four files cut with Command-X, dimmed and marked with scissors, and the toolbar's clipboard list open" width="900">
 </p>
 
-In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothing marks the items waiting to be pasted. In File Trail, ⌘X cuts and ⌘V moves, in the same window or another of File Trail's. Cut and copied items stay marked until they are pasted, and a button in the toolbar counts them and lists them, so you can jump to one, take one off or clear the lot.
+In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V. In File Trail, ⌘X cuts and ⌘V moves, in the same window or another of File Trail's. Cut and copied items stay marked until they are pasted, and a button in the toolbar counts them and lists them, so you can jump to one, take one off or clear the lot.
 
 **Pasting is built not to lose your files.**
 
