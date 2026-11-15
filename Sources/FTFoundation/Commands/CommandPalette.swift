@@ -87,7 +87,7 @@ public struct CommandPaletteWorkspace: Equatable, Sendable {
 }
 
 /// What the palette lists and how it orders it. Every row of the shortcut table is a command of the palette, and so are
-/// the menu items that aren't in it; `docs/working/commands.md` says what a new command needs.
+/// the menu items that aren't in it; `docs/process/commands.md` says what a new command needs.
 public enum CommandPalette {
     /// How many recent commands are kept.
     public static let recentLimit = 20

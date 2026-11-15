@@ -21,7 +21,7 @@ import Testing
     }
 
     // Every item the menu bar has is a command of the palette, or left out of it by name, so a menu item added later
-    // can't be forgotten (docs/working/commands.md).
+    // can't be forgotten (docs/process/commands.md).
     @Test func everyMenuItemIsInThePaletteOrLeftOutByName() {
         let workspaces = [WorkspaceMenuEntry(id: "w1", name: "Photos"), WorkspaceMenuEntry(id: "w2", name: "Work")]
         let (built, _) = build(ApplicationMenuOptions(workspaces: workspaces))

@@ -1,6 +1,6 @@
 # Command palette
 
-The plan the command palette (⇧⌘P) was built to, kept for the record; it is done. What it does, and why, is in [decisions/windows-and-panes.md](../decisions/windows-and-panes.md) ("The command palette lists every command"); what a new command needs to be in it is in [working/commands.md](../working/commands.md).
+The plan the command palette (⇧⌘P) was built to, kept for the record; it is done. What it does, and why, is in [decisions/windows-and-panes.md](../decisions/windows-and-panes.md) ("The command palette lists every command"); what a new command needs to be in it is in [process/commands.md](../process/commands.md).
 
 ## The parts
 

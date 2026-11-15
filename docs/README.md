@@ -6,7 +6,7 @@ What is kept here, by what it is for. A new file goes into the folder that fits 
 |---|---|
 | [principles.md](principles.md) | The few rules over everything else: how a decision is read, how safety is weighed, how work is done with the owner. Read first. |
 | [decisions.md](decisions.md), [decisions/](decisions/) | The owner's decisions, each with its reason: the standing ones and an index in the file, the rest by area in the folder. |
-| [working/](working/) | How work is done here: [commands.md](working/commands.md), what a new command needs (the table, the menus, the palette, Help, Settings); [reviews.md](working/reviews.md), how a review is reported; [debugging.md](working/debugging.md), what was learned finding a stalled test run and a permission question. |
+| [process/](process/) | How work is done here: [commands.md](process/commands.md), what a new command needs (the table, the menus, the palette, Help, Settings); [reviews.md](process/reviews.md), how a review is reported; [debugging.md](process/debugging.md), what was learned finding a stalled test run and a permission question. |
 | [state/](state/) | What is true of the app now: [known-issues.md](state/known-issues.md), its limits and open issues; [battery.md](state/battery.md), what it does in the background. |
 | [plans/](plans/) | Work planned or under way: [archives.md](plans/archives.md), [test-suite-audit.md](plans/test-suite-audit.md). |
 | [records/](records/) | What is finished and kept for the record: [command-palette.md](records/command-palette.md), [file-operations-review.md](records/file-operations-review.md), [finder-trash-workaround.diff](records/finder-trash-workaround.diff). |
