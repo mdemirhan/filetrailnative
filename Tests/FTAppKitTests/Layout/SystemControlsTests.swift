@@ -279,6 +279,62 @@ struct SystemControlsTests {
         try expectSwitch(shift: true)
     }
 
+    // In a narrow bar the scopes are one pop-up button: a place chosen in its menu is searched, the filter's Shift-Tab
+    // and the toolbar's Tab land on it, Tab from it goes to the other pane, and no arrow changes the scope. Widened, the
+    // segments come back with the keyboard.
+    @Test func theScopePopUpChoosesAndTakesTheKeyboardAsTheSegmentsDo() throws {
+        let (window, host) = hostWindow()
+        defer { window.close() }
+        let tree = KeyboardOwner(frame: NSRect(x: 0, y: 100, width: 720, height: 100))
+        host.addSubview(tree)
+        let header = SearchHeaderView(frame: NSRect(x: 0, y: 0, width: 300, height: 60))
+        host.addSubview(header)
+        var scopes: [String] = []
+        var switches = 0
+        header.onScopeChange = { scopes.append($0) }
+        header.onSwitchPane = {
+            switches += 1
+            window.makeFirstResponder(tree)
+        }
+        header.show(
+            scopes: [SearchScopeOption(path: "/a", label: "A"), SearchScopeOption(path: "/b", label: "B")],
+            rootPath: "/a", isRunning: false, truncated: false, filterText: "")
+        header.layoutSubtreeIfNeeded()
+        let menu = header.scopeMenu
+        #expect(header.showsScopeMenu && !menu.isHidden)
+        #expect(menu.titleOfSelectedItem == "A")
+        #expect(menu.toolTip == "/a")
+        #expect(!menu.acceptsFirstResponder)
+        #expect(!menu.canBecomeKeyView)
+
+        menu.selectItem(at: 1)
+        menu.sendAction(menu.action, to: menu.target)
+        #expect(scopes == ["/b"])
+        // The place searched, chosen again, searches nothing new.
+        menu.selectItem(at: 0)
+        menu.sendAction(menu.action, to: menu.target)
+        #expect(scopes == ["/b"])
+
+        #expect(window.makeFirstResponder(header.filter.input))
+        let editor = try #require(window.firstResponder as? NSTextView)
+        editor.doCommand(by: #selector(NSResponder.insertBacktab(_:)))
+        #expect(window.firstResponder === menu)
+        menu.keyDown(with: try arrowDown(window))
+        #expect(scopes == ["/b"])
+        #expect(menu.indexOfSelectedItem == 0)
+        menu.keyDown(with: try key(48, "\t", window))
+        #expect(switches == 1)
+        #expect(window.firstResponder === tree)
+
+        header.enterFromStart()
+        #expect(window.firstResponder === menu)
+        header.setFrameSize(NSSize(width: 720, height: 60))
+        header.layoutSubtreeIfNeeded()
+        let track = try #require(Views.first(SearchSegmentTrack.self, in: header) { _ in true })
+        #expect(!header.showsScopeMenu && menu.isHidden && !track.isHidden)
+        #expect(window.firstResponder === track)
+    }
+
     // The filter's ✕ is a stop while it shows; Return on it clears, and the keyboard goes back to the field.
     @Test func tabStopsAtTheFiltersClearButton() throws {
         let (window, host) = hostWindow()

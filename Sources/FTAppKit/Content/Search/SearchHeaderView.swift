@@ -2,8 +2,9 @@ import AppKit
 import FTFoundation
 
 /// The bar above search results, as in Finder: where the search runs, a field that narrows what it found, Stop while
-/// it runs on, and Done; and the banner when only the first matches are shown. The results themselves are drawn by the
-/// folder's views.
+/// it runs on, and Done; and the banner when only the first matches are shown. Where the scopes as segments leave the
+/// filter less than its minimum (a pane of two, a narrow window), they are one pop-up button instead, with no label.
+/// The results themselves are drawn by the folder's views.
 final class SearchHeaderView: NSView {
     var onScopeChange: (String) -> Void = { _ in }
     var onFilterChange: (String) -> Void = { _ in }
@@ -26,6 +27,10 @@ final class SearchHeaderView: NSView {
     private let label = FlushTextField(labelWithString: SearchBarText.scopeLabel)
     private let track = SearchSegmentTrack()
     private(set) var scopes: [SearchScopeButton] = []
+    /// The scopes as one button, while the bar is too narrow for the segments.
+    let scopeMenu = SearchScopePopUp()
+    /// Whether the scopes show as the pop-up rather than the segments.
+    private(set) var showsScopeMenu = false
     let filter = SearchFilterField()
     let stopButton = SearchSmallButton(title: SearchBarText.stop, spinner: true)
     let doneButton = SearchSmallButton(title: SearchBarText.done, spinner: false)
@@ -43,7 +48,17 @@ final class SearchHeaderView: NSView {
         bar.setAccessibilityLabel(SearchBarText.scopeToolbarName)
         label.setAccessibilityIdentifier("searchBar.label")
         addSubview(bar)
-        for view in [label, track, filter, stopButton, doneButton] as [NSView] { bar.addSubview(view) }
+        for view in [label, track, scopeMenu, filter, stopButton, doneButton] as [NSView] { bar.addSubview(view) }
+        scopeMenu.isHidden = true
+        scopeMenu.onChoose = { [weak self] path in
+            guard let self, path != self.rootPath else { return }
+            self.onScopeChange(path)
+        }
+        scopeMenu.onMouseDown = { [weak self] in self?.onFocusResults() }
+        scopeMenu.onTab = { [weak self] backward in
+            guard let self else { return }
+            self.moveKeyboard(from: self.scopeMenu, backward: backward)
+        }
         addSubview(banner)
         banner.isHidden = true
         stopButton.isHidden = true
@@ -104,7 +119,8 @@ final class SearchHeaderView: NSView {
         }
         if backward {
             // With no scopes what comes before the filter is the toolbar.
-            if !track.takeKeyboard(backward: true), let window { ToolbarKeyboard.enterFromEnd(of: window) }
+            let tookIt = showsScopeMenu ? scopeMenu.takeKeyboard() : track.takeKeyboard(backward: true)
+            if !tookIt, let window { ToolbarKeyboard.enterFromEnd(of: window) }
         } else if !filter.clearButton.isHidden {
             filter.clearStop.takeKeyboard()
         } else {
@@ -114,7 +130,8 @@ final class SearchHeaderView: NSView {
 
     /// The keyboard comes to the bar's first stop: Tab from what comes before it, the toolbar.
     func enterFromStart() {
-        if !track.takeKeyboard() { window?.makeFirstResponder(filter.input) }
+        let tookIt = showsScopeMenu ? scopeMenu.takeKeyboard() : track.takeKeyboard()
+        if !tookIt { window?.makeFirstResponder(filter.input) }
     }
 
     /// The header's text, at a weight of 500, which the bar's text inherits.
@@ -152,9 +169,11 @@ final class SearchHeaderView: NSView {
                 return button
             }
             track.show(scopes)
+            scopeMenu.show(options)
         }
         for scope in scopes { scope.setSelected(scope.path == rootPath, theme: theme) }
         track.showSelection(scopes)
+        scopeMenu.showSelection(rootPath)
         // Most searches finish at once: Stop and its spinner come only for one that runs on.
         stopFlag.update(active: isRunning, delay: SearchTiming.stopDelay)
         stopButton.isHidden = !stopFlag.value
@@ -198,13 +217,9 @@ final class SearchHeaderView: NSView {
         // The bar's parts are centered on the track, which starts at the pane's content top.
         let trackHeight = Self.trackHeight
         let centerY = DesignTokens.paneContentTop + trackHeight / 2
-        var x = layout.scopeBarPaddingHorizontal
+        let x = layout.scopeBarPaddingHorizontal
         let labelSize = label.intrinsicContentSize
         let labelWidth = Double((label.stringValue as NSString).size(withAttributes: [.font: label.font as Any]).width)
-        label.frame = NSRect(
-            x: x, y: (centerY - labelSize.height / 2).rounded(), width: ceil(labelWidth),
-            height: labelSize.height)
-        x += labelWidth + layout.scopeLabelMarginTrailing + gap
         // From the right: Done, Stop, then the filter field.
         var right = bounds.width - layout.scopeBarPaddingHorizontal
         let doneWidth = doneButton.preferredWidth
@@ -219,20 +234,50 @@ final class SearchHeaderView: NSView {
                 height: layout.smallButtonHeight)
             right -= stopWidth + gap
         }
-        // The segmented control keeps its width; the filter gives up room first, down to its minimum.
+        // The segments keep their width and the filter gives up room first, down to its minimum; with less room than
+        // that the scopes are one pop-up button and the filter takes the rest.
         let trackWidth = track.fittingWidth
-        let room = right - (x + trackWidth + gap)
-        let filterWidth = max(layout.filterMinWidth, min(layout.filterWidth, room))
-        filter.frame = NSRect(
-            x: right - filterWidth, y: centerY - layout.fieldHeight / 2, width: filterWidth, height: layout.fieldHeight)
-        track.frame = NSRect(
-            x: x, y: centerY - trackHeight / 2, width: min(trackWidth, max(0, filter.frame.minX - gap - x)),
-            height: trackHeight)
+        let segmentsEnd = x + labelWidth + layout.scopeLabelMarginTrailing + gap + trackWidth + gap
+        let compact = !scopes.isEmpty && right - segmentsEnd < layout.filterMinWidth
+        showScopeMenu(compact)
+        if compact {
+            let menuHeight = layout.segmentHeight
+            let menuWidth = min(scopeMenu.preferredWidth, layout.scopeMenuMaxWidth, max(0, right - x))
+            scopeMenu.frame = NSRect(x: x, y: centerY - menuHeight / 2, width: menuWidth, height: menuHeight)
+            let filterX = scopeMenu.frame.maxX + gap
+            filter.frame = NSRect(
+                x: filterX, y: centerY - layout.fieldHeight / 2, width: max(0, right - filterX),
+                height: layout.fieldHeight)
+        } else {
+            label.frame = NSRect(
+                x: x, y: (centerY - labelSize.height / 2).rounded(), width: ceil(labelWidth),
+                height: labelSize.height)
+            let filterWidth = min(layout.filterWidth, max(0, right - segmentsEnd))
+            filter.frame = NSRect(
+                x: right - filterWidth, y: centerY - layout.fieldHeight / 2, width: filterWidth,
+                height: layout.fieldHeight)
+            let trackX = x + labelWidth + layout.scopeLabelMarginTrailing + gap
+            let shownWidth = min(trackWidth, max(0, filter.frame.minX - gap - trackX))
+            track.frame = NSRect(x: trackX, y: centerY - trackHeight / 2, width: shownWidth, height: trackHeight)
+        }
         if !banner.isHidden {
             banner.frame = NSRect(
                 x: layout.bannerMarginHorizontal, y: barHeight,
                 width: max(0, bounds.width - 2 * layout.bannerMarginHorizontal), height: banner.height)
         }
+    }
+
+    /// Shows the scopes as the pop-up or as the label and the segments. The keyboard, on one of them, moves to the
+    /// other, so it never stays on a control out of sight.
+    private func showScopeMenu(_ compact: Bool) {
+        guard compact != showsScopeMenu else { return }
+        let hadKeyboard = window?.firstResponder === (compact ? track : scopeMenu)
+        showsScopeMenu = compact
+        scopeMenu.isHidden = !compact
+        label.isHidden = compact
+        track.isHidden = compact
+        guard hadKeyboard else { return }
+        if compact { scopeMenu.takeKeyboard() } else { track.takeKeyboard() }
     }
 
     override func viewDidChangeEffectiveAppearance() {
@@ -441,6 +486,113 @@ final class SearchMarkerView: NSView, TextStyleSource {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
+// MARK: The scope as a pop-up
+
+/// The search's scope as the system's pop-up button, for a bar too narrow for the segments: it names the place searched,
+/// and its menu has each place with its icon, the one searched checked. As the segments, it is a plain button of the
+/// pane: a click gives the keyboard to the results, and only Tab stops here, where Space or Return opens the menu, in
+/// which the arrows move and Return chooses. No arrow changes the scope while the menu is closed.
+final class SearchScopePopUp: NSPopUpButton {
+    /// A place was chosen in the menu: its path.
+    var onChoose: (String) -> Void = { _ in }
+    var onMouseDown: () -> Void = {}
+    /// Tab or Shift-Tab, which leaves it.
+    var onTab: (_ backward: Bool) -> Void = { _ in }
+    private var paths: [String] = []
+    private var takingKeyboard = false
+    private static var font: NSFont { SearchHeaderView.font(DesignTokens.typeScale.callout) }
+    private static let iconSize = 16.0
+
+    init() {
+        super.init(frame: .zero, pullsDown: false)
+        autoenablesItems = false
+        font = Self.font
+        (cell as? NSPopUpButtonCell)?.lineBreakMode = .byTruncatingTail
+        refusesFirstResponder = true
+        target = self
+        action = #selector(chosen(_:))
+        setAccessibilityIdentifier("searchBar.scopeMenu")
+        setAccessibilityLabel(SearchBarText.scopeToolbarName)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// The scopes changed: an item for each, with the place's icon, its tooltip its path.
+    func show(_ options: [SearchScopeOption]) {
+        removeAllItems()
+        paths = options.map(\.path)
+        for option in options {
+            let item = NSMenuItem(title: option.label, action: nil, keyEquivalent: "")
+            let icon = NSWorkspace.shared.icon(forFile: option.path)
+            icon.size = NSSize(width: Self.iconSize, height: Self.iconSize)
+            item.image = icon
+            item.toolTip = option.path
+            menu?.addItem(item)
+        }
+        invalidateIntrinsicContentSize()
+    }
+
+    /// Checks the place searched, which the button names.
+    func showSelection(_ rootPath: String) {
+        guard let index = paths.firstIndex(of: rootPath) else { return }
+        if indexOfSelectedItem != index { selectItem(at: index) }
+        toolTip = rootPath
+    }
+
+    /// As wide as the place searched, its icon and the arrows need: the system sizes a pop-up for its longest item,
+    /// which would take the filter's room for a place not shown.
+    var preferredWidth: Double {
+        guard let cell else { return 0 }
+        let widths = itemArray.map { Double(($0.title as NSString).size(withAttributes: [.font: Self.font]).width) }
+        let widest = widths.max() ?? 0
+        let shown = widths.indices.contains(indexOfSelectedItem) ? widths[indexOfSelectedItem] : widest
+        return Double(ceil(cell.cellSize.width)) - (widest - shown).rounded(.down)
+    }
+
+    @objc private func chosen(_ sender: Any?) {
+        guard paths.indices.contains(indexOfSelectedItem) else { return }
+        onChoose(paths[indexOfSelectedItem])
+    }
+
+    // MARK: Keyboard
+
+    /// Only Tab gives it the keyboard: a press never does.
+    override var acceptsFirstResponder: Bool { takingKeyboard && isEnabled }
+    override var canBecomeKeyView: Bool { false }
+
+    /// Gives it the keyboard; false while it has no places or is hidden, or when the window would not.
+    @discardableResult
+    func takeKeyboard() -> Bool {
+        guard let window, numberOfItems > 0, !isHiddenOrHasHiddenAncestor else { return false }
+        takingKeyboard = true
+        defer { takingKeyboard = false }
+        return window.makeFirstResponder(self)
+    }
+
+    override func keyDown(with event: NSEvent) {
+        guard event.modifierFlags.intersection([.command, .control, .option]).isEmpty else {
+            super.keyDown(with: event)
+            return
+        }
+        switch event.keyCode {
+        case 48:
+            onTab(event.modifierFlags.contains(.shift))
+        case 36, 76, 49:
+            performClick(nil)
+        case 123, 124, 125, 126:
+            // No arrow changes the scope: the keys go on to the pane.
+            nextResponder?.keyDown(with: event)
+        default:
+            super.keyDown(with: event)
+        }
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        onMouseDown()
+        super.mouseDown(with: event)
+    }
+}
+
 // MARK: Buttons
 
 /// A small push button as the system's button: 22 tall, 10 each side of the label, the callout size; Stop has the
@@ -582,8 +734,7 @@ final class SearchBannerView: NSView, TextStyleSource {
 
 // MARK: The filter field
 
-/// The results' filter: the filter lines, the mode chip, the field ("Name or folder"), and the clear button once
-/// something is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
+/// The results' filter: the mode chip, the field ("Name or folder"), and the clear button once something is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
 final class SearchFilterField: NSView, NSTextFieldDelegate {
     let input = NSTextField()
     let clearButton = ClearButton()
@@ -593,7 +744,7 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
     var onFocusResults: () -> Void = {}
     /// The mode chip was pressed.
     var onToggleMode: () -> Void = {}
-    /// How the filter matches the names (Fuzzy or Contains), after the filter icon; a press switches it.
+    /// How the filter matches the names (Fuzzy or Contains), at the field's start; a press switches it.
     let modeChip = ListFilterModeChip()
     /// Tab or Shift-Tab from the field or its ✕.
     var onTab: (_ from: NSView, _ backward: Bool) -> Void = { _, _ in }
@@ -675,7 +826,7 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
         super.layout()
         let layout = Self.layout
         let clear = layout.clearButtonSize
-        let chipLeft = layout.fieldPaddingLeading + layout.fieldIconSize + layout.fieldGap
+        let chipLeft = layout.fieldPaddingLeading
         modeChip.frame = NSRect(
             x: chipLeft, y: ((bounds.height - modeChip.fittingHeight) / 2).rounded(), width: modeChip.fittingWidth,
             height: modeChip.fittingHeight)
@@ -695,7 +846,6 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let layout = Self.layout
         let radius = CGFloat(DesignTokens.radii.control)
         let palette = theme.palette
         NSColor(palette.fieldBg).setFill()
@@ -713,19 +863,6 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
             NSColor(theme.accent.solid.withAlpha(0.5)).setStroke()
             ring.stroke()
         }
-        // The filter icon: three lines on a 24 by 24 grid, 16, 10 and 4 long, centered, 6, 12 and 18 down, stroked 2.
-        let size = CGFloat(layout.fieldIconSize)
-        let rect = NSRect(x: layout.fieldPaddingLeading, y: (bounds.height - size) / 2, width: size, height: size)
-        let scale = size / 24
-        let path = NSBezierPath()
-        for (x, y, length) in [(4.0, 6.0, 16.0), (7.0, 12.0, 10.0), (10.0, 18.0, 4.0)] {
-            path.move(to: NSPoint(x: rect.minX + x * scale, y: rect.minY + y * scale))
-            path.line(to: NSPoint(x: rect.minX + (x + length) * scale, y: rect.minY + y * scale))
-        }
-        path.lineWidth = CGFloat(layout.fieldIconStrokeWidth) * scale
-        path.lineCapStyle = .round
-        NSColor(palette.textSecondary).setStroke()
-        path.stroke()
     }
 
     override func mouseDown(with event: NSEvent) {

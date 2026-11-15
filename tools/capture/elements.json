@@ -224,6 +224,7 @@
     "search results header": {"swift": "searchHeader"},
     "search scope label": {"swift": "searchBar.label"},
     "search scope track": {"swift": "searchBar.scopes"},
+    "search scope menu": {"swift": "searchBar.scopeMenu"},
     "search filter box": {"swift": "searchBar.filterField"},
     "search filter clear": {"swift": "searchBar.filter.clear"},
     "search stop button": {"swift": "searchBar.stop"},

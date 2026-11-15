@@ -35,10 +35,11 @@ import Testing
         #expect(weight(label.font) == weight(NSFont.systemFont(ofSize: 12, weight: .medium)))
     }
 
-    // The results' filter is 280 wide where there is room, and gives up room first in a narrow bar, down to 150: the
-    // mode chip always leaves room to type.
-    @Test func theFilterFieldIsWideEnoughForItsChipAndText() throws {
-        func filterField(width: CGFloat) throws -> (field: SearchFilterField, chip: NSView, input: NSView) {
+    // The results' filter is 280 wide where there is room and gives up room first beside the segments, down to 200.
+    // With less room than that the scopes are one pop-up button, with no label, and the filter takes the rest. The
+    // filter has no icon: its mode chip is at its start.
+    @Test func theScopesBecomeAPopUpWhereTheSegmentsLeaveTheFilterTooLittle() throws {
+        func shown(width: CGFloat) throws -> SearchHeaderView {
             let header = SearchHeaderView(frame: NSRect(x: 0, y: 0, width: width, height: 41))
             header.show(
                 scopes: [
@@ -48,17 +49,52 @@ import Testing
                 rootPath: "/a/Application Support", isRunning: false, truncated: false, filterText: "")
             header.showFilterMode(.contains)
             header.layoutSubtreeIfNeeded()
-            let field = try #require(Views.first(SearchFilterField.self, in: header) { _ in true })
-            field.layoutSubtreeIfNeeded()
-            return (field, field.modeChip, field.input)
+            header.filter.layoutSubtreeIfNeeded()
+            return header
         }
-        let wide = try filterField(width: 1_400)
-        #expect(wide.field.frame.width == 280)
-        #expect(wide.input.frame.minX > wide.chip.frame.maxX)
-        #expect(wide.input.frame.width >= 150)
-        let narrow = try filterField(width: 500)
-        #expect(narrow.field.frame.width == 150)
-        #expect(narrow.input.frame.width >= 45)
+        let wide = try shown(width: 1_400)
+        let track = try #require(Views.first(SearchSegmentTrack.self, in: wide) { _ in true })
+        let label = try #require(
+            Views.first(NSTextField.self, in: wide) { $0.accessibilityIdentifier() == "searchBar.label" })
+        #expect(!wide.showsScopeMenu && wide.scopeMenu.isHidden && !track.isHidden && !label.isHidden)
+        #expect(wide.filter.frame.width == 280)
+        #expect(wide.filter.modeChip.frame.minX == 4)
+        #expect(wide.filter.input.frame.minX > wide.filter.modeChip.frame.maxX)
+        #expect(wide.filter.input.frame.width >= 150)
+
+        // What the segments and the bar's right end take, whatever the width.
+        let segmentsEnd = track.frame.maxX + 6
+        let trailing = 1_400 - (wide.doneButton.frame.minX - 6)
+
+        let tight = try shown(width: segmentsEnd + 240 + trailing)
+        #expect(!tight.showsScopeMenu)
+        #expect(tight.filter.frame.width == 240)
+
+        let narrow = try shown(width: segmentsEnd + 190 + trailing)
+        #expect(narrow.showsScopeMenu)
+        // The segments and "Search:" are hidden, which the finder of views passes over.
+        #expect(Views.first(SearchSegmentTrack.self, in: narrow) { _ in true } == nil)
+        #expect(Views.first(NSTextField.self, in: narrow) { $0.accessibilityIdentifier() == "searchBar.label" } == nil)
+        #expect(!narrow.scopeMenu.isHidden)
+        #expect(narrow.scopeMenu.frame.minX == 12)
+        #expect(narrow.scopeMenu.frame.width <= 220)
+        #expect(narrow.scopeMenu.titleOfSelectedItem == "“Application Support”")
+        #expect(narrow.filter.frame.minX == narrow.scopeMenu.frame.maxX + 6)
+        #expect(narrow.filter.frame.maxX == narrow.doneButton.frame.minX - 6)
+        #expect(narrow.filter.input.frame.width >= 45)
+
+        // The pop-up is as wide as the place searched, not its longest place: a shorter one leaves the filter more.
+        let longWidth = narrow.scopeMenu.frame.width
+        narrow.show(
+            scopes: [
+                SearchScopeOption(path: "/a/Application Support", label: "“Application Support”"),
+                SearchScopeOption(path: "/a", label: "Home"), SearchScopeOption(path: "/", label: "Macintosh HD"),
+            ],
+            rootPath: "/a", isRunning: false, truncated: false, filterText: "")
+        narrow.layoutSubtreeIfNeeded()
+        #expect(narrow.scopeMenu.titleOfSelectedItem == "Home")
+        #expect(narrow.scopeMenu.frame.width < longWidth - 50)
+        #expect(narrow.filter.frame.minX == narrow.scopeMenu.frame.maxX + 6)
     }
 
     // "No matches" is drawn in the body size, at weight 500, in the primary text color.

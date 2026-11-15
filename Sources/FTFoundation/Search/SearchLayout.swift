@@ -25,16 +25,17 @@ public struct SearchLayout: Equatable, Sendable {
     public var segmentHeight: Double
     public var segmentMaxWidth: Double
 
-    /// The results filter: 280 wide, at least 150, so the mode chip leaves room for the text; its field: the control
-    /// height, padding 0 4 0 8, 6 between the icon, the chip, the text and the clear button; a 13 pt icon stroked 2.
+    /// The results filter: 280 wide, and at least 200 beside the scope segments: a bar with less room shows the scopes
+    /// as one pop-up button (`scopeMenuMaxWidth` at most) and the filter takes the rest. Its field: the control height,
+    /// padding 0 4, 6 between the chip, the text and the clear button. It has no icon: the chip and the placeholder say
+    /// what it is.
     public var filterWidth: Double
     public var filterMinWidth: Double
+    public var scopeMenuMaxWidth: Double
     public var fieldHeight: Double
     public var fieldPaddingLeading: Double
     public var fieldPaddingTrailing: Double
     public var fieldGap: Double
-    public var fieldIconSize: Double
-    public var fieldIconStrokeWidth: Double
     public var clearButtonSize: Double
 
     /// A small push button: the small control height, padding 0 10, no minimum width, the callout size; a 6 pt
@@ -74,9 +75,9 @@ public struct SearchLayout: Equatable, Sendable {
         scopeBarPaddingBottom: 6, scopeBarPaddingHorizontal: 12, scopeBarGap: 6,
         scopeLabelMarginTrailing: 2, headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
         segmentPaddingHorizontal: 12, segmentHeight: 24, segmentMaxWidth: 220,
-        filterWidth: 280, filterMinWidth: 150, fieldHeight: 24,
-        fieldPaddingLeading: 8, fieldPaddingTrailing: 4, fieldGap: 6, fieldIconSize: 13, fieldIconStrokeWidth: 2,
-        clearButtonSize: 16, smallButtonHeight: 22, smallButtonPaddingHorizontal: 10, smallButtonGap: 6,
+        filterWidth: 280, filterMinWidth: 200, scopeMenuMaxWidth: 220, fieldHeight: 24,
+        fieldPaddingLeading: 4, fieldPaddingTrailing: 4, fieldGap: 6, clearButtonSize: 16, smallButtonHeight: 22,
+        smallButtonPaddingHorizontal: 10, smallButtonGap: 6,
         spinnerSize: 10, spinnerLineWidth: 1.5, bannerMarginHorizontal: 6, bannerMarginBottom: 12,
         bannerPaddingVertical: 10, bannerPaddingHorizontal: 12, bannerBorderWidth: 1, bannerBorderAccentShare: 0.22,
         bannerFillAccentAlpha: 0.06,
