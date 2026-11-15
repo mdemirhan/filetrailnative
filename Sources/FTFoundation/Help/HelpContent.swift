@@ -110,16 +110,27 @@ public enum HelpContent {
     /// The shortcut list as it is shown: every row with the key it has now. A command's other key is mentioned after
     /// what it does ("Go back (Cmd+Left also works)").
     public static func listShortcuts(_ display: ShortcutDisplay = .defaults) -> [HelpShownShortcut] {
-        shortcutItems.flatMap { item -> [HelpShownShortcut] in
+        namedShortcuts(display).map(\.shown)
+    }
+
+    /// The shortcuts shown, each with its command's name as Settings and the menus have it ("Quick Look"), which its
+    /// line needn't hold ("Preview the selected item without opening it"): Help's search finds it by either.
+    static func namedShortcuts(_ display: ShortcutDisplay) -> [(shown: HelpShownShortcut, name: String?)] {
+        shortcutItems.flatMap { item -> [(shown: HelpShownShortcut, name: String?)] in
             switch item.source {
             case .fixed(let shortcut):
-                return [HelpShownShortcut(group: item.group, shortcut: shortcut, description: item.description)]
+                return [(HelpShownShortcut(group: item.group, shortcut: shortcut, description: item.description), nil)]
             case .command(let id):
                 guard let shortcut = display.written(id), !shortcut.isEmpty else { return [] }
                 let description =
                     display.alternate(id).map { "\(item.description) (\(writeForReading($0)) also works)" }
                     ?? item.description
-                return [HelpShownShortcut(group: item.group, shortcut: shortcut, description: description)]
+                return [
+                    (
+                        HelpShownShortcut(group: item.group, shortcut: shortcut, description: description),
+                        ShortcutCommands.definition(id).label
+                    )
+                ]
             }
         }
     }
@@ -176,8 +187,9 @@ public enum HelpContent {
             }
     }
 
-    /// What the "Search help" field looks through: every row and every shortcut, by the words on screen (and the
-    /// shortcut as written, so "cmd+f" finds Find files).
+    /// What the "Search help" field looks through: every row and every shortcut, by the words on screen, the shortcut
+    /// as written ("cmd+f" finds the search field's key) and the command's name ("quick look" finds its key, though
+    /// its line says what it does in other words).
     public static func search(_ query: String, _ display: ShortcutDisplay = .defaults) -> [HelpSearchResult] {
         let needle = Array(JSString.lowercased(JSString.trimmed(query)).utf16)
         if needle.isEmpty { return [] }
@@ -204,7 +216,7 @@ public enum HelpContent {
 
         struct Shortcut: Sendable {
             let shown: HelpShownShortcut
-            /// What it does, and the shortcut as written.
+            /// What it does, the shortcut as written, and its command's name.
             let texts: [[UInt16]]
         }
 
@@ -219,7 +231,7 @@ public enum HelpContent {
 
         init(_ display: ShortcutDisplay) {
             func lowered(_ texts: String...) -> [[UInt16]] { texts.map { Array(JSString.lowercased($0).utf16) } }
-            let shown = HelpContent.listShortcuts(display)
+            let shown = HelpContent.namedShortcuts(display)
             self.display = display
             topics = HelpContent.topics.filter { $0.id != .shortcuts }.map { topic in
                 Topic(
@@ -233,10 +245,11 @@ public enum HelpContent {
                                     section.title))
                         }
                     },
-                    shortcuts: shown.filter { $0.group.topicID == topic.id }.map { shortcut in
+                    shortcuts: shown.filter { $0.shown.group.topicID == topic.id }.map { shortcut, name in
                         Shortcut(
                             shown: shortcut,
-                            texts: lowered(shortcut.description, HelpContent.writeForReading(shortcut.shortcut)))
+                            texts: lowered(
+                                shortcut.description, HelpContent.writeForReading(shortcut.shortcut), name ?? ""))
                     })
             }
         }

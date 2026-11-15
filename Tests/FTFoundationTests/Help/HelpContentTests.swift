@@ -152,6 +152,16 @@ struct HelpContentTests {
         #expect(parts.map(\.isCode) == [false, true, false])
     }
 
+    // A command's key is found by the command's name, though its line says what it does in other words.
+    @Test func aShortcutIsFoundByItsCommandsName() {
+        func found(_ query: String) -> [String] {
+            HelpContent.search(query).flatMap(\.shortcuts).map(\.description)
+        }
+        #expect(found("quick look").contains { $0.hasPrefix("Preview the selected item") })
+        #expect(found("Duplicate").contains("Make a copy of each selected item beside it"))
+        #expect(found("zzqxv").isEmpty)
+    }
+
     // MARK: Golden
 
     struct Input: Codable, Sendable {

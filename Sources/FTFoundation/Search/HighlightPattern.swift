@@ -53,7 +53,8 @@ public struct HighlightPattern: @unchecked Sendable {
         case .regex(let regex, let gaveUp):
             guard !gaveUp.isSet else { return nil }
             var found: NSRange?
-            let deadline = DispatchTime.now() + Self.timePerName
+            // Counted in the time this thread works, so a busy Mac alone doesn't spend it.
+            let budget = ThreadTimeBudget(Self.timePerName)
             // The block is called with each match, and now and then while a long one is looked for.
             regex.enumerateMatches(
                 in: name, options: [.reportProgress], range: NSRange(location: 0, length: name.utf16.count)
@@ -61,7 +62,7 @@ public struct HighlightPattern: @unchecked Sendable {
                 if let result {
                     found = result.range
                     stop.pointee = true
-                } else if DispatchTime.now() > deadline {
+                } else if budget.isSpent {
                     gaveUp.set()
                     stop.pointee = true
                 }

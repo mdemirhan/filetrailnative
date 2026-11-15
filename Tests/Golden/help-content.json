@@ -2023,7 +2023,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -2109,7 +2120,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -4359,7 +4376,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -4445,7 +4473,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -6689,7 +6723,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -6775,7 +6820,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -9026,7 +9077,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -9112,7 +9174,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Space",
+                  "description": "Preview the selected item without opening it"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -13302,7 +13370,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -13388,7 +13467,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -15621,7 +15706,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -15701,7 +15797,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -17949,7 +18051,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -18013,7 +18126,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+;",
+                  "description": "Order the list by size"
+                }
+              ]
             }
           ],
           [
@@ -18035,7 +18154,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -20252,7 +20377,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Ctrl+Cmd+S",
+                  "description": "Show or hide a strip of the selected item's details under the list (Cmd+Shift+Backspace also works)"
+                }
+              ]
             }
           ],
           [
@@ -20332,7 +20468,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Space",
+                  "description": "Preview the selected item without opening it"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -22592,7 +22734,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -22678,7 +22831,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -24906,7 +25065,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -24992,7 +25162,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Space",
+                  "description": "Preview the selected item without opening it"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -27228,7 +27404,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -27286,7 +27473,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Plus",
+                  "description": "Order the list by name, numbers in counting order"
+                }
+              ]
             }
           ],
           [
@@ -27308,7 +27501,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -29564,7 +29763,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Ctrl+Y",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -29650,7 +29860,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -31923,7 +32139,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -32009,7 +32236,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -34240,7 +34473,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -34304,7 +34548,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Ctrl+Cmd+S",
+                  "description": "Order the list by name, numbers in counting order (Cmd+; also works)"
+                }
+              ]
             }
           ],
           [
@@ -34326,7 +34576,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -36574,7 +36830,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -36660,7 +36927,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -38950,7 +39223,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -39036,7 +39320,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -41290,7 +41580,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -41376,7 +41677,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -43618,7 +43925,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -43704,7 +44022,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -45926,7 +46250,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -46012,7 +46347,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -48253,7 +48594,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -48333,7 +48685,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -50605,7 +50963,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -50685,7 +51054,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -52909,7 +53284,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -52973,7 +53359,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Y",
+                  "description": "Order the list by name, numbers in counting order"
+                }
+              ]
             }
           ],
           [
@@ -52995,7 +53387,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Space",
+                  "description": "Preview the selected item without opening it"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -55261,7 +55659,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -55347,7 +55756,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -57566,7 +57981,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -57652,7 +58078,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -59883,7 +60315,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -59969,7 +60412,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -62236,7 +62685,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "F5",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -62322,7 +62782,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -64575,7 +65041,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -64661,7 +65138,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Cmd+Y",
+                  "description": "Preview the selected item without opening it (Space also works)"
+                }
+              ]
             },
             {
               "topic": "views",
@@ -66920,7 +67403,18 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+I",
+                  "description": "Show or hide the details of the selected item, at the right"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+Shift+I",
+                  "description": "Show or hide a strip of the selected item's details under the list"
+                }
+              ]
             }
           ],
           [
@@ -67006,7 +67500,13 @@
                   "Quick Look"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "files",
+                  "shortcut": "Space",
+                  "description": "Preview the selected item without opening it"
+                }
+              ]
             },
             {
               "topic": "views",
