@@ -241,7 +241,7 @@ final class SearchHeaderView: NSView {
         let compact = !scopes.isEmpty && right - segmentsEnd < layout.filterMinWidth
         showScopeMenu(compact)
         if compact {
-            let menuHeight = layout.segmentHeight
+            let menuHeight = Self.trackHeight
             let menuWidth = min(scopeMenu.preferredWidth, layout.scopeMenuMaxWidth, max(0, right - x))
             scopeMenu.frame = NSRect(x: x, y: centerY - menuHeight / 2, width: menuWidth, height: menuHeight)
             let filterX = scopeMenu.frame.maxX + gap

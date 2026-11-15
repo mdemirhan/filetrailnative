@@ -37,14 +37,14 @@ extension ExplorerWindowlessTests {
             #expect(presets.width >= CGFloat(Layout.Header.presetsMinWidth))
             #expect(frame(sheet.titleLabel, in: sheet).minX == CGFloat(Layout.Header.paddingHorizontal))
             #expect(sheet.titleLabel.font?.pointSize == CGFloat(Layout.Fonts.body))
-            // Modes: centered, 28 tall (2 around 24 segments), 14 above the options.
+            // Modes: centered, the control height (2 around 20 pt segments), 14 above the options.
             let headerHeight = CGFloat(Layout.Header.paddingTop + Layout.controlHeight + Layout.Header.paddingBottom)
             let modes = frame(sheet.modeControl, in: sheet)
             #expect(modes.minY == headerHeight)
-            #expect(modes.height == control + CGFloat(2 * Layout.Modes.trackPadding))
+            #expect(modes.height == control)
             #expect(abs(modes.midX - width / 2) <= 0.5)
             for segment in sheet.modeControl.segments {
-                #expect(segment.frame.height == control)
+                #expect(segment.frame.height == control - CGFloat(2 * Layout.Modes.trackPadding))
                 #expect(
                     abs(
                         segment.frame.width - segment.label.exactWidth - CGFloat(2 * Layout.Modes.segmentPadding))

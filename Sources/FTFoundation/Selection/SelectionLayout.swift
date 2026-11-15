@@ -17,7 +17,8 @@ public enum SelectionLayout {
         public static let dangerWashAlpha = 0.1
     }
 
-    /// The mode chip in the search results' filter field (Fuzzy or Contains): a capsule of the accent around its word.
+    /// The mode chip in the search results' filter field (Fuzzy or Contains): a rounded rectangle of the accent
+    /// around its word, with the small radius.
     public enum FilterChip {
         public static let chipPaddingHorizontal = 7.0
         public static let chipPaddingVertical = 1.0

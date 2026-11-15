@@ -127,7 +127,7 @@ final class AllConflictsControl: SystemSegmentedControl {
         let gaps = CGFloat(max(0, segments.count - 1)) * CGFloat(layout.segmentGap)
         return NSSize(
             width: widths + gaps + 2 * CGFloat(layout.segmentTrackPadding),
-            height: CGFloat(DesignTokens.controlHeights.regular + 2 * layout.segmentTrackPadding))
+            height: CGFloat(DesignTokens.controlHeights.regular))
     }
 
     private func showValue() {
@@ -148,7 +148,7 @@ final class AllConflictsControl: SystemSegmentedControl {
             let width = segment.preferredWidth
             segment.frame = NSRect(
                 x: x, y: CGFloat(layout.segmentTrackPadding), width: width,
-                height: CGFloat(DesignTokens.controlHeights.regular))
+                height: CGFloat(DesignTokens.controlHeights.regular - 2 * layout.segmentTrackPadding))
             x += width + CGFloat(layout.segmentGap)
         }
     }

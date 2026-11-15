@@ -226,7 +226,7 @@ final class ListFilterModeControl: SystemSegmentedControl {
     }
 }
 
-/// The filter's mode as a word in a capsule of the accent, in the search results' filter field: a press switches Fuzzy
+/// The filter's mode as a word on a rounded rectangle of the accent, its corners the small radius inside the field's, in the search results' filter field: a press switches Fuzzy
 /// and Contains. It never takes the keyboard, so typing goes on where it was.
 final class ListFilterModeChip: NSControl {
     private let label = ListLabel()
@@ -306,7 +306,8 @@ final class ListFilterModeChip: NSControl {
         let layout = SelectionLayout.FilterChip.self
         let alpha = isHovering && !isLocked ? layout.chipHoverFillAlpha : layout.chipFillAlpha
         NSColor(theme.accent.solid.withAlpha(alpha)).setFill()
-        NSBezierPath(roundedRect: bounds, xRadius: bounds.height / 2, yRadius: bounds.height / 2).fill()
+        let radius = CGFloat(DesignTokens.radii.xs)
+        NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
     }
 
     override func updateTrackingAreas() {

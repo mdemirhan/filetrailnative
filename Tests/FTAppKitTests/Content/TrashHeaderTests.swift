@@ -52,7 +52,7 @@ extension ExplorerWindowlessTests {
             #expect(abs(inset - SearchLayout.standard.scopeBarPaddingHorizontal) < 0.01)
             // Empty starts at the pane's content top, clear of the active pane's line, with the bar's padding under it.
             #expect(abs(bar.emptyButton.frame.minY - DesignTokens.paneContentTop) < 0.01)
-            #expect(abs(bar.frame.height - (10 + 22 + 6 + 1)) < 0.01)
+            #expect(abs(bar.frame.height - (10 + 24 + 6 + 1)) < 0.01)
 
             window.tab.go(to: trash.appendingPathComponent("Inner"))
             #expect(await waitUntil { window.tab.shownFolderPath.hasSuffix("/.Trash/Inner") })

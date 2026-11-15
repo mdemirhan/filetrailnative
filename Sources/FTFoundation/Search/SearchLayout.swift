@@ -17,8 +17,8 @@ public struct SearchLayout: Equatable, Sendable {
     /// The line under the results header.
     public var headerBorderWidth: Double
 
-    /// The segmented control: a 2 pt track around segments 2 apart; a segment: padding 0 12, the control height,
-    /// at most 220 wide.
+    /// The segmented control: the control height, a 2 pt track around segments 2 apart; a segment: padding 0 12,
+    /// 20 high, at most 220 wide.
     public var segmentedTrackPadding: Double
     public var segmentedGap: Double
     public var segmentPaddingHorizontal: Double
@@ -38,7 +38,7 @@ public struct SearchLayout: Equatable, Sendable {
     public var fieldGap: Double
     public var clearButtonSize: Double
 
-    /// A small push button: the small control height, padding 0 10, no minimum width, the callout size; a 6 pt
+    /// A push button of the bar: the control height, as the scopes and the filter are, padding 0 10, no minimum width, the callout size; a 6 pt
     /// gap before the label; its spinner 10 across, stroked 1.5.
     public var smallButtonHeight: Double
     public var smallButtonPaddingHorizontal: Double
@@ -74,9 +74,9 @@ public struct SearchLayout: Equatable, Sendable {
     public static let standard = SearchLayout(
         scopeBarPaddingBottom: 6, scopeBarPaddingHorizontal: 12, scopeBarGap: 6,
         scopeLabelMarginTrailing: 2, headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
-        segmentPaddingHorizontal: 12, segmentHeight: 24, segmentMaxWidth: 220,
+        segmentPaddingHorizontal: 12, segmentHeight: 20, segmentMaxWidth: 220,
         filterWidth: 280, filterMinWidth: 200, scopeMenuMaxWidth: 220, fieldHeight: 24,
-        fieldPaddingLeading: 4, fieldPaddingTrailing: 4, fieldGap: 6, clearButtonSize: 16, smallButtonHeight: 22,
+        fieldPaddingLeading: 4, fieldPaddingTrailing: 4, fieldGap: 6, clearButtonSize: 16, smallButtonHeight: 24,
         smallButtonPaddingHorizontal: 10, smallButtonGap: 6,
         spinnerSize: 10, spinnerLineWidth: 1.5, bannerMarginHorizontal: 6, bannerMarginBottom: 12,
         bannerPaddingVertical: 10, bannerPaddingHorizontal: 12, bannerBorderWidth: 1, bannerBorderAccentShare: 0.22,

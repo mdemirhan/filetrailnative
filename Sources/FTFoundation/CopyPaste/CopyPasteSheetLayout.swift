@@ -28,7 +28,7 @@ public enum CopyPasteSheetLayout {
     public static let barInkAlpha = 0.025
     public static let border = 1.0
 
-    /// A segmented control: its track pads its segments by 2, the segments are 2 apart and pad their titles by 12.
+    /// A segmented control: the control height; its track pads its segments by 2, the segments are 2 apart and pad their titles by 12.
     public static let segmentGap = 2.0
     public static let segmentTrackPadding = 2.0
     public static let segmentPadding = 12.0

@@ -261,7 +261,8 @@ public class SystemButton: NSButton, ThemeApplying {
 
 // MARK: Segmented control
 
-/// A row of choices as the system's segmented control: a radio group, so Tab lands on it, the arrow keys move the
+/// A row of choices as the system's segmented control at the regular size, 24 pt, which the system draws as a
+/// rounded rectangle like the fields and buttons beside it (the large size is a capsule): a radio group, so Tab lands on it, the arrow keys move the
 /// choice (wrapping) and Space takes the one shown. A click shows no focus ring; the keyboard arriving does. The
 /// selected segment is tinted with the theme's accent. The views that name the segments for captures lie over it, take
 /// no clicks and draw nothing. One that sets `refusesFirstResponder` never has the keyboard: only clicks choose.
@@ -280,7 +281,7 @@ class SystemSegmentedControl: NSSegmentedControl, ThemeApplying {
     init(titles: [String]) {
         super.init(frame: .zero)
         trackingMode = .selectOne
-        controlSize = .large
+        controlSize = .regular
         font = ThemeFonts.sans(DesignTokens.typeScale.body)
         focusRingType = .none
         target = self

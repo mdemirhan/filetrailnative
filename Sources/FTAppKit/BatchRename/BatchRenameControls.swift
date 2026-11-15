@@ -441,7 +441,7 @@ final class BatchRenameModeControl: SystemSegmentedControl {
         let gaps = CGFloat(layout.segmentGap) * CGFloat(max(0, segments.count - 1))
         return NSSize(
             width: widths + gaps + CGFloat(2 * layout.trackPadding),
-            height: CGFloat(BatchRenameSheetLayout.controlHeight + 2 * layout.trackPadding))
+            height: CGFloat(BatchRenameSheetLayout.controlHeight))
     }
 
     override func layout() {
@@ -452,7 +452,7 @@ final class BatchRenameModeControl: SystemSegmentedControl {
             let width = segment.preferredWidth
             segment.frame = NSRect(
                 x: x, y: CGFloat(layout.trackPadding), width: width,
-                height: CGFloat(BatchRenameSheetLayout.controlHeight))
+                height: CGFloat(BatchRenameSheetLayout.controlHeight - 2 * layout.trackPadding))
             x += width + CGFloat(layout.segmentGap)
         }
     }
