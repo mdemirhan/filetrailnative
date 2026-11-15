@@ -366,6 +366,43 @@ struct AppStateReaderTests {
         #expect(encoded["searchColumnWidths"] == nil)
     }
 
+    // A workspace and the window closed last, as 1.2 saved them, kept the List's column widths in their session too:
+    // each pane saved without widths takes those of the workspace or window it is in, not the app's nor another's.
+    @Test func aWorkspaceAndTheWindowClosedLastSavedWithoutPaneWidthsTakeTheirOwn() {
+        func session(_ name: Int, _ folder: Int, tabs: String) -> String {
+            """
+            {"detailColumnWidths": {"name": \(name)}, "searchColumnWidths": {"folder": \(folder)},
+             "openTabs": \(tabs)}
+            """
+        }
+        let panes = """
+            [{"path": "/Users/demo/a", "viewSizes": {"iconSizes": {"standard": 96}},
+              "secondPane": {"path": "/Users/demo/b", "viewSizes": {"iconSizes": {"standard": 48}}}}]
+            """
+        let state = Self.read(
+            """
+            {"preferences": {"detailColumnWidths": {"name": 300}, "searchColumnWidths": {"folder": 200},
+                             "workspaces": [{"id": "w1", "name": "Work", "bounds": {"width": 900, "height": 600},
+                                             "session": \(session(420, 160, tabs: panes))}]},
+             "windows": [{"id": "window-a", "session": \(session(410, 150, tabs: panes))}],
+             "lastClosedWindow": {"id": "window-b", "session": \(session(430, 170, tabs: panes))}}
+            """)
+        let sessions = [
+            (state.windows?.first?.session, 410, 150), (state.preferences?.workspaces.first?.session, 420, 160),
+            (state.lastClosedWindow?.session, 430, 170),
+        ]
+        for (session, name, folder) in sessions {
+            let tab = session?.openTabs.first
+            #expect(tab?.viewSizes?.detailColumnWidths.name == name)
+            #expect(tab?.viewSizes?.searchColumnWidths.folder == folder)
+            #expect(tab?.viewSizes?.iconSizes.standard == 96)
+            #expect(tab?.secondPane?.viewSizes?.detailColumnWidths.name == name)
+            #expect(tab?.secondPane?.viewSizes?.searchColumnWidths.folder == folder)
+            #expect(tab?.secondPane?.viewSizes?.iconSizes.standard == 48)
+        }
+        #expect(state.preferences?.detailColumnWidths.name == 300)
+    }
+
     @Test func halfPixelWidthsRoundUpAndBadBoundsFallBack() {
         let state = Self.preferences(
             "{\"preferences\": {\"treeWidth\": 220.5, \"inspectorWidth\": 260.5, \"openItemLimit\": 1.5}}"
