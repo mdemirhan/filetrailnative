@@ -1047,6 +1047,12 @@ static int compress_item(
             break;
         }
         mode_t type;
+        // A disk mounted inside is written as the empty folder it is here, and what it holds counts as left out.
+        if (node->fts_info == FTS_D && node->fts_level > FTS_ROOTLEVEL && node->fts_statp != NULL
+            && node->fts_parent != NULL && node->fts_parent->fts_statp != NULL
+            && node->fts_statp->st_dev != node->fts_parent->fts_statp->st_dev) {
+            COUNT(control, skipped, 1);
+        }
         switch (node->fts_info) {
         case FTS_D: type = AE_IFDIR; break;
         case FTS_F: type = AE_IFREG; break;

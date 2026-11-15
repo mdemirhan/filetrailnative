@@ -662,7 +662,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// panels.
     func saveSession() {
         guard !isDestroyed, let host, let active = selected else { return }
-        let front = active.openTab
+        // What a window opened later starts from: the pane that is active, not always the first.
+        let front = active.activePaneTab
         // A window doesn't take more tabs than it keeps (one the system drops on a full window is sent back out); a
         // launch folder added to a full restored window is the one way past it, and the cut is there for it.
         let openTabs = Array(tabs.prefix(AppPreferenceLimits.openTabsLimit).map(\.openTab))

@@ -143,7 +143,7 @@ extension MainWindowController {
             guard let self, let box else { return }
             self.submitChosenFolder(
                 destination, box: box, actions: actions, verb: "Move",
-                refusal: { Self.alreadyThere(paths, in: $0) },
+                refusal: { Self.alreadyThere(paths, in: $0) ?? Self.insideItself(paths, folder: $0) },
                 start: { [weak self] folder in
                     await self?.startMove(paths, to: folder, actions) ?? .cancelled
                 },
@@ -220,6 +220,10 @@ extension MainWindowController {
         if !folder.hasPrefix("/") { return .blocked(message: "Choose a destination folder.") }
         if actions.session.isWriteLocked { return .blocked(message: WriteDialogs.busyMessage) }
         if let message = refusal(folder) { return .blocked(message: message) }
+        // Before a folder is made for them: nothing is made in the Trash.
+        if Paths.isInsideTrash(folder, homePath: trashHomePath) {
+            return .blocked(message: "Items can\u{2019}t be \(verb == "Move" ? "moved" : "extracted") into the Trash.")
+        }
         guard let refused = await TabDragDrop.destinationRefusal(folder, services.directoryService) else {
             return await start(folder)
         }
@@ -243,6 +247,13 @@ extension MainWindowController {
         case .cancelled:
             return .cancelled
         }
+    }
+
+    /// Why a move into `folder` can't be: it is inside one of the items. Said before a folder typed there is made,
+    /// which would otherwise be left behind inside the item when the move is refused.
+    static func insideItself(_ paths: [String], folder: String) -> String? {
+        guard let item = paths.first(where: { folder.hasPrefix($0 + "/") }) else { return nil }
+        return "\u{201C}\(NodePath.basename(item))\u{201D} can\u{2019}t be moved into itself."
     }
 
     /// Why a move into `folder` would do nothing: every item is in it already.

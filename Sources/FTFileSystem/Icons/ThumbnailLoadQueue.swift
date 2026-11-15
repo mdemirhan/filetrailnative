@@ -3,7 +3,8 @@ import Foundation
 /// Previews wanted at once are loaded a few at a time, so one scrolled past before its turn can still be
 /// dropped from the queue. Those asked for ahead of need (the next page of the Previews view) wait behind every
 /// one wanted now, and move up among them once one is wanted after all. One scrolled past once it started is told to
-/// stop (its task is cancelled), and its place goes to the next once it has.
+/// stop (its task is cancelled), and its place goes to the next once it has; one that hasn't a while later is on a disk
+/// that stopped answering, and its place goes to the next all the same.
 @MainActor
 public final class ThumbnailLoadQueue {
     public nonisolated static let maxConcurrentLoads = 4
@@ -64,9 +65,32 @@ public final class ThumbnailLoadQueue {
     }
 
     /// Tells the job to stop if it started: its task is cancelled, and its place goes to the next once its work returns.
+    /// Work that hasn't returned `abandonAfter` later is reading a file on a disk that stopped answering, which no
+    /// cancelling ends: its place is given up then, so that a few such files don't keep every preview of every folder
+    /// waiting until the disk gives up. No more than `maxAbandoned` are let go of this way, each still holding a
+    /// thread.
     func stop(_ id: Int) {
-        running[id]?.cancel()
+        guard let task = running[id] else { return }
+        task.cancel()
+        DispatchQueue.main.asyncAfter(deadline: .now() + abandonAfter) { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self, self.running[id] != nil, !self.abandoned.contains(id),
+                    self.abandoned.count < Self.maxAbandoned
+                else { return }
+                self.abandoned.insert(id)
+                self.active -= 1
+                self.startQueued()
+            }
+        }
     }
+
+    /// How long a job told to stop has to return before its place is given up.
+    var abandonAfter: TimeInterval = 2
+    static let maxAbandoned = 16
+    /// The jobs told to stop whose place was given up before their work returned.
+    private var abandoned: Set<Int> = []
+    /// How many of those there are, for a test.
+    var abandonedCount: Int { abandoned.count }
 
     /// A job asked for ahead of need is wanted now: it goes after those wanted now, before the other ones ahead.
     func wantNow(_ id: Int) {
@@ -93,9 +117,11 @@ public final class ThumbnailLoadQueue {
             active += 1
             running[job.id] = Task { [weak self] in
                 await job.work()
-                self?.running[job.id] = nil
-                self?.active -= 1
-                self?.startQueued()
+                guard let self else { return }
+                self.running[job.id] = nil
+                // Its place was given up already when it was let go of.
+                if self.abandoned.remove(job.id) == nil { self.active -= 1 }
+                self.startQueued()
             }
         }
     }

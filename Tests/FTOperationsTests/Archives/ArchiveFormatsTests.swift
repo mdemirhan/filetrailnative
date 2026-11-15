@@ -157,6 +157,23 @@ import Testing
         #expect(try handle.readToEnd() == end)
     }
 
+    /// A folder that takes nothing new refuses before the archive is taken apart elsewhere: said at once, not after
+    /// gigabytes were written out of sight.
+    @Test func aFolderThatCantBeWrittenRefusesBeforeAnythingIsExtracted() throws {
+        let folders = try Folders()
+        defer {
+            chmod(folders.out, 0o755)
+            folders.directory.remove()
+        }
+        chmod(folders.out, 0o555)
+        // The archive isn't even there: the folder's refusal comes first.
+        #expect {
+            try Self.extract("\(folders.root)/missing.zip", into: folders.out)
+        } throws: { error in
+            errorCode(error) == .errno(EACCES)
+        }
+    }
+
     /// RAR can't be written by libarchive: two files stored in a folder "notes", as a RAR 5 and a RAR 4 archive
     /// hold them, written byte by byte from the format's description, are read.
     @Test(arguments: [

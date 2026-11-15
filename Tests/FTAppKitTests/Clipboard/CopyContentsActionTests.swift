@@ -164,6 +164,30 @@ import UniformTypeIdentifiers
         #expect(FileContents.readNow(huge, guess: .image) == .failure(.tooLarge(.image)))
     }
 
+    // "Too large" is for an image or text that would be copied if it were smaller: a large file that is neither (a
+    // disk image, a Keynote document) is said to be neither, whatever its size.
+    @Test func aLargeFileThatIsNeitherImageNorTextSaysSo() throws {
+        let folder = Folder()
+        func sparse(_ name: String, _ head: Data, size: Int64) throws -> String {
+            let path = folder.write(name, head)
+            let handle = try FileHandle(forWritingTo: URL(fileURLWithPath: path))
+            try handle.truncate(atOffset: UInt64(size))
+            try handle.close()
+            return path
+        }
+        let binary = Data([0x7F, 0x45, 0x4C, 0x46, 0x00, 0x01])
+        let image = try sparse("disk.dmg", binary, size: CopyContents.imageLimit + 1)
+        #expect(FileContents.readNow(image, guess: .other) == .failure(.notImageOrText))
+        let blob = try sparse("BLOB", binary, size: CopyContents.imageLimit + 1)
+        #expect(FileContents.readNow(blob, guess: .unknown) == .failure(.notImageOrText))
+        // A kind that is neither, between the two limits and with no zero byte at its start, is neither too.
+        let pages = try sparse("talk.key", Data(repeating: 0x61, count: 64), size: CopyContents.textLimit + 1)
+        #expect(FileContents.readNow(pages, guess: .other) == .failure(.notImageOrText))
+        // An image too large is still told as one.
+        let picture = try sparse("PICTURE", Self.image(.png), size: CopyContents.imageLimit + 1)
+        #expect(FileContents.readNow(picture, guess: .unknown) == .failure(.tooLarge(.image)))
+    }
+
     // A name that doesn't say what the file holds: more than the text copied is turned down by its size, before
     // any of it is read as text.
     @Test func aFileWithNoKnownKindLargerThanTheTextCopiedIsNotDecoded() throws {

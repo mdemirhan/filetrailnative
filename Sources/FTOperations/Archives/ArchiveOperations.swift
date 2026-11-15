@@ -125,6 +125,8 @@ extension WriteCoordinator {
         let archiveName = NodePath.basename(archivePath)
         let kind = ArchiveNames.kind(of: archiveName) ?? .items
         let rawName = kind == .singleFile ? ArchiveNames.extractedName(archiveName) : nil
+        // A folder that takes nothing new says so now, not once the whole archive has been taken apart elsewhere.
+        try fileSystem.canModifyFolder(folder)
         let staging = try Staging(near: folder, fileSystem)
         defer { staging.remove() }
         try NativeArchive.extract(
@@ -163,6 +165,8 @@ extension WriteCoordinator {
                 currentSourcePath: paths.count == 1 ? paths[0] : nil,
                 currentDestinationPath: NodePath.join(folder, zipName), doneBefore: 0
             ) { control in
+                // A folder that takes no new file says so before everything is compressed elsewhere.
+                try fileSystem.canModifyFolder(folder)
                 let staging = try Staging(near: folder, fileSystem)
                 defer { staging.remove() }
                 let partial = NodePath.join(staging.work, zipName)

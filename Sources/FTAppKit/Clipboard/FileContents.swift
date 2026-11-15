@@ -47,15 +47,19 @@ enum FileContents: Equatable {
         let size = Int64(info.st_size)
         switch guess {
         case .text where size > CopyContents.textLimit: return .failure(.tooLarge(.text))
-        case .image, .unknown, .other:
-            if size > CopyContents.imageLimit { return .failure(.tooLarge(guess == .image ? .image : .text)) }
-        case .text: break
+        case .image where size > CopyContents.imageLimit: return .failure(.tooLarge(.image))
+        case .text, .image, .unknown, .other: break
         }
         if size == 0 { return .failure(.empty) }
         // A name that doesn't say what it holds, with more in it than the text copied: only an image is worth reading
-        // whole, so the first bytes are looked at before anything is read or decoded.
-        if guess == .unknown || guess == .other, size > CopyContents.textLimit, !looksLikeImage(path) {
-            return .failure(isBinary(path) ? .notImageOrText : .tooLarge(.text))
+        // whole, so the first bytes are looked at before anything is read or decoded. What is neither is said to be
+        // neither, whatever its size: "too large" is for an image or text that would be copied if it were smaller.
+        if guess == .unknown || guess == .other, size > CopyContents.textLimit {
+            if looksLikeImage(path) {
+                if size > CopyContents.imageLimit { return .failure(.tooLarge(.image)) }
+            } else {
+                return .failure(guess == .other || isBinary(path) ? .notImageOrText : .tooLarge(.text))
+            }
         }
         let data: Data
         do {

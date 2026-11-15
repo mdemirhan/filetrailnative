@@ -340,11 +340,17 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
             guard let folder = ExplorerTabs.parentDirectoryPath(path) else { continue }
             if request.kind == .reveal {
                 group.openTab(path: folder, from: tab, openedItem: .selecting([path]))
-            } else if tab.shownFolderPath == folder || tab.shownFolderPath == (try? NativeFileSystem().realpath(folder))
-            {
-                // A window opened on the item's folder for it: by the spelling given until its first read, by its real
-                // path after.
+            } else if tab.shownFolderPath == folder {
+                // A window opened on the item's folder for it: by the spelling given until its first read.
                 tab.showOpenedItem(.selecting([path]))
+            } else {
+                // By its real path after, looked up off the main thread: on a disk that stopped answering the look
+                // doesn't come back, and the window must not wait for it.
+                Task { [weak tab] in
+                    let real = await BlockingWork.run { try? NativeFileSystem().realpath(folder) }
+                    guard let tab, let real, tab.shownFolderPath == real else { return }
+                    tab.showOpenedItem(.selecting([path]))
+                }
             }
         }
     }

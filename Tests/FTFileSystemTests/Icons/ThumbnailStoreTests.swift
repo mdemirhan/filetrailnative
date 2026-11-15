@@ -609,6 +609,41 @@ private func request(
         #expect(later.last != nil)
     }
 
+    // A file on a disk that stopped answering never comes back from being read, whatever it is told: a while after it
+    // was told to stop its place goes to the next preview, so a few such files don't keep every folder's previews
+    // waiting. Its work, when it does return, takes nothing back.
+    @Test func aLoadToldToStopThatDoesntReturnGivesUpItsPlace() async {
+        let queue = ThumbnailLoadQueue(maxConcurrent: 1)
+        queue.abandonAfter = 0.05
+        let hung = DispatchSemaphore(value: 0)
+        let started = Receiver()
+        let handle = queue.enqueue {
+            started.answers.append(nil)
+            // Deaf to its task being cancelled, as a read of the disk is.
+            await withCheckedContinuation { continuation in
+                DispatchQueue.global().async {
+                    hung.wait()
+                    continuation.resume()
+                }
+            }
+        }
+        var ran = false
+        queue.enqueue { ran = true }
+        await pollUntil { started.answers.count == 1 }
+        #expect(!ran && queue.activeCount == 1 && queue.queuedCount == 1)
+        handle.cancel()
+        await pollUntil { ran }
+        #expect(queue.abandonedCount == 1)
+        await pollUntil { queue.activeCount == 0 }
+        // The disk gives up at last: nothing is counted twice.
+        hung.signal()
+        await pollUntil { queue.abandonedCount == 0 }
+        #expect(queue.activeCount == 0 && queue.queuedCount == 0)
+        var again = false
+        queue.enqueue { again = true }
+        await pollUntil { again }
+    }
+
     // An edit changes nothing a listing shows: a file named as changed is checked again in the same listing, and gets
     // its new preview. One not named is not asked again.
     @Test func aFileNamedAsChangedIsCheckedAgainInTheSameListing() async {

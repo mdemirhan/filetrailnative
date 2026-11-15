@@ -140,6 +140,34 @@ extension ExplorerWindowlessTests {
             await close(window)
         }
 
+        // A folder that isn't there yet, typed inside the item being moved or in the Trash, is refused before it is
+        // offered to be made: made first, it was left behind when the move was then refused.
+        @Test func makesNoFolderInsideTheItemMovedOrInTheTrash() async throws {
+            let window = try await open()
+            var box = try openMove(window, ["Alpha"])
+            submit(box, window.folder.appendingPathComponent("Alpha/New").path, in: window)
+            #expect(
+                await waitUntil {
+                    box.errorLabel.stringValue == "\u{201C}Alpha\u{201D} can\u{2019}t be moved into itself."
+                })
+            #expect(box.submitButton.title == "Move")
+            DialogKeys.press(36, "\r", in: window.tab.window)
+            await settle()
+            #expect(!window.exists("Alpha/New"))
+            DialogKeys.press(53, "\u{1b}", in: window.tab.window)
+            if window.tab.goToBox != nil { DialogKeys.press(53, "\u{1b}", in: window.tab.window) }
+
+            let trash = window.folder.appendingPathComponent(".Trash")
+            try FileManager.default.createDirectory(at: trash, withIntermediateDirectories: true)
+            window.tab.trashHomePath = window.folder.path
+            box = try openMove(window, ["note.txt"])
+            submit(box, trash.appendingPathComponent("New").path, in: window)
+            #expect(await waitUntil { box.errorLabel.stringValue == "Items can\u{2019}t be moved into the Trash." })
+            #expect(box.submitButton.title == "Move")
+            #expect(!window.exists(".Trash/New") && window.exists("note.txt"))
+            await close(window)
+        }
+
         // With another operation running the start is refused under the field; the list's commands wait while the box
         // is up.
         @Test func saysAnotherOperationRunsAndTheListWaits() async throws {
