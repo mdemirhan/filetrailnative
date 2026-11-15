@@ -9,7 +9,7 @@ import FTFoundation
 final class SharePicker: NSObject, @preconcurrency NSSharingServicePickerDelegate, NSSharingServiceDelegate {
     static let shared = SharePicker()
 
-    /// The picker showing, kept until it closes: AppKit doesn't keep it.
+    /// The picker showing, kept until it closes, so that the next Share closes it first.
     private var picker: NSSharingServicePicker?
     /// Where the items are on screen, for the animation of a service that starts from them (Mail, Messages).
     private var sourceFrame: NSRect?
@@ -88,18 +88,25 @@ final class SharePicker: NSObject, @preconcurrency NSSharingServicePickerDelegat
 
 extension MainWindowController {
     /// Share…: the system's share popover for `paths`, under `button` when one was pressed (the toolbar's, the Info
-    /// panel's), else under the first of the items in the list, or at the top of the list when none is on screen.
+    /// panel's), else under the lead item of the selection in the list (the first of `paths` when the lead isn't
+    /// among them), or at the top of the list when that item is not on screen. Nothing for items in the Trash,
+    /// whichever way it was asked: a key set for Share… comes here though its menu item is dimmed.
     func share(_ paths: [String], from button: NSView? = nil) {
-        guard !paths.isEmpty else { return }
-        if let showSharePicker {
-            showSharePicker(paths)
+        guard !paths.isEmpty, !paths.contains(where: { Paths.isInsideTrash($0, homePath: trashHomePath) }) else {
             return
+        }
+        func show(_ rect: NSRect, of view: NSView, sourceFrame: NSRect? = nil) {
+            if let showSharePicker {
+                showSharePicker(paths, rect, view)
+            } else {
+                SharePicker.shared.show(paths, relativeTo: rect, of: view, sourceFrame: sourceFrame)
+            }
         }
         let content = content
         let lead = content.selection.leadPath.flatMap { paths.contains($0) ? $0 : nil } ?? paths[0]
         let itemFrame = QuickLookItemFrame.screenFrame(of: lead, entries: content.entries, in: content.view)
         if let button, button.window != nil {
-            SharePicker.shared.show(paths, relativeTo: button.bounds, of: button, sourceFrame: itemFrame)
+            show(button.bounds, of: button, sourceFrame: itemFrame)
             return
         }
         guard let window, let list = content.view.window == nil ? nil : content.view else { return }
@@ -107,13 +114,13 @@ extension MainWindowController {
         if let itemFrame {
             let rect = list.convert(window.convertFromScreen(itemFrame), from: nil)
             if rect.intersects(visible) {
-                SharePicker.shared.show(paths, relativeTo: rect.intersection(visible), of: list, sourceFrame: itemFrame)
+                show(rect.intersection(visible), of: list, sourceFrame: itemFrame)
                 return
             }
         }
         // The item is scrolled out of sight: the popover hangs from the top of the list.
         let top = list.isFlipped ? visible.minY : visible.maxY - 1
-        SharePicker.shared.show(paths, relativeTo: NSRect(x: visible.midX, y: top, width: 1, height: 1), of: list)
+        show(NSRect(x: visible.midX, y: top, width: 1, height: 1), of: list)
     }
 
     /// File ▸ Share… and its key: the items selected in the list.

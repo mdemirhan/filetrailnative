@@ -325,7 +325,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Previews an item: the system's Quick Look panel, unless a test puts its own, so nothing comes on screen.
     var showQuickLook: ((String) -> Void)?
     /// Shares items: the system's share popover, unless a test puts its own, so nothing comes on screen.
-    var showSharePicker: (([String]) -> Void)?
+    var showSharePicker: (([String], NSRect, NSView) -> Void)?
     /// Carries out a rename and answers with its outcome, in place of the write coordinator (tests). Without it the
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.

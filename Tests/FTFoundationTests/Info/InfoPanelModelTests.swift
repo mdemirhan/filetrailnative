@@ -165,6 +165,18 @@ struct InfoPanelModelTests {
             ])
     }
 
+    // What is in the Trash is not shared or converted from the panel, as the menus have it.
+    @Test func anItemInTheTrashHasNoShare() {
+        func ids(inTrash: Bool) -> [InfoPanelModel.QuickAction.ID] {
+            InfoPanelModel.quickActions(
+                item: Self.file(), textEditorName: "Zed", isFavorite: false, canFavorite: true, copied: nil,
+                inTrash: inTrash, shortcut: { _ in nil }
+            ).map(\.id)
+        }
+        #expect(ids(inTrash: false).contains(.share))
+        #expect(!ids(inTrash: true).contains(.share))
+    }
+
     @Test func quickActionsDependOnTheItem() {
         func labels(
             _ item: InfoItem, favorite: Bool = false, canFavorite: Bool = true,
