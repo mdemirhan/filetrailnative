@@ -284,8 +284,7 @@ final class TabDragDrop {
             offersMove: offersMove)
         let refusal = DragRules.validate(
             session: session, blocked: isBlocked, targetSurface: target.surface, targetPath: target.path,
-            targetSupportsMove: target.supportsMove, targetIsSelected: target.isSelected, operation: operation,
-            targetIsAnotherList: target.isAnotherList)
+            targetSupportsMove: target.supportsMove, targetIsSelected: target.isSelected, operation: operation)
         return (operation, refusal)
     }
 
@@ -305,14 +304,13 @@ final class TabDragDrop {
     // MARK: The content pane
 
     /// The target of a drag over the content pane: a folder row (real folders take drops; an alias shows invalid),
-    /// or the folder on screen, which takes a drag from another app, and the app's own once it has sprung into it.
+    /// search results' included, or the folder on screen, which takes a drag from another app, and the app's own once
+    /// it has sprung into it.
     func contentTarget(_ session: DragSession, entry: DirectoryEntry?) -> Target? {
         guard let pane = listPane else { return nil }
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let anotherList = fromTheOtherPane(session, into: pane)
         if let entry {
-            // Search results take drops from other apps only.
-            if pane.searchRootPath != nil, session.sourceSurface != .external { return nil }
             let real = entry.kind == .directory && !entry.isSymlink
             return Target(
                 surface: .content, path: entry.path,
@@ -627,8 +625,7 @@ final class TabDragDrop {
                     DragRules.validate(
                         session: session, blocked: self.isBlocked, targetSurface: target.surface,
                         targetPath: target.path, targetSupportsMove: target.supportsMove,
-                        targetIsSelected: target.isSelected, operation: operation,
-                        targetIsAnotherList: target.isAnotherList) == nil
+                        targetIsSelected: target.isSelected, operation: operation) == nil
                 else { return }
             }
             await self.start(session, target: target, operation: operation)

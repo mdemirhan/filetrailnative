@@ -360,7 +360,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "move",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -1995,7 +1995,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "move",
-        "refusal": "unsupported_target"
+        "refusal": "target_selected"
       }
     },
     {
@@ -2462,7 +2462,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": "same_path"
       }
     },
     {
@@ -3210,7 +3210,7 @@
         "onSameDisk": null,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -3998,7 +3998,7 @@
         "onSameDisk": null,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": "target_selected"
       }
     },
     {
@@ -4241,7 +4241,7 @@
         "onSameDisk": false,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -5641,7 +5641,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "move",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -6190,7 +6190,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "move",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -6732,7 +6732,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "move",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -6911,7 +6911,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "move",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -7412,7 +7412,7 @@
         "onSameDisk": false,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -7451,7 +7451,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -8069,7 +8069,7 @@
         "onSameDisk": null,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -9716,7 +9716,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -10409,7 +10409,7 @@
         "onSameDisk": false,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -10557,7 +10557,7 @@
         "onSameDisk": null,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": "same_path"
       }
     },
     {
@@ -12126,7 +12126,7 @@
         "onSameDisk": false,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -13364,7 +13364,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     },
     {
@@ -14546,7 +14546,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": "same_path"
       }
     },
     {
@@ -14982,7 +14982,7 @@
         "onSameDisk": null,
         "operation": "move",
         "allowed": "move",
-        "refusal": "unsupported_target"
+        "refusal": "target_selected"
       }
     },
     {
@@ -16706,7 +16706,7 @@
         "onSameDisk": null,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": "same_path"
       }
     },
     {
@@ -17992,7 +17992,7 @@
         "onSameDisk": false,
         "operation": "copy",
         "allowed": "copy",
-        "refusal": "unsupported_target"
+        "refusal": null
       }
     }
   ]

@@ -263,7 +263,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Drag",
                             description:
-                                "Drag items onto a folder to move them there. Dragged to another disk (a USB drive, a network share) they are copied instead, as in Finder. Hold Option to copy, or Command to move. Rest the drag on a folder to open it: its icon wiggles first, and moving the pointer stops it. Keep going into folders inside; drop anywhere in the folder that opened to put the items there, or press Esc to go back to where you started."
+                                "Drag items onto a folder to move them there. Dragged to another disk (a USB drive, a network share) they are copied instead, as in Finder. Hold Option to copy, or Command to move. Rest the drag on a folder to open it: its icon wiggles first, and moving the pointer stops it. Keep going into folders inside; drop anywhere in the folder that opened to put the items there, or press Esc to go back to where you started. In search results, drop onto a folder found; a drag doesn't open folders there."
                         ),
                         HelpRow(
                             label: "To other apps",

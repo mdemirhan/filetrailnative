@@ -20,7 +20,6 @@ public enum DropOperation: String, Sendable, Codable {
 public enum DropRefusal: String, Sendable, Codable {
     case blocked, empty
     case targetMissing = "target_missing"
-    case unsupportedTarget = "unsupported_target"
     case invalidTarget = "invalid_target"
     case targetSelected = "target_selected"
     case samePath = "same_path"
@@ -158,17 +157,12 @@ public enum DragRules {
     /// Nil when the drop is allowed, else why not; the first failure in this order wins.
     public static func validate(
         session: DragSession?, blocked: Bool, targetSurface: DropTargetSurface, targetPath: String?,
-        targetSupportsMove: Bool, targetIsSelected: Bool = false, operation: DropOperation = .move,
-        targetIsAnotherList: Bool = false
+        targetSupportsMove: Bool, targetIsSelected: Bool = false, operation: DropOperation = .move
     ) -> DropRefusal? {
         if blocked { return .blocked }
         guard let session, !session.sourceItems.isEmpty else { return .empty }
         guard let targetPath, !targetPath.isEmpty else { return .targetMissing }
         if !targetSupportsMove { return .invalidTarget }
-        // Search results have no folder of their own to take their items; another pane's list does.
-        if session.sourceSurface == .search, targetSurface == .content, !targetIsAnotherList {
-            return .unsupportedTarget
-        }
         if targetSurface == .content, targetIsSelected { return .targetSelected }
         let facts = session.facts
         if facts.holds(targetPath) { return .samePath }

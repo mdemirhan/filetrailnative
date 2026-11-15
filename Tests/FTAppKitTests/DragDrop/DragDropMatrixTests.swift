@@ -176,17 +176,23 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // The app's own drag of what was found has nowhere to go among the results.
-        @Test func aDragOfResultsCantBeDroppedOnResults() async throws {
+        // The app's own drag of what was found goes into a folder found, and not on the results' background; the
+        // results are found again and stay on screen.
+        @Test func aDragOfResultsGoesIntoAFolderFound() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
-            _ = try await searching(window, finding: ["note.txt", "Alpha/"])
-            _ = tab.dragDrop.automationDragStarted([try entry(window, "note.txt")])
+            let restore = noKeys()
+            defer { restore() }
+            let engine = try await searching(window, finding: ["note.txt", "Alpha/"])
+            let searches = engine.starts.count
+            let dragged = tab.dragDrop.automationDragStarted([try entry(window, "note.txt")])
             let own = try #require(TabDragDrop.ownDrag?.session)
-            defer { TabDragDrop.ownDrag = nil }
             #expect(own.sourceSurface == .search)
-            #expect(tab.dragDrop.contentTarget(own, entry: try entry(window, "Alpha")) == nil)
             #expect(tab.dragDrop.contentTarget(own, entry: nil) == nil)
+            #expect(tab.dragDrop.automationDrop(dragged, entry: try entry(window, "Alpha"), allowed: [.copy, .move]))
+            #expect(await waitUntil { window.exists("Alpha/note.txt") && !window.exists("note.txt") })
+            #expect(await waitUntil { engine.starts.count > searches })
+            #expect(tab.searchRootPath != nil)
             tab.search.session.hideResults()
             await window.close()
         }

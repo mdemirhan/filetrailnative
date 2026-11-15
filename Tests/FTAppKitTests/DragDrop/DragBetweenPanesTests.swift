@@ -217,7 +217,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // A search result dragged to the other pane's folder goes there: only the results' own list refuses it.
+        // A search result dragged to the other pane's folder goes there.
         @Test func aSearchResultDraggedToTheOtherPaneGoesIntoItsFolder() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -234,10 +234,36 @@ extension ExplorerWindowlessTests {
             #expect(target.isAnotherList)
             let decision = tab.dragDrop.decide(session, target: target, offersMove: true, modifiers: [])
             #expect(decision.refusal == nil)
-            #expect(
-                DragRules.validate(
-                    session: session, blocked: false, targetSurface: .content, targetPath: target.path,
-                    targetSupportsMove: true) == .unsupportedTarget)
+            await window.close()
+        }
+
+        // A folder found in the other pane's search results takes a drag from this pane, and those results are found
+        // again; their background takes nothing.
+        @Test func aFolderFoundInTheOtherPanesResultsTakesTheDrag() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let left = tab.activePane
+            let right = try await twoPanes(window, right: "Beta")
+            tab.activate(right)
+            let engine = FakeSearchEngine()
+            engine.finds = { _ in (["Inner/"], false, false) }
+            right.search.session.engine = engine
+            right.search.session.submit("inner")
+            right.search.session.changeRoot(url(window, "Beta").path)
+            #expect(await waitUntil { right.content.entries.contains { $0.name == "Inner" } })
+            tab.activate(left)
+            let searches = engine.starts.count
+            let drags = tab.dragDrop
+
+            drags.paneUnderDrag = right
+            let dragged = drags.automationDragStarted([try entry(left, "note.txt")])
+            #expect(!drags.automationDrop(dragged, entry: nil, allowed: [.copy, .move, .generic]))
+            _ = drags.automationDragStarted([try entry(left, "note.txt")])
+            #expect(drags.automationDrop(dragged, entry: try entry(right, "Inner"), allowed: [.copy, .move, .generic]))
+            #expect(await waitUntil { window.exists("Beta/Inner/note.txt") && !window.exists("note.txt") })
+            #expect(await waitUntil { engine.starts.count > searches })
+            #expect(right.search.session.isSearchMode)
+            right.search.session.hideResults()
             await window.close()
         }
     }

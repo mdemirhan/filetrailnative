@@ -44,11 +44,11 @@ struct InternalDragAndDropTests {
                 == nil)
     }
 
-    @Test func rejectsDroppingSearchResultsOntoContentRows() {
+    @Test func takesSearchResultsOntoAFolderRow() {
         #expect(
             validate(
                 session(.search, [("/Users/demo/source.txt", .file)]), surface: .content, target: "/Users/demo/Folder")
-                == .unsupportedTarget)
+                == nil)
     }
 
     @Test func rejectsDropsOntoTheSelectedTargetRow() {
