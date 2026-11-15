@@ -2,8 +2,10 @@
 # Takes the README's screenshots of a real window with its shadow, showing the Lighthouse demo project in
 # /Users/Shared and a home folder called "demo". Nothing of the real home folder or settings shows.
 # Usage: scripts/readme-screenshots.sh [scene...]   (no scene: all of tools/capture/readme/*.json)
-# The app needs Screen Recording once: macOS asks, or allow "File Trail" in Privacy & Security. Leave the Mac alone
-# while it runs (about 2 minutes): the windows have to stay in front. A disk other than the startup disk shows in the
+# The app needs Screen Recording once: macOS asks, or allow "File Trail" in Privacy & Security. A scene with a sheet or a
+# popover takes the screen as well, and macOS may ask again over the window: answer Allow and the picture is taken
+# again; a window still over it after two minutes fails the scene. Leave the Mac alone otherwise while it runs (about 2
+# minutes): the windows have to stay in front. A disk other than the startup disk shows in the
 # sidebar, so eject those first.
 # A new picture is a new scene: tools/capture/readme/<name>.json ends in a windowShot (or marqueeShot) called <name>,
 # and lands in docs/screenshots/<name>.png. When the UI changes, run this again and every picture is taken again; a

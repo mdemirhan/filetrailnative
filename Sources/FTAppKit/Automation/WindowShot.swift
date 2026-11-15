@@ -24,10 +24,57 @@
             }
             let screenFile = file.deletingPathExtension().appendingPathExtension("screen.png")
             defer { try? FileManager.default.removeItem(at: screenFile) }
-            if let failure = captureScreen(of: window, to: screenFile) {
-                return AutomationRunner.Outcome(.failed, failure)
+            // What the screen shows over the window's frame is taken whole, another app's window over it too. macOS asks
+            // whether File Trail may take the screen in a window of its own over this one, while the screen is taken: the
+            // picture waits for the answer and is taken again.
+            for attempt in 1...2 {
+                if let failure = waitUntilUncovered(window) ?? captureScreen(of: window, to: screenFile) {
+                    return AutomationRunner.Outcome(.failed, failure)
+                }
+                guard let covered = coveringWindow(over: window) else { break }
+                if attempt == 2 { return AutomationRunner.Outcome(.failed, covered) }
             }
             return lay(screen: screenFile, over: file, of: window)
+        }
+
+        /// Gives whoever is at the Mac two minutes to answer or close a window over this one.
+        private static func waitUntilUncovered(_ window: NSWindow) -> String? {
+            guard var covered = coveringWindow(over: window) else { return nil }
+            FileHandle.standardError.write(Data("Waiting: \(covered)\n".utf8))
+            let deadline = Date(timeIntervalSinceNow: 120)
+            while Date() < deadline {
+                Thread.sleep(forTimeInterval: 0.5)
+                guard let still = coveringWindow(over: window) else {
+                    // The window closing takes a moment on screen.
+                    Thread.sleep(forTimeInterval: 0.5)
+                    return nil
+                }
+                covered = still
+            }
+            return covered
+        }
+
+        private static func coveringWindow(over window: NSWindow) -> String? {
+            let own = ProcessInfo.processInfo.processIdentifier
+            let height = NSScreen.screens.first?.frame.height ?? 0
+            let frame = window.frame
+            let flipped = CGRect(x: frame.minX, y: height - frame.maxY, width: frame.width, height: frame.height)
+            let above =
+                CGWindowListCopyWindowInfo([.optionOnScreenAboveWindow], CGWindowID(window.windowNumber))
+                as? [[String: Any]] ?? []
+            for info in above {
+                let owner = info[kCGWindowOwnerName as String] as? String ?? "another app"
+                // The Dock's window spans the screen, clear but for the Dock, which the scenes keep clear of.
+                guard info[kCGWindowOwnerPID as String] as? pid_t != own, owner != "Dock",
+                    (info[kCGWindowAlpha as String] as? Double ?? 1) > 0,
+                    let bounds = (info[kCGWindowBounds as String] as? NSDictionary).flatMap({
+                        CGRect(dictionaryRepresentation: $0)
+                    }),
+                    bounds.intersects(flipped)
+                else { continue }
+                return "a window of \(owner) is over the window: answer or close it"
+            }
+            return nil
         }
 
         private static func captureScreen(of window: NSWindow, to file: URL) -> String? {
