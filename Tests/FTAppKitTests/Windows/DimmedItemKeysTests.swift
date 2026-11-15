@@ -69,6 +69,29 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Return in the list of the pane that is not the active one (a right-click there gives it the keyboard): it
+        // becomes the active pane, and what is selected in it is renamed, not the other pane's selection.
+        @Test func returnActsInTheListThatSentIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            tab.updatePreferences { $0.returnKeyAction = .rename }
+            let left = tab.activePane
+            let right = tab.openSecondPane(at: harness.folder.path)
+            #expect(await waitUntil { right.loaded && right.hasShownFolder && !right.isNavigating })
+            let note = try #require(right.content.entries.first { $0.name == "note.txt" }?.path)
+            let alpha = try #require(left.content.entries.first { $0.name == "Alpha" }?.path)
+            left.content.select(paths: [alpha])
+            right.content.select(paths: [note])
+            tab.activate(left)
+
+            right.content.pressedReturn()
+            #expect(tab.activePane === right)
+            #expect(right.content.inlineRename?.path == note)
+            #expect(left.content.inlineRename == nil)
+            right.content.renameCancelled()
+            await harness.close()
+        }
+
         // Compress is on for a selection outside the Trash; Extract and Extract To for archives alone.
         @Test func compressAndExtractAreOnForWhatTheyCanActOn() async throws {
             let harness = try ExplorerHarness.windowless()
