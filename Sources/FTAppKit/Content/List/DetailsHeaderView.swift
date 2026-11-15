@@ -67,6 +67,8 @@ final class ColumnSeparatorView: NSView {
     /// Asked for the width on screen and the saved widths when a drag begins.
     var onBegin: (DetailColumn) -> (width: Double, saved: [DetailColumn: Double]) = { _ in (0, [:]) }
     var onDrag: (DetailColumn, Double, [DetailColumn: Double]) -> Void = { _, _, _ in }
+    /// The drag ended.
+    var onEnd: () -> Void = {}
     var onFit: (DetailColumn) -> Void = { _ in }
     var onNudge: (DetailColumn, Int) -> Void = { _, _ in }
 
@@ -135,7 +137,9 @@ final class ColumnSeparatorView: NSView {
     }
 
     override func mouseUp(with event: NSEvent) {
+        guard isDragging else { return }
         isDragging = false
+        onEnd()
     }
 
     override func keyDown(with event: NSEvent) {
@@ -255,6 +259,8 @@ final class DetailsHeaderView: NSView {
     var onPress: () -> Void = {}
     var onBegin: (DetailColumn) -> (width: Double, saved: [DetailColumn: Double]) = { _ in (0, [:]) }
     var onDrag: (DetailColumn, Double, [DetailColumn: Double]) -> Void = { _, _, _ in }
+    /// The drag ended.
+    var onEnd: () -> Void = {}
     var onFit: (DetailColumn) -> Void = { _ in }
     var onNudge: (DetailColumn, Int) -> Void = { _, _ in }
 
@@ -284,6 +290,7 @@ final class DetailsHeaderView: NSView {
             cell.onPress = { [weak self] in self?.onPress() }
             cell.separator.onBegin = { [weak self] column in self?.onBegin(column) ?? (0, [:]) }
             cell.separator.onDrag = { [weak self] column, width, saved in self?.onDrag(column, width, saved) }
+            cell.separator.onEnd = { [weak self] in self?.onEnd() }
             cell.separator.onFit = { [weak self] column in self?.onFit(column) }
             cell.separator.onNudge = { [weak self] column, direction in self?.onNudge(column, direction) }
             addSubview(cell)

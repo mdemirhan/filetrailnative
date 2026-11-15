@@ -128,6 +128,40 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The list scrolled to its right end, a divider dragged left: the column narrows by as much as the pointer
+        // moved and stays so while the pointer rests, the divider under it. The list keeps its room to the right
+        // until the drag ends, so nothing moves under the pointer; then it closes up to its columns again.
+        @Test func aColumnNarrowedAtTheListsRightEndFollowsThePointer() async throws {
+            let (harness, tab, list) = try await openNarrow()
+            let window = try #require(tab.window)
+            let clip = list.scroll.contentView
+            scrollSideways(list, to: 10_000)
+            harness.layout(tab)
+            let end = clip.bounds.minX
+            #expect(end > 0 && clip.bounds.maxX == list.table.frame.width)
+            let cell = try #require(header(tab)?.cell(for: .size))
+            let separator = cell.separator
+            let width = cell.frame.width
+            let dividerX = { separator.convert(NSPoint(x: separator.bounds.midX, y: 0), to: nil).x }
+            let start = NSPoint(x: dividerX(), y: separator.convert(separator.bounds, to: nil).midY)
+            separator.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: start, in: window)))
+            let left = NSPoint(x: start.x - 10, y: start.y)
+            // The pointer moves once and then rests: the events that follow say the same place.
+            for _ in 0..<6 {
+                separator.mouseDragged(with: try #require(MouseEvents.event(.leftMouseDragged, at: left, in: window)))
+                harness.layout(tab)
+            }
+            #expect(cell.frame.width == width - 10)
+            #expect(abs(dividerX() - left.x) <= 1)
+            #expect(clip.bounds.minX == end)
+            separator.mouseUp(with: try #require(MouseEvents.event(.leftMouseUp, at: left, in: window)))
+            harness.layout(tab)
+            #expect(cell.frame.width == width - 10)
+            #expect(clip.bounds.maxX == list.table.frame.width)
+            #expect(clip.bounds.minX == end - 10)
+            await harness.close()
+        }
+
         // Renaming with Name scrolled out of view brings Name back first: the field opens where it can be seen.
         @Test func renameBringsNameIntoViewFirst() async throws {
             let (harness, tab, list) = try await openNarrow()
