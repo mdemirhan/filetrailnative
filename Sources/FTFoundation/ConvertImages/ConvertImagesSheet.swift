@@ -10,6 +10,9 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     public private(set) var infos: [ImageInfo?]?
     /// Said under the custom size after a value was brought back to what is allowed, until the next change.
     public private(set) var customNote: String?
+    /// The custom size the sheet opened with, when it was made smaller only to fit this one picture and has not been
+    /// edited since: it is still the one remembered for the pictures to come.
+    private var customAsRemembered: PixelSize?
     /// The formats offered: those this Mac can write.
     public let formats: [ImageFormat]
 
@@ -33,7 +36,27 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     public mutating func read(_ infos: [ImageInfo?]) {
         self.infos = infos
         // An exact custom size taken from another selection is made to fit this one's picture.
-        if settings.sizeMode == .custom, single != nil { _ = settleCustom() }
+        if settings.sizeMode == .custom, single != nil { fitCustomToThePicture() }
+    }
+
+    /// The custom size made to fit the one picture, the size it was kept for the next pictures.
+    private mutating func fitCustomToThePicture() {
+        let before = PixelSize(width: settings.customWidth, height: settings.customHeight)
+        let remembered = customAsRemembered
+        guard settleCustom() else { return }
+        customAsRemembered = remembered ?? before
+    }
+
+    /// The settings to remember once Convert is pressed: what the sheet shows, but a custom size it only shrank to
+    /// fit this one picture stays as it was, so a small picture converted between two batches doesn't make the next
+    /// batch its size.
+    public var settingsToRemember: ConvertImagesSettings {
+        var remembered = settings
+        if let size = customAsRemembered {
+            remembered.customWidth = size.width
+            remembered.customHeight = size.height
+        }
+        return remembered
     }
 
     public var isReading: Bool { infos == nil }
@@ -118,7 +141,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
             settings.scale = percent
         case .custom:
             settings.sizeMode = .custom
-            _ = settleCustom()
+            fitCustomToThePicture()
             customNote = nil
         }
     }
@@ -128,6 +151,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     /// The width as typed. For one picture with Scale Proportionally, the height follows it.
     public mutating func type(width: Int) {
         customNote = nil
+        customAsRemembered = nil
         settings.customWidth = width
         guard settings.proportional else { return }
         if settings.customUnit == .percent {
@@ -141,6 +165,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     /// The height as typed. For one picture with Scale Proportionally, the width follows it.
     public mutating func type(height: Int) {
         customNote = nil
+        customAsRemembered = nil
         settings.customHeight = height
         guard settings.proportional else { return }
         if settings.customUnit == .percent {
@@ -193,6 +218,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     public mutating func choose(unit: ImageSizeUnit) {
         guard unit != settings.customUnit else { return }
         customNote = nil
+        customAsRemembered = nil
         settings.customUnit = unit
         switch unit {
         case .percent:
@@ -212,6 +238,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     /// Scale Proportionally: turned on for one picture, the height follows the width again.
     public mutating func set(proportional: Bool) {
         customNote = nil
+        customAsRemembered = nil
         settings.proportional = proportional
         if proportional { type(width: settings.customWidth) }
     }
@@ -233,6 +260,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
     /// What the size does: "4783 × 7174 → 1365 × 2048", or what it does to several.
     public var summary: String {
         guard infos != nil else { return "Reading the images\u{2019} sizes\u{2026}" }
+        if count > 1, sizes.isEmpty { return "None of them can be opened as an image." }
         if count == 1 {
             guard let single else { return "It can\u{2019}t be opened as an image." }
             guard let target = ImageConversion.targetSize(single, settings.size) else {
@@ -266,7 +294,7 @@ public struct ConvertImagesSheet: Equatable, Sendable {
         if case .custom(_, _, .pixels, false) = settings.size, count > 1, ImageConversion.shapesDiffer(sizes) {
             lines.append("The images aren\u{2019}t all the same shape, so one exact size stretches them differently")
         }
-        if unreadableCount > 0 {
+        if unreadableCount > 0, !sizes.isEmpty {
             lines.append(
                 unreadableCount == 1
                     ? "1 of them can\u{2019}t be opened as an image"
@@ -292,10 +320,11 @@ public struct ConvertImagesSheet: Equatable, Sendable {
         return lines
     }
 
-    /// Whether Convert can be pressed: an exact size any picture is smaller than can't be met, and the sizes must be
-    /// known for any size but the actual one.
+    /// Whether Convert can be pressed: an exact size any picture is smaller than can't be met, the sizes must be
+    /// known for any size but the actual one, and once they are read at least one must be a picture.
     public var canConvert: Bool {
         guard count > 0 else { return false }
+        if infos != nil, sizes.isEmpty { return false }
         if settings.sizeMode == .actual { return true }
         return infos != nil && outcome.tooSmall == 0
     }

@@ -6,6 +6,8 @@ import Foundation
 private enum ConvertedImage: Sendable {
     case made(String)
     case failed(String)
+    /// Stop was pressed while the picture was encoded: nothing of it was written.
+    case stopped
 }
 
 extension WriteCoordinator {
@@ -68,8 +70,16 @@ extension WriteCoordinator {
                     currentSourcePath: path))
             // On a queue of its own, never on Swift's cooperative threads: ImageIO's AV1 encoder (AVIF) does its work on
             // those, so holding one while it waits could leave it none.
-            let outcome = await LocalOperations.onDisk { convertOne(path, options, fileSystem, encode) }
+            let signal = operation.signal
+            let outcome = await LocalOperations.onDisk { convertOne(path, options, fileSystem, encode, signal) }
+            if case .stopped = outcome {
+                cancelled = true
+                items += LocalWriteResults.notStartedItems(Array(paths[index...]))
+                break
+            }
             switch outcome {
+            case .stopped:
+                break
             case .failed(let message):
                 items.append(
                     WriteOperationItem(sourcePath: path, destinationPath: nil, status: .failed, error: message))
@@ -106,9 +116,11 @@ extension WriteCoordinator {
 
     /// One picture converted, on the disk: filled under a hidden name, then given the first free one of its own. A
     /// folder that takes no new file says so before the picture is encoded, which can take long for a large one.
+    /// Encoding can't be ended part way, so a Stop pressed meanwhile is seen as it ends, before anything is written:
+    /// the last picture of a run, or the only one, can be stopped too.
     private nonisolated static func convertOne(
         _ path: String, _ options: ImageConversionOptions, _ fileSystem: any LocalWriteFileSystem,
-        _ encode: ImageEncoder
+        _ encode: ImageEncoder, _ signal: StopSignal
     ) -> ConvertedImage {
         let folder = NodePath.dirname(path)
         do {
@@ -124,6 +136,7 @@ extension WriteCoordinator {
         } catch {
             return .failed(LocalOperations.describeWriteError(error, missing: NodePath.basename(path)))
         }
+        if signal.isStopped { return .stopped }
         let name = ImageConversion.newName(for: NodePath.basename(path), format: options.format)
         let partial = partialFilePath(for: NodePath.join(folder, name))
         do {

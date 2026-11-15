@@ -152,6 +152,55 @@ import Testing
         #expect(reading.canConvert)
     }
 
+    // A custom size kept from a batch of large photos is made to fit one small picture while it is converted, and
+    // is still the one remembered afterwards; edited in the sheet, what was typed is remembered.
+    @Test func aCustomSizeShrunkToFitOnePictureIsRememberedAsItWas() {
+        let small = ImageInfo(size: PixelSize(width: 800, height: 600))
+        var one = sheet([small]) {
+            $0.sizeMode = .custom
+            $0.customUnit = .pixels
+            $0.proportional = true
+            $0.customWidth = 1920
+            $0.customHeight = 1080
+        }
+        #expect(one.settings.customWidth == 800 && one.settings.customHeight == 450)
+        #expect(one.settingsToRemember.customWidth == 1920 && one.settingsToRemember.customHeight == 1080)
+        #expect(one.options.size == one.settings.size)
+        // Another mode chosen and Custom again: still as it was.
+        one.choose(size: .actual)
+        one.choose(size: .custom)
+        #expect(one.settingsToRemember.customWidth == 1920)
+        #expect(one.settingsToRemember.sizeMode == .custom)
+        // Typed, the new size is the one to remember.
+        one.type(width: 400)
+        #expect(one.settingsToRemember == one.settings)
+        #expect(one.settings.customWidth == 400 && one.settings.customHeight == 300)
+
+        // A size that already fits is remembered as it is.
+        let fits = sheet([photo]) {
+            $0.sizeMode = .custom
+            $0.customUnit = .pixels
+            $0.customWidth = 1200
+            $0.customHeight = 800
+        }
+        #expect(fits.settingsToRemember == fits.settings)
+    }
+
+    // With nothing that can be read as a picture there is nothing to convert.
+    @Test func convertIsOffWhenNoneOfThemIsAPicture() {
+        let none = sheet([nil, nil, nil])
+        #expect(!none.canConvert)
+        #expect(none.summary == "None of them can be opened as an image.")
+        #expect(none.warnings.isEmpty)
+        let one = sheet([nil])
+        #expect(!one.canConvert)
+        #expect(one.summary == "It can\u{2019}t be opened as an image.")
+        // One that can be read is enough.
+        let some = sheet([nil, photo])
+        #expect(some.canConvert)
+        #expect(some.warnings == ["1 of them can\u{2019}t be opened as an image"])
+    }
+
     @Test func theNotesSayWhatTheFormatLosesOfThesePictures() {
         let clear = ImageInfo(size: PixelSize(width: 10, height: 10), hasAlpha: true)
         let bright = ImageInfo(size: PixelSize(width: 10, height: 10), hasGainMap: true)

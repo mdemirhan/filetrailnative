@@ -350,6 +350,50 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         }
     }
 
+    // The caption data's newer fields for a place (the place shown, the place the picture was made in) are kept in
+    // the XMP alone, where no dictionary of ImageIO's reaches them: they go with the location too, at any size, and
+    // the rest of the XMP stays.
+    @Test func removingTheLocationTakesThePlacesOnlyTheXMPNames() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let url = folder.appending("placed.jpg")
+        let metadata = CGImageMetadataCreateMutable()
+        #expect(
+            CGImageMetadataRegisterNamespaceForPrefix(
+                metadata, "http://iptc.org/std/Iptc4xmpExt/2008-02-29/" as CFString, "Iptc4xmpExt" as CFString, nil))
+        for (path, value) in [
+            ("Iptc4xmpExt:LocationShown", "Shown Street 5"), ("Iptc4xmpExt:LocationCreated", "Made Square 9"),
+            ("photoshop:City", "Kept City"), ("xmp:Rating", "4"), ("exif:GPSLatitude", "41,0.5N"),
+        ] {
+            #expect(CGImageMetadataSetValueWithPath(metadata, nil, path as CFString, value as CFString), "\(path)")
+        }
+        let destination = try #require(
+            CGImageDestinationCreateWithURL(url as CFURL, "public.jpeg" as CFString, 1, nil))
+        CGImageDestinationAddImageAndMetadata(destination, Pictures.image(width: 400, height: 300), metadata, nil)
+        #expect(CGImageDestinationFinalize(destination))
+        let source = try Written(Data(contentsOf: url))
+        #expect(source.everything.contains("Shown Street 5") && source.everything.contains("Made Square 9"))
+
+        for format in ImageFormat.allCases {
+            for size in [ImageSize.actual, .fitWithin(200)] {
+                let label = "\(format) \(size)"
+                let written = try await Written(
+                    converted(url.path, ImageConversionOptions(format: format, size: size, removeLocation: true)))
+                #expect(!written.everything.contains("Shown Street 5"), "\(label)")
+                #expect(!written.everything.contains("Made Square 9"), "\(label)")
+                #expect(!written.everything.contains("Kept City"), "\(label)")
+                #expect(!written.hasLocation, "\(label)")
+                #expect(written.xmp("xmp:Rating") == "4", "\(label)")
+                let expected = size == .actual ? PixelSize(width: 400, height: 300) : PixelSize(width: 200, height: 150)
+                #expect(written.size == expected, "\(label)")
+            }
+        }
+        // With the location kept, a picture drawn again keeps them with the rest of its XMP.
+        let kept = try await Written(
+            converted(url.path, ImageConversionOptions(format: .jpeg, size: .fitWithin(200))))
+        #expect(kept.everything.contains("Shown Street 5"))
+    }
+
     // Nothing of the camera's, the location, the caption data, a PNG's text or the XMP is written, in any format,
     // whether the picture is written at its size or made smaller; its orientation and color profile still are.
     @Test func withoutMetadataNoneIsWritten() async throws {

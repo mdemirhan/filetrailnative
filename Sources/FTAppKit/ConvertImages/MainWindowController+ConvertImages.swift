@@ -40,9 +40,9 @@ extension MainWindowController {
         let scrim = DialogScrim(panel: sheetView, placement: .sheet)
         scrim.setAccessibilityIdentifier("convertImages.scrim")
         sheetView.onCancel = { [weak scrim] in scrim?.dismiss() }
-        sheetView.onConvert = { [weak self, weak scrim] settings in
+        sheetView.onConvert = { [weak self, weak scrim] settings, remembered in
             scrim?.dismiss()
-            self?.updatePreferences { $0.convertImagesSettings = settings }
+            self?.updatePreferences { $0.convertImagesSettings = remembered }
             self?.startConvertImages(paths, options: settings.options)
         }
         scrim.present(in: window)

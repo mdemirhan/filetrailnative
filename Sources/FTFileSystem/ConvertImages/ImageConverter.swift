@@ -58,7 +58,11 @@ public enum ImageConverter {
         // AVIF keeps no orientation: an upright copy is written instead, or a portrait photo comes out on its side.
         // An HDR photo is decoded to its full range and its gain map made again, as ImageIO's own carrying of a gain
         // map from one format to another loses an ISO one (HEIC to JPEG).
-        let redraw = target != upright || (format == .avif && header.orientation != 1) || hdr
+        // A place named only in the XMP (the caption data's newer fields, which no dictionary of ImageIO's holds) is
+        // carried along by a picture written from its file whatever it is told: the location goes with the tags then.
+        let redraw =
+            target != upright || (format == .avif && header.orientation != 1) || hdr
+            || (options.keepMetadata && options.removeLocation && namesAPlaceInXMPAlone(source, header.index))
 
         if redraw {
             let image = try picture(source, header, upright: upright, target: target, hdr: hdr)
@@ -242,13 +246,17 @@ public enum ImageConverter {
             let metadata = CGImageMetadataCreateMutableCopy(read)
         else { return nil }
         var removed = storageTags
+        var removedTags: [CGImageMetadataTag] = []
         if options.removeLocation {
-            // The GPS position, and the place names where ImageIO keeps the caption data's in the XMP.
+            // The GPS position, the places only the XMP names, and the place names where ImageIO keeps the caption
+            // data's in the XMP.
             CGImageMetadataEnumerateTagsUsingBlock(metadata, nil, nil) { path, tag in
                 if CGImageMetadataTagCopyNamespace(tag) as String? == kCGImageMetadataNamespaceExif as String,
                     (CGImageMetadataTagCopyName(tag) as String?)?.hasPrefix("GPS") == true
                 {
                     removed.append(path as String)
+                } else if isPlaceInXMPAlone(tag) {
+                    removedTags.append(tag)
                 }
                 return true
             }
@@ -262,6 +270,12 @@ public enum ImageConverter {
             }
         }
         for path in removed { CGImageMetadataRemoveTagWithPath(metadata, nil, path as CFString) }
+        // By the prefix the tag itself has: its namespace is one ImageIO has no prefix of its own for.
+        for tag in removedTags {
+            guard let prefix = CGImageMetadataTagCopyPrefix(tag), let name = CGImageMetadataTagCopyName(tag)
+            else { continue }
+            CGImageMetadataRemoveTagWithPath(metadata, nil, "\(prefix):\(name)" as CFString)
+        }
         CGImageMetadataSetValueMatchingImageProperty(
             metadata, kCGImagePropertyTIFFDictionary, kCGImagePropertyTIFFOrientation, 1 as CFNumber)
         if CGImageMetadataCopyTagMatchingImageProperty(
@@ -275,6 +289,29 @@ public enum ImageConverter {
                 newSize.height as CFNumber)
         }
         return metadata
+    }
+
+    /// The caption data's newer fields for a place (IPTC Extension: the place shown, the place the picture was made
+    /// in), which are kept in the XMP alone.
+    private static let placeNamespace = "http://iptc.org/std/Iptc4xmpExt/2008-02-29/"
+    private static let placeNames: Set<String> = ["LocationShown", "LocationCreated"]
+
+    private static func isPlaceInXMPAlone(_ tag: CGImageMetadataTag) -> Bool {
+        guard CGImageMetadataTagCopyNamespace(tag) as String? == placeNamespace,
+            let name = CGImageMetadataTagCopyName(tag) as String?
+        else { return false }
+        return placeNames.contains(name)
+    }
+
+    /// Whether the picture's XMP names a place in one of those fields.
+    private static func namesAPlaceInXMPAlone(_ source: CGImageSource, _ index: Int) -> Bool {
+        guard let metadata = CGImageSourceCopyMetadataAtIndex(source, index, nil) else { return false }
+        var found = false
+        CGImageMetadataEnumerateTagsUsingBlock(metadata, nil, nil) { _, tag in
+            found = isPlaceInXMPAlone(tag)
+            return !found
+        }
+        return found
     }
 
     /// A TIFF's own dictionary, compressed with LZW: uncompressed, a photo is about 3 bytes a pixel.

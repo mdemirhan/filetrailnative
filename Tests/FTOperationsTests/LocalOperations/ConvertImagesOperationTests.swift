@@ -264,4 +264,37 @@ private final class Encoded: @unchecked Sendable {
         #expect(end.result?.items.filter { $0.status == .completed }.count ?? 0 <= 1)
         await coordinator.shutDown(maxWaitMs: 0)
     }
+
+    // Stop pressed while the only picture, or the last, is being encoded: nothing is written, and the run is told as
+    // stopped, not as done.
+    @Test(arguments: [1, 3]) func stoppingWhileTheLastPictureIsEncodedWritesNothingOfIt(count: Int) async throws {
+        let fileSystem = TestLocalFileSystem.stub()
+        let coordinator = WriteCoordinator.local(fileSystem)
+        let window = TestWindow()
+        let paths = (0..<count).map { "/Users/demo/\($0).png" }
+        let last = paths[count - 1]
+        let encoding = DispatchSemaphore(value: 0)
+        let gate = DispatchSemaphore(value: 0)
+        let handle = try await coordinator.convertImages(
+            paths: paths, options: ImageConversionOptions(), window: window,
+            encode: { path, _ in
+                if path == last {
+                    encoding.signal()
+                    gate.wait()
+                }
+                return Data([1])
+            })
+        await BlockingWork.run { encoding.wait() }
+        _ = coordinator.cancel(handle.operationId, window: window)
+        gate.signal()
+        let end = await window.ended(handle.operationId)
+        // Stopped with nothing made, or with the pictures before it made.
+        #expect(end.status == (count == 1 ? .cancelled : .partial))
+        let items = try #require(end.result?.items)
+        #expect(items.filter { $0.status == .completed }.count == count - 1)
+        #expect(items.last?.sourcePath == last)
+        #expect(items.last?.status != .completed)
+        #expect(items.last?.destinationPath == nil)
+        await coordinator.shutDown(maxWaitMs: 0)
+    }
 }

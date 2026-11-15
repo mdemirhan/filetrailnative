@@ -9,7 +9,8 @@ final class ConvertImagesSheetView: DialogPanelView {
     /// Cancel, Escape and ⌘.
     var onCancel: () -> Void = {}
     /// Convert, with what was chosen.
-    var onConvert: (ConvertImagesSettings) -> Void = { _ in }
+    /// Convert was pressed: the settings to convert with, and those to remember for the next time.
+    var onConvert: (ConvertImagesSettings, ConvertImagesSettings) -> Void = { _, _ in }
 
     let titleLabel: ThemedText
     let formatPopUp = ConvertImagesPopUp(label: "Format", identifier: "convertImages.format")
@@ -159,7 +160,7 @@ final class ConvertImagesSheetView: DialogPanelView {
     func submit() {
         settleCustom()
         guard sheet.canConvert else { return }
-        onConvert(sheet.settings)
+        onConvert(sheet.settings, sheet.settingsToRemember)
     }
 
     // MARK: Showing
