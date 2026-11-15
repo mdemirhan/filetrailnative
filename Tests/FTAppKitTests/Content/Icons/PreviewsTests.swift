@@ -60,6 +60,50 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // View ▸ Show Previews: from another view the pane goes to Previews at the count chosen, with the selected
+        // file in view, alone at 1; in Previews only the count changes. The count is saved and checked in the menu,
+        // and shows over the status text as after Make Bigger, as wide as it reads.
+        @Test func showPreviewsGoesToPreviewsAtItsCountWithTheSelectedFileInView() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openGrid(.viewAsList, files: 12)
+            let chosen = tab.content.entries[7]
+            tab.content.select(paths: [chosen.path])
+            tab.perform(.showPreviews1)
+            let probe = GridProbe(tab: tab)
+            #expect(await waitUntil { probe.pane is PreviewsViewController })
+            harness.layout(tab)
+            probe.layout()
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 0.02
+            try? await Task.sleep(for: .milliseconds(100))
+            _ = await waitUntil { !previews.isSettling }
+            #expect(tab.viewState.viewMode == .previews && previews.count == 1)
+            #expect(tab.content.selection.paths == [chosen.path])
+            #expect(previews.isWhollyInView(index: 7))
+            #expect(tab.preferences.previewCounts.standard == 1)
+            let bar = tab.content.contentShell.pathBarRow
+            #expect(bar.sizeLabel.stringValue == "1 at a time" && !bar.sizeLabel.isHidden)
+            #expect(bar.sizeSlider.doubleValue == 3)
+            func checked() -> [String] {
+                ApplicationMenu.itemStates(tab.menuState, window: .init(explorerFocused: true))
+                    .filter { $0.id.hasPrefix("showPreviews") && $0.checked == true }.map(\.id)
+            }
+            #expect(checked() == ["showPreviews1"])
+            tab.perform(.showPreviews9)
+            probe.layout()
+            #expect(probe.pane === previews && previews.count == 9 && previews.columns == 3)
+            #expect(checked() == ["showPreviews9"])
+            #expect(tab.preferences.previewCounts.standard == 9)
+            bar.needsLayout = true
+            bar.layoutSubtreeIfNeeded()
+            #expect(bar.sizeLabel.stringValue == "9 at a time")
+            #expect(bar.sizeLabel.frame.width >= bar.sizeLabel.attributedStringValue.size().width)
+            // The item checked already changes nothing.
+            tab.perform(.showPreviews9)
+            #expect(tab.viewState.viewMode == .previews && probe.pane === previews && previews.count == 9)
+            await harness.close()
+        }
+
         @Test func eachPaneShowsItsOwnView() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsPreviews, files: 6)

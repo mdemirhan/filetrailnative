@@ -235,7 +235,8 @@ extension ExplorerWindowlessTests {
             for (left, right) in zip(run, run.dropFirst()) { #expect(abs(right.minX - left.maxX - 8) <= 1) }
             #expect(try #require(toolbar.button(.back)).frame.width == 36)
             #expect(abs(toolbar.searchField.frame.width - DesignTokens.toolbar.searchWidth) <= 0.5)
-            // Finder's selected segment is 34 by 28; the system's control takes its height from the toolbar.
+            // Finder's selected segment is 34 by 28, Previews' too, as its menu shows with no arrow; the system's
+            // control takes its height from the toolbar.
             let viewSwitch = try #require(toolbar.viewSwitch)
             for segment in 0..<viewSwitch.segmentCount { #expect(viewSwitch.width(forSegment: segment) == 34) }
             #expect(viewSwitch.frame.height == 36)
@@ -436,6 +437,31 @@ extension ExplorerWindowlessTests {
             switcher.choose(segment: 1)
             #expect(tab.viewState.viewMode == .details)
             #expect(switcher.selected == .details)
+            await harness.close()
+        }
+
+        // A press held on the Previews segment shows View ▸ Show Previews' counts, with no arrow: one goes to Previews
+        // at it, from any view, and the count shown is checked while the pane shows Previews.
+        @Test func choosesHowManyPreviewsByHoldingThePreviewsSegment() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            tab.perform(.viewAsDetails)
+            let switcher = try #require(tab.explorerToolbar.viewSwitch)
+            let menu = try #require(switcher.menu(forSegment: ToolbarViewSwitch.previewsSegment))
+            #expect(!switcher.showsMenuIndicator(forSegment: ToolbarViewSwitch.previewsSegment))
+            #expect(menu.items.map(\.title) == ["9 at a Time", "4 at a Time", "2 at a Time", "1 at a Time"])
+            func checked() -> [String] {
+                switcher.menuNeedsUpdate(menu)
+                return menu.items.filter { $0.state == .on }.map(\.title)
+            }
+            #expect(checked().isEmpty)
+            menu.performActionForItem(at: 3)
+            #expect(tab.viewState.viewMode == .previews && tab.content.previewCount == 1)
+            #expect(switcher.selected == .previews)
+            #expect(checked() == ["1 at a Time"])
+            menu.performActionForItem(at: 0)
+            #expect(tab.content.previewCount == 9)
+            #expect(checked() == ["9 at a Time"])
             await harness.close()
         }
 

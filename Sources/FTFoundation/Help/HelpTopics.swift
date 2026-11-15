@@ -576,7 +576,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Previews",
                             description:
-                                "Shows 9, 4, 2 or 1 files at a time as large Quick Look previews, each in its own proportions with its name under it. The View menu, {increaseSize} and {decreaseSize}, or the slider in the status bar choose how many, and a scroll settles on a whole row. View → Show Previews switches to Previews at 9, 4, 2 or 1 at a time from any view, with the selected file on screen; Settings → Shortcuts gives each a key. Everything else works as in the Icons view."
+                                "Shows 9, 4, 2 or 1 files at a time as large Quick Look previews, each in its own proportions with its name under it. The View menu, {increaseSize} and {decreaseSize}, or the slider in the status bar choose how many, and a scroll settles on a whole row. View → Show Previews, or holding the toolbar’s Previews button, switches to Previews at 9, 4, 2 or 1 at a time from any view, with the selected file on screen; Settings → Shortcuts gives each a key. Everything else works as in the Icons view."
                         ),
                         HelpRow(
                             label: "Columns in List view",

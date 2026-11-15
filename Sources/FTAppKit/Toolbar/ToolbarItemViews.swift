@@ -72,8 +72,9 @@ final class ToolbarTitleView: NSView, TextStyleSource {
 }
 
 /// The view switch, the system's segmented control: four icons, one selected. Search results are one table: it is
-/// disabled in search mode.
-final class ToolbarViewSwitch: NSSegmentedControl {
+/// disabled in search mode. The Previews segment holds View ▸ Show Previews' counts: a click switches to Previews, and a
+/// press held on it shows the menu, with no arrow, which would make it wider than the others.
+final class ToolbarViewSwitch: NSSegmentedControl, NSMenuDelegate {
     static let modes: [(ExplorerViewMode, CommandIcon, String, ShortcutCommandID)] = [
         (.icons, .icons, "View as Icons", .viewAsIcons), (.details, .details, "View as List", .viewAsDetails),
         (.list, .list, "View as Compact List", .viewAsList),
@@ -81,7 +82,13 @@ final class ToolbarViewSwitch: NSSegmentedControl {
     ]
     /// Finder's selected segment, read from its screenshots; the system's fit around these icons is 30.
     static let segmentWidth = 34.0
+    static let previewsSegment = 3
     var onChoose: (ExplorerViewMode) -> Void = { _ in }
+    /// A count chosen from the Previews segment's menu.
+    var onChooseCount: (Int) -> Void = { _ in }
+    /// The count the pane shows while it shows Previews, checked in the segment's menu; nil in another view.
+    var previewCount: Int?
+    let countsMenu = NSMenu(title: "Show Previews")
     /// The segment Tab is at: each segment is a stop of its own.
     private(set) var keyboardSegment = 0 {
         didSet { noteFocusRingMaskChanged() }
@@ -103,6 +110,14 @@ final class ToolbarViewSwitch: NSSegmentedControl {
             setImageScaling(.scaleNone, forSegment: index)
             setWidth(Self.segmentWidth, forSegment: index)
         }
+        for count in PreviewGrid.counts {
+            let item = NSMenuItem(title: "\(count) at a Time", action: #selector(countChosen(_:)), keyEquivalent: "")
+            item.target = self
+            item.tag = count
+            countsMenu.addItem(item)
+        }
+        countsMenu.delegate = self
+        setMenu(countsMenu, forSegment: Self.previewsSegment)
         selectedSegment = 0
         target = self
         action = #selector(segmentChosen(_:))
@@ -114,6 +129,14 @@ final class ToolbarViewSwitch: NSSegmentedControl {
 
     @objc private func segmentChosen(_ sender: Any?) {
         choose(segment: selectedSegment)
+    }
+
+    @objc private func countChosen(_ sender: NSMenuItem) {
+        onChooseCount(sender.tag)
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        for item in menu.items { item.state = item.tag == previewCount ? .on : .off }
     }
 
     /// The segment at `index` was chosen.

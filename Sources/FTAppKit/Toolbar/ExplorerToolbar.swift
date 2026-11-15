@@ -332,7 +332,9 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             }
         } else if let switcher = views[id] as? ToolbarViewSwitch {
             // Search results show in a view of their own (`searchViewMode`).
-            switcher.selected = context.searchRootPath != nil ? view.searchViewMode : view.viewMode
+            let mode = context.searchRootPath != nil ? view.searchViewMode : view.viewMode
+            switcher.selected = mode
+            switcher.previewCount = mode == .previews ? (context as? MainWindowController)?.content.previewCount : nil
             switcher.isEnabled = canPerform(.viewAsIcons)
             switcher.setTooltips(shortcuts)
         } else if let title = views[id] as? ToolbarTitleView {
@@ -505,6 +507,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                     // A choice that did nothing puts the segment back.
                     self?.refreshStates()
                 }
+                switcher.onChooseCount = { [weak self] count in
+                    guard let command = Self.showPreviewsCommand(count) else { return }
+                    self?.context?.perform(command)
+                    self?.refreshStates()
+                }
             }
             return switcher
         case .clipboard:
@@ -605,6 +612,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         case .list: .viewAsList
         case .previews: .viewAsPreviews
         }
+    }
+
+    /// View ▸ Show Previews' command for `count`, which the view switch's Previews segment sends from its menu.
+    static func showPreviewsCommand(_ count: Int) -> AppCommand? {
+        AppCommand.allCases.first { PreviewGrid.count(of: $0) == count }
     }
 
     /// The buttons' accessibility labels.

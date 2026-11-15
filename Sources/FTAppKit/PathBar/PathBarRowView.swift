@@ -274,7 +274,9 @@ final class PathBarRowView: NSView {
                 x: right, y: contentTop + ((contentHeight - height) / 2), width: Self.sizeSliderWidth,
                 height: height)
             // Over the end of the status text, right next to the slider; it takes no room of its own.
-            let labelWidth = ceil(textExtent("600 pt", sizeLabel.font))
+            // As wide as the size it shows, and at least the widest in points: "9 at a time" is wider than "600 pt".
+            let labelWidth = ceil(
+                max(textExtent("600 pt", sizeLabel.font), textExtent(sizeLabel.stringValue, sizeLabel.font)))
             let labelHeight = lineBox(sizeLabel.font)
             sizeLabel.frame = NSRect(
                 x: right - Self.sizeLabelGap - labelWidth, y: contentTop + ((contentHeight - labelHeight) / 2),
