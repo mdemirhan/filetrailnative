@@ -46,7 +46,7 @@ public enum ArchiveNames {
         names.count == 1 ? "\(names[0]).zip" : "Archive.zip"
     }
 
-    /// The menus' words: Compress “Photos” or Compress 3 Items.
+    /// The menus' words: Compress “Photos” or Compress 3 Items, a long name shortened (`MenuName`).
     public static func compressTitle(_ names: [String]) -> String {
         compressTitle(count: names.count, firstName: names.first) ?? "Compress"
     }
@@ -54,7 +54,7 @@ public enum ArchiveNames {
     /// The same from how many items there are and the first one's name; nil for none.
     public static func compressTitle(count: Int, firstName: String?) -> String? {
         guard count > 0 else { return nil }
-        if count == 1, let firstName { return "Compress \u{201C}\(firstName)\u{201D}" }
+        if count == 1, let firstName { return "Compress \(MenuName.quoted(firstName))" }
         return "Compress \(count.formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))) Items"
     }
 

@@ -87,6 +87,21 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        /// A long name is shortened in Compress's row, so the menu is no wider for it than for a name that fits.
+        @Test func aLongNameLeavesTheMenuItsWidth() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let long = String(repeating: "NullSafety copy 2", count: 12) + ".kt"
+            try "x".write(to: harness.folder.appending(long), atomically: true, encoding: .utf8)
+            let tab = try await opened(harness)
+            let short = try #require(tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")]))
+            let shortWidth = short.size.width
+            let menu = try #require(tab.contextMenus.contentMenu(for: [try entry(tab, long)]))
+            #expect(item(menu, "Compress \(MenuName.quoted(long))") != nil)
+            // The file's own menu is about 240 points wide; the name, shortened, adds at most about 150.
+            #expect(menu.size.width <= shortWidth + 160, "\(menu.size.width) vs \(shortWidth)")
+            await harness.close()
+        }
+
         @Test func aFolderHasNewTabsAndPasteAndTheBackgroundHasTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)

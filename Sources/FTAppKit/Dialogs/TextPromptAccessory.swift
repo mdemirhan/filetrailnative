@@ -133,7 +133,7 @@ final class TextPromptAccessory: NSView, AlertAccessory, ThemeApplying, NSTextFi
         let menu = NSMenu()
         menu.autoenablesItems = false
         for name in names {
-            let item = NSMenuItem(title: name, action: #selector(chose(_:)), keyEquivalent: "")
+            let item = NSMenuItem(title: MenuName.shortened(name), action: #selector(chose(_:)), keyEquivalent: "")
             item.target = self
             item.representedObject = name
             menu.addItem(item)

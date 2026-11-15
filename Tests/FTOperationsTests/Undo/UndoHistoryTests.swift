@@ -54,6 +54,16 @@ struct UndoHistoryTests {
         #expect(history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: false))
     }
 
+    @Test func theEditMenuShortensALongNameAndTheHistoryKeepsItWhole() throws {
+        let name = String(repeating: "Quarterly report ", count: 5) + "final.pdf"
+        let history = UndoHistory()
+        history.record(undoable(.trash, [trashed("/Users/demo/\(name)")]))
+        #expect(history.menu().undo == "Move to Trash of \(MenuName.quoted(name))")
+        #expect(MenuName.quoted(name) != "\u{201C}\(name)\u{201D}")
+        let entry = try #require(history.top(.undo))
+        #expect(UndoHistory.labelOf(entry.action, entry.units) == "Move to Trash of \u{201C}\(name)\u{201D}")
+    }
+
     @Test func undoesTheNewestOperationFirst() {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))

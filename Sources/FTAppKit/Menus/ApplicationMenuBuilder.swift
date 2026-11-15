@@ -76,7 +76,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.openSelectionInNewTab, "Open in New Tab"))
             menu.addItem(context.command(.openSelectionInNewWindow, "Open in New Window"))
             menu.addItem(context.command(.openSelectionInOtherPane, "Open in Other Pane"))
-            menu.addItem(context.command(.editSelection, "Edit in \(options.textEditorName ?? "Text Editor")"))
+            let editor = MenuName.shortened(options.textEditorName ?? "Text Editor")
+            menu.addItem(context.command(.editSelection, "Edit in \(editor)"))
             // Search results only, as Finder's Show in Enclosing Folder.
             menu.addItem(context.command(.revealInFolder, "Reveal in Folder"))
             menu.addItem(.separator())
@@ -207,7 +208,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.goDownloads, "Downloads"))
             menu.addItem(context.command(.goHomeRootTree, "Home"))
             menu.addItem(context.command(.goLibrary, "Library"))
-            menu.addItem(context.command(.goMacintoshHD, options.startupDiskName))
+            menu.addItem(context.command(.goMacintoshHD, MenuName.shortened(options.startupDiskName)))
             menu.addItem(context.command(.goApplications, "Applications"))
             menu.addItem(context.command(.goTrash, "Trash"))
             menu.addItem(.separator())
@@ -362,8 +363,9 @@ enum ApplicationMenuBuilder {
 
         private func workspaceItem(_ entry: WorkspaceMenuEntry, inThisWindow: Bool) -> NSMenuItem {
             let id = ApplicationMenu.workspaceItemID(entry.id, inThisWindow: inThisWindow)
+            let name = MenuName.shortened(entry.name)
             let item = NSMenuItem(
-                title: inThisWindow ? "\(entry.name) in This Window" : entry.name,
+                title: inThisWindow ? "\(name) in This Window" : name,
                 action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")
             item.target = target
             item.identifier = NSUserInterfaceItemIdentifier(id)

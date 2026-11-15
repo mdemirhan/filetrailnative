@@ -120,7 +120,7 @@ public enum ContextMenuRules {
             targetsFolder: !subject.entries.isEmpty && subject.entries.allSatisfy { $0.kind.isDirectoryLike },
             // Several items are renamed in the Rename sheet, as Finder's Rename does.
             renameLabel: subject.entries.count > 1 ? "Rename \(groupedCount(subject.entries.count)) Items…" : nil,
-            ejectLabel: subject.ejectableDiskName.map { "Eject “\($0)”" } ?? ejectLabel,
+            ejectLabel: subject.ejectableDiskName.map { "Eject \(MenuName.quoted($0))" } ?? ejectLabel,
             pasteAsFileLabel: PasteAsFile.menuTitle(world.pasteAsFileKind),
             copyContentsLabel: CopyContents.menuTitle(copyContentsGuess(subject)),
             compressLabel: ArchiveNames.compressTitle(

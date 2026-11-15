@@ -173,8 +173,8 @@ public final class UndoHistory {
     /// `menu`: named after what is left to do: a stopped Undo of 3 items leaves "of 2 Items".
     public func menu() -> UndoMenuLabels {
         UndoMenuLabels(
-            undo: undoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves) },
-            redo: redoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves) },
+            undo: undoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: true) },
+            redo: redoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: true) },
             cantUndo: cantUndo && undoList.isEmpty)
     }
 
@@ -190,10 +190,10 @@ public final class UndoHistory {
     // MARK: Labels
 
     /// `labelOf`: "Rename", "Move of “a.txt”", "Copy of 3 Items"…: what the Edit menu puts after "Undo". A paste is
-    /// a Move when it `moves` anything, a Copy otherwise.
-    public nonisolated static func labelOf(_ action: WriteOperationAction, _ units: [UndoUnit], moves: Bool? = nil)
-        -> String
-    {
+    /// a Move when it `moves` anything, a Copy otherwise. `inMenu`: a long name is shortened, as the menus show names.
+    public nonisolated static func labelOf(
+        _ action: WriteOperationAction, _ units: [UndoUnit], moves: Bool? = nil, inMenu: Bool = false
+    ) -> String {
         switch action {
         case .rename:
             return "Rename"
@@ -212,15 +212,15 @@ public final class UndoHistory {
             let count = itemStepCount(units)
             return count == 1 ? "Convert Image" : "Convert \(count) Images"
         case .trash:
-            return "Move to Trash of \(itemsName(units))"
+            return "Move to Trash of \(itemsName(units, inMenu: inMenu))"
         case .duplicate:
-            return "Duplicate of \(itemsName(units))"
+            return "Duplicate of \(itemsName(units, inMenu: inMenu))"
         case .moveTo:
-            return "Move of \(itemsName(units))"
+            return "Move of \(itemsName(units, inMenu: inMenu))"
         case .copyTo:
-            return "Copy of \(itemsName(units))"
+            return "Copy of \(itemsName(units, inMenu: inMenu))"
         default:
-            return "\((moves ?? movesAnything(units)) ? "Move" : "Copy") of \(itemsName(units))"
+            return "\((moves ?? movesAnything(units)) ? "Move" : "Copy") of \(itemsName(units, inMenu: inMenu))"
         }
     }
 
@@ -250,10 +250,12 @@ public final class UndoHistory {
     }
 
     /// “a.txt” for one item, "3 Items" for more.
-    private nonisolated static func itemsName(_ units: [UndoUnit]) -> String {
+    /// `inMenu`: a long name is shortened, as the menus show names (`MenuName`).
+    private nonisolated static func itemsName(_ units: [UndoUnit], inMenu: Bool) -> String {
         guard units.count == 1 else { return "\(units.count) Items" }
         guard let path = mainPathOf(units[0].steps) else { return "1 Item" }
-        return "\u{201C}\(NodePath.basename(path))\u{201D}"
+        let name = NodePath.basename(path)
+        return inMenu ? MenuName.quoted(name) : "\u{201C}\(name)\u{201D}"
     }
 
     /// The item a unit is about: what was made or moved, or else what went to the Trash.

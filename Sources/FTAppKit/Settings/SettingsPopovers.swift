@@ -317,7 +317,7 @@ final class SettingsAppPopup: NSPopUpButton, SettingsSized {
     private func rebuild() {
         removeAllItems()
         for choice in choices {
-            let item = NSMenuItem(title: choice.application.appName, action: nil, keyEquivalent: "")
+            let item = NSMenuItem(title: MenuName.shortened(choice.application.appName), action: nil, keyEquivalent: "")
             item.image = choice.isDefault && !isDefault ? defaultIcon : icon
             item.toolTip = choice.application.appPath
             item.representedObject = choice.isDefault

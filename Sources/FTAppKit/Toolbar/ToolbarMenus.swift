@@ -185,7 +185,7 @@ extension ExplorerToolbar {
         case .topSeparator, .search:
             return nil
         case .title:
-            return overflowItem(Self.title(of: context), enabled: false) {}
+            return overflowItem(Self.title(of: context, inMenu: true), enabled: false) {}
         case .clipboard:
             return overflowItem(ToolbarItems.definition(id).label) { [weak self] in
                 guard let self, let button = self.clipboardButton, let tab = self.context as? MainWindowController

@@ -651,7 +651,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
             // Only what changed: this runs for every tab each time one opens, and the tab bar redoes itself for a set.
             if window.tab.title != label { window.tab.title = label }
             if window.tab.toolTip != descriptions[index].tooltip { window.tab.toolTip = descriptions[index].tooltip }
-            (window as? ExplorerTabWindow)?.windowsMenuTitle = label.isEmpty ? "File Trail" : label
+            (window as? ExplorerTabWindow)?.windowsMenuTitle = label.isEmpty ? "File Trail" : MenuName.shortened(label)
         }
     }
 

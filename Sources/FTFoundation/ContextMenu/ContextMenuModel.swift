@@ -171,7 +171,7 @@ public enum ContextMenuItems {
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 item(.quickLook, "Quick Look", .quickLook),
-                item(.edit, "Edit in \(textEditorName)", .edit),
+                item(.edit, "Edit in \(MenuName.shortened(textEditorName))", .edit),
                 item(.showPackageContents, "Show Package Contents", .showPackageContents),
                 line("separator-open"),
                 item(.showInfo, "Show Info", .showInfo),

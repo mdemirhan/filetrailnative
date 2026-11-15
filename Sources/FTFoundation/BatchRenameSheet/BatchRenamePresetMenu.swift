@@ -11,11 +11,11 @@ public struct BatchRenamePresetMenu: Equatable, Sendable {
 
         public var title: String {
             switch self {
-            case .preset(let name): name
+            case .preset(let name): MenuName.shortened(name)
             case .separator: ""
             case .save: "Save as Preset\u{2026}"
-            case .update(let name): "Update \u{201C}\(name)\u{201D}"
-            case .delete(let name): "Delete \u{201C}\(name)\u{201D}"
+            case .update(let name): "Update \(MenuName.quoted(name))"
+            case .delete(let name): "Delete \(MenuName.quoted(name))"
             }
         }
     }

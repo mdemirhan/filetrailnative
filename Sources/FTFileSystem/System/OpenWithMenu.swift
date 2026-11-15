@@ -112,7 +112,7 @@ public enum OpenWithMenu {
             guard !apps.isEmpty else { return }
             if !items.isEmpty { items.append(.separator(key: "separator-\(key)")) }
             for app in apps {
-                let label = labels[appKey(app.path)] ?? app.name
+                let label = MenuName.shortened(labels[appKey(app.path)] ?? app.name)
                 items.append(
                     .action(
                         .application(
