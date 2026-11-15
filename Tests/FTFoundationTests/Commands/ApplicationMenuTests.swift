@@ -116,6 +116,9 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("closePane", Self.initial).title == "Close Tab")
         #expect(Self.stateOf("closePane", two).title == "Close Pane")
         #expect(Self.stateOf("closeTab", two).title == nil)
+        // With Settings or Help in front, ⌘W closes that window: no pane is named.
+        let other = Window(explorerFocused: false, explorerWindowCount: 1, otherWindowFocused: true)
+        #expect(Self.stateOf("closePane", two, other).title == "Close Tab")
     }
 
     @Test func offersHideFolderTreeWhileTheTreeIsShownAndShowFolderTreeWhileHidden() {

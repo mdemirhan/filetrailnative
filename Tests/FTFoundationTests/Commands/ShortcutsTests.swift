@@ -279,6 +279,13 @@ struct ShortcutsTests {
         #expect(saved["closePane"] == [])
     }
 
+    // Settings says under Close Pane and Close Tab what each closes, as their names alone don't.
+    @Test func settingsSaysWhatClosePaneAndCloseTabClose() {
+        #expect(
+            ShortcutSettingsText.hint(.closePane, returnKeyAction: .open) == "Closes the tab when it has one pane.")
+        #expect(ShortcutSettingsText.hint(.closeTab, returnKeyAction: .open) == "Closes the tab with both its panes.")
+    }
+
     @Test func dropsWhatMakesNoSenseUnknownCommandsUnusableKeysAThirdKey() {
         let bindings = ShortcutCommands.resolve(
             .object([

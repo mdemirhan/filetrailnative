@@ -194,6 +194,45 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // With two panes a command runs in the pane that had the keyboard when the palette opened, and the keyboard
+        // is back in it after.
+        @Test func aCommandRunsInThePaneThatHadTheKeyboard() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            let window = try #require(tab.window)
+            let left = tab.activePane
+            let right = tab.openSecondPane(at: harness.folder.appending("Alpha").path)
+            #expect(await waitUntil { right.loaded && right.hasShownFolder && !right.isNavigating })
+            harness.layout(tab)
+            tab.focusPane(right)
+            #expect(tab.activePane === right)
+
+            let box = try openBox(tab, menu)
+            type("hidden", into: box)
+            DialogKeys.press(36, "\r", in: window)
+            #expect(tab.commandPaletteBox == nil)
+            #expect(await waitUntil { right.includeHidden })
+            #expect(!left.includeHidden)
+            #expect(tab.activePane === right && tab.paneWithKeyboard === right)
+            await harness.close()
+        }
+
+        // A command that opens a box of its own opens it once the palette has gone.
+        @Test func aCommandThatOpensABoxOpensItOnceThePaletteHasGone() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            let window = try #require(tab.window)
+            let box = try openBox(tab, menu)
+            type("go to folder", into: box)
+            #expect(box.selectedRow?.entry.id == "openLocationSheet")
+            DialogKeys.press(36, "\r", in: window)
+            #expect(tab.commandPaletteBox == nil)
+            #expect(await waitUntil { tab.goToBox != nil })
+            #expect(harness.store.recentCommands() == ["openLocationSheet"])
+            tab.goToBox?.onClose()
+            await harness.close()
+        }
+
         // The page moves have no menu item: the palette runs them in the pane that has the keyboard.
         @Test func runsAPageMoveInTheListThatHasTheKeyboard() async throws {
             let (harness, tab, _) = try await open()

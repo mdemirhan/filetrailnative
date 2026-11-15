@@ -91,6 +91,89 @@ extension ExplorerWindowlessTests {
             #expect(tab.activePane === right)
         }
 
+        // With the keyboard in the folder tree, the active pane closes and the keyboard stays in the tree.
+        @Test func withTheKeyboardInTheTreeTheActivePaneClosesAndTheTreeKeepsTheKeyboard() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness)
+            tab.focusPane(right)
+            tab.perform(.focusTreePane)
+            #expect(tab.focusedPane == .tree)
+
+            tab.perform(.closePane)
+            #expect(tab.panes.count == 1)
+            #expect(tab.activePane === left)
+            #expect(tab.focusedPane == .tree)
+        }
+
+        // A name being edited holds the pane, as it holds the tab: nothing closes, and the name stays open.
+        @Test func aNameBeingEditedHoldsThePane() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, _) = try await twoPanes(harness)
+            let note = try #require(left.content.entries.first { $0.name == "note.txt" }?.path)
+            #expect(left.content.beginRename(path: note))
+
+            tab.perform(.closePane)
+            #expect(tab.panes.count == 2)
+            #expect(left.content.inlineRename?.path == note)
+            left.content.renameCancelled()
+        }
+
+        // A pane closed while it shows search results: its search goes with it, and the tab shows the other pane's
+        // folder with no search on screen.
+        @Test func closingAPaneThatShowsSearchResultsEndsItsSearch() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness)
+            tab.focusPane(right)
+            let engine = FakeSearchEngine()
+            engine.finds = { _ in (["a.txt"], false, false) }
+            right.search.session.engine = engine
+            right.search.session.submit("a")
+            #expect(await waitUntil { right.search.session.isSearchMode })
+            #expect(tab.searchRootPath != nil)
+
+            tab.perform(.closePane)
+            #expect(tab.panes.count == 1)
+            #expect(tab.activePane === left)
+            #expect(tab.searchRootPath == nil)
+            // ⌘\ brings the pane back on its folder, without the search.
+            tab.perform(.toggleTwoPanes)
+            let back = try #require(tab.otherPane)
+            await arrived(back)
+            #expect(back.searchRootPath == nil)
+            #expect(back.shownFolderPath == real(harness, "Alpha"))
+        }
+
+        // The tab is saved with the pane that is left as its only one, the right one too once the left has closed.
+        @Test func theTabIsSavedWithThePaneThatIsLeft() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, _) = try await twoPanes(harness)
+            left.content.focusList()
+            #expect(tab.snapshot.secondPane != nil)
+
+            tab.perform(.closePane)
+            let saved = tab.snapshot
+            #expect(saved.secondPane == nil)
+            #expect(saved.currentPath == real(harness, "Alpha"))
+            #expect(saved.activePane == 0)
+        }
+
+        // Show Previews at a count changes the active pane alone: the other keeps the count it had.
+        @Test func aPreviewCountIsTheActivePanesAlone() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness)
+            let before = right.content.previewCount
+            tab.focusPane(left)
+            tab.perform(.showPreviews1)
+            #expect(left.viewMode == .previews && left.content.previewCount == 1)
+            #expect(right.viewMode != .previews && right.content.previewCount == before)
+            #expect(before != 1)
+        }
+
         @Test func withOnePaneClosesTheTab() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
