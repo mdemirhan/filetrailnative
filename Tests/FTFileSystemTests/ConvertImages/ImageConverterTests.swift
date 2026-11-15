@@ -394,6 +394,40 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         #expect(kept.everything.contains("Shown Street 5"))
     }
 
+    // A position a camera wrote under a name of its own (a drone's, beside the standard one) goes with the location
+    // too, at any size and in every format.
+    @Test func removingTheLocationTakesAPositionACameraNamedItsOwnWay() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let url = folder.appending("drone.jpg")
+        let metadata = CGImageMetadataCreateMutable()
+        #expect(
+            CGImageMetadataRegisterNamespaceForPrefix(
+                metadata, "http://www.dji.com/drone-dji/1.0/" as CFString, "drone-dji" as CFString, nil))
+        for (path, value) in [
+            ("drone-dji:GpsLatitude", "+41.012345"), ("drone-dji:GpsLongitude", "+28.976543"),
+            ("drone-dji:FlightYawDegree", "12.5"), ("exif:GPSLatitude", "41,0.5N"), ("xmp:Rating", "4"),
+        ] {
+            #expect(CGImageMetadataSetValueWithPath(metadata, nil, path as CFString, value as CFString), "\(path)")
+        }
+        let destination = try #require(
+            CGImageDestinationCreateWithURL(url as CFURL, "public.jpeg" as CFString, 1, nil))
+        CGImageDestinationAddImageAndMetadata(destination, Pictures.image(width: 400, height: 300), metadata, nil)
+        #expect(CGImageDestinationFinalize(destination))
+        #expect(try Written(Data(contentsOf: url)).everything.contains("41.012345"))
+        for format in ImageFormat.allCases {
+            for size in [ImageSize.actual, .fitWithin(200)] {
+                let written = try await Written(
+                    converted(url.path, ImageConversionOptions(format: format, size: size, removeLocation: true)))
+                #expect(!written.everything.contains("41.012345"), "\(format) \(size)")
+                #expect(!written.everything.contains("28.976543"), "\(format) \(size)")
+                // What says nothing of where stays.
+                #expect(written.everything.contains("12.5"), "\(format) \(size)")
+                #expect(written.xmp("xmp:Rating") == "4", "\(format) \(size)")
+            }
+        }
+    }
+
     // Nothing of the camera's, the location, the caption data, a PNG's text or the XMP is written, in any format,
     // whether the picture is written at its size or made smaller; its orientation and color profile still are.
     @Test func withoutMetadataNoneIsWritten() async throws {
@@ -676,6 +710,29 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
             let (cyan, yellow) = (pixel(image, x: 10, y: 40), pixel(image, x: 90, y: 40))
             #expect(cyan[0] < 120 && cyan[2] > 150, "\(format) \(cyan)")
             #expect(yellow[0] > 200 && yellow[2] < 120, "\(format) \(yellow)")
+        }
+        // Made smaller it is still in CMYK where the format holds that, upright whichever way it was stored, and a
+        // picture with no transparency gets none by being drawn again.
+        for orientation in [1, 6] {
+            let turned = folder.appending("print-\(orientation).jpg")
+            try Pictures.write(
+                [try #require(Pictures.cmyk(width: 200, height: 100))], as: .jpeg, to: turned,
+                properties: [kCGImagePropertyOrientation: orientation])
+            for format in [ImageFormat.jpeg, .tiff] {
+                let written = try await Written(
+                    converted(turned.path, ImageConversionOptions(format: format, size: .scale(50))))
+                let label = "\(format) \(orientation)"
+                #expect(written.properties[kCGImagePropertyColorModel] as? String == "CMYK", "\(label)")
+                let expected = orientation == 1 ? PixelSize(width: 100, height: 50) : PixelSize(width: 50, height: 100)
+                #expect(written.size == expected, "\(label)")
+                #expect(written.orientation == 1, "\(label)")
+            }
+        }
+        let opaque = folder.appending("opaque.jpg")
+        try Pictures.write([Pictures.image(width: 200, height: 100)], as: .jpeg, to: opaque)
+        for format in [ImageFormat.png, .tiff] {
+            let written = try await Written(converted(opaque.path, ImageConversionOptions(format: format, size: exact)))
+            #expect(written.properties[kCGImagePropertyHasAlpha] as? Bool != true, "\(format)")
         }
         // Written at its size without its metadata, it is decoded and written again, in every format.
         for format in ImageFormat.allCases {

@@ -161,6 +161,9 @@ public enum ImageConverter {
             else { throw .notAnImage }
             return image
         }
+        // A picture in CMYK or in gray is drawn in its own color space, so it stays what it was: ImageIO's scaled
+        // copy of it comes in RGB.
+        if !hdr, let own = try inItsOwnSpace(source, header, at: target) { return own }
         let longest = upright.longestSide
         func ceiling(_ numerator: Int, _ denominator: Int) -> Int { (numerator + denominator - 1) / denominator }
         // `target`'s side along the picture's longest, and the longest side of the smallest copy each of whose sides
@@ -181,17 +184,76 @@ public enum ImageConverter {
         return try drawn(image, at: target)
     }
 
-    /// The picture drawn at `size`, whatever its shape. A bitmap to draw in holds red, green and blue with
-    /// transparency, so a picture in gray or in CMYK is drawn in sRGB; one in RGB keeps its own color space.
+    /// A picture in CMYK, or in gray with no transparency, upright at `size` in its own color space; nil for any
+    /// other, which `picture` scales as ImageIO decodes it. It is decoded whole and drawn turned as its orientation
+    /// says, at 8 bits a color.
+    private static func inItsOwnSpace(
+        _ source: CGImageSource, _ header: Header, at size: PixelSize
+    ) throws(Failure) -> CGImage? {
+        let model = header.properties[kCGImagePropertyColorModel] as? String
+        guard model == kCGImagePropertyColorModelCMYK as String || model == kCGImagePropertyColorModelGray as String
+        else { return nil }
+        let whole = [kCGImageSourceShouldCache: false] as CFDictionary
+        // One of more than 8 bits a color keeps its depth the other way, in RGB.
+        guard let image = CGImageSourceCreateImageAtIndex(source, header.index, whole), let space = image.colorSpace,
+            image.bitsPerComponent <= 8, space.model == .cmyk || (space.model == .monochrome && isOpaque(image)),
+            let context = CGContext(
+                data: nil, width: size.width, height: size.height, bitsPerComponent: 8, bytesPerRow: 0, space: space,
+                bitmapInfo: CGImageAlphaInfo.none.rawValue)
+        else { return nil }
+        context.interpolationQuality = .high
+        let width = CGFloat(size.width)
+        let height = CGFloat(size.height)
+        // The picture as stored lies on its side for the orientations 5 to 8.
+        var rect = CGRect(x: 0, y: 0, width: width, height: height)
+        let sideways = CGRect(x: 0, y: 0, width: height, height: width)
+        switch header.orientation {
+        case 2:
+            context.translateBy(x: width, y: 0)
+            context.scaleBy(x: -1, y: 1)
+        case 3:
+            context.translateBy(x: width, y: height)
+            context.rotate(by: .pi)
+        case 4:
+            context.translateBy(x: 0, y: height)
+            context.scaleBy(x: 1, y: -1)
+        case 5, 8:
+            context.translateBy(x: width, y: 0)
+            context.rotate(by: .pi / 2)
+            rect = sideways
+        case 6, 7:
+            context.translateBy(x: 0, y: height)
+            context.rotate(by: -.pi / 2)
+            rect = sideways
+        default: break
+        }
+        if header.orientation == 5 || header.orientation == 7 {
+            context.translateBy(x: height, y: 0)
+            context.scaleBy(x: -1, y: 1)
+        }
+        context.draw(image, in: rect)
+        guard let result = context.makeImage() else { throw .notWritten }
+        return result
+    }
+
+    private static func isOpaque(_ image: CGImage) -> Bool {
+        switch image.alphaInfo {
+        case .none, .noneSkipFirst, .noneSkipLast: true
+        default: false
+        }
+    }
+
+    /// The picture drawn at `size`, whatever its shape, in its own color space when that is RGB (sRGB otherwise). One
+    /// with no transparency is drawn without any, so it doesn't come out with an alpha channel it never had.
     private static func drawn(_ image: CGImage, at size: PixelSize) throws(Failure) -> CGImage {
         let deep = image.bitsPerComponent > 8
         let own = image.colorSpace.flatMap { $0.model == .rgb ? $0 : nil }
         let space = own ?? CGColorSpace(name: CGColorSpace.sRGB)!
+        let alpha = (isOpaque(image) ? CGImageAlphaInfo.noneSkipLast : .premultipliedLast).rawValue
         let info: UInt32 =
             deep
-            ? CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.floatComponents.rawValue
-                | CGImageByteOrderInfo.order16Little.rawValue
-            : CGImageAlphaInfo.premultipliedLast.rawValue
+            ? alpha | CGBitmapInfo.floatComponents.rawValue | CGImageByteOrderInfo.order16Little.rawValue
+            : alpha
         guard
             let context = CGContext(
                 data: nil, width: size.width, height: size.height, bitsPerComponent: deep ? 16 : 8, bytesPerRow: 0,
@@ -299,11 +361,16 @@ public enum ImageConverter {
     private static let placeNamespace = "http://iptc.org/std/Iptc4xmpExt/2008-02-29/"
     private static let placeNames: Set<String> = ["LocationShown", "LocationCreated"]
 
+    /// Also a position a camera wrote under a name of its own (a drone's "GpsLatitude" and "GpsLongitude"): any tag
+    /// outside the camera's standard ones whose name says GPS, latitude or longitude.
     private static func isPlaceInXMPAlone(_ tag: CGImageMetadataTag) -> Bool {
-        guard CGImageMetadataTagCopyNamespace(tag) as String? == placeNamespace,
+        guard let namespace = CGImageMetadataTagCopyNamespace(tag) as String?,
             let name = CGImageMetadataTagCopyName(tag) as String?
         else { return false }
-        return placeNames.contains(name)
+        if namespace == placeNamespace { return placeNames.contains(name) }
+        guard namespace != kCGImageMetadataNamespaceExif as String else { return false }
+        let lowered = name.lowercased()
+        return lowered.hasPrefix("gps") || lowered.contains("latitude") || lowered.contains("longitude")
     }
 
     /// Whether the picture's XMP names a place in one of those fields.
