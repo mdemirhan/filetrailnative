@@ -205,12 +205,16 @@ struct IconGridSizeTests {
         #expect(large.iconInset == 4)
     }
 
-    // Smaller icons keep the column wide enough for two lines of name.
-    @Test func smallIconsKeepRoomForTheirNames() {
+    // Smaller icons narrow the column with the tile, down to 80, so more fit across and a name keeps a 78 pt label.
+    @Test func smallIconsNarrowTheColumnToAFloor() {
+        #expect(Self.base.sized(iconSize: 56).cellMinWidth == 96)
+        #expect(Self.base.sized(iconSize: 48).cellMinWidth == 88)
+        #expect(Self.base.sized(iconSize: 40).cellMinWidth == 80)
         let small = Self.base.sized(iconSize: 32)
         #expect(small.iconBoxSize == 40)
-        #expect(small.cellMinWidth == 104 && small.labelWidth == 102)
+        #expect(small.cellMinWidth == 80 && small.labelWidth == 78)
         #expect(small.rowHeight == 84)
-        #expect(small.columns(containerWidth: 1000) == Self.base.columns(containerWidth: 1000))
+        #expect(small.columns(containerWidth: 1000) == 12)
+        #expect(Self.base.columns(containerWidth: 1000) == 9)
     }
 }
