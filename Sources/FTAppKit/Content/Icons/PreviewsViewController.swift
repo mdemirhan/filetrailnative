@@ -417,6 +417,8 @@ final class PreviewsViewController: IconViewController {
     /// side, so a preview filling a large screen is as sharp as the screen.
     override var thumbnailPixelSize: Int {
         if let pixelSizeInUse { return pixelSizeInUse }
+        // Not kept while the pane is in no window: its screen is not known yet.
+        guard view.window != nil else { return pixelSizeForThePane }
         let size = pixelSizeForThePane
         pixelSizeInUse = size
         return size

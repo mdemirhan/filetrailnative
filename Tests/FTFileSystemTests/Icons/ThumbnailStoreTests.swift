@@ -596,14 +596,18 @@ private func request(
     // again.
     @Test func aLoadOfAFileSinceChangedDoesntAnswerALaterListing() async {
         let provider = ScriptedProvider()
-        let queue = ThumbnailLoadQueue()
+        let queue = ThumbnailLoadQueue(maxConcurrent: 1)
         let store = ThumbnailStore(provider: provider, queue: queue)
         _ = request(store, "/Users/demo/photo.jpeg", listing: Listing(), into: Receiver())
         await pollUntil { provider.calls.count == 1 }
         store.markChanged(["/Users/demo/photo.jpeg"])
         let later = Receiver()
         _ = request(store, "/Users/demo/photo.jpeg", listing: Listing(), into: later)
+        // A load of its own waits its turn, rather than this request waiting on the first.
+        #expect(queue.queuedCount == 1)
+        provider.release(ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()))
         await pollUntil { provider.calls.count == 2 }
+        await pollUntil { queue.queuedCount == 0 && queue.activeCount == 1 }
         provider.release(ThumbnailResponse(version: "2:2", unchanged: false, picture: picture()))
         await idle(queue)
         #expect(later.last != nil)

@@ -213,7 +213,9 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
             openDefaultWindow()
             return
         }
-        openWindowFrom(front.windowID, tabs: [tabs[min(preferences.activeTabIndex, tabs.count - 1)]], activeTabIndex: 0)
+        // One pane, the active one's, as New Window opens from the window itself.
+        let tab = tabs[min(preferences.activeTabIndex, tabs.count - 1)].activePaneAlone
+        openWindowFrom(front.windowID, tabs: [tab], activeTabIndex: 0)
     }
 
     /// `openWindowFrom`: a window opened from another one (New Window, Open in New Window, Move Tab to New Window). It

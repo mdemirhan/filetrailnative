@@ -554,27 +554,25 @@ static int dress_item(struct extraction *extraction, int fd, struct archive_entr
 static const off_t long_hole = 64 << 20;
 
 /// Leaves the open file `fd` empty from `from` up to `to`, where the archive says the item holds nothing (a sparse
-/// file). An archive of a few kilobytes can name a hole of any size, so a long one is refused (ENOSPC) when the disk
-/// hasn't that much room; and on a disk that keeps no holes, where the system would write the zeros itself in one
-/// call nothing can stop, they are written here, a piece at a time with a look at the stop between. 0, ECANCELED, or
-/// an errno.
+/// file: a disk image, a virtual machine's disk). On a disk that keeps holes it costs nothing, whatever its length.
+/// On one that doesn't, the system would write the zeros itself in one call nothing can stop, and an archive of a
+/// few kilobytes can name a hole of any size: a long one is refused there (ENOSPC) when the disk hasn't that much
+/// room, and otherwise written here, a piece at a time with a look at the stop between. 0, ECANCELED, or an errno.
 static int leave_hole(struct extraction *extraction, int fd, off_t from, off_t to) {
-    if (to - from > long_hole) {
+    if (to - from > long_hole && fpathconf(fd, _PC_MIN_HOLE_SIZE) <= 0) {
         struct statfs disk;
         if (fstatfs(fd, &disk) == 0 && (uint64_t)(to - from) > (uint64_t)disk.f_bavail * (uint64_t)disk.f_bsize) {
             return ENOSPC;
         }
-        if (fpathconf(fd, _PC_MIN_HOLE_SIZE) <= 0) {
-            static const char zeros[1 << 20];
-            for (off_t at = from; at < to;) {
-                if (is_stopped(extraction->control)) return ECANCELED;
-                size_t piece = (size_t)(to - at < (off_t)sizeof(zeros) ? to - at : (off_t)sizeof(zeros));
-                int result = write_all(fd, zeros, piece, at);
-                if (result != 0) return result;
-                at += (off_t)piece;
-            }
-            return 0;
+        static const char zeros[1 << 20];
+        for (off_t at = from; at < to;) {
+            if (is_stopped(extraction->control)) return ECANCELED;
+            size_t piece = (size_t)(to - at < (off_t)sizeof(zeros) ? to - at : (off_t)sizeof(zeros));
+            int result = write_all(fd, zeros, piece, at);
+            if (result != 0) return result;
+            at += (off_t)piece;
         }
+        return 0;
     }
     return ftruncate(fd, to) == 0 ? 0 : errno;
 }

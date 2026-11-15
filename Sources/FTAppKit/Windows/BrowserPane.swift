@@ -684,7 +684,9 @@ final class BrowserPane {
         // Read before anything moves: the place being left is the one in the history now, and the results to come back
         // are those left where this goes.
         let bringsResultsBack = !keepingSearch && searchResultsWereLeft(at: move)
-        let leftPlace = NavigationHistory.Place(index: navigationHistory.index, path: folder.path)
+        // (The folder on screen's place, which a Back still under way has moved the history away from.)
+        let leftPlace = NavigationHistory.Place(
+            index: historyIndexOnScreen ?? navigationHistory.index, path: folder.path)
         // Back, Forward and the hold menus move within the history at once, before the folder is read. The place of
         // the folder on screen is kept until one of them arrives.
         switch move {

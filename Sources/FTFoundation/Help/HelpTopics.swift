@@ -566,7 +566,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Icon size and column width",
                             description:
-                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, and a workspace brings them back; a new window starts from the sizes set last. Sizes → Match Finder keeps sizes of its own."
+                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, and a workspace brings them back; a pane opened from another starts with that pane’s. Sizes → Match Finder keeps sizes of its own."
                         ),
                         HelpRow(
                             label: "Previews",

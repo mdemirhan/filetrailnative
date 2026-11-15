@@ -163,7 +163,12 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
     }
 
     public func flushToDisk(_ path: String, wholeDisk: Bool) throws {
-        if wholeDisk, sync_volume_np(path, SYNC_VOLUME_FULLSYNC | SYNC_VOLUME_WAIT) == 0 { return }
+        if wholeDisk {
+            if sync_volume_np(path, SYNC_VOLUME_FULLSYNC | SYNC_VOLUME_WAIT) == 0 { return }
+            // A disk with no call for the whole of it: every disk is asked to write out what waits, and the folder
+            // is flushed after it, which is as much as such a disk can be told.
+            sync()
+        }
         // A link, a pipe or a device has nothing of its own to write out: the folder it is in is flushed, as is a
         // folder whose disk has no call for the whole of it.
         var descriptor = open(path, O_RDONLY | O_NONBLOCK | O_NOFOLLOW | O_CLOEXEC)

@@ -113,7 +113,7 @@ public enum StartupTabs {
             favoritePath: nil, viewMode: second.viewMode, searchViewMode: second.searchViewMode,
             sortBy: second.sortBy, sortDirection: second.sortDirection, includeHidden: second.includeHidden,
             foldersFirst: second.foldersFirst, favoritesExpanded: tab.favoritesExpanded,
-            locationsExpanded: tab.locationsExpanded)
+            locationsExpanded: tab.locationsExpanded, viewSizes: second.viewSizes)
     }
 
     /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it.

@@ -44,6 +44,24 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(!fileSystem.exists("/source/a.txt") && fileSystem.exists("/target/a.txt"))
     }
 
+    // A file moved to another disk in place of one that is there is written out as a file is, not the whole disk
+    // for each.
+    @Test func aFileThatReplacesAnotherOnAnotherDiskIsWrittenOutAlone() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 2)),
+            ("/target/a.txt", .file(size: 3, dev: 2)),
+        ])
+        fileSystem.copyFileImpl = copyingSize(fileSystem)
+        fileSystem.enableTrash()
+        let policy = CopyPastePolicy(file: .overwrite, directory: .merge, mismatch: .skip)
+        let operation = try createResolvedOperation(
+            fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target", policy: policy)
+        await execute(fileSystem, operation, operationId: "flush-replace", policy: policy)
+        #expect(!fileSystem.exists("/source/a.txt"))
+        #expect(!fileSystem.flushes.isEmpty)
+        #expect(fileSystem.flushes.allSatisfy { !$0.wholeDisk })
+    }
+
     // A folder moved to another disk is written out once, whole, before any of its originals goes.
     @Test func aFolderMovedToAnotherDiskIsWrittenOutOnceBeforeItsOriginalsGo() async throws {
         let fileSystem = MockWriteServiceFileSystem([

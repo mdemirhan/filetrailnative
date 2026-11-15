@@ -65,4 +65,21 @@ struct SavedPanesTests {
         let data = try JSONEncoder().encode(read)
         #expect(try JSONDecoder().decode([OpenTabPreference].self, from: data) == read)
     }
+
+    // A new window starts from a tab's active pane alone: that pane's folder, view, order and sizes, and no second
+    // pane.
+    @Test func theActivePaneAloneIsWhatANewWindowStartsFrom() throws {
+        let read = try tabs(
+            #"[{"path": "/a", "viewMode": "list", "viewSizes": {"iconSizes": {"standard": 96}}, "secondPane": {"path": "/b", "viewMode": "icons", "sortBy": "size", "viewSizes": {"iconSizes": {"standard": 40}}}, "activePane": 1, "paneSplit": 0.4}]"#
+        )
+        let second = read[0].activePaneAlone
+        #expect(second.path == "/b" && second.viewMode == .icons && second.sortBy == .size)
+        #expect(second.viewSizes?.iconSizes.standard == 40)
+        #expect(second.secondPane == nil && second.activePane == nil && second.paneSplit == nil)
+        var first = read[0]
+        first.activePane = nil
+        #expect(first.activePaneAlone.path == "/a")
+        #expect(first.activePaneAlone.viewSizes?.iconSizes.standard == 96)
+        #expect(first.activePaneAlone.secondPane == nil)
+    }
 }

@@ -320,7 +320,7 @@ public final class ThumbnailStore {
                 waiter.completion(thumbnail.picture)
                 // One of a later listing: the file is checked for it now, which costs a look at the file unless it
                 // changed.
-                if let recheck = waiter.recheck {
+                if let recheck = waiter.recheck, !waiter.cancelled {
                     waiter.recheck = nil
                     waiter.followUp = self.load(
                         path: path, kind: recheck.kind, size: recheck.size, listing: recheck.listing, ahead: false,

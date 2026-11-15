@@ -437,7 +437,11 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         layoutParts()
         let work = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
-                guard let self, self.path == path, !self.hasThumbnail else { return }
+                guard let self else { return }
+                // Over, whatever the item shows by now: one reused for the same file starts a wait of its own.
+                self.iconWait = nil
+                self.waitingPath = nil
+                guard self.path == path, !self.hasThumbnail else { return }
                 self.showIcon()
             }
         }

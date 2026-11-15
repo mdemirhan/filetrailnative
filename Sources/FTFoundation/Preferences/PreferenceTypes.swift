@@ -459,6 +459,26 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         self.paneSplit = secondPane == nil ? nil : paneSplit
         self.viewSizes = viewSizes
     }
+
+    /// The tab with its active pane alone, as a new window starts from it: that pane's folder, view, order and sizes.
+    public var activePaneAlone: OpenTabPreference {
+        var alone = self
+        if activePane == 1, let second = secondPane {
+            alone.path = second.path
+            alone.favoritePath = nil
+            alone.viewMode = second.viewMode
+            alone.searchViewMode = second.searchViewMode
+            alone.sortBy = second.sortBy
+            alone.sortDirection = second.sortDirection
+            alone.includeHidden = second.includeHidden
+            alone.foldersFirst = second.foldersFirst
+            alone.viewSizes = second.viewSizes
+        }
+        alone.secondPane = nil
+        alone.activePane = nil
+        alone.paneSplit = nil
+        return alone
+    }
 }
 
 /// A tab's second pane as it is saved: its folder and how it shows it.

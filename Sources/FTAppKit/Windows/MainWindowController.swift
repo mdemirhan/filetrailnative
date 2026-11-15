@@ -510,7 +510,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             favoritePath: favoritePath == path ? favoritePath : nil, viewMode: pane.viewMode,
             searchViewMode: pane.searchViewMode, sortBy: pane.sortBy, sortDirection: pane.sortDirection,
             includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded, viewSizes: pane.viewSizes)
+            locationsExpanded: locationsExpanded, viewSizes: savedViewSizes(pane))
+    }
+
+    /// The sizes a pane is saved with: its own, or for one not shown yet the app's as they are now, so a workspace
+    /// or the tabs kept at quit hold what it would have shown.
+    private func savedViewSizes(_ pane: BrowserPane) -> PaneViewSizes {
+        pane.viewSizes ?? PaneViewSizes(preferences)
     }
 
     /// A pane as a saved tab keeps its second one.
@@ -519,7 +525,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return OpenPanePreference(
             path: path.isEmpty ? nil : path, viewMode: pane.viewMode, searchViewMode: pane.searchViewMode,
             sortBy: pane.sortBy, sortDirection: pane.sortDirection, includeHidden: pane.includeHidden,
-            foldersFirst: pane.foldersFirst, viewSizes: pane.viewSizes)
+            foldersFirst: pane.foldersFirst, viewSizes: savedViewSizes(pane))
     }
 
     /// The tab as a new tab or a reopened one starts from it.
@@ -900,9 +906,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             let firstPress = !Self.isKeyRepeat(currentEvent())
             if firstPress {
                 Self.heldKeyTookApart = false
+                Self.openPresses += 1
             } else if Self.heldKeyTookApart {
                 return
             }
+            let press = Self.openPresses
             func takesApart(_ path: String) -> Bool {
                 ArchiveNames.isArchive(NodePath.basename(path)) || DiskImageNames.isDiskImagePath(path)
             }
@@ -933,7 +941,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                             ArchiveNames.isArchive(NodePath.basename(path)), !DiskImageNames.isDiskImagePath(target)
                         {
                             if firstPress {
-                                Self.heldKeyTookApart = true
+                                // Unless another press came while the link was looked up.
+                                if press == Self.openPresses { Self.heldKeyTookApart = true }
                                 extractToOpen([path])
                             }
                         } else if opensOnThisPress(target) {
@@ -955,9 +964,20 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    /// The key now held down (Return, ⌘↓, ⌘O) extracted an archive or mounted a disk image when it was pressed. The
-    /// next press of any key that opens says otherwise.
-    static var heldKeyTookApart = false
+    /// The key now held down (Return, ⌘↓, ⌘O) extracted an archive or mounted a disk image when it was pressed. It is
+    /// so until a key is let go, or the next press of a key that opens.
+    static var heldKeyTookApart = false {
+        didSet {
+            guard heldKeyTookApart, keyUpMonitor == nil else { return }
+            keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyUp) { event in
+                heldKeyTookApart = false
+                return event
+            }
+        }
+    }
+    private static var keyUpMonitor: Any?
+    /// The presses that opened something, counted: a lookup that ends after another press is not that press's.
+    private static var openPresses = 0
 
     /// A file or app opens in what macOS chooses; a disk image is mounted here and an archive extracted here, rather
     /// than by Archive Utility (Open With still hands it to an app). Either counts as using the folder.

@@ -116,12 +116,12 @@ import Testing
         #expect(try FileManager.default.contentsOfDirectory(atPath: folders.out).isEmpty)
     }
 
-    /// An archive of a few kilobytes can say a file is a hole of any length. One longer than the disk has room for is
-    /// refused, and leaves nothing.
-    @Test func aHoleLongerThanTheDiskHasRoomForIsRefused() throws {
+    /// A hole longer than the disk has room for (a disk image, a virtual machine's disk) comes out on a disk that keeps
+    /// holes, at its length and taking almost nothing: it is refused only where the disk would have to write it all.
+    @Test func aHoleLongerThanTheDisksFreeSpaceComesOutWhereTheDiskKeepsHoles() throws {
         let folders = try Folders()
         defer { folders.directory.remove() }
-        // Only where the disk keeps holes: elsewhere making the file to archive would write it all.
+        // Elsewhere making the file to archive would write it all.
         guard pathconf(folders.root, _PC_MIN_HOLE_SIZE) > 0 else { return }
         let sparse = "\(folders.source)/hole.bin"
         let file = open(sparse, O_WRONLY | O_CREAT, 0o644)
@@ -129,14 +129,19 @@ import Testing
         // Twice what the disk has free: the system's tar takes minutes to write down a hole a thousand times that.
         let free = try #require(
             try FileManager.default.attributesOfFileSystem(forPath: folders.root)[.systemFreeSize] as? Int64)
-        let stretched = ftruncate(file, off_t(free) * 2 + (1 << 30))
+        let length = off_t(free) * 2 + (1 << 30)
+        let stretched = ftruncate(file, length)
         close(file)
         try #require(stretched == 0)
         let archive = try folders.archive("hole.tar", ["-c"], of: ["hole.bin"])
         let size = try #require(try FileManager.default.attributesOfItem(atPath: archive)[.size] as? Int)
         try #require(size < 1 << 20)
-        #expect(throws: (any Error).self) { try Self.extract(archive, into: folders.out) }
-        #expect(try FileManager.default.contentsOfDirectory(atPath: folders.out).isEmpty)
+        let made = try Self.extract(archive, into: folders.out)
+        var stats = stat()
+        try #require(stat(made, &stats) == 0)
+        #expect(stats.st_size == length)
+        // What it takes on the disk is next to nothing.
+        #expect(Int64(stats.st_blocks) * 512 < 1 << 20)
     }
 
     /// A file with a hole the disk has room for comes out with it.

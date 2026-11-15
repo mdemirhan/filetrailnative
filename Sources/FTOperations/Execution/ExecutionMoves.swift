@@ -27,8 +27,10 @@ func removeMovedSources(
     _ stagingPath: String, _ finalPath: String
 ) -> (error: String?, childItems: [CopyPasteItemResult]) {
     let fileSystem = context.fileSystem
-    // Everything it copied is written out in one go before any of its originals goes.
-    if let kept = flushMovedCopy(fileSystem, finalPath, wholeDisk: true) { return (kept, childItems) }
+    // Everything it copied is written out before any of its originals goes: a folder's in one go, the whole disk; a
+    // file put in place of another, the file alone, as every other file moved is.
+    let wholeDisk = node.node.sourceKind == .directory
+    if let kept = flushMovedCopy(fileSystem, finalPath, wholeDisk: wholeDisk) { return (kept, childItems) }
     func removeCopied(_ current: ResolvedCopyPasteNode) -> String? {
         let copied = context.shared.copiedForMove.removeValue(forKey: NameKeys.Exact(current.node.sourcePath))
         guard let copied,

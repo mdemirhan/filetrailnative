@@ -143,6 +143,22 @@ extension ExplorerWindowlessTests {
             #expect(!tab.canPerform(.goToOtherPaneFolder))
         }
 
+        // The rule itself: the folder the other pane is in decides, whatever it shows of it, while Copy and Move go
+        // by where items can be put.
+        @Test func goToOtherPanesFolderGoesByTheFolderTheOtherPaneIsIn() {
+            func context(_ destination: String, folder: String) -> CommandAvailabilityContext {
+                CommandAvailabilityContext(
+                    currentPath: "/a", paneCount: 2, otherPanePath: destination, otherPaneFolder: folder)
+            }
+            // Search results, or the Trash: nowhere to put items, somewhere to go.
+            let searching = context("", folder: "/b")
+            #expect(CommandAvailability.canRun(.goToOtherPaneFolder, searching))
+            #expect(!CommandAvailability.canRun(.copyToOtherPane, searching))
+            // The same folder as this pane's, or none: nowhere to go.
+            #expect(!CommandAvailability.canRun(.goToOtherPaneFolder, context("", folder: "/a")))
+            #expect(!CommandAvailability.canRun(.goToOtherPaneFolder, context("", folder: "")))
+        }
+
         // MARK: Each pane's sizes
 
         // The icon size, the Compact List's column width and the Previews count are each pane's own: a size set in
