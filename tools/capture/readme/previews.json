@@ -1,6 +1,6 @@
 {
   "name": "previews",
-  "description": "Photos in the Previews view, four at a time",
+  "description": "A photo filling the pane in the Previews view, one at a time",
   "root": "/Users/Shared/Lighthouse",
   "steps": [
     {
@@ -34,8 +34,14 @@
       "ms": 300
     },
     {
+      "step": "select",
+      "names": [
+        "Fuji at dawn.jpg"
+      ]
+    },
+    {
       "step": "command",
-      "id": "viewAsPreviews"
+      "id": "showPreviews1"
     },
     {
       "step": "wait",

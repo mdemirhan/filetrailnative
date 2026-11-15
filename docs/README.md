@@ -10,7 +10,8 @@ What is kept here, by what it is for. A new file goes into the folder that fits 
 | [state/](state/) | What is true of the app now: [known-issues.md](state/known-issues.md), its limits and open issues; [battery.md](state/battery.md), what it does in the background. |
 | [plans/](plans/) | Work planned or under way: [archives.md](plans/archives.md), [test-suite-audit.md](plans/test-suite-audit.md). |
 | [records/](records/) | What is finished and kept for the record: [command-palette.md](records/command-palette.md), [file-operations-review.md](records/file-operations-review.md), [finder-trash-workaround.diff](records/finder-trash-workaround.diff). |
-| [screenshots/](screenshots/) | The README's pictures, made by `scripts/readme-screenshots.sh`. They stay here: the README and the script name this place. |
+| [features.md](features.md) | Everything the app does, by area, for people deciding whether to use it. The README keeps to what differs from Finder and links here. A feature added or changed gets its line here. |
+| [screenshots/](screenshots/) | The pictures of the README and of features.md, made by `scripts/readme-screenshots.sh`. They stay here: the README and the script name this place. |
 | [frame-timings.json](frame-timings.json) | The frame times of each release, written by `scripts/release.sh`, which names this place. |
 
 How the commands, the tests and the tools work is in [CLAUDE.md](../CLAUDE.md) and [tools/capture/README.md](../tools/capture/README.md).

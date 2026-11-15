@@ -1,6 +1,6 @@
 {
   "name": "two-panes",
-  "description": "Two panes side by side, a list and icons",
+  "description": "Two panes: photos in a list, and as icons the folder three of them were just copied to with F5",
   "root": "/Users/Shared/Lighthouse",
   "steps": [
     {
@@ -27,7 +27,7 @@
     },
     {
       "step": "open",
-      "path": "design/screens"
+      "path": "Portfolio"
     },
     {
       "step": "wait",
@@ -43,7 +43,7 @@
     },
     {
       "step": "open",
-      "path": "app/src/components"
+      "path": "photos"
     },
     {
       "step": "wait",
@@ -56,6 +56,25 @@
     {
       "step": "wait",
       "ms": 1200
+    },
+    {
+      "step": "select",
+      "names": [
+        "Alpine lake.jpg",
+        "Cape Point.jpg",
+        "Coast road.jpg"
+      ]
+    },
+    {
+      "step": "menu",
+      "path": [
+        "Edit",
+        "Copy to Other Pane"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 1500
     },
     {
       "step": "snapshot",

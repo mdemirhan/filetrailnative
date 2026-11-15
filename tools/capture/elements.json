@@ -18,6 +18,7 @@
     "checked search option": {"swift": "searchOptionsMenu.item.checked"},
     "clipboard button": {"swift": "toolbar.clipboard"},
     "clipboard count": {"swift": "toolbar.clipboard.count"},
+    "command palette": {"swift": "commandPalette"},
     "clipboard popover": {"swift": "clipboardPopover"},
     "clipboard popover title": {"swift": "clipboardPopover.title"},
     "clipboard popover item": {"swift": "clipboardPopover.item"},

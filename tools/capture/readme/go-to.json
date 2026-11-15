@@ -1,6 +1,6 @@
 {
   "name": "go-to",
-  "description": "Go To listing the folders used most lately",
+  "description": "Go To finding the folders used lately from a few letters",
   "root": "/Users/Shared/Lighthouse",
   "steps": [
     {
@@ -43,6 +43,10 @@
     {
       "step": "expectSheet",
       "name": "go to folder"
+    },
+    {
+      "step": "type",
+      "text": "scr"
     },
     {
       "step": "wait",

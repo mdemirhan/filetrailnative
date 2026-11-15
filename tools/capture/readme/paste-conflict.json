@@ -1,0 +1,85 @@
+{
+  "name": "paste-conflict",
+  "description": "Pasting a folder where one of that name already is",
+  "root": "/Users/Shared/Lighthouse",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "density": "standard",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "design"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "select",
+      "names": [
+        "screens"
+      ]
+    },
+    {
+      "step": "key",
+      "key": "c",
+      "modifiers": [
+        "cmd"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "open",
+      "path": "mobile"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "key",
+      "key": "v",
+      "modifiers": [
+        "cmd"
+      ]
+    },
+    {
+      "step": "expectSheet",
+      "name": "review sheet"
+    },
+    {
+      "step": "wait",
+      "ms": 700
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "paste-conflict"
+    }
+  ]
+}

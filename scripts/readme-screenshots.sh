@@ -5,6 +5,10 @@
 # The app needs Screen Recording once: macOS asks, or allow "File Trail" in Privacy & Security. Leave the Mac alone
 # while it runs (about 2 minutes): the windows have to stay in front. A disk other than the startup disk shows in the
 # sidebar, so eject those first.
+# A new picture is a new scene: tools/capture/readme/<name>.json ends in a windowShot (or marqueeShot) called <name>,
+# and lands in docs/screenshots/<name>.png. When the UI changes, run this again and every picture is taken again; a
+# scene whose step no longer works fails by name. At the end it names any picture README.md or docs/features.md shows
+# that no scene makes, and any picture in docs/screenshots that neither shows.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -43,7 +47,13 @@ codesign --force --sign "$identity" "$app"
 trap 'rm -rf "$project" "$home_root"' EXIT
 cp -cpR "$fixture" "$project"
 swiftc -o "build/readme-photos" tools/capture/readme/photos.swift
-build/readme-photos "$project/photos"
+build/readme-photos "$project/photos" tools/capture/readme/photos
+# The paste-conflict scene pastes design/screens into mobile, which has a screens folder of its own with two of the
+# five pictures. The folder around it keeps its date, which the folder-sizes scene shows.
+mkdir "$project/mobile/screens"
+cp -p "$project/design/screens/home.png" "$project/design/screens/map.png" "$project/mobile/screens/"
+touch -r "$project/design/screens" "$project/mobile/screens"
+touch -r "$project/mobile/README.md" "$project/mobile"
 # The fixture's big files are sparse, which would show as "on disk" sizes of nothing.
 python3 - "$project" <<'PY'
 import os, sys
@@ -84,8 +94,18 @@ prefs = {"treeWidth": 205}
 if scene in ("folder-sizes", "dark-mode"):
     prefs["inspectorWidth"] = 233
     prefs["detailColumnWidths"] = {"name": 160, "modified": 150, "size": 90, "kind": 60}
+if scene == "two-panes":
+    prefs["detailColumnWidths"] = {"name": 190, "modified": 150, "size": 90, "kind": 60}
 json.dump({"preferences": prefs}, open(target.replace("visited-folders", "app-state"), "w"))
 PY
+    # The two-panes scene copies three photos into a folder that holds four already. Only that scene has the folder.
+    if [ "$scene" = two-panes ]; then
+        touch -r "$project" "$out/project-time"
+        mkdir "$project/Portfolio"
+        for name in "Desert dusk" "Fuji at dawn" "Lake Wanaka" "Milford Sound"; do
+            cp -p "$project/photos/$name.jpg" "$project/Portfolio/"
+        done
+    fi
     # By `open`, so that macOS asks about Screen Recording for this app, not for whatever started the script.
     # Launch Services can refuse while the scene before is still going away.
     for attempt in 1 2 3 4 5; do
@@ -95,12 +115,32 @@ PY
             --elements "$PWD/tools/capture/elements.json" --user-data-dir "$data" && break
         sleep 2
     done
+    if [ "$scene" = two-panes ]; then
+        rm -rf "$project/Portfolio"
+        touch -r "$out/project-time" "$project"
+    fi
     # A step the app couldn't do as asked (unsupported) leaves a picture that isn't the scene: that fails too.
     if [ -f "$out/$scene/$scene.png" ] && ! grep -qE '"status" *: *"(failed|timeout|unsupported)"' "$out/$scene/report.json"; then
         cp "$out/$scene/$scene.png" "docs/screenshots/$scene.png"
         echo "PASS $scene"
     else
         echo "FAIL $scene: see $out/$scene"
+        status=1
+    fi
+done
+
+# What the pages show against what the scenes make.
+shown="$(grep -ohE 'screenshots/[a-z0-9-]+\.png' README.md docs/features.md | sed 's|.*/||; s|\.png$||' | sort -u)"
+for name in $shown; do
+    if [ ! -f "tools/capture/readme/$name.json" ] || [ ! -f "docs/screenshots/$name.png" ]; then
+        echo "FAIL $name is shown in README.md or docs/features.md, and no scene makes it"
+        status=1
+    fi
+done
+for file in docs/screenshots/*.png; do
+    name="$(basename "$file" .png)"
+    if ! echo "$shown" | grep -qx "$name"; then
+        echo "FAIL $file is shown in neither README.md nor docs/features.md: remove it and its scene, or show it"
         status=1
     fi
 done
