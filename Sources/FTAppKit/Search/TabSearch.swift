@@ -363,16 +363,23 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     // MARK: The options menu
 
-    /// The options chosen in the menu are this search's, and what searches opened later start with; no other search
-    /// open changes with them.
-    private func saveOptions() {
+    private enum Option {
+        case matchScope, patternMode, recursive, skipGitFolders, skipGitIgnored
+    }
+
+    /// The option chosen in the menu is this search's, and what searches opened later start with; no other search
+    /// open changes with it. Only that option is saved: the others may have been chosen since in another search, and
+    /// this one's would take them back.
+    private func save(_ option: Option) {
         let search = session
         tab.updatePreferences {
-            $0.searchMatchScope = search.matchScope
-            $0.searchPatternMode = search.patternMode
-            $0.searchRecursive = search.recursive
-            $0.searchSkipGitFolders = search.skipGitFolders
-            $0.searchSkipGitIgnored = search.skipGitIgnored
+            switch option {
+            case .matchScope: $0.searchMatchScope = search.matchScope
+            case .patternMode: $0.searchPatternMode = search.patternMode
+            case .recursive: $0.searchRecursive = search.recursive
+            case .skipGitFolders: $0.searchSkipGitFolders = search.skipGitFolders
+            case .skipGitIgnored: $0.searchSkipGitIgnored = search.skipGitIgnored
+            }
         }
     }
 
@@ -395,28 +402,36 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     private func optionItems() -> [AppMenuItem] {
         let search = session
-        func item(_ title: String, _ checked: Bool, _ apply: @escaping () -> Void) -> AppMenuItem {
+        func item(
+            _ title: String, _ checked: Bool, _ option: Option, _ apply: @escaping () -> Void
+        ) -> AppMenuItem {
             AppMenuItem(title: title, checked: checked) { [weak self] in
                 apply()
-                self?.saveOptions()
+                self?.save(option)
             }
         }
         return [
             .heading("Match"),
-            item("Name", search.matchScope == .name) { search.setMatchScope(.name) },
-            item("Full Path", search.matchScope == .path) { search.setMatchScope(.path) },
+            item("Name", search.matchScope == .name, .matchScope) { search.setMatchScope(.name) },
+            item("Full Path", search.matchScope == .path, .matchScope) { search.setMatchScope(.path) },
             .separator,
             .heading("Match As"),
-            item(SearchPatternModePreference.text.label, search.patternMode == .text) { search.setPatternMode(.text) },
-            item(SearchPatternModePreference.glob.label, search.patternMode == .glob) { search.setPatternMode(.glob) },
-            item(SearchPatternModePreference.regex.label, search.patternMode == .regex) {
+            item(SearchPatternModePreference.text.label, search.patternMode == .text, .patternMode) {
+                search.setPatternMode(.text)
+            },
+            item(SearchPatternModePreference.glob.label, search.patternMode == .glob, .patternMode) {
+                search.setPatternMode(.glob)
+            },
+            item(SearchPatternModePreference.regex.label, search.patternMode == .regex, .patternMode) {
                 search.setPatternMode(.regex)
             },
             .separator,
-            item("Search Subfolders", search.recursive) { search.setRecursive(!search.recursive) },
+            item("Search Subfolders", search.recursive, .recursive) { search.setRecursive(!search.recursive) },
             .separator,
-            item("Skip .git Folders", search.skipGitFolders) { search.setSkipGitFolders(!search.skipGitFolders) },
-            item("Skip Files Ignored by Git", search.skipGitIgnored) {
+            item("Skip .git Folders", search.skipGitFolders, .skipGitFolders) {
+                search.setSkipGitFolders(!search.skipGitFolders)
+            },
+            item("Skip Files Ignored by Git", search.skipGitIgnored, .skipGitIgnored) {
                 search.setSkipGitIgnored(!search.skipGitIgnored)
             },
         ]

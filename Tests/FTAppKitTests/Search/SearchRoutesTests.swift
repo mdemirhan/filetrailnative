@@ -503,24 +503,37 @@ extension ExplorerWindowlessTests {
             #expect(!session.recursive)
             #expect(session.skipGitIgnored)
             #expect(!session.hasCachedSearch)
-            // What a window opened next reads, with no session of its own yet.
-            let saved = harness.channel.preferences(for: nil)
-            #expect(saved.searchPatternMode == .regex)
-            #expect(saved.searchMatchScope == .path)
-            #expect(!saved.searchRecursive)
-            #expect(saved.searchSkipGitIgnored)
-            // What a tab or pane of this window reads.
-            let new = SearchSession(preferences: tab.preferences, includeHidden: false)
-            #expect(new.patternMode == .regex)
-            #expect(new.matchScope == .path)
-            #expect(!new.recursive)
-            #expect(new.skipGitIgnored)
-            #expect(new.sortBy == .name && new.sortDirection == .desc)
+            // A tab opened next in this window, and a window opened next: what each reads, and the search of a pane
+            // opened in it (the harness gives a window its services only once it is open, after its first pane's
+            // search was made).
+            let group = try #require(tab.group)
+            group.openTab(path: harness.folder.path, from: tab)
+            let other = try #require(group.tabs.last)
+            #expect(other !== tab)
+            group.openNewWindow(from: tab, path: harness.folder.path)
+            let window = try #require(harness.windows.front as? MainWindowController)
+            #expect(window.group !== group)
+            for opened in [other, window] {
+                opened.servicesOverride = harness.services
+                opened.ensureLoaded()
+                #expect(await waitUntil { opened.workspace.isReady && opened.loaded })
+                #expect(opened.preferences.searchPatternMode == .regex)
+                let pane = opened.openSecondPane(at: harness.folder.appending("Alpha").path)
+                let new = pane.search.session
+                #expect(new !== session)
+                #expect(new.patternMode == .regex)
+                #expect(new.matchScope == .path)
+                #expect(!new.recursive)
+                #expect(new.skipGitIgnored)
+                #expect(!new.hasCachedSearch)
+            }
+            let inTab = try #require(other.panes.last).search.session
+            #expect(inTab.sortBy == .name && inTab.sortDirection == .desc)
             await harness.close()
         }
 
         // Options chosen in one pane's field leave the other pane's search as it is; a pane opened next starts with
-        // them.
+        // those chosen last, whichever search each was chosen in.
         @Test func optionsChosenInOnePaneLeaveTheOther() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -535,12 +548,21 @@ extension ExplorerWindowlessTests {
             #expect(left.search.session.matchScope == .path)
             #expect(right.search.session.patternMode == .text)
             #expect(right.search.session.matchScope == .name)
+            // An option chosen in the other pane saves that option alone: its search, made before the left one's
+            // were chosen, doesn't take them back.
             tab.activate(right)
+            try choose(["Skip Files Ignored by Git"], in: tab)
+            #expect(right.search.session.skipGitIgnored)
+            #expect(right.search.session.patternMode == .text)
+            #expect(tab.preferences.searchSkipGitIgnored)
+            #expect(tab.preferences.searchPatternMode == .glob)
+            #expect(tab.preferences.searchMatchScope == .path)
             tab.closePane()
             let reopened = tab.openSecondPane(at: harness.folder.path)
             #expect(await waitUntil { reopened.loaded && reopened.hasShownFolder && !reopened.isNavigating })
             #expect(reopened.search.session.patternMode == .glob)
             #expect(reopened.search.session.matchScope == .path)
+            #expect(reopened.search.session.skipGitIgnored)
             await harness.close()
         }
 
