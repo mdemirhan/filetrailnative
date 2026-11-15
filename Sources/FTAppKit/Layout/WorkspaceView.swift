@@ -161,11 +161,19 @@ final class WorkspaceView: NSView {
     override var isFlipped: Bool { true }
 
     private var titlebarObserver: (any NSObjectProtocol)?
+    /// Where the keyboard is, for the line over the active pane: the window's first responder and whether it is key.
+    private var keyboardObservation: NSKeyValueObservation?
+    private var keyObservers: [any NSObjectProtocol] = []
+
+    /// Whether the active pane has the keyboard, and whether its window is in front: the line over it is lit, dimmed or
+    /// grey. Asked each time the keyboard moves, the window comes or goes to the background, or the active pane changes.
+    var activePaneKeyboard: () -> (hasKeyboard: Bool, windowActive: Bool) = { (true, true) }
 
     /// The title bar's container changes height when the system tab bar shows or goes: the content column's panes
     /// start under it, and are laid out again each time.
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
+        observeKeyboard()
         if let titlebarObserver { NotificationCenter.default.removeObserver(titlebarObserver) }
         titlebarObserver = nil
         guard let container = window?.standardWindowButton(.closeButton)?.superview?.superview else { return }
@@ -179,6 +187,24 @@ final class WorkspaceView: NSView {
                 self?.inspectorColumn.needsLayout = true
                 self?.sidebarColumn.needsLayout = true
             }
+        }
+    }
+
+    /// The line over the active pane follows the keyboard. It is looked at again in the content column's next layout,
+    /// once the move is over: a pane gives up the keyboard before a dialog that keeps its focused look takes it back.
+    private func observeKeyboard() {
+        keyboardObservation = nil
+        for observer in keyObservers { NotificationCenter.default.removeObserver(observer) }
+        keyObservers = []
+        guard let window else { return }
+        keyboardObservation = window.observe(\.firstResponder) { [weak self] _, _ in
+            MainActor.assumeIsolated { self?.contentColumn.needsLayout = true }
+        }
+        for name in [NSWindow.didBecomeKeyNotification, NSWindow.didResignKeyNotification] {
+            keyObservers.append(
+                NotificationCenter.default.addObserver(forName: name, object: window, queue: .main) { [weak self] _ in
+                    MainActor.assumeIsolated { self?.contentColumn.needsLayout = true }
+                })
         }
     }
 
@@ -310,9 +336,9 @@ final class WorkspaceView: NSView {
         effectiveAppearance.performAsCurrentDrawingAppearance {
             contentColumn.bandLine.layer?.backgroundColor = WorkspaceBandLine.color.cgColor
             inspectorColumn.bandLine.layer?.backgroundColor = WorkspaceBandLine.color.cgColor
-            contentColumn.activeLine.layer?.backgroundColor =
-                NSColor(AppearanceModel.shared.theme.accent.solid).cgColor
         }
+        // The accent may have changed.
+        contentColumn.activeLine.needsDisplay = true
     }
 
     override func viewDidChangeEffectiveAppearance() {
@@ -333,7 +359,6 @@ final class WorkspaceView: NSView {
         secondStatusCell.isHidden = !isReady || !showsTwoPanes
         column.secondCell.isHidden = !isReady || !showsTwoPanes
         column.divider.isHidden = !isReady || !showsTwoPanes
-        column.activeLine.isHidden = !isReady || !showsTwoPanes
         guard isReady else { return }
         let top = panesTop
         let paneHeight = max(0, height - top - PathBarRowView.height)
@@ -358,12 +383,11 @@ final class WorkspaceView: NSView {
             secondStatusCell.frame = NSRect(
                 x: left + rightX, y: statusTop, width: max(0, bounds.width - left - rightX),
                 height: PathBarRowView.height)
-            let active = activePane == 0 ? column.mainCell.frame : column.secondCell.frame
-            let inset = PaneSplit.activeLineInset
-            column.activeLine.frame = NSRect(
-                x: active.minX + inset, y: top, width: max(0, active.width - inset * 2),
-                height: PaneSplit.activeLineHeight)
         }
+        let active = showsTwoPanes && activePane == 1 ? column.secondCell.frame : column.mainCell.frame
+        let keyboard = activePaneKeyboard()
+        column.activeLine.frame = ActivePaneLine.frame(over: active, top: top)
+        column.activeLine.look = !keyboard.windowActive ? .background : keyboard.hasKeyboard ? .lit : .dimmed
         // A closing panel stays over the content's right edge, out of reach, while it slides away.
         if inspectorCell.superview === column {
             inspectorCell.frame = NSRect(
@@ -546,8 +570,8 @@ final class WorkspaceContentColumn: NSView {
     let secondCell = WorkspaceCell()
     /// Between the two panes: drags to share the room, double-clicks to share it evenly.
     let divider = PaneDividerView()
-    /// The line over the active pane, while the tab shows two.
-    let activeLine = NSView()
+    /// The line over the active pane, with one pane as with two: where the keyboard is.
+    let activeLine = ActivePaneLine()
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -557,12 +581,10 @@ final class WorkspaceContentColumn: NSView {
         // The rows that reached the old hairline stop at the sidebar's edge.
         mainCell.layer?.masksToBounds = true
         secondCell.layer?.masksToBounds = true
-        activeLine.wantsLayer = true
-        activeLine.layer?.cornerRadius = PaneSplit.activeLineHeight / 2
         for view in [backdrop, band, mainCell, secondCell, divider, activeLine, bandLine] as [NSView] {
             addSubview(view)
         }
-        for view in [secondCell, divider, activeLine] as [NSView] { view.isHidden = true }
+        for view in [secondCell, divider] as [NSView] { view.isHidden = true }
         band.setAccessibilityIdentifier("toolbar.band")
         bandLine.isHidden = true
     }
@@ -676,8 +698,6 @@ enum PaneSplit {
     static let minimumPaneWidth = 280.0
     /// The divider's room: a hairline in the middle of a band the pointer can take.
     static let dividerWidth = 9.0
-    static let activeLineHeight = 2.0
-    static let activeLineInset = 8.0
 
     static func clamp(_ split: Double) -> Double {
         guard split.isFinite else { return even }

@@ -405,6 +405,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             guard let self else { return }
             self.group?.tabChanged(self)
         }
+        workspace.activePaneKeyboard = { [weak self] in
+            guard let content = self?.activePane.content else { return (true, true) }
+            return (content.keyboardIsInPane, content.windowIsActive)
+        }
         workspace.onWidthsChosen = { [weak self] panes in
             self?.updatePanels {
                 $0.treeWidth = Int(panes.preferredTreeWidth)

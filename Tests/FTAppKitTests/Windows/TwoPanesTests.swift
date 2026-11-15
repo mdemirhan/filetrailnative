@@ -101,6 +101,67 @@ extension ExplorerWindowlessTests {
             #expect(tab.paneWithKeyboard === right)
         }
 
+        /// The line runs along the top of `cell`, its ends in from the cell's sides.
+        private func isOver(_ line: ActivePaneLine, _ cell: WorkspaceCell) -> Bool {
+            let inset = CGFloat(ActivePaneLine.inset)
+            return line.frame.minX == cell.frame.minX + inset && line.frame.maxX == cell.frame.maxX - inset
+                && line.frame.minY == cell.frame.minY
+        }
+
+        /// The line's look for where the keyboard is: grey whatever it is while the window is in the background.
+        private func expectedLook(_ tab: MainWindowController, lit: Bool) -> ActivePaneLine.Look {
+            let keyboard = tab.workspace.activePaneKeyboard()
+            #expect(keyboard.hasKeyboard == lit)
+            return !keyboard.windowActive ? .background : lit ? .lit : .dimmed
+        }
+
+        @Test func theLineOverThePaneShowsWithOnePaneAndIsLitWhileThePaneOrItsRenameHasTheKeyboard() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let line = tab.workspace.contentColumn.activeLine
+            tab.content.focusList()
+            harness.layout(tab)
+            #expect(!line.isHidden)
+            #expect(isOver(line, tab.workspace.mainCell))
+            #expect(line.look == expectedLook(tab, lit: true))
+
+            tab.perform(.focusTreePane)
+            harness.layout(tab)
+            #expect(line.look == expectedLook(tab, lit: false))
+
+            // A name being renamed is the pane's keyboard too.
+            let item = try #require(tab.content.entries.first)
+            tab.content.select(paths: [item.path])
+            #expect(tab.content.beginRename(path: item.path))
+            harness.layout(tab)
+            #expect(line.look == expectedLook(tab, lit: true))
+            tab.content.renameCancelled()
+        }
+
+        @Test func withTwoPanesTheLineIsOverTheActivePaneAndDimsWhileTheTreeHasTheKeyboard() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Beta")
+            let line = tab.workspace.contentColumn.activeLine
+            right.content.focusList()
+            harness.layout(tab)
+            #expect(isOver(line, tab.workspace.secondCell))
+            #expect(line.look == expectedLook(tab, lit: true))
+
+            tab.perform(.focusTreePane)
+            harness.layout(tab)
+            // The tree drives the right pane still: the line stays over it, dimmed.
+            #expect(tab.activePane === right)
+            #expect(isOver(line, tab.workspace.secondCell))
+            #expect(line.look == expectedLook(tab, lit: false))
+
+            left.content.focusList()
+            harness.layout(tab)
+            #expect(isOver(line, tab.workspace.mainCell))
+            #expect(line.look == expectedLook(tab, lit: true))
+        }
+
         @Test func tabWalksTheTreeTheLeftPaneAndTheRightPaneInTurn() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }

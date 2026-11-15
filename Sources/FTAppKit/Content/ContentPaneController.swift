@@ -1148,6 +1148,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     // MARK: Host
 
     var paneHasKeyboard: Bool { pane?.hasKeyboard ?? false }
+    /// The keyboard is in this pane: its list has it (or a dialog keeps the list's focused look), or a field in the pane
+    /// does, as a name being renamed.
+    var keyboardIsInPane: Bool {
+        if paneHasKeyboard { return true }
+        let responder = view.window?.firstResponder
+        // A field's keyboard is its editor's.
+        let field = (responder as? NSTextView)?.delegate as? NSView ?? responder as? NSView
+        return field?.isDescendant(of: view) ?? false
+    }
     var windowIsActive: Bool {
         guard let window = view.window else { return windowActive }
         #if DEBUG
