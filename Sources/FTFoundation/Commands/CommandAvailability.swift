@@ -55,6 +55,9 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var paneCount: Int?
     /// The folder the other pane shows, while the tab shows two: empty while it shows none or search results.
     public var otherPanePath: String?
+    /// The folder the other pane is in, whatever it shows of it (the Trash and search results too): where Go to Other
+    /// Pane's Folder goes. Nil for the same as `otherPanePath`.
+    public var otherPaneFolder: String?
     /// Trash is never added to Favorites; it is offered for removal only when it is one.
     public var trashPath: String?
     /// The Trash is among the favorites, so File ▸ Remove from Favorites can take it out.
@@ -77,7 +80,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
         hasCachedSearch: Bool? = nil, tabCount: Int? = nil, paneCount: Int? = nil, otherPanePath: String? = nil,
-        trashPath: String? = nil,
+        otherPaneFolder: String? = nil, trashPath: String? = nil,
         homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
         viewSizeSteps: ViewSize.Steps? = nil, filterPinnable: Bool? = nil,
@@ -100,6 +103,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.tabCount = tabCount
         self.paneCount = paneCount
         self.otherPanePath = otherPanePath
+        self.otherPaneFolder = otherPaneFolder
         self.trashPath = trashPath
         self.homePath = homePath
         self.trashIsEmpty = trashIsEmpty
@@ -416,7 +420,10 @@ public enum CommandAvailability {
         case .showFolderInOtherPane:
             return !context.currentPath.isEmpty && !context.isSearchMode
         case .goToOtherPaneFolder:
-            guard let other = context.otherPanePath else { return context.paneCount == nil }
+            // Going to a folder writes nothing into it: the Trash, or the folder searched, is somewhere to go too.
+            guard let other = context.otherPaneFolder ?? context.otherPanePath else {
+                return context.paneCount == nil
+            }
             return !other.isEmpty && other != context.currentPath
         case .copyToOtherPane, .moveToOtherPane:
             // Into the folder the other pane shows, from the list: not when both show one folder.

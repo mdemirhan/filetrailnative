@@ -112,7 +112,9 @@ extension MainWindowController {
         panes = [keep]
         activePaneIndex = 0
         window?.minSize = minimumWindowSize
-        activePaneChanged(saving: false)
+        // The active pane is the one it was: nothing that follows it is told of a change, so the sidebar's row (a
+        // favorite it was opened from) and Show Info's item stay as they are.
+        updateTitle()
         panesChanged()
         // The list that had the keyboard keeps it; the pane that went gives it to the one that stays.
         if keyboard != nil { keepKeyboard(in: keep) }

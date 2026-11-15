@@ -1991,6 +1991,7 @@ extension MainWindowController: ExplorerWindowContext {
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,
             tabCount: group?.tabs.count ?? 1, paneCount: panes.count,
             otherPanePath: otherPane.map { otherPaneDestination($0) ?? "" },
+            otherPaneFolder: otherPane.map(\.shownFolderPath),
             trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
             trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),

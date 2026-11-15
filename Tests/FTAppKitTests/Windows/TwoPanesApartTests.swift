@@ -89,6 +89,60 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { info.targetOverride == nil })
         }
 
+        // Closing the other pane changes nothing of the active one: Show Info's item stays, its properties aren't
+        // asked for again, and the sidebar's row stays where it was, whichever side the active pane was on.
+        @Test(arguments: [false, true]) func closingTheOtherPaneLeavesWhatFollowsTheActivePane(rightActive: Bool)
+            async throws
+        {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, _, right) = try await twoPanes(harness, right: "Alpha")
+            if rightActive { tab.focusPane(right) }
+            await settle()
+            let active = tab.activePane
+            let info = try #require(tab.infoController)
+            let beta = real(harness, "Beta")
+            info.showInfo(for: beta)
+            harness.layout(tab)
+            #expect(await waitUntil { info.propertiesLoad.phase == .answered(path: beta) })
+            let asked = info.propertiesLoad.requests
+            let row = tab.sidebarController.model.selected
+            var changes: [ExplorerWindowChange] = []
+            let watching = tab.observe { changes.append($0) }
+            defer { withExtendedLifetime(watching) {} }
+
+            tab.perform(.toggleTwoPanes)
+            await settle()
+            #expect(tab.panes.count == 1 && tab.activePane === active)
+            #expect(info.targetOverride == beta)
+            #expect(info.propertiesLoad.requests == asked)
+            #expect(tab.sidebarController.model.selected == row)
+            // The panes changed; the active pane's folder did not.
+            #expect(changes.contains(.panels))
+            #expect(!changes.contains(.folder), "\(changes)")
+            #expect(tab.sidebarController.paneFolders.isEmpty)
+        }
+
+        // Go to Other Pane's Folder goes wherever the other pane is, the Trash and a folder being searched too:
+        // nothing is written there, unlike Copy and Move to Other Pane.
+        @Test func goToOtherPanesFolderIsOfferedForTheTrashAndForSearchResults() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, _, right) = try await twoPanes(harness, right: "Alpha")
+            #expect(tab.canPerform(.goToOtherPaneFolder))
+            let trash = real(harness) + "/.Trash"
+            try FileManager.default.createDirectory(atPath: trash, withIntermediateDirectories: true)
+            tab.trashHomePath = real(harness)
+            await right.navigate(to: URL(fileURLWithPath: trash))
+            #expect(right.shownFolderPath == trash)
+            #expect(!tab.canPerform(.copyToOtherPane))
+            #expect(tab.canPerform(.goToOtherPaneFolder))
+            tab.perform(.goToOtherPaneFolder)
+            #expect(await waitUntil { tab.activePane.shownFolderPath == trash })
+            // Both in one folder now: nowhere else to go.
+            #expect(!tab.canPerform(.goToOtherPaneFolder))
+        }
+
         // MARK: The visits Go To counts
 
         /// Whether the Go To box counts a visit of `path`.
