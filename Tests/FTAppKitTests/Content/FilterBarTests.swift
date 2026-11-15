@@ -72,6 +72,50 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A press on the bar of the pane that isn't active, or on one of its buttons, makes that pane the active
+        // one, as a press on its list or its other bars does: what the button changes is then in the pane being used.
+        @Test func aPressOnTheBarMakesItsPaneTheActiveOne() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let path = try harness.makeFolder(named: "Many", files: 30).path
+            let tab = try await harness.open(path)
+            #expect(await waitUntil { tab.content.entries.count == 30 })
+            let left = tab.activePane
+            let right = tab.openSecondPane(at: harness.folder.path)
+            #expect(await waitUntil { right.loaded && right.hasShownFolder && !right.isNavigating })
+            harness.layout(tab)
+            left.content.applyFilterKey(.type("0"))
+            let bar = left.content.container.filterBar
+            #expect(bar.isShowingFilter)
+
+            tab.focusPane(right)
+            #expect(tab.activePane === right)
+            // The mode already shown changes nothing but the pane.
+            bar.modes.press(.fuzzy)
+            #expect(tab.activePane === left)
+            #expect(left.content.filterMode == .fuzzy)
+
+            tab.focusPane(right)
+            bar.modes.press(.contains)
+            #expect(tab.activePane === left)
+            #expect(left.content.filterMode == .contains)
+
+            tab.focusPane(right)
+            _ = bar.pin.sendAction(bar.pin.action, to: bar.pin.target)
+            #expect(tab.activePane === left)
+            #expect((left.content.pinnedFilter != nil))
+
+            tab.focusPane(right)
+            let event = try #require(
+                NSEvent.mouseEvent(
+                    with: .leftMouseDown, location: .zero, modifierFlags: [], timestamp: 0,
+                    windowNumber: tab.window?.windowNumber ?? 0, context: nil, eventNumber: 0, clickCount: 1,
+                    pressure: 1))
+            bar.mouseDown(with: event)
+            #expect(tab.activePane === left)
+            #expect((left.content.pinnedFilter != nil))
+            await harness.close()
+        }
+
         @Test func theBarTurnsRedWhenNothingMatchesAndGoesWithTheFilter() async throws {
             let harness = try ExplorerHarness.windowless()
             let path = try harness.makeFolder(named: "Few", files: 5).path

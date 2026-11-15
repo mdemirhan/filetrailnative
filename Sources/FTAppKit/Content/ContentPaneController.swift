@@ -277,6 +277,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         container.backgroundMenu = { [weak self] in self?.contextMenu(for: nil) }
         container.stateView.onOpenPrivacySettings = { [weak self] in self?.loaders.openPrivacySettings() }
         // The bar's ✕ brings the list back as Esc does, a pinned filter too; the list keeps the keyboard.
+        container.filterBar.onFocusList = { [weak self] in self?.focusList() }
         container.filterBar.onClear = { [weak self] in self?.removeFilter() }
         container.filterBar.onTogglePin = { [weak self] in self?.togglePin() }
         container.filterBar.onToggleMode = { [weak self] in self?.onToggleFilterMode?() }

@@ -24,6 +24,9 @@ final class ListFilterBarView: NSView, TextStyleSource {
     /// Whether the bar shows a filter.
     private(set) var isShowingFilter = false
 
+    /// Told of a press anywhere on the bar, its buttons too: the list above it takes the keyboard, and with it its
+    /// pane becomes the active one, as a press on the pane's other bars does.
+    var onFocusList: () -> Void = {}
     /// Told when the ✕ is pressed.
     var onClear: () -> Void = {}
     /// Told when the other mode is chosen.
@@ -52,6 +55,7 @@ final class ListFilterBarView: NSView, TextStyleSource {
         value.setAccessibilityIdentifier("listFilter.value")
         count.font = NSFont.monospacedDigitSystemFont(ofSize: CGFloat(DesignTokens.typeScale.callout), weight: .regular)
         count.setAccessibilityIdentifier("listFilter.count")
+        modes.onPress = { [weak self] in self?.onFocusList() }
         modes.onChoose = { [weak self] _ in self?.onToggleMode() }
         clear.setAccessibilityLabel("Clear filter")
         clear.toolTip = "Clear Filter (Esc)"
@@ -71,9 +75,15 @@ final class ListFilterBarView: NSView, TextStyleSource {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    @objc private func cleared(_ sender: Any?) { onClear() }
+    @objc private func cleared(_ sender: Any?) {
+        onFocusList()
+        onClear()
+    }
 
-    @objc private func toggledPin(_ sender: Any?) { onTogglePin() }
+    @objc private func toggledPin(_ sender: Any?) {
+        onFocusList()
+        onTogglePin()
+    }
 
     /// Shows the filter, or takes the bar away when there is none.
     func show(query: String, mode: NameMatchMode, shown: Int, total: Int, theme: Theme, pinned: Bool = false) {
@@ -154,16 +164,18 @@ final class ListFilterBarView: NSView, TextStyleSource {
         place(count, x: x, size: NSSize(width: max(0, min(countWidth, right - gap - x)), height: count.lineHeight))
     }
 
-    /// The buttons take the pointer; the list keeps the keyboard (a press here does not change who has it).
+    /// The buttons take the pointer and the bar never has the keyboard: a press on it gives the keyboard to its list.
     override var acceptsFirstResponder: Bool { false }
 
-    override func mouseDown(with event: NSEvent) {}
+    override func mouseDown(with event: NSEvent) { onFocusList() }
 }
 
 /// The filter's mode as the system's segmented control, Fuzzy and Contains side by side. Only a click chooses: it never
 /// takes the keyboard, so typing goes on into the list. While the filter is pinned the other mode can't be chosen.
 final class ListFilterModeControl: SystemSegmentedControl {
     private static let modes: [NameMatchMode] = [.fuzzy, .contains]
+    /// Told of a press on either segment, the one shown and a locked one too.
+    var onPress: () -> Void = {}
     /// Told the mode chosen, when it is not the one shown.
     var onChoose: (NameMatchMode) -> Void = { _ in }
 
@@ -201,6 +213,7 @@ final class ListFilterModeControl: SystemSegmentedControl {
 
     private func chose(_ index: Int) {
         guard Self.modes.indices.contains(index) else { return }
+        onPress()
         let wanted = Self.modes[index]
         // The segment pressed stays chosen once the filter has taken its mode, which then shows it.
         showMode()
