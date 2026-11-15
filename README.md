@@ -14,7 +14,7 @@ A Mac file browser with fast search, a real folder tree and true cut and paste. 
 - **Cut and paste files.** ⌘X and ⌘V to move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
 - **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that have those letters in order, and a filter you pin stays as you go from folder to folder.
 - **Your windows, saved by name.** Save a window's tabs and panes as a workspace and open it again with one key.
-- **Keyboard first, with your keys.** Everything can be done from the keyboard, and every command can have a shortcut, two keys per command, that you choose. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.
+- **Keyboard first, with your keys.** Everything can be done from the keyboard, the command palette (⇧⌘P) finds any command by name, and every command can have a shortcut, two keys per command, that you choose. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.
 - **See what's taking the space.** Sort by size and every folder gets a bar, so the big ones stand out at a glance.
 - **Fast in big folders, and never stuck.** Scrolling stays smooth with thousands of files, and a slow or unresponsive disk never freezes the window.
 - **Free, open source and private.** MIT licensed, with no accounts, no analytics and nothing sent anywhere.
@@ -55,6 +55,12 @@ In Finder, moving files between two folders means two windows, or a drag held ov
 - **One tree for both.** The folder tree follows the pane you are in and marks the folder each pane shows.
 - **Kept with the tab.** Both panes, the active one and the divider come back when you quit and open File Trail again, and a workspace saves them too.
 
+## Tabs, windows and workspaces
+
+Every tab has its own folder, history, folder tree, view and search, and every window its own tabs. Move a tab into a window of its own, or merge every window back into one.
+
+When a set of folders is one piece of work, save the window as a workspace: its tabs with their panes, views and sizes, the folder tree and the Info panel. Window ▸ Workspaces opens it again in a new window, or with ⌥ in place of the one you are in, and the first five open with ⌃⌘1 to ⌃⌘5. Settings → Browsing renames, removes and reorders them.
+
 ## Cut, copy and paste, with a clipboard you can see
 
 <p align="center">
@@ -87,6 +93,7 @@ In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothi
 Everything File Trail does can be done from the keyboard, and the keys are yours to choose.
 
 - **Move around without the mouse.** Tab switches between the folder tree and the files, ⌘↑ goes up a folder and ⌘↓ opens what is selected, and Control-D and Control-U move half a page.
+- **Find any command by typing.** The command palette (⇧⌘P) lists every command File Trail has, with where it is in the menus, its keys and a line on what it does. Type a few of its letters, in order, and press Return to run it; the commands you ran last come first.
 - **Get back what you just left.** ⌘⇧T reopens the tab closed last, and ⌘⇧F shows the last search results again.
 - **Choose your own shortcuts.** Every command can be on a shortcut, shown in the menus. In Finder, changing one means System Settings, App Shortcuts and the menu item's exact name; in File Trail, it is a list in Settings, with two keys per command and a warning before one is taken from another command.
 - **Help knows your keys.** The built-in Help lists every shortcut, the ones you changed included, and finds one as you type.
@@ -130,9 +137,7 @@ Icons view shows Quick Look previews of photos, PDFs and other documents. List v
   <img src="docs/screenshots/previews.png" alt="A folder of photos in Previews view, four large previews filling the pane, each with its name under it" width="900">
 </p>
 
-Previews view (⌘4) is for looking through pictures and documents: it fills the pane with 9, 4, 2 or 1 large previews at a time, each in its own proportions, and a scroll settles on a whole row. Everything else works as in Icons view: select, rename, drag, cut and paste.
-
-Every tab has its own folder, history, folder tree, view and search, and every window its own tabs. Move a tab into a window of its own, or merge every window back into one. Save a window's tabs, panes and all, as a workspace, and open it again from Window ▸ Workspaces, the first five with ⌃⌘1 to ⌃⌘5.
+Previews view (⌘4) is for looking through pictures and documents: it fills the pane with 9, 4, 2 or 1 large previews at a time, each in its own proportions, and a scroll settles on a whole row. Everything else works as in Icons view: select, rename, drag, cut and paste. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen. Give a count a key in Settings → Shortcuts, and a file selected in the List is one press from filling the pane.
 
 ## Zip, unzip and convert, in place
 
@@ -151,8 +156,8 @@ File Trail follows the macOS Light and Dark setting, or stays in the one you pic
 
 ## Fast, private and open source
 
-- **Built for big folders.** Scrolling stays smooth with thousands of files, in Icons, List and Compact List alike, and every release is measured to keep it that way. A disk or network drive that is slow or stops answering never freezes the window: File Trail waits for it in the background.
-- **Nothing leaves your Mac.** There are no accounts and no analytics, and File Trail makes no network connections of its own. It is a native app of about 11 MB.
+- **Built for big folders.** Scrolling stays smooth with thousands of files, in Icons, List and Compact List alike. Every release measures it against the one before, and one that clearly scrolls slower isn't released. A disk or network drive that is slow or stops answering never freezes the window: File Trail waits for it in the background.
+- **Nothing leaves your Mac.** There are no accounts and no analytics, and File Trail makes no network connections of its own. It is a native app of about 13 MB.
 - **Free and open source**, under the [MIT License](LICENSE). The code is here to read, build and change.
 
 ## Also in the box
@@ -160,6 +165,7 @@ File Trail follows the macOS Light and Dark setting, or stays in the one you pic
 - Favorites in the sidebar, with an icon of your choice for each, in the order you drag them to
 - Open in Terminal, Copy Path and Edit in your text editor on a key, and Open With for the apps you choose
 - Duplicate, Move To, New Folder and Move to Trash, with the Info panel and Quick Look a key away
+- Share the selected items by AirDrop, Mail, Messages and the rest, from the File menu, the right-click menu, the Info panel or the toolbar
 - Drag items in from Finder or other apps, and out to Finder, the desktop or any app, as from Finder
 - A screenshot or text you copied in another app saved as a new file in the folder you are in (⇧⌘V), and a file's image or text copied to paste in another app (⇧⌘C)
 - Eject disks from the sidebar, and open disk images in File Trail instead of a Finder window
@@ -203,7 +209,7 @@ Each step prints one line, and the full logs are in `build/logs/`.
 
 Open issues are in [docs/state/known-issues.md](docs/state/known-issues.md) and [docs/state/battery.md](docs/state/battery.md).
 
-`scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk), and the tests that put real windows, menus and disks on screen. Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh` and `FILETRAIL_GUI_TESTS=1 swift test --filter GUITests` before a release; `scripts/release.sh` runs both.
+`scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk), the tests that put real windows, menus and disks on screen, and a few slow release-only tests. Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh`, `FILETRAIL_GUI_TESTS=1 swift test --filter GUITests` and `FILETRAIL_RELEASE_TESTS=1 scripts/ci.sh`; `scripts/release.sh` runs all three.
 
 <details>
 <summary>Making a signed app and a release</summary>
@@ -223,7 +229,15 @@ A version comes from git: a release is a commit tagged `vX.Y.Z`, and any other b
 scripts/release.sh <major|minor|patch|X.Y.Z> --notes <file> [--yes] [--dry-run]
 ```
 
-From a clean `main` that is already on GitHub, with the test fixtures built, it runs `scripts/ci.sh --full` with the large-file tests and then the tests of real windows, tags the commit, builds the notarized app, checks that the built version is the tag and that nothing moved meanwhile, pushes the tag, and makes a draft GitHub release with the disk image and the ZIP. A failure before the push removes the tag. It stops if an earlier release was left unfinished, and it never publishes: read the draft over, then press Publish release on GitHub.
+From a clean `main` that is already on GitHub, with the test fixtures built, it:
+
+1. runs `scripts/ci.sh --full` with the large-file tests, the release-only tests and the fuzz tests at more cases, from a seed of the day;
+2. runs the tests of real windows, which also time scrolling in the List, Icons and Compact List, and shows those frame times against the last release made on the same Mac model, stopping on a clear slowdown (the limits are in `scripts/lib/frame-timing-limits.sh`);
+3. adds the frame times to `docs/frame-timings.json` in a commit of their own and tags that commit;
+4. builds the notarized app and checks that its version is the tag and that nothing moved meanwhile;
+5. pushes `main` and the tag together, and makes a draft GitHub release with the disk image and the ZIP.
+
+A failure before the push takes back the tag and the frame-times commit. It stops if an earlier release was left unfinished, and it never publishes: read the draft over, then press Publish release on GitHub.
 
 The notes are written for people before the release starts, in a Markdown file outside the checkout (or under `build/`), and named with `--notes <file>`. They become both the draft's text and the tag's message, so `git show vX.Y.Z` keeps them. The tag gets the file as it is when the commit is tagged: change the notes in the file, not on GitHub, or the tag and the release page will differ. The first release is asked for by exact version, as there is nothing yet for `major`, `minor` or `patch` to count from. `--dry-run` only says what it would release and what would stop it.
 
