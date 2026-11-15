@@ -81,7 +81,7 @@ import Testing
         #expect(narrow.scopeMenu.titleOfSelectedItem == "“Application Support”")
         #expect(narrow.filter.frame.minX == narrow.scopeMenu.frame.maxX + 6)
         #expect(narrow.filter.frame.maxX == narrow.doneButton.frame.minX - 6)
-        #expect(narrow.filter.input.frame.width >= 45)
+        #expect(narrow.filter.frame.width >= 200)
 
         // The pop-up is as wide as the place searched, not its longest place: a shorter one leaves the filter more.
         let longWidth = narrow.scopeMenu.frame.width
@@ -95,6 +95,21 @@ import Testing
         #expect(narrow.scopeMenu.titleOfSelectedItem == "Home")
         #expect(narrow.scopeMenu.frame.width < longWidth - 50)
         #expect(narrow.filter.frame.minX == narrow.scopeMenu.frame.maxX + 6)
+
+        // A pane of two at its narrowest, 280 pt: the place's name is cut short and the filter keeps what a filter
+        // needs, its chip inside it; while Stop shows too, the pop-up is at its smallest and the filter is still
+        // there.
+        let pane = try shown(width: 280)
+        #expect(pane.showsScopeMenu)
+        #expect(pane.scopeMenu.frame.width == 72)
+        #expect(pane.filter.frame.width >= 120)
+        #expect(pane.filter.frame.maxX == pane.doneButton.frame.minX - 6)
+        #expect(pane.filter.modeChip.frame.maxX < pane.filter.bounds.width)
+        // A bar with room for the filter's 200 and less than the place's name: the name gives way, not the filter.
+        let between = try shown(width: 400)
+        #expect(between.showsScopeMenu)
+        #expect(between.filter.frame.width == 200)
+        #expect(between.scopeMenu.frame.width > 72 && between.scopeMenu.frame.width < longWidth)
     }
 
     // "No matches" is drawn in the body size, at weight 500, in the primary text color.

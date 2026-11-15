@@ -26,12 +26,15 @@ public struct SearchLayout: Equatable, Sendable {
     public var segmentMaxWidth: Double
 
     /// The results filter: 280 wide, and at least 200 beside the scope segments: a bar with less room shows the scopes
-    /// as one pop-up button (`scopeMenuMaxWidth` at most) and the filter takes the rest. Its field: the control height,
+    /// as one pop-up button and the filter takes the rest. The pop-up is `scopeMenuMaxWidth` at most, and where it
+    /// would leave the filter less than its 200 its name is cut short, down to `scopeMenuMinWidth` (its icon, a few
+    /// letters and its arrows); only then does the filter give up more. Its field: the control height,
     /// padding 0 4, 6 between the chip, the text and the clear button. It has no icon: the chip and the placeholder say
     /// what it is.
     public var filterWidth: Double
     public var filterMinWidth: Double
     public var scopeMenuMaxWidth: Double
+    public var scopeMenuMinWidth: Double
     public var fieldHeight: Double
     public var fieldPaddingLeading: Double
     public var fieldPaddingTrailing: Double
@@ -75,7 +78,8 @@ public struct SearchLayout: Equatable, Sendable {
         scopeBarPaddingBottom: 6, scopeBarPaddingHorizontal: 12, scopeBarGap: 6,
         scopeLabelMarginTrailing: 2, headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
         segmentPaddingHorizontal: 12, segmentHeight: 20, segmentMaxWidth: 220,
-        filterWidth: 280, filterMinWidth: 200, scopeMenuMaxWidth: 220, fieldHeight: 24,
+        filterWidth: 280, filterMinWidth: 200, scopeMenuMaxWidth: 220, scopeMenuMinWidth: 72,
+        fieldHeight: 24,
         fieldPaddingLeading: 4, fieldPaddingTrailing: 4, fieldGap: 6, clearButtonSize: 16, smallButtonHeight: 24,
         smallButtonPaddingHorizontal: 10, smallButtonGap: 6,
         spinnerSize: 10, spinnerLineWidth: 1.5, bannerMarginHorizontal: 6, bannerMarginBottom: 12,

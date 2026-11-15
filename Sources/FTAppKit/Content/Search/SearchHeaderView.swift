@@ -251,7 +251,12 @@ final class SearchHeaderView: NSView {
         showScopeMenu(compact)
         if compact {
             let menuHeight = Self.trackHeight
-            let menuWidth = min(scopeMenu.preferredWidth, layout.scopeMenuMaxWidth, max(0, right - x))
+            // The filter keeps its minimum and the place's name is cut short for it, down to the pop-up's own
+            // minimum; in a bar with room for neither, the filter has what the pop-up leaves.
+            let besideFilter = right - x - gap - layout.filterMinWidth
+            let menuWidth = min(
+                scopeMenu.preferredWidth, layout.scopeMenuMaxWidth, max(layout.scopeMenuMinWidth, besideFilter),
+                max(0, right - x))
             scopeMenu.frame = NSRect(x: x, y: centerY - menuHeight / 2, width: menuWidth, height: menuHeight)
             let filterX = scopeMenu.frame.maxX + gap
             filter.frame = NSRect(
