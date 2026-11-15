@@ -378,6 +378,10 @@ public enum CommandAvailability {
             guard focusedPane != .tree, selectedCount == 1 else { return false }
             return entry(at: context.selectedPathsInViewOrder.first, in: context.activeContentEntries)?.kind
                 .isEditableFile ?? false
+        case .shareSelection:
+            // The items of the list, wherever they are but in the Trash: what is there is taken out or deleted for good.
+            guard focusedPane != .tree, selectedCount > 0 else { return false }
+            return !selectionIsInTrash(context)
         case .copyPath:
             if focusedPane == .tree {
                 return context.selectedTreeTargetPath != nil

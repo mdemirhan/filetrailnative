@@ -43,6 +43,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case calculateSize
     case copyPath
     case copyContents
+    case share
     case theme
     case settings
     case help
@@ -146,6 +147,8 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .copyContents, label: CopyContents.commandLabel, icon: .copyContents, commandType: .copyContents,
             shortcutCommand: .copyContents),
+        ToolbarItemDefinition(
+            id: .share, label: "Share", icon: .share, commandType: .shareSelection, shortcutCommand: .shareSelection),
         ToolbarItemDefinition(id: .theme, label: "Theme", icon: .theme),
         ToolbarItemDefinition(
             id: .settings, label: "Settings", icon: .settings, commandType: .openSettings,
@@ -211,6 +214,7 @@ extension ToolbarItems {
         .showInFinder,
         .copyPath,
         .copyContents,
+        .share,
         .theme,
         .settings,
         .help,

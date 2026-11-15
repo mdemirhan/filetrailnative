@@ -94,6 +94,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -270,6 +275,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -450,6 +460,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -626,6 +641,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -806,6 +826,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -982,6 +1007,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -1163,6 +1193,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -1348,6 +1383,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -1537,6 +1577,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -1722,6 +1767,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -1911,6 +1961,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -2098,6 +2153,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -2283,6 +2343,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -2473,6 +2538,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -4424,6 +4494,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -4606,6 +4681,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -4792,6 +4872,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -4974,6 +5059,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -5160,6 +5250,11 @@
           "icon": "copyContents"
         },
         {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
+        },
+        {
           "type": "separator",
           "key": "separator-clipboard"
         },
@@ -5342,6 +5437,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",
@@ -5529,6 +5629,11 @@
           "id": "copyContents",
           "label": "Copy Contents",
           "icon": "copyContents"
+        },
+        {
+          "id": "share",
+          "label": "Share…",
+          "icon": "share"
         },
         {
           "type": "separator",

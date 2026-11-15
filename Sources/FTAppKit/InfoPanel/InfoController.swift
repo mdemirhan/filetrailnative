@@ -579,6 +579,7 @@ final class InfoController {
                 self?.flashCopied(.copyContents)
                 self?.update()
             }
+        case .share: host.share([item.path], from: panel.actionButton(.share))
         case .convertImages: host.openConvertImagesSheet([item.path])
         case .terminal: actions.openInTerminal(item.path)
         case .finder: actions.showInFinder(item.path)

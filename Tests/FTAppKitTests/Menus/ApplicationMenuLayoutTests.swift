@@ -28,7 +28,7 @@ import Testing
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "-", "Open", "Open in New Tab",
                 "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Reveal in Folder", "-",
                 "Calculate Size", "Rename", "-", "Compress", "Extract", "Extract To…", "-",
-                "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-",
+                "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-", "Share…", "-",
                 "Add to Favorites", "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-",
                 "Reopen Closed Tab",
                 // Close Pane until synced, then Close Tab, the item ⌥ shows in its place.

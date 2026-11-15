@@ -10,7 +10,7 @@ The decisions are kept by area. An entry names another by its title in quotes, w
 | [decisions/names-and-search.md](decisions/names-and-search.md) | How names are ordered and matched, search, the filters, the Go To, Move To and Extract To box |
 | [decisions/views.md](decisions/views.md) | The List, Icons, Compact List and Previews views, their sizes, Quick Look, how items are named and drawn |
 | [decisions/windows-and-panes.md](decisions/windows-and-panes.md) | Two panes, workspaces, tabs, the menus and their keys, Back and Forward, the sidebar, Settings |
-| [decisions/file-operations.md](decisions/file-operations.md) | Copy, move and Replace, what protects files, folder sizes, Paste as File, Copy Contents, Convert Images |
+| [decisions/file-operations.md](decisions/file-operations.md) | Copy, move and Replace, what protects files, folder sizes, Paste as File, Copy Contents, Share, Convert Images |
 | [decisions/archives.md](decisions/archives.md) | Compress, Extract and Extract To, and the plan to browse archives |
 | [decisions/code.md](decisions/code.md) | How work lands, how it is tested and released |
 | [decisions/left-out.md](decisions/left-out.md) | What is not done on purpose, and why |

@@ -45,6 +45,7 @@ extension CommandIcon {
         case .extract: "arrow.up.bin"
         case .copyPath: "link"
         case .copyContents: "text.below.photo"
+        case .share: "square.and.arrow.up"
         case .move: "folder"
         case .rename: "pencil"
         case .duplicate: "plus.square.on.square"

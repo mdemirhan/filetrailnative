@@ -324,6 +324,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var openHelp: ((HelpTopicID?) -> Void)?
     /// Previews an item: the system's Quick Look panel, unless a test puts its own, so nothing comes on screen.
     var showQuickLook: ((String) -> Void)?
+    /// Shares items: the system's share popover, unless a test puts its own, so nothing comes on screen.
+    var showSharePicker: (([String]) -> Void)?
     /// Carries out a rename and answers with its outcome, in place of the write coordinator (tests). Without it the
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.
@@ -1970,6 +1972,8 @@ extension MainWindowController: ExplorerWindowHandle {
             }
         case .convertImages:
             openConvertImagesSheet(selectedPaths)
+        case .shareSelection:
+            shareSelection()
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
             .pasteAsFile, .trashSelection, .emptyTrash, .copySelection, .cutSelection, .pasteSelection,
             .compressSelection, .extractSelection, .extractSelectionTo:

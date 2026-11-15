@@ -591,6 +591,12 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 guard let button, let tab = self?.context as? MainWindowController else { return }
                 tab.undoHistoryUI.toggle(from: button)
             }
+        case .share:
+            // The popover hangs from the button.
+            button.onClick = { [weak self, weak button] in
+                guard let button, let tab = self?.context as? MainWindowController else { return }
+                tab.shareSelection(from: button)
+            }
         case .up: button.onClick = { [weak self] in self?.context?.goToParentFolder() }
         case .foldersFirst: button.onClick = { [weak self] in self?.context?.perform(.toggleFoldersFirst) }
         case .hidden: button.onClick = { [weak self] in self?.context?.perform(.toggleHiddenFiles) }

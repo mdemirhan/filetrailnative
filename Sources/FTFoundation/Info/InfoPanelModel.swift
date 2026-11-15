@@ -243,7 +243,8 @@ public enum InfoPanelModel {
     /// One of the quick actions.
     public struct QuickAction: Equatable, Sendable {
         public enum ID: String, Sendable {
-            case quickLook, edit, copyPath, copyName, copyContents, convertImages, terminal, finder, favorite, rootTree
+            case quickLook, edit, copyPath, copyName, copyContents, share, convertImages, terminal, finder, favorite
+            case rootTree
         }
         public var id: ID
         public var label: String
@@ -272,6 +273,10 @@ public enum InfoPanelModel {
                 QuickAction(
                     id: .copyContents, label: copied == .copyContents ? "Copied" : CopyContents.menuTitle(guess),
                     shortcut: shortcut(.copyContents)))
+        }
+        // The system's share popover, as the menus offer it: not for what is in the Trash.
+        if !inTrash {
+            actions.append(QuickAction(id: .share, label: "Share…", shortcut: shortcut(.shareSelection)))
         }
         // An image, as the menus offer Convert for it; nothing is made in the Trash.
         if item.kind.isEditableFile, !inTrash, ImageConversion.isConvertible(name: item.name) {

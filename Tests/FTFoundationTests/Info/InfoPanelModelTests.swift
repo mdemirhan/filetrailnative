@@ -177,7 +177,7 @@ struct InfoPanelModelTests {
         }
         #expect(
             labels(Self.file()) == [
-                "Quick Look", "Edit in Zed", "Copy Path", "Copy Name", "Copy Text", "Open in Terminal",
+                "Quick Look", "Edit in Zed", "Copy Path", "Copy Name", "Copy Text", "Share…", "Open in Terminal",
                 "Show in Finder",
             ])
         // A file's image or text, by its name; nothing for a kind that is neither.
@@ -193,8 +193,8 @@ struct InfoPanelModelTests {
         #expect(
             labels(folder)
                 == [
-                    "Quick Look", "Copy Path", "Copy Name", "Open in Terminal", "Show in Finder", "Add to Favorites",
-                    "Use as Tree Root",
+                    "Quick Look", "Copy Path", "Copy Name", "Share…", "Open in Terminal", "Show in Finder",
+                    "Add to Favorites", "Use as Tree Root",
                 ])
         #expect(labels(folder, favorite: true).contains("Remove from Favorites"))
         #expect(!labels(folder, canFavorite: false).contains("Add to Favorites"))

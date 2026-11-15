@@ -16,6 +16,8 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case newFolder, compress, extract, extractTo
     case convertImages
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, copyContents, rootTreeHere, trash
+    /// The system's share popover for the items: AirDrop, Mail, Messages and the rest macOS offers.
+    case share
     case deleteImmediately, emptyTrash, eject
     /// The submenu of what can be done with the tab's other pane, while it shows two.
     case otherPane
@@ -179,6 +181,8 @@ public enum ContextMenuItems {
                 item(.copyPath, "Copy Path", .copyPath),
                 // For one image or text file (hidden by the caller otherwise).
                 item(.copyContents, options.copyContentsLabel ?? CopyContents.commandLabel, .copyContents),
+                // Right after the copies, as Finder has Share… after Copy. Not for what is in the Trash.
+                item(.share, "Share…", .share),
                 line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
                 item(.move, "Move to…", .move), item(.newFolder, "New Folder", .newFolder),

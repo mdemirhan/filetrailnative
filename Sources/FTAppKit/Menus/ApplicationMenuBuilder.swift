@@ -96,6 +96,9 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.convertImages, ConvertImagesText.commandLabel))
             menu.addItem(context.command(.quickLookSelection, "Quick Look"))
             menu.addItem(.separator())
+            // On its own, as in Finder's File menu.
+            menu.addItem(context.command(.shareSelection, "Share…"))
+            menu.addItem(.separator())
             // "Remove from Favorites" while the folder is one.
             menu.addItem(context.command(.toggleFavorite, "Add to Favorites"))
             menu.addItem(context.command(.openInTerminal, "Open in Terminal"))

@@ -112,6 +112,8 @@ final class InfoPanelView: NSView {
 
     func setOpenMenuOpen(_ value: Bool) { content.setOpenMenuOpen(value) }
     func setOpensWithMenuOpen(_ value: Bool) { content.setOpensWithMenuOpen(value) }
+    /// The button of a quick action, for what hangs from it (Share's popover).
+    func actionButton(_ id: InfoPanelModel.QuickAction.ID) -> NSView? { content.actionButton(id) }
 
     override func layout() {
         super.layout()
@@ -495,6 +497,11 @@ final class InfoPanelContentView: NSView {
     private var sectionTitles: [TextBoxField] = []
     private var rowViews: [RowViews] = []
     private var actionButtons: [(InfoPanelModel.QuickAction.ID, InfoIconButton)] = []
+
+    /// The button of a quick action, for what hangs from it (Share's popover).
+    func actionButton(_ id: InfoPanelModel.QuickAction.ID) -> NSView? {
+        actionButtons.first { $0.0 == id }?.1
+    }
     private var dividers: [Double] = []
     /// The load of the Open button's app icon: the next item's takes it back, so an older answer can't land after a
     /// newer one.
@@ -713,6 +720,7 @@ final class InfoPanelContentView: NSView {
         case .copyPath: copied ? .check : .copy
         case .copyName: copied ? .check : .name
         case .copyContents: copied ? .check : .contents
+        case .share: .share
         case .convertImages: .convertImages
         case .terminal: .terminal
         case .finder: .finder

@@ -143,19 +143,33 @@ struct ContextMenuRulesTests {
         #expect(
             menu == [
                 "Open", "Open With", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy", "Copy Path",
-                "Copy Text", "Rename", "Duplicate", "Move to…", "Compress \u{201C}b.txt\u{201D}", "Open in Terminal",
-                "Show in Finder", "Move to Trash",
+                "Copy Text", "Share…", "Rename", "Duplicate", "Move to…", "Compress \u{201C}b.txt\u{201D}",
+                "Open in Terminal", "Show in Finder", "Move to Trash",
             ])
         let folder = labels(
             subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))
         #expect(
             folder == [
                 "Open", "Open With", "Open in New Tab", "Open in New Window", "Quick Look", "Show Info",
-                "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Rename", "Duplicate", "Move to…",
+                "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Share…", "Rename", "Duplicate",
+                "Move to…",
                 "New Folder", "Compress \u{201C}F\u{201D}", "Remove from Favorites", "Open in Terminal",
                 "Show in Finder",
                 "Move to Trash",
             ])
+    }
+
+    /// Share… is for items of the list and of search results, one or several, files or folders, and never for what
+    /// is in the Trash; it only reads, so a running operation leaves it in.
+    @Test func shareIsForItemsOutsideTheTrash() {
+        let items = subject(.content, [("/a/b.txt", .file), ("/a/F", .directory)])
+        #expect(!hidden(items, world()).contains(.share))
+        #expect(!hidden(items, world(locked: true)).contains(.share))
+        #expect(!hidden(subject(.search, [("/a/b.txt", .file)]), world(search: true)).contains(.share))
+        #expect(hidden(subject(.trash, [("\(Self.trash)/b.txt", .file)]), world(current: Self.trash)).contains(.share))
+        let found = subject(.search, [("/a/b.txt", .file), ("\(Self.trash)/c.txt", .file)])
+        #expect(hidden(found, world(search: true)).contains(.share))
+        #expect(hidden(subject(.background, [], scope: .background), world()).contains(.share))
     }
 
     /// What makes new files from the items has a group of its own, after Rename's.

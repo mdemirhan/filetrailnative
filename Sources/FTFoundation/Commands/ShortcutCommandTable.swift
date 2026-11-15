@@ -95,6 +95,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case emptyTrash
     case copyPath
     case copyContents
+    case shareSelection
     case showClipboard
     case clearClipboard
     case openInTerminal
@@ -332,6 +333,8 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .copyContents, label: "Copy Contents", group: .files, defaults: ["Cmd+Shift+C"],
             menuPath: "Edit > Copy Contents"),
+        ShortcutCommandDefinition(
+            id: .shareSelection, label: "Share\u{2026}", group: .files, defaults: [], menuPath: "File > Share\u{2026}"),
         ShortcutCommandDefinition(
             id: .showClipboard, label: "Show Clipboard", group: .files, defaults: [], menuPath: "Edit > Show Clipboard"),
         ShortcutCommandDefinition(

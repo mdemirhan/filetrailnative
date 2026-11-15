@@ -385,6 +385,7 @@ public enum CommandPalette {
         case .emptyTrash: .emptyTrash
         case .copyPath: .copyPath
         case .copyContents: .copyContents
+        case .shareSelection: .share
         case .openInTerminal: .terminal
         case .showInFinder: .showInFinder
         case .toggleFavorite: .favorite

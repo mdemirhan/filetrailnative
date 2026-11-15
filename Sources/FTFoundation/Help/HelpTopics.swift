@@ -241,6 +241,11 @@ extension HelpContent {
                                 "{copyContents} puts the image or text of the selected file on the clipboard, to paste in another app: a photo into a message, a file's text into a document. An image keeps its format, with a PNG copy for the apps that read only PNG. Text is copied as it is, and an RTF file keeps its styles. The Edit menu and the file's right-click menu say which it will be. Before copying a file that usually holds a password or a key, such as .env or id_rsa, it asks, and marks the text as private on the clipboard."
                         ),
                         HelpRow(
+                            label: "Sharing",
+                            description:
+                                "{shareSelection} opens the share menu Finder has for the selected items: AirDrop, Mail, Messages, Notes and the share extensions you have added. It is in the right-click menu and the Info panel too, and a Share button can be added to the toolbar. Items in the Trash can't be shared."
+                        ),
+                        HelpRow(
                             label: "Converting images",
                             description:
                                 "Choose Convert Images from the right-click menu, the Info panel or {convertImages} to make a copy of the selected images in another format (JPEG, HEIC, PNG, TIFF or AVIF), or smaller, beside each original: Photo.HEIC as JPEG becomes Photo.jpg, numbered when that name is taken. It is offered only when every selected item is an image. The size can fit within a longest side, be a percentage or be a width and height of your own, and no image is ever made larger. Keep metadata keeps the camera's details, and Remove location takes out where the photo was taken. The originals stay as they are, and Undo moves the new files to the Trash."
@@ -781,6 +786,9 @@ extension HelpContent {
         HelpShortcutItem(group: .files, .command(.copyPath), "Copy the selected items' paths as text"),
         HelpShortcutItem(
             group: .files, .command(.copyContents), "Copy the selected file's image or text, to paste in another app"),
+        HelpShortcutItem(
+            group: .files, .command(.shareSelection),
+            "Send the selected items by AirDrop, Mail, Messages or another way macOS offers"),
         HelpShortcutItem(group: .files, .command(.showClipboard), "See what is waiting to be pasted"),
         HelpShortcutItem(group: .files, .command(.clearClipboard), "Forget the items waiting to be pasted"),
         HelpShortcutItem(

@@ -192,6 +192,12 @@ public enum ContextMenuRules {
         }
         // Copy Contents is for one image or text file, or one whose kind isn't known.
         if !(copyContentsGuess(subject)?.isOffered ?? false) { hidden.insert(.copyContents) }
+        // Share is for items, and not those in the Trash, which are only taken out or deleted for good.
+        if subject.scope != .selection || subject.paths.isEmpty
+            || subject.paths.contains(where: { Paths.isInsideTrash($0, homePath: world.homePath) })
+        {
+            hidden.insert(.share)
+        }
         // Extract and Extract To are for archives, every item of the menu one.
         if entries.isEmpty || entries.count != subject.paths.count
             || !entries.allSatisfy(CommandAvailability.isArchive)

@@ -254,6 +254,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if let first = subject.paths.first { holdingTheTab { [tab] in await tab.contentsCopier.copy(first) } }
         case .convertImages:
             tab.openConvertImagesSheet(subject.paths)
+        case .share:
+            tab.share(subject.paths)
         case .open:
             holdingTheTab { [self] in await openPaths(subject) }
         case .quickLook:
