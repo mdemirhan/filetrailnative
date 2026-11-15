@@ -35,7 +35,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 ## Working in this repository
 
-- Work lands on local `main` by fast-forward or rebase, with no pull requests and no merge commits, and nothing is pushed unless the owner asks (`docs/decisions/code.md`).
+- Never commit to `main` until the owner says so. Work in a worktree of its own (`.claude/worktrees/<name>`, branch `claude/<name>`), never in the main checkout, and commit there. When the owner says to land it, it goes onto local `main` by fast-forward or rebase, with no pull requests and no merge commits. Nothing is pushed unless the owner asks (`docs/decisions/code.md`).
 - A request to delete worktrees or branches covers the ones this session made, however it is worded: others that look idle or merged may be another session's work. List them and ask.
 
 ## Benchmarks

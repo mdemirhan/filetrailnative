@@ -2,8 +2,8 @@
 
 How work lands, how it is tested and released, and what stays as it is in the code. Part of the owner's decisions: [the index](../decisions.md) lists the other parts.
 
-- **Work lands on `main` by fast-forward or rebase**, never by a merge commit, and there are no pull requests. A commit message is one plain sentence saying what is now true of the app, with no `Co-Authored-By` trailer.
-- **Nothing is pushed unless the owner asks.** Landing on `main` is local; pushing to GitHub is a step of its own.
+- **Nothing is committed to `main` until the owner says so.** Work is done and committed in a worktree of its own (`.claude/worktrees/<name>`, on the branch `claude/<name>`), never in the main checkout, and stays on its branch until the owner says to land it. It then lands by fast-forward or rebase, never by a merge commit, and there are no pull requests. A commit message is one plain sentence saying what is now true of the app, with no `Co-Authored-By` trailer. Changed on 2026-11-15: work used to land on local `main` as soon as it was done; the owner wants to look at it, and say when it goes in, first.
+- **Nothing is pushed unless the owner asks.** Landing on `main` is local, and only when the owner says; pushing to GitHub is a step of its own.
 - **The commits are as many as the changes.** A fix or a feature is one commit, so each can be taken back or found by bisecting. Rewording of comments or docs goes in one commit for a module or an area, not one for each folder or file, and bookkeeping (an item of a plan ticked off) goes into the commit that did the work. A plan once landed in 401 commits, some 115 of them comments alone and 41 ticking items: too many to read.
 - **`scripts/release.sh` runs the tests that drive real windows.** A release is run at the keyboard, and these are the only tests of real windows.
 - **`scripts/ci.sh --affected` compares with the previous commit, not with `main`:** the last commit's files, uncommitted changes and new files. On a long branch every module differs from `main`, so it ran everything every time. With no commit before HEAD, or nothing changed, everything runs. The format lint follows the same files.
