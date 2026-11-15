@@ -21,7 +21,7 @@ int64_t ft_copy_control_copied(const ft_copy_control *control);
 
 /// What copyfile reported to the copy that used this control: each step that failed (its number, the extended
 /// attribute's name, the errno, and whether it was skipped), then what copyfile returned and what the copy returns.
-/// Read once the copy returned.
+/// Read once the copy returned. Empty in a release build, which keeps no trace.
 const char *ft_copy_control_trace(const ft_copy_control *control);
 void ft_copy_control_set_copied(ft_copy_control *control, int64_t copied);
 

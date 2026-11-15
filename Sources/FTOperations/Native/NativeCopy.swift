@@ -31,6 +31,7 @@ public final class CopyControl: @unchecked Sendable {
     }
 
     /// What copyfile reported to the copy: each step that failed, then what it returned. Read once the copy returned.
+    /// Debug builds only, for the tests; empty in a release build.
     public var trace: String { String(cString: ft_copy_control_trace(pointer)) }
 
     fileprivate var raw: OpaquePointer { pointer }
