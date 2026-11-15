@@ -115,7 +115,7 @@ public enum WriteEndNotices {
 
     /// The toast for an operation that needs no sheet; nil for none. `quietOnScreen`:
     /// items dropped from another app into the folder on screen are in sight there. `undoLabel`: what an Undo or Redo
-    /// did, in the words of its menu item.
+    /// did, in the words of its menu item with a long name whole.
     public static func toast(
         _ write: WriteEndSummary, quietOnScreen: Bool = false, isSearchMode: Bool = false, currentPath: String = "",
         undoLabel: String? = nil

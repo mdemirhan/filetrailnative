@@ -121,7 +121,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
     private var clipboardClearAfterMove: (operationId: String, capturedAt: String)?
     /// The folder the tree selects once the write is done (Move To, Duplicate from the tree).
     var pendingTreeSelectionPath: String?
-    /// What the Undo or Redo running does, in the words of its menu item.
+    /// What the Undo or Redo running does, in the words of its menu item with a long name whole.
     var runningUndoLabel: String?
     /// A folder made in the folder on screen, to be renamed in its row once it is listed
     /// (and selected). Leaving the folder forgets it.

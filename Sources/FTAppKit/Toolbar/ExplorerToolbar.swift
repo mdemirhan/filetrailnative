@@ -220,7 +220,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         let panels = context.panels
         let view = context.viewState
         let labels = undoHistory().map { history in
-            let menu = history.menu()
+            // A tooltip has room for a long name whole.
+            let menu = history.menu(whole: true)
             return ApplicationMenu.undoLabels(undo: menu.undo, redo: menu.redo, cantUndo: menu.cantUndo)
         }
         return ToolbarTooltipState(

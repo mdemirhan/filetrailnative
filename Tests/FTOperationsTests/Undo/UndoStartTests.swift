@@ -117,6 +117,23 @@ struct UndoStartTests {
         #expect(sawGiveUp.isSet)
     }
 
+    // What Undo is about to do is named with a long name whole, for the notice that tells it: only the menu's item
+    // shortens it.
+    @Test func namesWhatItUndoesWithALongNameWhole() async throws {
+        try await withUndoFolder { root, trashDir in
+            let name = String(repeating: "Quarterly report ", count: 3) + "final.pdf"
+            try UndoDisk.write("\(root)/\(name)", "a")
+            let t = UndoTest(root: root, trashDir: trashDir)
+            try await t.trash("\(root)/\(name)")
+            let whole = "Move to Trash of \u{201C}\(name)\u{201D}"
+            #expect(try await t.prepare().label == whole)
+            #expect(t.history.menu(whole: true).undo == whole)
+            #expect(t.history.menu().undo == "Move to Trash of \(MenuName.quoted(name))")
+            #expect(MenuName.quoted(name) != "\u{201C}\(name)\u{201D}")
+            await t.shutDown()
+        }
+    }
+
     // Another window's operation ends while Undo looks at its items: Undo is refused rather than asking about one
     // operation under another's name.
     @Test func refusesWhenAnotherOperationEndsWhileItLooksAtItsItems() async throws {

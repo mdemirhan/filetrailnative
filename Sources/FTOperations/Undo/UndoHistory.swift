@@ -170,11 +170,12 @@ public final class UndoHistory {
         changed()
     }
 
-    /// `menu`: named after what is left to do: a stopped Undo of 3 items leaves "of 2 Items".
-    public func menu() -> UndoMenuLabels {
+    /// `menu`: named after what is left to do: a stopped Undo of 3 items leaves "of 2 Items". `whole`: with a long
+    /// name whole, for a notice or a tooltip; a menu's item shortens it.
+    public func menu(whole: Bool = false) -> UndoMenuLabels {
         UndoMenuLabels(
-            undo: undoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: true) },
-            redo: redoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: true) },
+            undo: undoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: !whole) },
+            redo: redoList.last.map { Self.labelOf($0.action, $0.units, moves: $0.moves, inMenu: !whole) },
             cantUndo: cantUndo && undoList.isEmpty)
     }
 

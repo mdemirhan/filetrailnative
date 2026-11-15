@@ -94,7 +94,9 @@ extension WriteCoordinator {
         undo.preparing = true
         let units = entry.units
         // Named now, after the entry looked at: another window's operation may end while the disks are read.
-        let label = direction == .undo ? history.menu().undo : history.menu().redo
+        // The notice tells it with a long name whole.
+        let labels = history.menu(whole: true)
+        let label = direction == .undo ? labels.undo : labels.redo
         let questions = await Self.answerWithin(options.undoCheckWithinMs, stuck: stuckLooks, stop: stop) { progress in
             UndoPlan.findQuestions(fileSystem, units, progress: progress)
         }
