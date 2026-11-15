@@ -298,7 +298,7 @@ struct AppStateStoreTests {
         }
     }
 
-    @Test func keepsEachWindowsTabsPanelsAndColumnWidthsToItself() throws {
+    @Test func keepsEachWindowsTabsAndPanelsToItself() throws {
         try Kit.withFolder { folder in
             let store = Kit.store(Kit.statePath(folder))
             store.addExplorerWindow(id: "window-b", bounds: Kit.bounds, session: store.createWindowSession())
@@ -310,8 +310,9 @@ struct AppStateStoreTests {
             store.updateWindow("window-a") {
                 $0.openTabs = Kit.openTabs(["/Users/demo/work"])
                 $0.propertiesOpen = true
+                // Not a window's own: every window shares them. The List's column widths are each pane's, kept in
+                // its tab; the app's are those set last.
                 $0.detailColumnWidths = widened
-                // Not a window's own: every window shares it.
                 $0.notificationsEnabled = false
             }
 
@@ -322,7 +323,7 @@ struct AppStateStoreTests {
             #expect(a.detailColumnWidths.name == 410)
             #expect(b.openTabs.isEmpty)
             #expect(!b.propertiesOpen)
-            #expect(b.detailColumnWidths.name == widths.name)
+            #expect(b.detailColumnWidths.name == 410)
             #expect(!b.notificationsEnabled)
             // The app keeps the values set last, for a window that opens without its own.
             #expect(store.preferences().detailColumnWidths.name == 410)

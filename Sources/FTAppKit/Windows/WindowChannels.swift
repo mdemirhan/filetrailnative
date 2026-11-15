@@ -67,7 +67,7 @@ public final class WindowPreferenceChannel {
                     written = $0.written
                 }
             }
-        // What belongs to one window (its tabs, panels, column widths) stays with it.
+        // What belongs to one window (its tabs, panels) stays with it.
         let shared = Set(written.filter { !$0.isWindowSessionKey })
         onPreferencesChanged(store.preferences(), PreferencesChange(keys: shared, senderID: senderID))
         return preferences

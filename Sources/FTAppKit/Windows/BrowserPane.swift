@@ -932,9 +932,9 @@ final class BrowserPane {
         content.setColumns(columns(from: tab.preferences))
     }
 
-    /// The sizes the pane shows its views at (the icon size, the Compact List's column width, the Previews count):
-    /// its own. Nil until its first folder is read, when it takes the app's, which are those set last in any pane;
-    /// until then it shows the app's as they are.
+    /// The sizes the pane shows its views at (the icon size, the Compact List's column width, the Previews count, the
+    /// List's column widths): its own. Nil until its first folder is read, when it takes the app's, which are those
+    /// set last in any pane; until then it shows the app's as they are.
     private(set) var viewSizes: PaneViewSizes?
 
     /// The pane's sizes are its own from here on: the app's as they are now, unless it came with some.
@@ -947,17 +947,9 @@ final class BrowserPane {
     /// The columns and the density from the preferences, the search's own columns while results show, at the pane's
     /// own sizes.
     func columns(from preferences: AppPreferences) -> ListColumnState {
-        var state: ListColumnState
-        if let search = searchStore, search.showsResults {
-            state = search.columnState(preferences)
-        } else {
-            state = ListColumnState(preferences: preferences)
-        }
-        let sizes = viewSizes ?? PaneViewSizes(preferences)
-        state.iconSizes = sizes.iconSizes
-        state.compactListWidths = sizes.compactListWidths
-        state.previewCounts = sizes.previewCounts
-        return state
+        let shown = viewSizes?.applied(to: preferences) ?? preferences
+        if let search = searchStore, search.showsResults { return search.columnState(shown) }
+        return ListColumnState(preferences: shown)
     }
 
     /// A size was set in the pane: it is the pane's own from now on.

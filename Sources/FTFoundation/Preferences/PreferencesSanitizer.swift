@@ -34,10 +34,15 @@ public enum PreferencesSanitizer {
     // MARK: Open tabs
 
     /// Tabs from a damaged file are kept as far as they make sense; a tab that does not is dropped rather than failing
-    /// the whole list. A tab saved before it kept Favorites and Locations open or closed takes the window's setting.
+    /// the whole list. A tab saved before it kept Favorites and Locations open or closed takes the window's setting,
+    /// and a pane saved with its sizes but without the List's column widths takes `columnWidths`, its window's.
     static func openTabs(
-        _ value: JSONNode?, includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool
+        _ value: JSONNode?, includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool,
+        columnWidths: (detail: DetailColumnWidths, search: SearchColumnWidths) = (.defaults, .defaults)
     ) -> [OpenTabPreference] {
+        func viewSizes(_ value: JSONNode?) -> PaneViewSizes? {
+            Self.viewSizes(value, columnWidths: columnWidths)
+        }
         guard let candidates = value?.array else { return [] }
         var tabs: [OpenTabPreference] = []
         for candidate in candidates {
@@ -79,8 +84,11 @@ public enum PreferencesSanitizer {
     }
 
     /// A pane's own sizes, each brought into its range; nil when the file has none for it. One it doesn't say is the
-    /// size before any is set.
-    private static func viewSizes(_ value: JSONNode?) -> PaneViewSizes? {
+    /// size before any is set; the column widths it doesn't have are `columnWidths`, and a column's it doesn't say is
+    /// that one's there.
+    private static func viewSizes(
+        _ value: JSONNode?, columnWidths: (detail: DetailColumnWidths, search: SearchColumnWidths)
+    ) -> PaneViewSizes? {
         guard let record = value?.object else { return nil }
         return PaneViewSizes(
             iconSizes: densitySizes(record["iconSizes"], .iconDefaults) { AppPreferenceLimits.clampIconSize($0) },
@@ -89,7 +97,9 @@ public enum PreferencesSanitizer {
             },
             previewCounts: densitySizes(record["previewCounts"], .previewCountDefaults) {
                 PreviewGrid.valid(Int($0.rounded()))
-            })
+            },
+            detailColumnWidths: detailColumnWidths(record["detailColumnWidths"], columnWidths.detail),
+            searchColumnWidths: searchColumnWidths(record["searchColumnWidths"], columnWidths.search))
     }
 
     private static func sortBy(_ record: [String: JSONNode]) -> SortByPreference {
@@ -211,6 +221,8 @@ public enum PreferencesSanitizer {
     public static func sanitize(_ value: JSONNode?, defaults: AppPreferences) -> AppPreferences {
         guard let record = value?.object else { return defaults }
         let global = AppPreferences.defaults()
+        let detailWidths = detailColumnWidths(record["detailColumnWidths"], defaults.detailColumnWidths)
+        let searchWidths = searchColumnWidths(record["searchColumnWidths"], defaults.searchColumnWidths)
         return AppPreferences(
             theme: choice(record, "theme", defaults.theme),
             accent: record["accent"]?.string.map { AppPreferenceLimits.normalizeAccentColor($0) ?? defaults.accent }
@@ -226,12 +238,12 @@ public enum PreferencesSanitizer {
             detailColumnOrder: record["detailColumnOrder"] == nil
                 ? defaults.detailColumnOrder
                 : AppPreferenceLimits.normalizeDetailColumnOrder(record["detailColumnOrder"]),
-            detailColumnWidths: detailColumnWidths(record["detailColumnWidths"], defaults.detailColumnWidths),
+            detailColumnWidths: detailWidths,
             searchColumns: searchColumns(record["searchColumns"], defaults.searchColumns),
             searchColumnOrder: record["searchColumnOrder"] == nil
                 ? defaults.searchColumnOrder
                 : AppPreferenceLimits.normalizeSearchColumnOrder(record["searchColumnOrder"]),
-            searchColumnWidths: searchColumnWidths(record["searchColumnWidths"], defaults.searchColumnWidths),
+            searchColumnWidths: searchWidths,
             compactListWidths: densitySizes(record["compactListWidths"], defaults.compactListWidths) {
                 AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
             },
@@ -273,7 +285,8 @@ public enum PreferencesSanitizer {
             openTabs: openTabs(
                 record["openTabs"], includeHidden: defaults.includeHidden, foldersFirst: defaults.foldersFirst,
                 favoritesExpanded: bool(record, "favoritesExpanded", defaults.favoritesExpanded),
-                locationsExpanded: bool(record, "locationsExpanded", defaults.locationsExpanded)),
+                locationsExpanded: bool(record, "locationsExpanded", defaults.locationsExpanded),
+                columnWidths: (detail: detailWidths, search: searchWidths)),
             activeTabIndex: activeTabIndex(record["activeTabIndex"]),
             treeRootPath: nonEmptyString(record["treeRootPath"]),
             lastVisitedPath: nonEmptyString(record["lastVisitedPath"]),

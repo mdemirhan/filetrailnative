@@ -58,9 +58,9 @@ extension ExplorerWindowlessTests {
                 ])
             ]
             _ = AutomationPrefs.apply(prefs, context: .init(controller: tab, window: window, prefs: prefs))
-            // The window saving its session (any navigation does) keeps them.
+            // The window saving its session (any navigation does) keeps them, with the pane.
             tab.group?.saveSession()
-            #expect(tab.group?.session.panels.searchColumnWidths.folder == 110)
+            #expect(tab.openTab.viewSizes?.searchColumnWidths.folder == 110)
             try search("no", in: tab, timers)
             #expect(tab.searchRootPath != nil)
             #expect(await waitUntil { !tab.content.entries.isEmpty })

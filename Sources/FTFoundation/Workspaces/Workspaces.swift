@@ -161,7 +161,7 @@ public enum Workspaces {
             guard !name.isEmpty, index(named: name, in: workspaces) == nil else { continue }
             var merged = base
             let saved = record["session"]?.object ?? [:]
-            for key in WindowSession.keys {
+            for key in WindowSession.readKeys {
                 if let value = saved[key.rawValue] { merged[key.rawValue] = value }
             }
             var session = PreferencesSanitizer.sanitize(.object(merged), defaults: defaults).windowSession

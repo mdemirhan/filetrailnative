@@ -124,8 +124,8 @@ extension ExplorerWindowlessTests {
             #expect(opened.tabs.map { $0.panes[0].folder.path } == [real(harness, "Alpha"), real(harness, "Beta")])
         }
 
-        // A workspace opens with the List column widths it was saved with, in every one of its tabs, whatever the
-        // window it was opened from has since.
+        // A workspace opens with the List column widths its panes were saved with, each pane's own, whatever the app's
+        // are by then.
         @Test func aWorkspaceOpensWithTheColumnWidthsItWasSavedWith() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
@@ -134,26 +134,29 @@ extension ExplorerWindowlessTests {
             var widths = tab.content.columnState.widths
             widths[.name] = 333
             tab.content.columnWidthsChanged(widths)
-            let kept = try workspace(
-                "workspace-a", "Work", of: tab, in: harness,
-                tabs: [FTAppKitTests.tab(real(harness, "Alpha")), FTAppKitTests.tab(real(harness, "Beta"))])
-            #expect(kept.session.detailColumnWidths.name == 333)
+            let second = tab.openSecondPane(at: real(harness, "Alpha"))
+            #expect(await waitUntil { second.loaded && !second.isNavigating })
+            tab.focusPane(second)
+            tab.perform(.viewAsDetails)
+            widths[.name] = 250
+            second.content.columnWidthsChanged(widths)
+            let kept = try workspace("workspace-a", "Work", of: tab, in: harness)
+            #expect(kept.session.openTabs.first?.viewSizes?.detailColumnWidths.name == 333)
+            #expect(kept.session.openTabs.first?.secondPane?.viewSizes?.detailColumnWidths.name == 250)
             tab.updatePreferences { $0.workspaces = [kept] }
+            // The app's widths move on.
             widths[.name] = 210
-            tab.content.columnWidthsChanged(widths)
+            second.content.columnWidthsChanged(widths)
 
             harness.windows.openWorkspace(slot: 0)
             #expect(await waitUntil { harness.windows.count == 2 })
-            let opened = try #require(harness.windows.newestGroup)
-            #expect(opened.tabs.count == 2)
-            for other in opened.tabs {
-                // The window's services are this harness's, as `open` gives its first window; nothing else is told.
-                other.servicesOverride = harness.services
-                // What a tab is told when it joins its window, and whenever the window's panels change.
-                other.showPanels(opened.session.panels)
-                #expect(other.panes[0].content.columnState.widths[.name] == 333)
-            }
-            #expect(tab.content.columnState.widths[.name] == 210)
+            let opened = try #require(harness.windows.newestGroup?.tabs.first)
+            #expect(await waitUntil { opened.panes.count == 2 })
+            harness.layout(opened)
+            #expect(opened.panes[0].content.columnState.widths[.name] == 333)
+            #expect(opened.panes[1].content.columnState.widths[.name] == 250)
+            #expect(tab.panes[0].content.columnState.widths[.name] == 333)
+            #expect(second.content.columnState.widths[.name] == 210)
         }
 
         // A window with a name being edited in it isn't replaced: a beep, and nothing opens. One whose name begins

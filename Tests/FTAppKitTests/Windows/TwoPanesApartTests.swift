@@ -212,6 +212,55 @@ extension ExplorerWindowlessTests {
             #expect(copy.panes[1].content.columnState.iconSizes.standard == 56)
         }
 
+        // The List's column widths are each pane's own, as its sizes are: a divider dragged in one pane leaves the
+        // other's widths as they were, and is the app's from then on (what a pane with none starts from). Each pane's
+        // are saved with it, and a new tab takes the active pane's.
+        @Test func eachPaneKeepsItsOwnColumnWidths() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            tab.perform(.viewAsDetails)
+            right.setMode(.details)
+            await settle()
+            let name = try #require(left.content.columnState.widths[.name])
+            let size = try #require(left.content.columnState.widths[.size])
+            #expect(right.content.columnState.widths[.name] == name)
+
+            var widths = left.content.columnState.widths
+            widths[.name] = 333
+            left.content.columnWidthsChanged(widths)
+            #expect(left.content.columnState.widths[.name] == 333)
+            #expect(right.content.columnState.widths[.name] == name)
+            #expect(tab.preferences.detailColumnWidths.name == 333)
+            tab.focusPane(right)
+            widths = right.content.columnState.widths
+            widths[.size] = 140
+            right.content.columnWidthsChanged(widths)
+            #expect(right.content.columnState.widths[.size] == 140)
+            #expect(right.content.columnState.widths[.name] == name)
+            #expect(left.content.columnState.widths[.name] == 333)
+            #expect(left.content.columnState.widths[.size] == size)
+
+            // Saved with each pane; a new tab takes the active pane's.
+            let saved = tab.openTab
+            #expect(saved.viewSizes?.detailColumnWidths.name == 333)
+            #expect(saved.secondPane?.viewSizes?.detailColumnWidths.size == 140)
+            #expect(ExplorerTabs.newTab(from: tab.snapshot).viewSizes?.detailColumnWidths.size == 140)
+
+            // A tab opened from the saved one shows each pane at its widths, whatever the app's are by then.
+            tab.updatePreferences { $0.detailColumnWidths.name = 500 }
+            #expect(left.content.columnState.widths[.name] == 333)
+            let group = try #require(tab.group)
+            group.addTabs([saved])
+            let copy = try #require(group.tabs.last)
+            #expect(copy !== tab)
+            #expect(await waitUntil { copy.panes.count == 2 })
+            harness.layout(copy)
+            #expect(copy.panes[0].content.columnState.widths[.name] == 333)
+            #expect(copy.panes[1].content.columnState.widths[.size] == 140)
+            #expect(copy.panes[1].content.columnState.widths[.name] == name)
+        }
+
         // MARK: The visits Go To counts
 
         /// Whether the Go To box counts a visit of `path`.

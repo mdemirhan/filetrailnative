@@ -122,7 +122,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Each window",
                             description:
-                                "Has its own tabs, Info panel and Info Row, column widths, and whether the folder tree shows and how wide it is. A new window opens with one tab, on the folder you were in, and takes the rest from the window it was opened from. Settings, favorites and the columns shown are the same in every window."
+                                "Has its own tabs, Info panel and Info Row, and whether the folder tree shows and how wide it is. A new window opens with one tab, on the folder you were in, and takes the rest from the window it was opened from. Settings, favorites and the columns shown are the same in every window."
                         ),
                         HelpRow(
                             label: "Moving tabs",
@@ -586,7 +586,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Columns in List view",
                             description:
-                                "Each column keeps the width you give it. Drag the divider at the right of a column’s heading to make it wider or narrower, or double-click the divider to fit the column to its widest value. When the columns are wider than the pane (a narrow window, or the Info panel open), the list scrolls sideways."
+                                "Each column keeps the width you give it. Drag the divider at the right of a column’s heading to make it wider or narrower, or double-click the divider to fit the column to its widest value. Each pane keeps its own widths, as it keeps its sizes. When the columns are wider than the pane (a narrow window, or the Info panel open), the list scrolls sideways."
                         ),
                         HelpRow(
                             label: "Sort",

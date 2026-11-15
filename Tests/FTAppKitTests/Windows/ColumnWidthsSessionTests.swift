@@ -1,4 +1,4 @@
-// The column widths a drag sets, kept as the window saves its session
+// The column widths a drag sets, kept with the pane as the window saves its session
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -10,7 +10,8 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ColumnWidthsSessionTests {
-        // A dragged width outlives the next navigation, which saves the window's session.
+        // A dragged width is the pane's own and the app's, and outlives the next navigation, which saves the window's
+        // session with the pane's widths in its tab.
         @Test func aDraggedDetailWidthSurvivesANavigation() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -23,7 +24,9 @@ extension ExplorerWindowlessTests {
             _ = await tab.navigate(to: harness.folder.appending("Alpha"), history: .push)
             tab.group?.saveSession()
             #expect(tab.preferences.detailColumnWidths.name == 333)
-            #expect(tab.group?.session.panels.detailColumnWidths.name == 333)
+            #expect(tab.activePane.viewSizes?.detailColumnWidths.name == 333)
+            #expect(tab.content.columnState.widths[.name] == 333)
+            #expect(tab.openTab.viewSizes?.detailColumnWidths.name == 333)
             await harness.close()
         }
 
@@ -50,7 +53,10 @@ extension ExplorerWindowlessTests {
 
             tab.group?.saveSession()
             #expect(tab.preferences.searchColumnWidths.folder == 222)
-            #expect(tab.group?.session.panels.searchColumnWidths.folder == 222)
+            #expect(tab.activePane.viewSizes?.searchColumnWidths.folder == 222)
+            #expect(tab.openTab.viewSizes?.searchColumnWidths.folder == 222)
+            // A folder's List keeps its own.
+            #expect(tab.activePane.viewSizes?.detailColumnWidths == tab.preferences.detailColumnWidths)
             await harness.close()
         }
     }

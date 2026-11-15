@@ -80,7 +80,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 ## Views
 
 - **Icons** shows Quick Look previews of photos, PDFs and other documents, at the size you set.
-- **List** has columns for date, size and kind, and optionally date created and permissions. Each column keeps the width you give it.
+- **List** has columns for date, size and kind, and optionally date created and permissions. Each column keeps the width you give it, in each pane apart.
 - **Compact List** packs a folder into columns of names.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
 - **Quick Look** on Space and ⌘Y, in every view.

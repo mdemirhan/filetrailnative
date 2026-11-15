@@ -1,7 +1,7 @@
 import FTFoundation
 import Foundation
 
-/// What the tabs of one window share: which panels are shown, how wide the panes and the columns are, and the tabs
+/// What the tabs of one window share: which panels are shown and how wide, and the tabs
 /// Reopen Closed Tab can bring back. Changing it in one tab changes it in all.
 @MainActor
 public final class TabGroupSession {
@@ -12,8 +12,6 @@ public final class TabGroupSession {
         public var detailRowOpen: Bool
         public var treeWidth: Int
         public var inspectorWidth: Int
-        public var detailColumnWidths: DetailColumnWidths
-        public var searchColumnWidths: SearchColumnWidths
 
         public init(_ session: WindowSession) {
             folderTreeOpen = session.folderTreeOpen
@@ -21,8 +19,6 @@ public final class TabGroupSession {
             detailRowOpen = session.detailRowOpen
             treeWidth = session.treeWidth
             inspectorWidth = session.inspectorWidth
-            detailColumnWidths = session.detailColumnWidths
-            searchColumnWidths = session.searchColumnWidths
         }
 
         /// Sets the session keys these are.
@@ -32,8 +28,6 @@ public final class TabGroupSession {
             preferences.detailRowOpen = detailRowOpen
             preferences.treeWidth = treeWidth
             preferences.inspectorWidth = inspectorWidth
-            preferences.detailColumnWidths = detailColumnWidths
-            preferences.searchColumnWidths = searchColumnWidths
         }
     }
 

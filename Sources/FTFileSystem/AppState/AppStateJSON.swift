@@ -30,7 +30,9 @@ enum AppStateJSON {
             "path", "viewMode", "searchViewMode", "sortBy", "sortDirection", "includeHidden", "foldersFirst",
             "viewSizes",
         ],
-        "viewSizes": ["iconSizes", "compactListWidths", "previewCounts"],
+        "viewSizes": [
+            "iconSizes", "compactListWidths", "previewCounts", "detailColumnWidths", "searchColumnWidths",
+        ],
         "detailColumns": columnKeys,
         "searchColumns": ["folder"] + columnKeys,
         "detailColumnWidths": ["name"] + columnKeys,

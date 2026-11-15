@@ -1304,7 +1304,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         content.onColumnWidthsChanged = { [weak self, weak pane] widths in
             guard let pane else { return }
-            self?.saveColumnWidths(widths, searching: pane.searchStore?.showsResults == true)
+            self?.saveColumnWidths(widths, in: pane)
         }
         // A size set here is this pane's own, and the app's from now on: what a pane with none of its own starts
         // from. The other panes keep theirs.
@@ -1332,31 +1332,34 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.setMode(pane.viewMode)
     }
 
-    /// The widths the List keeps are the window's own (`detailColumnWidths` is a window session key).
-    private func saveColumnWidths(_ widths: [DetailColumn: Double], searching: Bool) {
+    /// The List's widths, as a drag, a step or a double-click left them in `pane`: that pane's own, as its other sizes
+    /// are, and the app's from now on (what a pane with none of its own starts from). The other panes keep theirs.
+    private func saveColumnWidths(_ widths: [DetailColumn: Double], in pane: BrowserPane) {
+        let searching = pane.searchStore?.showsResults == true
         // As the column's width is drawn, then kept as a whole number the way the saved state keeps it.
         func width(_ column: DetailColumn) -> Double {
             DetailsColumns.clamp(widths[column] ?? 0, column: column, search: searching)
         }
         if searching {
             // Search results keep widths of their own (`searchColumnWidths`), Folder among them.
-            updatePreferences {
-                for key in SearchColumnKey.allCases {
-                    let column = DetailColumn(rawValue: key.rawValue) ?? .name
-                    $0.searchColumnWidths[key] = AppPreferenceLimits.clampSearchColumnWidth(key, width(column))
-                }
+            var kept = SearchColumnWidths.defaults
+            for key in SearchColumnKey.allCases {
+                let column = DetailColumn(rawValue: key.rawValue) ?? .name
+                kept[key] = AppPreferenceLimits.clampSearchColumnWidth(key, width(column))
             }
-            // What the window saves with every navigation, so it keeps them.
-            updatePanels { $0.searchColumnWidths = preferences.searchColumnWidths }
-            return
-        }
-        updatePreferences {
+            pane.setViewSize { $0.searchColumnWidths = kept }
+            updatePreferences { $0.searchColumnWidths = kept }
+        } else {
+            var kept = DetailColumnWidths.defaults
             for key in DetailColumnKey.allCases {
                 let column = DetailColumn(rawValue: key.rawValue) ?? .name
-                $0.detailColumnWidths[key] = AppPreferenceLimits.clampDetailColumnWidth(key, width(column))
+                kept[key] = AppPreferenceLimits.clampDetailColumnWidth(key, width(column))
             }
+            pane.setViewSize { $0.detailColumnWidths = kept }
+            updatePreferences { $0.detailColumnWidths = kept }
         }
-        updatePanels { $0.detailColumnWidths = preferences.detailColumnWidths }
+        // Saved with the pane. A drag calls this at each step, so the folders watched aren't gone over again.
+        group?.saveSession()
     }
 
     /// The columns and the density again, from the preferences (Settings changed them, or a scenario did).
@@ -2017,9 +2020,6 @@ extension MainWindowController: ExplorerWindowHandle {
         if treeLosesKeyboard { content.focusList() }
         showInfoRow(animated: workspace.isReady)
         if !workspace.isReady { workspace.becomeReady() }
-        // The List's column widths are the window's own: a tab made before it had a window (a workspace's, one
-        // moved from another window) shows them from here on.
-        refreshColumns()
         notify(.panels)
     }
 }

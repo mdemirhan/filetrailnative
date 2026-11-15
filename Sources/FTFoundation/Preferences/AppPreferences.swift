@@ -111,15 +111,19 @@ extension WindowSession {
         .openTabs, .activeTabIndex, .treeRootPath, .lastVisitedPath, .lastVisitedFavoritePath, .viewMode,
         .searchViewMode, .sortBy, .sortDirection, .searchResultsSortBy, .searchResultsSortDirection, .includeHidden,
         .foldersFirst, .favoritesExpanded, .locationsExpanded, .folderTreeOpen, .propertiesOpen, .detailRowOpen,
-        .treeWidth, .inspectorWidth, .detailColumnWidths, .searchColumnWidths,
+        .treeWidth, .inspectorWidth,
     ]
 
     static let keySet = Set(keys)
+
+    /// The keys a session is read with: its own, and the List's column widths, which a window kept before each pane
+    /// had its own. A pane saved without them takes its window's, as it showed them.
+    public static let readKeys: [PreferenceKey] = keys + [.detailColumnWidths, .searchColumnWidths]
 }
 
 /// What belongs to one explorer window rather than to the app: its tabs and where they are, how its front tab shows its
-/// folder, which of its panels are open and how wide, and how wide its columns are. Each window keeps its own; the
-/// app's preferences hold the values last set in any window, which a window opened without one of its own starts from.
+/// folder, and which of its panels are open and how wide. Each window keeps its own; the app's preferences hold the
+/// values last set in any window, which a window opened without one of its own starts from.
 public struct WindowSession: Codable, Equatable, Sendable {
     public var openTabs: [OpenTabPreference]
     public var activeTabIndex: Int
@@ -141,8 +145,6 @@ public struct WindowSession: Codable, Equatable, Sendable {
     public var detailRowOpen: Bool
     public var treeWidth: Int
     public var inspectorWidth: Int
-    public var detailColumnWidths: DetailColumnWidths
-    public var searchColumnWidths: SearchColumnWidths
 
     /// The whole session of whole preferences.
     public init(_ preferences: AppPreferences) {
@@ -166,8 +168,6 @@ public struct WindowSession: Codable, Equatable, Sendable {
         detailRowOpen = preferences.detailRowOpen
         treeWidth = preferences.treeWidth
         inspectorWidth = preferences.inspectorWidth
-        detailColumnWidths = preferences.detailColumnWidths
-        searchColumnWidths = preferences.searchColumnWidths
     }
 
     /// The preferences as a window with this session sees them: the session's values over `preferences`.
@@ -193,8 +193,6 @@ public struct WindowSession: Codable, Equatable, Sendable {
         merged.detailRowOpen = detailRowOpen
         merged.treeWidth = treeWidth
         merged.inspectorWidth = inspectorWidth
-        merged.detailColumnWidths = detailColumnWidths
-        merged.searchColumnWidths = searchColumnWidths
         return merged
     }
 

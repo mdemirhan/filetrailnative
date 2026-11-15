@@ -388,25 +388,45 @@ public struct NullEncoded<Value: Codable & Equatable & Sendable>: Codable, Equat
     }
 }
 
-/// The sizes a pane shows its views at, each at each density: the Icons view's icon size, the Compact List's column
-/// width and how many previews fill the pane in the Previews view. Every pane has its own; the app's (in the
-/// preferences) are the ones set last in any pane, which a pane with none of its own starts from.
+/// The sizes a pane shows its views at: the Icons view's icon size, the Compact List's column width and how many
+/// previews fill the pane in the Previews view, each at each density, and the List's column widths, a folder's and
+/// search results'. Every pane has its own; the app's (in the preferences) are the ones set last in any pane, which a
+/// pane with none of its own starts from.
 public struct PaneViewSizes: Codable, Equatable, Sendable {
     public var iconSizes: DensitySizes
     public var compactListWidths: DensitySizes
     public var previewCounts: DensitySizes
+    public var detailColumnWidths: DetailColumnWidths
+    public var searchColumnWidths: SearchColumnWidths
 
-    public init(iconSizes: DensitySizes, compactListWidths: DensitySizes, previewCounts: DensitySizes) {
+    public init(
+        iconSizes: DensitySizes, compactListWidths: DensitySizes, previewCounts: DensitySizes,
+        detailColumnWidths: DetailColumnWidths, searchColumnWidths: SearchColumnWidths
+    ) {
         self.iconSizes = iconSizes
         self.compactListWidths = compactListWidths
         self.previewCounts = previewCounts
+        self.detailColumnWidths = detailColumnWidths
+        self.searchColumnWidths = searchColumnWidths
     }
 
     /// The app's own sizes: those set last.
     public init(_ preferences: AppPreferences) {
         self.init(
             iconSizes: preferences.iconSizes, compactListWidths: preferences.compactListWidths,
-            previewCounts: preferences.previewCounts)
+            previewCounts: preferences.previewCounts, detailColumnWidths: preferences.detailColumnWidths,
+            searchColumnWidths: preferences.searchColumnWidths)
+    }
+
+    /// `preferences` with these sizes in place of the app's.
+    public func applied(to preferences: AppPreferences) -> AppPreferences {
+        var shown = preferences
+        shown.iconSizes = iconSizes
+        shown.compactListWidths = compactListWidths
+        shown.previewCounts = previewCounts
+        shown.detailColumnWidths = detailColumnWidths
+        shown.searchColumnWidths = searchColumnWidths
+        return shown
     }
 }
 

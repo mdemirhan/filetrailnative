@@ -124,10 +124,12 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.normalizeAccentColor("#12345g") == nil)
     }
 
-    @Test func aWindowKeepsTwentyTwoSessionKeysOfItsOwn() {
-        #expect(WindowSession.keys.count == 22)
+    @Test func aWindowKeepsTwentySessionKeysOfItsOwn() {
+        #expect(WindowSession.keys.count == 20)
         #expect(PreferenceKey.openTabs.isWindowSessionKey)
-        #expect(PreferenceKey.searchColumnWidths.isWindowSessionKey)
+        // The List's column widths are each pane's, kept in its tab, not the window's.
+        #expect(!PreferenceKey.detailColumnWidths.isWindowSessionKey)
+        #expect(!PreferenceKey.searchColumnWidths.isWindowSessionKey)
         #expect(!PreferenceKey.theme.isWindowSessionKey)
         let encoded = (try? JSONNode.of(AppPreferences.defaults().windowSession))?.object ?? [:]
         #expect(Set(encoded.keys) == Set(WindowSession.keys.map(\.rawValue)))

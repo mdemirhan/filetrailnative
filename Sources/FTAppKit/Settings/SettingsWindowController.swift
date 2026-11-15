@@ -117,7 +117,7 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
     // MARK: Preferences
 
     /// A change of the app's preferences, made here or in another window: shown here. Only the keys the whole app
-    /// shares are shown, so a change of one window's own (its tabs, panels, column widths) is not looked at.
+    /// shares are shown, so a change of one window's own (its tabs, panels) is not looked at.
     public func preferencesChanged(_ change: PreferencesChange) {
         guard !change.keys.isEmpty else { return }
         loadedStore?.reload()

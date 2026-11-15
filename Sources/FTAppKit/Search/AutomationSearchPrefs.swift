@@ -58,10 +58,10 @@
                 AutomationPrefs.register(key) { value, context in
                     guard let controller = context.controller else { return .unsupported(key.rawValue) }
                     AutomationPrefs.set(key, value, on: controller)
-                    // The window's session keeps its widths and writes them back whenever it saves.
+                    // The widths are the panes' own: the tab's panes show these, as a drag in each would leave them.
                     if key == .searchColumnWidths {
                         let widths = controller.preferences.searchColumnWidths
-                        controller.updatePanels { $0.searchColumnWidths = widths }
+                        for pane in controller.panes { pane.setViewSize { $0.searchColumnWidths = widths } }
                     }
                     controller.refreshColumns()
                     return .applied

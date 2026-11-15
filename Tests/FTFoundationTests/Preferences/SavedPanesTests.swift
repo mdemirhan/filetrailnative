@@ -91,4 +91,23 @@ struct SavedPanesTests {
         #expect(first.activePaneAlone.viewSizes?.iconSizes.standard == 96)
         #expect(first.activePaneAlone.secondPane == nil)
     }
+
+    // The List's column widths are kept with the pane's sizes, a folder's and search results' apart, each brought into
+    // its range; a pane saved with sizes but none of the widths takes the ones it is given, its window's.
+    @Test func readsEachPanesOwnColumnWidths() throws {
+        let read = try tabs(
+            #"[{"path": "/a", "viewSizes": {"detailColumnWidths": {"name": 9999, "size": 140}, "searchColumnWidths": {"folder": 5}}, "secondPane": {"path": "/b", "viewSizes": {"detailColumnWidths": {"name": 250}}}}]"#
+        )
+        let first = try #require(read[0].viewSizes)
+        #expect(first.detailColumnWidths.name == 1000)
+        #expect(first.detailColumnWidths.size == 140)
+        #expect(first.detailColumnWidths.kind == DetailColumnWidths.defaults.kind)
+        #expect(first.searchColumnWidths.folder == 80)
+        #expect(first.searchColumnWidths.name == SearchColumnWidths.defaults.name)
+        let second = try #require(read[0].secondPane?.viewSizes)
+        #expect(second.detailColumnWidths.name == 250)
+        #expect(second.searchColumnWidths == .defaults)
+        let data = try JSONEncoder().encode(read)
+        #expect(try JSONDecoder().decode([OpenTabPreference].self, from: data) == read)
+    }
 }

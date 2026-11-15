@@ -15,7 +15,7 @@ struct ListColumnState: Equatable {
     /// How many previews fill the pane in the Previews view, at each density.
     var previewCounts: DensitySizes = .previewCountDefaults
 
-    /// A folder's columns, from Settings and the window's saved widths.
+    /// A folder's columns, from Settings, at the widths and sizes in `preferences` (a pane puts its own there).
     init(preferences: AppPreferences) {
         columns = DetailsColumns.visible(
             visibility: preferences.detailColumns, order: preferences.detailColumnOrder)

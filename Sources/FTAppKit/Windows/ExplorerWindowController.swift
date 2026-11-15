@@ -427,8 +427,8 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     // MARK: Internals
 
-    // A window that starts as the window closed last ended: its place and size, panels and column widths, and the
-    // tab that was in front. Before any window has closed, the app's latest values at the default size.
+    // A window that starts as the window closed last ended: its place and size, its panels, and the tab that was in
+    // front. Before any window has closed, the app's latest values at the default size.
     private func recordFromLastClosed() -> StoredExplorerWindow {
         let lastClosed = host.store.lastClosedWindow()
         return createRecord(lastClosed?.bounds ?? .default) { if let lastClosed { $0 = lastClosed.session } }

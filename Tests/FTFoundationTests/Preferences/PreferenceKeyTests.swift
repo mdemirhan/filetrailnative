@@ -69,10 +69,10 @@ struct PreferenceKeyTests {
     @Test func aWindowSessionHoldsItsKeysAndNoOther() throws {
         let encoded = try #require(try JSONNode.of(AppPreferences.defaults().windowSession).object)
         #expect(Set(encoded.keys) == Set(WindowSession.keys.map(\.rawValue)))
-        #expect(WindowSession.keys.count == 22)
+        #expect(WindowSession.keys.count == 20)
         let applied = Self.allDifferent.windowSession.applied(to: .defaults())
         #expect(applied.keys(differingFrom: .defaults()) == PreferenceKey.allCases.filter(\.isWindowSessionKey))
-        #expect(PreferenceKey.allCases.filter(\.isWindowSessionKey).count == 22)
+        #expect(PreferenceKey.allCases.filter(\.isWindowSessionKey).count == 20)
         #expect(!PreferenceKey.theme.isWindowSessionKey)
     }
 

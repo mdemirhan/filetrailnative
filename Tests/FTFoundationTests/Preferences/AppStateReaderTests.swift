@@ -336,6 +336,36 @@ struct AppStateReaderTests {
         #expect(state.preferences?.treeWidth == 300)
     }
 
+    // A window kept the List's column widths before each pane had its own: a pane saved with its sizes but without
+    // widths takes its window's, as it showed them, and one saved without sizes starts from the app's when it is
+    // first read. The window's session keeps none from then on; the app's are those set last.
+    @Test func aPaneSavedWithoutColumnWidthsTakesItsWindows() {
+        let state = Self.read(
+            """
+            {"preferences": {"detailColumnWidths": {"name": 300}, "searchColumnWidths": {"folder": 200}},
+             "windows": [{"id": "window-a",
+                          "session": {"detailColumnWidths": {"name": 410}, "searchColumnWidths": {"folder": 150},
+                                      "openTabs": [{"path": "/Users/demo/a", "viewSizes": {"iconSizes": {"standard": 96}},
+                                                    "secondPane": {"path": "/Users/demo/b",
+                                                                   "viewSizes": {"detailColumnWidths": {"name": 500}}}},
+                                                   {"path": "/Users/demo/c"}]}}]}
+            """)
+        let tabs = state.windows?.first?.session.openTabs ?? []
+        #expect(tabs.count == 2)
+        #expect(tabs.first?.viewSizes?.iconSizes.standard == 96)
+        #expect(tabs.first?.viewSizes?.detailColumnWidths.name == 410)
+        #expect(tabs.first?.viewSizes?.detailColumnWidths.size == DetailColumnWidths.defaults.size)
+        #expect(tabs.first?.viewSizes?.searchColumnWidths.folder == 150)
+        // A width it has is its own, and a column's it doesn't say is its window's.
+        #expect(tabs.first?.secondPane?.viewSizes?.detailColumnWidths.name == 500)
+        #expect(tabs.first?.secondPane?.viewSizes?.searchColumnWidths.folder == 150)
+        #expect(tabs.last?.viewSizes == nil)
+        #expect(state.preferences?.detailColumnWidths.name == 300)
+        let encoded = (try? JSONNode.of(state.windows?.first?.session))?.object ?? [:]
+        #expect(encoded["detailColumnWidths"] == nil)
+        #expect(encoded["searchColumnWidths"] == nil)
+    }
+
     @Test func halfPixelWidthsRoundUpAndBadBoundsFallBack() {
         let state = Self.preferences(
             "{\"preferences\": {\"treeWidth\": 220.5, \"inspectorWidth\": 260.5, \"openItemLimit\": 1.5}}"
