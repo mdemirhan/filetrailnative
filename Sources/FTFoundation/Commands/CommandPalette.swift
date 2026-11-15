@@ -32,11 +32,14 @@ public struct CommandPaletteEntry: Equatable, Sendable, Identifiable {
     public var group: ShortcutGroup
     public var icon: CommandIcon?
     public var run: CommandPaletteRun
+    /// What it does, in a line: Help's line for it, shown under the list while it is selected.
+    public var help: String
 
     public init(
         id: String, title: String, place: String?, keys: [String], enabled: Bool = true, checked: Bool = false,
-        group: ShortcutGroup, icon: CommandIcon? = nil, run: CommandPaletteRun
+        group: ShortcutGroup, icon: CommandIcon? = nil, run: CommandPaletteRun, help: String = ""
     ) {
+        self.help = help
         self.id = id
         self.title = title
         self.place = place
@@ -124,22 +127,29 @@ public enum CommandPalette {
         public var group: ShortcutGroup
         public var run: CommandPaletteRun
         public var icon: CommandIcon?
+        /// What it does, in a line, as Help says it of the commands in the table.
+        public var help: String
     }
 
     /// The menu items with no row in the table, in the menus' order. The id of a system item is its title, as the
     /// menu gives it none.
     public static let menuItems: [MenuItem] = [
         MenuItem(
-            id: "about", title: "About File Trail", place: "File Trail", group: .standard, run: .menuItem("about")),
+            id: "about", title: "About File Trail", place: "File Trail", group: .standard, run: .menuItem("about"),
+            help: "Show File Trail's version"),
         MenuItem(
-            id: "Show All", title: "Show All", place: "File Trail", group: .standard, run: .system(.showAll)),
-        MenuItem(id: "Zoom", title: "Zoom", place: "Window", group: .standard, run: .system(.zoom)),
+            id: "Show All", title: "Show All", place: "File Trail", group: .standard, run: .system(.showAll),
+            help: "Show the windows of every app that was hidden"),
+        MenuItem(
+            id: "Zoom", title: "Zoom", place: "Window", group: .standard, run: .system(.zoom),
+            help: "Make the window as large as the screen allows, or as it was"),
         MenuItem(
             id: ApplicationMenu.manageWorkspacesItemID, title: "Manage Workspaces…", place: "Window > Workspaces",
-            group: .tabs, run: .menuItem(ApplicationMenu.manageWorkspacesItemID)),
+            group: .tabs, run: .menuItem(ApplicationMenu.manageWorkspacesItemID),
+            help: "Rename, remove or reorder the saved workspaces, in Settings"),
         MenuItem(
             id: "Bring All to Front", title: "Bring All to Front", place: "Window", group: .standard,
-            run: .system(.bringAllToFront)),
+            run: .system(.bringAllToFront), help: "Bring every File Trail window in front of other apps' windows"),
     ]
 
     /// How a row of the table runs from the palette; nil for one it leaves out.
@@ -211,7 +221,8 @@ public enum CommandPalette {
                     place: place(definition.menuPath) ?? standardPlaces[definition.id],
                     keys: keys(bindings, definition.id),
                     enabled: state?.enabled ?? true, checked: state?.checked ?? false, group: definition.group,
-                    icon: icon(definition.id), run: run))
+                    icon: icon(definition.id), run: run,
+                    help: HelpContent.line(of: definition.id) ?? ""))
         }
         for (index, workspace) in workspaces.enumerated() {
             for inThisWindow in [false, true] {
@@ -223,14 +234,18 @@ public enum CommandPalette {
                         id: itemID, title: inThisWindow ? "\(name) in This Window" : name,
                         place: "Window > Workspaces",
                         keys: slots.indices.contains(index) ? keys(bindings, slots[index]) : [],
-                        enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID)))
+                        enabled: states[itemID]?.enabled ?? true, group: .tabs, run: .menuItem(itemID),
+                        help: inThisWindow
+                            ? "Open the workspace as it was saved, in place of this window"
+                            : "Open the workspace as it was saved, in a new window"))
             }
         }
         for item in menuItems {
             result.append(
                 CommandPaletteEntry(
                     id: item.id, title: item.title, place: item.place, keys: [],
-                    enabled: states[item.id]?.enabled ?? true, group: item.group, icon: item.icon, run: item.run))
+                    enabled: states[item.id]?.enabled ?? true, group: item.group, icon: item.icon, run: item.run,
+                    help: item.help))
         }
         // In the groups' order, each keeping its own.
         let groups = ShortcutGroup.allCases

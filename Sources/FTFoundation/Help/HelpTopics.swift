@@ -655,31 +655,38 @@ extension HelpContent {
     ]
 
     static let shortcutItems: [HelpShortcutItem] = [
-        HelpShortcutItem(group: .navigation, .command(.goBack), "Go back"),
-        HelpShortcutItem(group: .navigation, .command(.goForward), "Go forward"),
-        HelpShortcutItem(group: .navigation, .command(.goEnclosingFolder), "Open the enclosing folder"),
+        HelpShortcutItem(group: .navigation, .command(.goBack), "Go back to the folder you were in before"),
+        HelpShortcutItem(
+            group: .navigation, .command(.goForward), "Go forward again, to the folder you went back from"),
+        HelpShortcutItem(
+            group: .navigation, .command(.goEnclosingFolder), "Open the folder that holds the one you are in"),
         HelpShortcutItem(
             group: .navigation, .command(.openSelectedItem),
             "Open the selected item, or expand or collapse the folder in the tree"),
-        HelpShortcutItem(group: .navigation, .command(.openLocationSheet), "Go to a folder by name or path"),
+        HelpShortcutItem(
+            group: .navigation, .command(.openLocationSheet),
+            "Go to a folder by name or path, or pick one of those you use most"),
         HelpShortcutItem(group: .navigation, .command(.goHomeRootTree), "Go Home and root the folder tree there"),
-        HelpShortcutItem(group: .navigation, .command(.goDocuments), "Go to Documents"),
-        HelpShortcutItem(group: .navigation, .command(.goDesktop), "Go to Desktop"),
-        HelpShortcutItem(group: .navigation, .command(.goDownloads), "Go to Downloads"),
-        HelpShortcutItem(group: .navigation, .command(.goLibrary), "Go to your Library folder"),
-        HelpShortcutItem(group: .navigation, .command(.goMacintoshHD), "Go to Macintosh HD"),
-        HelpShortcutItem(group: .navigation, .command(.goApplications), "Go to Applications"),
-        HelpShortcutItem(group: .navigation, .command(.goTrash), "Go to the Trash"),
+        HelpShortcutItem(group: .navigation, .command(.goDocuments), "Open your Documents folder"),
+        HelpShortcutItem(group: .navigation, .command(.goDesktop), "Open your Desktop folder"),
+        HelpShortcutItem(group: .navigation, .command(.goDownloads), "Open your Downloads folder"),
+        HelpShortcutItem(group: .navigation, .command(.goLibrary), "Open the Library folder in your home folder"),
+        HelpShortcutItem(group: .navigation, .command(.goMacintoshHD), "Open the startup disk"),
+        HelpShortcutItem(group: .navigation, .command(.goApplications), "Open the Applications folder"),
+        HelpShortcutItem(
+            group: .navigation, .command(.goTrash), "Open the Trash, to see what is in it or put something back"),
         HelpShortcutItem(
             group: .navigation, .command(.rootTreeAtSelection), "Root the folder tree at the selected folder"),
-        HelpShortcutItem(group: .navigation, .command(.newWindow), "New window, on the same folder"),
-        HelpShortcutItem(group: .navigation, .command(.newTab), "New tab, on the same folder"),
+        HelpShortcutItem(group: .navigation, .command(.newWindow), "Open a new window on the folder you are in"),
+        HelpShortcutItem(group: .navigation, .command(.newTab), "Open a new tab on the folder you are in"),
         HelpShortcutItem(group: .navigation, .command(.openSelectionInNewTab), "Open the selected folder in a new tab"),
         HelpShortcutItem(
             group: .navigation, .command(.openSelectionInNewWindow), "Open the selected folder in a new window"),
         HelpShortcutItem(group: .navigation, .command(.moveTabToNewWindow), "Move the tab to a window of its own"),
         HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window's tabs into this window"),
-        HelpShortcutItem(group: .navigation, .command(.saveWorkspace), "Save the window's tabs as a workspace"),
+        HelpShortcutItem(
+            group: .navigation, .command(.saveWorkspace),
+            "Save this window's tabs and panes by name, to open again later"),
         HelpShortcutItem(group: .navigation, .command(.openWorkspace1), "Open the first workspace"),
         HelpShortcutItem(group: .navigation, .command(.openWorkspace2), "Open the second workspace"),
         HelpShortcutItem(group: .navigation, .command(.openWorkspace3), "Open the third workspace"),
@@ -705,70 +712,83 @@ extension HelpContent {
             group: .navigation, .command(.copyToOtherPane), "Copy the selected items into the other pane's folder"),
         HelpShortcutItem(
             group: .navigation, .command(.moveToOtherPane), "Move the selected items into the other pane's folder"),
-        HelpShortcutItem(group: .navigation, .command(.swapPanes), "Swap the two panes"),
+        HelpShortcutItem(group: .navigation, .command(.swapPanes), "Swap the two panes, left for right"),
         HelpShortcutItem(
             group: .navigation, .command(.showFolderInOtherPane), "Show this pane's folder in the other pane"),
-        HelpShortcutItem(group: .navigation, .command(.goToOtherPaneFolder), "Go to the other pane's folder"),
+        HelpShortcutItem(
+            group: .navigation, .command(.goToOtherPaneFolder), "Open the other pane's folder in this pane too"),
         HelpShortcutItem(group: .navigation, .command(.equalizePanes), "Make the two panes equally wide"),
         HelpShortcutItem(
-            group: .navigation, .command(.closeTab), "Close the tab (the window, when it is the last tab)"),
-        HelpShortcutItem(group: .navigation, .command(.selectNextTab), "Next tab"),
-        HelpShortcutItem(group: .navigation, .command(.selectPreviousTab), "Previous tab"),
-        HelpShortcutItem(group: .navigation, .command(.reopenClosedTab), "Reopen the tab closed last"),
-        HelpShortcutItem(group: .navigation, .command(.duplicateTab), "Duplicate the tab"),
-        HelpShortcutItem(group: .navigation, .command(.closeWindow), "Close the window"),
-        HelpShortcutItem(group: .navigation, .command(.focusTreePane), "Focus the folder tree"),
-        HelpShortcutItem(group: .navigation, .command(.focusContentPane), "Focus the file list"),
+            group: .navigation, .command(.closeTab), "Close this tab, or the window when it is the last tab"),
+        HelpShortcutItem(group: .navigation, .command(.selectNextTab), "Show the tab to the right of this one"),
+        HelpShortcutItem(group: .navigation, .command(.selectPreviousTab), "Show the tab to the left of this one"),
+        HelpShortcutItem(group: .navigation, .command(.reopenClosedTab), "Reopen the tab you closed last"),
+        HelpShortcutItem(
+            group: .navigation, .command(.duplicateTab), "Open another tab like this one, on the same folder"),
+        HelpShortcutItem(group: .navigation, .command(.closeWindow), "Close this window and all of its tabs"),
+        HelpShortcutItem(group: .navigation, .command(.focusTreePane), "Move the keyboard to the folder tree"),
+        HelpShortcutItem(group: .navigation, .command(.focusContentPane), "Move the keyboard to the file list"),
         HelpShortcutItem(
             group: .navigation, .fixed("Tab"),
             "Move between the tree and the list, or with two panes, the tree, the left pane and the right pane"),
         HelpShortcutItem(group: .navigation, .fixed("Shift+Down"), "Extend the selection (Shift+Up, the other way)"),
         HelpShortcutItem(group: .navigation, .fixed("Home"), "Select the first item (End, the last)"),
-        HelpShortcutItem(group: .navigation, .command(.halfPageDown), "Move half a page down"),
-        HelpShortcutItem(group: .navigation, .command(.halfPageUp), "Move half a page up"),
-        HelpShortcutItem(group: .navigation, .command(.pageDown), "Move one page down"),
-        HelpShortcutItem(group: .navigation, .command(.pageUp), "Move one page up"),
+        HelpShortcutItem(group: .navigation, .command(.halfPageDown), "Move the selection half a page down the list"),
+        HelpShortcutItem(group: .navigation, .command(.halfPageUp), "Move the selection half a page up the list"),
+        HelpShortcutItem(group: .navigation, .command(.pageDown), "Move the selection one page down the list"),
+        HelpShortcutItem(group: .navigation, .command(.pageUp), "Move the selection one page up the list"),
         HelpShortcutItem(
             group: .navigation, .fixed("Shift+PageDown"),
             "Extend the selection by a page (Shift with any of the page keys above)"),
         HelpShortcutItem(group: .navigation, .command(.refreshOrApplySearchSort), "Refresh the current folder"),
-        HelpShortcutItem(group: .files, .command(.openSelection), "Open"),
-        HelpShortcutItem(group: .files, .command(.editSelection), "Edit in your text editor"),
-        HelpShortcutItem(group: .files, .command(.quickLookSelection), "Quick Look"),
+        HelpShortcutItem(
+            group: .files, .command(.openSelection), "Open the selected items: a folder here, a file in its app"),
+        HelpShortcutItem(
+            group: .files, .command(.editSelection), "Open the selected files in the text editor chosen in Settings"),
+        HelpShortcutItem(group: .files, .command(.quickLookSelection), "Preview the selected item without opening it"),
         HelpShortcutItem(
             group: .files, .command(.calculateSize),
             "Calculate the size of the selected folders, or of the folder on screen"),
-        HelpShortcutItem(group: .files, .command(.renameSelection), "Rename"),
+        HelpShortcutItem(
+            group: .files, .command(.renameSelection),
+            "Rename the selected item, or several at once in the Rename sheet"),
         HelpShortcutItem(group: .files, .command(.undo), "Undo the last file operation (in a text field, its typing)"),
         HelpShortcutItem(group: .files, .command(.redo), "Redo what was undone"),
-        HelpShortcutItem(group: .files, .command(.copy), "Copy"),
-        HelpShortcutItem(group: .files, .command(.cut), "Cut"),
-        HelpShortcutItem(group: .files, .command(.paste), "Paste"),
+        HelpShortcutItem(group: .files, .command(.copy), "Copy the selected items, to paste into another folder"),
+        HelpShortcutItem(group: .files, .command(.cut), "Cut the selected items, to move them where you paste"),
+        HelpShortcutItem(group: .files, .command(.paste), "Paste the items copied or cut into the folder you are in"),
         HelpShortcutItem(
             group: .files, .command(.pasteAsFile), "Save the image or text copied in another app as a file"),
-        HelpShortcutItem(group: .files, .command(.duplicateSelection), "Duplicate"),
+        HelpShortcutItem(group: .files, .command(.duplicateSelection), "Make a copy of each selected item beside it"),
         HelpShortcutItem(
             group: .files, .command(.convertImages), "Convert the selected images to another format or size"),
         HelpShortcutItem(group: .files, .command(.compressSelection), "Compress the selected items into a zip"),
         HelpShortcutItem(group: .files, .command(.extractSelection), "Extract the selected archives here"),
         HelpShortcutItem(
             group: .files, .command(.extractSelectionTo), "Extract the selected archives to another folder"),
-        HelpShortcutItem(group: .files, .command(.moveSelection), "Move to another folder"),
-        HelpShortcutItem(group: .files, .command(.newFolder), "New folder"),
-        HelpShortcutItem(group: .files, .command(.trashSelection), "Move to Trash"),
+        HelpShortcutItem(
+            group: .files, .command(.moveSelection), "Move the selected items to a folder chosen by name or path"),
+        HelpShortcutItem(
+            group: .files, .command(.newFolder), "Make a new folder in the folder you are in, and name it"),
+        HelpShortcutItem(group: .files, .command(.trashSelection), "Move the selected items to the Trash"),
         HelpShortcutItem(group: .files, .command(.emptyTrash), "Empty the Trash (asks first)"),
         HelpShortcutItem(group: .files, .command(.ejectVolume), "Eject the disk selected in the sidebar"),
-        HelpShortcutItem(group: .files, .command(.selectAll), "Select all"),
-        HelpShortcutItem(group: .files, .command(.copyPath), "Copy the path"),
+        HelpShortcutItem(group: .files, .command(.selectAll), "Select everything in the list"),
+        HelpShortcutItem(group: .files, .command(.copyPath), "Copy the selected items' paths as text"),
         HelpShortcutItem(
             group: .files, .command(.copyContents), "Copy the selected file's image or text, to paste in another app"),
         HelpShortcutItem(group: .files, .command(.showClipboard), "See what is waiting to be pasted"),
-        HelpShortcutItem(group: .files, .command(.clearClipboard), "Empty the clipboard"),
-        HelpShortcutItem(group: .files, .command(.openInTerminal), "Open in Terminal"),
-        HelpShortcutItem(group: .files, .command(.showInFinder), "Show in Finder"),
-        HelpShortcutItem(group: .files, .command(.toggleFavorite), "Add to or remove from Favorites"),
+        HelpShortcutItem(group: .files, .command(.clearClipboard), "Forget the items waiting to be pasted"),
+        HelpShortcutItem(
+            group: .files, .command(.openInTerminal),
+            "Open a terminal window in the selected folder, or the one you are in"),
+        HelpShortcutItem(group: .files, .command(.showInFinder), "Show the selected items in a Finder window"),
+        HelpShortcutItem(
+            group: .files, .command(.toggleFavorite), "Add the folder to Favorites, or remove it when it is one already"
+        ),
         HelpShortcutItem(group: .files, .fixed("Esc"), "Cancel a dialog (Cmd+. also works)"),
-        HelpShortcutItem(group: .search, .command(.focusFileSearch), "Find files"),
+        HelpShortcutItem(
+            group: .search, .command(.focusFileSearch), "Search the folder you are in, and the folders inside it"),
         HelpShortcutItem(
             group: .search, .fixed("Down"), "Move from the search field into the results (Return also works)"),
         HelpShortcutItem(group: .search, .command(.showLastSearchResults), "Show the last results again"),
@@ -776,38 +796,45 @@ extension HelpContent {
         HelpShortcutItem(group: .search, .command(.refreshOrApplySearchSort), "Run the search again"),
         HelpShortcutItem(group: .search, .fixed("Esc"), "Close the results"),
         HelpShortcutItem(group: .views, .command(.toggleFolderTree), "Show or hide the folder tree"),
-        HelpShortcutItem(group: .views, .command(.toggleInfoPanel), "Show or hide the Info panel"),
-        HelpShortcutItem(group: .views, .command(.toggleInfoRow), "Show or hide the Info row"),
-        HelpShortcutItem(group: .views, .command(.toggleHiddenFiles), "Show or hide hidden files"),
+        HelpShortcutItem(
+            group: .views, .command(.toggleInfoPanel), "Show or hide the details of the selected item, at the right"),
+        HelpShortcutItem(
+            group: .views, .command(.toggleInfoRow),
+            "Show or hide a strip of the selected item's details under the list"),
+        HelpShortcutItem(
+            group: .views, .command(.toggleHiddenFiles),
+            "Show or hide files whose names start with a dot, and other hidden items"),
         HelpShortcutItem(
             group: .views, .command(.togglePinFilter),
             "Keep the filter typed in the list as you go to other folders, or let it go"),
-        HelpShortcutItem(group: .views, .command(.viewAsIcons), "View as icons"),
+        HelpShortcutItem(
+            group: .views, .command(.viewAsIcons), "View as large icons, with previews of photos and documents"),
         HelpShortcutItem(group: .views, .command(.viewAsDetails), "View as a list, with columns"),
         HelpShortcutItem(group: .views, .command(.viewAsList), "View as a compact list of names"),
         HelpShortcutItem(group: .views, .command(.viewAsPreviews), "View as large previews of the files"),
         HelpShortcutItem(
             group: .views, .command(.increaseSize),
-            "Bigger icons in the Icons view, wider columns in the Compact List, fewer and larger previews in Previews"),
+            "Bigger icons, wider columns in the Compact List, or fewer and larger previews"),
         HelpShortcutItem(
             group: .views, .command(.decreaseSize), "Smaller icons, narrower columns, or more and smaller previews"),
         HelpShortcutItem(group: .views, .command(.resetSize), "Icons, columns or previews back to their default size"),
-        HelpShortcutItem(group: .views, .command(.sortByName), "Sort by name"),
-        HelpShortcutItem(group: .views, .command(.sortByKind), "Sort by kind"),
-        HelpShortcutItem(group: .views, .command(.sortByModified), "Sort by date modified"),
-        HelpShortcutItem(group: .views, .command(.sortBySize), "Sort by size"),
-        HelpShortcutItem(group: .views, .command(.toggleFoldersFirst), "Keep folders first, or not"),
+        HelpShortcutItem(group: .views, .command(.sortByName), "Order the list by name, numbers in counting order"),
+        HelpShortcutItem(group: .views, .command(.sortByKind), "Order the list by kind, each type of file together"),
+        HelpShortcutItem(group: .views, .command(.sortByModified), "Order the list by when each item last changed"),
+        HelpShortcutItem(group: .views, .command(.sortBySize), "Order the list by size"),
+        HelpShortcutItem(
+            group: .views, .command(.toggleFoldersFirst), "List the folders before the files, or among them"),
         HelpShortcutItem(group: .views, .command(.fullScreen), "Enter or leave full screen"),
-        HelpShortcutItem(group: .views, .command(.minimize), "Minimize the window"),
-        HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail"),
+        HelpShortcutItem(group: .views, .command(.minimize), "Minimize the window into the Dock"),
+        HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail's windows until you come back to it"),
         HelpShortcutItem(group: .views, .command(.hideOthers), "Hide other apps"),
-        HelpShortcutItem(group: .views, .command(.customizeToolbar), "Customize the toolbar"),
+        HelpShortcutItem(group: .views, .command(.customizeToolbar), "Add, remove or move the toolbar's buttons"),
         HelpShortcutItem(
             group: .views, .command(.showCommandPalette), "Find any command by its name, and run it"),
-        HelpShortcutItem(group: .views, .command(.settings), "Settings"),
-        HelpShortcutItem(group: .views, .command(.openHelp), "Help"),
-        HelpShortcutItem(group: .views, .command(.openKeyboardShortcuts), "Keyboard shortcuts"),
-        HelpShortcutItem(group: .views, .command(.quit), "Quit File Trail"),
+        HelpShortcutItem(group: .views, .command(.settings), "Change File Trail's settings and keyboard shortcuts"),
+        HelpShortcutItem(group: .views, .command(.openHelp), "Open File Trail's Help"),
+        HelpShortcutItem(group: .views, .command(.openKeyboardShortcuts), "List every keyboard shortcut, in Help"),
+        HelpShortcutItem(group: .views, .command(.quit), "Close every window and quit File Trail"),
         HelpShortcutItem(group: .views, .fixed("Esc"), "Clear the search in Help"),
     ]
 }

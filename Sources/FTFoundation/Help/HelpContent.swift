@@ -124,6 +124,19 @@ public enum HelpContent {
         }
     }
 
+    /// What a command does in a line: its first line in the shortcut list, which the command palette shows too.
+    public static func line(of id: ShortcutCommandID) -> String? {
+        lineByCommand[id]
+    }
+
+    private static let lineByCommand: [ShortcutCommandID: String] = {
+        var lines: [ShortcutCommandID: String] = [:]
+        for item in shortcutItems {
+            if case .command(let id) = item.source, lines[id] == nil { lines[id] = item.description }
+        }
+        return lines
+    }()
+
     /// "Cmd+Plus" reads as "Cmd++".
     static func writeForReading(_ shortcut: String) -> String {
         JSString.hasSuffix(shortcut, "+Plus") ? String(shortcut.dropLast(4)) + "+" : shortcut

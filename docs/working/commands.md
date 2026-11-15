@@ -34,8 +34,9 @@ The palette lists every row of the table and the menu items that aren't in it, s
 ## Help
 
 - Every table row has a line in `HelpContent.shortcutItems` (`Sources/FTFoundation/Help/HelpTopics.swift`), which the Keyboard Shortcuts page lists. `HelpContentTests` fails without it.
+- The command palette shows that line under its list while the command is selected, alone, without the key beside it. So it says what the command does and to what, more than its name: "Copy the selected items, to paste into another folder", not "Copy". It is a phrase with no period, 80 characters at most. `CommandPaletteTests` checks all three. A menu item with no table row has its line in `CommandPalette.menuItems`.
 - A command that needs more than its line gets a row in the topic it belongs to, saying what it does and where it is.
-- `Tests/Golden/help-content.json` records what Help's search finds; a command whose words change a search's results is added there by hand.
+- `Tests/Golden/help-content.json` records the shortcut list and what Help's search finds: a new or changed line is put in each case's list by hand, and in the searches whose words it now holds or no longer does.
 
 ## Goldens
 

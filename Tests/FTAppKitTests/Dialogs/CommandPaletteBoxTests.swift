@@ -83,8 +83,11 @@ extension ExplorerWindowlessTests {
             let box = try openBox(tab, menu)
             type("view as", into: box)
             #expect(box.selectedRow?.entry.id == "viewAsIcons")
+            #expect(box.helpLabel.stringValue == HelpContent.line(of: .viewAsIcons))
             DialogKeys.press(125, "", in: window)
             #expect(box.selectedRow?.entry.id == "viewAsDetails")
+            // Under the list, what the selected command does.
+            #expect(box.helpLabel.stringValue == "View as a list, with columns")
             DialogKeys.press(45, "n", modifiers: .control, in: window)
             #expect(box.selectedRow?.entry.id == "viewAsList")
             DialogKeys.press(35, "p", modifiers: .control, in: window)

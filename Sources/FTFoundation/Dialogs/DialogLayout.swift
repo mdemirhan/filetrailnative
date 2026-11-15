@@ -70,8 +70,10 @@ public enum DialogLayout {
         public static let checkWidth = 12.0
         /// The title takes at most 60% of the row.
         public static let titleMaxFraction = 0.6
-        /// The foot: 1 pt line on top, its text 8 below it and 10 above the bottom, inset 16.
+        /// The foot: 1 pt line on top, the selected command's Help line 8 below it, the keys 4 below that and 10
+        /// above the bottom, inset 16.
         public static let footerTop = 8.0
+        public static let helpBottom = 4.0
         public static let footerBottom = 10.0
         public static let footerHorizontal = 16.0
         /// Nothing matches: 18 above the words, 22 below.

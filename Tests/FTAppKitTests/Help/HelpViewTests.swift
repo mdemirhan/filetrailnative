@@ -97,8 +97,8 @@ import Testing
         #expect(inline)
         // The topic's own shortcuts close the page; others stay on their topics.
         #expect(headings(view).last == "Shortcuts")
-        #expect(shortcutTexts(view).contains("Find files"))
-        #expect(!shortcutTexts(view).contains("Move to Trash"))
+        #expect(shortcutTexts(view).contains("Search the folder you are in, and the folders inside it"))
+        #expect(!shortcutTexts(view).contains("Move the selected items to the Trash"))
     }
 
     @Test func listsEveryShortcutOnTheKeyboardShortcutsPageGroupedByTopic() {
@@ -121,10 +121,10 @@ import Testing
         view.layoutSubtreeIfNeeded()
 
         let row = views("help.shortcutRow", in: view).first {
-            texts("help.shortcutRow.description", in: $0) == ["Duplicate"]
+            texts("help.shortcutRow.description", in: $0) == ["Make a copy of each selected item beside it"]
         }
         #expect(row.map { texts("help.keycap", in: $0) } == ["⇧", "⌘", "D"])
-        #expect(!shortcutTexts(view).contains("New tab, on the same folder"))
+        #expect(!shortcutTexts(view).contains("Open a new tab on the folder you are in"))
 
         (views("help.action", in: view).first as? SystemButton)?.perform()
         #expect(customized == 1)
@@ -144,7 +144,7 @@ import Testing
         let view = make(
             topic: .files, shortcuts: ShortcutDisplay(shortcuts: ShortcutCommands.resolve(overrides)))
         let row = views("help.shortcutRow", in: view).first {
-            texts("help.shortcutRow.description", in: $0) == ["Copy the path"]
+            texts("help.shortcutRow.description", in: $0) == ["Copy the selected items' paths as text"]
         }
         #expect(row.map { texts("help.keycap", in: $0) } == ["⌘", "+"])
         #expect(views("help.keycap", in: view).count > 4)
@@ -160,7 +160,8 @@ import Testing
         // A row and a shortcut from Working with files, nothing from other topics.
         #expect(headings(view).contains("Working with files"))
         let hits = texts("help.row.label", in: view) + shortcutTexts(view)
-        #expect(hits.filter { $0 == "Move to Trash" }.count == 2)
+        #expect(hits.filter { $0 == "Move to Trash" }.count == 1)
+        #expect(hits.contains("Move the selected items to the Trash"))
         #expect(!headings(view).contains("Views and panels"))
         // While searching, no topic is marked as the current page.
         #expect(view.currentTopic == nil)
@@ -168,7 +169,7 @@ import Testing
 
         // The shortcut as written also matches.
         type("cmd+f", in: view)
-        #expect(shortcutTexts(view).contains("Find files"))
+        #expect(shortcutTexts(view).contains("Search the folder you are in, and the folders inside it"))
 
         type("zzzz", in: view)
         #expect(texts("help.intro", in: view).contains { $0.hasPrefix("Nothing in Help matches") })

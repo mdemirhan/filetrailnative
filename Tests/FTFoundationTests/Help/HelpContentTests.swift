@@ -44,11 +44,15 @@ struct HelpContentTests {
             #expect(Set(rows).count == rows.count)
         }
         // A command without a key has no row, and a second key is mentioned after the first.
-        #expect(!shown.map(\.description).contains("Show in Finder"))
-        #expect(shown.first { $0.shortcut == "Cmd+[" }?.description == "Go back (Cmd+Left also works)")
+        #expect(!shown.map(\.description).contains("Show the selected items in a Finder window"))
+        #expect(
+            shown.first { $0.shortcut == "Cmd+[" }?.description
+                == "Go back to the folder you were in before (Cmd+Left also works)")
         #expect(
             shown.first { $0.description.hasPrefix("Rename") }
-                == HelpShownShortcut(group: .files, shortcut: "Return", description: "Rename (F2 also works)"))
+                == HelpShownShortcut(
+                    group: .files, shortcut: "Return",
+                    description: "Rename the selected item, or several at once in the Rename sheet (F2 also works)"))
     }
 
     @Test func followsTheKeysChosenInSettingsInTheListAndInTheSentences() {
@@ -60,10 +64,13 @@ struct HelpContentTests {
         let display = ShortcutDisplay(shortcuts: ShortcutCommands.resolve(overrides))
         let shown = HelpContent.listShortcuts(display)
 
-        #expect(!shown.map(\.description).contains("New tab, on the same folder"))
-        #expect(shown.first { $0.description == "Go back" }?.shortcut == "Cmd+Option+Left")
-        #expect(shown.first { $0.description == "Show in Finder" }?.shortcut == "Cmd+Shift+J")
-        #expect(shown.first { $0.shortcut == "Cmd+=" }?.description == "Copy the path (Cmd++ also works)")
+        #expect(!shown.map(\.description).contains("Open a new tab on the folder you are in"))
+        #expect(shown.first { $0.description.hasPrefix("Go back") }?.shortcut == "Cmd+Option+Left")
+        #expect(
+            shown.first { $0.description.hasPrefix("Show the selected items in a Finder") }?.shortcut == "Cmd+Shift+J")
+        #expect(
+            shown.first { $0.shortcut == "Cmd+=" }?.description
+                == "Copy the selected items' paths as text (Cmd++ also works)")
         // A sentence names the key, or the menu item when the command has no key.
         #expect(
             HelpContent.fillShortcutMentions("{goBack} goes back; {newTab} opens a tab.", display)
@@ -72,7 +79,9 @@ struct HelpContentTests {
         #expect(
             HelpContent.fillShortcutMentions("*.{jpg,png} and \\d{2} and {nothing}")
                 == "*.{jpg,png} and \\d{2} and {nothing}")
-        #expect(HelpContent.search("cmd+shift+j", display).first?.shortcuts.first?.description == "Show in Finder")
+        #expect(
+            HelpContent.search("cmd+shift+j", display).first?.shortcuts.first?.description
+                == "Show the selected items in a Finder window")
     }
 
     @Test func namesOnlyCommandsThatExistInItsSentences() {
@@ -118,7 +127,7 @@ struct HelpContentTests {
         #expect(trash.first?.shortcuts.map(\.shortcut) == ["Cmd+Backspace", "Cmd+Shift+Backspace"])
         #expect(
             HelpContent.search("cmd+k").first?.shortcuts.first?.description
-                == "Go to a folder by name or path (Cmd+Shift+G also works)")
+                == "Go to a folder by name or path, or pick one of those you use most (Cmd+Shift+G also works)")
         // A section title brings its rows along ("glob" is in "Glob patterns").
         #expect((HelpContent.search("glob patterns").first?.rows.count ?? 0) >= 6)
     }

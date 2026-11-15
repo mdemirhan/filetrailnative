@@ -16,6 +16,8 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
     let footer = DialogFooterLine(thickness: DialogLayout.GoTo.footerBorder)
     let hintLabel = PlainLabel(labelWithString: "↑↓ to choose    ↩ to run    esc to close")
     let countLabel = PlainLabel(labelWithString: "")
+    /// What the selected command does, in a line: Help's line for it.
+    let helpLabel = PlainLabel(labelWithString: "")
     let emptyLabel = PlainLabel(wrappingLabelWithString: "")
     private(set) var sections: [CommandPaletteSection] = []
     private(set) var rowViews: [CommandPaletteRowView] = []
@@ -29,6 +31,7 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
     var onClose: () -> Void = {}
 
     private static let hintFont = ThemeFonts.sans(DesignTokens.typeScale.small)
+    private static let helpFont = ThemeFonts.sans(DesignTokens.typeScale.callout)
     private static let headingFont = ThemeFonts.sans(DesignTokens.typeScale.small, .semibold)
     private static let emptyFont = ThemeFonts.sans(DesignTokens.typeScale.callout)
 
@@ -63,6 +66,10 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
             footer.addSubview(label)
         }
         countLabel.alignment = .right
+        helpLabel.font = Self.helpFont
+        helpLabel.lineBreakMode = .byTruncatingTail
+        helpLabel.setAccessibilityIdentifier("commandPalette.help")
+        footer.addSubview(helpLabel)
         countLabel.setAccessibilityIdentifier("commandPalette.count")
         applyTheme(theme)
         showRows()
@@ -188,6 +195,7 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
         footer.applyTheme(theme)
         let secondary = NSColor(theme.palette.textSecondary)
         for label in [hintLabel, countLabel, emptyLabel] + headingViews { label.textColor = secondary }
+        helpLabel.textColor = NSColor(theme.palette.textPrimary)
         for row in rowViews { row.applyTheme(theme) }
     }
 
@@ -233,6 +241,8 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
 
     private func markSelection() {
         for view in rowViews { view.isSelected = view.index == selectedIndex }
+        let entry = selectedRow?.entry
+        helpLabel.stringValue = entry.map { $0.help.isEmpty ? $0.title : $0.help } ?? ""
     }
 
     private func scrollSelectionIntoView() {
@@ -257,8 +267,8 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
 
     private var footerHeight: CGFloat {
         let layout = DialogLayout.CommandPalette.self
-        return CGFloat(DialogLayout.GoTo.footerBorder + layout.footerTop + layout.footerBottom)
-            + GoToRowView.lineHeight(Self.hintFont)
+        return CGFloat(DialogLayout.GoTo.footerBorder + layout.footerTop + layout.helpBottom + layout.footerBottom)
+            + GoToRowView.lineHeight(Self.helpFont) + GoToRowView.lineHeight(Self.hintFont)
     }
 
     /// The field, the room around the list, and the foot.
@@ -297,9 +307,13 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
         y += fieldHeight + CGFloat(goTo.sectionTop)
         footer.frame = NSRect(x: 0, y: bounds.height - footerHeight, width: width, height: footerHeight)
         let inset = GoToRowView.cellInset
-        let lineY = CGFloat(goTo.footerBorder + layout.footerTop)
-        let textHeight = GoToRowView.lineHeight(Self.hintFont)
+        let helpY = CGFloat(goTo.footerBorder + layout.footerTop)
+        let helpHeight = GoToRowView.lineHeight(Self.helpFont)
         let textWidth = max(0, width - 2 * CGFloat(layout.footerHorizontal))
+        helpLabel.frame = NSRect(
+            x: CGFloat(layout.footerHorizontal) - inset, y: helpY, width: textWidth + 2 * inset, height: helpHeight)
+        let lineY = helpY + helpHeight + CGFloat(layout.helpBottom)
+        let textHeight = GoToRowView.lineHeight(Self.hintFont)
         hintLabel.frame = NSRect(
             x: CGFloat(layout.footerHorizontal) - inset, y: lineY, width: textWidth * 0.7 + 2 * inset,
             height: textHeight)

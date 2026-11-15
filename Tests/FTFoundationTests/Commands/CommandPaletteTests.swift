@@ -182,6 +182,25 @@ struct CommandPaletteTests {
         #expect(CommandPalette.sanitizeRecent("x").isEmpty)
     }
 
+    // Every command has a line saying what it does, shown under the list while it is selected: Help's line for the
+    // commands of the table. It says more than the command's name, fits on the line, and is a phrase, not a sentence.
+    @Test func everyCommandHasALineSayingMoreThanItsName() {
+        let stop: Set<String> = ["the", "a", "an", "to", "of", "in", "it", "its", "is", "and", "or", "this", "that"]
+        func words(_ text: String) -> Set<String> {
+            Set(text.lowercased().split { !$0.isLetter }.map(String.init).filter { !stop.contains($0) })
+        }
+        let workspaces = [CommandPaletteWorkspace(id: "w1", name: "Photos")]
+        for entry in Self.entries(workspaces: workspaces) {
+            #expect(!entry.help.isEmpty, "\(entry.id)")
+            #expect(!words(entry.help).isSubset(of: words(entry.title)), "\(entry.id): \(entry.help)")
+            #expect(entry.help.count <= 80, "\(entry.id): \(entry.help)")
+            #expect(!entry.help.hasSuffix("."), "\(entry.id)")
+        }
+        // A command Help lists twice has its first line: Refresh's in a folder, not over search results.
+        #expect(Self.entry("refreshOrApplySearchSort")?.help == "Refresh the current folder")
+        #expect(Self.entry("toggleTwoPanes")?.help == HelpContent.line(of: .toggleTwoPanes))
+    }
+
     @Test func placeIsTheMenuPathWithoutTheItem() {
         #expect(CommandPalette.place("View > Sort By > Name") == "View > Sort By")
         #expect(CommandPalette.place("File > Open") == "File")
