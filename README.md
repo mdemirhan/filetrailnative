@@ -71,6 +71,16 @@ In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothi
 
 The files you cut or copy are on File Trail's own clipboard, the one the toolbar lists, so they are pasted in File Trail and not in Finder or other apps. Between apps, drag them.
 
+## Small jobs without opening an app
+
+<p align="center">
+  <img src="docs/screenshots/convert-images.png" alt="The Convert Images sheet for five selected photos, with its format, quality, size and metadata choices" width="900">
+</p>
+
+- **Paste as File (⇧⌘V)** saves a screenshot or text you copied in another app as a new file in the folder you are in, with its name selected for you to change. Finder has nothing like it.
+- **Copy Contents (⇧⌘C)** puts a file's image or text on the clipboard, ready to paste into a message or a document, without opening the file.
+- **Convert Images** makes copies of the selected images as JPEG, HEIC, PNG, TIFF or AVIF, at their size or smaller, with or without their metadata and location. One Undo takes the copies back.
+
 ## Any folder in a few keystrokes
 
 <p align="center">

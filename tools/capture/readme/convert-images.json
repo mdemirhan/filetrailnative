@@ -1,0 +1,70 @@
+{
+  "name": "convert-images",
+  "description": "The Convert Images sheet for five photos",
+  "root": "/Users/Shared/Lighthouse",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "density": "standard",
+        "viewMode": "icons",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "photos"
+    },
+    {
+      "step": "wait",
+      "ms": 800
+    },
+    {
+      "step": "select",
+      "names": [
+        "Alpine lake.jpg",
+        "Arrabida coast.jpg",
+        "Biwa shore.jpg",
+        "Cape Point.jpg",
+        "Coast road.jpg"
+      ]
+    },
+    {
+      "step": "menu",
+      "path": [
+        "File",
+        "Convert 5 Images…"
+      ]
+    },
+    {
+      "step": "expectSheet",
+      "name": "convert images sheet"
+    },
+    {
+      "step": "wait",
+      "ms": 800
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "convert-images"
+    }
+  ]
+}
