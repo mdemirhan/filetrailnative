@@ -191,23 +191,37 @@ extension ExplorerWindowlessTests {
             #expect(!open(right) && !open(other))
         }
 
-        @Test func theTreeShowsHiddenFoldersAsTheActivePaneDoes() async throws {
+        // Hidden Files is the tab's: turned on or off from either pane, both panes and the tree follow, a pane switch
+        // leaves the tree as it is, and a pane opened again where it was closed shows them as the tab does now.
+        @Test func hiddenFilesAreTheTabsInBothPanesAndTheTree() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
+            try "x".write(to: URL(fileURLWithPath: real(harness, ".secret")), atomically: true, encoding: .utf8)
+            try "x".write(to: URL(fileURLWithPath: real(harness, "Beta/.shade")), atomically: true, encoding: .utf8)
             let (tab, left, right) = try await twoPanes(harness, right: "Beta")
             let model = tab.sidebarController.model
+            func names(_ pane: BrowserPane) -> [String] { pane.content.entries.map(\.name) }
             #expect(!model.includeHidden)
 
             tab.focusPane(right)
             tab.perform(.toggleHiddenFiles)
-            #expect(right.includeHidden)
-            #expect(!left.includeHidden)
-            #expect(model.includeHidden)
+            #expect(left.includeHidden && right.includeHidden && model.includeHidden)
+            #expect(await waitUntil { names(left).contains(".secret") && names(right).contains(".shade") })
 
             tab.focusPane(left)
-            #expect(!model.includeHidden)
-            tab.focusPane(right)
             #expect(model.includeHidden)
+            tab.perform(.toggleHiddenFiles)
+            #expect(!left.includeHidden && !right.includeHidden && !model.includeHidden)
+            #expect(await waitUntil { !names(left).contains(".secret") && !names(right).contains(".shade") })
+
+            // The right pane closes with them off, they are turned on, and it opens again with them.
+            tab.perform(.toggleTwoPanes)
+            tab.perform(.toggleHiddenFiles)
+            tab.perform(.toggleTwoPanes)
+            let reopened = try #require(tab.otherPane)
+            #expect(reopened.includeHidden)
+            await arrived(reopened)
+            #expect(names(reopened).contains(".shade"))
         }
 
         // The toolbar's one search field is the active pane's: the other pane opening a folder leaves what is typed.

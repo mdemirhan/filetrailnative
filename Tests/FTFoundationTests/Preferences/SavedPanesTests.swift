@@ -35,6 +35,15 @@ struct SavedPanesTests {
         #expect(read.first?.paneSplit == 0.65)
     }
 
+    // Hidden Files is the tab's. A tab saved while each pane had its own takes its active pane's, in both panes.
+    @Test func aTabSavedWithPanesThatDifferInHiddenFilesTakesItsActivePanes() throws {
+        let read = try tabs(
+            #"[{"path": "/a", "includeHidden": false, "secondPane": {"path": "/b", "includeHidden": true}, "activePane": 1}, {"path": "/c", "includeHidden": true, "secondPane": {"path": "/d", "includeHidden": false}}]"#
+        )
+        #expect(read[0].includeHidden && read[0].secondPane?.includeHidden == true)
+        #expect(read[1].includeHidden && read[1].secondPane?.includeHidden == true)
+    }
+
     @Test func aDamagedDividerIsKeptInItsRangeAndAnUnknownActivePaneIsTheFirst() throws {
         let read = try tabs(
             #"[{"path": "/a", "secondPane": {"path": ""}, "activePane": 7, "paneSplit": 3}, {"path": "/b", "secondPane": {}, "paneSplit": -1}]"#

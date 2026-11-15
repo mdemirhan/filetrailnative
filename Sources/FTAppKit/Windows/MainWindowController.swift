@@ -220,9 +220,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var searchViewMode: ExplorerViewMode { activePane.searchViewMode }
     var sortBy: SortByPreference { activePane.sortBy }
     var sortDirection: SortDirectionPreference { activePane.sortDirection }
+    /// Hidden Files is the tab's, not a pane's: both panes and the tree show hidden items or neither does.
     var includeHidden: Bool {
         get { activePane.includeHidden }
-        set { activePane.includeHidden = newValue }
+        set { for pane in panes { pane.includeHidden = newValue } }
     }
     var foldersFirst: Bool {
         get { activePane.foldersFirst }
@@ -1850,8 +1851,12 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleHiddenFiles:
             includeHidden.toggle()
             sidebar.hiddenFilesChanged(includeHidden)
-            viewChanged(keepingTree: !sidebar.model.rootPath.isEmpty)
-            searchStore?.session.hiddenFilesChanged(includeHidden)
+            // Each pane reads its folder again, or searches again; the other pane leaves the tree to the active one.
+            let keepingTree = !sidebar.model.rootPath.isEmpty
+            for pane in panes {
+                pane.viewChanged(keepingTree: pane !== activePane || keepingTree)
+                pane.searchStore?.session.hiddenFilesChanged(includeHidden)
+            }
         case .refreshOrApplySearchSort:
             // In search mode ⌘R runs the same search again.
             if let session = searchStore?.session, session.isSearchMode { session.rerun() } else { refresh() }

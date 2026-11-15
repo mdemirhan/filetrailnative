@@ -208,11 +208,13 @@ extension ExplorerWindowlessTests {
             #expect(tab.activePane === right)
 
             let box = try openBox(tab, menu)
-            type("hidden", into: box)
+            // Folders First is a pane's own, so where it changed shows where the command ran.
+            type("folders first", into: box)
+            #expect(box.selectedRow?.entry.id == "toggleFoldersFirst")
             DialogKeys.press(36, "\r", in: window)
             #expect(tab.commandPaletteBox == nil)
-            #expect(await waitUntil { right.includeHidden })
-            #expect(!left.includeHidden)
+            #expect(await waitUntil { !right.foldersFirst })
+            #expect(left.foldersFirst)
             #expect(tab.activePane === right && tab.paneWithKeyboard === right)
             await harness.close()
         }

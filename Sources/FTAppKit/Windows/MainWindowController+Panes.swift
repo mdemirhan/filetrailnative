@@ -37,7 +37,7 @@ extension MainWindowController {
             return other
         }
         let source = activePane
-        let start: StartupTab
+        var start: StartupTab
         var history: (paths: [String], index: Int)?
         if path == nil, let closed = closedSecondPane {
             start = closed.start
@@ -45,6 +45,8 @@ extension MainWindowController {
         } else {
             start = startupTab(of: source, path: path ?? source.shownFolderPath)
         }
+        // Hidden Files is the tab's: a pane opened again where it was takes it as the tab has it now.
+        start.includeHidden = includeHidden
         let keyboard = paneWithKeyboard
         let pane = addSecondPane(start: start, history: history)
         pane.ensureLoaded()
@@ -72,7 +74,8 @@ extension MainWindowController {
     }
 
     /// A tab brought back with two panes (a relaunch, Reopen Closed Tab, Duplicate Tab, a tab moved to another
-    /// window): its second pane as it was kept, read with the tab's first.
+    /// window): its second pane as it was kept, read with the tab's first. It shows hidden files as the first does, the
+    /// tab having one Hidden Files (`PreferencesSanitizer.openTabs` reads a file saved while each pane had its own).
     func restoreSecondPane(
         _ saved: OpenPanePreference, history: (paths: [String], index: Int)?, active: Bool, split: Double?
     ) {
@@ -80,7 +83,7 @@ extension MainWindowController {
         let start = StartupTab(
             path: saved.path ?? "", rootPath: treeRootPath, favoritePath: nil, viewMode: saved.viewMode,
             searchViewMode: saved.searchViewMode, sortBy: saved.sortBy, sortDirection: saved.sortDirection,
-            includeHidden: saved.includeHidden, foldersFirst: saved.foldersFirst, favoritesExpanded: favoritesExpanded,
+            includeHidden: includeHidden, foldersFirst: saved.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, viewSizes: saved.viewSizes)
         let pane = addSecondPane(start: start, history: history)
         if let split { workspace.setPaneSplit(split) }
@@ -265,7 +268,7 @@ extension MainWindowController {
         for pane in panes where isGone(pane.shownFolderPath) { pane.go(to: URL(fileURLWithPath: homePath)) }
         if !activeLeaves, isGone(treeRootPath) {
             sidebarController.model.initializeTree(homePath)
-            sidebarController.activePaneChanged(to: active.shownFolderPath, includeHidden: active.includeHidden)
+            sidebarController.activePaneChanged(to: active.shownFolderPath)
         }
     }
 
@@ -285,16 +288,16 @@ extension MainWindowController {
         activePaneChanged()
     }
 
-    /// What follows the active pane: the search field, the Info panel and Info Row, the tree's selection and hidden
-    /// files, the title and everything that reads the tab. `saving`: the tab is saved with its new active pane; off
-    /// when what comes next saves it anyway.
+    /// What follows the active pane: the search field, the Info panel and Info Row, the tree's selection, the title and
+    /// everything that reads the tab. Hidden Files is the tab's, so the tree shows what it showed. `saving`: the tab is
+    /// saved with its new active pane; off when what comes next saves it anyway.
     func activePaneChanged(saving: Bool = true) {
         let pane = activePane
         workspace.activePane = activePaneIndex
         pane.search.connect(searchField)
         infoController?.follow(row: pane.content.contentShell.infoRow)
         showInfoRow(animated: false)
-        sidebarController.activePaneChanged(to: pane.shownFolderPath, includeHidden: pane.includeHidden)
+        sidebarController.activePaneChanged(to: pane.shownFolderPath)
         updateTitle()
         if group?.selected === self { group?.frontSearch = pane.searchStore }
         for change: ExplorerWindowChange in [.folder, .history, .view, .search, .selection, .focusedPane] {

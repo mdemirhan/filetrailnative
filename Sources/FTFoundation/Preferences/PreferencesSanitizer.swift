@@ -43,18 +43,22 @@ public enum PreferencesSanitizer {
         for candidate in candidates {
             guard let record = candidate.object else { continue }
             let sortBy = Self.sortBy(record)
-            let includesHidden = bool(record, "includeHidden", includeHidden)
+            let firstHidden = bool(record, "includeHidden", includeHidden)
             let showsFoldersFirst = bool(record, "foldersFirst", foldersFirst)
             // A second pane takes what it doesn't say from the tab's first.
-            let secondPane = record["secondPane"]?.object.map { pane in
+            var secondPane = record["secondPane"]?.object.map { pane in
                 OpenPanePreference(
                     path: nonEmptyString(pane["path"]), viewMode: viewMode(pane["viewMode"]),
                     searchViewMode: viewMode(pane["searchViewMode"], .details), sortBy: Self.sortBy(pane),
                     sortDirection: pane["sortDirection"]?.string == "desc" ? .desc : .asc,
-                    includeHidden: bool(pane, "includeHidden", includesHidden),
+                    includeHidden: bool(pane, "includeHidden", firstHidden),
                     foldersFirst: bool(pane, "foldersFirst", showsFoldersFirst),
                     viewSizes: viewSizes(pane["viewSizes"]))
             }
+            let activePane = record["activePane"]?.number == 1 ? 1 : nil
+            // Hidden Files is the tab's: a tab saved while each pane had its own takes its active pane's.
+            let includesHidden = activePane == 1 ? secondPane?.includeHidden ?? firstHidden : firstHidden
+            secondPane?.includeHidden = includesHidden
             let split = record["paneSplit"]?.number.flatMap { $0.isFinite ? min(0.8, max(0.2, $0)) : nil }
             tabs.append(
                 OpenTabPreference(
@@ -65,7 +69,7 @@ public enum PreferencesSanitizer {
                     includeHidden: includesHidden, foldersFirst: showsFoldersFirst,
                     favoritesExpanded: bool(record, "favoritesExpanded", favoritesExpanded),
                     locationsExpanded: bool(record, "locationsExpanded", locationsExpanded), secondPane: secondPane,
-                    activePane: record["activePane"]?.number == 1 ? 1 : nil, paneSplit: split,
+                    activePane: activePane, paneSplit: split,
                     viewSizes: viewSizes(record["viewSizes"])))
             if tabs.count == AppPreferenceLimits.openTabsLimit {
                 break
