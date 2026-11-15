@@ -6,6 +6,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 - `docs/principles.md`: the few rules over everything else. A decision is a default to ask about, not a wall; safety is weighed against what it costs the ordinary case; do what was asked; ask the owner only what is the owner's to say.
 - `docs/decisions.md`: the owner's decisions, each with its reason, by area in `docs/decisions/`. Read the part that covers what is being changed before changing it.
+- `docs/working/commands.md`: what a new command needs so it is in the menus, the command palette, Help and Settings → Shortcuts. Follow it for every command added.
 - `docs/working/reviews.md`: how a review's findings are reported (blocker or not, and why what was left was left). Give it to any reviewer started for one.
 - Open issues are in `docs/state/known-issues.md` and `docs/state/battery.md`; what was learned finding a stalled test run or a permission question is in `docs/working/debugging.md`. `docs/README.md` says what is where.
 
