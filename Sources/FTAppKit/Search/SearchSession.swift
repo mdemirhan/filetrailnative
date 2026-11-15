@@ -387,7 +387,12 @@ final class SearchSession {
         {
             results = patched
             resultsGeneration += 1
-            keptResultPaths = []
+            // A search still running finds the kept results again, where they were or where they are now: neither
+            // is listed a second time, nor is one the write removed listed again.
+            if !keptResultPaths.isEmpty, !write.renamed.isEmpty {
+                let renames = SearchResultRenames(write.renamed)
+                keptResultPaths.formUnion(keptResultPaths.compactMap(renames.path))
+            }
             refinedCache = nil
             resultsChanged()
             cachedSearchSelection = Self.selection(cachedSearchSelection, after: write.renamed)

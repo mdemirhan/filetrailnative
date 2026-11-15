@@ -122,6 +122,32 @@ import Testing
         #expect(session.mayBeMissingItems)
     }
 
+    // Results kept from the search before, which the search running finds again, are still listed once after a write
+    // changed them: where one was, where it is now, and one the write removed.
+    @Test func keptResultsAreStillListedOnceAfterAWrite() {
+        engine.finds = { request in
+            request.query == "no"
+                ? (["note.txt", "notes.md", "notary.txt", "nobody.md"], false, true) : ([], true, false)
+        }
+        let session = SearchSession(preferences: .defaults(), includeHidden: false, engine: engine, timers: timers)
+        session.host = host
+        session.updateDraft("no")
+        timers.advance(0.4)
+        session.updateDraft("not")
+        timers.advance(0.4)
+        #expect(session.isRunning)
+        #expect(names(session) == ["notary.txt", "note.txt", "notes.md"])
+        session.applyWrite(
+            write(.batchRename, [("/demo/note.txt", "/demo/noted.txt")]))
+        session.applyWrite(write(.trash, [("/demo/notary.txt", "/Users/demo/.Trash/notary.txt")]))
+        // The search had found them all before the write, and finds the renamed one again under its new name.
+        engine.progress(
+            engine.lastJobID, add: ["note.txt", "notes.md", "notary.txt", "noted.txt", "nothing.md"], finish: true)
+        timers.advance(1)
+        #expect(!session.isRunning)
+        #expect(names(session) == ["noted.txt", "notes.md", "nothing.md"])
+    }
+
     // Searching again, another scope, a new search or clearing it lets go of what was told; the search runs only
     // when asked.
     @Test func searchingAgainLetsGoOfIt() {
