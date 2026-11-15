@@ -702,6 +702,10 @@ extension HelpContent {
             group: .navigation, .command(.moveToOtherPane), "Move the selected items into the other pane's folder"),
         HelpShortcutItem(group: .navigation, .command(.swapPanes), "Swap the two panes"),
         HelpShortcutItem(
+            group: .navigation, .command(.showFolderInOtherPane), "Show this pane's folder in the other pane"),
+        HelpShortcutItem(group: .navigation, .command(.goToOtherPaneFolder), "Go to the other pane's folder"),
+        HelpShortcutItem(group: .navigation, .command(.equalizePanes), "Make the two panes equally wide"),
+        HelpShortcutItem(
             group: .navigation, .command(.closeTab), "Close the tab (the window, when it is the last tab)"),
         HelpShortcutItem(group: .navigation, .command(.selectNextTab), "Next tab"),
         HelpShortcutItem(group: .navigation, .command(.selectPreviousTab), "Previous tab"),
@@ -740,6 +744,10 @@ extension HelpContent {
         HelpShortcutItem(group: .files, .command(.duplicateSelection), "Duplicate"),
         HelpShortcutItem(
             group: .files, .command(.convertImages), "Convert the selected images to another format or size"),
+        HelpShortcutItem(group: .files, .command(.compressSelection), "Compress the selected items into a zip"),
+        HelpShortcutItem(group: .files, .command(.extractSelection), "Extract the selected archives here"),
+        HelpShortcutItem(
+            group: .files, .command(.extractSelectionTo), "Extract the selected archives to another folder"),
         HelpShortcutItem(group: .files, .command(.moveSelection), "Move to another folder"),
         HelpShortcutItem(group: .files, .command(.newFolder), "New folder"),
         HelpShortcutItem(group: .files, .command(.trashSelection), "Move to Trash"),

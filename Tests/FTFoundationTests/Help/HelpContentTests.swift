@@ -189,6 +189,16 @@ struct HelpContentTests {
             })
     }
 
+    // Every command a key can be given in Settings has a row in Help's list, so a key someone sets shows there.
+    @Test func theShortcutListHasEveryCommandAKeyCanBeGiven() {
+        let listed = Set(
+            HelpContent.shortcutItems.compactMap { item -> ShortcutCommandID? in
+                if case .command(let id) = item.source { id } else { nil }
+            })
+        let missing = ShortcutCommands.all.map(\.id).filter { !listed.contains($0) }
+        #expect(missing.isEmpty, "\(missing)")
+    }
+
     @Test func listsMentionsAndSearchesAsTheGoldenFileSays() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "help-content")
         #expect(cases.count >= 20)

@@ -266,7 +266,12 @@ watch_stalls() {
         [ -z "$helper" ] && continue
         taken=$((taken + 1))
         sample "$helper" 3 -file "${log%.log}.stall-$taken.txt" >/dev/null 2>&1
-        echo "ci.sh: no output for ${still} s; the process's threads are in $(basename "${log%.log}").stall-$taken.txt" >>"$log"
+        # Only when there is one to point at: the process may have ended, or `sample` not be there.
+        if [ -s "${log%.log}.stall-$taken.txt" ]; then
+            echo "ci.sh: no output for ${still} s; the process's threads are in $(basename "${log%.log}").stall-$taken.txt" >>"$log"
+        else
+            echo "ci.sh: no output for ${still} s; its threads couldn't be sampled" >>"$log"
+        fi
         still=0
         last="$(stat -f %z "$log" 2>/dev/null || echo 0)"
     done
@@ -295,7 +300,10 @@ full_tests() {
         shift
         names+=("$name")
         follow_tests "$dir/$name.log"
-        run_bundle "$@" --xunit-output "$dir/$name.xml" >"$dir/$name.log" 2>&1 &
+        # Opened to be added to, after being emptied: `watch_stalls` writes its note into the same log, and a process
+        # that wrote from where it had got to would write over the note.
+        : >"$dir/$name.log"
+        run_bundle "$@" --xunit-output "$dir/$name.xml" >>"$dir/$name.log" 2>&1 &
         pids+=($!)
         watch_stalls "$dir/$name.log" "$!" &
         disown $!

@@ -1551,7 +1551,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         go(to: URL(fileURLWithPath: parent))
     }
 
-    /// File ▸ Open, ⌘O and the toolbar's Open (`openPaths`): opens the items, whatever "Double-click a file to" says.
+    /// File ▸ Open, ⌘O and the toolbar's Open (`openPaths`): opens the items.
     @objc func openSelection(_ sender: Any?) {
         perform(OpenItems.openPlan(commandEntries, limit: preferences.openItemLimit))
     }

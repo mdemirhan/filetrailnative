@@ -147,7 +147,7 @@ Every tab has its own folder, history, folder tree, view and search, and every w
   <img src="docs/screenshots/dark-mode.png" alt="File Trail in Dark, showing a project folder sorted by size" width="900">
 </p>
 
-File Trail follows the macOS Light and Dark setting, or stays in the one you pick. You choose the accent color, and Settings covers the everyday choices: which app edits text files and which terminal opens, what double-click and Return do, whether disk images open in a new window or a new tab, which columns List view and search results show, what search starts with, and whether your tabs and last folder come back at launch.
+File Trail follows the macOS Light and Dark setting, or stays in the one you pick. You choose the accent color, and Settings covers the everyday choices: which app edits text files and which terminal opens, what Return does, whether disk images open in a new window or a new tab, which columns List view and search results show, what search starts with, and whether your tabs and last folder come back at launch.
 
 ## Fast, private and open source
 

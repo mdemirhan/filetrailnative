@@ -107,8 +107,6 @@ enum AfterWrite {
         return destinationPrefix + path[rest...]
     }
 
-    /// The selection a write leaves: the items it made or moved, when they are in the
-    /// folder on screen, nothing is searched, and the person didn't pick something else meanwhile.
     /// What a write made, all in one folder.
     struct Arrived: Equatable, Sendable {
         var folder: String
@@ -153,6 +151,8 @@ enum AfterWrite {
             aside: (result.replacedPaths ?? []) + (result.trashedPaths ?? []))
     }
 
+    /// The selection a write leaves: the items it made or moved, when they are in the
+    /// folder on screen, nothing is searched, and the person didn't pick something else meanwhile.
     static func selection(
         _ result: WriteOperationResult, currentPath: String, isSearching: Bool, selectionChanged: Bool
     ) -> [String]? {
