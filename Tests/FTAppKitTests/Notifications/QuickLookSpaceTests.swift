@@ -59,6 +59,32 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // In the Compact List and the Icons view the panel zooms out of the item's icon, square and where the item draws
+        // it, and back into the image the item shows, not over the whole item with the name.
+        @Test(arguments: [AppCommand.viewAsList, .viewAsIcons])
+        func zoomsOutOfTheIconTheGridDraws(view: AppCommand) async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(view)
+            let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
+            func drawnIcon() -> NSImageView? {
+                let icon =
+                    view == .viewAsList ? probe.compactItems[note.name]?.iconView : probe.iconItems[note.name]?.iconView
+                return icon?.image == nil ? nil : icon
+            }
+            #expect(await waitUntil { drawnIcon() != nil })
+            let icon = try #require(drawnIcon())
+
+            let picture = try #require(
+                QuickLookItemFrame.picture(of: note.path, entries: tab.content.entries, in: tab.content.view))
+
+            let window = try #require(tab.window)
+            let drawn = window.convertToScreen(icon.convert(icon.bounds, to: nil))
+            #expect(picture.frame == drawn)
+            #expect(abs(picture.frame.width - picture.frame.height) < 0.5)
+            #expect(picture.image === icon.image)
+            await harness.close()
+        }
+
         // Closed, the panel lets go of what told it where its item was: that holds the tab's list.
         @Test func lettingGoOfThePanelLetsGoOfTheTabItCameFrom() {
             final class Pane {}
@@ -114,7 +140,7 @@ extension ExplorerWindowlessTests {
             #expect(quickLook.numberOfPreviewItems(in: nil) == 1)
             #expect(fake.presented == 2)
             // The transition leaves from the item's row.
-            let frame = quickLook.sourceFrame?(URL(fileURLWithPath: note.path))
+            let frame = quickLook.source?(URL(fileURLWithPath: note.path))?.frame
             #expect(frame != nil && frame?.isEmpty == false)
             quickLook.close()
             await harness.close()

@@ -232,7 +232,7 @@ final class IconItemRootView: PassThroughView {
 }
 
 /// An item of the Icon view.
-final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
+final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging, QuickLookPictureItem {
     static let identifier = NSUserInterfaceItemIdentifier("icons.item")
 
     let root = IconItemRootView()
@@ -596,6 +596,14 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
             nameFontSize: Double(label.font?.pointSize ?? 12), nameCentered: true,
             thumbnail: hasThumbnail && !thumbnail.isHidden,
             inSight: FileDragImages.isInSight(icon, within: [visible]))
+    }
+
+    // MARK: Quick Look
+
+    /// The preview where one is drawn, at its own shape; otherwise the icon's view.
+    var quickLookPicture: (view: NSView, image: NSImage?) {
+        if hasThumbnail, !thumbnail.isHidden, let image = thumbnail.image { return (thumbnail, image) }
+        return (iconView, iconView.isHidden ? nil : iconView.image)
     }
 
     // MARK: GridItemView

@@ -114,7 +114,7 @@ private final class CompactDropView: PassThroughView {
 }
 
 /// An item of the Compact List: the file's icon and its name.
-final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDragging {
+final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDragging, QuickLookPictureItem {
     static let identifier = NSUserInterfaceItemIdentifier("compactList.item")
 
     let root = CompactItemRootView()
@@ -235,6 +235,9 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
             iconRect: icon, nameRect: nameRect, nameFontSize: Double(label.font?.pointSize ?? 13), nameCentered: false,
             thumbnail: false, inSight: FileDragImages.isInSight(icon, within: [visible]))
     }
+
+    /// The icon, not the whole item: Quick Look zooms into it.
+    var quickLookPicture: (view: NSView, image: NSImage?) { (iconView, iconView.image) }
 
     private func layoutParts() {
         let style = FlowItemStyle.make()

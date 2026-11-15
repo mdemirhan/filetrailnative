@@ -39,7 +39,7 @@ final class SystemQuickLookPanel: QuickLookPanelControlling {
 }
 
 /// Quick Look: the system's preview panel for one item, opened with Space, the menu and the Info panel's button,
-/// zooming out of the item's row.
+/// zooming out of the item's icon or preview, and back into it when it closes.
 @MainActor
 final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSource,
     @preconcurrency QLPreviewPanelDelegate
@@ -48,8 +48,8 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
 
     /// The item the panel previews.
     private(set) var url: URL?
-    /// Where the item is on screen, for the zoom transition (nil: no transition).
-    var sourceFrame: ((URL) -> NSRect?)?
+    /// Where the item's picture is on screen and what it is, for the zoom transition (nil: no transition).
+    var source: ((URL) -> QuickLookPicture?)?
     /// Told when the panel closes.
     var onClose: (() -> Void)?
     private weak var owner: NSWindow?
@@ -59,19 +59,19 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     var isShowing: Bool { panel.isVisible && url != nil }
 
     /// The panel shows the item. Showing the item it already shows closes the panel, as Space does.
-    func toggle(_ path: String, from window: NSWindow?, sourceFrame: @escaping (URL) -> NSRect?) {
+    func toggle(_ path: String, from window: NSWindow?, source: @escaping (URL) -> QuickLookPicture?) {
         let target = URL(fileURLWithPath: path)
         if isShowing, url == target {
             close()
             return
         }
-        show(path, from: window, sourceFrame: sourceFrame)
+        show(path, from: window, source: source)
     }
 
-    func show(_ path: String, from window: NSWindow?, sourceFrame: @escaping (URL) -> NSRect?) {
+    func show(_ path: String, from window: NSWindow?, source: @escaping (URL) -> QuickLookPicture?) {
         url = URL(fileURLWithPath: path)
         owner = window
-        self.sourceFrame = sourceFrame
+        self.source = source
         if panel.isVisible {
             panel.refresh()
         } else {
@@ -88,7 +88,7 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     func ended() {
         url = nil
         // It holds the tab's list: let go with the item.
-        sourceFrame = nil
+        source = nil
         onClose?()
     }
 
@@ -105,8 +105,8 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     // MARK: QLPreviewPanelDelegate
 
     func previewPanel(_ panel: QLPreviewPanel!, sourceFrameOnScreenFor item: (any QLPreviewItem)!) -> NSRect {
-        guard let url, let frame = sourceFrame?(url) else { return .zero }
-        return frame
+        guard let url, let picture = source?(url) else { return .zero }
+        return picture.frame
     }
 
     func previewPanel(
@@ -114,13 +114,43 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
         contentRect: UnsafeMutablePointer<NSRect>!
     ) -> Any! {
         guard let url else { return nil }
-        return NSWorkspace.shared.icon(forFile: url.path)
+        // What the item draws, so the panel shrinks into that picture: a preview stays sharp, and an icon is the one
+        // on screen.
+        return source?(url)?.image ?? NSWorkspace.shared.icon(forFile: url.path)
     }
+}
+
+/// An item's picture as drawn on screen, for Quick Look's zoom: where it is, and the image when the view has one.
+struct QuickLookPicture {
+    var frame: NSRect
+    var image: NSImage?
+}
+
+/// An item of the Icons, Compact List or Previews view that says which of its views draws its picture.
+@MainActor
+protocol QuickLookPictureItem: AnyObject {
+    /// The view the icon or the preview is drawn in, its bounds the picture's, and the image it draws.
+    var quickLookPicture: (view: NSView, image: NSImage?) { get }
 }
 
 /// Where an item is on screen: its row in the List or its cell in the Icons view.
 @MainActor
 enum QuickLookItemFrame {
+    /// The item's icon or preview on screen, as drawn: the icon in the List and the Compact List, the preview or the
+    /// icon in the Icons and Previews views. Quick Look zooms out of it and back into it, so the picture keeps its
+    /// shape and the panel shrinks into what the item shows rather than an icon stretched over the whole cell.
+    static func picture(of path: String, entries: [DirectoryEntry], in root: NSView) -> QuickLookPicture? {
+        guard let index = entries.firstIndex(where: { $0.path == path }), let window = root.window else { return nil }
+        if firstView(NSTableView.self, in: root) == nil, let collection = firstView(NSCollectionView.self, in: root),
+            let item = collection.item(at: IndexPath(item: index, section: 0)) as? QuickLookPictureItem
+        {
+            let (view, image) = item.quickLookPicture
+            guard view.window != nil, !view.bounds.isEmpty else { return nil }
+            return QuickLookPicture(frame: window.convertToScreen(view.convert(view.bounds, to: nil)), image: image)
+        }
+        return screenFrame(of: path, entries: entries, in: root).map { QuickLookPicture(frame: $0, image: nil) }
+    }
+
     static func screenFrame(of path: String, entries: [DirectoryEntry], in root: NSView) -> NSRect? {
         guard let index = entries.firstIndex(where: { $0.path == path }), let window = root.window else { return nil }
         let rect: NSRect

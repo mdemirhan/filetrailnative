@@ -62,7 +62,7 @@ extension MainWindowController {
         }
         let content = content
         QuickLookController.shared.toggle(path, from: window) { url in
-            QuickLookItemFrame.screenFrame(of: url.path, entries: content.entries, in: content.view)
+            QuickLookItemFrame.picture(of: url.path, entries: content.entries, in: content.view)
         }
     }
 
