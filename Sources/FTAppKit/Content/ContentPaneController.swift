@@ -1246,6 +1246,27 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         }
     }
 
+    /// How many previews the pane shows at a time in Previews, at the density on screen.
+    var previewCount: Int { PreviewGrid.valid(columnState.previewCounts[columnState.density]) }
+
+    /// View ▸ Show Previews: the pane shows `count` previews at a time in Previews, saved as the slider's count is.
+    /// The window switches the pane to Previews after, so a pane in another view lays them out once, at this count.
+    func showPreviews(count: Int) {
+        let density = columnState.density
+        if count != columnState.previewCounts[density] {
+            columnState.previewCounts[density] = count
+            if mode == .previews { pane?.columnsChanged() }
+        }
+        syncSizeSlider()
+        onPreviewCountChanged?(density, count)
+    }
+
+    /// The size shows over the status text for a moment, as it does after Make Bigger.
+    func flashViewSize() {
+        guard viewSize != nil else { return }
+        shell.pathBarRow.flashSizeValue()
+    }
+
     /// The size of the view on screen, which View ▸ Make Bigger, Make Smaller and Default Size change; nil in the List.
     var viewSize: ViewSize? {
         ViewSize.of(

@@ -106,6 +106,10 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case viewAsDetails
     case viewAsList
     case viewAsPreviews
+    case showPreviews9
+    case showPreviews4
+    case showPreviews2
+    case showPreviews1
     case increaseSize
     case decreaseSize
     case resetSize
@@ -355,6 +359,19 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .viewAsPreviews, label: "View as Previews", group: .view, defaults: ["Cmd+4"],
             menuPath: "View > as Previews"),
+        // A pane in Previews at one of its four counts, from any view: no keys until they are chosen.
+        ShortcutCommandDefinition(
+            id: .showPreviews9, label: "Show Previews 9 at a Time", group: .view, defaults: [],
+            menuPath: "View > Show Previews > 9 at a Time"),
+        ShortcutCommandDefinition(
+            id: .showPreviews4, label: "Show Previews 4 at a Time", group: .view, defaults: [],
+            menuPath: "View > Show Previews > 4 at a Time"),
+        ShortcutCommandDefinition(
+            id: .showPreviews2, label: "Show Previews 2 at a Time", group: .view, defaults: [],
+            menuPath: "View > Show Previews > 2 at a Time"),
+        ShortcutCommandDefinition(
+            id: .showPreviews1, label: "Show Previews 1 at a Time", group: .view, defaults: [],
+            menuPath: "View > Show Previews > 1 at a Time"),
         // ⌘+ is pressed as ⌘= on most keyboards, so ⌘= is its other key.
         ShortcutCommandDefinition(
             id: .increaseSize, label: "Make Bigger", group: .view, defaults: ["Cmd+Plus", "Cmd+="],

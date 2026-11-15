@@ -41,7 +41,8 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "View")) == [
-                "as Icons", "as List", "as Compact List", "as Previews", "-", "Make Bigger", "Make Smaller",
+                "as Icons", "as List", "as Compact List", "as Previews", "Show Previews", "-", "Make Bigger",
+                "Make Smaller",
                 "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "-", "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…", "Command Palette…",
@@ -254,6 +255,24 @@ import Testing
         #expect(titles(sortMenu) == expected.map(\.0))
         for (title, command) in expected {
             let found = item(sortMenu, title)
+            #expect(found.identifier?.rawValue == command.rawValue)
+            #expect(accelerator(found) == nil)
+        }
+    }
+
+    @Test func showsPreviewsAtEachCountFromTheShowPreviewsSubmenuWithNoKeysUntilOneIsChosen() {
+        let (built, _) = build()
+        guard let previewsMenu = item(submenu(built.menu, "View"), "Show Previews").submenu else {
+            Issue.record("Show Previews has no submenu")
+            return
+        }
+        let expected: [(String, AppCommand)] = [
+            ("9 at a Time", .showPreviews9), ("4 at a Time", .showPreviews4), ("2 at a Time", .showPreviews2),
+            ("1 at a Time", .showPreviews1),
+        ]
+        #expect(titles(previewsMenu) == expected.map(\.0))
+        for (title, command) in expected {
+            let found = item(previewsMenu, title)
             #expect(found.identifier?.rawValue == command.rawValue)
             #expect(accelerator(found) == nil)
         }

@@ -1504,7 +1504,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let context = commandContext
         let panels = group?.session.panels
         return ApplicationMenuState.build(
-            viewMode: shownViewMode, sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: includeHidden,
+            viewMode: shownViewMode, previewCount: content.previewCount, sortBy: sortBy, foldersFirst: foldersFirst,
+            hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
             filterPinned: content.pinnedFilter != nil,
@@ -1814,6 +1815,11 @@ extension MainWindowController: ExplorerWindowHandle {
         case .viewAsDetails: setMode(.details)
         case .viewAsList: setMode(.list)
         case .viewAsPreviews: setMode(.previews)
+        case .showPreviews9, .showPreviews4, .showPreviews2, .showPreviews1:
+            guard let count = PreviewGrid.count(of: command) else { return }
+            content.showPreviews(count: count)
+            if shownViewMode != .previews { setMode(.previews) }
+            content.flashViewSize()
         case .increaseSize, .decreaseSize, .resetSize:
             if let change = ViewSize.Change(command) { content.stepViewSize(change) }
         // Search results have an order of their own, chosen in the List view's headers.

@@ -148,6 +148,15 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.viewAsDetails, "as List"))
             menu.addItem(context.command(.viewAsList, "as Compact List"))
             menu.addItem(context.command(.viewAsPreviews, "as Previews"))
+            // Previews at a count, from any view, each with a key of its own once one is chosen in Settings.
+            let showPreviews = NSMenuItem(title: "Show Previews", action: nil, keyEquivalent: "")
+            let previewsMenu = NSMenu(title: "Show Previews")
+            previewsMenu.addItem(context.command(.showPreviews9, "9 at a Time"))
+            previewsMenu.addItem(context.command(.showPreviews4, "4 at a Time"))
+            previewsMenu.addItem(context.command(.showPreviews2, "2 at a Time"))
+            previewsMenu.addItem(context.command(.showPreviews1, "1 at a Time"))
+            showPreviews.submenu = previewsMenu
+            menu.addItem(showPreviews)
             menu.addItem(.separator())
             // Named for the view on screen once the menu is synced: "Make Icons Bigger", "Make Columns Wider".
             menu.addItem(context.command(.increaseSize, "Make Bigger"))

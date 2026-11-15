@@ -576,7 +576,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Previews",
                             description:
-                                "Shows 9, 4, 2 or 1 files at a time as large Quick Look previews, each in its own proportions with its name under it. The View menu, {increaseSize} and {decreaseSize}, or the slider in the status bar choose how many, and a scroll settles on a whole row. Everything else works as in the Icons view."
+                                "Shows 9, 4, 2 or 1 files at a time as large Quick Look previews, each in its own proportions with its name under it. The View menu, {increaseSize} and {decreaseSize}, or the slider in the status bar choose how many, and a scroll settles on a whole row. View → Show Previews switches to Previews at 9, 4, 2 or 1 at a time from any view, with the selected file on screen; Settings → Shortcuts gives each a key. Everything else works as in the Icons view."
                         ),
                         HelpRow(
                             label: "Columns in List view",
@@ -812,6 +812,10 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.viewAsDetails), "View as a list, with columns"),
         HelpShortcutItem(group: .views, .command(.viewAsList), "View as a compact list of names"),
         HelpShortcutItem(group: .views, .command(.viewAsPreviews), "View as large previews of the files"),
+        HelpShortcutItem(group: .views, .command(.showPreviews9), "View as previews, 9 at a time"),
+        HelpShortcutItem(group: .views, .command(.showPreviews4), "View as previews, 4 at a time"),
+        HelpShortcutItem(group: .views, .command(.showPreviews2), "View as previews, 2 at a time"),
+        HelpShortcutItem(group: .views, .command(.showPreviews1), "View as previews, one file at a time"),
         HelpShortcutItem(
             group: .views, .command(.increaseSize),
             "Bigger icons, wider columns in the Compact List, or fewer and larger previews"),

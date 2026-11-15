@@ -24,6 +24,17 @@ public enum PreviewGrid {
     /// Where `count` is in `counts`.
     public static func index(of count: Int) -> Int { counts.firstIndex(of: valid(count)) ?? 1 }
 
+    /// The count View ▸ Show Previews' item puts the pane in Previews at; nil for any other command.
+    public static func count(of command: AppCommand) -> Int? {
+        switch command {
+        case .showPreviews9: 9
+        case .showPreviews4: 4
+        case .showPreviews2: 2
+        case .showPreviews1: 1
+        default: nil
+        }
+    }
+
     /// What the status bar shows of the size.
     public static func label(_ count: Int) -> String { count == 1 ? "1 at a time" : "\(count) at a time" }
 

@@ -5,6 +5,8 @@ import Foundation
 public struct ApplicationMenuState: Equatable, Sendable {
     public var disabledCommands: [AppCommand]
     public var viewMode: ExplorerViewMode
+    /// How many previews the active pane shows at a time in Previews, which View ▸ Show Previews checks.
+    public var previewCount: Int
     public var sortBy: SortByPreference
     public var foldersFirst: Bool
     public var hiddenFilesShown: Bool
@@ -29,7 +31,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var convertImagesCount: Int
 
     public init(
-        disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
+        disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list,
+        previewCount: Int = PreviewGrid.defaultCount, sortBy: SortByPreference = .name,
         foldersFirst: Bool = true, hiddenFilesShown: Bool = false, folderTreeOpen: Bool = true,
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
@@ -38,6 +41,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
+        self.previewCount = previewCount
         self.sortBy = sortBy
         self.foldersFirst = foldersFirst
         self.hiddenFilesShown = hiddenFilesShown
@@ -60,7 +64,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// What the application menu is told about the window: every command that can not
     /// run now, and what its checkmarks show.
     public static func build(
-        viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
+        viewMode: ExplorerViewMode, previewCount: Int = PreviewGrid.defaultCount, sortBy: SortByPreference,
+        foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
         pasteAsFileKind: PasteAsFileKind? = nil,
@@ -73,7 +78,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
             !(textEditing && (command == .undo || command == .redo)) && !canRun(command)
         }
         return ApplicationMenuState(
-            disabledCommands: disabled, viewMode: viewMode, sortBy: sortBy, foldersFirst: foldersFirst,
+            disabledCommands: disabled, viewMode: viewMode, previewCount: previewCount, sortBy: sortBy,
+            foldersFirst: foldersFirst,
             hiddenFilesShown: hiddenFilesShown, folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen,
             infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
             favoriteIsSet: favoriteIsSet,
@@ -201,6 +207,9 @@ public enum ApplicationMenu {
             case .viewAsList: state.viewMode == .list
             case .viewAsDetails: state.viewMode == .details
             case .viewAsPreviews: state.viewMode == .previews
+            // The pane's count, only while it shows Previews: in another view each item switches to it.
+            case .showPreviews9, .showPreviews4, .showPreviews2, .showPreviews1:
+                state.viewMode == .previews && PreviewGrid.valid(state.previewCount) == PreviewGrid.count(of: type)
             case .sortByName: state.sortBy == .name
             case .sortByModified: state.sortBy == .modified
             case .sortBySize: state.sortBy == .size

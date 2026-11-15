@@ -77,6 +77,10 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case viewAsList
     case viewAsDetails
     case viewAsPreviews
+    case showPreviews9
+    case showPreviews4
+    case showPreviews2
+    case showPreviews1
     case increaseSize
     case decreaseSize
     case resetSize

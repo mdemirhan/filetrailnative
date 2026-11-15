@@ -82,8 +82,25 @@ struct ApplicationMenuTests {
                 "viewAsIcons": false, "viewAsList": false, "viewAsDetails": true, "sortByName": false,
                 "sortByModified": false, "sortBySize": true, "sortByKind": false, "toggleFoldersFirst": false,
                 "toggleHiddenFiles": true, "toggleInfoPanel": true, "toggleInfoRow": false, "toggleTwoPanes": false,
-                "togglePinFilter": false, "viewAsPreviews": false,
+                "togglePinFilter": false, "viewAsPreviews": false, "showPreviews9": false, "showPreviews4": false,
+                "showPreviews2": false, "showPreviews1": false,
             ])
+    }
+
+    @Test func checksTheCountOfPreviewsOnlyWhileThePaneShowsPreviews() {
+        func checked(_ viewMode: ExplorerViewMode, _ count: Int) -> [String] {
+            var state = Self.initial
+            state.viewMode = viewMode
+            state.previewCount = count
+            return ApplicationMenu.itemStates(state, window: Self.explorerWindow)
+                .filter { $0.id.hasPrefix("showPreviews") && $0.checked == true }.map(\.id)
+        }
+        #expect(checked(.previews, 9) == ["showPreviews9"])
+        #expect(checked(.previews, 1) == ["showPreviews1"])
+        // A count saved some other way is the default's.
+        #expect(checked(.previews, 3) == ["showPreviews4"])
+        #expect(checked(.details, 1).isEmpty)
+        #expect(checked(.icons, 4).isEmpty)
     }
 
     @Test func offersToAddTheFolderToTheFavoritesOrToRemoveItOnceItIsOne() {
