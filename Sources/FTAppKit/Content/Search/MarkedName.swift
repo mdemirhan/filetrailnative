@@ -77,6 +77,9 @@ enum MarkedName {
         if truncates {
             let paragraph = NSMutableParagraphStyle()
             paragraph.lineBreakMode = .byTruncatingTail
+            // The marks are placed by measuring the text at its own spacing. Text cut with an ellipsis is otherwise
+            // squeezed a little first, which leaves a mark far into a long name off to the right of its letters.
+            paragraph.allowsDefaultTighteningForTruncation = false
             let copy = NSMutableAttributedString(attributedString: line.text)
             copy.addAttribute(.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: copy.length))
             text = copy
