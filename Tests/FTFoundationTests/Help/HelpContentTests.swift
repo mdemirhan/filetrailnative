@@ -123,7 +123,8 @@ struct HelpContentTests {
     @Test func searchesRowsAndShortcutsByTheirWordsAndByTheShortcutAsWritten() {
         #expect(HelpContent.search("   ").isEmpty)
         let trash = HelpContent.search("TRASH")
-        #expect(trash.map(\.topic.id) == [.files])
+        // Searching's row on results after changes says what moving to the Trash does to them.
+        #expect(trash.map(\.topic.id) == [.files, .search])
         #expect(trash.first?.shortcuts.map(\.shortcut) == ["Cmd+Backspace", "Cmd+Shift+Backspace"])
         #expect(
             HelpContent.search("cmd+k").first?.shortcuts.first?.description

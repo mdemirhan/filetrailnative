@@ -81,6 +81,9 @@ final class SearchSession {
     /// Started by typing: a pattern that does not parse yet is not shown as a failure.
     private(set) var startedLive = false
     private(set) var truncated = false
+    /// A write that acted on the results put something inside the folder searched, which they don't list: they may
+    /// be missing it until the search runs again.
+    private(set) var mayBeMissingItems = false
 
     // MARK: Bookkeeping
 
@@ -371,6 +374,7 @@ final class SearchSession {
         status = nil
         error = nil
         truncated = false
+        mayBeMissingItems = false
         resultsVisible = false
         cachedSearchSelection = .empty
         cachedFilter = ""
@@ -378,6 +382,47 @@ final class SearchSession {
         emit(wasVisible ? [.results, .status, .visibility] : [.results, .status])
         guard let host else { return }
         host.applySearchSelection(restore.sanitized(entryPaths: host.searchFolderEntryPaths))
+    }
+
+    // MARK: After a write
+
+    /// A write that acted on the results: what it removed leaves them, what it renamed is renamed in them, and
+    /// what it put inside the folder searched makes them say they may be missing something. A search still running
+    /// may yet give what the write changed, so it says so too. Nothing is searched again. The selection follows
+    /// what was renamed; the list on screen is the host's to select in.
+    func applyWrite(_ write: SearchAfterWrite) {
+        guard hasCachedSearch else { return }
+        var change: Change = []
+        if let patched = SearchResults.afterWrite(
+            results, rootPath: rootPath, removed: write.removed, renamed: write.renamed)
+        {
+            results = patched
+            resultsGeneration += 1
+            keptResultPaths = []
+            refinedCache = nil
+            resultsChanged()
+            cachedSearchSelection = Self.selection(cachedSearchSelection, after: write.renamed)
+            change.insert(.results)
+        }
+        if !mayBeMissingItems, write.addsInside(rootPath) || (isRunning && !change.isEmpty) {
+            mayBeMissingItems = true
+            change.insert(.status)
+        }
+        if !change.isEmpty { emit(change) }
+    }
+
+    /// The results' paths, for a write to tell whether it acted on them.
+    var resultPaths: Set<ExactPath> { Set(results.map { ExactPath($0.path) }) }
+
+    /// `selection` with what was renamed at its new paths.
+    static func selection(_ selection: ContentSelection, after renamed: [SearchResultRename]) -> ContentSelection {
+        guard !renamed.isEmpty else { return selection }
+        func moved(_ path: String) -> String { SearchResults.path(path, after: renamed) ?? path }
+        var next = selection
+        next.paths = selection.paths.map(moved)
+        next.anchorPath = selection.anchorPath.map(moved)
+        next.leadPath = selection.leadPath.map(moved)
+        return next
     }
 
     // MARK: Typing
@@ -620,6 +665,7 @@ final class SearchSession {
         status = .running
         error = nil
         truncated = false
+        mayBeMissingItems = false
         searchedHidden = host.searchIncludeHidden
         searchedOptions = options
         cachedSearchSelection = .empty

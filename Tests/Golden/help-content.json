@@ -588,6 +588,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -667,6 +677,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -1408,6 +1428,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -1694,6 +1718,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -1928,6 +1962,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -2942,6 +2980,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -3021,6 +3069,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -3762,6 +3820,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -4047,6 +4109,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -4281,6 +4353,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -5302,6 +5378,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -5381,6 +5467,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -6112,6 +6208,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -6398,6 +6498,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -6628,6 +6738,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -7647,6 +7761,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -7726,6 +7850,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -8467,6 +8601,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -8752,6 +8890,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (Cmd+Y also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -8982,6 +9130,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -9847,6 +9999,16 @@
                 ]
               ],
               "shortcuts": []
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -9912,6 +10074,16 @@
                 [
                   "Undo and Redo: if something has changed since",
                   "It couldn’t be done"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -10510,6 +10682,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -10755,6 +10931,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -11920,6 +12106,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -11999,6 +12195,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -12745,6 +12951,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -13041,6 +13251,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -13275,6 +13495,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -14285,6 +14509,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -14359,6 +14593,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -15095,6 +15339,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -15381,6 +15629,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -15615,6 +15873,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -16622,6 +16884,16 @@
                   "description": "Move the selected items to the Trash"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -16696,6 +16968,16 @@
                   "description": "Move the selected items to the Trash"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -17437,6 +17719,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -17722,6 +18008,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -17956,6 +18252,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -18968,6 +19268,16 @@
                   "description": "Move the selected items to the Trash"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -19042,6 +19352,16 @@
                   "description": "Move the selected items to the Trash"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -19783,6 +20103,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -20056,6 +20380,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -21295,6 +21629,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -21374,6 +21718,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -22120,6 +22474,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -22405,6 +22763,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -22639,6 +23007,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -23667,6 +24039,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -23746,6 +24128,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [],
@@ -24459,6 +24851,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -24744,6 +25140,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -24970,6 +25376,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -25994,6 +26404,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -26073,6 +26493,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -26814,6 +27244,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -27087,6 +27521,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -27313,6 +27757,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -28338,6 +28786,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -28417,6 +28875,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -29148,6 +29616,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -29434,6 +29906,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -29668,6 +30150,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -30693,6 +31179,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -30772,6 +31268,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -31525,6 +32031,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -31810,6 +32320,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -32044,6 +32564,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -33067,6 +33591,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -33146,6 +33680,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -33871,6 +34415,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -34144,6 +34692,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -34378,6 +34936,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -35395,6 +35957,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -35474,6 +36046,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -36215,6 +36797,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -36501,6 +37087,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -36735,6 +37331,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -37780,6 +38380,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -37870,6 +38480,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -38608,6 +39228,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -38898,6 +39522,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -39128,6 +39762,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -40153,6 +40791,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -40232,6 +40880,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -40978,6 +41636,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -41251,6 +41913,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -41485,6 +42157,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -42502,6 +43178,16 @@
                   "description": "Move the selected items to the Trash (Cmd+= also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -42576,6 +43262,16 @@
                   "description": "Move the selected items to the Trash (Cmd+= also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -43300,6 +43996,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -43596,6 +44296,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -43830,6 +44540,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -44833,6 +45547,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -44912,6 +45636,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -45648,6 +46382,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -45921,6 +46659,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -46155,6 +46903,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -47167,6 +47919,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -47241,6 +48003,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -47982,6 +48754,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -48273,6 +49049,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -48503,6 +49289,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -49528,6 +50318,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -49607,6 +50407,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -50353,6 +51163,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -50642,6 +51456,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -50872,6 +51696,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -51877,6 +52705,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -51956,6 +52794,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -52677,6 +53525,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -52963,6 +53815,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -54218,6 +55080,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -54297,6 +55169,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -55050,6 +55932,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -55330,6 +56216,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -55564,6 +56460,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -56585,6 +57485,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -56664,6 +57574,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -57390,6 +58310,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -57664,6 +58588,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -57886,6 +58820,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -58885,6 +59823,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -58964,6 +59912,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -59700,6 +60658,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -59986,6 +60948,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -60220,6 +61192,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -61254,6 +62230,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -61344,6 +62330,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -62075,6 +63071,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -62360,6 +63360,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -62590,6 +63600,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -63607,6 +64621,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -63686,6 +64710,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -64427,6 +65461,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -64712,6 +65750,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -64946,6 +65994,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []
@@ -65972,6 +67024,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -66051,6 +67113,16 @@
                   "description": "Empty the Trash (asks first)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -66792,6 +67864,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": [
@@ -67078,6 +68154,16 @@
                   "description": "Rename the selected item, or several at once in the Rename sheet (F2 also works)"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Results",
+                  "After changes"
+                ]
+              ],
+              "shortcuts": []
             }
           ],
           [
@@ -67308,6 +68394,10 @@
                 [
                   "Results",
                   "Open"
+                ],
+                [
+                  "Results",
+                  "After changes"
                 ]
               ],
               "shortcuts": []

@@ -176,8 +176,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // The app's own drag of what was found goes into a folder found, and not on the results' background; the
-        // results are found again and stay on screen.
+        // The app's own drag of what was found goes into a folder found, and not on the results' background; its row
+        // leaves, the results stay on screen without searching again and say they may be missing it.
         @Test func aDragOfResultsGoesIntoAFolderFound() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -191,7 +191,9 @@ extension ExplorerWindowlessTests {
             #expect(tab.dragDrop.contentTarget(own, entry: nil) == nil)
             #expect(tab.dragDrop.automationDrop(dragged, entry: try entry(window, "Alpha"), allowed: [.copy, .move]))
             #expect(await waitUntil { window.exists("Alpha/note.txt") && !window.exists("note.txt") })
-            #expect(await waitUntil { engine.starts.count > searches })
+            #expect(await waitUntil { tab.search.session.mayBeMissingItems })
+            #expect(tab.content.entries.map(\.name) == ["Alpha"])
+            #expect(engine.starts.count == searches)
             #expect(tab.searchRootPath != nil)
             tab.search.session.hideResults()
             await window.close()

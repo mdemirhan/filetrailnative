@@ -2,7 +2,8 @@ import AppKit
 import FTFoundation
 
 /// The bar above search results, as in Finder: where the search runs, a field that narrows what it found, Stop while
-/// it runs on, and Done; and the banner when only the first matches are shown. Where the scopes as segments leave the
+/// it runs on, and Done; and the banner when only the first matches are shown, or when something was added since that
+/// they may not list, with Search Again. Where the scopes as segments leave the
 /// filter less than its minimum (a pane of two, a narrow window), they are one pop-up button instead, with no label.
 /// The results themselves are drawn by the folder's views.
 final class SearchHeaderView: NSView {
@@ -17,6 +18,8 @@ final class SearchHeaderView: NSView {
     var onSwitchPane: () -> Void = {}
     var onStop: () -> Void = {}
     var onDone: () -> Void = {}
+    /// The banner's Search Again.
+    var onSearchAgain: () -> Void = {}
     /// The header's height changed (the banner came or went).
     var onHeightChange: () -> Void = {}
 
@@ -34,7 +37,7 @@ final class SearchHeaderView: NSView {
     let filter = SearchFilterField()
     let stopButton = SearchSmallButton(title: SearchBarText.stop, spinner: true)
     let doneButton = SearchSmallButton(title: SearchBarText.done, spinner: false)
-    private let banner = SearchBannerView()
+    let banner = SearchBannerView()
     private let stopFlag = DelayedFlag()
     private var rootPath = ""
 
@@ -61,6 +64,9 @@ final class SearchHeaderView: NSView {
         }
         addSubview(banner)
         banner.isHidden = true
+        banner.searchAgain.onPress = { [weak self] in self?.onSearchAgain() }
+        banner.searchAgain.onMouseDown = { [weak self] in self?.onFocusResults() }
+        banner.searchAgain.onTab = { [weak self] _ in self?.onSwitchPane() }
         stopButton.isHidden = true
         stopButton.setAccessibilityIdentifier("searchBar.stop")
         stopButton.setAccessibilityLabel(SearchBarText.stopName)
@@ -154,7 +160,8 @@ final class SearchHeaderView: NSView {
 
     /// Shows the search on screen: its scopes, which one is pressed, how it stands, and the filter's text.
     func show(
-        scopes options: [SearchScopeOption], rootPath: String, isRunning: Bool, truncated: Bool, filterText: String
+        scopes options: [SearchScopeOption], rootPath: String, isRunning: Bool, truncated: Bool,
+        mayBeMissingItems: Bool = false, filterText: String
     ) {
         self.rootPath = rootPath
         if options.map(\.path) != scopes.map(\.path) || options.map(\.label) != scopes.map(\.title) {
@@ -178,9 +185,11 @@ final class SearchHeaderView: NSView {
         stopFlag.update(active: isRunning, delay: SearchTiming.stopDelay)
         stopButton.isHidden = !stopFlag.value
         if filter.text != filterText { filter.text = filterText }
-        let wasHidden = banner.isHidden
-        banner.isHidden = !truncated
-        if wasHidden != banner.isHidden { onHeightChange() }
+        let wasHeight = height
+        let text = SearchBarText.banner(truncated: truncated, mayBeMissingItems: mayBeMissingItems)
+        banner.show(text: text ?? "", searchAgain: mayBeMissingItems)
+        banner.isHidden = text == nil
+        if wasHeight != height { onHeightChange() }
         needsLayout = true
     }
 
@@ -676,10 +685,12 @@ final class SearchSmallButton: SystemButton {
 
 // MARK: The banner
 
-/// The banner over cut-short results (`SearchBarText.truncatedBanner`).
+/// The banner over the results (`SearchBarText.banner`): that they were cut short, that they may be missing what was
+/// added since, with Search Again for that.
 final class SearchBannerView: NSView, TextStyleSource {
     var styleTextField: NSTextField? { text }
     private let text = FlushTextField(labelWithString: SearchBarText.truncatedBanner)
+    let searchAgain = SearchSmallButton(title: SearchBarText.searchAgain, spinner: false)
     private var theme = AppearanceModel.shared.theme
     private static var layout: SearchLayout { .standard }
 
@@ -688,21 +699,44 @@ final class SearchBannerView: NSView, TextStyleSource {
         setAccessibilityIdentifier("searchBar.banner")
         text.setAccessibilityIdentifier("searchBar.banner.text")
         text.font = SearchHeaderView.font(DesignTokens.typeScale.callout)
+        text.lineBreakMode = .byTruncatingTail
         addSubview(text)
+        searchAgain.setAccessibilityIdentifier("searchBar.banner.searchAgain")
+        searchAgain.setAccessibilityLabel(SearchBarText.searchAgainName)
+        searchAgain.toolTip = SearchBarText.searchAgainTitle
+        searchAgain.isHidden = true
+        addSubview(searchAgain)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
 
+    /// What it says, and whether it offers Search Again.
+    func show(text value: String, searchAgain offers: Bool) {
+        if text.stringValue != value { text.stringValue = value }
+        searchAgain.isHidden = !offers
+        text.toolTip = value
+        needsLayout = true
+    }
+
+    /// What it says now.
+    var shownText: String { text.stringValue }
+
+    /// The text's line with its padding, or the button with a little room above and below, whichever is taller.
     var height: Double {
         let layout = Self.layout
-        return 2 * (layout.bannerBorderWidth + layout.bannerPaddingVertical) + Double(text.intrinsicContentSize.height)
+        let line = 2 * layout.bannerPaddingVertical + Double(text.intrinsicContentSize.height)
+        let button = searchAgain.isHidden ? 0 : layout.smallButtonHeight + 2 * Self.buttonInset
+        return 2 * layout.bannerBorderWidth + max(line, button)
     }
+
+    private static let buttonInset = 4.0
 
     func applyTheme(_ theme: Theme) {
         self.theme = theme
         text.textColor = NSColor(theme.palette.textSecondary)
+        searchAgain.applyTheme(theme)
         needsDisplay = true
     }
 
@@ -710,10 +744,18 @@ final class SearchBannerView: NSView, TextStyleSource {
         super.layout()
         let layout = Self.layout
         let inset = layout.bannerBorderWidth
-        text.frame = NSRect(
-            x: inset + layout.bannerPaddingHorizontal, y: inset + layout.bannerPaddingVertical,
-            width: max(0, bounds.width - 2 * (inset + layout.bannerPaddingHorizontal)),
-            height: text.intrinsicContentSize.height)
+        var right = bounds.width - inset - layout.bannerPaddingHorizontal
+        if !searchAgain.isHidden {
+            let width = searchAgain.preferredWidth
+            right = bounds.width - inset - Self.buttonInset - width
+            searchAgain.frame = NSRect(
+                x: right, y: (bounds.height - layout.smallButtonHeight) / 2, width: width,
+                height: layout.smallButtonHeight)
+            right -= layout.bannerPaddingHorizontal
+        }
+        let textHeight = Double(text.intrinsicContentSize.height)
+        let x = inset + layout.bannerPaddingHorizontal
+        text.frame = NSRect(x: x, y: (bounds.height - textHeight) / 2, width: max(0, right - x), height: textHeight)
     }
 
     override func draw(_ dirtyRect: NSRect) {

@@ -33,6 +33,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         header.onSwitchPane = { [weak self] in self?.pane.content.switchPane() }
         header.onStop = { [weak self] in self?.session.stop() }
         header.onDone = { [weak self] in self?.done() }
+        header.onSearchAgain = { [weak self] in self?.session.rerun() }
         header.onHeightChange = { [weak self] in self?.layoutHeader() }
         let content = pane.content
         content.onSearchSort = { [weak self] key in self?.sortByColumn(key) }
@@ -116,25 +117,25 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     private var writesToken: ExplorerWindowObservation?
 
-    /// Search results on screen stay there after a write that changed at least one item: they are found again, so
-    /// they show what is on disk. So do those a move was dragged out of, put away before it ended.
+    /// The pane's results, shown or put away, change only after a write started in this tab that acted on them
+    /// (`SearchAfterWrite`): nothing is searched again.
     private func observeWrites() {
         guard writesToken == nil, let group = tab.group, let writes = AppWriteOperations.current else { return }
-        let writeSession = writes.session(for: group)
-        writesToken = writeSession.observe { [weak self, weak writeSession] event in
+        writesToken = writes.session(for: group).observe { [weak self] event in
             guard let self, case .ended(let ended, let inTabOnScreen) = event, inTabOnScreen,
-                let result = ended.result, result.summary.completedItemCount > 0,
-                self.tab.group?.selected === self.tab
+                let result = ended.result, self.tab.group?.selected === self.tab
             else { return }
-            // Those a move was taken out of are this pane's only when the move began in this pane and they hold what
-            // was moved: the other pane's search, put away earlier, stays put away.
-            if !self.session.isSearchMode {
-                guard writeSession?.isMoveFromSearchResults(ended.operationId, of: ObjectIdentifier(self.pane)) == true
-                else { return }
-                let moved = Set(result.items.compactMap { $0.sourcePath.map(PathBox.init) })
-                guard self.session.results.contains(where: { moved.contains(PathBox($0.path)) }) else { return }
-            }
-            self.session.rerun()
+            self.applyWrite(SearchAfterWrite(result, homePath: Self.homePath))
+        }
+    }
+
+    /// `write` changes the results when it acted on them, and the selection on screen follows what it renamed.
+    func applyWrite(_ write: SearchAfterWrite) {
+        guard session.hasCachedSearch, write.actsOn(session.resultPaths) else { return }
+        let selecting = showsResults ? SearchSession.selection(pane.content.selection, after: write.renamed) : nil
+        session.applyWrite(write)
+        if let selecting, showsResults, selecting != pane.content.selection {
+            pane.content.applySelection(selecting.sanitized(entryPaths: pane.content.entries.map(\.path)))
         }
     }
 
@@ -190,7 +191,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         header.show(
             scopes: SearchBarText.scopeOptions(
                 currentPath: pane.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),
-            rootPath: rootPath, isRunning: session.isRunning, truncated: session.truncated, filterText: content.filter)
+            rootPath: rootPath, isRunning: session.isRunning, truncated: session.truncated,
+            mayBeMissingItems: session.mayBeMissingItems, filterText: content.filter)
         header.showFilterMode(content.filterMode)
         layoutHeader()
     }

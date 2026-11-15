@@ -166,8 +166,7 @@ extension WindowWriteActions {
     func leaveOut(
         _ report: CopyPasteAnalysisReport, mode: FTOperations.CopyPasteMode, sources: [String], destination: String,
         action: WriteOperationAction, clearsCutClipboard: String?, initiator: CopyLikeInitiator?,
-        onSourcesMissing: (([String]) -> Void)?, reportsRefusals: Bool, defaultPolicy: CopyPastePolicy,
-        moveFromSearchResults: ObjectIdentifier?
+        onSourcesMissing: (([String]) -> Void)?, reportsRefusals: Bool, defaultPolicy: CopyPastePolicy
     ) async -> CopyLikeOutcome {
         let issues = report.issues.map {
             ClipboardTexts.Issue(
@@ -192,8 +191,7 @@ extension WindowWriteActions {
             return await copyLike(
                 mode: mode, sources: remaining, destination: destination, action: action,
                 clearsCutClipboard: clearsCutClipboard, initiator: initiator, onSourcesMissing: onSourcesMissing,
-                reportsRefusals: reportsRefusals, checksBusy: false, defaultPolicy: defaultPolicy,
-                moveFromSearchResults: moveFromSearchResults)
+                reportsRefusals: reportsRefusals, checksBusy: false, defaultPolicy: defaultPolicy)
         }
         session.applyCard(nil)
         // A paste into the folder the items are in quietly does nothing, and missing items are told by the paste; a

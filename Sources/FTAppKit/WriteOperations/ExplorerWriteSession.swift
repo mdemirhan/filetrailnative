@@ -119,9 +119,6 @@ final class ExplorerWriteSession: WriteOperationWindow {
     private var selectionsAtStart: [WritePaneSelection] = []
     // The cut a move clears once it moved something.
     private var clipboardClearAfterMove: (operationId: String, capturedAt: String)?
-    // For the one surface read at the end: the analysis of a move dragged out of
-    // search results, and the operation it became. A review may stand between the two.
-    private var moveFromSearchResults: (analysisId: String, operationId: String?, pane: ObjectIdentifier)?
     /// The folder the tree selects once the write is done (Move To, Duplicate from the tree).
     var pendingTreeSelectionPath: String?
     /// What the Undo or Redo running does, in the words of its menu item.
@@ -230,22 +227,6 @@ final class ExplorerWriteSession: WriteOperationWindow {
     /// Clears the cut `capturedAt` once operation `operationId`, a move of it, moved something.
     func clearCutAfterMove(operationId: String, capturedAt: String) {
         clipboardClearAfterMove = (operationId, capturedAt)
-    }
-
-    /// The analysis of a move out of the search results of `pane`.
-    func noteMoveFromSearchResults(analysisId: String, pane: ObjectIdentifier) {
-        moveFromSearchResults = (analysisId, nil, pane)
-    }
-
-    /// A paste started from analysis `analysisId`.
-    func noteStarted(analysisId: String, operationId: String) {
-        if moveFromSearchResults?.analysisId == analysisId { moveFromSearchResults?.operationId = operationId }
-    }
-
-    /// Whether operation `operationId` is a move out of the search results of `pane`: the other pane's results, put
-    /// away earlier, are not this move's, though they may hold the same items.
-    func isMoveFromSearchResults(_ operationId: String, of pane: ObjectIdentifier) -> Bool {
-        moveFromSearchResults?.operationId == operationId && moveFromSearchResults?.pane == pane
     }
 
     // MARK: Another window's operation

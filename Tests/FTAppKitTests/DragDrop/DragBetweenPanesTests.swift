@@ -181,7 +181,8 @@ extension ExplorerWindowlessTests {
         }
 
         // Both panes searched and found the same file, and the right one's results were put away since. A move of
-        // that file out of the left pane's results finds those again; the right pane's search stays put away.
+        // that file out of the left pane's results takes it out of both, searching neither again; the left one says it
+        // may be missing it where it went, and the right pane's search stays put away.
         @Test func aMoveOutOfOnePanesResultsLeavesTheOtherPanesSearchPutAway() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -209,9 +210,11 @@ extension ExplorerWindowlessTests {
 
             tab.sendToOtherPane([folder + "/note.txt"], copying: false)
             #expect(await waitUntil { window.exists("Gamma/note.txt") && !window.exists("note.txt") })
-            #expect(await waitUntil { engines[1].starts.count == searches[1] + 1 })
+            #expect(await waitUntil { left.search.session.results.isEmpty })
+            #expect(right.search.session.results.isEmpty)
+            #expect(left.search.session.mayBeMissingItems)
             for _ in 0..<5 { await Task.yield() }
-            #expect(engines[0].starts.count == searches[0])
+            #expect(engines.map(\.starts.count) == searches)
             #expect(!right.search.session.isSearchMode)
             left.search.session.hideResults()
             await window.close()
@@ -237,8 +240,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // A folder found in the other pane's search results takes a drag from this pane, and those results are found
-        // again; their background takes nothing.
+        // A folder found in the other pane's search results takes a drag from this pane, and those results say they
+        // may be missing it, without searching again; their background takes nothing.
         @Test func aFolderFoundInTheOtherPanesResultsTakesTheDrag() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -261,7 +264,8 @@ extension ExplorerWindowlessTests {
             _ = drags.automationDragStarted([try entry(left, "note.txt")])
             #expect(drags.automationDrop(dragged, entry: try entry(right, "Inner"), allowed: [.copy, .move, .generic]))
             #expect(await waitUntil { window.exists("Beta/Inner/note.txt") && !window.exists("note.txt") })
-            #expect(await waitUntil { engine.starts.count > searches })
+            #expect(await waitUntil { right.search.session.mayBeMissingItems })
+            #expect(engine.starts.count == searches)
             #expect(right.search.session.isSearchMode)
             right.search.session.hideResults()
             await window.close()

@@ -108,7 +108,7 @@ extension ExplorerWindowlessTests {
 
         // Each drag is followed on its own. A second drag ending while the first's
         // slow move is still going doesn't stop the first being looked for: when it leaves, a cut of it is cancelled and
-        // the results are found again.
+        // it leaves the results, which are not searched again.
         @Test func aSecondDragDoesntStopTheFirstBeingLookedFor() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -133,15 +133,16 @@ extension ExplorerWindowlessTests {
             tab.dragDrop.ownDragEnded(paths: [quick], operation: .move, over: .elsewhere)
             // The second is gone at its own first check (it never existed); the first is still there then.
             dragTimers.advance(DragTimings.draggedAwayChecksMs[0] / 1000)
-            #expect(await waitUntil { engine.starts.count == searches + 1 })
+            for _ in 0..<5 { await Task.yield() }
             #expect(tab.services.clipboard.contents.hasItems)
+            #expect(tab.content.entries.contains { $0.name == "note.txt" })
 
-            engine.finds = { _ in ([], false, false) }
             try FileManager.default.removeItem(atPath: slow)
             dragTimers.advance(DragTimings.draggedAwayChecksMs[1] / 1000)
-            #expect(await waitUntil { engine.starts.count == searches + 2 })
             #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
             #expect(await waitUntil { !tab.content.entries.contains { $0.name == "note.txt" } })
+            #expect(engine.starts.count == searches)
+            #expect(!tab.search.session.mayBeMissingItems)
             tab.search.session.hideResults()
             await window.close()
         }
@@ -162,8 +163,8 @@ extension ExplorerWindowlessTests {
         }
 
         // Empty Trash from the menu with a Trash item on the clipboard: it leaves the clipboard, and the results
-        // on screen are found again.
-        @Test func emptyTrashWithTrashedItemsOnTheClipboardFindsResultsAgain() async throws {
+        // on screen, which it didn't act on, stay as they are.
+        @Test func emptyTrashWithTrashedItemsOnTheClipboardLeavesTheResults() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let engine = FakeSearchEngine()
@@ -187,7 +188,9 @@ extension ExplorerWindowlessTests {
             tab.services.clipboard.set(ClipboardRules.set(.copy, [trashed], capturedAt: "t"), from: nil)
             _ = await actions.emptyTrash()
             #expect(!tab.services.clipboard.contents.hasItems)
-            #expect(await waitUntil { engine.starts.count == searches + 1 })
+            for _ in 0..<5 { await Task.yield() }
+            #expect(engine.starts.count == searches)
+            #expect(tab.content.entries.contains { $0.name == "note.txt" })
             tab.search.session.hideResults()
             await window.close()
         }

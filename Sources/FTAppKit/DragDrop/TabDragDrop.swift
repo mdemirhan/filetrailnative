@@ -207,7 +207,8 @@ final class TabDragDrop {
     }
 
     /// Items dragged away to another app: the clipboard lets go of the items (a cut of any is cancelled), every window
-    /// forgets their sizes and reads what they left again, and the search results on screen are found again.
+    /// forgets their sizes and reads what they left again, and the search results on screen that listed them let go
+    /// of them.
     func draggedAway(_ gone: [String], cleared: [String], intoTrash: Bool) {
         guard let tab else { return }
         let clipboard = tab.services.clipboard
@@ -223,14 +224,8 @@ final class TabDragDrop {
             each.folderSizes.forgetChangedSizes(cleared, intoTrash: intoTrash)
             each.reload(changedPaths: cleared)
         }
-        findSearchResultsAgain()
-    }
-
-    /// Search results on screen are found again, as after a write of the app's own.
-    func findSearchResultsAgain() {
-        guard let tab else { return }
         let shown = tab.group?.selected ?? tab
-        if shown.searchRootPath != nil { shown.search.session.rerun() }
+        for pane in shown.panes { pane.searchStore?.applyWrite(SearchAfterWrite(draggedAway: gone)) }
     }
 
     // MARK: Drags over the tab
@@ -647,13 +642,10 @@ final class TabDragDrop {
             outcome = .blocked(message: message)
         } else {
             if target.selectsInTree { actions.session.pendingTreeSelectionPath = target.path }
-            // The pane whose search results the drag began in.
-            let searchPane = ObjectIdentifier(Self.ownDrag?.pane ?? tab.activePane)
             // Asked again: a write may have started here while the destination was looked at.
             outcome = await actions.copyLike(
                 mode: operation == .copy ? .copy : .cut, sources: session.facts.sourcePaths,
-                destination: target.path, action: action, initiator: .dragDrop,
-                moveFromSearchResults: action == .moveTo && session.sourceSurface == .search ? searchPane : nil)
+                destination: target.path, action: action, initiator: .dragDrop)
             // A drop that didn't start leaves the tree nothing to select when the next write ends.
             switch outcome {
             case .blocked, .error, .cancelled:

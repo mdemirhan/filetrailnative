@@ -540,9 +540,9 @@ extension ExplorerWindowlessTests {
             return (tab, operations, engine)
         }
 
-        // A write from results that changed something runs the search again, one that changed
-        // nothing doesn't.
-        @Test func aWriteFromTheResultsFindsThemAgain() async throws {
+        // A copy made from the results, next to a result inside the folder searched, isn't added: the results say
+        // they may be missing it, without searching again. A write that changed nothing says nothing.
+        @Test func aCopyFromTheResultsIsToldNotSearched() async throws {
             let harness = try ExplorerHarness.windowless()
             try "x".write(to: harness.folder.appending("Alpha/notes.md"), atomically: true, encoding: .utf8)
             let (tab, operations, engine) = try await searching(harness, names: ["Alpha/notes.md"])
@@ -556,14 +556,19 @@ extension ExplorerWindowlessTests {
             tab.content.focusList()
             tab.perform(.duplicateSelection)
             #expect(await waitUntil { ended == 1 })
-            #expect(await waitUntil { engine.starts.count == 2 })
-            #expect(engine.starts.last?.query == "no")
+            #expect(await waitUntil { tab.search.session.mayBeMissingItems })
+            #expect(engine.starts.count == 1)
+            #expect(tab.content.entries.map(\.path) == [result])
             // The copy goes next to the result, not in the folder on screen.
             let made = try FileManager.default.contentsOfDirectory(atPath: harness.folder.path + "/Alpha")
             #expect(made.contains { $0.hasPrefix("notes") && $0 != "notes.md" })
             #expect(!FileManager.default.fileExists(atPath: harness.folder.path + "/notes copy.md"))
 
-            // The folder takes nothing now: nothing completes.
+            // Searched again, the copy is found; then the folder takes nothing: nothing completes, nothing is told.
+            engine.finds = { _ in (["Alpha/notes.md", "Alpha/notes copy.md"], false, false) }
+            tab.search.session.rerun()
+            #expect(await waitUntil { tab.content.entries.count == 2 })
+            #expect(!tab.search.session.mayBeMissingItems)
             let alpha = harness.folder.appending("Alpha").path
             try FileManager.default.setAttributes([.posixPermissions: 0o555], ofItemAtPath: alpha)
             tab.content.applySelection(.single(result))
@@ -572,15 +577,18 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { ended == 2 })
             await settle()
             #expect(engine.starts.count == 2)
+            #expect(!tab.search.session.mayBeMissingItems)
+            #expect(tab.content.entries.count == 2)
             try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: alpha)
             withExtendedLifetime(watching) {}
             withExtendedLifetime(operations) {}
             await harness.close()
         }
 
-        // A move dragged out of the results finds them again and shows them, though Esc put them away
-        // before it ended; a drag from the folder, with results put away, searches nothing.
-        @Test func aMoveDraggedOutOfTheResultsFindsThemAgainThoughTheyWerePutAway() async throws {
+        // A move dragged out of the results takes what moved out of them, though Esc put them away before it ended:
+        // they stay put away, are searched for nothing, and say they may be missing it where it went. A drag from the
+        // folder of an item that is no result leaves them.
+        @Test func aMoveDraggedOutOfTheResultsLeavesThemThoughTheyWerePutAway() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = harness.folder.appending("Alpha").path
             let beta = harness.folder.appending("Beta").path
@@ -613,11 +621,11 @@ extension ExplorerWindowlessTests {
                     sequence: 1))
             #expect(await waitUntil { ended == 1 })
             #expect(FileManager.default.fileExists(atPath: beta + "/first.md"))
-            #expect(await waitUntil { engine.starts.count == 2 })
-            #expect(engine.starts.last?.query == "no")
-            #expect(search.isSearchMode)
+            #expect(await waitUntil { search.results.isEmpty })
+            #expect(search.mayBeMissingItems)
+            #expect(engine.starts.count == 1)
+            #expect(!search.isSearchMode)
 
-            search.hideResults()
             hidesAsItStarts = false
             #expect(
                 tab.dragDrop.drop(
@@ -626,8 +634,9 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { ended == 2 })
             #expect(FileManager.default.fileExists(atPath: beta + "/second.md"))
             await settle()
-            #expect(engine.starts.count == 2)
+            #expect(engine.starts.count == 1)
             #expect(!search.isSearchMode)
+            #expect(search.hasCachedSearch)
             withExtendedLifetime(watching) {}
             withExtendedLifetime(operations) {}
             await harness.close()

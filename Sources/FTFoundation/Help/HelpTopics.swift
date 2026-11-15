@@ -555,6 +555,11 @@ extension HelpContent {
                                 "Opening a folder in the results goes into it and closes the search. {showLastSearchResults} brings the results back."
                         ),
                         HelpRow(
+                            label: "After changes",
+                            description:
+                                "Results stay as they are while you work with them: nothing is searched again on its own. What you move out of them, delete or move to the Trash leaves the list, and what you rename keeps its place under its new name. When you copy or move something into the folder searched, a note above the results says they may not list it: Search Again in the note, or {refreshOrApplySearchSort}, searches again. Changes made in Finder or other apps show once you search again."
+                        ),
+                        HelpRow(
                             label: "Limits",
                             description:
                                 "Search stops at \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) results. Aliases are not searched for."

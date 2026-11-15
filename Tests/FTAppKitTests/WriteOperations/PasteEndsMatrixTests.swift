@@ -408,9 +408,9 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // Results on screen stay through a write, and are found again when it
-        // changed something; a write that changed nothing, or one from another tab in front, leaves them.
-        @Test func resultsOnScreenAreFoundAgainAfterAWriteThatChangedSomething() async throws {
+        // Results on screen stay through a write: what it moved to the Trash leaves them, and nothing is searched
+        // again; a write that changed nothing, or one from another tab in front, leaves them as they are.
+        @Test func resultsOnScreenLetGoOfWhatAWriteTookAway() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let actions = try #require(tab.writeActions)
@@ -418,8 +418,10 @@ extension ExplorerWindowlessTests {
             var searches = engine.starts.count
 
             _ = await actions.trash([path(window, "note.txt")])
-            #expect(await waitUntil { engine.starts.count == searches + 1 })
+            #expect(await waitUntil { !tab.content.entries.contains { $0.name == "note.txt" } })
             #expect(await waitUntil { !tab.isWriteLocked })
+            #expect(engine.starts.count == searches)
+            #expect(tab.content.entries.map(\.name) == ["Alpha"])
             #expect(tab.searchRootPath != nil)
             searches = engine.starts.count
 

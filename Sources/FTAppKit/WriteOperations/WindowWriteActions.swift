@@ -99,7 +99,7 @@ final class WindowWriteActions {
         mode: FTOperations.CopyPasteMode, sources: [String], destination: String, action: WriteOperationAction,
         clearsCutClipboard: String? = nil, initiator: CopyLikeInitiator? = nil,
         onSourcesMissing: (([String]) -> Void)? = nil, reportsRefusals: Bool = true, checksBusy: Bool = true,
-        defaultPolicy: CopyPastePolicy = WindowWriteActions.safePolicy, moveFromSearchResults: ObjectIdentifier? = nil
+        defaultPolicy: CopyPastePolicy = WindowWriteActions.safePolicy
     ) async -> CopyLikeOutcome {
         if checksBusy, refuseWhileBusy(.operation(action)) { return .cancelled }
         session.applyCard(
@@ -155,15 +155,11 @@ final class WindowWriteActions {
             if reportsRefusals { dialogs.showRefusal(.operation(action), message: message, in: window) }
             return .error(message: message)
         }
-        if let pane = moveFromSearchResults {
-            session.noteMoveFromSearchResults(analysisId: report.analysisId, pane: pane)
-        }
         if !report.issues.isEmpty {
             return await leaveOut(
                 report, mode: mode, sources: sources, destination: destination, action: action,
                 clearsCutClipboard: clearsCutClipboard, initiator: initiator, onSourcesMissing: onSourcesMissing,
-                reportsRefusals: reportsRefusals, defaultPolicy: defaultPolicy,
-                moveFromSearchResults: moveFromSearchResults)
+                reportsRefusals: reportsRefusals, defaultPolicy: defaultPolicy)
         }
         if Self.hasConflicts(report) {
             session.applyCard(nil)
@@ -197,7 +193,6 @@ final class WindowWriteActions {
             if let clears {
                 session.clearCutAfterMove(operationId: handle.operationId, capturedAt: clears)
             }
-            session.noteStarted(analysisId: report.analysisId, operationId: handle.operationId)
             if TabDragDrop.externalDropAnalyses.remove(report.analysisId) != nil {
                 TabDragDrop.externalDropOperations.insert(handle.operationId)
             }
@@ -630,7 +625,6 @@ final class WindowWriteActions {
                 capturedAt: capturedAt)
         clipboard.set(next, follows: capturedAt, from: tab?.windowID)
         tab?.clipboardChanged()
-        tab?.dragDrop.findSearchResultsAgain()
     }
 
     // MARK: Starting a local operation

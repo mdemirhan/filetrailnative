@@ -208,10 +208,10 @@ extension MainWindowController {
         guard let other = otherPane, let destination = otherPaneDestination(other), let actions = writeActions else {
             return
         }
-        let searchPane = searchRootPath != nil ? ObjectIdentifier(activePane) : nil
+        let searching = searchRootPath != nil
         // Both panes on one folder: nothing to copy or move. The menu items are dimmed then, and the key of a dimmed
         // item still comes here (`keyOfDimmedItem`), where a copy would make a second "name copy" of each item.
-        guard !sources.isEmpty, searchPane != nil || !samePath(destination, activePane.shownFolderPath) else { return }
+        guard !sources.isEmpty, searching || !samePath(destination, activePane.shownFolderPath) else { return }
         let action: WriteOperationAction = copying ? .copyTo : .moveTo
         if actions.refuseWhileBusy(.operation(action)) { return }
         Task {
@@ -221,7 +221,7 @@ extension MainWindowController {
             }
             let outcome = await actions.copyLike(
                 mode: copying ? .copy : .cut, sources: sources, destination: destination, action: action,
-                initiator: .otherPane, moveFromSearchResults: copying ? nil : searchPane)
+                initiator: .otherPane)
             actions.reviewIfAsked(outcome, action: action)
         }
     }

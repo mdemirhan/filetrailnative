@@ -46,6 +46,18 @@ public enum SearchBarText {
     public static let doneName = "Close search results"
     public static let truncatedBanner =
         "Showing the first \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) matches."
+    /// A write put items inside the folder searched, which the results don't list.
+    public static let mayBeMissingBanner = "Items added since this search may not be listed."
+    public static let searchAgain = "Search Again"
+    public static let searchAgainTitle = "Search Again (⌘R)"
+    public static let searchAgainName = "Search again"
+
+    /// What the banner over the results says: that they were cut short, that they may be missing what was added, or
+    /// both; nil when there is nothing to say.
+    public static func banner(truncated: Bool, mayBeMissingItems: Bool) -> String? {
+        let lines = [truncated ? truncatedBanner : nil, mayBeMissingItems ? mayBeMissingBanner : nil].compactMap { $0 }
+        return lines.isEmpty ? nil : lines.joined(separator: " ")
+    }
 
     /// The toolbar's field.
     public static let fieldPlaceholder = "Search"
