@@ -59,29 +59,38 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // In the Compact List and the Icons view the panel zooms out of the item's icon, square and where the item draws
-        // it, and back into the image the item shows, not over the whole item with the name.
+        // In the Compact List and the Icons view the panel zooms out of the item's picture, square and where the item
+        // draws it, and back into the image the item shows, not over the whole item with the name. In the Icons view
+        // that is the file's preview once Quick Look has made one (a text file has one), and its icon until then: the
+        // icon stays set while the preview covers it, so the picture compared is the one on screen, whichever comes
+        // first.
         @Test(arguments: [AppCommand.viewAsList, .viewAsIcons])
         func zoomsOutOfTheIconTheGridDraws(view: AppCommand) async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(view)
             let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
-            func drawnIcon() -> NSImageView? {
-                let icon =
-                    view == .viewAsList ? probe.compactItems[note.name]?.iconView : probe.iconItems[note.name]?.iconView
-                return icon?.image == nil ? nil : icon
+            func drawnPicture() -> (view: NSView, image: NSImage)? {
+                var shown: [(NSView, NSImage?)] = []
+                if view == .viewAsList, let icon = probe.compactItems[note.name]?.iconView {
+                    shown = [(icon, icon.image)]
+                } else if let item = probe.iconItems[note.name] {
+                    shown = [(item.thumbnail, item.thumbnail.image), (item.iconView, item.iconView.image)]
+                }
+                return shown.lazy.compactMap { view, image in
+                    image.flatMap { view.isHiddenOrHasHiddenAncestor ? nil : (view, $0) }
+                }.first
             }
-            #expect(await waitUntil { drawnIcon() != nil })
-            let icon = try #require(drawnIcon())
+            #expect(await waitUntil { drawnPicture() != nil })
+            let drawnNow = try #require(drawnPicture())
 
             let picture = try #require(
                 QuickLookItemFrame.picture(of: note.path, entries: tab.content.entries, in: tab.content.view))
 
             let window = try #require(tab.window)
-            let drawn = window.convertToScreen(icon.convert(icon.bounds, to: nil))
+            let drawn = window.convertToScreen(drawnNow.view.convert(drawnNow.view.bounds, to: nil))
             #expect(picture.frame == drawn)
             #expect(abs(picture.frame.width - picture.frame.height) < 0.5)
-            #expect(picture.image === icon.image)
+            #expect(picture.image === drawnNow.image)
             await harness.close()
         }
 
