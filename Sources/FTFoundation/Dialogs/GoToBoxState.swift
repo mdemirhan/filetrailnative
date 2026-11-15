@@ -193,11 +193,14 @@ public struct GoToBoxState: Equatable, Sendable {
         rebuild(reselect: false)
     }
 
-    /// A folder was forgotten: it leaves the list at once.
+    /// A folder was forgotten: it leaves the list at once, and the row that takes its place is the one selected (the
+    /// last row when it was the last), so that ⌘⌫ again forgets the next folder down rather than the one at the top.
     public mutating func forgetPlace(_ path: String) {
+        let at = selectedIndex
         places.removeAll { $0.path == path }
         letGoOfRow()
         rebuild(reselect: false)
+        if at >= 0, !rows.isEmpty { selectedIndex = min(at, rows.count - 1) }
     }
 
     /// The places read again (a folder forgotten from the store): the list follows at once.
@@ -215,10 +218,12 @@ public struct GoToBoxState: Equatable, Sendable {
         }
     }
 
-    /// The typed folder doesn't exist: the next submit of the same text makes it first, and `notice` says so.
-    public mutating func offerToCreate(notice: String) {
-        folderToCreate = (text, notice)
-        error = nil
+    /// The folder typed as `submitted` doesn't exist: the next submit of the same text makes it first, and `notice`
+    /// says so. The disk may answer after the field has changed: the offer is for what was submitted, not for what
+    /// the field holds by then, which was never looked for.
+    public mutating func offerToCreate(notice: String, for submitted: String) {
+        folderToCreate = (submitted, notice)
+        if submitted == text { error = nil }
     }
 
     /// Whether the next submit makes the typed folder first.

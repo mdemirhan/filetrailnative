@@ -302,8 +302,7 @@ public enum ExplorerTabs {
         func isGone(_ path: String) -> Bool { !path.isEmpty && unmounted.contains(volumeRoot(path)) }
         let second = snapshot.secondPane
         let rootGone = isGone(snapshot.treeRootPath)
-        // A tab with one pane goes with its tree.
-        let firstGone = isGone(snapshot.currentPath) || (second == nil && rootGone)
+        let firstGone = isGone(snapshot.currentPath)
         let secondGone = second?.pane.path.map(isGone) ?? false
         guard firstGone || secondGone || rootGone else { return snapshot }
         var left = snapshot

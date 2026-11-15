@@ -189,13 +189,14 @@ extension MainWindowController {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let folder = GoToBoxState.folderPath(typed, homePath: home, currentPath: box.options.currentPath)
         let creates = box.state.createsFolder
+        let submitted = box.state.text
         box.setError(nil)
         box.setSubmitting(true)
         Task { @MainActor [weak self, weak box] in
             guard let self else { return }
             let outcome = await self.sendToChosenFolder(
                 folder, creates: creates, actions: actions, verb: verb, refusal: refusal, start: start,
-                offer: { [weak box] notice in box?.offerToCreate(notice: notice) })
+                offer: { [weak box] notice in box?.offerToCreate(notice: notice, for: submitted) })
             guard let box else { return }
             switch outcome {
             case .queued, .review:

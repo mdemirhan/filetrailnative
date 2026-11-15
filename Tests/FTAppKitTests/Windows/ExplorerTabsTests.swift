@@ -231,6 +231,20 @@ import Testing
         #expect(left.view == nil)
     }
 
+    // The tree alone was rooted on the disk, the pane showing a folder elsewhere: the tab stays where it is, with
+    // what it had on screen, and its tree starts again at Home.
+    @Test func aTabWhoseTreeAloneWasOnTheDiskKeepsItsFolder() {
+        let tab = onDisk("/Users/demo/Documents", ["/Volumes/Backup/Photos", "/Users/demo/Documents"])
+        let left = ExplorerTabs.leaveUnmountedDisks(tab, unmounted: ["/Volumes/Backup"], homePath: "/Users/demo")
+
+        #expect(left.currentPath == "/Users/demo/Documents")
+        #expect(left.historyPaths == tab.historyPaths)
+        #expect(left.view != nil)
+        #expect(left.treeRootPath == "/Users/demo")
+        #expect(left.selectedTreeItemID == "fs:/Users/demo/Documents")
+        #expect(left.leftPaneSubview == .tree)
+    }
+
     @Test func leavesATabOnAnotherDiskOrOnAFolderNamedAlikeAsItIs() {
         let onArchive = onDisk("/Volumes/Archive/2025", ["/Volumes/Archive/2025"], root: "/Volumes/Archive")
         #expect(

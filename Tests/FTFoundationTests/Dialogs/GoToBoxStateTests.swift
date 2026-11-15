@@ -170,7 +170,7 @@ struct GoToBoxStateTests {
         choosing.pointerMoved(over: 0, at: CGPoint(x: 2, y: 1))
         #expect(choosing.selectedRow == nil)
         #expect(choosing.submitValue == "~/src/new")
-        choosing.offerToCreate(notice: "It will be made.")
+        choosing.offerToCreate(notice: "It will be made.", for: "~/src/new")
         choosing.pointerMoved(over: 0, at: CGPoint(x: 3, y: 1))
         #expect(choosing.createsFolder)
         #expect(choosing.pressReturn() == .submit("~/src/new"))
@@ -298,11 +298,35 @@ struct GoToBoxStateTests {
         _ = state.setText("~/New")
         #expect(!state.createsFolder)
         state.error = "Destination must be an existing folder."
-        state.offerToCreate(notice: "There’s no folder “New”.")
+        state.offerToCreate(notice: "There’s no folder “New”.", for: "~/New")
         #expect(state.createsFolder)
         #expect(state.error == nil)
         _ = state.setText("~/Newer")
         #expect(!state.createsFolder)
+        // The disk answers for "~/Newer" once the field says something else: that text, never looked for, is not
+        // made, and typing starts over.
+        _ = state.setText("~/Other")
+        state.offerToCreate(notice: "There’s no folder “Newer”.", for: "~/Newer")
+        #expect(!state.createsFolder)
+        _ = state.setText("~/Newer")
+        #expect(!state.createsFolder)
+    }
+
+    // ⌘⌫ on a row further down leaves the row that takes its place selected: pressed again, it forgets the next one.
+    @Test func forgettingAFolderKeepsTheSelectionWhereItWas() throws {
+        var state = GoToBoxState(places: Self.places)
+        let before = state.rows
+        let at = try #require(before.indices.dropFirst().first { before[$0].canForget })
+        for _ in 0..<at { state.moveSelection(1) }
+        #expect(state.forgetKey() == .forget(before[at].path))
+        state.forgetPlace(before[at].path)
+        #expect(state.selectedIndex == min(at, before.count - 2))
+        #expect(state.selectedRow?.path == before[min(at + 1, before.count - 1)].path || at == before.count - 1)
+        // The last row forgotten: the one before it is selected.
+        var last = GoToBoxState(places: Self.places)
+        for _ in 0..<(before.count - 1) { last.moveSelection(1) }
+        last.forgetPlace(before[before.count - 1].path)
+        #expect(last.selectedIndex == before.count - 2)
     }
 
     // ".", "..", "./…" and "../…" are paths from the folder on screen; "~" and "." and ".." are followed.

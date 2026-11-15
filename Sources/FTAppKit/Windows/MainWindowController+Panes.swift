@@ -187,7 +187,9 @@ extension MainWindowController {
             return
         }
         let searchPane = searchRootPath != nil ? ObjectIdentifier(activePane) : nil
-        guard !sources.isEmpty else { return }
+        // Both panes on one folder: nothing to copy or move. The menu items are dimmed then, and the key of a dimmed
+        // item still comes here (`keyOfDimmedItem`), where a copy would make a second "name copy" of each item.
+        guard !sources.isEmpty, searchPane != nil || !samePath(destination, activePane.shownFolderPath) else { return }
         let action: WriteOperationAction = copying ? .copyTo : .moveTo
         if actions.refuseWhileBusy(.operation(action)) { return }
         Task {

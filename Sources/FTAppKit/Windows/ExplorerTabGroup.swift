@@ -458,7 +458,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
 
     /// Disks were unmounted: the tabs showing one close, as Finder's do, and Reopen
     /// Closed Tab doesn't offer them; when they are all the window's tabs, the window closes. A tab with two panes
-    /// closes when both are on such a disk; with one of them elsewhere it stays, and the pane on the disk goes Home.
+    /// closes when both are on such a disk; with one of them elsewhere it stays, and the pane on the disk goes Home. A
+    /// tab whose tree alone is rooted on such a disk stays too, and its tree goes Home.
     /// While the tabs can't change (a sheet or an alert is open), the tabs in the background go Home instead, and the
     /// tab on screen opens Home. `volumeRoot` says which disk a path is on.
     func disksUnmounted(_ unmounted: Set<String>, homePath: String, volumeRoot: (String) -> String) {
@@ -468,13 +469,9 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         let touched = tabs.filter { panesGone($0) > 0 || isGone($0.treeRootPath) }
         guard !touched.isEmpty else { return }
         let front = selected
-        // Nothing of these is left: every pane is on a disk that went, or the one pane's tree is.
-        let gone =
-            isBlocked
-            ? []
-            : touched.filter { tab in
-                panesGone(tab) == tab.panes.count || (tab.panes.count == 1 && isGone(tab.treeRootPath))
-            }
+        // Nothing of these is left: every pane is on a disk that went. One whose tree alone was rooted there stays,
+        // its pane showing a folder elsewhere, and the tree starts again at Home.
+        let gone = isBlocked ? [] : touched.filter { panesGone($0) == $0.panes.count }
         if !gone.isEmpty, gone.count == tabs.count {
             closeAsCloseButton()
             return

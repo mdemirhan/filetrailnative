@@ -1222,7 +1222,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.shortcutsProvider = { [weak self] in
             ShortcutCommands.resolve(self?.preferences.shortcutOverrides ?? [:])
         }
-        content.onReturn = { [weak self] in self?.pressedReturn() }
+        // The list that has the keyboard is the one acted on: after a right-click in the other pane, which gives it
+        // the keyboard without making it the active one, Return opens or renames what is selected there.
+        content.onReturn = { [weak self, weak pane] in
+            guard let self, let pane else { return }
+            self.activate(pane)
+            self.pressedReturn()
+        }
         // Tab walks the tree and the panes in the order they are on screen; with the tree hidden it stays among the
         // panes, and with one pane in the list.
         content.onSwitchPane = { [weak self, weak pane] in
@@ -1959,6 +1965,9 @@ extension MainWindowController: ExplorerWindowHandle {
         if treeLosesKeyboard { content.focusList() }
         showInfoRow(animated: workspace.isReady)
         if !workspace.isReady { workspace.becomeReady() }
+        // The List's column widths are the window's own: a tab made before it had a window (a workspace's, one
+        // moved from another window) shows them from here on.
+        refreshColumns()
         notify(.panels)
     }
 }

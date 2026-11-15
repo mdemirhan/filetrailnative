@@ -219,8 +219,8 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
     }
 
     /// The typed folder doesn't exist: the footer's button makes it first, and `notice` says so under the field.
-    func offerToCreate(notice: String) {
-        state.offerToCreate(notice: notice)
+    func offerToCreate(notice: String, for submitted: String) {
+        state.offerToCreate(notice: notice, for: submitted)
         render()
     }
 

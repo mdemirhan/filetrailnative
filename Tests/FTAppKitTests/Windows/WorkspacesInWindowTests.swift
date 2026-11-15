@@ -124,6 +124,38 @@ extension ExplorerWindowlessTests {
             #expect(opened.tabs.map { $0.panes[0].folder.path } == [real(harness, "Alpha"), real(harness, "Beta")])
         }
 
+        // A workspace opens with the List column widths it was saved with, in every one of its tabs, whatever the
+        // window it was opened from has since.
+        @Test func aWorkspaceOpensWithTheColumnWidthsItWasSavedWith() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.perform(.viewAsDetails)
+            var widths = tab.content.columnState.widths
+            widths[.name] = 333
+            tab.content.columnWidthsChanged(widths)
+            let kept = try workspace(
+                "workspace-a", "Work", of: tab, in: harness,
+                tabs: [FTAppKitTests.tab(real(harness, "Alpha")), FTAppKitTests.tab(real(harness, "Beta"))])
+            #expect(kept.session.detailColumnWidths.name == 333)
+            tab.updatePreferences { $0.workspaces = [kept] }
+            widths[.name] = 210
+            tab.content.columnWidthsChanged(widths)
+
+            harness.windows.openWorkspace(slot: 0)
+            #expect(await waitUntil { harness.windows.count == 2 })
+            let opened = try #require(harness.windows.newestGroup)
+            #expect(opened.tabs.count == 2)
+            for other in opened.tabs {
+                // The window's services are this harness's, as `open` gives its first window; nothing else is told.
+                other.servicesOverride = harness.services
+                // What a tab is told when it joins its window, and whenever the window's panels change.
+                other.showPanels(opened.session.panels)
+                #expect(other.panes[0].content.columnState.widths[.name] == 333)
+            }
+            #expect(tab.content.columnState.widths[.name] == 210)
+        }
+
         // A window with a name being edited in it isn't replaced: a beep, and nothing opens. One whose name begins
         // to be edited while the workspace loads stays open with it, and the workspace opens beside it with a beep.
         @Test func aWindowWithANameBeingEditedIsntReplacedByAWorkspace() async throws {
