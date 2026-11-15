@@ -299,6 +299,11 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
             wasInView: wasInView, ask: ask, index: ask.path.flatMap { indexByPath[$0] }, scroller: self)
     }
 
+    /// Brings the item `keepInView` follows on screen, wherever the pane is scrolled to.
+    func revealLead() {
+        keepInViewAfterStep(true)
+    }
+
     var scrollOrigin: NSPoint { scroll.contentView.bounds.origin }
 
     func isInView(index: Int) -> Bool { isWhollyInView(index: index) }

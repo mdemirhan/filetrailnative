@@ -1251,12 +1251,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// View ▸ Show Previews: the pane shows `count` previews at a time in Previews, saved as the slider's count is.
     /// The window switches the pane to Previews after, so a pane in another view lays them out once, at this count.
+    /// In Previews already, the selected item comes on screen wherever the pane was scrolled to: these commands
+    /// show that item at a size, where the slider and Make Bigger keep the pane's place.
     func showPreviews(count: Int) {
         let density = columnState.density
         if count != columnState.previewCounts[density] {
             columnState.previewCounts[density] = count
             if mode == .previews { pane?.columnsChanged() }
         }
+        if mode == .previews { (pane as? ItemGridPane)?.revealLead() }
         syncSizeSlider()
         onPreviewCountChanged?(density, count)
     }

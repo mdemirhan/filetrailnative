@@ -104,6 +104,40 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // In Previews already, with the selected file scrolled out of sight: a count's command brings it on screen,
+        // at that count, where the slider would keep the pane's place. With nothing selected the pane stays put.
+        @Test func showPreviewsInPreviewsBringsTheSelectedFileOnScreen() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openGrid(.viewAsPreviews, files: 40)
+            let probe = GridProbe(tab: tab)
+            harness.layout(tab)
+            probe.layout()
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            tab.perform(.showPreviews9)
+            probe.layout()
+            let chosen = tab.content.entries[2]
+            tab.content.select(paths: [chosen.path])
+            probe.layout()
+            // Scrolled to the end, the selected file far above.
+            previews.scrollClamped(to: NSPoint(x: 0, y: previews.collection.frame.height))
+            probe.layout()
+            #expect(!previews.isWhollyInView(index: 2))
+
+            tab.perform(.showPreviews1)
+            probe.layout()
+            #expect(previews.count == 1)
+            #expect(previews.isWhollyInView(index: 2))
+
+            // Checked already, it still shows the selected file.
+            previews.scrollClamped(to: NSPoint(x: 0, y: previews.collection.frame.height))
+            probe.layout()
+            #expect(!previews.isWhollyInView(index: 2))
+            tab.perform(.showPreviews1)
+            probe.layout()
+            #expect(previews.isWhollyInView(index: 2))
+            await harness.close()
+        }
+
         @Test func eachPaneShowsItsOwnView() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsPreviews, files: 6)
