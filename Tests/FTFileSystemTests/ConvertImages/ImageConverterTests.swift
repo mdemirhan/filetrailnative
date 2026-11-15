@@ -727,6 +727,23 @@ private func converted(_ path: String, _ options: ImageConversionOptions) async 
         }
     }
 
+    // A TIFF made from a HEIC with its metadata, at its size, is compressed too: written from the file as it is, it
+    // came out uncompressed whatever was asked, some hundred times larger for a plain picture.
+    @Test func aTIFFMadeFromAHEICIsCompressedToo() async throws {
+        let folder = try TemporaryDirectory()
+        defer { folder.remove() }
+        let url = folder.appending("photo.heic")
+        try Pictures.write(
+            [Pictures.image(width: 800, height: 600)], as: .heic, to: url,
+            properties: Pictures.cameraMetadata(orientation: 1))
+        let data = try await converted(url.path, ImageConversionOptions(format: .tiff))
+        let written = try Written(data)
+        #expect(written.size == PixelSize(width: 800, height: 600))
+        #expect(written.exifDate == Pictures.exifDate)
+        // Uncompressed it is three bytes a pixel or more: 1.4 MB.
+        #expect(data.count < 800 * 600)
+    }
+
     @Test func anAnimationGivesItsFirstFrame() async throws {
         let folder = try TemporaryDirectory()
         defer { folder.remove() }

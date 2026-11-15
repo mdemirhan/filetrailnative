@@ -1925,7 +1925,12 @@ extension MainWindowController: ExplorerWindowHandle {
             }
         case .copyContents:
             if selectedPaths.count == 1, let path = selectedPaths.first {
-                Task { [contentsCopier] in await contentsCopier.copy(path) }
+                // The tab is held until the copy ends: what the copier asks of it (its window, its toasts) must
+                // still be there when a slow read comes back after the tab was closed.
+                Task { [self] in
+                    await contentsCopier.copy(path)
+                    withExtendedLifetime(self) {}
+                }
             }
         case .convertImages:
             openConvertImagesSheet(selectedPaths)

@@ -124,9 +124,15 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         writesToken = writeSession.observe { [weak self, weak writeSession] event in
             guard let self, case .ended(let ended, let inTabOnScreen) = event, inTabOnScreen,
                 let result = ended.result, result.summary.completedItemCount > 0,
-                self.tab.group?.selected === self.tab,
-                self.session.isSearchMode || writeSession?.isMoveFromSearchResults(ended.operationId) == true
+                self.tab.group?.selected === self.tab
             else { return }
+            // Those a move was dragged out of are this pane's only when they hold what was moved: the other pane's
+            // search, put away earlier, stays put away.
+            if !self.session.isSearchMode {
+                guard writeSession?.isMoveFromSearchResults(ended.operationId) == true else { return }
+                let moved = Set(result.items.compactMap { $0.sourcePath.map(PathBox.init) })
+                guard self.session.results.contains(where: { moved.contains(PathBox($0.path)) }) else { return }
+            }
             self.session.rerun()
         }
     }

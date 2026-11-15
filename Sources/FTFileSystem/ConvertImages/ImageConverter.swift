@@ -63,6 +63,9 @@ public enum ImageConverter {
         let redraw =
             target != upright || (format == .avif && header.orientation != 1) || hdr
             || (options.keepMetadata && options.removeLocation && namesAPlaceInXMPAlone(source, header.index))
+            // A TIFF written from a HEIC or an AVIF as it is comes out uncompressed, whatever it is asked: drawn
+            // again, it is compressed as every other TIFF is.
+            || (format == .tiff && !Self.writesCompressedTIFFAsItIs(source))
 
         if redraw {
             let image = try picture(source, header, upright: upright, target: target, hdr: hdr)
@@ -312,6 +315,13 @@ public enum ImageConverter {
             return !found
         }
         return found
+    }
+
+    /// Whether ImageIO compresses a TIFF it writes from this file as it is: it does from the kinds it has long
+    /// written TIFFs from.
+    private static func writesCompressedTIFFAsItIs(_ source: CGImageSource) -> Bool {
+        guard let type = CGImageSourceGetType(source) as String? else { return false }
+        return ["public.jpeg", "public.png", "public.tiff", "com.compuserve.gif"].contains(type)
     }
 
     /// A TIFF's own dictionary, compressed with LZW: uncompressed, a photo is about 3 bytes a pixel.

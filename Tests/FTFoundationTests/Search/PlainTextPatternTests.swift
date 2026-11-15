@@ -22,7 +22,7 @@ struct PlainTextPatternTests {
         "a\u{1F468}\u{200D}\u{1F469}\u{200D}\u{1F467}b", "\u{1F1F9}\u{1F1F7} trip", "x-y_z [2] {3} ^$ #&~|",
         "ffffffffffff",
         "\u{FB00}\u{FB00}\u{FB00}\u{FB00}\u{FB00}\u{FB00}", "stiff fist", "A\u{30A}ngstro\u{308}m", "\u{17F}un",
-        "kelvin \u{212A}",
+        "kelvin \u{212A}", "a\u{2260}b.txt", "x\u{226E}y",
     ]
 
     private static let queries = [
@@ -34,7 +34,7 @@ struct PlainTextPatternTests {
         "l", "fff", "fix", "\u{FB01}", "\u{FB00}", "abc", "ABC 12", "\u{FF41}", "a.t", ".", "\u{65E5}\u{672C}", "ab",
         "\u{1F469}", "tr", "[2]", "{3}", "^$", "#&~|", "-y_", "ffffffffff", "ffffffffffff", "fffffffffffff", "stiff",
         "f f",
-        "angstrom", "\u{E5}", "sun", "k", " ",
+        "angstrom", "\u{E5}", "sun", "k", " ", "=", "<", "a=b",
     ]
 
     // Every name the filter keeps in Contains is one the pattern finds: fd may hand over more, which the matcher then
