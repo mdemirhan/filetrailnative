@@ -82,11 +82,12 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         // when nothing of that group is offered and its line has gone with it.
         let tagColorsSeparator =
             items.contains(.separator(key: "separator-organize")) ? "separator-organize" : "separator-rename"
+        let offersTagColors = subject.surface == .content || subject.surface == .search
         for item in items {
             switch item {
             case .separator(let key):
                 menu.addItem(.separator())
-                if key == tagColorsSeparator, subject.surface == .content || subject.surface == .search {
+                if key == tagColorsSeparator, offersTagColors {
                     addTagColors()
                     menu.addItem(.separator())
                 }
@@ -112,6 +113,12 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                     menu.addItem(alternate)
                 }
             }
+        }
+        // While a file operation runs, Rename's group and Compress's are both left out, and their lines with them:
+        // the colors, which start no operation, close the menu then.
+        if offersTagColors, tagColors == nil, !subject.entries.isEmpty {
+            if menu.items.last?.isSeparatorItem == false { menu.addItem(.separator()) }
+            addTagColors()
         }
     }
 

@@ -91,6 +91,24 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
+        // A menu opened while an operation runs leaves out what would start another, and keeps the row of colors.
+        @Test func aMenuOpenedWhileAnOperationRunsKeepsTheRowOfColors() async throws {
+            let window = try await open()
+            let actions = try #require(window.tab.writeActions)
+            actions.session.applyCard(
+                WriteOperationCardState(
+                    action: .paste, stage: .starting, targetPath: nil, totalItemCount: 1, totalBytes: nil,
+                    currentSourcePath: nil))
+            let menu = try contentMenu(window, ["note.txt"])
+            #expect(!menu.items.contains { $0.title == "Rename" || $0.title == "Move to Trash" })
+            #expect(menu.items.filter { $0.view is TagColorsMenuRow }.count == 1)
+            #expect(menu.items.last?.view is TagColorsMenuRow)
+            // The folder's own menu has no items to color.
+            #expect(try backgroundMenu(window).items.contains { $0.view is TagColorsMenuRow } == false)
+            actions.session.applyCard(nil)
+            await window.close()
+        }
+
         // A tab opened while another window's operation runs leaves the writes out of its menus, as the tabs open
         // before it do.
         @Test func aTabOpenedDuringAnotherWindowsOperationLeavesTheWritesOut() async throws {

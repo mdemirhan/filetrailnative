@@ -59,9 +59,6 @@ final class CopyContentsAction {
             guard mine == generation else { return false }
             concealed = target != path && CopyContents.looksSecret(path: target)
         }
-        if concealed {
-            guard await confirm(Self.secretQuestion(name), window()), mine == generation else { return false }
-        }
         endCopyingToast()
         let slow = Task { @MainActor [weak self, slowDelay] in
             try? await Task.sleep(for: slowDelay)
@@ -73,6 +70,11 @@ final class CopyContentsAction {
         // A later copy took over: what it reads is what lands.
         guard mine == generation else { return false }
         endCopyingToast()
+        // Asked once the file is read, and only of text, the only kind copied as a secret: a Keynote document
+        // (".key") or a picture named like a key is copied without a question.
+        if concealed, case .success(let contents) = result, contents.kind == .text {
+            guard await confirm(Self.secretQuestion(name), window()), mine == generation else { return false }
+        }
         switch result {
         case .success(let contents):
             // Only text is marked as private: an image found in a file named like a key is no secret.

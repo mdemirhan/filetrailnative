@@ -353,6 +353,18 @@ import UniformTypeIdentifiers
         #expect(!PasteAsFile.isConcealed(types: fixture.board.types?.map(\.rawValue) ?? []))
     }
 
+    // A Keynote document is named ".key" as a private key is: it holds no text, so nothing is asked of it.
+    @Test func aFileNamedLikeAKeyThatHoldsNoTextIsNotAskedAbout() async {
+        let folder = Folder()
+        let fixture = Fixture()
+        let document = Data([0x50, 0x4B, 0x03, 0x04, 0xFF, 0xFE, 0x00, 0x00, 0x9C, 0xC3, 0x28, 0x00, 0x00])
+        #expect(!(await fixture.action.copy(folder.write("Talk.key", document))))
+        #expect(fixture.asked.isEmpty)
+        // A private key under the same name is asked about, once read.
+        #expect(await fixture.action.copy(folder.write("server.key", Data("-----BEGIN PRIVATE KEY-----".utf8))))
+        #expect(fixture.asked.count == 1)
+    }
+
     // MARK: Paste as File's reading of the clipboard
 
     @Test func theMenusTellTextFromItsTypeAndTheReadTellsWhatIsThere() async {
