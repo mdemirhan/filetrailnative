@@ -150,5 +150,44 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.shownFolderPath == window.folder.appendingPathComponent("Alpha").path })
             await window.close()
         }
+
+        // The rule that a held key starts no file operation again is asked where keys arrive: the window's own keys
+        // and the list's. A repeat of ⌘D there is taken and makes no copy; the press itself makes one.
+        @Test func aRepeatOfAKeyThatStartsAFileOperationStartsNoneWhereverItArrives() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let number = try #require(tab.window).windowNumber
+            func commandD(repeating: Bool) throws -> NSEvent {
+                try #require(
+                    NSEvent.keyEvent(
+                        with: .keyDown, location: .zero, modifierFlags: [.command], timestamp: 0,
+                        windowNumber: number, context: nil, characters: "d", charactersIgnoringModifiers: "d",
+                        isARepeat: repeating, keyCode: 2))
+            }
+            func copies() throws -> [String] {
+                try FileManager.default.contentsOfDirectory(atPath: window.folder.path)
+                    .filter { $0.hasPrefix("note") }.sorted()
+            }
+            window.select(["note.txt"])
+            tab.content.focusList()
+            let pane = try #require(tab.content.pane as? ListViewController)
+
+            // The window's keys.
+            #expect(tab.windowKeyDown(try commandD(repeating: true)))
+            // The list's.
+            #expect(pane.handleKeyDown(try commandD(repeating: true)))
+            try? await Task.sleep(for: .milliseconds(300))
+            #expect(tab.writeActions?.session.activeOperationId == nil)
+            #expect(try copies() == ["note.txt"])
+
+            // Pressed, it makes its copy, through either.
+            #expect(pane.handleKeyDown(try commandD(repeating: false)))
+            #expect(await waitUntil { (try? copies())?.count == 2 })
+            #expect(await waitUntil { tab.writeActions?.session.activeOperationId == nil })
+            window.select(["note.txt"])
+            #expect(tab.windowKeyDown(try commandD(repeating: false)))
+            #expect(await waitUntil { (try? copies())?.count == 3 })
+            await window.close()
+        }
     }
 }

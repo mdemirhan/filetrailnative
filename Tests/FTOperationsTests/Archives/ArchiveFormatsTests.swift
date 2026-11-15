@@ -126,7 +126,10 @@ import Testing
         let sparse = "\(folders.source)/hole.bin"
         let file = open(sparse, O_WRONLY | O_CREAT, 0o644)
         try #require(file >= 0)
-        let stretched = ftruncate(file, 1 << 50)
+        // Twice what the disk has free: the system's tar takes minutes to write down a hole a thousand times that.
+        let free = try #require(
+            try FileManager.default.attributesOfFileSystem(forPath: folders.root)[.systemFreeSize] as? Int64)
+        let stretched = ftruncate(file, off_t(free) * 2 + (1 << 30))
         close(file)
         try #require(stretched == 0)
         let archive = try folders.archive("hole.tar", ["-c"], of: ["hole.bin"])
