@@ -290,6 +290,7 @@ final class BrowserPane {
     /// it (folder and history) and reads its folder when it is next shown. Whether its folder changed.
     @discardableResult
     func takePlace(path: String, historyPaths: [String], historyIndex: Int) -> Bool {
+        historyIndexOnScreen = nil
         if historyPaths.indices.contains(historyIndex) {
             navigationHistory = NavigationHistory(paths: historyPaths, index: historyIndex)
         } else {
@@ -630,6 +631,17 @@ final class BrowserPane {
     /// links open anyway. `quiet`: the folder is on screen and is only read again, so no "Loading…". `keepingSelection`:
     /// it is read in place, its selection and scroll staying. `arrives`: the pane's first folder counts as gone to (the
     /// one step of its history is there already).
+    /// Where the folder on screen is in the history, while a Back, Forward or jump that hasn't arrived yet has moved
+    /// the history ahead of it; nil when the two agree.
+    private var historyIndexOnScreen: Int?
+
+    /// The history goes back to the folder on screen, when a move within it that didn't arrive had left it ahead.
+    private func putHistoryBackOnScreen() {
+        guard let index = historyIndexOnScreen else { return }
+        historyIndexOnScreen = nil
+        navigationHistory.jump(to: index)
+    }
+
     func attemptNavigation(
         to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil, readFailure: ReadFailure? = nil, quiet: Bool = false,
@@ -651,6 +663,13 @@ final class BrowserPane {
         navigationTarget = url
         defer { if token == navigationToken { isNavigating = false } }
         let move = open.pushesHistory ? move : HistoryMove.none
+        // A Back, Forward or jump still under way moved the history ahead of the folder on screen. Another of them
+        // goes on from where the history is, so two quick Backs go two folders back; anything else (a folder
+        // opened, a read in place) starts from the folder on screen, whose place the history takes again first.
+        switch move {
+        case .back, .forward, .jump: break
+        case .push, .replace, .none: putHistoryBackOnScreen()
+        }
         // The folder being left is remembered first: what was selected and where the list was scrolled.
         // Nothing is remembered when search results are showing.
         if !folderLetGo, url.comparablePath != folder.comparablePath, searchRootPath == nil,
@@ -663,7 +682,13 @@ final class BrowserPane {
         // are those left where this goes.
         let bringsResultsBack = !keepingSearch && searchResultsWereLeft(at: move)
         let leftPlace = NavigationHistory.Place(index: navigationHistory.index, path: folder.path)
-        // Back, Forward and the hold menus move within the history at once, before the folder is read.
+        // Back, Forward and the hold menus move within the history at once, before the folder is read. The place of
+        // the folder on screen is kept until one of them arrives.
+        switch move {
+        case .back, .forward, .jump:
+            if historyIndexOnScreen == nil { historyIndexOnScreen = navigationHistory.index }
+        case .push, .none, .replace: break
+        }
         switch move {
         case .back: navigationHistory.goBack()
         case .forward: navigationHistory.goForward()
@@ -689,6 +714,7 @@ final class BrowserPane {
             if let goToFailure {
                 content.showReadError(readError)
                 goToFailure(readError.message)
+                putHistoryBackOnScreen()
                 writeEndReadMissed()
                 return .failed
             }
@@ -701,6 +727,9 @@ final class BrowserPane {
                 // A quiet read shows nothing: the search for a folder that can be read goes on from it.
                 if !quiet { content.showReadError(readError) }
                 if drivesSidebar { sidebar.openFailed() }
+                // The folder it came from is still the one on screen: the history is where that folder is, so Back
+                // and Forward go on from it, not from a folder that never opened.
+                putHistoryBackOnScreen()
                 tab.paneChanged(.history, in: self)
                 writeEndReadMissed()
                 return .failed
@@ -716,6 +745,8 @@ final class BrowserPane {
             search.session.hideResults(returnPlace: sameFolder ? nil : leftPlace)
         }
 
+        // The folder arrived: the history is where the folder on screen is again.
+        historyIndexOnScreen = nil
         // A folder is added to the history only after its listing has arrived and been applied.
         let visits = visitTracker
         switch move {

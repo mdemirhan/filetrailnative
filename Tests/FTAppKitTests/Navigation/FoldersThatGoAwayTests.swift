@@ -79,7 +79,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Back to a folder that is gone tells it on the card, with no sheet to dismiss; the history has moved.
+        // Back to a folder that is gone tells it on the card, with no sheet to dismiss; the folder it came from is
+        // still the one on screen, and the history stays with it.
         @Test func backToAGoneFolderShowsTheCard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -93,7 +94,65 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.container(for: .error(message: message)) })
             #expect(tab.window?.attachedSheet == nil)
             #expect(tab.shownFolderPath == path(harness, "Beta"))
-            #expect(tab.historyIndex == 1)
+            #expect(tab.historyIndex == 2)
+            #expect(tab.canPerform(.goBack) && !tab.canPerform(.goForward))
+            await harness.close()
+        }
+
+        // Back to a folder slow to read, then another folder opened before it arrives: the folder on screen, the one
+        // Back was pressed in, keeps its place in the history, and the new folder comes after it. The history was
+        // left where Back had moved it, so the folder come from was dropped.
+        @Test func aFolderOpenedWhileBackIsStillReadingKeepsTheFolderItCameFrom() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let home = tab.folder.path
+            let alpha = path(harness, "Alpha")
+            let beta = path(harness, "Beta")
+            let gamma = path(harness, "Gamma")
+            #expect(await opening(harness, tab, alpha))
+            #expect(await opening(harness, tab, beta))
+            let probe = FolderReadProbe()
+            harness.reading(through: probe, in: tab)
+            forgetListings(harness)
+            probe.hold(alpha)
+            tab.perform(.goBack)
+            #expect(await waitUntil { probe.isHolding })
+            #expect(tab.shownFolderPath == beta)
+            tab.go(to: URL(fileURLWithPath: gamma))
+            #expect(await waitUntil { tab.shownFolderPath == gamma && !tab.isNavigating })
+            probe.letGo()
+            await settle()
+            #expect(tab.shownFolderPath == gamma)
+            #expect(tab.historyPaths == [home, alpha, beta, gamma])
+            #expect(tab.historyIndex == 3)
+            // Back from there is the folder it came from.
+            tab.perform(.goBack)
+            #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
+            await harness.close()
+        }
+
+        // Two Backs pressed one after the other, the first not yet arrived, go two folders back.
+        @Test func twoQuickBacksGoTwoFoldersBack() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let home = tab.folder.path
+            let alpha = path(harness, "Alpha")
+            let beta = path(harness, "Beta")
+            #expect(await opening(harness, tab, alpha))
+            #expect(await opening(harness, tab, beta))
+            let probe = FolderReadProbe()
+            harness.reading(through: probe, in: tab)
+            forgetListings(harness)
+            probe.hold(alpha)
+            tab.perform(.goBack)
+            #expect(await waitUntil { probe.isHolding })
+            tab.perform(.goBack)
+            #expect(await waitUntil { tab.shownFolderPath == home && !tab.isNavigating })
+            probe.letGo()
+            await settle()
+            #expect(tab.shownFolderPath == home)
+            #expect(tab.historyPaths == [home, alpha, beta])
+            #expect(tab.historyIndex == 0)
             await harness.close()
         }
 
