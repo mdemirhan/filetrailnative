@@ -185,6 +185,40 @@ extension ExplorerWindowlessTests {
 
         // A folder that is gone opens as the nearest folder above it, in the second pane as in the first, and a notice
         // says how many tabs had one.
+        // A workspace brings back the sizes its panes showed their views at: the icon size, the Compact List's column
+        // width and the Previews count, each pane's own, whatever sizes the app has by then.
+        @Test func aWorkspaceBringsBackEachPanesSizes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            tab.perform(.viewAsIcons)
+            tab.perform(.increaseSize)
+            let second = tab.openSecondPane(at: real(harness, "Alpha"))
+            #expect(await waitUntil { second.loaded && !second.isNavigating })
+            tab.focusPane(second)
+            tab.perform(.viewAsPreviews)
+            tab.perform(.decreaseSize)
+            #expect(tab.panes[0].content.columnState.iconSizes.standard == 72)
+            #expect(second.content.columnState.previewCounts.standard == 9)
+            try await save(tab, as: "Sized", in: harness)
+            let kept = try #require(workspaces(harness).first)
+            #expect(kept.session.openTabs.first?.viewSizes?.iconSizes.standard == 72)
+            #expect(kept.session.openTabs.first?.secondPane?.viewSizes?.previewCounts.standard == 9)
+
+            // The app's sizes move on.
+            tab.updatePreferences {
+                $0.iconSizes.standard = 32
+                $0.previewCounts.standard = 1
+            }
+            harness.windows.openWorkspace(id: kept.id)
+            #expect(await waitUntil { harness.windows.count == 2 })
+            let opened = try #require(harness.windows.newestGroup?.tabs.first)
+            #expect(await waitUntil { opened.panes.count == 2 })
+            harness.layout(opened)
+            #expect(opened.panes[0].content.columnState.iconSizes.standard == 72)
+            #expect(opened.panes[1].content.columnState.previewCounts.standard == 9)
+        }
+
         @Test func aWorkspaceWhoseFoldersAreGoneOpensTheFoldersAboveThemInBothPanes() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }

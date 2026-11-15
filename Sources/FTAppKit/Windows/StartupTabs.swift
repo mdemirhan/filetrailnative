@@ -18,6 +18,8 @@ public struct StartupTab: Equatable, Sendable {
     public var secondPane: OpenPanePreference? = nil
     public var activePane: Int? = nil
     public var paneSplit: Double? = nil
+    /// The sizes its pane shows its views at; nil to start from the app's.
+    public var viewSizes: PaneViewSizes? = nil
 
     /// The tab as it is saved between launches.
     public var openTab: OpenTabPreference {
@@ -26,7 +28,7 @@ public struct StartupTab: Equatable, Sendable {
             favoritePath: favoritePath, viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy,
             sortDirection: sortDirection, includeHidden: includeHidden, foldersFirst: foldersFirst,
             favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded, secondPane: secondPane,
-            activePane: activePane, paneSplit: paneSplit)
+            activePane: activePane, paneSplit: paneSplit, viewSizes: viewSizes)
     }
 }
 
@@ -58,6 +60,7 @@ public enum StartupTabs {
         start.secondPane = tab.secondPane
         start.activePane = tab.activePane
         start.paneSplit = tab.paneSplit
+        start.viewSizes = tab.viewSizes
         return start
     }
 

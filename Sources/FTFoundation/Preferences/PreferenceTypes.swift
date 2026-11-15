@@ -388,6 +388,28 @@ public struct NullEncoded<Value: Codable & Equatable & Sendable>: Codable, Equat
     }
 }
 
+/// The sizes a pane shows its views at, each at each density: the Icons view's icon size, the Compact List's column
+/// width and how many previews fill the pane in the Previews view. Every pane has its own; the app's (in the
+/// preferences) are the ones set last in any pane, which a pane with none of its own starts from.
+public struct PaneViewSizes: Codable, Equatable, Sendable {
+    public var iconSizes: DensitySizes
+    public var compactListWidths: DensitySizes
+    public var previewCounts: DensitySizes
+
+    public init(iconSizes: DensitySizes, compactListWidths: DensitySizes, previewCounts: DensitySizes) {
+        self.iconSizes = iconSizes
+        self.compactListWidths = compactListWidths
+        self.previewCounts = previewCounts
+    }
+
+    /// The app's own sizes: those set last.
+    public init(_ preferences: AppPreferences) {
+        self.init(
+            iconSizes: preferences.iconSizes, compactListWidths: preferences.compactListWidths,
+            previewCounts: preferences.previewCounts)
+    }
+}
+
 /// A tab as it is remembered between launches: where it was and how it showed its folder.
 /// Its history, selection and search are not kept.
 public struct OpenTabPreference: Codable, Equatable, Sendable {
@@ -410,12 +432,16 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
     public var activePane: Int?
     /// The left pane's share of the room, while the tab shows two.
     public var paneSplit: Double?
+    /// The sizes its first pane shows its views at; nil in a file saved before panes kept their own, which then
+    /// start from the app's.
+    public var viewSizes: PaneViewSizes?
 
     public init(
         path: String?, treeRootPath: String?, favoritePath: String?, viewMode: ExplorerViewMode,
         searchViewMode: ExplorerViewMode, sortBy: SortByPreference, sortDirection: SortDirectionPreference,
         includeHidden: Bool, foldersFirst: Bool, favoritesExpanded: Bool, locationsExpanded: Bool,
-        secondPane: OpenPanePreference? = nil, activePane: Int? = nil, paneSplit: Double? = nil
+        secondPane: OpenPanePreference? = nil, activePane: Int? = nil, paneSplit: Double? = nil,
+        viewSizes: PaneViewSizes? = nil
     ) {
         self.path = path
         self.treeRootPath = treeRootPath
@@ -431,6 +457,7 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
         self.secondPane = secondPane
         self.activePane = secondPane == nil ? nil : activePane
         self.paneSplit = secondPane == nil ? nil : paneSplit
+        self.viewSizes = viewSizes
     }
 }
 
@@ -444,10 +471,13 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
     public var sortDirection: SortDirectionPreference
     public var includeHidden: Bool
     public var foldersFirst: Bool
+    /// The sizes the pane shows its views at; nil in a file saved before panes kept their own.
+    public var viewSizes: PaneViewSizes?
 
     public init(
         path: String?, viewMode: ExplorerViewMode, searchViewMode: ExplorerViewMode, sortBy: SortByPreference,
-        sortDirection: SortDirectionPreference, includeHidden: Bool, foldersFirst: Bool
+        sortDirection: SortDirectionPreference, includeHidden: Bool, foldersFirst: Bool,
+        viewSizes: PaneViewSizes? = nil
     ) {
         self.path = path
         self.viewMode = viewMode
@@ -456,6 +486,7 @@ public struct OpenPanePreference: Codable, Equatable, Sendable {
         self.sortDirection = sortDirection
         self.includeHidden = includeHidden
         self.foldersFirst = foldersFirst
+        self.viewSizes = viewSizes
     }
 }
 

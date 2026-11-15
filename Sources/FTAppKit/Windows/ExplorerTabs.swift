@@ -54,6 +54,8 @@ public struct TabSnapshot: Equatable, Sendable {
     public var activePane = 0
     /// The left pane's share of the room while it shows two.
     public var paneSplit: Double?
+    /// The sizes its first pane shows its views at; the second pane's are with it.
+    public var viewSizes: PaneViewSizes?
 
     public init(
         currentPath: String, historyPaths: [String], historyIndex: Int, viewMode: ExplorerViewMode = .icons,
@@ -258,6 +260,7 @@ public enum ExplorerTabs {
             new.sortDirection = second.sortDirection
             new.includeHidden = second.includeHidden
             new.foldersFirst = second.foldersFirst
+            new.viewSizes = second.viewSizes
             // What the first pane had on screen isn't this folder's.
             new.view?.directoryError = nil
         }

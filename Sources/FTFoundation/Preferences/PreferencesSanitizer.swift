@@ -52,7 +52,8 @@ public enum PreferencesSanitizer {
                     searchViewMode: viewMode(pane["searchViewMode"], .details), sortBy: Self.sortBy(pane),
                     sortDirection: pane["sortDirection"]?.string == "desc" ? .desc : .asc,
                     includeHidden: bool(pane, "includeHidden", includesHidden),
-                    foldersFirst: bool(pane, "foldersFirst", showsFoldersFirst))
+                    foldersFirst: bool(pane, "foldersFirst", showsFoldersFirst),
+                    viewSizes: viewSizes(pane["viewSizes"]))
             }
             let split = record["paneSplit"]?.number.flatMap { $0.isFinite ? min(0.8, max(0.2, $0)) : nil }
             tabs.append(
@@ -64,12 +65,27 @@ public enum PreferencesSanitizer {
                     includeHidden: includesHidden, foldersFirst: showsFoldersFirst,
                     favoritesExpanded: bool(record, "favoritesExpanded", favoritesExpanded),
                     locationsExpanded: bool(record, "locationsExpanded", locationsExpanded), secondPane: secondPane,
-                    activePane: record["activePane"]?.number == 1 ? 1 : nil, paneSplit: split))
+                    activePane: record["activePane"]?.number == 1 ? 1 : nil, paneSplit: split,
+                    viewSizes: viewSizes(record["viewSizes"])))
             if tabs.count == AppPreferenceLimits.openTabsLimit {
                 break
             }
         }
         return tabs
+    }
+
+    /// A pane's own sizes, each brought into its range; nil when the file has none for it. One it doesn't say is the
+    /// size before any is set.
+    private static func viewSizes(_ value: JSONNode?) -> PaneViewSizes? {
+        guard let record = value?.object else { return nil }
+        return PaneViewSizes(
+            iconSizes: densitySizes(record["iconSizes"], .iconDefaults) { AppPreferenceLimits.clampIconSize($0) },
+            compactListWidths: densitySizes(record["compactListWidths"], .compactListDefaults) {
+                AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
+            },
+            previewCounts: densitySizes(record["previewCounts"], .previewCountDefaults) {
+                PreviewGrid.valid(Int($0.rounded()))
+            })
     }
 
     private static func sortBy(_ record: [String: JSONNode]) -> SortByPreference {

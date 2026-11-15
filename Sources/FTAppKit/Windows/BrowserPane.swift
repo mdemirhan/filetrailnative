@@ -114,6 +114,7 @@ final class BrowserPane {
         sortDirection = startup.sortDirection
         includeHidden = startup.includeHidden
         foldersFirst = startup.foldersFirst
+        viewSizes = startup.viewSizes
         if let history, history.paths.indices.contains(history.index) {
             navigationHistory = NavigationHistory(paths: history.paths, index: history.index)
         } else {
@@ -183,6 +184,7 @@ final class BrowserPane {
 
     /// Reads the pane's folder the first time it is shown, or again when it was sent elsewhere in the background.
     func ensureLoaded() {
+        takeOwnViewSizes()
         if loaded {
             if stale {
                 stale = false
@@ -649,6 +651,7 @@ final class BrowserPane {
     ) async -> NavigationOutcome {
         // A pane sent somewhere before it was first read takes this as its first read.
         if !loaded {
+            takeOwnViewSizes()
             firstRead = .reading
             let outcome = await attemptNavigation(
                 to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure,
@@ -924,11 +927,42 @@ final class BrowserPane {
     func refreshColumns() {
         guard let tab else { return }
         content.sizeShortcuts = tab.sizeShortcuts
+        content.setColumns(columns(from: tab.preferences))
+    }
+
+    /// The sizes the pane shows its views at (the icon size, the Compact List's column width, the Previews count):
+    /// its own. Nil until its first folder is read, when it takes the app's, which are those set last in any pane;
+    /// until then it shows the app's as they are.
+    private(set) var viewSizes: PaneViewSizes?
+
+    /// The pane's sizes are its own from here on: the app's as they are now, unless it came with some.
+    private func takeOwnViewSizes() {
+        guard viewSizes == nil, let tab else { return }
+        viewSizes = PaneViewSizes(tab.preferences)
+        refreshColumns()
+    }
+
+    /// The columns and the density from the preferences, the search's own columns while results show, at the pane's
+    /// own sizes.
+    func columns(from preferences: AppPreferences) -> ListColumnState {
+        var state: ListColumnState
         if let search = searchStore, search.showsResults {
-            content.setColumns(search.columnState(tab.preferences))
+            state = search.columnState(preferences)
         } else {
-            content.setColumns(ListColumnState(preferences: tab.preferences))
+            state = ListColumnState(preferences: preferences)
         }
+        let sizes = viewSizes ?? PaneViewSizes(preferences)
+        state.iconSizes = sizes.iconSizes
+        state.compactListWidths = sizes.compactListWidths
+        state.previewCounts = sizes.previewCounts
+        return state
+    }
+
+    /// A size was set in the pane: it is the pane's own from now on.
+    func setViewSize(_ change: (inout PaneViewSizes) -> Void) {
+        guard var sizes = viewSizes ?? tab.map({ PaneViewSizes($0.preferences) }) else { return }
+        change(&sizes)
+        viewSizes = sizes
     }
 
     /// The path bar shows the folder on screen; in search mode where the one selected result is, as Finder's does, or

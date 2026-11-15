@@ -451,7 +451,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             viewMode: snapshot.viewMode, searchViewMode: snapshot.searchViewMode, sortBy: snapshot.sortBy,
             sortDirection: snapshot.sortDirection, includeHidden: snapshot.includeHidden,
             foldersFirst: snapshot.foldersFirst, favoritesExpanded: snapshot.favoritesExpanded,
-            locationsExpanded: snapshot.locationsExpanded)
+            locationsExpanded: snapshot.locationsExpanded, viewSizes: snapshot.viewSizes)
         self.init(tab: startup, history: (snapshot.historyPaths, snapshot.historyIndex), frame: frame)
         startingPane = snapshot.focusedPane
         if let view = snapshot.view { carry(view, of: snapshot) }
@@ -510,7 +510,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             favoritePath: favoritePath == path ? favoritePath : nil, viewMode: pane.viewMode,
             searchViewMode: pane.searchViewMode, sortBy: pane.sortBy, sortDirection: pane.sortDirection,
             includeHidden: pane.includeHidden, foldersFirst: pane.foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded)
+            locationsExpanded: locationsExpanded, viewSizes: pane.viewSizes)
     }
 
     /// A pane as a saved tab keeps its second one.
@@ -519,7 +519,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return OpenPanePreference(
             path: path.isEmpty ? nil : path, viewMode: pane.viewMode, searchViewMode: pane.searchViewMode,
             sortBy: pane.sortBy, sortDirection: pane.sortDirection, includeHidden: pane.includeHidden,
-            foldersFirst: pane.foldersFirst)
+            foldersFirst: pane.foldersFirst, viewSizes: pane.viewSizes)
     }
 
     /// The tab as a new tab or a reopened one starts from it.
@@ -528,7 +528,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             path: shownFolderPath, rootPath: treeRootPath, favoritePath: favoritePath, viewMode: viewMode,
             searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
             includeHidden: includeHidden, foldersFirst: foldersFirst, favoritesExpanded: favoritesExpanded,
-            locationsExpanded: locationsExpanded)
+            locationsExpanded: locationsExpanded, viewSizes: activePane.viewSizes)
     }
 
     /// The view on screen: search results have one of their own (`shownViewMode`).
@@ -576,6 +576,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             focusedPane: pane == .tree ? .tree : .content,
             includeHidden: first.includeHidden, foldersFirst: first.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, view: liveView)
+        snapshot.viewSizes = first.viewSizes
         if panes.count > 1 {
             let second = panes[1]
             snapshot.secondPane = PaneSnapshot(
@@ -1240,21 +1241,29 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             guard let pane else { return }
             self?.saveColumnWidths(widths, searching: pane.searchStore?.showsResults == true)
         }
-        content.onCompactListWidthChanged = { [weak self] density, width in
+        // A size set here is this pane's own, and the app's from now on: what a pane with none of its own starts
+        // from. The other panes keep theirs.
+        content.onCompactListWidthChanged = { [weak self, weak pane] density, width in
+            pane?.setViewSize { $0.compactListWidths[density] = width }
             self?.updatePreferences { $0.compactListWidths[density] = width }
+            if let self { self.group?.tabChanged(self) }
         }
-        content.onIconSizeChanged = { [weak self] density, size in
+        content.onIconSizeChanged = { [weak self, weak pane] density, size in
+            pane?.setViewSize { $0.iconSizes[density] = size }
             self?.updatePreferences { $0.iconSizes[density] = size }
+            if let self { self.group?.tabChanged(self) }
         }
-        content.onPreviewCountChanged = { [weak self] density, count in
+        content.onPreviewCountChanged = { [weak self, weak pane] density, count in
+            pane?.setViewSize { $0.previewCounts[density] = count }
             self?.updatePreferences { $0.previewCounts[density] = count }
+            if let self { self.group?.tabChanged(self) }
         }
         content.setView(
             sortBy: pane.sortBy, direction: pane.sortDirection, foldersFirst: pane.foldersFirst,
             includeHidden: pane.includeHidden)
         content.setDefaultFilterMode(preferences.listFilterMatch)
         content.sizeShortcuts = sizeShortcuts
-        content.setColumns(ListColumnState(preferences: preferences))
+        content.setColumns(pane.columns(from: preferences))
         content.setMode(pane.viewMode)
     }
 

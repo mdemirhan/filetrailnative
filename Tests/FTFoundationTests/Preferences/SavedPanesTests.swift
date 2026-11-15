@@ -45,4 +45,24 @@ struct SavedPanesTests {
         #expect(read[0].paneSplit == 0.8)
         #expect(read[1].paneSplit == 0.2)
     }
+
+    // Each pane keeps the sizes it shows its views at. A file saved before that has none, and the pane starts from
+    // the app's; one it doesn't say is the size before any is set, and one out of range is brought into it.
+    @Test func readsEachPanesOwnSizes() throws {
+        let read = try tabs(
+            #"[{"path": "/a", "viewSizes": {"iconSizes": {"standard": 96, "finder": 9999}, "previewCounts": {"standard": 9}}, "secondPane": {"path": "/b", "viewSizes": {"compactListWidths": {"standard": 400, "finder": 180}}}}, {"path": "/c"}]"#
+        )
+        let first = try #require(read[0].viewSizes)
+        #expect(first.iconSizes == DensitySizes(standard: 96, finder: 128))
+        #expect(first.previewCounts.standard == 9)
+        #expect(first.previewCounts.finder == PreviewGrid.defaultCount)
+        #expect(first.compactListWidths == .compactListDefaults)
+        let second = try #require(read[0].secondPane?.viewSizes)
+        #expect(second.compactListWidths == DensitySizes(standard: 400, finder: 180))
+        #expect(second.iconSizes == .iconDefaults)
+        #expect(read[1].viewSizes == nil)
+        // Written and read again, they are what they were.
+        let data = try JSONEncoder().encode(read)
+        #expect(try JSONDecoder().decode([OpenTabPreference].self, from: data) == read)
+    }
 }

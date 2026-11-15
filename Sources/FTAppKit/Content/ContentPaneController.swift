@@ -632,7 +632,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             typedFilterMode = pin.mode
             listFilter.set(pin.query, at: ProcessInfo.processInfo.systemUptime)
         }
-        filterChanged(.kept(previousPaths: previous))
+        filterChanged(.keptWhereShown(previousPaths: previous))
     }
 
     /// The pill's ✕: the filter goes, pinned or typed.
@@ -694,6 +694,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private enum SelectionAfterFilter {
         /// Kept, without what is no longer listed; `previousPaths` is the order the items that left stood in.
         case kept(previousPaths: [String])
+        /// Kept as far as it still shows: the chip switched the mode, or the filter was unpinned, which can hide an
+        /// item selected by hand.
+        case keptWhereShown(previousPaths: [String])
         /// The name the text fits best, as typing selects; kept when the text is empty.
         case bestMatch
         /// Left as it is: whoever changed the filter sets it next.
@@ -705,8 +708,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func filterChanged(_ after: SelectionAfterFilter) {
         onFilterChanged?(filter)
         reorder()
-        // What the new filter hides leaves the selection: nothing unseen is left for Return, ⌘⌫ or a drag to act on.
-        if case .kept(let previousPaths) = after {
+        if case .kept(let previousPaths) = after { resanitizeSelection(previousPaths: previousPaths) }
+        // What the filter comes to hide leaves the selection: nothing unseen is left for Return, ⌘⌫ or a drag to
+        // act on.
+        if case .keptWhereShown(let previousPaths) = after {
             resanitizeSelection(previousPaths: previousPaths, keepingHidden: false)
         }
         pane?.reload(scrollToTop: false)
@@ -750,7 +755,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let next = filterMode.toggled
         guard !filter.isEmpty else { return next }
         typedFilterMode = next
-        filterChanged(.kept(previousPaths: entryPaths))
+        filterChanged(.keptWhereShown(previousPaths: entryPaths))
         return next
     }
 

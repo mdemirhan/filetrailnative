@@ -143,6 +143,59 @@ extension ExplorerWindowlessTests {
             #expect(!tab.canPerform(.goToOtherPaneFolder))
         }
 
+        // MARK: Each pane's sizes
+
+        // The icon size, the Compact List's column width and the Previews count are each pane's own: a size set in
+        // one pane leaves the other's as it was, is the app's from then on (what a pane with none starts from), and
+        // is kept with the pane in the saved tab, in a copy of the tab and in a workspace.
+        @Test func eachPaneKeepsItsOwnSizes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            tab.perform(.viewAsIcons)
+            right.setMode(.icons)
+            await settle()
+            #expect(left.content.columnState.iconSizes.standard == 64)
+            #expect(right.content.columnState.iconSizes.standard == 64)
+            // Each took the sizes it began with as its own when its first folder was read.
+            #expect(left.viewSizes != nil && right.viewSizes == left.viewSizes)
+
+            // The left pane is active: Make Bigger is its own.
+            tab.perform(.increaseSize)
+            tab.perform(.increaseSize)
+            #expect(left.content.columnState.iconSizes.standard == 80)
+            #expect(right.content.columnState.iconSizes.standard == 64)
+            #expect(tab.preferences.iconSizes.standard == 80)
+            // And the right one's, once it is the active one.
+            tab.focusPane(right)
+            tab.perform(.decreaseSize)
+            #expect(right.content.columnState.iconSizes.standard == 56)
+            #expect(left.content.columnState.iconSizes.standard == 80)
+            #expect(tab.preferences.iconSizes.standard == 56)
+
+            // Saved with each pane.
+            let saved = tab.openTab
+            #expect(saved.viewSizes?.iconSizes.standard == 80)
+            #expect(saved.secondPane?.viewSizes?.iconSizes.standard == 56)
+            // A copy of the tab has both; a new tab, the active pane's.
+            let snapshot = tab.snapshot
+            #expect(snapshot.viewSizes?.iconSizes.standard == 80)
+            #expect(snapshot.secondPane?.pane.viewSizes?.iconSizes.standard == 56)
+            #expect(ExplorerTabs.newTab(from: snapshot).viewSizes?.iconSizes.standard == 56)
+
+            // A tab opened from the saved one shows each pane at its size, whatever the app's is by then.
+            tab.updatePreferences { $0.iconSizes.standard = 128 }
+            #expect(left.content.columnState.iconSizes.standard == 80)
+            let group = try #require(tab.group)
+            group.addTabs([saved])
+            let copy = try #require(group.tabs.last)
+            #expect(copy !== tab)
+            #expect(await waitUntil { copy.panes.count == 2 })
+            harness.layout(copy)
+            #expect(copy.panes[0].content.columnState.iconSizes.standard == 80)
+            #expect(copy.panes[1].content.columnState.iconSizes.standard == 56)
+        }
+
         // MARK: The visits Go To counts
 
         /// Whether the Go To box counts a visit of `path`.
