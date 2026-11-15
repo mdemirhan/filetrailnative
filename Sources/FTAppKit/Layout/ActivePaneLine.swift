@@ -17,9 +17,9 @@ final class ActivePaneLine: NSView {
     }
 
     /// The line's thickness.
-    static let lineHeight = 2.0
+    static let lineHeight = 1.5
     /// How far the glow reaches into the pane under the line.
-    static let glowHeight = 14.0
+    static let glowHeight = 10.5
     /// The space between the line's ends and the pane's sides.
     static let inset = 8.0
     /// The line's accent while the keyboard is elsewhere in the window.
