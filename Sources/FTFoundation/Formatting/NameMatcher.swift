@@ -21,9 +21,20 @@ public enum NameMatchMode: String, Codable, CaseIterable, Sendable, Hashable {
 
 /// One letter of text as names are compared with what is typed: lowercased and composed.
 struct FoldedLetter: Equatable, Sendable {
-    /// The letter itself, an accented one as one value. A letter carrying a mark it has no composed form with has the
-    /// top bit set, so that no letter typed on its own is the same.
+    /// The letter itself, an accented one as one value. A letter carrying marks it has no composed form with (a
+    /// Devanagari or Thai vowel sign, a Hebrew point) has the top bit set, so that no letter typed on its own is the
+    /// same, and its marks folded into the bits above the letter's own (`markBits`), so that the letter under one
+    /// mark is not the letter under another.
     var exact: UInt32
+
+    /// The bits of `exact` that are the letter: a Unicode scalar has 21.
+    static let letterBits: UInt32 = 0x1F_FFFF
+    /// `exact`, a letter, with `mark` after it.
+    static func marked(_ exact: UInt32, _ mark: Unicode.Scalar) -> UInt32 {
+        let before = (exact >> 21) & 0x3FF
+        let folded = (before &* 0x9E5 &+ (mark.value ^ (mark.value >> 10))) & 0x3FF
+        return 0x8000_0000 | (folded << 21) | (exact & letterBits)
+    }
     /// The letter without its accent: what a plain letter typed is compared with. Only Latin, Greek and Cyrillic
     /// letters lose their accents; a letter that is not an accent on another (ø, ł, ı) is its own.
     var base: UInt32
@@ -65,7 +76,7 @@ struct FoldedText: Sendable {
             var opened = false
             for scalar in piece.unicodeScalars {
                 if opened, Self.isMark(scalar) {
-                    letters[letters.count - 1].exact |= 0x8000_0000
+                    letters[letters.count - 1].exact = FoldedLetter.marked(letters[letters.count - 1].exact, scalar)
                     continue
                 }
                 // A ligature is its letters, each spanning the one character the name stores.

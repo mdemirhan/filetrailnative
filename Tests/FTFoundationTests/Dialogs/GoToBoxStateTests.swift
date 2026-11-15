@@ -160,6 +160,47 @@ struct GoToBoxStateTests {
         #expect(choosing.doubleClick(2) == .submit("/Users/demo/src/render-farm"))
     }
 
+    // Where a folder is chosen for items, the pointer over a row chooses nothing: Return sends them where the field
+    // says, a folder still to be made too.
+    @Test func thePointerOverARowDoesntChooseWhereItemsGo() {
+        var choosing = GoToBoxState(places: Self.places, purpose: .chooseFolder, homePath: Self.home)
+        _ = choosing.setText("~/src/new")
+        choosing.setCompletions([GoToCompletion(path: "/Users/demo/src/news-archive", name: "news-archive")])
+        choosing.pointerMoved(over: 0, at: CGPoint(x: 1, y: 1))
+        choosing.pointerMoved(over: 0, at: CGPoint(x: 2, y: 1))
+        #expect(choosing.selectedRow == nil)
+        #expect(choosing.submitValue == "~/src/new")
+        choosing.offerToCreate(notice: "It will be made.")
+        choosing.pointerMoved(over: 0, at: CGPoint(x: 3, y: 1))
+        #expect(choosing.createsFolder)
+        #expect(choosing.pressReturn() == .submit("~/src/new"))
+        // In Go To the pointer still selects, as a click there goes at once.
+        var going = GoToBoxState(places: Self.places)
+        going.pointerMoved(over: 2, at: CGPoint(x: 1, y: 1))
+        going.pointerMoved(over: 2, at: CGPoint(x: 2, y: 1))
+        #expect(selected(going) == "render-farm")
+    }
+
+    // A folder shown in the field that is forgotten (it was gone when Return went to it) gives the field back what
+    // was typed: the next Return goes where the field and the selection say, not to whichever row took its place.
+    @Test func aRowShownInTheFieldThatLeavesTheListGivesBackWhatWasTyped() {
+        var state = GoToBoxState(places: Self.places, homePath: Self.home)
+        state.moveSelection(1)
+        state.moveSelection(1)
+        #expect(state.text == "~/src/render-farm/")
+        // Another place going leaves the row shown where it is.
+        state.setPlaces(Self.places.filter { $0.name != "filetrail" })
+        #expect(state.isShowingRow)
+        #expect(selected(state) == "render-farm")
+        #expect(state.submitValue == "/Users/demo/src/render-farm")
+        // Its own going lets go of it.
+        state.setPlaces(Self.places.filter { $0.name != "filetrail" && $0.name != "render-farm" })
+        #expect(!state.isShowingRow)
+        #expect(state.text.isEmpty)
+        #expect(selected(state) == "Downloads")
+        #expect(state.submitValue == "/Users/demo/Downloads")
+    }
+
     @Test func saysHowToTypeAPathWhenThereIsNothingToList() {
         var state = GoToBoxState(places: [])
         #expect(state.emptyText == "Folders you open are listed here. Start with / or ~ to type a path.")

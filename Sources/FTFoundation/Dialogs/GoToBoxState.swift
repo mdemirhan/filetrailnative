@@ -201,9 +201,18 @@ public struct GoToBoxState: Equatable, Sendable {
     }
 
     /// The places read again (a folder forgotten from the store): the list follows at once.
+    /// A row shown in the field stays the one selected while it is still listed; once it is gone (it was the folder
+    /// forgotten) the field gives back what was typed, so Return never goes to a place the field doesn't show.
     public mutating func setPlaces(_ places: [Place]) {
+        let shown = isShowingRow ? selectedRow?.path : nil
         self.places = places
         rebuild(reselect: false)
+        guard let shown else { return }
+        if let index = rows.firstIndex(where: { $0.path == shown }) {
+            selectedIndex = index
+        } else {
+            letGoOfRow()
+        }
     }
 
     /// The typed folder doesn't exist: the next submit of the same text makes it first, and `notice` says so.
@@ -325,11 +334,13 @@ public struct GoToBoxState: Equatable, Sendable {
     }
 
     /// The pointer moved over row `index`: it selects the row only when it really moved since the last time, and
-    /// not while the field shows a row, which stays the one chosen.
+    /// not while the field shows a row, which stays the one chosen. Where a folder is chosen for items it selects
+    /// nothing: only a click puts a folder in the field, so Return sends the items where the field says, never to a
+    /// row the pointer happens to be over.
     public mutating func pointerMoved(over index: Int, at point: CGPoint) {
         let last = lastPointer
         lastPointer = point
-        if let last, last != point, !isShowingRow, rows.indices.contains(index) {
+        if let last, last != point, !isShowingRow, purpose == .goTo, rows.indices.contains(index) {
             selectedIndex = index
         }
     }

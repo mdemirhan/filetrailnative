@@ -86,6 +86,28 @@ struct FilterNarrowingTests {
         #expect(!content.entries.isEmpty)
     }
 
+    // The chip can hide what is selected: it leaves the selection then, so no key acts on an item out of sight.
+    @Test func anotherModeLetsGoOfASelectionItHides() {
+        let content = pane()
+        content.setDefaultFilterMode(.fuzzy)
+        content.applyFilterKey(.type("r"))
+        content.applyFilterKey(.type("m"))
+        content.select(paths: ["/f/Readme.md"])
+        #expect(content.selectedEntries.map(\.name) == ["Readme.md"])
+        #expect(content.toggleFilterMode() == .contains)
+        #expect(!content.entries.contains { $0.name == "Readme.md" })
+        #expect(content.selection.paths.isEmpty)
+        #expect(content.selectedEntries.isEmpty)
+        // One it still shows stays selected.
+        #expect(content.toggleFilterMode() == .fuzzy)
+        content.select(paths: ["/f/Readme.md"])
+        content.applyFilterKey(.clear)
+        content.applyFilterKey(.type("e"))
+        content.select(paths: ["/f/Readme.md"])
+        _ = content.toggleFilterMode()
+        #expect(content.selection.paths == ["/f/Readme.md"])
+    }
+
     // A filter keeps the mode it started with: the default changed meanwhile (Settings, another window's chip) is for
     // the filters to come. Cleared, the next one starts from the default.
     @Test func aFilterKeepsItsModeWhenTheDefaultChanges() {

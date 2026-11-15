@@ -152,6 +152,26 @@ extension ExplorerWindowlessTests {
             #expect(tab.menuState.filterPinned)
         }
 
+        // Pinned, a filter leaves folders alone; typed again, it hides them: a folder selected meanwhile leaves the
+        // selection with the pin.
+        @Test func unpinningLetsGoOfASelectedFolderTheTypedFilterHides() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let path = try desk(harness)
+            let tab = try await harness.open(path)
+            #expect(await waitUntil { tab.content.entries.count == 4 })
+            type("scr", tab.content)
+            tab.perform(.togglePinFilter)
+            #expect(names(tab).contains("Projects"))
+            tab.content.select(paths: [path + "/Projects"])
+            #expect(tab.content.pinnedFilter != nil)
+            tab.perform(.togglePinFilter)
+            #expect(tab.content.pinnedFilter == nil)
+            #expect(tab.content.filter == "scr")
+            #expect(!names(tab).contains("Projects"))
+            #expect(tab.content.selection.paths.isEmpty)
+        }
+
         @Test func theClearButtonRemovesThePinAndShowingAnItemItHidesLetsItGo() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }

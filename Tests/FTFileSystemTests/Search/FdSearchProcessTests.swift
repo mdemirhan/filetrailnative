@@ -326,6 +326,33 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         }
     }
 
+    // fd refuses a regular expression that compiles to more than 10 MB, which a pasted path or sentence of some 500
+    // characters came to: the search failed where it should find the item, or nothing.
+    @Test(.enabled(if: hasFd))
+    func aVeryLongPlainTextSearchRunsAndFindsWhatItNames() throws {
+        let runtime = try makeRuntime()
+        defer { runtime.close() }
+        try withTemporaryDirectory { folder in
+            let parts = ["a", "b", "c"].map { String(repeating: $0 + "ffi ", count: 44) + "end" }
+            let inside = parts.joined(separator: "/")
+            try FileManager.default.createDirectory(
+                at: folder.appending(inside), withIntermediateDirectories: true)
+            #expect(inside.count > 600)
+            let (found, items) = try runToEnd(
+                runtime,
+                SearchRequest(rootPath: folder.path, query: inside, patternMode: .text, matchScope: .path))
+            #expect(found.status == .complete)
+            #expect(found.error == nil)
+            #expect(items.map(\.name) == [parts[2]])
+            // The same text with another end names nothing: what fd hands over for its start is judged whole.
+            let (none, nothing) = try runToEnd(
+                runtime,
+                SearchRequest(rootPath: folder.path, query: inside + "x", patternMode: .text, matchScope: .path))
+            #expect(none.status == .complete)
+            #expect(nothing.isEmpty)
+        }
+    }
+
     @Test(.enabled(if: hasFd))
     func quittingWhileASearchRunsLeavesNoFdBehind() async throws {
         let runtime = try makeRuntime()

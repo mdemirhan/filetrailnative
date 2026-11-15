@@ -225,7 +225,7 @@ public enum Places {
 
     // /[\s\-_.()[\]]/u
     private static func isWordBoundary(_ letter: FoldedLetter) -> Bool {
-        let value = letter.exact & 0x7FFF_FFFF
+        let value = letter.exact & FoldedLetter.letterBits
         guard value <= 0xFFFF else { return false }
         let unit = UInt16(value)
         return JSString.isWhitespace(unit) || [0x2D, 0x5F, 0x2E, 0x28, 0x29, 0x5B, 0x5D].contains(unit)

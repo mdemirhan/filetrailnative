@@ -10,12 +10,16 @@ public enum PlainTextPattern {
     /// accented and full-width forms, followed by any marks a name keeps apart from it; each accented letter as
     /// itself. Either is found however a name spells it: composed, decomposed, partly composed or with its marks in
     /// another order. Where the letters typed are those of a ligature ("fi"), the ligature is found in their place too.
+    ///
+    /// Only the first `patternLimit` characters of a long text go into the pattern: fd refuses a regular expression
+    /// that compiles to more than 10 MB, which some 500 characters come to, and a name that holds the whole text
+    /// holds its start, so nothing the matcher would keep is missed.
     public static func regex(for text: String) -> String {
         var tokens: [Token] = []
-        for character in text {
+        for character in text.prefix(patternLimit) {
             for letter in FoldedText(String(character)).letters {
-                // A letter typed with a mark it has no composed form with finds that letter under any such mark, so it
-                // is looked for as the plain letter is, and the matcher tells the names apart.
+                // A letter typed with a mark it has no composed form with is looked for as the plain letter is: fd
+                // finds the letter under any marks, and the matcher keeps the names that have the same ones.
                 if letter.exact == letter.base || letter.exact == 0x3C2 || letter.exact & 0x8000_0000 != 0 {
                     tokens.append(.plain(letter.base))
                 } else if let scalar = Unicode.Scalar(letter.exact) {
@@ -39,6 +43,9 @@ public enum PlainTextPattern {
         }
         return pattern
     }
+
+    /// The characters of a text the pattern is made of.
+    static let patternLimit = 64
 
     /// One character typed, as the pattern takes it.
     private enum Token {

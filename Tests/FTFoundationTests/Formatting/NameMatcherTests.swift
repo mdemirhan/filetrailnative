@@ -268,4 +268,25 @@ struct FoldedNameCacheTests {
         #expect(cache.count == 1)
         #expect(FoldedNameCache().limit == FoldedNameCache.standardLimit)
     }
+
+    // In scripts whose marks don't compose with their letter (a Devanagari or Thai vowel sign, a Hebrew point, an
+    // Arabic vowel, a caron on "x"), a letter typed with a mark finds it with that mark only, and the letter typed
+    // alone finds it under any.
+    @Test(arguments: [
+        ("\u{915}\u{93F}", "\u{915}\u{941}"), ("\u{E01}\u{E34}", "\u{E01}\u{E38}"),
+        ("\u{5D1}\u{5B4}", "\u{5D1}\u{5B8}"), ("\u{628}\u{64E}", "\u{628}\u{650}"), ("x\u{30C}", "x\u{302}"),
+    ])
+    func aLetterTypedWithAMarkThatDoesntComposeFindsOnlyThatMark(typed: String, other: String) throws {
+        for mode in NameMatchMode.allCases {
+            let matcher = try #require(NameMatcher(typed, mode: mode))
+            #expect(matcher.matches("a \(typed).txt"), "\(mode)")
+            #expect(!matcher.matches("a \(other).txt"), "\(mode)")
+            let plain = try #require(NameMatcher(String(typed.unicodeScalars.prefix(1)), mode: mode))
+            #expect(plain.matches("a \(typed).txt") && plain.matches("a \(other).txt"), "\(mode)")
+        }
+        // Two marks are not one of them, and their order as the name stores them doesn't matter.
+        let two = try #require(NameMatcher("x\u{30C}\u{323}", mode: .contains))
+        #expect(two.matches("x\u{323}\u{30C}"))
+        #expect(!two.matches("x\u{30C}"))
+    }
 }

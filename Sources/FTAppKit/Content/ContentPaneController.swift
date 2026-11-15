@@ -705,7 +705,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func filterChanged(_ after: SelectionAfterFilter) {
         onFilterChanged?(filter)
         reorder()
-        if case .kept(let previousPaths) = after { resanitizeSelection(previousPaths: previousPaths) }
+        // What the new filter hides leaves the selection: nothing unseen is left for Return, ⌘⌫ or a drag to act on.
+        if case .kept(let previousPaths) = after {
+            resanitizeSelection(previousPaths: previousPaths, keepingHidden: false)
+        }
         pane?.reload(scrollToTop: false)
         if case .bestMatch = after, !filter.isEmpty {
             let match = ListFilter.selection(in: entries, query: filter, mode: filterMode, cache: foldedNames)
@@ -900,10 +903,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// Whenever the visible entries change (a folder, a sort, a filter), every selected path that is no longer in the
     /// list is dropped, and a selection whose items all left keeps their place for the arrow keys. A renamed, pasted or
-    /// new item outside the filter is selected on purpose, and is kept.
-    private func resanitizeSelection(previousPaths: [String]) {
+    /// new item outside the filter is selected on purpose, and is kept (`keepingHidden`); one the filter itself came
+    /// to hide, by another mode or by being unpinned, is not.
+    private func resanitizeSelection(previousPaths: [String], keepingHidden: Bool = true) {
         guard !selection.isEmpty || selection.gapIndex != nil else { return }
-        if let lead = selection.leadPath, position(of: lead) == nil, rowsByPath[lead] != nil { return }
+        if keepingHidden, let lead = selection.leadPath, position(of: lead) == nil, rowsByPath[lead] != nil { return }
         setSelection(selection.sanitized(entryPaths: entryPaths, previousPaths: previousPaths), notify: true)
     }
 
