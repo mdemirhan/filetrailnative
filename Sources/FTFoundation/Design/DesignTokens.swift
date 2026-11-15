@@ -42,6 +42,10 @@ public enum DesignTokens {
     public static let scrollbarWidth = 8.0
     public static let paneHeaderHeight = 30.0
     public static let breadcrumbRowHeight = 33.0
+    /// Where the first thing drawn in a pane starts, below its top: clear of the 1.5 pt line along the active pane's
+    /// top and of the bright part of its glow. Compact List's first row, the icon grid's first row and the controls of
+    /// the search and Trash bars start here; the List view's header text, centered in its 28 pt, lands about here.
+    public static let paneContentTop = 10.0
     public static let settingsSidebarWidth = 196.0
     public static let settingsPopupMinWidth = 120.0
 

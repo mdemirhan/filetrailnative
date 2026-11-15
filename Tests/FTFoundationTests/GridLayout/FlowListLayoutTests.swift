@@ -42,12 +42,12 @@ struct FlowListLayoutTests {
         #expect(Self.reveal(0, 120, maxScrollLeft: 1400) == 1400)
     }
 
-    // Items fill a column before the next, inside 8 of padding at the top, 10 at the sides and 4 at the bottom; an
+    // Items fill a column before the next, inside 10 of padding at the top, 10 at the sides and 4 at the bottom; an
     // item hugs its icon and name.
     @Test func itemsFillAColumnThenTheNext() {
         let style = FlowItemStyle.make()
-        #expect(Self.layout.cellFrame(index: 0, rowsPerColumn: 10) == GridRect(x: 10, y: 8, width: 292, height: 28))
-        #expect(Self.layout.cellFrame(index: 13, rowsPerColumn: 10) == GridRect(x: 320, y: 92, width: 292, height: 28))
+        #expect(Self.layout.cellFrame(index: 0, rowsPerColumn: 10) == GridRect(x: 10, y: 10, width: 292, height: 28))
+        #expect(Self.layout.cellFrame(index: 13, rowsPerColumn: 10) == GridRect(x: 320, y: 94, width: 292, height: 28))
         #expect(Self.layout.contentWidth(itemCount: 21, rowsPerColumn: 10) == 20 + 3 * 292 + 2 * 18)
         #expect(style.chromeWidth(layout: Self.layout) == 2 * 12 + 18 + 8)
         #expect(Self.layout.itemWidth(nameWidth: 40, style: style) == 90)

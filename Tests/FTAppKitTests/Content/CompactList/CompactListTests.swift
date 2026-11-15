@@ -27,7 +27,7 @@ extension ExplorerWindowlessTests {
                 let column = index / rows
                 let row = index % rows
                 #expect(Double(item.view.frame.minX) == 10 + Double(column) * 310)
-                #expect(Double(item.view.frame.minY) == 8 + Double(row) * 28)
+                #expect(Double(item.view.frame.minY) == 10 + Double(row) * 28)
                 #expect(item.view.frame.height == 28)
                 let entry = tab.content.entries[index]
                 let nameWidth = SplitName.width(name, extension: entry.fileExtension, marks: [], font: compact.nameFont)

@@ -36,8 +36,11 @@ final class TrashHeaderView: NSView {
 
     override var isFlipped: Bool { true }
 
-    /// The bar, as tall as Finder's, then the 1 pt edge.
-    static var height: Double { layout.scopeBarMinHeight + layout.headerBorderWidth }
+    /// The bar, as the search bar is built: Empty starts at the pane's content top, clear of the active pane's line,
+    /// with the bar's padding under it; then the 1 pt edge.
+    static var height: Double {
+        DesignTokens.paneContentTop + layout.smallButtonHeight + layout.scopeBarPaddingBottom + layout.headerBorderWidth
+    }
 
     override func mouseDown(with event: NSEvent) { onFocusList() }
 
@@ -56,7 +59,7 @@ final class TrashHeaderView: NSView {
         // Over the list's top: opaque, but for its 1 pt edge.
         backdrop.frame = NSRect(
             x: 0, y: 0, width: bounds.width, height: max(0, bounds.height - layout.headerBorderWidth))
-        let centerY = layout.scopeBarMinHeight / 2
+        let centerY = DesignTokens.paneContentTop + layout.smallButtonHeight / 2
         let buttonWidth = emptyButton.preferredWidth
         emptyButton.frame = NSRect(
             x: bounds.width - layout.scopeBarPaddingHorizontal - buttonWidth, y: centerY - layout.smallButtonHeight / 2,

@@ -50,7 +50,7 @@ import Testing
     static func flowList(_ density: Density) -> Table {
         [
             "rowHeight": density == .finder ? 24 : 28, "rowGap": 0, "itemWidth": density == .finder ? 252 : 292,
-            "columnGap": 18, "paddingTop": 8, "paddingBottom": 4, "paddingInline": 10,
+            "columnGap": 18, "paddingTop": 10, "paddingBottom": 4, "paddingInline": 10,
             "fontSize": density == .finder ? 13 : 14, "iconSize": density == .finder ? 16 : 18, "iconGap": 8,
         ]
     }

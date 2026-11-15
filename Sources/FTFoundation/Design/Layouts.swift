@@ -64,7 +64,7 @@ public struct IconGridLayout: Equatable, Sendable {
     static func make(density: Density) -> IconGridLayout {
         IconGridLayout(
             iconSize: 64, iconBoxSize: 72, cellMinWidth: 104, rowHeight: 116, itemPaddingTop: 5,
-            labelGap: 4, labelWidth: 102, paddingTop: 10, paddingBottom: 10, paddingInline: 16,
+            labelGap: 4, labelWidth: 102, paddingTop: DesignTokens.paneContentTop, paddingBottom: 10, paddingInline: 16,
             labelFontSize: density.isFinder ? 12 : 13, labelLineHeight: density.isFinder ? 15 : 16,
             labelPaddingVertical: 1, labelPaddingHorizontal: 4, labelRadius: 4, clipboardBadgeSize: 18,
             clipboardBadgeOffset: -4)
@@ -181,7 +181,7 @@ public struct FlowListLayout: Equatable, Sendable {
     static func make(density: Density) -> FlowListLayout {
         FlowListLayout(
             rowHeight: density.isFinder ? 24 : 28, rowGap: 0, itemWidth: density.isFinder ? 252 : 292,
-            columnGap: 18, paddingTop: 8, paddingBottom: 4, paddingInline: 10,
+            columnGap: 18, paddingTop: DesignTokens.paneContentTop, paddingBottom: 4, paddingInline: 10,
             fontSize: density.isFinder ? 13 : 14, iconSize: density.isFinder ? 16 : 18, iconGap: 8)
     }
 }

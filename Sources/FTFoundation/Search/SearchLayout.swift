@@ -6,10 +6,11 @@ import Foundation
 public struct SearchLayout: Equatable, Sendable {
     // MARK: Results bar
 
-    /// The scope bar: padding 6 12, at least 36 tall, 6 between its parts.
-    public var scopeBarPaddingVertical: Double
+    /// The scope bar, and the Trash bar built like it: its tallest control starts at the pane's content top
+    /// (`DesignTokens.paneContentTop`), clear of the active pane's line and its glow, with 6 under it, 12 at the sides
+    /// and 6 between its parts.
+    public var scopeBarPaddingBottom: Double
     public var scopeBarPaddingHorizontal: Double
-    public var scopeBarMinHeight: Double
     public var scopeBarGap: Double
     /// The gap after the scope label.
     public var scopeLabelMarginTrailing: Double
@@ -70,7 +71,7 @@ public struct SearchLayout: Equatable, Sendable {
     public var tabMagnifierSize: Double
 
     public static let standard = SearchLayout(
-        scopeBarPaddingVertical: 6, scopeBarPaddingHorizontal: 12, scopeBarMinHeight: 36, scopeBarGap: 6,
+        scopeBarPaddingBottom: 6, scopeBarPaddingHorizontal: 12, scopeBarGap: 6,
         scopeLabelMarginTrailing: 2, headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
         segmentPaddingHorizontal: 12, segmentHeight: 24, segmentMaxWidth: 220,
         filterWidth: 280, filterMinWidth: 150, fieldHeight: 24,

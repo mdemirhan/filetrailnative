@@ -84,11 +84,12 @@ final class SearchHeaderView: NSView {
 
     override var isFlipped: Bool { true }
 
-    /// The bar: its scope track (the segments and the track's padding) and the bar's padding, at least its minimum.
-    static var barHeight: Double {
-        let trackHeight = layout.segmentHeight + 2 * layout.segmentedTrackPadding
-        return max(layout.scopeBarMinHeight, trackHeight + 2 * layout.scopeBarPaddingVertical)
-    }
+    /// The scope track, the bar's tallest control: the segments and the track's padding.
+    private static var trackHeight: Double { layout.segmentHeight + 2 * layout.segmentedTrackPadding }
+
+    /// The bar: the pane's content top, where the track starts, clear of the active pane's line; the track; the bar's
+    /// padding under it.
+    static var barHeight: Double { DesignTokens.paneContentTop + trackHeight + layout.scopeBarPaddingBottom }
 
     /// A press on the header itself gives the pane the keyboard.
     override func mouseDown(with event: NSEvent) { onFocusResults() }
@@ -194,7 +195,9 @@ final class SearchHeaderView: NSView {
             x: 0, y: 0, width: bounds.width, height: max(0, bounds.height - layout.headerBorderWidth))
         bar.frame = NSRect(x: 0, y: 0, width: bounds.width, height: barHeight)
         let gap = layout.scopeBarGap
-        let centerY = barHeight / 2
+        // The bar's parts are centered on the track, which starts at the pane's content top.
+        let trackHeight = Self.trackHeight
+        let centerY = DesignTokens.paneContentTop + trackHeight / 2
         var x = layout.scopeBarPaddingHorizontal
         let labelSize = label.intrinsicContentSize
         let labelWidth = Double((label.stringValue as NSString).size(withAttributes: [.font: label.font as Any]).width)
@@ -222,7 +225,6 @@ final class SearchHeaderView: NSView {
         let filterWidth = max(layout.filterMinWidth, min(layout.filterWidth, room))
         filter.frame = NSRect(
             x: right - filterWidth, y: centerY - layout.fieldHeight / 2, width: filterWidth, height: layout.fieldHeight)
-        let trackHeight = layout.segmentHeight + 2 * layout.segmentedTrackPadding
         track.frame = NSRect(
             x: x, y: centerY - trackHeight / 2, width: min(trackWidth, max(0, filter.frame.minX - gap - x)),
             height: trackHeight)
