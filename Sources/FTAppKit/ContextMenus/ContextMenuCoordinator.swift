@@ -407,8 +407,12 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             await openEntry(entry)
             return
         }
-        let archives = paths.filter { ArchiveNames.isArchive(NodePath.basename($0)) }
-        for path in paths where !archives.contains(path) { await openExternally(path) }
+        // A folder or a package named as an archive is isn't one: the system opens it with the rest.
+        let folders = Set(subject.entries.filter(OpenItems.isFolderNamedAsArchive).map(\.path))
+        let archives = paths.filter { ArchiveNames.isArchive(NodePath.basename($0)) && !folders.contains($0) }
+        for path in paths where !archives.contains(path) {
+            if folders.contains(path) { await handToSystem(path) } else { await openExternally(path) }
+        }
         tab.extractToOpen(archives)
     }
 
@@ -424,9 +428,17 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             if let target { await openExternally(target) }
         case .openExternally(let path):
             await openExternally(path)
+        case .handToSystem(let path):
+            await handToSystem(path)
         case .extract(let paths):
             tab.extractToOpen(paths)
         }
+    }
+
+    /// The system opens it, whatever its name. A failure is only logged.
+    private func handToSystem(_ path: String) async {
+        tab.onFolderUsed?()
+        ActionNoticeText.logOpenFailure(await SystemActions.openPath(path, opener: opener))
     }
 
     /// A failure is only logged.

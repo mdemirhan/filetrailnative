@@ -17,6 +17,9 @@ public enum OpenItems {
         case resolveThenOpen(String)
         /// An app or package, a file, or anything else: the system opens it.
         case openExternally(String)
+        /// A folder or a package named as an archive is ("backup.tar", "site.zip"): the system opens it, as it opens
+        /// any other; it isn't one to take apart.
+        case handToSystem(String)
         /// Archives: File Trail takes them apart, all in one run, rather than handing them to Archive Utility.
         case extract([String])
     }
@@ -55,7 +58,9 @@ public enum OpenItems {
         if items.count > limit { return .tooMany(action: .open, selected: items.count, limit: limit) }
         if items.count == 1 { return .steps([step(for: items[0])]) }
         let archives = items.filter(isArchive).map(\.path)
-        let others: [Step] = items.filter { !isArchive($0) }.map { .openExternally($0.path) }
+        let others: [Step] = items.filter { !isArchive($0) }.map {
+            isFolderNamedAsArchive($0) ? .handToSystem($0.path) : .openExternally($0.path)
+        }
         return .steps(others + (archives.isEmpty ? [] : [.extract(archives)]))
     }
 
@@ -67,7 +72,16 @@ public enum OpenItems {
         case .directory: return .navigate(item.path)
         case .symlinkDirectory: return .resolveThenNavigate(item.path)
         case .symlinkFile: return .resolveThenOpen(item.path)
-        case .bundle, .file, .other: return .openExternally(item.path)
+        case .bundle: return isFolderNamedAsArchive(item) ? .handToSystem(item.path) : .openExternally(item.path)
+        case .file, .other: return .openExternally(item.path)
+        }
+    }
+
+    /// A folder, a link to one or a package whose name ends as an archive's does.
+    public static func isFolderNamedAsArchive(_ item: CommandEntry) -> Bool {
+        switch item.kind {
+        case .directory, .symlinkDirectory, .bundle: ArchiveNames.isArchive(NodePath.basename(item.path))
+        case .file, .symlinkFile, .other: false
         }
     }
 

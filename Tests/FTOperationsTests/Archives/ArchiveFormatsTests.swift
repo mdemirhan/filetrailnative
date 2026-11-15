@@ -80,6 +80,83 @@ import Testing
         #expect(try Self.text(made) == "notes")
     }
 
+    /// A file that holds nothing, compressed on its own, comes out as the empty file it is: the reader finds no data
+    /// to know it by, which is not damage.
+    @Test(arguments: [("empty.txt.gz", ["-cz"]), ("empty.txt.bz2", ["-cj"]), ("empty.txt.xz", ["-cJ"])])
+    func anEmptyCompressedFileComesOutEmpty(name: String, options: [String]) throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        try Data().write(to: URL(fileURLWithPath: "\(folders.source)/empty.txt"))
+        let archive = try folders.archive(name, ["--format", "raw"] + options, of: ["empty.txt"])
+        let made = try Self.extract(archive, into: folders.out)
+        #expect(made == "\(folders.out)/empty.txt")
+        #expect(try Data(contentsOf: URL(fileURLWithPath: made)).isEmpty)
+    }
+
+    /// Data that isn't what the archive says it holds (one byte of a stored file changed, so its checksum no longer
+    /// matches) fails the archive, and nothing of it is left: the reader only warns of it, and the file came out as
+    /// if it were whole.
+    @Test func aSevenZipWhoseDataIsDamagedFails() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let noise = ArchivePipe.noise(200_000)
+        try noise.write(to: URL(fileURLWithPath: "\(folders.source)/noise.bin"))
+        let archive = try folders.archive(
+            "noise.7z", ["-c", "--format", "7zip", "--options", "compression=store"], of: ["noise.bin"])
+        // Whole, it comes out as it went in.
+        let whole = try Self.extract(archive, into: folders.out)
+        #expect(try Data(contentsOf: URL(fileURLWithPath: whole)) == noise)
+        try FileManager.default.removeItem(atPath: whole)
+
+        var bytes = try Data(contentsOf: URL(fileURLWithPath: archive))
+        // Stored, the file's bytes follow the 32-byte header as they are.
+        bytes[1000] ^= 0xFF
+        try bytes.write(to: URL(fileURLWithPath: archive))
+        #expect(throws: ArchiveError.self) { try Self.extract(archive, into: folders.out) }
+        #expect(try FileManager.default.contentsOfDirectory(atPath: folders.out).isEmpty)
+    }
+
+    /// An archive of a few kilobytes can say a file is a hole of any length. One longer than the disk has room for is
+    /// refused, and leaves nothing.
+    @Test func aHoleLongerThanTheDiskHasRoomForIsRefused() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        // Only where the disk keeps holes: elsewhere making the file to archive would write it all.
+        guard pathconf(folders.root, _PC_MIN_HOLE_SIZE) > 0 else { return }
+        let sparse = "\(folders.source)/hole.bin"
+        let file = open(sparse, O_WRONLY | O_CREAT, 0o644)
+        try #require(file >= 0)
+        let stretched = ftruncate(file, 1 << 50)
+        close(file)
+        try #require(stretched == 0)
+        let archive = try folders.archive("hole.tar", ["-c"], of: ["hole.bin"])
+        let size = try #require(try FileManager.default.attributesOfItem(atPath: archive)[.size] as? Int)
+        try #require(size < 1 << 20)
+        #expect(throws: (any Error).self) { try Self.extract(archive, into: folders.out) }
+        #expect(try FileManager.default.contentsOfDirectory(atPath: folders.out).isEmpty)
+    }
+
+    /// A file with a hole the disk has room for comes out with it.
+    @Test func aFileWithAHoleComesOutAsItWas() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        guard pathconf(folders.root, _PC_MIN_HOLE_SIZE) > 0 else { return }
+        let sparse = "\(folders.source)/hole.bin"
+        let file = open(sparse, O_WRONLY | O_CREAT, 0o644)
+        try #require(file >= 0)
+        let end = Data("end".utf8)
+        let written = end.withUnsafeBytes { pwrite(file, $0.baseAddress, $0.count, 200_000_000) }
+        close(file)
+        try #require(written == end.count)
+        let archive = try folders.archive("hole.tar", ["-c"], of: ["hole.bin"])
+        let made = try Self.extract(archive, into: folders.out)
+        let handle = try FileHandle(forReadingFrom: URL(fileURLWithPath: made))
+        defer { try? handle.close() }
+        #expect(try handle.seekToEnd() == 200_000_003)
+        try handle.seek(toOffset: 200_000_000)
+        #expect(try handle.readToEnd() == end)
+    }
+
     /// RAR can't be written by libarchive: two files stored in a folder "notes", as a RAR 5 and a RAR 4 archive
     /// hold them, written byte by byte from the format's description, are read.
     @Test(arguments: [

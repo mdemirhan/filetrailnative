@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/xattr.h>
@@ -549,6 +550,35 @@ static int dress_item(struct extraction *extraction, int fd, struct archive_entr
     return quarantine_item(extraction, fd);
 }
 
+/// A hole longer than this is looked at before it is made.
+static const off_t long_hole = 64 << 20;
+
+/// Leaves the open file `fd` empty from `from` up to `to`, where the archive says the item holds nothing (a sparse
+/// file). An archive of a few kilobytes can name a hole of any size, so a long one is refused (ENOSPC) when the disk
+/// hasn't that much room; and on a disk that keeps no holes, where the system would write the zeros itself in one
+/// call nothing can stop, they are written here, a piece at a time with a look at the stop between. 0, ECANCELED, or
+/// an errno.
+static int leave_hole(struct extraction *extraction, int fd, off_t from, off_t to) {
+    if (to - from > long_hole) {
+        struct statfs disk;
+        if (fstatfs(fd, &disk) == 0 && (uint64_t)(to - from) > (uint64_t)disk.f_bavail * (uint64_t)disk.f_bsize) {
+            return ENOSPC;
+        }
+        if (fpathconf(fd, _PC_MIN_HOLE_SIZE) <= 0) {
+            static const char zeros[1 << 20];
+            for (off_t at = from; at < to;) {
+                if (is_stopped(extraction->control)) return ECANCELED;
+                size_t piece = (size_t)(to - at < (off_t)sizeof(zeros) ? to - at : (off_t)sizeof(zeros));
+                int result = write_all(fd, zeros, piece, at);
+                if (result != 0) return result;
+                at += (off_t)piece;
+            }
+            return 0;
+        }
+    }
+    return ftruncate(fd, to) == 0 ? 0 : errno;
+}
+
 /// Makes the file `leaf` in the open folder `parent` and writes the item's data to it.
 static int make_file(
     struct extraction *extraction, struct archive *reader, struct archive_entry *entry, int parent, const char *leaf) {
@@ -566,15 +596,19 @@ static int make_file(
             result = ECANCELED;
             break;
         }
-        result = write_all(fd, block, length, (off_t)offset);
+        // A hole before this block: nothing is written there.
+        if ((off_t)offset > end) result = leave_hole(extraction, fd, end, (off_t)offset);
+        if (result == 0) result = write_all(fd, block, length, (off_t)offset);
         if (result != 0) break;
         if ((off_t)offset + (off_t)length > end) end = (off_t)offset + (off_t)length;
         if (extraction->control != NULL) atomic_store(&extraction->control->done, archive_filter_bytes(reader, -1));
     }
-    if (result == 0 && status != ARCHIVE_EOF && status < ARCHIVE_WARN) result = reader_error(reader);
-    // A file that ends in a hole: nothing was written there.
+    // Anything but the data's end is a failure, a warning too: the reader gives one for data that isn't what the
+    // archive says it holds (a checksum that doesn't match), and the file would be kept as if it were whole.
+    if (result == 0 && status != ARCHIVE_EOF) result = reader_error(reader);
+    // A file that ends in a hole.
     if (result == 0 && archive_entry_size_is_set(entry) && archive_entry_size(entry) > end) {
-        if (ftruncate(fd, (off_t)archive_entry_size(entry)) != 0) result = errno;
+        result = leave_hole(extraction, fd, end, (off_t)archive_entry_size(entry));
     }
     if (result == 0) result = dress_item(extraction, fd, entry);
     if (result == 0) {
@@ -792,13 +826,22 @@ int ft_archive_extract(
         result = quarantine_item(&extraction, extraction.root);
     }
 
+    int empty_file = 0;
     // When the destination refused the quarantine, nothing is read.
     struct archive *reader = result == 0 ? new_reader(raw_name != NULL) : NULL;
     if (result == 0) {
         if (reader == NULL) {
             result = ENOMEM;
         } else if (archive_read_open_fd(reader, fd, 1 << 16) != ARCHIVE_OK) {
-            result = reader_error(reader);
+            // A compressed file that holds an empty file is read to its end and gives no data for the reader to
+            // know as anything (EFTYPE is what libarchive says then): it comes out as the empty file it is.
+            if (raw_name != NULL && archive_errno(reader) == EFTYPE
+                && archive_filter_code(reader, 0) != ARCHIVE_FILTER_NONE && archive_filter_bytes(reader, 0) == 0
+                && archive_filter_bytes(reader, -1) > 0) {
+                empty_file = 1;
+            } else {
+                result = reader_error(reader);
+            }
         } else if (raw_name != NULL && archive_filter_code(reader, 0) == ARCHIVE_FILTER_NONE) {
             // A file that isn't compressed at all: "raw" would copy it as it is.
             result = FT_ARCHIVE_UNREADABLE;
@@ -807,7 +850,24 @@ int ft_archive_extract(
 
     char name[PATH_MAX];
     int64_t count_made = 0;
-    while (result == 0) {
+    if (result == 0 && empty_file) {
+        result = FT_ARCHIVE_UNREADABLE;
+        if (safe_name(raw_name, name, sizeof(name)) == NAME_USED && strchr(name, '/') == NULL) {
+            int made = openat(extraction.root, name, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0644);
+            if (made < 0) {
+                result = errno;
+            } else {
+                result = quarantine_item(&extraction, made);
+                if (close(made) != 0 && result == 0) result = errno;
+                if (result == 0) {
+                    count_made = 1;
+                    COUNT(control, items, 1);
+                    if (control != NULL) atomic_store(&control->done, (int64_t)stats.st_size);
+                }
+            }
+        }
+    }
+    while (result == 0 && !empty_file) {
         struct archive_entry *entry;
         int status = archive_read_next_header(reader, &entry);
         if (status == ARCHIVE_EOF) break;

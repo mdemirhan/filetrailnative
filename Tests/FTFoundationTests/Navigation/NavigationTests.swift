@@ -122,6 +122,15 @@ struct OpenItemsTests {
                 == .steps([.openExternally("/f/a.txt"), .extract(["/f/Photos.zip", "/f/src.tar.gz"])]))
         let folderNamedLikeOne = CommandEntry(path: "/f/Old.zip", kind: .directory)
         #expect(OpenItems.openPlan([folderNamedLikeOne], limit: 5) == .steps([.navigate("/f/Old.zip")]))
+        // Among several items it is handed to the system as a folder is, not taken apart; so is a package.
+        let package = CommandEntry(path: "/f/Site.zip", kind: .bundle)
+        #expect(
+            OpenItems.openPlan([folderNamedLikeOne, file, zip, package], limit: 5)
+                == .steps([
+                    .handToSystem("/f/Old.zip"), .openExternally("/f/a.txt"), .handToSystem("/f/Site.zip"),
+                    .extract(["/f/Photos.zip"]),
+                ]))
+        #expect(OpenItems.openPlan([package], limit: 5) == .steps([.handToSystem("/f/Site.zip")]))
         let link = CommandEntry(path: "/f/link.zip", kind: .symlinkFile)
         #expect(OpenItems.openPlan([link], limit: 5) == .steps([.resolveThenOpen("/f/link.zip")]))
         // A document that is a zip inside opens in its app.

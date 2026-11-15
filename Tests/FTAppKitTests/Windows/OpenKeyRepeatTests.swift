@@ -47,13 +47,24 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { (try? names(window))?.contains("Box") == true })
             #expect(await waitUntil { tab.writeActions?.session.activeOperationId == nil })
 
-            // The key is still down: its repeats open the archive again, which extracts nothing more.
-            window.select(["Box.zip"])
+            // The key is still down, and what came out is selected now: its repeats don't open that.
+            #expect(await waitUntil { tab.content.selectedEntries.map(\.name) == ["Box"] })
+            let shown = tab.shownFolderPath
             tab.currentEvent = { returnKey(repeating: true) }
             for _ in 0..<3 { tab.openSelection(nil) }
+            // Nor do they open the archive again, which would extract it once more.
+            window.select(["Box.zip"])
+            for _ in 0..<3 { tab.openSelection(nil) }
             try? await Task.sleep(for: .milliseconds(500))
+            #expect(tab.shownFolderPath == shown)
             #expect(tab.writeActions?.session.activeOperationId == nil)
             #expect(try names(window).filter { $0.hasPrefix("Box") } == ["Box", "Box.zip"])
+
+            // Let go and pressed again, the key opens the folder that came out.
+            window.select(["Box"])
+            tab.currentEvent = { returnKey(repeating: false) }
+            tab.openSelection(nil)
+            #expect(await waitUntil { tab.shownFolderPath == shown + "/Box" })
             await window.close()
         }
 
@@ -112,6 +123,8 @@ extension ExplorerWindowlessTests {
 
         // macOS is given the file on every repeat, as before: an open document or app comes to the front.
         @Test func aHeldKeyOpensAFileAsBefore() async throws {
+            // No key held since an earlier test's took an archive apart.
+            MainWindowController.heldKeyTookApart = false
             let harness = try ExplorerHarness.windowless()
             try "x".write(to: harness.folder.appending("notes.txt"), atomically: true, encoding: .utf8)
             let tab = try await harness.open()
@@ -127,6 +140,8 @@ extension ExplorerWindowlessTests {
         }
 
         @Test func aHeldKeyOpensAFolderAsBefore() async throws {
+            // No key held since an earlier test's took an archive apart.
+            MainWindowController.heldKeyTookApart = false
             let window = try await WritingWindow.open()
             let tab = window.tab
             window.select(["Alpha"])

@@ -894,10 +894,20 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             // A held key (Return, ⌘↓, ⌘O) opens folders and files again on every repeat, but extracts an archive and
             // mounts a disk image once per press: each repeat would take the archive apart again beside what the
             // first one gave, or open the image's disk in another window or tab.
+            // What the press extracted or mounted is selected once it is there, in this tab or a new one: the
+            // repeats that follow would open that, so they open nothing until the key is let go.
             let firstPress = !Self.isKeyRepeat(currentEvent())
+            if firstPress {
+                Self.heldKeyTookApart = false
+            } else if Self.heldKeyTookApart {
+                return
+            }
+            func takesApart(_ path: String) -> Bool {
+                ArchiveNames.isArchive(NodePath.basename(path)) || DiskImageNames.isDiskImagePath(path)
+            }
             func opensOnThisPress(_ path: String) -> Bool {
-                firstPress
-                    || !(ArchiveNames.isArchive(NodePath.basename(path)) || DiskImageNames.isDiskImagePath(path))
+                if firstPress, takesApart(path) { Self.heldKeyTookApart = true }
+                return firstPress || !takesApart(path)
             }
             for step in steps {
                 switch step {
@@ -921,19 +931,32 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                         if ArchiveNames.isArchive(NodePath.basename(target)),
                             ArchiveNames.isArchive(NodePath.basename(path)), !DiskImageNames.isDiskImagePath(target)
                         {
-                            if firstPress { extractToOpen([path]) }
+                            if firstPress {
+                                Self.heldKeyTookApart = true
+                                extractToOpen([path])
+                            }
                         } else if opensOnThisPress(target) {
                             openExternally(target)
                         }
                     }
                 case .openExternally(let path):
                     if opensOnThisPress(path) { openExternally(path) }
+                case .handToSystem(let path):
+                    onFolderUsed?()
+                    openFile(URL(fileURLWithPath: path))
                 case .extract(let paths):
-                    if firstPress { extractToOpen(paths) }
+                    if firstPress {
+                        Self.heldKeyTookApart = true
+                        extractToOpen(paths)
+                    }
                 }
             }
         }
     }
+
+    /// The key now held down (Return, ⌘↓, ⌘O) extracted an archive or mounted a disk image when it was pressed. The
+    /// next press of any key that opens says otherwise.
+    static var heldKeyTookApart = false
 
     /// A file or app opens in what macOS chooses; a disk image is mounted here and an archive extracted here, rather
     /// than by Archive Utility (Open With still hands it to an app). Either counts as using the folder.
