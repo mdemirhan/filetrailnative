@@ -80,7 +80,7 @@ public final class ThumbnailStore {
         var cancelled = false
         /// The request it made, when the load it waits for is another listing's: once that load answers, the file is
         /// checked for this one.
-        var recheck: (kind: IconEntryKind, size: Int, listing: AnyObject)?
+        var recheck: (kind: IconEntryKind, size: Int, listing: AnyObject, ahead: Bool)?
         /// That check, once asked for.
         var followUp: LoadHandle?
 
@@ -263,10 +263,10 @@ public final class ThumbnailStore {
         // The folder was read again while the file's preview was being made (a download adding files to it, a step
         // of a window being resized): that load goes on and answers this request too, rather than being taken back
         // and begun again, which a folder that keeps changing would do to it over and over.
-        if !ahead, let other = loads?.first(where: { $0.showsMeanwhile(size: wanted) }) {
-            waiter.recheck = (kind, size, listing)
+        if let other = loads?.first(where: { $0.showsMeanwhile(size: wanted) }) {
+            waiter.recheck = (kind, size, listing, ahead)
             other.waiters.append(waiter)
-            if other.isAhead {
+            if !ahead, other.isAhead {
                 other.isAhead = false
                 queue.wantNow(other.job)
             }
@@ -323,8 +323,8 @@ public final class ThumbnailStore {
                 if let recheck = waiter.recheck, !waiter.cancelled {
                     waiter.recheck = nil
                     waiter.followUp = self.load(
-                        path: path, kind: recheck.kind, size: recheck.size, listing: recheck.listing, ahead: false,
-                        completion: waiter.completion)
+                        path: path, kind: recheck.kind, size: recheck.size, listing: recheck.listing,
+                        ahead: recheck.ahead, completion: waiter.completion)
                 }
             }
         }

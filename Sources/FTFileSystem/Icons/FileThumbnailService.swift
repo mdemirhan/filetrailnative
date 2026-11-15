@@ -154,6 +154,10 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     /// How close to the largest size Quick Look gives the search comes.
     static let searchStep = 128
 
+    /// How many pictures ImageIO decodes at once.
+    static let maxDecodes = 2
+    static let decodes = DecodeGate(limit: maxDecodes)
+
     private static let pictureLimits = QuickLookLimits()
     private static let iconLimits = QuickLookLimits()
 
@@ -171,7 +175,7 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
             image = await Self.imagePicture(
                 side: side, pixels: pixels, limits: Self.pictureLimits,
                 request: { await Self.quickLookImage(url, side: $0, iconMode: false) },
-                decode: { await BlockingWork.run { Self.decodedImage(url, side: side) } })
+                decode: { await Self.decodes.run { Self.decodedImage(url, side: side) } })
         }
         if image == nil, !Task.isCancelled {
             image = await Self.largestPicture(

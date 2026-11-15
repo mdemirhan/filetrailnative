@@ -266,6 +266,41 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A pane made narrower or wider (the window's edge dragged, the Info panel or the second pane opened) keeps
+        // the row at its top: the row was taken by the columns the new width would hold of the old places, one fewer
+        // for any narrowing, so the view jumped back toward the top.
+        @Test func anotherWidthKeepsTheTopRow() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 24)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 0.02
+            try? await Task.sleep(for: .milliseconds(50))
+            let clip = previews.scroll.contentView
+            func topItem() async -> Int {
+                try? await Task.sleep(for: .milliseconds(100))
+                _ = await waitUntil { !previews.isSettling }
+                let row = Double(clip.bounds.origin.y) / previews.layout.rowHeight
+                #expect(abs(row - row.rounded()) < 0.001)
+                return Int(row.rounded()) * previews.columns
+            }
+            previews.scrollPosition = (top: 4 * previews.layout.rowHeight, left: 0)
+            #expect(await topItem() == 8)
+            let window = try #require(tab.window)
+            let size = window.frame.size
+            for width in [size.width - 40, size.width - 160, size.width + 120] {
+                window.setContentSize(NSSize(width: width, height: size.height))
+                harness.layout(tab)
+                probe.layout()
+                #expect(await topItem() == 8, "\(width)")
+            }
+            // The Info panel takes room from the pane.
+            tab.perform(.toggleInfoPanel)
+            harness.layout(tab)
+            probe.layout()
+            #expect(await topItem() == 8)
+            await harness.close()
+        }
+
         // MARK: The previews kept
 
         // The panes are counted, and what they share is let go a little after the last one went, unless one came

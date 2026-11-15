@@ -576,6 +576,31 @@ private func request(
         withExtendedLifetime(handle) {}
     }
 
+    // The same of a preview asked for ahead of need: the next page's load goes on when the folder is read again.
+    @Test func aLoadAheadUnderWayAnswersTheSameFileAskedForAheadForANewListing() async {
+        let renderer = SteppedRenderer(steps: 2)
+        let queue = ThumbnailLoadQueue(maxConcurrent: 2)
+        let store = ThumbnailStore(
+            provider: FileThumbnailService(renderer: renderer, version: { _ in "1:1" }), queue: queue)
+        var handle = store.prefetch(path: "/a.mov", kind: .file, size: 256, listing: Listing())
+        await pollUntil { renderer.waiting == 1 }
+        for _ in 0..<3 {
+            // The pane asks again for the folder as it is now, then takes the earlier request back.
+            let again = store.prefetch(path: "/a.mov", kind: .file, size: 256, listing: Listing())
+            handle.cancel()
+            handle = again
+            await mainLoopTurn()
+        }
+        renderer.step()
+        await pollUntil { renderer.waiting == 1 }
+        renderer.step()
+        await idle(queue)
+        #expect(renderer.started == ["/a.mov"])
+        #expect(renderer.stopped.isEmpty)
+        #expect(store.loadedPicture(forPath: "/a.mov") != nil)
+        withExtendedLifetime(handle) {}
+    }
+
     // What was taken back and not asked for again does stop, a turn of the main loop later.
     @Test func aLoadTakenBackAndNotAskedForAgainStopsOnceTheMainLoopTurns() async {
         let renderer = SteppedRenderer(steps: 2)

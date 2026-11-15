@@ -98,6 +98,7 @@ final class PreviewsViewController: IconViewController {
         settle?.cancel()
         settle = nil
         scrollStart = nil
+        gridColumns = PreviewGrid.shape(count).columns
         setGrid(density: next, layout: fitted)
         collection.collectionViewLayout?.invalidateLayout()
         return true
@@ -177,11 +178,19 @@ final class PreviewsViewController: IconViewController {
     override func scrollAnchor() -> (() -> Void)? {
         guard !entries.isEmpty else { return nil }
         let top = Double(scroll.contentView.bounds.origin.y)
-        let index = min(layout.row(atScrollTop: top + layout.rowHeight / 2) * columns, entries.count - 1)
+        // By the columns the grid on screen was fitted with: counted from the pane's width, which has changed by
+        // now, the old places give another number (2 across a pane a little narrower count as 1), and the row kept
+        // was another row.
+        let index = min(layout.row(atScrollTop: top + layout.rowHeight / 2) * gridColumns, entries.count - 1)
         return { [self] in
-            placing { scrollClamped(to: NSPoint(x: 0, y: Double(index / max(1, columns)) * layout.rowHeight)) }
+            placing {
+                scrollClamped(to: NSPoint(x: 0, y: Double(index / max(1, gridColumns)) * layout.rowHeight))
+            }
         }
     }
+
+    /// The columns of the grid as it was last fitted (`PreviewGrid.shape`).
+    private var gridColumns = PreviewGrid.shape(PreviewGrid.defaultCount).columns
 
     override func layoutPane() {
         placing { super.layoutPane() }
@@ -374,13 +383,14 @@ final class PreviewsViewController: IconViewController {
             prefetched[entry.path] = thumbnailStore.prefetch(
                 path: entry.path, kind: entry.iconEntry.kind, size: size, listing: listing)
         }
+        for handle in outdated.values { handle.cancel() }
+        outdated = [:]
     }
 
     /// The next pages' previews are checked again too.
     override func filesChanged(paths: Set<String>?) {
         super.filesChanged(paths: paths)
-        dropPrefetches()
-        prefetchSoon()
+        askAgainForPrefetches()
     }
 
     override func viewDidAppear() {
@@ -388,10 +398,28 @@ final class PreviewsViewController: IconViewController {
         prefetchSoon()
     }
 
+    /// The folder was read again, or files in it changed: the previews a page away are asked for again, for the
+    /// folder as it is now, and only then are the earlier requests taken back. A load under way for a file still a
+    /// page away so goes on and answers the new request, rather than being stopped and begun again, which a folder
+    /// that keeps changing (a download, a camera's card being copied in) would do to it over and over.
+    private func askAgainForPrefetches() {
+        for (path, handle) in prefetched {
+            outdated[path]?.cancel()
+            outdated[path] = handle
+        }
+        prefetched = [:]
+        prefetchSoon()
+    }
+
+    /// The requests made before the folder was last read, until the next page is asked for again.
+    private var outdated: [String: LoadHandle] = [:]
+
     /// Takes back every preview asked for ahead of need: the pane shows other items, or other sizes of them.
     private func dropPrefetches() {
         for handle in prefetched.values { handle.cancel() }
         prefetched = [:]
+        for handle in outdated.values { handle.cancel() }
+        outdated = [:]
     }
 
     isolated deinit {
@@ -399,6 +427,7 @@ final class PreviewsViewController: IconViewController {
         settle?.cancel()
         sharpen?.cancel()
         for handle in prefetched.values { handle.cancel() }
+        for handle in outdated.values { handle.cancel() }
         if isCounted { PreviewThumbnails.panes.disappeared() }
     }
 
@@ -465,8 +494,7 @@ final class PreviewsViewController: IconViewController {
 
     override func reload(scrollToTop: Bool) {
         placing { super.reload(scrollToTop: scrollToTop) }
-        dropPrefetches()
-        prefetchSoon()
+        askAgainForPrefetches()
         let listed = indexByPath
         pictureShapes = pictureShapes.filter { listed[$0.key] != nil }
     }
