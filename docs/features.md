@@ -115,7 +115,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 - **Light and Dark**, following macOS or staying in the one you pick, with an accent color you choose.
 - **The toolbar** is customized the way Finder's is: choose View ▸ Customize Toolbar, or right-click it, and drag buttons in, along or out.
-- **Settings** cover the everyday choices: which app edits text files and which terminal opens, what Return does, whether disk images open in a new window or a new tab, which columns List view and search results show, what search starts with, and whether your tabs and last folder come back at launch.
+- **Settings** cover the everyday choices: which app edits text files and which terminal opens, what Return does, whether disk images open in a new window or a new tab, which columns List view and search results show, and whether your tabs and last folder come back at launch.
 
 ## With the rest of the Mac
 

@@ -77,7 +77,7 @@ extension ExplorerWindowlessTests {
         @Test func theSettingChangesNoViewOpen() async throws {
             let (harness, tab) = try await twoPanes()
             let (left, right) = (tab.panes[0], tab.panes[1])
-            try await search(tab, right)
+            await search(tab, right)
             #expect(chip(right) == .fuzzy)
 
             tab.updatePreferences { $0.listFilterMatch = .contains }
@@ -106,9 +106,9 @@ extension ExplorerWindowlessTests {
         @Test func resultsKeepTheirOwnMode() async throws {
             let (harness, tab) = try await twoPanes()
             let (left, right) = (tab.panes[0], tab.panes[1])
-            try await search(tab, left)
+            await search(tab, left)
             tab.activate(right)
-            try await search(tab, right)
+            await search(tab, right)
             tab.activate(left)
 
             left.search.header.filter.onToggleMode()
@@ -137,7 +137,7 @@ extension ExplorerWindowlessTests {
             right.search.session.hideResults()
             #expect(right.content.filterMode == .fuzzy)
             tab.activate(right)
-            try await search(tab, right, "note")
+            await search(tab, right, "note")
             #expect(right.content.filterMode == .contains)
             #expect(chip(right) == .contains)
             left.search.session.hideResults()

@@ -36,7 +36,6 @@ final class SettingsPageView: NSView {
         switch tab {
         case .general: buildGeneral()
         case .browsing: buildBrowsing()
-        case .search: buildSearch()
         case .files: buildFiles()
         case .shortcuts: buildShortcuts()
         }
@@ -187,6 +186,16 @@ final class SettingsPageView: NSView {
                 labels: { DetailColumnKey(rawValue: $0.rawValue)?.label ?? $0.rawValue },
                 defaultOrder: AppPreferenceLimits.defaultDetailColumnOrder, order: \.detailColumnOrder,
                 visible: { $0.detailColumns[$1] }, toggle: { $0.detailColumns[$1].toggle() }), fullWidth: true)
+
+        let resultColumns = section(
+            "Columns in Search Results",
+            note: "For search results in List view. Drag the columns into the order you want.")
+        resultColumns.card.add(
+            columnList(
+                label: "Columns in search results", name: SearchColumnKey.name.label,
+                labels: { SearchColumnKey(rawValue: $0.rawValue)?.label ?? $0.rawValue },
+                defaultOrder: AppPreferenceLimits.defaultSearchColumnOrder, order: \.searchColumnOrder,
+                visible: { $0.searchColumns[$1] }, toggle: { $0.searchColumns[$1].toggle() }), fullWidth: true)
 
         let favorites = section("Favorites")
         popup(
@@ -520,37 +529,6 @@ final class SettingsPageView: NSView {
             host.showNotice(failure)
             return nil
         }
-    }
-
-    // MARK: Search
-
-    private func buildSearch() {
-        let searches = section(
-            "New Searches",
-            note:
-                "New windows start with these, and a change here applies to the tab on screen too. The search "
-                + "field’s menu changes them for its tab.")
-        popup(
-            searches, "Search in", nil, label: "Search in",
-            options: [(SearchMatchScopePreference.name, "Names"), (.path, "Full Paths")], \.searchMatchScope)
-        popup(
-            searches, "Match as", "Glob and Regex read the words as a pattern.", label: "Match as",
-            options: SearchPatternModePreference.allCases.map { ($0, $0.label) }, \.searchPatternMode)
-        toggle(searches, "Search subfolders", nil, \.searchRecursive)
-        toggle(searches, "Skip .git folders", "Matters only while hidden files are shown.", \.searchSkipGitFolders)
-        toggle(
-            searches, "Skip files ignored by Git", "Inside a repository, leave out what its .gitignore excludes.",
-            \.searchSkipGitIgnored)
-
-        let columns = section(
-            "Columns in Search Results",
-            note: "For search results in List view. Drag the columns into the order you want.")
-        columns.card.add(
-            columnList(
-                label: "Columns in search results", name: SearchColumnKey.name.label,
-                labels: { SearchColumnKey(rawValue: $0.rawValue)?.label ?? $0.rawValue },
-                defaultOrder: AppPreferenceLimits.defaultSearchColumnOrder, order: \.searchColumnOrder,
-                visible: { $0.searchColumns[$1] }, toggle: { $0.searchColumns[$1].toggle() }), fullWidth: true)
     }
 
     // MARK: Files

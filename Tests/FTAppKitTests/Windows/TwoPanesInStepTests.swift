@@ -265,18 +265,22 @@ extension ExplorerWindowlessTests {
             #expect(tab.window?.tab.accessoryView == nil)
         }
 
-        @Test func aSearchOptionEditedInSettingsReachesBothPanes() async throws {
+        // A search option saved from elsewhere (another window's choice) reaches neither pane's search: each keeps
+        // its own.
+        @Test func aSearchOptionSavedElsewhereReachesNeitherPane() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
             let (tab, left, right) = try await twoPanes(harness, right: "Beta")
             tab.focusPane(right)
             tab.focusPane(left)
-            let recursive = !left.search.session.recursive
-            #expect(right.search.session.recursive == !recursive)
+            let recursive = left.search.session.recursive
+            #expect(right.search.session.recursive == recursive)
 
-            tab.updatePreferences { $0.searchRecursive = recursive }
+            tab.updatePreferences { $0.searchRecursive = !recursive }
 
-            #expect(await waitUntil { left.search.session.recursive == recursive })
+            #expect(await waitUntil { tab.preferences.searchRecursive == !recursive })
+            for _ in 0..<5 { await Task.yield() }
+            #expect(left.search.session.recursive == recursive)
             #expect(right.search.session.recursive == recursive)
         }
 

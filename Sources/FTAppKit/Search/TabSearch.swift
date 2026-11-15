@@ -363,6 +363,19 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     // MARK: The options menu
 
+    /// The options chosen in the menu are this search's, and what searches opened later start with; no other search
+    /// open changes with them.
+    private func saveOptions() {
+        let search = session
+        tab.updatePreferences {
+            $0.searchMatchScope = search.matchScope
+            $0.searchPatternMode = search.patternMode
+            $0.searchRecursive = search.recursive
+            $0.searchSkipGitFolders = search.skipGitFolders
+            $0.searchSkipGitIgnored = search.skipGitIgnored
+        }
+    }
+
     /// The magnifier: the options as a menu with checkmarks. Opened with the mouse, the keyboard stays in the field;
     /// from the keyboard (Return or Space on the button), the first item is marked.
     func openOptions(fromKeyboard: Bool = false) {
@@ -383,7 +396,10 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     private func optionItems() -> [AppMenuItem] {
         let search = session
         func item(_ title: String, _ checked: Bool, _ apply: @escaping () -> Void) -> AppMenuItem {
-            AppMenuItem(title: title, checked: checked, action: apply)
+            AppMenuItem(title: title, checked: checked) { [weak self] in
+                apply()
+                self?.saveOptions()
+            }
         }
         return [
             .heading("Match"),

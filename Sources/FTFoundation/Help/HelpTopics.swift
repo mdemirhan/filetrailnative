@@ -528,7 +528,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Defaults",
                             description:
-                                "Options you change in the search field stay with that tab, and new tabs in its window start with them. Settings → Search sets what new windows start with, and changing it there also changes the tab on screen."
+                                "Options you choose in the search field's menu stay with that search: other panes, tabs and windows keep theirs, and those you open later start with the ones you chose last."
                         ),
                     ]),
                 HelpSection(

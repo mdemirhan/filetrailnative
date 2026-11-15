@@ -26,19 +26,19 @@ import Testing
     @Test func namesTheSectionOnScreenAboveItWithTheShortcutsSearchBesideTheName() throws {
         let (controller, _) = Kit.make()
         let view = controller.settingsView
-        #expect(view.sectionTitles == ["General", "Browsing", "Search", "Files", "Shortcuts"])
+        #expect(view.sectionTitles == ["General", "Browsing", "Files", "Shortcuts"])
         #expect(texts("settings.title", in: view) == ["General"])
         #expect(views("settings.shortcuts.search", in: view).isEmpty)
         var told: [SettingsTab] = []
         controller.onTabChange = { told.append($0) }
-        Kit.click(view.items[4])
+        Kit.click(view.items[3])
         Kit.layout(controller)
         #expect(texts("settings.title", in: view) == ["Shortcuts"])
         #expect(told == [.shortcuts])
         let field = try #require(views("settings.shortcuts.search", in: view).first)
         #expect(field.isDescendant(of: view.header))
         #expect(field.frame.width == 200)
-        #expect(view.items.map(\.isCurrent) == [false, false, false, false, true])
+        #expect(view.items.map(\.isCurrent) == [false, false, false, true])
         // Sidebar 196 wide: items 10 in, 52 down, 30 tall and 2 apart; the header is 52 tall.
         #expect(view.sidebar.frame.width == 196)
         #expect(view.items[0].frame == NSRect(x: 10, y: 52, width: 175, height: 30))
@@ -52,11 +52,11 @@ import Testing
         let first = try #require(pages.settingsWindow)
         #expect(first.activeTab == .files)
         // Asking again shows the open one, switched to the tab asked for.
-        pages.openSettings(tab: .search)
+        pages.openSettings(tab: .shortcuts)
         #expect(pages.settingsWindow === first)
-        #expect(first.activeTab == .search)
+        #expect(first.activeTab == .shortcuts)
         pages.openSettings()
-        #expect(first.activeTab == .search)
+        #expect(first.activeTab == .shortcuts)
         first.settingsView.select(tab: .browsing)
         #expect(pages.lastSettingsTab == .browsing)
         first.close()
@@ -123,7 +123,7 @@ import Testing
         let (controller, _) = Kit.make(loads: false)
         let view = controller.settingsView
         #expect(view.page == nil)
-        #expect(texts("settings.section", in: view).count == 5)
+        #expect(texts("settings.section", in: view).count == 4)
         let notice = try #require(view.noticeText)
         #expect(notice.stringValue == "Couldn’t load the settings.")
         Kit.click(view.noticeButton)
@@ -530,32 +530,35 @@ import Testing
         #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
     }
 
-    // MARK: Search
+    // MARK: Search results' columns
 
-    @Test func listsSearchResultsColumnsOnTheSearchTabApartFromAFolders() throws {
-        let (controller, recorder) = Kit.make(tab: .search)
+    // Browsing lists the columns of search results after those of a folder's List view, each list saving its own; no
+    // page or row sets the options searches start with, which are the ones last chosen in a search field.
+    @Test func listsSearchResultsColumnsOnBrowsingAfterAFolders() throws {
+        #expect(SettingsTab.allCases == [.general, .browsing, .files, .shortcuts])
+        let (controller, recorder) = Kit.make(tab: .browsing)
         let titles = views("settings.row.title", in: controller.settingsView).compactMap {
             ($0 as? NSTextField)?.stringValue
         }
+        for gone in ["Search in", "Match as", "Search subfolders", "Typing filters by"] {
+            #expect(!titles.contains(gone), "\(gone)")
+        }
+        let folders = try Kit.list("Columns in List view", in: controller)
+        let results = try Kit.list("Columns in search results", in: controller)
+        #expect(Kit.names(results) == ["Folder", "Date Modified", "Size", "Kind", "Date Created", "Permissions"])
         #expect(
-            titles == [
-                "Search in", "Match as", "Search subfolders", "Skip .git folders", "Skip files ignored by Git",
-            ])
-        let match = try Kit.control("Match as", SettingsPopup.self, in: controller)
-        #expect(match.options.map(\.title) == ["Plain Text", "Glob", "Regex"])
-        let scope = try Kit.control("Search in", SettingsPopup.self, in: controller)
-        #expect(scope.options.map(\.title) == ["Names", "Full Paths"])
-        scope.choose("path")
-        let ignored = try Kit.control("Skip files ignored by Git", SettingsSwitch.self, in: controller)
-        Kit.click(ignored)
-        #expect(recorder.saved == ["searchMatchScope": .string("path"), "searchSkipGitIgnored": .bool(true)])
-        let list = try Kit.list("Columns in search results", in: controller)
-        #expect(Kit.names(list) == ["Folder", "Date Modified", "Size", "Kind", "Date Created", "Permissions"])
-        #expect(
-            list.rows.compactMap { ($0.spec.leading as? SettingsCheckbox)?.isChecked } == [
+            results.rows.compactMap { ($0.spec.leading as? SettingsCheckbox)?.isChecked } == [
                 true, true, true, false, false, false,
             ])
-        #expect(Kit.lists(in: controller).count == 1)
+        let lists = Kit.lists(in: controller)
+        let foldersAt = try #require(lists.firstIndex { $0 === folders })
+        let resultsAt = try #require(lists.firstIndex { $0 === results })
+        #expect(resultsAt == foldersAt + 1)
+        let created = try #require(
+            results.rows.first { $0.nameText.stringValue == "Date Created" }?.spec.leading as? SettingsCheckbox)
+        Kit.click(created)
+        #expect(recorder.saved["searchColumns"]?["created"] == .bool(true))
+        #expect(recorder.saved["detailColumns"] == nil)
     }
 
     // MARK: Files

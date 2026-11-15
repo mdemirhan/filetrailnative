@@ -299,7 +299,6 @@ extension MainWindowController {
         showInfoRow(animated: false)
         sidebarController.activePaneChanged(to: pane.shownFolderPath)
         updateTitle()
-        if group?.selected === self { group?.frontSearch = pane.searchStore }
         for change: ExplorerWindowChange in [.folder, .history, .view, .search, .selection, .focusedPane] {
             notify(change)
         }

@@ -26,8 +26,6 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     private var normalFrame: NSRect
     private var lastSelected: MainWindowController?
     private weak var host: ExplorerWindows?
-    /// The search of its tab on screen last: where a new tab of this window takes its options from.
-    weak var frontSearch: TabSearch?
     private var observations: [NSKeyValueObservation] = []
 
     init(windowID: Int, recordID: String, session: TabGroupSession, frame: NSRect, host: ExplorerWindows) {
@@ -371,9 +369,6 @@ final class ExplorerTabGroup: ExplorerWindowLike {
 
     private func insert(_ tab: MainWindowController, after anchor: MainWindowController, select selectIt: Bool) {
         tab.group = self
-        // A new tab starts with the options and sort of the search on screen in this window; a new window has none
-        // yet, and starts with the saved ones.
-        if let front = frontSearch { tab.search.session.takeOptions(of: front.session) }
         tab.showPanels(session.panels)
         tab.giveKeyboardToStartingPane()
         let index = tabs.firstIndex { $0 === anchor }.map { $0 + 1 } ?? tabs.count

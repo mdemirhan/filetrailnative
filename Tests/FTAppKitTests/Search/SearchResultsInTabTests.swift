@@ -195,15 +195,19 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A Settings edit of one search default changes that option only; the others chosen in the
-        // options menu stay.
-        @Test func aSettingsEditChangesOnlyThatOption() async throws {
+        // The search options saved changed from elsewhere (another window's choice) change no search open: each
+        // keeps its own.
+        @Test func savedOptionsChangedElsewhereChangeNoSearchOpen() async throws {
             let (harness, tab, _, _) = try await open()
             let session = tab.search.session
             session.setPatternMode(.regex)
-            #expect(tab.preferences.searchPatternMode == .text)
-            harness.channel.update(from: nil) { $0.searchRecursive = false }
-            #expect(!session.recursive)
+            harness.channel.update(from: nil) {
+                $0.searchRecursive = false
+                $0.searchPatternMode = .glob
+            }
+            #expect(await waitUntil { !tab.preferences.searchRecursive })
+            for _ in 0..<5 { await Task.yield() }
+            #expect(session.recursive)
             #expect(session.patternMode == .regex)
             await harness.close()
         }

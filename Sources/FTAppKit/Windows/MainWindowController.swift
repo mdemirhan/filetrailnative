@@ -1701,7 +1701,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             for pane in other.panes { pane.searchStore?.session.enterBackground() }
         }
         for pane in panes { pane.searchStore?.session.returnToForeground() }
-        group?.frontSearch = searchStore
         group?.tabBecameKey(self)
     }
 
@@ -1755,16 +1754,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// A preference changed in any window or in Settings: the keys the whole app shares.
     func preferencesChanged(_ change: PreferencesChange) {
-        // A Settings edit of the search options updates the live values without running anything again.
-        let searchDefaults: Set<PreferenceKey> = [
-            .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders, .searchSkipGitIgnored,
-        ]
-        // Only the keys edited, and only in the tab on screen, in each of its panes: a tab behind keeps the options of
-        // its own search.
-        let edited = searchDefaults.intersection(change.keys)
-        if !edited.isEmpty, group == nil || group?.selected === self {
-            for pane in panes { pane.searchStore?.session.applyDefaults(preferences, keys: edited) }
-        }
         sidebar.applyPreferences()
         refreshColumns()
         notificationsSettingChanged()

@@ -137,17 +137,6 @@ final class SearchSession {
         searchedHidden = includeHidden
     }
 
-    /// A new tab's session: nothing searched, with the options and sort of `other`.
-    func takeOptions(of other: SearchSession) {
-        patternMode = other.patternMode
-        matchScope = other.matchScope
-        recursive = other.recursive
-        skipGitFolders = other.skipGitFolders
-        skipGitIgnored = other.skipGitIgnored
-        sortBy = other.sortBy
-        sortDirection = other.sortDirection
-    }
-
     // MARK: What the tab shows
 
     /// `hasCachedSearch`: a committed search exists, shown or not.
@@ -564,8 +553,8 @@ final class SearchSession {
         optionChanged()
     }
 
-    /// A Settings edit updates the live values of the keys it changed, without running anything
-    /// again; the others keep what was chosen in the options menu.
+    /// A capture scene's preferences set the live values of the keys it gives, without running anything again; the
+    /// others keep what was chosen in the options menu.
     func applyDefaults(_ preferences: AppPreferences, keys: Set<PreferenceKey>) {
         if keys.contains(.searchPatternMode) { patternMode = preferences.searchPatternMode }
         if keys.contains(.searchMatchScope) { matchScope = preferences.searchMatchScope }

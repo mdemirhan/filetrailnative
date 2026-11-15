@@ -476,45 +476,71 @@ extension ExplorerWindowlessTests {
     /// What replaces a global: the tab on screen last, and the app's file operations.
     @MainActor
     @Suite struct SearchAcrossTheWindowTests {
-        // A new tab starts with the options and order of the search on screen, and nothing searched.
-        @Test func aNewTabTakesTheOptionsOfTheTabOnScreen() async throws {
+        /// Chooses `titles` in the search field's options menu, as a click on each does.
+        private func choose(_ titles: [String], in tab: MainWindowController) throws {
+            for title in titles {
+                tab.activePane.search.openOptions()
+                let menu = try #require(AppMenuPresenter.shared.menu)
+                let item = try #require(menu.items.first { $0.title == title }, "\(title)")
+                AppMenuPresenter.shared.close()
+                item.action()
+            }
+        }
+
+        // Options chosen in the field's menu, and the order of the results, are saved for the whole app: what a
+        // search opened next starts with, in a new pane, tab or window (each makes its session from them); the search
+        // they were chosen in keeps them, and nothing else is searched.
+        @Test func optionsChosenAreWhatSearchesOpenedNextStartWith() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.windowDidBecomeKey(Notification(name: NSWindow.didBecomeKeyNotification))
+            #expect(tab.preferences.searchPatternMode == .text)
+            try choose(["Regex", "Full Path", "Search Subfolders", "Skip Files Ignored by Git"], in: tab)
+            tab.content.onSearchSortSet?(.name, .desc)
             let session = tab.search.session
-            session.setPatternMode(.regex)
-            session.setMatchScope(.path)
-            session.setRecursive(false)
-            session.setSkipGitIgnored(true)
-            session.setSort(.name, .desc)
-            let group = try #require(tab.group)
-            group.openTab(path: harness.folder.path, from: tab)
-            let other = try #require(group.tabs.last)
-            #expect(other !== tab)
-            let new = other.search.session
+            #expect(session.patternMode == .regex)
+            #expect(session.matchScope == .path)
+            #expect(!session.recursive)
+            #expect(session.skipGitIgnored)
+            #expect(!session.hasCachedSearch)
+            // What a window opened next reads, with no session of its own yet.
+            let saved = harness.channel.preferences(for: nil)
+            #expect(saved.searchPatternMode == .regex)
+            #expect(saved.searchMatchScope == .path)
+            #expect(!saved.searchRecursive)
+            #expect(saved.searchSkipGitIgnored)
+            // What a tab or pane of this window reads.
+            let new = SearchSession(preferences: tab.preferences, includeHidden: false)
             #expect(new.patternMode == .regex)
             #expect(new.matchScope == .path)
             #expect(!new.recursive)
             #expect(new.skipGitIgnored)
             #expect(new.sortBy == .name && new.sortDirection == .desc)
-            #expect(!new.hasCachedSearch)
-            // Those of a fresh launch, in the tab that was there.
-            #expect(tab.preferences.searchPatternMode == .text)
             await harness.close()
         }
 
-        // A new window reads the saved options; those of another window's search stay there.
-        @Test func aNewWindowStartsWithTheSavedOptions() async throws {
+        // Options chosen in one pane's field leave the other pane's search as it is; a pane opened next starts with
+        // them.
+        @Test func optionsChosenInOnePaneLeaveTheOther() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.windowDidBecomeKey(Notification(name: NSWindow.didBecomeKeyNotification))
-            tab.search.session.setPatternMode(.regex)
-            let group = try #require(tab.group)
-            group.openNewWindow(from: tab, path: harness.folder.path)
-            let other = try #require(harness.windows.front as? MainWindowController)
-            #expect(other.group !== group)
-            #expect(other.preferences.searchPatternMode == .text)
-            #expect(other.search.session.patternMode == .text)
+            let right = tab.openSecondPane(at: harness.folder.appending("Alpha").path)
+            #expect(await waitUntil { right.loaded && right.hasShownFolder && !right.isNavigating })
+            let left = tab.panes[0]
+            #expect(right.search.session.patternMode == .text)
+            tab.activate(left)
+            try choose(["Glob", "Full Path"], in: tab)
+            #expect(left.search.session.patternMode == .glob)
+            #expect(left.search.session.matchScope == .path)
+            #expect(right.search.session.patternMode == .text)
+            #expect(right.search.session.matchScope == .name)
+            tab.activate(right)
+            tab.closePane()
+            let reopened = tab.openSecondPane(at: harness.folder.path)
+            #expect(await waitUntil { reopened.loaded && reopened.hasShownFolder && !reopened.isNavigating })
+            #expect(reopened.search.session.patternMode == .glob)
+            #expect(reopened.search.session.matchScope == .path)
             await harness.close()
         }
 

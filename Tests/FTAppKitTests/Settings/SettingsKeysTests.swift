@@ -18,7 +18,7 @@ import Testing
     }
 
     // The sections are built when they are chosen: Tab still goes on from a control of the one on screen.
-    @Test(arguments: [SettingsTab.browsing, .search, .files])
+    @Test(arguments: [SettingsTab.browsing, .files])
     func tabMovesOnFromAControlAfterSwitchingSections(_ tab: SettingsTab) throws {
         let (controller, _) = Kit.make(tab: .general)
         controller.show(tab: tab)
@@ -134,7 +134,7 @@ import Testing
         let (controller, _) = Kit.make(tab: .browsing)
         Kit.layout(controller)
         let sections = controller.settingsView.items
-        #expect(sections.count == 5)
+        #expect(sections.count == 4)
         let stops = try walk(controller)
         #expect(stops.count > sections.count)
         for (index, section) in sections.enumerated() {
