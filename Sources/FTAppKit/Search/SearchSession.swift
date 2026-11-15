@@ -96,8 +96,9 @@ final class SearchSession {
     private(set) var interrupted = false
     /// The hidden-files setting the results were found with.
     private var searchedHidden: Bool
-    /// The options the results on screen were found with: Settings can change the options without searching again,
-    /// and results found with others are then neither narrowed by more typing nor kept by the next search.
+    /// The options the results on screen were found with: automation's `applyDefaults` changes the options without
+    /// searching again, and results found with others are then neither narrowed by more typing nor kept by the next
+    /// search.
     private var searchedOptions: SearchOptions?
     /// The folder list's selection, for when the search closes.
     private(set) var browseSelection = ContentSelection.empty
@@ -577,7 +578,7 @@ final class SearchSession {
         startSearch(committedQuery, rootPath: rootPath.isEmpty ? (host?.searchCurrentPath ?? "") : rootPath)
     }
 
-    /// ⌘R in search mode, and after a write that changed what is on disk.
+    /// ⌘R in search mode, and the banner's Search Again.
     func rerun() {
         guard hasCachedSearch else { return }
         startSearch(committedQuery, rootPath: rootPath.isEmpty ? (host?.searchCurrentPath ?? "") : rootPath)

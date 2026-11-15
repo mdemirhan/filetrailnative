@@ -609,7 +609,7 @@ final class SearchScopePopUp: NSPopUpButton {
 
 // MARK: Buttons
 
-/// A small push button as the system's button: 22 tall, 10 each side of the label, the callout size; Stop has the
+/// A small push button as the system's button: 24 tall, 10 each side of the label, the callout size; Stop has the
 /// spinner before its label. A click gives the keyboard to the results; Tab stops here, where Return or Space presses it.
 final class SearchSmallButton: SystemButton {
     var onPress: () -> Void = {}

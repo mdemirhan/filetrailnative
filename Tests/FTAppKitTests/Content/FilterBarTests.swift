@@ -1,5 +1,5 @@
 // The filter bar: it takes its room at the foot of the list, which ends above it, its modes switch how typing finds
-// names for every window, and it says when nothing matches
+// names in its list, a press on it makes its pane the active one, and it says when nothing matches
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -37,7 +37,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        @Test func theModesSwitchHowTypingFindsNamesAndSettingsShowsIt() async throws {
+        @Test func theModesSwitchHowTypingFindsNamesAndWhatViewsOpenedLaterStartWith() async throws {
             let harness = try ExplorerHarness.windowless()
             let path = try harness.makeFolder(named: "Many", files: 30).path
             let tab = try await harness.open(path)

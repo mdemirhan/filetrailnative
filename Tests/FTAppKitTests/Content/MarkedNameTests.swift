@@ -7,7 +7,7 @@ import Testing
 
 @MainActor
 struct MarkedNameTests {
-    static let name = "-Users-tcmudemirhan-src-swiftproj-filetrail--claude-worktrees-code-audit-followup-9419c2"
+    static let name = "-Users-demo-src-swiftproj-filetrail--claude-worktrees-code-audit-followup-9419c2"
 
     /// The pixels of `line` drawn `width` wide, at two to the point, in the columns before `upTo` points.
     func pixels(_ line: MarkedName.Line, width: CGFloat, upTo: CGFloat, font: NSFont) -> [[UInt8]] {

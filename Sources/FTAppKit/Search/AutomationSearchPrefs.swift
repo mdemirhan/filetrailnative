@@ -2,8 +2,8 @@
     import AppKit
     import FTFoundation
 
-    /// The `prefs` keys of search: the five options (a Settings edit, which the tab's search takes without running
-    /// again), the results' order, their view, and their List columns.
+    /// The `prefs` keys of search: the five options (which the tab's search takes without running again, where the
+    /// field's menu runs it again), the results' order, their view, and their List columns.
     @MainActor
     enum AutomationSearchPrefs {
         private static var registered = false

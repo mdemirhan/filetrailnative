@@ -101,7 +101,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var clipboardMarks: ClipboardMarks?
     var dropTarget: (path: String, state: DropTargetState)?
     var onSearchSubfolders: (() -> Void)?
-    /// The filter bar's other mode was chosen: that way of matching is wanted (Settings → Browsing).
+    /// The filter bar's other mode was chosen: that way of matching is wanted in this view.
     var onToggleFilterMode: (() -> Void)?
     /// The keys of the commands, as Settings has them (the window wires its own).
     var shortcutsProvider: () -> ResolvedShortcuts = { ShortcutCommands.defaultResolved }
