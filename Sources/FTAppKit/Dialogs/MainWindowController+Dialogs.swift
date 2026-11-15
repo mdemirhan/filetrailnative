@@ -45,12 +45,12 @@ extension MainWindowController {
     /// and the keyboard is back where it was. Nil when a dialog is up already.
     @discardableResult
     func presentCommandPalette(
-        _ entries: [CommandPaletteEntry], recent: [String], ownKey: String?,
+        _ entries: [CommandPaletteEntry], recent: [String], ownKeys: [String],
         run: @escaping (CommandPaletteEntry) -> Void
     ) -> CommandPaletteBox? {
         guard let window, !isDialogOpen else { return nil }
         AppMenuPresenter.shared.close()
-        let box = CommandPaletteBox(entries: entries, recent: recent, ownKey: ownKey)
+        let box = CommandPaletteBox(entries: entries, recent: recent, ownKeys: ownKeys)
         let scrim = DialogScrim(panel: box, placement: .sheet)
         scrim.onScrimPress = { [weak box] in box?.onClose() }
         box.onClose = { [weak scrim] in scrim?.dismiss() }

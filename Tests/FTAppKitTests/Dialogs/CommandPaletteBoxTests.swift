@@ -121,6 +121,79 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A click on a dimmed row does what Return on it does: nothing, the box staying up.
+        @Test func aClickOnADimmedCommandDoesNotRunIt() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            let box = try openBox(tab, menu)
+            type("forward", into: box)
+            let forward = try #require(box.rows.firstIndex { $0.entry.id == "goForward" })
+            box.rowClicked(forward)
+            #expect(tab.commandPaletteBox === box)
+            #expect(harness.store.recentCommands().isEmpty)
+            box.onClose()
+            await harness.close()
+        }
+
+        // The pointer resting where the box opened, or stirring a little after a row was chosen with the keyboard,
+        // selects nothing: Return runs the row typed for. Moved clearly, it selects the row it is over.
+        @Test func thePointerSelectsOnlyOnceItHasClearlyMoved() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            let box = try openBox(tab, menu)
+            type("view as", into: box)
+            #expect(box.selectedRow?.entry.id == "viewAsIcons")
+            box.pointerMoved(over: 2, at: NSPoint(x: 100, y: 100))
+            box.pointerMoved(over: 2, at: NSPoint(x: 101, y: 102))
+            #expect(box.selectedRow?.entry.id == "viewAsIcons")
+            box.pointerMoved(over: 2, at: NSPoint(x: 100, y: 100 + CommandPaletteBox.pointerSlack))
+            #expect(box.selectedRow?.entry.id == "viewAsList")
+            // From then on it selects as it goes.
+            box.pointerMoved(over: 1, at: NSPoint(x: 100, y: 105))
+            #expect(box.selectedRow?.entry.id == "viewAsDetails")
+            // An arrow chooses again: the pointer has to move clearly once more.
+            box.moveSelection(-1)
+            box.pointerMoved(over: 3, at: NSPoint(x: 100, y: 105))
+            box.pointerMoved(over: 3, at: NSPoint(x: 100, y: 106))
+            #expect(box.selectedRow?.entry.id == "viewAsIcons")
+            box.onClose()
+            await harness.close()
+        }
+
+        // Close Window from the palette closes the window with every tab of it, as File ▸ Close Window does.
+        @Test func closeWindowClosesEveryTabOfTheWindow() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            let group = try #require(tab.group)
+            tab.perform(.newTab)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            let entry = try #require(
+                menu.commandPaletteEntries(
+                    for: ExplorerCommandTarget(handle: tab, focused: true), ShortcutCommands.defaultBindings
+                ).first { $0.id == "closeWindow" })
+            menu.runPaletteCommand(entry, in: tab)
+            #expect(await waitUntil { harness.windows.count == 0 })
+            await harness.close()
+        }
+
+        // A key of the palette's that the menu doesn't listen for (one with no ⌘ or ⌃) opens it from the window.
+        @Test func aKeyOfThePalettesTheMenuDoesntHearOpensIt() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            tab.updatePreferences { $0.shortcutOverrides = ["showCommandPalette": ["Cmd+Shift+P", "F1"]] }
+            let f1 = try #require(
+                NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: .function, timestamp: 0, windowNumber: 0,
+                    context: nil, characters: "\u{F704}", charactersIgnoringModifiers: "\u{F704}", isARepeat: false,
+                    keyCode: 122))
+            #expect(tab.windowKeyDown(f1))
+            let box = try #require(tab.commandPaletteBox)
+            box.onClose()
+            #expect(tab.commandPaletteBox == nil)
+            withExtendedLifetime(menu) {}
+            await harness.close()
+        }
+
         // The page moves have no menu item: the palette runs them in the pane that has the keyboard.
         @Test func runsAPageMoveInTheListThatHasTheKeyboard() async throws {
             let (harness, tab, _) = try await open()

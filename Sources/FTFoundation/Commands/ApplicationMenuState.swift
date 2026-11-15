@@ -231,8 +231,9 @@ public enum ApplicationMenu {
             case .redo: textUndo ? "Redo" : window.undoLabels?.redo ?? "Redo"
             case .toggleFavorite: state.favoriteIsSet ? "Remove from Favorites" : "Add to Favorites"
             case .toggleFolderTree: state.folderTreeOpen ? "Hide Folder Tree" : "Show Folder Tree"
-            // ⌘W closes the pane it is in while the tab shows two, and the tab otherwise.
-            case .closePane: state.twoPanesShown ? "Close Pane" : "Close Tab"
+            // ⌘W closes the pane it is in while the tab shows two, and the tab otherwise. With another window in
+            // front (Settings, Help) no pane is named: ⌘W closes that window.
+            case .closePane: window.explorerFocused && state.twoPanesShown ? "Close Pane" : "Close Tab"
             // What it would write, while it can.
             case .pasteAsFile:
                 PasteAsFile.menuTitle(isEnabled(type) ? state.pasteAsFileKind : nil)

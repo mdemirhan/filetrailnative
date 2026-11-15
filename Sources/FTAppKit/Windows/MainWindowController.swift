@@ -1035,12 +1035,21 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
+    /// Opens the command palette, or closes it: the app's menu sets it, for a key of the palette's that reaches the
+    /// window and not the menu.
+    static var showCommandPalette: (@MainActor () -> Void)?
+
     /// A command the list's keys ask for: the key is one the menu does not listen for (a command's second key, Space,
     /// F2, ⌘←). Whether the window ran it. Keys don't go by what dims the menu (only `ShortcutPolicy.canHandle` is
     /// asked): a command that can't start says why itself.
     /// `isRepeat`: the key is held down. A workspace opens once per press, not a window for every repeat.
     private func runKeyCommand(_ id: ShortcutCommandID, isRepeat: Bool) -> Bool {
         if id == .openSelectedItem { return openSelectedItem() }
+        if id == .showCommandPalette {
+            guard let show = Self.showCommandPalette else { return false }
+            if !isRepeat { show() }
+            return true
+        }
         if let slot = Workspaces.slot(of: id) {
             if !isRepeat { group?.openWorkspace(slot: slot) }
             return true

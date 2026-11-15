@@ -9550,11 +9550,6 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+W",
-            "description": "Close the pane you are in, or this tab when it shows only one"
-          },
-          {
-            "group": "navigation",
             "shortcut": "Cmd+Shift+W",
             "description": "Close this window and all of its tabs"
           },
@@ -10063,11 +10058,6 @@
                 ]
               ],
               "shortcuts": [
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+W",
-                  "description": "Close the pane you are in, or this tab when it shows only one"
-                },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+W",
@@ -10823,10 +10813,6 @@
                 [
                   "Tabs",
                   "Open in New Tab"
-                ],
-                [
-                  "Tabs",
-                  "Closing"
                 ],
                 [
                   "Two panes",
@@ -44133,11 +44119,6 @@
           },
           {
             "group": "navigation",
-            "shortcut": "Cmd+W",
-            "description": "Close the pane you are in, or this tab when it shows only one"
-          },
-          {
-            "group": "navigation",
             "shortcut": "Ctrl+Cmd+S",
             "description": "Close this tab with both its panes, or the window when it is the last tab"
           },
@@ -44845,11 +44826,6 @@
                   "group": "navigation",
                   "shortcut": "Cmd+T",
                   "description": "Open a new tab on the folder you are in"
-                },
-                {
-                  "group": "navigation",
-                  "shortcut": "Cmd+W",
-                  "description": "Close the pane you are in, or this tab when it shows only one"
                 },
                 {
                   "group": "navigation",

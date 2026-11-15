@@ -39938,9 +39938,7 @@
             "Option+Left",
             "Cmd+Left"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "reopenClosedTab": [
             "Ctrl+Shift+K",
@@ -40243,10 +40241,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Ctrl+Tab",
             "selectNextTab"
           ],
@@ -40442,6 +40436,7 @@
             "Option+Left",
             "Cmd+Left"
           ],
+          "closePane": [],
           "closeTab": [],
           "reopenClosedTab": [
             "Ctrl+Shift+K",
@@ -40499,6 +40494,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40537,6 +40533,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40571,6 +40568,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40622,6 +40620,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40656,6 +40655,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40690,6 +40690,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40738,6 +40739,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40772,6 +40774,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40806,6 +40809,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40852,6 +40856,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40886,6 +40891,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -40917,6 +40923,7 @@
                 "Option+Left",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Ctrl+Shift+K",
@@ -53822,9 +53829,7 @@
             "Cmd+Q"
           ],
           "focusContentPane": [],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "goBack": [
             "Cmd+[",
@@ -54123,10 +54128,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -54336,6 +54337,7 @@
           ]
         ],
         "sanitized": {
+          "closePane": [],
           "closeTab": []
         },
         "probes": [],
@@ -54352,12 +54354,15 @@
               "goTrash": [
                 "Cmd+Pageup"
               ],
+              "closePane": [],
               "closeTab": []
             },
             "removed": {
+              "closePane": [],
               "closeTab": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -54375,15 +54380,18 @@
             "command": null,
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "sortByModified": [
                 "Shift+A"
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -54401,6 +54409,7 @@
             "command": null,
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "hideOthers": [
                 "Cmd+Option+H",
@@ -54408,9 +54417,11 @@
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -54428,6 +54439,7 @@
             "command": null,
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "paste": [
                 "Cmd+V",
@@ -54435,9 +54447,11 @@
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -72397,9 +72411,7 @@
           "newTab": [
             "F1"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [
             "Cmd+K"
           ],
@@ -72692,10 +72704,6 @@
             "newWindow"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -72889,6 +72897,7 @@
           "newTab": [
             "F1"
           ],
+          "closePane": [],
           "closeTab": [
             "Cmd+K"
           ],
@@ -72944,6 +72953,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -72973,6 +72983,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73000,6 +73011,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73037,6 +73049,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73069,6 +73082,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73098,6 +73112,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73139,6 +73154,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73172,6 +73188,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73201,6 +73218,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73244,6 +73262,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73279,6 +73298,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -73309,6 +73329,7 @@
               "newTab": [
                 "F1"
               ],
+              "closePane": [],
               "closeTab": [
                 "Cmd+K"
               ],
@@ -83138,9 +83159,7 @@
             "Cmd+Q"
           ],
           "goDownloads": [],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
@@ -83446,10 +83465,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -83651,6 +83666,7 @@
           ]
         ],
         "sanitized": {
+          "closePane": [],
           "closeTab": [],
           "openInTerminal": [],
           "resetSize": [],
@@ -98804,9 +98820,7 @@
           "halfPageUp": [
             "Ctrl+Cmd+K"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [
             "F11"
           ],
@@ -99120,10 +99134,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -99291,6 +99301,7 @@
             "Ctrl+Cmd+K"
           ],
           "halfPageDown": [],
+          "closePane": [],
           "closeTab": [
             "F11"
           ],
@@ -99389,6 +99400,7 @@
                 "F21"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99429,6 +99441,7 @@
               ],
               "halfPageUp": [],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99468,6 +99481,7 @@
                 "Delete"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99521,6 +99535,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99566,6 +99581,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99608,6 +99624,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99662,6 +99679,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99707,6 +99725,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99749,6 +99768,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99802,6 +99822,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99848,6 +99869,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -99891,6 +99913,7 @@
                 "Ctrl+Cmd+K"
               ],
               "halfPageDown": [],
+              "closePane": [],
               "closeTab": [
                 "F11"
               ],
@@ -102542,9 +102565,7 @@
             "Cmd+Shift+I"
           ],
           "newTab": [],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [
             "Cmd+Shift+K"
           ],
@@ -102848,10 +102869,6 @@
             "newWindow"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -103036,6 +103053,7 @@
             "Cmd+Shift+I"
           ],
           "newTab": [],
+          "closePane": [],
           "closeTab": [
             "Cmd+Shift+K"
           ],
@@ -103159,6 +103177,7 @@
                 "Cmd+Shift+I"
               ],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+K"
               ],
@@ -103218,6 +103237,7 @@
                 "Cmd+Shift+I"
               ],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+K"
               ],
@@ -103273,6 +103293,7 @@
                 "Cmd+Shift+I"
               ],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+K"
               ],
@@ -103339,6 +103360,7 @@
                 "Cmd+Shift+I"
               ],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+K"
               ],
@@ -103394,6 +103416,7 @@
                 "Cmd+Shift+I"
               ],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+K"
               ],
@@ -103448,6 +103471,7 @@
                 "Cmd+Shift+I"
               ],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+K"
               ],
@@ -112553,9 +112577,7 @@
           "quit": [
             "Cmd+Q"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "selectPreviousTab": [],
           "openSelectionInNewWindow": [
@@ -112862,10 +112884,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -113063,6 +113081,7 @@
           ]
         ],
         "sanitized": {
+          "closePane": [],
           "closeTab": [],
           "selectPreviousTab": [],
           "openSelectionInNewWindow": [
@@ -113148,6 +113167,7 @@
             "command": "renameSelection",
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [],
               "openSelectionInNewWindow": [
@@ -113163,6 +113183,7 @@
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [],
               "openSelectionInNewWindow": [
@@ -113175,6 +113196,7 @@
               "cut": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [],
               "openSelectionInNewWindow": [
@@ -113197,6 +113219,7 @@
             "command": "editSelection",
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [],
               "openSelectionInNewWindow": [
@@ -113212,6 +113235,7 @@
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [],
               "openSelectionInNewWindow": [
@@ -113223,6 +113247,7 @@
               ]
             },
             "reset": {
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [],
               "openSelectionInNewWindow": [
@@ -121380,9 +121405,7 @@
             "Ctrl+Left",
             "Cmd+Shift+K"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [
             "Cmd+;"
           ],
@@ -121685,10 +121708,6 @@
             "newWindow"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Ctrl+Tab",
             "selectNextTab"
           ],
@@ -121861,6 +121880,7 @@
             "Ctrl+Left",
             "Cmd+Shift+K"
           ],
+          "closePane": [],
           "closeTab": [
             "Cmd+;"
           ],
@@ -122064,9 +122084,7 @@
           "quit": [
             "Cmd+Q"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "openSelectionInNewWindow": [],
           "goBack": [
@@ -122366,10 +122384,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -122579,6 +122593,7 @@
           ]
         ],
         "sanitized": {
+          "closePane": [],
           "closeTab": []
         },
         "probes": [
@@ -122620,16 +122635,19 @@
             "command": null,
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "focusFileSearch": [
                 ""
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": [],
               "focusFileSearch": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -122644,6 +122662,7 @@
             "command": "openSelectedItem",
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "openSelectedItem": [],
               "closeWindow": [
@@ -122652,9 +122671,11 @@
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -122673,15 +122694,18 @@
                 "Cmd+pagedown",
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": []
             },
             "removed": {
               "goBack": [
                 "Cmd+Left"
               ],
+              "closePane": [],
               "closeTab": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -122699,6 +122723,7 @@
             "command": null,
             "customized": false,
             "assigned": {
+              "closePane": [],
               "closeTab": [],
               "renameSelection": [
                 "F2",
@@ -122706,9 +122731,11 @@
               ]
             },
             "removed": {
+              "closePane": [],
               "closeTab": []
             },
             "reset": {
+              "closePane": [],
               "closeTab": []
             },
             "takenFrom": [],
@@ -122897,9 +122924,7 @@
           "halfPageDown": [
             "F13"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "reopenClosedTab": [
             "Cmd+D",
@@ -123210,10 +123235,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
           ],
@@ -123384,6 +123405,7 @@
           "halfPageDown": [
             "F13"
           ],
+          "closePane": [],
           "closeTab": [],
           "reopenClosedTab": [
             "Cmd+D",
@@ -123463,6 +123485,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123521,6 +123544,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123577,6 +123601,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123646,6 +123671,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123705,6 +123731,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123761,6 +123788,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123826,6 +123854,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123880,6 +123909,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -123933,6 +123963,7 @@
               "halfPageDown": [
                 "F13"
               ],
+              "closePane": [],
               "closeTab": [],
               "reopenClosedTab": [
                 "Cmd+D",
@@ -131522,9 +131553,7 @@
           "halfPageDown": [
             "Cmd+Option+C"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "moveTabToNewWindow": [
             "Cmd+Shift+["
@@ -131801,10 +131830,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -131997,6 +132022,7 @@
             "Cmd+Option+C"
           ],
           "newWindow": [],
+          "closePane": [],
           "closeTab": [],
           "selectPreviousTab": [
             "Ctrl+Shift+Tab"
@@ -132096,6 +132122,7 @@
                 "Cmd+Option+C"
               ],
               "newWindow": [],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -132160,6 +132187,7 @@
                 "Cmd+Option+C"
               ],
               "newWindow": [],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -132224,6 +132252,7 @@
                 "Cmd+Option+C"
               ],
               "newWindow": [],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -132299,6 +132328,7 @@
                 "Cmd+Option+C"
               ],
               "newWindow": [],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -132367,6 +132397,7 @@
                 "Cmd+Option+C"
               ],
               "newWindow": [],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -132431,6 +132462,7 @@
                 "Cmd+Option+C"
               ],
               "newWindow": [],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -137490,9 +137522,7 @@
             "Cmd+Option+T",
             "Cmd+N"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [
             "Cmd+Shift+M"
           ],
@@ -137798,10 +137828,6 @@
             "halfPageUp"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -137985,6 +138011,7 @@
           "halfPageDown": [],
           "newWindow": [],
           "newTab": [],
+          "closePane": [],
           "closeTab": [
             "Cmd+Shift+M"
           ],
@@ -138061,6 +138088,7 @@
               "halfPageDown": [],
               "newWindow": [],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138120,6 +138148,7 @@
               "halfPageDown": [],
               "newWindow": [],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138175,6 +138204,7 @@
               "halfPageDown": [],
               "newWindow": [],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138240,6 +138270,7 @@
                 "Cmd+T"
               ],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138295,6 +138326,7 @@
               "halfPageDown": [],
               "newWindow": [],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138348,6 +138380,7 @@
               ],
               "halfPageDown": [],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138416,6 +138449,7 @@
               "halfPageDown": [],
               "newWindow": [],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138471,6 +138505,7 @@
               "halfPageDown": [],
               "newWindow": [],
               "newTab": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+Shift+M"
               ],
@@ -138553,7 +138588,8 @@
                 "Cmd+="
               ],
               "decreaseSize": [],
-              "toggleFolderTree": []
+              "toggleFolderTree": [],
+              "closePane": []
             },
             "takenFrom": [],
             "menuShortcut": "Cmd+Shift+M"
@@ -183686,9 +183722,7 @@
             "Cmd+Shift+N",
             "Cmd+Delete"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "selectNextTab": [
             "Cmd+Shift+K"
@@ -184071,10 +184105,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Ctrl+Shift+Tab",
             "selectPreviousTab"
           ],
@@ -184226,6 +184256,7 @@
             "Cmd+Shift+N",
             "Cmd+Delete"
           ],
+          "closePane": [],
           "closeTab": [],
           "reopenClosedTab": [],
           "selectNextTab": [
@@ -196813,9 +196844,7 @@
             "F2",
             "F20"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
@@ -197127,10 +197156,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -197332,6 +197357,7 @@
             "F2",
             "F20"
           ],
+          "closePane": [],
           "closeTab": [],
           "selectPreviousTab": [
             "Ctrl+Shift+Tab"
@@ -197424,6 +197450,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197441,6 +197468,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197458,6 +197486,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197489,6 +197518,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197509,6 +197539,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197527,6 +197558,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197558,6 +197590,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197578,6 +197611,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -197595,6 +197629,7 @@
                 "F2",
                 "F20"
               ],
+              "closePane": [],
               "closeTab": [],
               "selectPreviousTab": [
                 "Ctrl+Shift+Tab"
@@ -221464,9 +221499,7 @@
           "focusTreePane": [
             "Cmd+Shift+G"
           ],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [
             "Cmd+PageDown"
           ],
@@ -221770,10 +221803,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -221946,6 +221975,7 @@
           ],
           "pageUp": [],
           "halfPageUp": [],
+          "closePane": [],
           "closeTab": [
             "Cmd+PageDown"
           ],
@@ -237291,9 +237321,7 @@
             "Cmd+;"
           ],
           "pageDown": [],
-          "closePane": [
-            "Cmd+W"
-          ],
+          "closePane": [],
           "closeTab": [
             "Cmd+=",
             "F2"
@@ -237592,10 +237620,6 @@
             "newTab"
           ],
           [
-            "Cmd+W",
-            "closePane"
-          ],
-          [
             "Cmd+Shift+T",
             "reopenClosedTab"
           ],
@@ -237793,6 +237817,7 @@
             "Cmd+;"
           ],
           "pageDown": [],
+          "closePane": [],
           "closeTab": [
             "Cmd+=",
             "F2"
@@ -237859,6 +237884,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -237879,6 +237905,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -237895,6 +237922,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -237931,6 +237959,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -237955,6 +237984,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -237976,6 +238006,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -238014,6 +238045,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -238034,6 +238066,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -238054,6 +238087,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -238088,6 +238122,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -238111,6 +238146,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"
@@ -238132,6 +238168,7 @@
                 "Cmd+;"
               ],
               "pageDown": [],
+              "closePane": [],
               "closeTab": [
                 "Cmd+=",
                 "F2"

@@ -116,7 +116,7 @@ public enum CommandPalette {
     /// title in place of the table's label.
     public static let menuTitledCommands: Set<ShortcutCommandID> = [
         .undo, .redo, .toggleFavorite, .toggleFolderTree, .pasteAsFile, .copyContents, .compressSelection,
-        .convertImages, .increaseSize, .decreaseSize, .resetSize, .editSelection, .goMacintoshHD,
+        .convertImages, .increaseSize, .decreaseSize, .resetSize, .editSelection, .goMacintoshHD, .closePane,
     ]
 
     /// A menu item with no row in the table.
@@ -210,8 +210,13 @@ public enum CommandPalette {
         workspaces: [CommandPaletteWorkspace] = []
     ) -> [CommandPaletteEntry] {
         var result: [CommandPaletteEntry] = []
+        // In a tab with one pane the menu names Close Pane "Close Tab", as that is what it closes: Close Tab, which
+        // would do the same there, is not listed a second time under the same name.
+        let closePaneClosesTab =
+            menuTitles[ShortcutCommandID.closePane.rawValue] == ShortcutCommands.definition(.closeTab).label
         for definition in ShortcutCommands.all {
             guard let run = run(of: definition.id) else { continue }
+            if definition.id == .closeTab, closePaneClosesTab { continue }
             let itemID: String? = if case .menuItem(let id) = run { id } else { nil }
             let state = itemID.flatMap { states[$0] }
             let menuTitle = menuTitledCommands.contains(definition.id) ? itemID.flatMap { menuTitles[$0] } : nil
@@ -260,8 +265,10 @@ public enum CommandPalette {
 
     /// The rows for what is typed. With nothing typed: the recent commands that are listed, then every command under
     /// its group. With text: the commands whose title has its letters in order, then those whose place and title hold
-    /// each word typed, the ones that can run first, the best fit first, then the most recently run, then the table's
-    /// order.
+    /// each word typed, the ones that can run first, the best fit first. Among those that fit alike, the command named
+    /// just what was typed comes first ("copy" is Copy, not Copy to Other Pane), then the most recently run, then the
+    /// table's order, but for a command whose whole name begins another's, which comes before it ("dup" is Duplicate
+    /// before Duplicate Tab).
     public static func sections(_ entries: [CommandPaletteEntry], query: String, recent: [String])
         -> [CommandPaletteSection]
     {
@@ -276,14 +283,22 @@ public enum CommandPalette {
             var row: CommandPaletteRow
             var score: Int
             var order: Int
+            var isNamedSo = false
         }
+        /// A title as it is compared with what was typed: without the "…" of a command that asks more.
+        func name(_ title: String) -> String {
+            title.hasSuffix("\u{2026}") ? String(title.dropLast()) : title
+        }
+        let exact = NameMatcher(trimmed, mode: .contains)
         var hits: [Hit] = []
         for (order, entry) in entries.enumerated() {
             if let score = matcher.score(entry.title) {
                 hits.append(
                     Hit(
                         row: CommandPaletteRow(entry: entry, marks: matcher.marks(in: entry.title)), score: score,
-                        order: order))
+                        order: order,
+                        isNamedSo: name(entry.title).count == trimmed.count
+                            && exact?.isContained(in: entry.title) == true))
                 continue
             }
             // Below every title that fits: each word in the place or the title.
@@ -298,10 +313,29 @@ public enum CommandPalette {
         hits.sort { left, right in
             if left.row.entry.enabled != right.row.entry.enabled { return left.row.entry.enabled }
             if left.score != right.score { return left.score > right.score }
+            if left.isNamedSo != right.isNamedSo { return left.isNamedSo }
             let a = recency[left.row.entry.id] ?? Int.max
             let b = recency[right.row.entry.id] ?? Int.max
             if a != b { return a < b }
             return left.order < right.order
+        }
+        // A command whose whole name begins another's comes before it where the two fit alike and neither was run
+        // more recently: "dup" is Duplicate before Duplicate Tab, "open" Open before Open in New Tab.
+        func alike(_ a: Hit, _ b: Hit) -> Bool {
+            a.row.entry.enabled == b.row.entry.enabled && a.score == b.score
+                && recency[a.row.entry.id] == recency[b.row.entry.id]
+        }
+        var at = 0
+        while at < hits.count {
+            let longer = name(hits[at].row.entry.title)
+            let shorter = hits.indices.dropFirst(at + 1).first { index in
+                alike(hits[at], hits[index]) && longer.hasPrefix(name(hits[index].row.entry.title) + " ")
+            }
+            if let shorter {
+                hits.insert(hits.remove(at: shorter), at: at)
+            } else {
+                at += 1
+            }
         }
         return [CommandPaletteSection(title: nil, rows: hits.map(\.row))]
     }
@@ -394,7 +428,7 @@ public enum CommandPalette {
         case .viewAsIcons: .icons
         case .viewAsDetails: .details
         case .viewAsList: .list
-        case .viewAsPreviews: .previews
+        case .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2, .showPreviews1: .previews
         case .sortByName, .sortByKind, .sortByModified, .sortBySize: .sortBy
         case .toggleFoldersFirst: .foldersFirst
         case .toggleHiddenFiles: .hiddenShown

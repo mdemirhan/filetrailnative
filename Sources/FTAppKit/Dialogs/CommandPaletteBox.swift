@@ -7,8 +7,14 @@ import FTFoundation
 final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
     private(set) var entries: [CommandPaletteEntry]
     private let recent: [String]
-    /// The key that opened it, which closes it again.
-    private let ownKey: String?
+    /// The palette's keys, any of which closes it again.
+    private let ownKeys: [String]
+    /// Where the pointer was when the keyboard last chose a row (typing, the arrows, the box opening): it selects
+    /// nothing until it has moved `pointerSlack` from there, so a hand brushing the trackpad on its way to Return
+    /// doesn't change the command Return runs. Nil once it has, and before the pointer is first heard of.
+    private var pointerRest: NSPoint?
+    private var keyboardChose = true
+    static let pointerSlack: CGFloat = 4
     let shell = GoToFieldShell(
         label: "Command name", placeholder: CommandPalette.placeholder, identifier: "commandPalette")
     let scroll = NSScrollView()
@@ -35,10 +41,10 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
     private static let headingFont = ThemeFonts.sans(DesignTokens.typeScale.small, .semibold)
     private static let emptyFont = ThemeFonts.sans(DesignTokens.typeScale.callout)
 
-    init(entries: [CommandPaletteEntry], recent: [String], ownKey: String?) {
+    init(entries: [CommandPaletteEntry], recent: [String], ownKeys: [String]) {
         self.entries = entries
         self.recent = recent
-        self.ownKey = ownKey
+        self.ownKeys = ownKeys
         super.init(cornerRadius: GlassSurface.sheetRadius)
         setAccessibilityElement(true)
         setAccessibilityRole(.sheet)
@@ -117,6 +123,11 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
             onClose()
             return true
         }
+        // The keys are the list's while the field has the keyboard and no input method is composing in it: Return on
+        // the clear button presses that button, and Return or an arrow in a composition is the input method's.
+        guard shell.holdsKeyboard, (window?.firstResponder as? NSTextView)?.hasMarkedText() != true else {
+            return false
+        }
         let modifiers = event.modifierFlags.intersection([.command, .control, .option, .shift])
         switch (event.keyCode, modifiers) {
         case (KeyCode.down, []): moveSelection(1)
@@ -137,10 +148,8 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
     private static let letterP: UInt16 = 35
 
     private func isOwnKey(_ event: NSEvent) -> Bool {
-        guard let ownKey, let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)) else {
-            return false
-        }
-        return pressed == ownKey
+        guard let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)) else { return false }
+        return ownKeys.contains(pressed)
     }
 
     private var visibleRowCount: Int {
@@ -151,6 +160,8 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
         let count = rows.count
         guard count > 0 else { return }
         selectedIndex = min(count - 1, max(0, selectedIndex + step))
+        keyboardChose = true
+        pointerRest = nil
         markSelection()
         scrollSelectionIntoView()
     }
@@ -181,7 +192,18 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
         run(rowViews[index].row.entry)
     }
 
-    func pointerMoved(over index: Int) {
+    /// The pointer moved over row `index`, at `point` in the window: the row is selected, unless the keyboard chose
+    /// the row selected and the pointer has only stirred since.
+    func pointerMoved(over index: Int, at point: NSPoint) {
+        if keyboardChose {
+            guard let rest = pointerRest else {
+                pointerRest = point
+                return
+            }
+            guard hypot(point.x - rest.x, point.y - rest.y) >= Self.pointerSlack else { return }
+            keyboardChose = false
+            pointerRest = nil
+        }
         guard index != selectedIndex else { return }
         selectedIndex = index
         markSelection()
@@ -226,6 +248,8 @@ final class CommandPaletteBox: DialogPanelView, NSTextFieldDelegate {
         }
         // The first row that can run: Return does something.
         selectedIndex = rowViews.firstIndex { $0.row.entry.enabled } ?? 0
+        keyboardChose = true
+        pointerRest = nil
         let typed = !field.stringValue.trimmingCharacters(in: .whitespaces).isEmpty
         shell.clearButton.isHidden = field.stringValue.isEmpty
         emptyLabel.stringValue = "No command matches \u{201C}\(field.stringValue)\u{201D}."
@@ -434,11 +458,13 @@ final class CommandPaletteRowView: NSView, ThemeApplying {
         let palette = theme.palette
         let enabled = row.entry.enabled
         let onAccent = isSelected && enabled
-        let text: RGBA = onAccent ? theme.accent.onSolid : enabled ? palette.textPrimary : palette.textTertiary
+        // A dimmed row that is selected is read against its fill: a step darker than the dimmed rows around it.
+        let dimmed: RGBA = isSelected ? palette.textSecondary : palette.textTertiary
+        let text: RGBA = onAccent ? theme.accent.onSolid : enabled ? palette.textPrimary : dimmed
         let detail: RGBA =
             onAccent
             ? theme.accent.onSolid.withAlpha(DialogLayout.GoTo.selectedPathAlpha)
-            : enabled ? palette.textSecondary : palette.textTertiary
+            : enabled ? palette.textSecondary : dimmed
         let title = row.entry.title
         let name = NSMutableAttributedString(
             string: title, attributes: [.font: Self.titleFont, .foregroundColor: NSColor(text)])
@@ -454,7 +480,7 @@ final class CommandPaletteRowView: NSView, ThemeApplying {
         titleLabel.attributedStringValue = name
         for label in [placeLabel, keysLabel] { label.textColor = NSColor(detail) }
         checkLabel.textColor = NSColor(
-            onAccent ? theme.accent.onSolid : enabled ? theme.accent.solid : palette.textTertiary)
+            onAccent ? theme.accent.onSolid : enabled ? theme.accent.solid : dimmed)
         iconView.contentTintColor = NSColor(detail)
         needsDisplay = true
     }
@@ -497,10 +523,15 @@ final class CommandPaletteRowView: NSView, ThemeApplying {
     override func draw(_ dirtyRect: NSRect) {
         guard isSelected else { return }
         let radius = CGFloat(DesignTokens.radii.control)
-        let fill = row.entry.enabled ? theme.accent.solidButton : theme.palette.textTertiary
+        // A dimmed row's fill is faint, so its dimmed text still reads on it.
+        let fill =
+            row.entry.enabled
+            ? theme.accent.solidButton : theme.palette.textTertiary.withAlpha(Self.dimmedFillAlpha)
         NSColor(fill).setFill()
         NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
     }
+
+    static let dimmedFillAlpha = 0.12
 
     // MARK: Mouse
 
@@ -514,7 +545,7 @@ final class CommandPaletteRowView: NSView, ThemeApplying {
     }
 
     override func mouseMoved(with event: NSEvent) {
-        box?.pointerMoved(over: index)
+        box?.pointerMoved(over: index, at: event.locationInWindow)
     }
 
     // The field keeps the keyboard while the list is used with the mouse.

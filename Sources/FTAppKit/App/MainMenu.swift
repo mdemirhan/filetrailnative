@@ -35,6 +35,8 @@ public final class MainMenu {
         router.isTextEditing = { [weak sync] target in sync?.state(of: target).textEditing ?? false }
         router.beforeValidating = { [weak sync] in sync?.readWindowState() }
         router.onShowCommandPalette = { [weak self] in self?.toggleCommandPalette() }
+        // A key of the palette's that the menu doesn't listen for (a second key, one with no ⌘ or ⌃) comes by the window.
+        MainWindowController.showCommandPalette = { [weak self] in self?.toggleCommandPalette() }
     }
 
     // MARK: Command palette
@@ -59,8 +61,8 @@ public final class MainMenu {
         }
         let bindings = shortcuts()
         let entries = commandPaletteEntries(for: ExplorerCommandTarget(handle: target.handle, focused: true), bindings)
-        let ownKey = bindings[.showCommandPalette]?.first
-        let opened = controller.presentCommandPalette(entries, recent: recentCommands(), ownKey: ownKey) {
+        let ownKeys = bindings[.showCommandPalette] ?? []
+        let opened = controller.presentCommandPalette(entries, recent: recentCommands(), ownKeys: ownKeys) {
             [weak self, weak controller] entry in
             guard let self, let controller else { return }
             self.recordCommand(entry.id)
@@ -93,10 +95,14 @@ public final class MainMenu {
         let window = controller.window
         switch entry.run {
         case .menuItem(let id): router.choose(itemID: id)
-        case .windowKey(let id): controller.runPaletteKeyCommand(id)
+        case .windowKey(let id):
+            // Nothing selected to open, or the keyboard in neither pane: it says so, as a dimmed row does.
+            if !controller.runPaletteKeyCommand(id) { NSSound.beep() }
         case .system(let item):
             switch item {
-            case .closeWindow: window?.performClose(nil)
+            // The window with every tab of it, as File ▸ Close Window: a plain close would close the tab in front.
+            case .closeWindow:
+                if let group = controller.group { group.closeAsCloseButton() } else { window?.performClose(nil) }
             case .minimize: window?.performMiniaturize(nil)
             case .zoom: window?.performZoom(nil)
             case .fullScreen: window?.toggleFullScreen(nil)

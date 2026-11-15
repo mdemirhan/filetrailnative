@@ -169,6 +169,39 @@ struct CommandPaletteTests {
         #expect(recent.first == "View as Previews")
     }
 
+    // A command named just what was typed comes before the longer names that begin with it, so Return runs it; one
+    // whose whole name begins another's comes before that one. What was run last still breaks the other ties.
+    @Test func theCommandNamedAsTypedComesFirst() {
+        #expect(Self.titles("copy").first == "Copy")
+        #expect(Self.titles("COPY ").first == "Copy")
+        #expect(Self.titles("paste").first == "Paste")
+        #expect(Self.titles("open").first == "Open")
+        #expect(Self.titles("share").first == "Share\u{2026}")
+        #expect(Self.titles("dup").prefix(2) == ["Duplicate", "Duplicate Tab"])
+        #expect(Self.titles("ope").prefix(2) == ["Open", "Open in New Tab"])
+        // Run last, the longer name comes first among those that only begin with what was typed.
+        #expect(Self.titles("dup", recent: ["duplicateTab"]).first == "Duplicate Tab")
+        // Named as typed, a command stays first whatever was run last.
+        #expect(Self.titles("copy", recent: ["copyPath"]).prefix(2) == ["Copy", "Copy Path"])
+    }
+
+    // In a tab with one pane the menu calls Close Pane "Close Tab": the palette says so too, and lists it once.
+    @Test func closePaneIsCloseTabOnceInATabWithOnePane() {
+        let twoPanes = Self.entries(menuTitles: ["closePane": "Close Pane"])
+        #expect(Self.entry("closePane", in: twoPanes)?.title == "Close Pane")
+        #expect(Self.entry("closeTab", in: twoPanes)?.title == "Close Tab")
+        let onePane = Self.entries(menuTitles: ["closePane": "Close Tab"])
+        #expect(Self.entry("closePane", in: onePane)?.title == "Close Tab")
+        #expect(Self.entry("closeTab", in: onePane) == nil)
+        #expect(onePane.filter { $0.title == "Close Tab" }.count == 1)
+    }
+
+    @Test func thePreviewCountsHaveThePreviewsSymbol() {
+        for id in ["showPreviews9", "showPreviews4", "showPreviews2", "showPreviews1"] {
+            #expect(Self.entry(id)?.icon == .previews, "\(id)")
+        }
+    }
+
     // MARK: Recent commands
 
     @Test func keepsTheRecentCommandsLastFirstEachOnce() {
