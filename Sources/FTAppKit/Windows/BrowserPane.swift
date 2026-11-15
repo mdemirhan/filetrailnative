@@ -907,7 +907,10 @@ final class BrowserPane {
     /// The pane's order, Folders First or hidden files changed: the content pane shows it, the folder is read again in
     /// place and the choice is saved with the tab.
     /// `keepingTree`: the tree sees to itself, and the folder read again leaves it alone.
-    func viewChanged(keepingTree: Bool = false) {
+    /// `keepingSelection`: the items are the same but for the hidden ones, so what is selected stays selected, and
+    /// the list stays where it was scrolled, with the lead item still in view if it was; another order starts at the
+    /// top with nothing selected.
+    func viewChanged(keepingTree: Bool = false, keepingSelection: Bool = false) {
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
         tab.paneChanged(.view, in: self)
@@ -919,7 +922,10 @@ final class BrowserPane {
             keepingTree || !drivesSidebar
             ? SidebarOpen(origin: .alias) : sidebar.model.openKeepingRow(folder.path) ?? .other
         let folder = folder
-        holdingTab { await $0.navigate(to: folder, history: .replace, open: open, keepingSearch: true) }
+        holdingTab {
+            _ = await $0.attemptNavigation(
+                to: folder, history: .replace, open: open, keepingSearch: true, keepingSelection: keepingSelection)
+        }
     }
 
     /// The folder on screen read again brings the tree along; a folder being opened now will do that itself.

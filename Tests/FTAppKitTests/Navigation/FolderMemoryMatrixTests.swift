@@ -237,20 +237,25 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Hidden files (an order and Folders First go the same way, `viewChanged`) and Go To the same
-        // folder clear the selection; Refresh keeps it.
+        // Another order (Folders First goes the same way, `viewChanged`) and Go To the same folder clear the
+        // selection; Refresh and Hidden Files keep it.
         @Test(arguments: [false, true])
         func readingAgainWithoutKeepingClearsTheSelection(goToTheSameFolder: Bool) async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
+            try "x".write(to: tab.folder.appendingPathComponent(".hidden"), atomically: true, encoding: .utf8)
             let note = try #require(tab.content.listed.first { $0.name == "note.txt" })
             tab.content.select(paths: [note.path])
             tab.perform(.refreshOrApplySearchSort)
             #expect(await waitUntil { !tab.isNavigating })
             await settle()
             #expect(tab.content.selection.paths == [note.path])
+            tab.perform(.toggleHiddenFiles)
+            #expect(await waitUntil { tab.content.entries.contains { $0.name == ".hidden" } && !tab.isNavigating })
+            await settle()
+            #expect(tab.content.selection.paths == [note.path])
 
-            if goToTheSameFolder { tab.go(to: tab.folder) } else { tab.perform(.toggleHiddenFiles) }
+            if goToTheSameFolder { tab.go(to: tab.folder) } else { tab.setSort(.name, .desc) }
             #expect(await waitUntil { tab.content.selection.isEmpty })
             await settle()
             #expect(tab.content.selection.isEmpty)

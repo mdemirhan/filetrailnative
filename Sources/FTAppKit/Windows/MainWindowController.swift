@@ -1843,10 +1843,11 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleHiddenFiles:
             includeHidden.toggle()
             sidebar.hiddenFilesChanged(includeHidden)
-            // Each pane reads its folder again, or searches again; the other pane leaves the tree to the active one.
+            // Each pane reads its folder again, or searches again, and keeps what is selected in it and where it
+            // is scrolled; the other pane leaves the tree to the active one.
             let keepingTree = !sidebar.model.rootPath.isEmpty
             for pane in panes {
-                pane.viewChanged(keepingTree: pane !== activePane || keepingTree)
+                pane.viewChanged(keepingTree: pane !== activePane || keepingTree, keepingSelection: true)
                 pane.searchStore?.session.hiddenFilesChanged(includeHidden)
             }
         case .refreshOrApplySearchSort:

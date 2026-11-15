@@ -67,6 +67,67 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Hidden Files turned on or off from the other pane: each pane keeps what is selected in it, and its lead
+        // stays in view if it was, though the hidden items come before it; a list scrolled away from its lead stays
+        // where it was scrolled. A hidden item selected leaves the selection when they are hidden again.
+        @Test func hiddenFilesKeepTheSelectionAndTheLeadInViewInBothPanes() async throws {
+            let (harness, tab, folder) = try await open(.viewAsDetails)
+            for index in 0..<200 {
+                try "y".write(
+                    toFile: (folder as NSString).appendingPathComponent(".hidden-\(index)"), atomically: true,
+                    encoding: .utf8)
+            }
+            let left = tab.activePane
+            let lead = left.content.entries[150].path
+            let other = left.content.entries[160].path
+            left.content.select(paths: [lead, other])
+            #expect(left.content.selection.leadPath == other)
+            #expect(try leadIsInView(tab))
+            let right = tab.openSecondPane(at: folder)
+            #expect(await waitUntil { right.loaded && right.hasShownFolder && !right.isNavigating })
+            harness.layout(tab)
+            right.content.select(paths: [right.content.entries[300].path])
+            let scrolled = try #require(right.content.pane as? any RevealScroller)
+            tab.focusPane(right)
+            func inView(_ pane: BrowserPane) throws -> Bool {
+                let lead = try #require(pane.content.selection.leadPath)
+                let index = try #require(pane.content.entries.firstIndex { $0.path == lead })
+                return try #require(pane.content.pane as? any RevealScroller).isInView(index: index)
+            }
+            #expect(try inView(left) && inView(right))
+
+            tab.perform(.toggleHiddenFiles)
+            #expect(
+                await waitUntil {
+                    left.content.entries.count == 600 && right.content.entries.count == 600 && !tab.isNavigating
+                })
+            harness.layout(tab)
+            #expect(left.content.selection.paths.sorted() == [lead, other].sorted())
+            #expect(left.content.selection.leadPath == other)
+            #expect(right.content.selection.paths.count == 1)
+            #expect(left.content.entries.firstIndex { $0.path == other } == 360)
+            #expect(try inView(left) && inView(right))
+
+            // Scrolled away from its lead, the right pane stays where it is; a hidden item selected in the left one
+            // goes with the hidden items, and the rest of its selection stays.
+            right.content.pane?.scrollPosition = (top: 0, left: 0)
+            let away = scrolled.scrollOrigin
+            #expect(try !inView(right))
+            let hidden = try #require(left.content.entries.first { $0.name.hasPrefix(".hidden") }).path
+            left.content.select(paths: [hidden, lead])
+            tab.perform(.toggleHiddenFiles)
+            #expect(
+                await waitUntil {
+                    left.content.entries.count == 400 && right.content.entries.count == 400 && !tab.isNavigating
+                })
+            harness.layout(tab)
+            #expect(left.content.selection.paths == [lead])
+            #expect(try inView(left))
+            #expect(right.content.selection.paths.count == 1)
+            #expect(scrolled.scrollOrigin == away)
+            await harness.close()
+        }
+
         // A folder's size comes in and moves it past the lead, in view or not.
         @Test func followsTheLeadAsSizesReSortTheList() async throws {
             let jobs = FakeJobs()
