@@ -12,6 +12,49 @@ public struct SearchResultRename: Equatable, Sendable {
     }
 }
 
+/// Renames to look a path up in: where a path is after them costs as much as the path is deep, however many they are.
+public struct SearchResultRenames: Sendable {
+    private var destinations: [FTFoundation.NameKeys.Exact: String] = [:]
+
+    public init(_ renamed: [SearchResultRename] = []) {
+        for rename in renamed { add(rename) }
+    }
+
+    public var isEmpty: Bool { destinations.isEmpty }
+
+    /// Of two renames of one path the first is kept.
+    public mutating func add(_ rename: SearchResultRename) {
+        let key = FTFoundation.NameKeys.Exact(rename.from)
+        if destinations[key] == nil { destinations[key] = rename.to }
+    }
+
+    /// Where `path` is after the renames, when it is a renamed item or inside one; nil when it didn't move. Only
+    /// renames of the item itself and of folders holding it apply, the deepest first, so items that swapped names
+    /// each take the other's. A rename inside a renamed folder finds the item where it was, and the folder then takes
+    /// it along, whichever path the write gave the item.
+    public func path(_ path: String) -> String? {
+        guard !destinations.isEmpty else { return nil }
+        let units = Array(path.utf8)
+        let slash = UInt8(ascii: "/")
+        var current = path
+        var moved = false
+        var end = units.count
+        while end > 0 {
+            let from = String(decoding: units[..<end], as: UTF8.self)
+            if let to = destinations[FTFoundation.NameKeys.Exact(from)],
+                let next = SearchResults.replacingPrefix(current, from, to)
+            {
+                current = next
+                moved = true
+            }
+            // The folder above: up to the slash before, the first one aside.
+            guard let above = units[..<end].lastIndex(of: slash), above > 0 else { break }
+            end = above
+        }
+        return moved ? current : nil
+    }
+}
+
 extension SearchResults {
     /// `results` without the items at or inside a path of `removed`, and with those at or inside a renamed item at
     /// their new paths, found as fd would have found them there; nil when no result is one of them. A renamed item
@@ -21,7 +64,7 @@ extension SearchResults {
     ) -> [SearchResultItem]? {
         guard !removed.isEmpty || !renamed.isEmpty else { return nil }
         let gone = Set(removed.map(FTFoundation.NameKeys.Exact.init))
-        let renames = deepestFirst(renamed)
+        let renames = SearchResultRenames(renamed)
         var changed = false
         var kept: [SearchResultItem] = []
         kept.reserveCapacity(results.count)
@@ -30,7 +73,7 @@ extension SearchResults {
                 changed = true
                 continue
             }
-            guard let path = path(item.path, after: renames) else {
+            guard let path = renames.path(item.path) else {
                 kept.append(item)
                 continue
             }
@@ -40,18 +83,9 @@ extension SearchResults {
         return changed ? kept : nil
     }
 
-    /// Where `path` is after `renamed`, when it is a renamed item or inside one; nil when it didn't move. Only renames
-    /// of the item itself and of folders holding it apply, the deepest first, so items that swapped names each take
-    /// the other's.
+    /// Where `path` is after `renamed` (`SearchResultRenames.path`); for many paths, make the renames once.
     public static func path(_ path: String, after renamed: [SearchResultRename]) -> String? {
-        var current = path
-        var moved = false
-        for rename in deepestFirst(renamed) where replacingPrefix(path, rename.from, rename.to) != nil {
-            guard let next = replacingPrefix(current, rename.from, rename.to) else { continue }
-            current = next
-            moved = true
-        }
-        return moved ? current : nil
+        SearchResultRenames(renamed).path(path)
     }
 
     /// Whether `path` is one of `paths` or inside one: each folder above it is looked up, so the cost grows with the
@@ -79,14 +113,8 @@ extension SearchResults {
         return path.utf8.starts(with: prefix.utf8)
     }
 
-    /// A rename inside a renamed folder is applied before the folder's, so it finds the item where it was: the folder
-    /// then takes it along, whichever path the write gave the item.
-    private static func deepestFirst(_ renamed: [SearchResultRename]) -> [SearchResultRename] {
-        renamed.sorted { $0.from.utf16.count > $1.from.utf16.count }
-    }
-
     /// `path` with `from` replaced by `to` when it is `from` or inside it; nil otherwise.
-    private static func replacingPrefix(_ path: String, _ from: String, _ to: String) -> String? {
+    static func replacingPrefix(_ path: String, _ from: String, _ to: String) -> String? {
         if path.utf8.elementsEqual(from.utf8) { return to }
         guard path.utf8.starts(with: (from + "/").utf8) else { return nil }
         return to + String(decoding: path.utf8.dropFirst(from.utf8.count), as: UTF8.self)

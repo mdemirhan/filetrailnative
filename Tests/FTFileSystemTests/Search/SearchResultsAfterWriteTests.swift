@@ -1,5 +1,6 @@
 // Search results after a write: what it removed leaves them, what it renamed is renamed in them
 import FTFoundation
+import FTTestSupport
 import Testing
 
 @testable import FTFileSystem
@@ -180,6 +181,21 @@ private func paths(_ items: [SearchResultItem]?) -> [String]? {
         #expect(SearchResults.path(root + "/Docsx", after: renames) == nil)
         #expect(SearchResults.path(root + "/c.txt", after: renames) == nil)
         #expect(SearchResults.path(root + "/c.txt", after: []) == nil)
+    }
+
+    // 5,000 results renamed at once are placed in a moment: each path is looked up by the folders above it, so the
+    // cost doesn't grow with the renames times the results. Sorting the renames for every result took 34 s here.
+    @Test func manyRenamesOfManyResultsArePlacedAtOnce() {
+        let count = 5_000
+        let results = (0..<count).map { found("Folder \($0 % 50)/old \($0).txt") }
+        let renamed = (0..<count).map { rename("Folder \($0 % 50)/old \($0).txt", "Folder \($0 % 50)/new \($0).txt") }
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (after, seconds) = CPUTime.measureThread {
+            SearchResults.afterWrite(results, rootPath: root, removed: [], renamed: renamed)
+        }
+        #expect(after?.count == count)
+        #expect(after?.last?.name == "new \(count - 1).txt")
+        #expect(seconds < 1)
     }
 
     @Test func atOrInsideAFolder() {

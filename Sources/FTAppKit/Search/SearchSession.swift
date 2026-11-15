@@ -406,7 +406,8 @@ final class SearchSession {
     /// `selection` with what was renamed at its new paths.
     static func selection(_ selection: ContentSelection, after renamed: [SearchResultRename]) -> ContentSelection {
         guard !renamed.isEmpty else { return selection }
-        func moved(_ path: String) -> String { SearchResults.path(path, after: renamed) ?? path }
+        let renames = SearchResultRenames(renamed)
+        func moved(_ path: String) -> String { renames.path(path) ?? path }
         var next = selection
         next.paths = selection.paths.map(moved)
         next.anchorPath = selection.anchorPath.map(moved)
