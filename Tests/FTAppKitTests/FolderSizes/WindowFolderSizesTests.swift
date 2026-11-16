@@ -112,7 +112,7 @@ struct WindowFolderSizesTests {
     @Test func answersAreStoredWithOneRepaint() async {
         jobs.known = ["/a": 10, "/b": 20]
         var repaints = 0
-        sizes.onChange = { repaints += 1 }
+        sizes.observe(jobs) { repaints += 1 }
         _ = sizes.entry("/a")
         _ = sizes.entry("/b")
         await settle()
@@ -127,7 +127,7 @@ struct WindowFolderSizesTests {
         let paths = (0..<WindowFolderSizes.maxEntries + 1_000).map { "/big/\($0)" }
         jobs.known = Dictionary(uniqueKeysWithValues: paths.map { ($0, 1) })
         var repaints = 0
-        sizes.onChange = { [weak sizes] in
+        sizes.observe(jobs) { [weak sizes] in
             repaints += 1
             for path in paths { _ = sizes?.readySize(path) }
         }
@@ -210,10 +210,29 @@ struct WindowFolderSizesTests {
         #expect(sizes.readySize("/a/inner") == 5)
     }
 
+    // The window's two panes share its sizes: a second pane opened and closed leaves the first one told of each
+    // repaint, which keeps its status, its list and the Info panel and Info Row showing a calculation under way.
+    @Test func eachPaneIsToldOfRepaintsWhenASecondPaneComesAndGoes() {
+        let first = ContentPaneController(mode: .details, folderSizes: sizes, loaders: .placeholder)
+        var firstHeard = 0
+        first.onDetailsChanged = { firstHeard += 1 }
+        var second: ContentPaneController? = ContentPaneController(
+            mode: .details, folderSizes: sizes, loaders: .placeholder)
+        var secondHeard = 0
+        second?.onDetailsChanged = { secondHeard += 1 }
+        sizes.calculate("/a")
+        #expect(firstHeard == 1 && secondHeard == 1)
+        second = nil
+        timers.advance(WindowFolderSizes.repaintInterval)
+        sizes.calculate("/b")
+        #expect(firstHeard == 2 && secondHeard == 1)
+        _ = second
+    }
+
     // Repaints come at most every 100 ms; the first at once.
     @Test func repaintsAreMergedWithinAHundredMilliseconds() {
         var repaints = 0
-        sizes.onChange = { repaints += 1 }
+        sizes.observe(jobs) { repaints += 1 }
         sizes.calculate("/a")
         #expect(repaints == 1)
         sizes.calculate("/b")

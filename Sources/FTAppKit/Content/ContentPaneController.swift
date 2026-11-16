@@ -251,7 +251,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         self.folderSizes = folderSizes
         self.loaders = loaders
         super.init(nibName: nil, bundle: nil)
-        folderSizes.onChange = { [weak self] in self?.folderSizesChanged() }
+        folderSizes.observe(self) { [weak self] in self?.folderSizesChanged() }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }

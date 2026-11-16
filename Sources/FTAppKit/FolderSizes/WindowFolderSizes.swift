@@ -57,8 +57,13 @@ final class WindowFolderSizes {
     private var trimmedAt = -1
     /// Changes whenever a cached entry does, for views that derive from the cache (sorting by size).
     private(set) var version = 0
-    /// Told once per repaint, after the entries changed.
-    var onChange: (@MainActor () -> Void)?
+    /// Who is told once per repaint, after the entries changed: each pane of the window, while it is there.
+    private var observers: [Observer] = []
+
+    private struct Observer {
+        weak var owner: AnyObject?
+        let changed: @MainActor () -> Void
+    }
 
     private var lastRepaint = -TimeInterval.infinity
     private var repaintTimer: TimerToken?
@@ -119,7 +124,15 @@ final class WindowFolderSizes {
         repaintTimer = nil
         lastRepaint = now()
         version += 1
-        onChange?()
+        observers.removeAll { $0.owner == nil }
+        for observer in observers { observer.changed() }
+    }
+
+    /// `changed` is told once per repaint for as long as `owner` is there. The window's panes share its sizes, so
+    /// each one adds itself: a second pane, opened or closed, leaves the first one told.
+    func observe(_ owner: AnyObject, _ changed: @escaping @MainActor () -> Void) {
+        observers.removeAll { $0.owner == nil || $0.owner === owner }
+        observers.append(Observer(owner: owner, changed: changed))
     }
 
     // MARK: The cache
