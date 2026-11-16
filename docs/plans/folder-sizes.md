@@ -1,6 +1,6 @@
 # Folder sizes
 
-The plan for how File Trail measures folders: what asks for a measurement, in what order measurements run, what stops one, what each view shows while it waits, runs, ends or fails, and how long a size stays true. Today's behavior grew one fix at a time; this puts it in one place, says where it falls short, and proposes one set of rules. The owner's answers to the questions at the end become entries in [decisions/file-operations.md](../decisions/file-operations.md), and this file moves to `records/` once it is built.
+The plan for how File Trail measures folders: what asks for a measurement, in what order measurements run, what stops one, what each view shows while it waits, runs, ends or fails, and how long a size stays true. Today's behavior grew one fix at a time; this puts it in one place, says where it falls short, and proposes one set of rules. The owner answered its questions on 2026-11-16 ("Decisions" below); the standing rules are in [decisions/file-operations.md](../decisions/file-operations.md). This file moves to `records/` once it is built.
 
 What is said of today was read in the code and, where marked *(tried)*, seen in a debug build driven by a scratch scenario on the owner's home folder.
 
@@ -45,10 +45,10 @@ Each is found in the code; those marked *(tried)* were seen in the app.
 5. **Waiting looks like running**: a request behind another window's walk shows the spinner and "Calculating…", as if it ran.
 6. **A failed walk looks like one never started**: the Info panel and Info Row show "Calculate", the List "--", and the error message is kept but shown nowhere. Auto measure doesn't try it again, so the folder looks forgotten.
 7. **A size measured again inside a folder leaves the folder's size as it was**: measuring `~/Library/Caches` again after it shrank leaves `~/Library` and `~` with their old totals, so a folder can read smaller than what is inside it.
-8. **Changes made outside the app leave sizes stale** until measured again: only the app's own writes clear or adjust them. A download, a build or Terminal's `rm` is not seen.
-9. **What couldn't be read is not said**: a folder with no access counts as empty, silently; Finder does the same.
+8. **Changes made outside the app leave sizes stale** until measured again: only the app's own writes clear or adjust them. A download, a build or Terminal's `rm` is not seen. Kept as it is (decision 4).
+9. **What couldn't be read is not said**: a folder with no access counts as empty, silently; Finder does the same. Kept as it is (decision 6).
 10. **Stop just as a walk finishes** shows no size until the folder is asked about again (known-issues.md).
-11. **Hard links are counted each time they are met** (the walker keeps no record of the files it has seen). How iCloud files not downloaded to the Mac are counted, and how Finder counts either, is not checked yet.
+11. **Hard links are counted each time they are met** (the walker keeps no record of the files it has seen). How iCloud files not downloaded to the Mac are counted, and how Finder counts either, is not checked. Left as it is (decision 7).
 
 ## Proposed rules
 
@@ -68,9 +68,11 @@ A request belongs to the window it came from, and knows whether that window is i
 ### What stops what
 
 - **Asked is never stopped by another request.** A second asked folder waits its turn; several asked in a row run in the order asked. Only Stop, closing its window, quitting, or a write that makes it outdated (run again, as now) ends it early. Asking again for the same folder with Recalculate starts it over.
+- **At most 10 asked requests wait, for the whole app.** A run of several folders (Calculate Size on a selection) is one request, its folders measured in order, so a selection of 200 folders is measured whole. An 11th drops the oldest waiting request, which goes back to not measured; the one running is never dropped. A request that joined a job already running or waiting doesn't count again.
 - **Automatic gives way.** An asked request from any window, or an automatic one from the front window, stops a running automatic walk of a window that isn't in front. What that walk measured inside is kept, and it goes back in the queue only if its window still describes that folder.
 - **A window has at most one automatic request**, waiting or running; a new folder replaces it, as now.
-- **A window or tab that goes behind another drops its automatic request**, waiting or running. When it comes to the front its views ask again.
+- **An automatic request goes when what asked for it no longer wants it**: the Info panel and Info Row describe another folder, both close, or the setting goes off. Waiting, it is taken out of the queue; running, it is stopped. (So it is today, for the window's own request; the rule now holds for a request put back in the queue too.)
+- **A tab behind another tab, or a minimized window, drops its automatic request**, waiting or running. When it is shown again its views ask again. A window merely behind another window keeps its request, behind the front window's.
 - **Stop stops the folder's job for every window that joined it** only when no other window still asks for it; otherwise that window just stops showing it.
 
 ### What the views show
@@ -90,10 +92,7 @@ A request belongs to the window it came from, and knows whether that window is i
 ### How long a size stays true
 
 - **A size measured again inside a folder corrects the folders holding it**: the difference is added to each, as removals already are (`FolderSizeAdjust`). Where that can't be done exactly (a folder holding it counted on another measurement that is gone), those sizes are forgotten and shown as not measured.
-- **Changes from outside the app**: the folder watchers the listings already run tell the cache which folders changed. Two choices, for the owner (question 4):
-  - *Forget*: the sizes of the changed folders and those holding them are forgotten; the views show "Calculate" or "--" again, and auto measure measures again what it describes.
-  - *Mark*: the sizes stay, shown as possibly outdated (dimmed, with the refresh button), until measured again.
-  Only the folder each window has in front is watched today (`FolderWatches`), so a change in a folder not on screen would still go unseen until it is shown.
+- **Changes from outside the app leave sizes as they are**, until measured again (decision 4). The refresh button beside a size is how to measure it again.
 
 ## Scenarios
 
@@ -114,47 +113,49 @@ Each with today's behavior and the proposed.
 8. *Both windows show `~/Library`; window 1 measures it.* Today: window 2 shows "--" until it redraws. Proposed: window 2 shows the size when it arrives.
 9. *Both windows ask for `~/Library`.* Today: walked twice. Proposed: walked once.
 10. *Window 1 measures `~`; window 2 asks for `~/Documents`.* Today: waits, then walks `~/Documents` again. Proposed: joins window 1's walk and has its size when that part of the walk is done.
-11. *A tab with the Info panel open goes behind another tab while it measures `~`.* Today: it keeps walking. Proposed: stopped and dropped; measured again when the tab comes back, unless known by then.
+11. *A tab with the Info panel open goes behind another tab while it measures `~`.* Today: it keeps walking. Proposed: stopped and dropped; measured again when the tab comes back, unless known by then. The same for a minimized window.
+12. *Calculate Size on twelve folders one at a time, each while another runs.* Today: each stops the one before. Proposed: one runs, ten wait, and the oldest waiting is dropped when the twelfth comes.
+13. *The Info panel describes `~`, waiting behind window 1's walk; you select `~/Documents`.* Today: the waiting request is replaced. Proposed: the same; `~` is taken out of the queue.
 
 **Panes**
 
-12. *A second pane opened and closed, then a folder measured in the first.* Today: the first pane hears of its sizes, since both panes now subscribe to the window's cache; before, the pane opened last took them all *(tried)*. Proposed: the same.
+14. *A second pane opened and closed, then a folder measured in the first.* Today: the first pane hears of its sizes, since both panes now subscribe to the window's cache; before, the pane opened last took them all *(tried)*. Proposed: the same.
 
 **Stopping and failing**
 
-13. *Stop on a folder.* Today: back to "Calculate"; what was measured inside is kept. Proposed: the same, and no other window's view of it is stopped.
-14. *A folder whose listing fails part way (a disk ejected, an I/O error).* Today: shows "Calculate"; the error is not shown. Proposed: "Couldn't Calculate" with the message, Try Again.
-15. *A folder with sub-folders that can't be read (another user's, a protected app container).* Today: counted as empty, silently. Proposed: the same, unless the owner wants it said (question 6).
-16. *Quit while measuring.* Today: the walk stops and nothing waiting runs. Proposed: the same.
+15. *Stop on a folder.* Today: back to "Calculate"; what was measured inside is kept. Proposed: the same, and no other window's view of it is stopped.
+16. *A folder whose listing fails part way (a disk ejected, an I/O error).* Today: shows "Calculate"; the error is not shown. Proposed: "Couldn't Calculate" with the message, Try Again.
+17. *A folder with sub-folders that can't be read (another user's, a protected app container).* Today: counted as empty, silently. Proposed: the same (decision 6).
+18. *Quit while measuring.* Today: the walk stops and nothing waiting runs. Proposed: the same.
 
 **Changes**
 
-17. *Move a file into a measured folder in the app.* Today: the folders it touched are measured again when next asked for; removals are taken off exactly. Proposed: the same.
-18. *Measure `~/Library/Caches` again after deleting caches in Terminal.* Today: Caches is right, `~/Library` and `~` keep their old totals. Proposed: they are corrected by the difference.
-19. *Download a 4 GB file into `~/Downloads` with another app.* Today: `~/Downloads` keeps its old size. Proposed: forgotten or marked, as the owner decides.
+19. *Move a file into a measured folder in the app.* Today: the folders it touched are measured again when next asked for; removals are taken off exactly. Proposed: the same.
+20. *Measure `~/Library/Caches` again after deleting caches in Terminal.* Today: Caches is right, `~/Library` and `~` keep their old totals. Proposed: they are corrected by the difference.
+21. *Download a 4 GB file into `~/Downloads` with another app.* Today: `~/Downloads` keeps its old size until measured again. Proposed: the same (decision 4).
 
 **Disks and kinds**
 
-20. *Show Info on a folder on another disk or a network volume.* Today: not measured automatically; Calculate Size measures it. Proposed: the same.
-21. *A bundle (an app) anywhere.* Today: measured automatically. Proposed: the same.
-22. *The Trash.* Today: only the home folder's Trash is measured (known-issues.md). Proposed: out of scope here.
+22. *Show Info on a folder on another disk or a network volume.* Today: not measured automatically; Calculate Size measures it. Proposed: the same.
+23. *A bundle (an app) anywhere.* Today: measured automatically. Proposed: the same.
+24. *The Trash.* Today: only the home folder's Trash is measured (known-issues.md). Proposed: out of scope here.
 
-## Questions for the owner
+## Decisions (2026-11-16)
 
-1. **Asked never stops asked** (Calculate Size on B waits for A instead of stopping it). *Recommended:* yes. It costs a wait when you change your mind, which Stop covers.
-2. **Automatic walks of a window not in front give way** to any asked request and to the front window's automatic one, and are put back in the queue. *Recommended:* yes.
-3. **A tab or window that goes behind drops its automatic walk.** *Recommended:* yes for a tab behind another tab and for a minimized window; a window merely behind another window keeps its place in the queue, behind the front window's.
-4. **Changes made outside the app**: forget the sizes, mark them as possibly outdated, or leave them as today. *Recommended:* forget, for the folders the watchers see change: simplest, and auto measure measures again what is on screen. It costs a walk each time something changes in a folder you are looking at, so a folder that changes all the time (Downloads while downloading) would walk again and again; a short wait after the last change (2 s) keeps that in check.
-5. **Show "Waiting…" apart from "Calculating…".** *Recommended:* yes.
-6. **Say when a size left out folders it couldn't read** ("Some folders couldn't be read" as the size's tooltip). *Recommended:* no, as Finder doesn't; revisit if someone asks.
-7. **Hard links and iCloud files**: count as today and look at how Finder counts them before deciding. *Recommended:* look first, then ask.
+1. **A size asked for is never stopped by another request.** A second one waits its turn. This is for sizes asked for (Calculate Size by any route, the Calculate link, the refresh button); automatic walks give way (2). **At most 10 asked requests wait**, for the whole app, a run of several folders counting as one; past that the oldest waiting one is dropped, never the one running.
+2. **Automatic walks of a window not in front give way** to any asked request and to the front window's automatic one, and are put back in the queue while the window still describes the folder. **When the view that asked moves to another folder or closes, its automatic request is taken out of the queue**, or stopped if it runs.
+3. **A tab behind another tab, or a minimized window, drops its automatic walk.** A window merely behind another keeps its place, after the front window's.
+4. **Changes made outside the app leave sizes as they are**, as today. Asked to choose between forgetting the sizes of the folders the watchers see change, marking them as possibly outdated, and this; the owner chose this.
+5. **A walk waiting shows "Waiting…"**, apart from one running: a dimmed spinner with Stop and the tooltip "Waiting for another folder" in the Info panel and Info Row, "Waiting…" in the List's Size column and the status bar.
+6. **A size that left out folders it couldn't read doesn't say so**, as Finder doesn't.
+7. **Hard links and iCloud files are counted as they are now**; not part of this plan.
 
 ## Order of work
 
-1. **The jobs** (`FolderSizeJobs`): asked and automatic kinds, the queue order, front window, joining a job already running or waiting, joining a walk of a folder holding it, and the stop rules. Tests with the fake walker. Nothing changes in the views yet.
+1. **The jobs** (`FolderSizeJobs`): asked and automatic kinds, the queue order, front window, joining a job already running or waiting, joining a walk of a folder holding it, the stop rules and the cap of 10 waiting. Tests with the fake walker. Nothing changes in the views yet.
 2. **Every window hears of every size** (the jobs tell each window; each repaints what it shows). The front window is told to the jobs by the window controllers.
 3. **The states shown**: waiting, failed with its message and Try Again, in the Info panel, the Info Row, the List and the status bar. `help-content.json` and Help if they describe it.
-4. **Sizes kept true**: a size measured again inside corrects the folders holding it; then, as the owner decides, changes from outside.
+4. **Sizes kept true**: a size measured again inside corrects the folders holding it.
 5. **Hidden tabs and minimized windows** drop their automatic walks.
 
 Each step is tried in the app with a scratch scenario on a large folder (the home folder) and two windows, and lands on its own.
