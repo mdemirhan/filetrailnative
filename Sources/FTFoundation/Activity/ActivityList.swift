@@ -84,7 +84,33 @@ public struct ActivityItem: Equatable, Sendable, Identifiable {
     }
 }
 
+/// How something the Activity list showed ended, for its row, which stays while the list is open.
+public enum ActivityOutcome: Equatable, Sendable {
+    case completed
+    case stopped
+    case failed
+    /// A file operation that did part of its work.
+    case partly
+    /// Still running, but no longer listed: a walk the app started by itself that holds up nothing asked for now.
+    case goesOn
+}
+
 public enum ActivityList {
+    /// What the row of something no longer listed says in place of how far along it was; `outcome` nil when how it
+    /// ended isn't known.
+    public static func endedDetail(_ kind: ActivityItem.Kind, _ outcome: ActivityOutcome?) -> String {
+        switch (kind, outcome) {
+        case (_, .completed): "Done"
+        case (_, .stopped): "Stopped"
+        case (.fileOperation, .failed): "Didn't finish"
+        case (_, .failed): "Couldn't calculate"
+        case (_, .partly): "Finished in part"
+        case (_, .goesOn): "Calculating size"
+        case (.folderSizeRun, nil): "No longer waiting"
+        case (_, nil): "Ended"
+        }
+    }
+
     /// The rows: the file operation running (one at a time in the whole app), then the folder sizes, the one measured
     /// first and the rest in the order they wait. A walk the app started by itself is listed only while it runs with a
     /// size asked for waiting behind it, so the list says what holds that size up; otherwise it is quiet, as it is

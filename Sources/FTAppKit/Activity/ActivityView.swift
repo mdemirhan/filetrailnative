@@ -4,22 +4,22 @@ import FTFoundation
 
 /// The content of the Activity popover: a header, then a row for each thing running or waiting, the file operation
 /// first. A row says what it is and how far along, has a bar when how far is known, and Stop.
+///
+/// While the list is open no row changes place, so a press aimed at one row's Stop never lands on another's: a row
+/// whose item ended stays where it was, dimmed, saying how it ended, with no Stop; one whose turn came says so where it
+/// is; and what is new goes to the end. The list opened again shows only what runs, in its usual order.
 final class ActivityView: NSView {
     static let width = 320.0
     static let rowHeight = 48.0
     static let headerHeight = 30.0
-    /// How long Stop is not taken after a row came to another place: a press aimed at one row's Stop as the row
-    /// above it ended would land on the next one's.
-    static let settleInterval = 0.4
     private static var inset: Double { DesignTokens.menu.padding + DesignTokens.menu.borderWidth }
 
     private(set) var items: [ActivityItem]
     var onStop: (ActivityItem) -> Void = { _ in }
-    /// The time now, in seconds; a test hands its own.
-    var now: () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
+    /// How what a row listed ended, once it is no longer listed (nil: not known).
+    var outcome: (ActivityItem) -> ActivityOutcome? = { _ in nil }
     private let title = ClipboardMenuText(identifier: "activityPopover.title")
     private var rows: [ActivityRow] = []
-    private var movedAt = -TimeInterval.infinity
 
     init(items: [ActivityItem]) {
         self.items = items
@@ -41,39 +41,37 @@ final class ActivityView: NSView {
 
     /// A row whose item is still listed is kept and told what changed, so a press on its Stop under way, its hover
     /// and VoiceOver's place in it outlast the list's updates, which come several times a second while something
-    /// runs. Only the rows of items new to the list are made, and those of items gone removed.
+    /// runs. A row whose item is no longer listed says how it ended, where it is; the rows of items new to the list
+    /// are added after the others.
     func update(_ items: [ActivityItem]) {
         self.items = items
-        let places = Dictionary(
-            rows.enumerated().map { ($0.element.item.id, $0.offset) }, uniquingKeysWith: { first, _ in first })
-        var kept = Dictionary(rows.map { ($0.item.id, $0) }, uniquingKeysWith: { first, _ in first })
-        var moved = false
-        rows = items.enumerated().map { index, item in
-            if let row = kept.removeValue(forKey: item.id) {
-                if places[item.id] != index { moved = true }
+        let listed = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        var shown = Set<String>()
+        for row in rows {
+            if let item = listed[row.item.id] {
                 row.update(item)
-                return row
+                shown.insert(item.id)
+            } else {
+                row.end(ActivityList.endedDetail(row.item.kind, outcome(row.item)))
             }
+        }
+        for item in items where shown.insert(item.id).inserted {
             let row = ActivityRow(item: item)
             row.onStop = { [weak self, weak row] in
-                guard let self, let row, self.takesStop else { return }
+                guard let self, let row, !row.isEnded else { return }
                 self.onStop(row.item)
             }
             addSubview(row)
-            return row
+            rows.append(row)
         }
-        for row in kept.values { row.removeFromSuperview() }
-        if moved { movedAt = now() }
         needsLayout = true
     }
 
-    /// Whether a press on Stop counts: not just after a row came to another place.
-    var takesStop: Bool { now() - movedAt >= Self.settleInterval }
-
+    /// Its size: a row for everything it has listed since it opened.
     var listSize: NSSize {
         NSSize(
             width: Self.width,
-            height: 2 * Self.inset + Self.headerHeight + Double(items.count) * Self.rowHeight)
+            height: 2 * Self.inset + Self.headerHeight + Double(rows.count) * Self.rowHeight)
     }
 
     override func layout() {
@@ -95,6 +93,9 @@ final class ActivityView: NSView {
 /// One thing running or waiting: its name over how far along it is, a bar when that is known, and Stop.
 final class ActivityRow: NSView {
     private(set) var item: ActivityItem
+    /// What it says once its item is no longer listed (nil: it is listed).
+    private(set) var endedDetail: String?
+    var isEnded: Bool { endedDetail != nil }
     var onStop: () -> Void = {}
     private let name = ClipboardMenuText(identifier: "activityPopover.name")
     private let detail = ClipboardMenuText(identifier: "activityPopover.detail")
@@ -126,26 +127,37 @@ final class ActivityRow: NSView {
 
     /// The item moved on: the row says so, staying the view it was.
     func update(_ next: ActivityItem) {
-        guard next != item else { return }
-        let hadBar = item.progress != nil
+        guard next != item || isEnded else { return }
         item = next
+        endedDetail = nil
         show()
-        if hadBar != (next.progress != nil) { needsLayout = true }
+    }
+
+    /// The item is no longer listed: the row stays, dimmed, saying how it ended, with nothing to stop.
+    func end(_ detail: String) {
+        guard endedDetail != detail else { return }
+        endedDetail = detail
+        show()
     }
 
     private func show() {
         let palette = AppearanceModel.shared.theme.palette
+        let dimmed = item.isWaiting || isEnded
         name.set(item.title, font: ChromeColors.font(size: DesignTokens.typeScale.body))
-        name.textColor = NSColor(item.isWaiting ? palette.contextMenuShortcut : palette.contextMenuText)
-        detail.set(item.detail, font: ChromeColors.font(size: DesignTokens.typeScale.small))
+        name.textColor = NSColor(dimmed ? palette.contextMenuShortcut : palette.contextMenuText)
+        let text = endedDetail ?? item.detail
+        detail.set(text, font: ChromeColors.font(size: DesignTokens.typeScale.small))
         detail.textColor = NSColor(palette.contextMenuShortcut)
+        let hadBar = !bar.isHidden
         bar.doubleValue = item.progress ?? 0
-        bar.isHidden = item.progress == nil
+        bar.isHidden = item.progress == nil || isEnded
+        if hadBar == bar.isHidden { needsLayout = true }
+        stop.isHidden = isEnded
         // Set only when it changes: setting a tooltip takes away the one showing.
         let tip = item.isWaiting ? "Stop Waiting" : "Stop"
         if stop.toolTip != tip { stop.toolTip = tip }
         stop.setAccessibilityLabel("Stop \(item.title)")
-        setAccessibilityLabel("\(item.title), \(item.detail)")
+        setAccessibilityLabel("\(item.title), \(text)")
     }
 
     @objc private func stopPressed() { onStop() }

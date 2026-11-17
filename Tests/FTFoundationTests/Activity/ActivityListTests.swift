@@ -3,6 +3,19 @@ import Testing
 @testable import FTFoundation
 
 struct ActivityListTests {
+    // What a row says once its item is no longer listed.
+    @Test func saysHowWhatWasListedEnded() {
+        #expect(ActivityList.endedDetail(.fileOperation, .completed) == "Done")
+        #expect(ActivityList.endedDetail(.folderSize, .completed) == "Done")
+        #expect(ActivityList.endedDetail(.folderSize, .stopped) == "Stopped")
+        #expect(ActivityList.endedDetail(.fileOperation, .failed) == "Didn't finish")
+        #expect(ActivityList.endedDetail(.fileOperation, .partly) == "Finished in part")
+        #expect(ActivityList.endedDetail(.folderSize, .failed) == "Couldn't calculate")
+        #expect(ActivityList.endedDetail(.folderSize, .goesOn) == "Calculating size")
+        #expect(ActivityList.endedDetail(.folderSizeRun, nil) == "No longer waiting")
+        #expect(ActivityList.endedDetail(.fileOperation, nil) == "Ended")
+    }
+
     // The folders of a Calculate Size on several that wait their turn are one row, after the sizes, and count as one
     // more for the ring.
     @Test func listsTheFoldersOfARunStillWaitingAsOneRow() {

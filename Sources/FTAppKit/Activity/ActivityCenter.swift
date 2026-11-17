@@ -25,6 +25,7 @@ final class ActivityCenter {
     private weak var operationOwner: (any WriteOperationWindow)?
     /// How the last file operation ended.
     private var operationCompleted = false
+    private var lastOperationEnd: (id: String, status: WriteOperationStatus)?
     /// Stops a file operation as its window's Stop does; the app's write operations set it.
     var stopOperation: ((String, any WriteOperationWindow) -> Void)?
     /// The folder size jobs; a test hands its own.
@@ -41,6 +42,7 @@ final class ActivityCenter {
         if event.status.isTerminal {
             guard operation?.id == event.operationId else { return }
             operationCompleted = event.status == .completed
+            lastOperationEnd = (event.operationId, event.status)
             operation = nil
             operationOwner = nil
         } else {
@@ -86,6 +88,30 @@ final class ActivityCenter {
         endedWell = next.isEmpty && operationCompleted && items.contains { $0.kind == .fileOperation }
         items = next
         NotificationCenter.default.post(name: Self.changed, object: self)
+    }
+
+    /// How what `item` listed ended, for its row in a list still open; nil when that isn't known.
+    func outcome(of item: ActivityItem) -> ActivityOutcome? {
+        switch item.kind {
+        case .fileOperation:
+            guard let end = lastOperationEnd, end.id == item.id else { return nil }
+            switch end.status {
+            case .completed: return .completed
+            case .cancelled: return .stopped
+            case .partial: return .partly
+            default: return .failed
+            }
+        case .folderSize:
+            guard let status = jobs()?.getStatus(jobId: item.id).status else { return nil }
+            switch status {
+            case .ready: return .completed
+            case .cancelled: return .stopped
+            case .error: return .failed
+            default: return .goesOn
+            }
+        case .folderSizeRun:
+            return nil
+        }
     }
 
     // MARK: Stop

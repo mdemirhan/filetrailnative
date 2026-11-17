@@ -2,8 +2,8 @@
 import AppKit
 import FTFoundation
 
-/// One tab's Activity list: it opens under the title's ring, follows what runs while open, and closes on Escape, a
-/// press outside it, or once nothing runs.
+/// One tab's Activity list: it opens under the title's ring, follows what runs while open, and closes on Escape or a
+/// press outside it. What ends while it is open keeps its row, so it stays open with nothing left running.
 @MainActor
 final class TabActivity {
     private weak var tab: MainWindowController?
@@ -35,6 +35,7 @@ final class TabActivity {
         AppMenuPresenter.shared.close()
         let view = ActivityView(items: center.items)
         view.onStop = { item in ActivityCenter.shared.stop(item) }
+        view.outcome = { item in ActivityCenter.shared.outcome(of: item) }
         self.view = view
         let list = ToolbarListPopover(
             content: view, size: view.listSize, key: { [weak self] event in self?.key(event) ?? false },
@@ -55,15 +56,10 @@ final class TabActivity {
         list = nil
     }
 
-    /// What runs changed: the list shows it, or closes with nothing left.
+    /// What runs changed: the list shows it, each row where it was.
     private func changed() {
         guard let view else { return }
-        let items = ActivityCenter.shared.items
-        guard !items.isEmpty else {
-            close()
-            return
-        }
-        view.update(items)
+        view.update(ActivityCenter.shared.items)
         view.layoutSubtreeIfNeeded()
         list?.setSize(view.listSize)
     }

@@ -33,9 +33,16 @@ final class TitleActivityView: NSView, ToolbarListAnchor {
     private(set) var indicator: ActivityIndicator?
     /// The check after a file operation completed, until it fades.
     private(set) var showsCheck = false
-    /// The list is open under it.
+    /// The list is open under it. It stays for as long as the list does, an empty ring once nothing runs, and goes
+    /// when the list closes.
     var isOn = false {
-        didSet { updatePill() }
+        didSet {
+            guard isOn != oldValue else { return }
+            updatePill()
+            guard !isOn, !isShown, !isHidden else { return }
+            generation += 1
+            fadeOut()
+        }
     }
 
     private let pill = CALayer()
@@ -85,7 +92,7 @@ final class TitleActivityView: NSView, ToolbarListAnchor {
     // MARK: What it shows
 
     /// Whether it takes room at the end of the title.
-    var isShown: Bool { indicator != nil || showsCheck }
+    var isShown: Bool { indicator != nil || showsCheck || isOn }
 
     /// Its width while shown: the ring, and the count's room when there is a count.
     var preferredWidth: Double {
@@ -143,6 +150,11 @@ final class TitleActivityView: NSView, ToolbarListAnchor {
             MainActor.assumeIsolated {
                 guard let self, self.generation == at, self.showsCheck else { return }
                 self.showsCheck = false
+                guard !self.isShown else {
+                    // Its list is open: the empty ring stays under it.
+                    self.updateLayers()
+                    return
+                }
                 self.fadeOut()
             }
         }
@@ -228,7 +240,7 @@ final class TitleActivityView: NSView, ToolbarListAnchor {
         }
 
         let shown = indicator
-        track.isHidden = shown == nil || showsCheck
+        track.isHidden = (shown == nil && !isOn) || showsCheck
         arc.isHidden = shown == nil || showsCheck
         checkCircle.isHidden = !showsCheck
         checkMark.isHidden = !showsCheck

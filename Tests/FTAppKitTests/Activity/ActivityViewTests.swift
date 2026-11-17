@@ -31,8 +31,9 @@ struct ActivityViewTests {
         #expect(stopped == ["job"])
         #expect(view.listSize.height > 2 * ActivityView.rowHeight)
 
-        view.update([Self.items[1]])
-        #expect(view.subviews.compactMap { $0 as? ActivityRow }.count == 1)
+        // Opened on what runs, it lists that in its usual order.
+        let later = ActivityView(items: [Self.items[1]])
+        #expect(later.subviews.compactMap { $0 as? ActivityRow }.map(\.item.id) == ["job"])
     }
 
     // The list is told what runs several times a second: a row whose item is still listed stays the view it was,
@@ -58,33 +59,54 @@ struct ActivityViewTests {
         #expect(stopped == [moved[1]])
     }
 
-    // When a row ends, the ones under it move up under the pointer: for a moment Stop is not taken, so a press aimed
-    // at the row that went doesn't stop the next one. A row added at the end moves none.
-    @Test func stopIsNotTakenJustAfterARowCameToAnotherPlace() throws {
+    // While the list is open no row changes place, so a press aimed at one row's Stop never lands on another's. A
+    // row whose item ended stays where it was, saying how it ended, with no Stop; one that comes first in what runs
+    // now stays where it is; what is new goes to the end; and the list keeps its rows with nothing left running.
+    @Test func noRowChangesPlaceWhileTheListIsOpen() throws {
         let third = ActivityItem(
             id: "job-2", kind: .folderSize, title: "Movies", detail: "Waiting to calculate its size", progress: nil,
             isWaiting: true)
-        var time = 100.0
         let view = ActivityView(items: Self.items)
-        view.now = { time }
+        var outcomes: [String: ActivityOutcome] = ["op": .completed]
+        view.outcome = { outcomes[$0.id] }
         var stopped: [String] = []
         view.onStop = { stopped.append($0.id) }
-        func pressStop(_ index: Int) {
-            let row = view.subviews.compactMap { $0 as? ActivityRow }[index]
-            row.stop.sendAction(row.stop.action, to: row.stop.target)
+        func rows() -> [ActivityRow] { view.subviews.compactMap { $0 as? ActivityRow } }
+        func pressStop(_ row: ActivityRow) { row.stop.sendAction(row.stop.action, to: row.stop.target) }
+        func frames() -> [NSRect] {
+            view.frame = NSRect(origin: .zero, size: view.listSize)
+            view.layoutSubtreeIfNeeded()
+            return rows().map(\.frame)
         }
+        let before = rows()
+        let places = frames()
 
-        view.update(Self.items + [third])
-        pressStop(2)
-        #expect(stopped == ["job-2"])
+        // The file operation ended and another size was asked for, which the jobs list first as it runs.
+        var running = third
+        running.isWaiting = false
+        running.detail = "Calculating size"
+        view.update([running, Self.items[1]])
+        #expect(rows().map(\.item.id) == ["op", "job", "job-2"])
+        #expect(rows()[0] === before[0] && rows()[1] === before[1])
+        #expect(Array(frames().prefix(2)) == places)
+        #expect(rows()[0].isEnded && rows()[0].stop.isHidden && rows()[0].endedDetail == "Done")
+        #expect(rows()[0].accessibilityLabel() == "Copying…, Done")
+        #expect(rows()[0].subviews.compactMap { $0 as? NSProgressIndicator }.first?.isHidden == true)
+        // A press where the ended row's Stop was stops nothing; the others stop their own.
+        pressStop(rows()[0])
+        pressStop(rows()[1])
+        #expect(stopped == ["job"])
 
-        // The file operation ended: the two sizes moved up a row.
-        view.update([Self.items[1], third])
-        pressStop(0)
-        #expect(stopped == ["job-2"])
-        time += ActivityView.settleInterval
-        pressStop(0)
-        #expect(stopped == ["job-2", "job"])
+        // Nothing left running: every row stays, each saying how it ended.
+        outcomes = ["op": .completed, "job": .stopped, "job-2": .failed]
+        view.update([])
+        #expect(rows().count == 3 && rows().allSatisfy(\.isEnded))
+        #expect(rows().map(\.endedDetail) == ["Done", "Stopped", "Couldn't calculate"])
+
+        // One that waits again under the same id (it gave way) is listed again in its row.
+        view.update([Self.items[1]])
+        #expect(!rows()[1].isEnded && !rows()[1].stop.isHidden && rows()[1].endedDetail == nil)
+        #expect(rows()[1].accessibilityLabel() == "Library, Waiting to calculate its size")
     }
 
     // The title's ring: as far round as a file operation has gone, spinning while that isn't known, a pill with the count
@@ -129,6 +151,17 @@ struct ActivityViewTests {
         #expect(ring.showsCheck && ring.isShown && ring.ringFill == nil && !ring.spins)
         ring.show(nil, endedWell: true)
         #expect(ring.showsCheck)
+
+        // Under its open list it stays, an empty ring once nothing runs and the check has gone, until the list closes.
+        let open = TitleActivityView()
+        open.reducesMotion = { true }
+        open.show(ActivityIndicator(progress: nil, isWaiting: false, moreCount: 0))
+        open.isOn = true
+        open.show(nil)
+        #expect(open.isShown && !open.isHidden && !open.spins && open.ringFill == nil && !open.showsCheck)
+        #expect(open.preferredWidth == TitleActivityView.ringSize + 2 * TitleActivityView.inset)
+        open.isOn = false
+        #expect(!open.isShown && open.isHidden && open.preferredWidth == 0)
 
         let quiet = TitleActivityView()
         quiet.reducesMotion = { true }
