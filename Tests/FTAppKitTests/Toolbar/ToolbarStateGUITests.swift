@@ -76,7 +76,7 @@ extension ExplorerWindowGUITests.ToolbarGUITests {
         setItems(tab, ToolbarItems.defaultTopItems + [.undoHistory, .newTab], harness)
         #expect(toolbar.item(.clipboard)?.isHidden == true)
         #expect(toolbar.item(.undoHistory)?.isHidden == true)
-        let switcher = try #require(toolbar.viewSwitch)
+        let switcher = try #require(toolbar.button(.viewMenu))
         #expect(switcher.isEnabled && toolbar.button(.sort)?.isEnabled == true)
         tab.perform(.customizeToolbar)
         #expect(await waitUntil { window.attachedSheet != nil })
@@ -118,7 +118,7 @@ extension ExplorerWindowGUITests.ToolbarGUITests {
         harness.layout(tab)
         let toolbar = tab.explorerToolbar
         #expect(await waitUntil { toolbar.item(.newTab)?.isVisible == false })
-        #expect(toolbar.item(.viewOptions)?.isVisible == true)
+        #expect(toolbar.item(.title)?.isVisible == true)
         // Under a dialog the system's » button is covered as the items are.
         let frameView = try #require(window.contentView?.superview)
         let overflow = try #require(
