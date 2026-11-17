@@ -9,6 +9,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case refresh
     case topSeparator
     case view
+    case viewMenu
     case sort
     case title
     case clipboard
@@ -63,6 +64,8 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .topSeparator, label: "Space", icon: nil, allowDuplicates: true),
         ToolbarItemDefinition(id: .view, label: "View Mode", icon: nil),
+        // The view switch's four views as one button and its menu, which takes the room of one item.
+        ToolbarItemDefinition(id: .viewMenu, label: "View Mode Menu", icon: .viewAs),
         ToolbarItemDefinition(id: .sort, label: "Sort", icon: .sortBy),
         ToolbarItemDefinition(id: .title, label: "Title", icon: nil, topRequired: true),
         ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, highPriority: true),
@@ -186,6 +189,7 @@ extension ToolbarItems {
         .refresh,
         .newTab,
         .view,
+        .viewMenu,
         .sort,
         .foldersFirst,
         .hidden,

@@ -57,7 +57,8 @@ class ToolbarButton: NSButton {
 
     /// The buttons that open a menu.
     private static let menuIdentifiers: Set<String> = [
-        "toolbar.back", "toolbar.forward", "toolbar.sort", "toolbar.viewOptions", "toolbar.theme", "toolbar.clipboard",
+        "toolbar.back", "toolbar.forward", "toolbar.viewMenu", "toolbar.sort", "toolbar.viewOptions", "toolbar.theme",
+        "toolbar.clipboard",
     ]
 
     init(icon name: CommandIcon, label: String, identifier: String) {

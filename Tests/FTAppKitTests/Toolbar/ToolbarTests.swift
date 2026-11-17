@@ -465,6 +465,54 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The View Mode Menu is the view switch in one button: it shows the view on screen, its menu has the four views
+        // with their keys and the Previews segment's counts, and it can sit in the toolbar beside the switch.
+        @Test func switchesTheViewAndThePreviewCountFromTheViewModeMenu() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let toolbar = tab.explorerToolbar
+            setItems(tab, ToolbarItems.defaultTopItems + [.viewMenu], harness)
+            tab.perform(.viewAsDetails)
+            let button = try #require(button(tab, .viewMenu))
+            #expect(button.iconName == .details && button.tooltip == "View as List")
+            #expect(button.accessibilityRole() == .menuButton)
+            _ = button.accessibilityPerformPress()
+            #expect(
+                titles(menu) == [
+                    "Icons", "List", "Compact List", "Previews", "-", "Show Previews", "9 at a Time", "4 at a Time",
+                    "2 at a Time", "1 at a Time",
+                ])
+            #expect(menu?.items.filter { $0.checked == true }.map(\.title) == ["List"])
+            #expect(
+                menu?.items.first?.key
+                    == ShortcutDisplay.defaults.written(.viewAsIcons).flatMap(MenuKeyEquivalent.parse))
+            #expect(button.menuOpen)
+            choose("Icons")
+            #expect(menu == nil)
+            #expect(tab.viewState.viewMode == .icons)
+            #expect(button.iconName == .icons && button.tooltip == "View as Icons")
+            // The switch beside it follows, as the button follows the switch.
+            #expect(toolbar.viewSwitch?.selected == .icons)
+            toolbar.viewSwitch?.choose(segment: 2)
+            #expect(button.iconName == .list && button.tooltip == "View as Compact List")
+
+            _ = button.accessibilityPerformPress()
+            choose("2 at a Time")
+            #expect(tab.viewState.viewMode == .previews && tab.content.previewCount == 2)
+            #expect(button.iconName == .previews)
+            _ = button.accessibilityPerformPress()
+            #expect(menu?.items.filter { $0.checked == true }.map(\.title) == ["Previews", "2 at a Time"])
+            // Pressed again, the button closes its menu.
+            _ = button.accessibilityPerformPress()
+            #expect(menu == nil)
+
+            // In the » menu it is the switch's entry.
+            let entry = try #require(toolbar.item(.viewMenu)?.menuFormRepresentation)
+            #expect(entry.title == "View Mode")
+            #expect(entry.submenu?.items.map(\.title) == ["as Icons", "as List", "as Compact List", "as Previews"])
+            await harness.close()
+        }
+
         @Test func choosesAutoLightOrDarkFromTheThemeButtonsMenu() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

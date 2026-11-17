@@ -282,7 +282,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         let panels = context.panels
         if let button = views[id] as? ToolbarButton {
             // Set once: the items whose tooltip says their state set it below.
-            if ![.sort, .viewOptions, .theme, .clipboard].contains(id) {
+            if ![.viewMenu, .sort, .viewOptions, .theme, .clipboard].contains(id) {
                 button.tooltip = Tooltips.toolbarItemTooltip(itemID: id, state: tooltipState, shortcuts: shortcuts)
             }
             switch id {
@@ -297,6 +297,12 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             case .infoPanel: button.isOn = panels.propertiesOpen
             case .twoPanes: button.isOn = (context as? MainWindowController)?.showsTwoPanes == true
             case .infoRow: button.isOn = panels.detailRowOpen
+            case .viewMenu:
+                // The view on screen, as the switch shows it: search results show in one of their own.
+                let mode = context.searchRootPath != nil ? view.searchViewMode : view.viewMode
+                button.iconName = Self.viewIcon(mode)
+                button.isEnabled = canPerform(.viewAsIcons)
+                button.tooltip = "View as \(mode.menuName)"
             case .sort:
                 button.isEnabled = canPerform(.sortByName)
                 button.tooltip =
@@ -574,6 +580,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 self.cancelHold()
                 self.showHistoryMenu(back: back, from: button)
             }
+        case .viewMenu:
+            button.onClick = { [weak self, weak button] in
+                guard let self, let button else { return }
+                self.toggleMenu(from: button) { self.viewModeMenu(anchor: button) }
+            }
         case .sort:
             button.onClick = { [weak self, weak button] in
                 guard let self, let button else { return }
@@ -625,6 +636,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         }
     }
 
+    /// The view's symbol, the one its segment of the view switch shows.
+    static func viewIcon(_ mode: ExplorerViewMode) -> CommandIcon {
+        ToolbarViewSwitch.modes.first { $0.0 == mode }?.1 ?? .viewAs
+    }
+
     /// View ▸ Show Previews' command for `count`, which the view switch's Previews segment sends from its menu.
     static func showPreviewsCommand(_ count: Int) -> AppCommand? {
         AppCommand.allCases.first { PreviewGrid.count(of: $0) == count }
@@ -636,6 +652,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         case .back: "Back"
         case .forward: "Forward"
         case .up: "Enclosing Folder"
+        case .viewMenu: "View Mode"
         case .sort: "Sort By"
         case .viewOptions: "View Options"
         case .foldersFirst: "Folders First"

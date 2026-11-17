@@ -115,6 +115,35 @@ extension ExplorerToolbar {
         present(menu, from: anchor, at: origin)
     }
 
+    /// The View Mode Menu's menu: the four views, then the counts of the Previews segment's menu, checked while the pane
+    /// shows Previews at one of them.
+    func viewModeMenu(anchor: ToolbarButton) {
+        guard let context else { return }
+        let view = context.viewState
+        let shortcuts = shortcuts
+        func key(_ command: AppCommand) -> MenuKeyEquivalent? {
+            ShortcutCommandID(rawValue: command.rawValue).flatMap(shortcuts.written).flatMap(MenuKeyEquivalent.parse)
+        }
+        // The view on screen: search results show in one of their own.
+        let shown = context.searchRootPath != nil ? view.searchViewMode : view.viewMode
+        let previewCount = shown == .previews ? (context as? MainWindowController)?.content.previewCount : nil
+        var items = ExplorerViewMode.menuOrder.map { mode in
+            let command = Self.viewCommand(mode)
+            return AppMenuItem(
+                title: mode.menuName, key: key(command), checked: shown == mode,
+                action: { [weak self] in self?.context?.perform(command) })
+        }
+        items += [.separator, .heading("Show Previews")]
+        for count in PreviewGrid.counts {
+            guard let command = Self.showPreviewsCommand(count) else { continue }
+            items.append(
+                AppMenuItem(
+                    title: "\(count) at a Time", key: key(command), checked: previewCount == count,
+                    action: { [weak self] in self?.context?.perform(command) }))
+        }
+        present(AppMenu(items: items, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item"), from: anchor)
+    }
+
     static func sortCommand(_ value: SortByPreference) -> AppCommand {
         switch value {
         case .name: .sortByName
@@ -213,9 +242,9 @@ extension ExplorerToolbar {
             return overflowItem(
                 "Enclosing Folder", enabled: ExplorerTabs.parentDirectoryPath(context.shownFolderPath) != nil
             ) { [weak self] in self?.context?.goToParentFolder() }
-        case .view:
+        case .view, .viewMenu:
             return submenu(
-                ToolbarItems.definition(id).label,
+                ToolbarItems.definition(.view).label,
                 ExplorerViewMode.menuOrder.map { mode in
                     // The view on screen: search results show in one of their own (`shownViewMode`).
                     let shown = context.searchRootPath != nil ? view.searchViewMode : view.viewMode
