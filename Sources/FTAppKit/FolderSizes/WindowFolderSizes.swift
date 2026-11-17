@@ -90,6 +90,11 @@ final class WindowFolderSizes {
     private var lastFolderRun = 0
     /// The folders of a run whose turn hasn't come, each with its run: they show as waiting, with no job yet.
     private var runWaiting: [String: Int] = [:]
+    /// Each run under way of more than one folder, for the Activity list: how many folders it has, how many it has
+    /// done with, and the one it is on.
+    private var runStates: [Int: (total: Int, done: Int, current: String?)] = [:]
+    /// How the last runs ended (true: every folder had its turn; false: stopped), for the Activity list's rows.
+    private var runEnds: [Int: Bool] = [:]
     /// The measurement asked for of each folder (Calculate Size, by any route), by its job, while it runs or
     /// waits. One the app started by itself that was then asked for keeps its job, and is no longer the app's own
     /// to stop.
@@ -449,7 +454,8 @@ final class WindowFolderSizes {
     }
 
     /// Several folders, one after another, as one request: each waits for the one before, and says so until its
-    /// turn comes. With `recalculate` false, folders whose size is known or being calculated are left alone. A
+    /// turn comes. Folders being calculated, or waiting to be, are left alone: their answer is as fresh as a new
+    /// one's. With `recalculate` false, so are folders whose size is known. A
     /// folder stopped part way (Stop, or dropped from the jobs' queue) stops the run; another run doesn't, and
     /// Stop on a folder whose turn hasn't come takes only that one out.
     func calculate(_ paths: [String], recalculate: Bool = false) {
@@ -458,16 +464,16 @@ final class WindowFolderSizes {
         var wanted: [String] = []
         var seen = Set<String>()
         for path in paths where seen.insert(path).inserted {
-            if !recalculate, let entry = cache[path]?.entry {
-                switch entry {
-                case .ready, .calculating: continue
-                default: break
-                }
+            switch cache[path]?.entry {
+            case .calculating: continue
+            case .ready where !recalculate: continue
+            default: break
             }
             wanted.append(path)
         }
         guard !wanted.isEmpty else { return }
         folderRuns[run] = Set(wanted)
+        if wanted.count > 1 { runStates[run] = (wanted.count, 0, nil) }
         for path in wanted.dropFirst() {
             runWaiting[path] = run
             setEntry(path, .calculating(jobID: "", waiting: true))
@@ -480,30 +486,42 @@ final class WindowFolderSizes {
                 let path = wanted[index]
                 index += 1
                 // Stopped, or asked for by itself, while it waited.
-                guard index == 1 || runWaiting[path] == run else { continue }
+                guard index == 1 || runWaiting[path] == run else {
+                    runStates[run]?.done += 1
+                    continue
+                }
                 let resume = index
                 finishWaiters[path, default: []].append { [weak self] entry in
                     guard let self else { return }
                     self.folderRuns[run]?.remove(path)
+                    self.runStates[run]?.done += 1
+                    self.runStates[run]?.current = nil
                     if case .idle = entry {
-                        self.endRun(run)
+                        self.endRun(run, completed: false)
                         return
                     }
                     next(resume)
                 }
                 runWaiting[path] = nil
+                runStates[run]?.current = path
                 calculate(path, recalculate: recalculate)
+                activityChanged()
                 return
             }
-            endRun(run)
+            endRun(run, completed: true)
         }
         next(0)
         activityChanged()
     }
 
     /// The run is over or stopped: its folders still waiting show no size again.
-    private func endRun(_ run: Int) {
+    private func endRun(_ run: Int, completed: Bool) {
         guard folderRuns.removeValue(forKey: run) != nil else { return }
+        if runStates.removeValue(forKey: run) != nil {
+            runEnds[run] = completed
+            // Only the last few are of use: a list open since they ended.
+            for old in runEnds.keys.sorted().dropLast(32) { runEnds[old] = nil }
+        }
         var changed = false
         for (path, waitingRun) in runWaiting where waitingRun == run {
             runWaiting[path] = nil
@@ -523,28 +541,28 @@ final class WindowFolderSizes {
         activityChanged()
     }
 
-    /// The runs of several folders with folders still waiting their turn, for the Activity list: how many wait in
-    /// each.
-    var waitingRuns: [(run: Int, count: Int)] {
-        var counts: [Int: Int] = [:]
-        for run in runWaiting.values { counts[run, default: 0] += 1 }
-        return counts.sorted { $0.key < $1.key }.map { (run: $0.key, count: $0.value) }
+    /// The runs of several folders under way, for the Activity list: each one's folders, how many it is done with,
+    /// the job measuring the one it is on, and whether that one waits its turn behind another measurement.
+    var activeRuns: [(run: Int, total: Int, done: Int, jobId: String?, waiting: Bool)] {
+        runStates.sorted { $0.key < $1.key }.map { run, state in
+            var jobId: String?
+            var waiting = true
+            if let current = state.current, case .calculating(let id, let isWaiting)? = cache[current]?.entry {
+                jobId = id.isEmpty ? nil : id
+                waiting = isWaiting
+            }
+            return (run, state.total, state.done, jobId, waiting)
+        }
     }
 
-    /// The folders of a run still waiting their turn leave it and show no size again; the one being measured for it
-    /// goes on, and has its own Stop.
-    func cancelWaiting(ofRun run: Int) {
-        var changed = false
-        for (path, waitingRun) in runWaiting where waitingRun == run {
-            runWaiting[path] = nil
-            folderRuns[run]?.remove(path)
-            if case .calculating(let jobID, _)? = cache[path]?.entry, jobID.isEmpty {
-                setEntry(path, .idle)
-                changed = true
-            }
-        }
-        if changed { bumpVersion() }
-        activityChanged()
+    /// How the run `run` ended: true when every folder had its turn, false when it was stopped; nil while it runs or
+    /// when that is no longer known.
+    func runCompleted(_ run: Int) -> Bool? { runEnds[run] }
+
+    /// Stops a run of several folders: the folder being measured for it and those still waiting.
+    func cancelRun(_ run: Int) {
+        guard let paths = folderRuns[run] else { return }
+        cancel(Array(paths))
     }
 
     /// Told when the runs waiting changed; the Activity list follows.
@@ -568,7 +586,7 @@ final class WindowFolderSizes {
     func cancel(_ paths: [String]) {
         let stopping = Set(paths)
         for (run, runPaths) in folderRuns where !runPaths.isDisjoint(with: stopping) {
-            endRun(run)
+            endRun(run, completed: false)
         }
         for path in paths {
             if case .calculating? = cache[path]?.entry { cancel(path) }

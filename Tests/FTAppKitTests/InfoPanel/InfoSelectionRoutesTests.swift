@@ -295,8 +295,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Of several, those known are left: one grown since keeps its old size while the other is measured.
-        @Test func calculateSizeOnSeveralLeavesThoseKnown() async throws {
+        // Several are measured again as one is: one grown since has its new size, and the other is measured.
+        @Test func calculateSizeOnSeveralMeasuresThoseKnownAgain() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["Alpha/one.txt": 1000, "Beta/one.txt": 300], in: harness)
             let tab = try await harness.open()
@@ -310,7 +310,7 @@ extension ExplorerWindowlessTests {
             tab.content.select(paths: [alpha, beta])
             tab.perform(.calculateSize)
             #expect(await waitUntil { tab.folderSizes.readySize(beta) == 300 })
-            #expect(tab.folderSizes.readySize(alpha) == 1000)
+            #expect(await waitUntil { tab.folderSizes.readySize(alpha) == 1500 })
             await harness.close()
         }
     }

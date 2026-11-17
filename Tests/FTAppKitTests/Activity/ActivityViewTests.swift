@@ -118,6 +118,16 @@ struct ActivityViewTests {
         #expect(rows().count == 3 && rows().allSatisfy(\.isEnded))
         #expect(rows().map(\.endedDetail) == ["Done", "Stopped", "Couldn't calculate"])
 
+        // Only the row of a measurement the app started by itself goes when it is no longer listed.
+        var automatic = third
+        automatic.id = "auto"
+        automatic.isAutomatic = true
+        view.update([automatic])
+        #expect(rows().map(\.item.id) == ["op", "job", "job-2", "auto"])
+        view.update([])
+        #expect(rows().map(\.item.id) == ["op", "job", "job-2"])
+        #expect(view.scroll.documentView?.subviews.count == 3)
+
         // One that waits again under the same id (it gave way) is listed again in its row.
         view.update([Self.items[1]])
         #expect(!rows()[1].isEnded && !rows()[1].stop.isHidden && rows()[1].endedDetail == nil)

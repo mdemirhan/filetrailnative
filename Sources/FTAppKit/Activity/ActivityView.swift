@@ -7,7 +7,8 @@ import FTFoundation
 ///
 /// While the list is open no row changes place, so a press aimed at one row's Stop never lands on another's: a row
 /// whose item ended stays where it was, dimmed, saying how it ended, with no Stop; one whose turn came says so where it
-/// is; and what is new goes to the end. The list opened again shows only what runs, in its usual order.
+/// is; and what is new goes to the end. The list opened again shows only what runs, in its usual order. Only the row
+/// of a measurement the app started by itself goes when it is no longer listed: where it was started shows how it goes.
 final class ActivityView: NSView {
     static let width = 320.0
     static let rowHeight = 48.0
@@ -62,10 +63,13 @@ final class ActivityView: NSView {
             if let item = listed[row.item.id] {
                 row.update(item)
                 shown.insert(item.id)
+            } else if row.item.isAutomatic {
+                row.removeFromSuperview()
             } else {
                 row.end(ActivityList.endedDetail(row.item.kind, outcome(row.item)))
             }
         }
+        rows.removeAll { $0.superview == nil }
         for item in items where shown.insert(item.id).inserted {
             let row = ActivityRow(item: item)
             row.onStop = { [weak self, weak row] in

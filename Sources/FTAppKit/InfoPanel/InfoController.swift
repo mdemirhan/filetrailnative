@@ -528,7 +528,7 @@ final class InfoController {
         update()
     }
 
-    /// The Calculate Size command: what `calculateSizePaths` names, one folder measured again. Unlike
+    /// The Calculate Size command: what `calculateSizePaths` names, measured again, one folder or several. Unlike
     /// the menus' item it never opens the panel.
     func calculateSizeCommand() {
         let sizes = host.folderSizes
@@ -536,7 +536,7 @@ final class InfoController {
         if targets.count == 1, let path = targets.first {
             sizes.recalculate(path)
         } else if targets.count > 1 {
-            sizes.calculate(targets)
+            sizes.calculate(targets, recalculate: true)
         }
         update()
     }

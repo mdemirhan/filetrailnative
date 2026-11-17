@@ -30,9 +30,10 @@ final class ActivityCenter {
     var stopOperation: ((String, any WriteOperationWindow) -> Void)?
     /// The folder size jobs; a test hands its own.
     var jobs: () -> FolderSizeJobs? = { FolderSizeService.shared.jobs }
-    /// The runs of several folders with folders waiting their turn, and what stops one; a test hands its own.
-    var runs: () -> [FolderSizeRunActivity] = { FolderSizeService.shared.waitingRuns }
+    /// The runs of several folders under way, what stops one and how one ended; a test hands its own.
+    var runs: () -> [FolderSizeRunActivity] = { FolderSizeService.shared.activeRuns }
     var stopRun: (String) -> Void = { FolderSizeService.shared.stopRun($0) }
+    var runCompleted: (String) -> Bool? = { FolderSizeService.shared.runCompleted($0) }
     private var refreshQueued = false
 
     // MARK: What it hears
@@ -107,17 +108,17 @@ final class ActivityCenter {
             case .ready: return .completed
             case .cancelled: return .stopped
             case .error: return .failed
-            default: return .goesOn
+            default: return nil
             }
         case .folderSizeRun:
-            return nil
+            return runCompleted(item.id).map { $0 ? .completed : .stopped }
         }
     }
 
     // MARK: Stop
 
     /// Stops what a row lists: the file operation as its card's Stop does, a folder size for every window that asked,
-    /// the folders of a run that wait their turn (the one being measured has its own row).
+    /// a Calculate Size on several folders with the one being measured for it and those still to come.
     func stop(_ item: ActivityItem) {
         switch item.kind {
         case .fileOperation:

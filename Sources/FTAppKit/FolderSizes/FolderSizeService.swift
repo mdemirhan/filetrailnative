@@ -47,20 +47,35 @@ final class FolderSizeService {
         return sizes
     }
 
-    /// Every window's runs of several folders with folders still waiting their turn, for the Activity list.
-    var waitingRuns: [FolderSizeRunActivity] {
+    /// Every window's runs of several folders under way, for the Activity list.
+    var activeRuns: [FolderSizeRunActivity] {
         router.windows.sorted { $0.key < $1.key }.flatMap { windowID, sizes in
-            (sizes.value?.waitingRuns ?? []).map {
-                FolderSizeRunActivity(id: "run:\(windowID):\($0.run)", waitingCount: $0.count)
+            (sizes.value?.activeRuns ?? []).map {
+                FolderSizeRunActivity(
+                    id: "run:\(windowID):\($0.run)", folderCount: $0.total, doneCount: $0.done, jobId: $0.jobId,
+                    isWaiting: $0.waiting)
             }
         }
     }
 
-    /// The folders waiting in the run `waitingRuns` listed under `id` wait no more.
-    func stopRun(_ id: String) {
+    private func run(_ id: String) -> (sizes: WindowFolderSizes, run: Int)? {
         let parts = id.split(separator: ":")
-        guard parts.count == 3, let windowID = Int(parts[1]), let run = Int(parts[2]) else { return }
-        router.windows[windowID]?.value?.cancelWaiting(ofRun: run)
+        guard parts.count == 3, let windowID = Int(parts[1]), let run = Int(parts[2]),
+            let sizes = router.windows[windowID]?.value
+        else { return nil }
+        return (sizes, run)
+    }
+
+    /// Stops the run `activeRuns` listed under `id`.
+    func stopRun(_ id: String) {
+        guard let found = run(id) else { return }
+        found.sizes.cancelRun(found.run)
+    }
+
+    /// How that run ended: true when every folder had its turn, false when stopped, nil when not known.
+    func runCompleted(_ id: String) -> Bool? {
+        guard let found = run(id) else { return nil }
+        return found.sizes.runCompleted(found.run)
     }
 
     /// A window closed: its measurements are stopped, those waiting and the one under way.

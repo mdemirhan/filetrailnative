@@ -353,7 +353,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     private func calculateSize(_ subject: ContextMenuSubject) {
         // The status bar shows the size as it comes in: the selection's, which a right-clicked item is part of.
         if subject.entries.count > 1 {
-            tab.folderSizes.calculate(subject.entries.filter { $0.kind.isFolderSizeEligible }.map(\.path))
+            tab.folderSizes.calculate(
+                subject.entries.filter { $0.kind.isFolderSizeEligible }.map(\.path), recalculate: true)
             return
         }
         guard let target = subject.targetPath ?? subject.paths.first else { return }

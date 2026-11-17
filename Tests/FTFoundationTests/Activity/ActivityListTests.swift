@@ -11,26 +11,7 @@ struct ActivityListTests {
         #expect(ActivityList.endedDetail(.fileOperation, .failed) == "Didn't finish")
         #expect(ActivityList.endedDetail(.fileOperation, .partly) == "Finished in part")
         #expect(ActivityList.endedDetail(.folderSize, .failed) == "Couldn't calculate")
-        #expect(ActivityList.endedDetail(.folderSize, .goesOn) == "Calculating size")
-        #expect(ActivityList.endedDetail(.folderSizeRun, nil) == "No longer waiting")
         #expect(ActivityList.endedDetail(.fileOperation, nil) == "Ended")
-    }
-
-    // The folders of a Calculate Size on several that wait their turn are one row, after the sizes, and count as one
-    // more for the ring.
-    @Test func listsTheFoldersOfARunStillWaitingAsOneRow() {
-        let items = ActivityList.items(
-            operation: nil, sizes: [Self.size("/Users/demo/a", running: true)],
-            runs: [
-                FolderSizeRunActivity(id: "run:1:1", waitingCount: 1_200),
-                FolderSizeRunActivity(id: "run:2:1", waitingCount: 1),
-                FolderSizeRunActivity(id: "run:2:2", waitingCount: 0),
-            ])
-        #expect(items.map(\.kind) == [.folderSize, .folderSizeRun, .folderSizeRun])
-        #expect(items[1].id == "run:1:1" && items[1].title == "1,200 more folders" && items[1].isWaiting)
-        #expect(items[1].detail == "Waiting to calculate their sizes")
-        #expect(items[2].title == "1 more folder" && items[2].detail == "Waiting to calculate its size")
-        #expect(ActivityList.indicator(items)?.countLabel == "+2")
     }
 
     static func size(
@@ -38,6 +19,36 @@ struct ActivityListTests {
     ) -> FolderSizeActivity {
         FolderSizeActivity(
             jobId: "job:\(path)", path: path, isRunning: running, isAutomatic: automatic, measuredFolderCount: measured)
+    }
+
+    // A Calculate Size on several folders is one row, after the sizes asked for one at a time: it says how many of its
+    // folders are done, fills as they are, and the folder it is on has no row of its own. It counts as one for the ring.
+    @Test func listsACalculateSizeOnSeveralFoldersAsOneRow() {
+        let sizes = [Self.size("/Users/demo/a", running: true), Self.size("/Users/demo/b")]
+        let items = ActivityList.items(
+            operation: nil, sizes: sizes,
+            runs: [
+                FolderSizeRunActivity(
+                    id: "run:1:1", folderCount: 1_200, doneCount: 300, jobId: "job:/Users/demo/a", isWaiting: false),
+                FolderSizeRunActivity(id: "run:2:1", folderCount: 2, doneCount: 0, jobId: nil, isWaiting: true),
+            ])
+        #expect(items.map(\.kind) == [.folderSize, .folderSizeRun, .folderSizeRun])
+        #expect(items[0].title == "b")
+        #expect(items[1].id == "run:1:1" && items[1].title == "1,200 folders" && !items[1].isWaiting)
+        #expect(items[1].detail == "Calculating sizes · 300 of 1,200 done" && items[1].progress == 0.25)
+        #expect(items[2].title == "2 folders" && items[2].detail == "Waiting to calculate their sizes")
+        #expect(items[2].isWaiting && items[2].progress == nil)
+        #expect(ActivityList.indicator(items) == ActivityIndicator(progress: 0.25, isWaiting: false, moreCount: 2))
+        #expect(ActivityList.endedDetail(.folderSizeRun, .completed) == "Done")
+        #expect(ActivityList.endedDetail(.folderSizeRun, .stopped) == "Stopped")
+    }
+
+    // A measurement the app started by itself says so, for its row to go when it is no longer listed.
+    @Test func marksAMeasurementTheAppStartedByItself() {
+        let items = ActivityList.items(
+            operation: nil,
+            sizes: [Self.size("/Users/demo/auto", running: true, automatic: true), Self.size("/Users/demo/asked")])
+        #expect(items.map(\.isAutomatic) == [true, false])
     }
 
     // The file operation first, then the folder measured, then those waiting in their order.

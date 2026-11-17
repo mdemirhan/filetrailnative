@@ -21,17 +21,24 @@ public struct FolderSizeActivity: Equatable, Sendable {
     }
 }
 
-/// The folders of a Calculate Size on several that wait their turn behind the one being measured: one request, so one
-/// row of the Activity list.
+/// A Calculate Size on several folders, measured one after another: one request, so one row of the Activity list.
 public struct FolderSizeRunActivity: Equatable, Sendable {
     /// The run's id, for Stop.
     public var id: String
-    /// How many of its folders wait.
-    public var waitingCount: Int
+    public var folderCount: Int
+    /// The folders it is done with.
+    public var doneCount: Int
+    /// The job measuring the folder it is on: that folder has no row of its own.
+    public var jobId: String?
+    /// The folder it is on waits its turn behind another measurement.
+    public var isWaiting: Bool
 
-    public init(id: String, waitingCount: Int) {
+    public init(id: String, folderCount: Int, doneCount: Int, jobId: String?, isWaiting: Bool) {
         self.id = id
-        self.waitingCount = waitingCount
+        self.folderCount = folderCount
+        self.doneCount = doneCount
+        self.jobId = jobId
+        self.isWaiting = isWaiting
     }
 }
 
@@ -59,7 +66,7 @@ public struct ActivityItem: Equatable, Sendable, Identifiable {
     public enum Kind: Equatable, Sendable {
         case fileOperation
         case folderSize
-        /// The folders of a Calculate Size on several still waiting their turn.
+        /// A Calculate Size on several folders, from its first folder to its last.
         case folderSizeRun
     }
 
@@ -73,14 +80,21 @@ public struct ActivityItem: Equatable, Sendable, Identifiable {
     /// 0...1 when how far along is known.
     public var progress: Double?
     public var isWaiting: Bool
+    /// A measurement the app started by itself. Its row goes when it is no longer listed, where the others stay to
+    /// say how they ended: the Info panel or the Info Row that started it shows how it goes.
+    public var isAutomatic: Bool
 
-    public init(id: String, kind: Kind, title: String, detail: String, progress: Double?, isWaiting: Bool) {
+    public init(
+        id: String, kind: Kind, title: String, detail: String, progress: Double?, isWaiting: Bool,
+        isAutomatic: Bool = false
+    ) {
         self.id = id
         self.kind = kind
         self.title = title
         self.detail = detail
         self.progress = progress
         self.isWaiting = isWaiting
+        self.isAutomatic = isAutomatic
     }
 }
 
@@ -91,8 +105,6 @@ public enum ActivityOutcome: Equatable, Sendable {
     case failed
     /// A file operation that did part of its work.
     case partly
-    /// Still running, but no longer listed: a walk the app started by itself that holds up nothing asked for now.
-    case goesOn
 }
 
 public enum ActivityList {
@@ -105,8 +117,6 @@ public enum ActivityList {
         case (.fileOperation, .failed): "Didn't finish"
         case (_, .failed): "Couldn't calculate"
         case (_, .partly): "Finished in part"
-        case (_, .goesOn): "Calculating size"
-        case (.folderSizeRun, nil): "No longer waiting"
         case (_, nil): "Ended"
         }
     }
@@ -114,7 +124,8 @@ public enum ActivityList {
     /// The rows: the file operation running (one at a time in the whole app), then the folder sizes, the one measured
     /// first and the rest in the order they wait. A walk the app started by itself is listed only while it runs with a
     /// size asked for waiting behind it, so the list says what holds that size up; otherwise it is quiet, as it is
-    /// meant to be. Last, a row for each Calculate Size on several folders with folders still waiting their turn.
+    /// meant to be. Last, a row for each Calculate Size on several folders, which stands for all of them: the folder
+    /// it is on has no row of its own.
     public static func items(
         operation: (id: String, card: WriteOperationCardState)?, sizes: [FolderSizeActivity],
         runs: [FolderSizeRunActivity] = []
@@ -131,18 +142,23 @@ public enum ActivityList {
                     progress: waiting ? nil : min(1, max(0, text.percent / 100)), isWaiting: waiting))
         }
         let askedWaiting = sizes.contains { !$0.isAutomatic && !$0.isRunning }
+        let inRuns = Set(runs.compactMap(\.jobId))
         for size in sizes.sorted(by: { $0.isRunning && !$1.isRunning }) {
             if size.isAutomatic && !(size.isRunning && askedWaiting) { continue }
+            if inRuns.contains(size.jobId) { continue }
             items.append(folderSizeItem(size))
         }
-        for run in runs where run.waitingCount > 0 {
-            let one = run.waitingCount == 1
+        for run in runs {
+            let count = ContextMenuRules.groupedCount(run.folderCount)
+            let doneCount = min(run.doneCount, run.folderCount)
+            let done = ContextMenuRules.groupedCount(doneCount)
             items.append(
                 ActivityItem(
-                    id: run.id, kind: .folderSizeRun,
-                    title: "\(ContextMenuRules.groupedCount(run.waitingCount)) more \(one ? "folder" : "folders")",
-                    detail: one ? "Waiting to calculate its size" : "Waiting to calculate their sizes",
-                    progress: nil, isWaiting: true))
+                    id: run.id, kind: .folderSizeRun, title: "\(count) folders",
+                    detail: run.isWaiting
+                        ? "Waiting to calculate their sizes" : "Calculating sizes · \(done) of \(count) done",
+                    progress: run.isWaiting ? nil : Double(doneCount) / Double(max(1, run.folderCount)),
+                    isWaiting: run.isWaiting))
         }
         return items
     }
@@ -159,7 +175,7 @@ public enum ActivityList {
         }
         return ActivityItem(
             id: size.jobId, kind: .folderSize, title: ProgressCardText.leafName(size.path), detail: detail,
-            progress: nil, isWaiting: !size.isRunning)
+            progress: nil, isWaiting: !size.isRunning, isAutomatic: size.isAutomatic)
     }
 
     /// What the title's ring shows for `items`; nil when nothing is listed. The ring follows the first listed that runs

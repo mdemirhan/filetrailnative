@@ -82,6 +82,8 @@ extension ExplorerWindowlessTests {
             let toolbar = tab.explorerToolbar
             var running: [ActivityItem] = []
             toolbar.activity = { running }
+            // Not the app's own: a file operation another test completed would end the ring with a check.
+            toolbar.activityEndedWell = { false }
             let title = try #require(toolbar.titleView)
             title.activity.reducesMotion = { true }
             toolbar.refreshStates()

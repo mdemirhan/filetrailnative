@@ -93,62 +93,66 @@ struct FolderSizeRunsTests {
         #expect(jobs.starts.allSatisfy { !$0.recalculate })
     }
 
-    // The folders whose turn hasn't come say they wait, and are counted for the Activity list; each stops saying so
-    // as its turn comes, and the last leaves nothing waiting.
-    @Test func theFoldersOfARunWhoseTurnHasntComeSayTheyWait() {
+    // The folders whose turn hasn't come say they wait; the run says, for the Activity list, how many folders it has,
+    // how many it is done with and which job measures the one it is on, until its last folder ends.
+    @Test func theFoldersOfARunWhoseTurnHasntComeSayTheyWait() throws {
         var changes = 0
         sizes.onRunsChanged = { changes += 1 }
         sizes.calculate(["/a", "/b", "/c"])
         #expect(sizes.cachedEntry("/a") == .calculating(jobID: OneAtATimeJobs.job("/a")))
         #expect(sizes.cachedEntry("/b") == .calculating(jobID: "", waiting: true))
         #expect(sizes.cachedEntry("/c") == .calculating(jobID: "", waiting: true))
-        #expect(sizes.waitingRuns.map(\.count) == [2] && changes > 0)
+        var run = try #require(sizes.activeRuns.first)
+        #expect(run.total == 3 && run.done == 0 && run.jobId == OneAtATimeJobs.job("/a") && !run.waiting)
+        #expect(changes > 0 && sizes.runCompleted(run.run) == nil)
         jobs.finish("/a")
         sizes.settled(jobId: OneAtATimeJobs.job("/a"))
         #expect(sizes.cachedEntry("/b") == .calculating(jobID: OneAtATimeJobs.job("/b")))
-        #expect(sizes.waitingRuns.map(\.count) == [1])
+        run = try #require(sizes.activeRuns.first)
+        #expect(run.done == 1 && run.jobId == OneAtATimeJobs.job("/b"))
         jobs.finish("/b")
         sizes.settled(jobId: OneAtATimeJobs.job("/b"))
-        #expect(sizes.waitingRuns.isEmpty)
+        #expect(sizes.activeRuns.first?.done == 2)
         jobs.finish("/c")
         sizes.settled(jobId: OneAtATimeJobs.job("/c"))
         #expect(jobs.started == ["/a", "/b", "/c"])
-        #expect(sizes.readySize("/c") == 9 && sizes.waitingRuns.isEmpty)
+        #expect(sizes.readySize("/c") == 9 && sizes.activeRuns.isEmpty && sizes.runCompleted(run.run) == true)
+        // One folder is no run: it has its own row.
+        sizes.calculate(["/d"])
+        #expect(sizes.activeRuns.isEmpty)
     }
 
     // Stop on a folder whose turn hasn't come takes only that one out of the run; one asked for by itself meanwhile
-    // is measured for that, not again in its turn.
+    // is measured for that, not again in its turn. Both count as done with.
     @Test func aFolderStoppedOrAskedForWhileItWaitsLeavesTheRun() {
         sizes.calculate(["/a", "/b", "/c", "/d"])
         sizes.cancel("/b")
         #expect(sizes.cachedEntry("/b") == .idle && jobs.cancels.isEmpty)
         sizes.calculate("/c")
         #expect(jobs.started == ["/a", "/c"])
-        #expect(sizes.waitingRuns.map(\.count) == [1])
         jobs.finish("/a")
         sizes.settled(jobId: OneAtATimeJobs.job("/a"))
         #expect(jobs.started == ["/a", "/c", "/d"])
         #expect(sizes.cachedEntry("/b") == .idle)
+        #expect(sizes.activeRuns.first?.done == 3 && sizes.activeRuns.first?.total == 4)
     }
 
-    // The Activity list's Stop on a run's waiting folders takes them out and leaves the one being measured going;
-    // Stop on the folder being measured ends the run, and those waiting show no size again.
+    // The Activity list's Stop on a run stops the folder being measured for it, and those waiting show no size
+    // again; so does Stop on the folder being measured. Either way the run was stopped, not completed.
     @Test func stoppingARunLeavesNoneOfItsFoldersWaiting() throws {
         sizes.calculate(["/a", "/b", "/c"])
-        sizes.cancelWaiting(ofRun: try #require(sizes.waitingRuns.first).run)
-        #expect(jobs.cancels.isEmpty)
-        #expect(sizes.cachedEntry("/a") == .calculating(jobID: OneAtATimeJobs.job("/a")))
-        #expect(["/b", "/c"].map { sizes.cachedEntry($0) } == [.idle, .idle])
-        #expect(sizes.waitingRuns.isEmpty)
-        jobs.finish("/a")
-        sizes.settled(jobId: OneAtATimeJobs.job("/a"))
-        #expect(sizes.readySize("/a") == 9 && jobs.started == ["/a"])
+        let first = try #require(sizes.activeRuns.first).run
+        sizes.cancelRun(first)
+        #expect(jobs.cancels == [OneAtATimeJobs.job("/a")])
+        #expect(["/a", "/b", "/c"].map { sizes.cachedEntry($0) } == [.idle, .idle, .idle])
+        #expect(sizes.activeRuns.isEmpty && sizes.runCompleted(first) == false)
 
         sizes.calculate(["/d", "/e"])
+        let second = try #require(sizes.activeRuns.first).run
         sizes.cancel("/d")
-        #expect(sizes.cachedEntry("/e") == .idle && sizes.waitingRuns.isEmpty)
+        #expect(sizes.cachedEntry("/e") == .idle && sizes.activeRuns.isEmpty && sizes.runCompleted(second) == false)
         timers.advance(1)
-        #expect(jobs.started == ["/a", "/d"] && jobs.cancels == [OneAtATimeJobs.job("/d")])
+        #expect(jobs.started == ["/a", "/d"] && jobs.cancels.count == 2)
     }
 
     // Refresh on the selection measures all of them again, known or not.
@@ -161,6 +165,20 @@ struct FolderSizeRunsTests {
         sizes.settled(jobId: OneAtATimeJobs.job("/a"))
         #expect(jobs.started == ["/a", "/b"])
         #expect(jobs.starts.map(\.recalculate) == [true, true])
+    }
+
+    // Measuring a selection again leaves the folder being measured, and one waiting its turn in an earlier run, as
+    // they are: each is measured once, and its answer is as fresh as a new one's.
+    @Test func recalculatingLeavesThoseBeingMeasuredOrWaitingAlone() {
+        sizes.calculate("/running")
+        sizes.calculate(["/a", "/b"], recalculate: true)
+        sizes.calculate(["/running", "/b", "/c"], recalculate: true)
+        #expect(jobs.started == ["/running", "/a", "/c"])
+        #expect(sizes.cachedEntry("/running") == .calculating(jobID: OneAtATimeJobs.job("/running")))
+        #expect(sizes.cachedEntry("/b") == .calculating(jobID: "", waiting: true))
+        jobs.finish("/a")
+        sizes.settled(jobId: OneAtATimeJobs.job("/a"))
+        #expect(jobs.started == ["/running", "/a", "/c", "/b"])
     }
 
     // Stop on the selection cancels the one being measured and starts no more.
