@@ -111,7 +111,9 @@ struct ActivityViewTests {
         ring.frame = NSRect(x: 0, y: 0, width: ring.preferredWidth, height: TitleActivityView.height)
         ring.layout()
         #expect(ring.spins && ring.ringFill == nil)
-        #expect(!ring.countField.isHidden && ring.countField.stringValue == "+2" && ring.pillShown)
+        #expect(!ring.countField.isHidden && ring.countField.stringValue == "+2")
+        // Nothing is drawn behind the ring and its count at rest, with one thing running or several.
+        #expect(!ring.pillShown)
         #expect(ring.preferredWidth > TitleActivityView.ringSize + 2 * TitleActivityView.inset)
         // The ring keeps its place at the right end as the count comes.
         #expect(ring.ringFrame.maxX == ring.bounds.maxX - TitleActivityView.inset && ring.ringFrame.size == alone.size)

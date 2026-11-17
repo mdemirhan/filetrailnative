@@ -4,9 +4,10 @@ import FTFoundation
 
 /// The title's activity ring: at the end of the title's room while something runs in the background, so nothing in the
 /// toolbar moves as it comes and goes. It fills as far as a file operation has gone, and spins while a folder is measured
-/// or how far along isn't known; dimmed while all it lists waits. With others listed, a pill grows out to its left with
-/// their count ("+2"), the ring staying where it is. A click opens the Activity list; a pointer over it shows the pill
-/// as the system's borderless buttons do. A file operation that completes ends it with a check, which fades.
+/// or how far along isn't known; dimmed while all it lists waits. With others listed, their count ("+2") stands to its
+/// left, the ring staying where it is, with nothing behind them: the ring looks the same with one thing running as with
+/// several. A click opens the Activity list; a pointer over it shows a pill under the ring and its count, as the
+/// system's borderless buttons do. A file operation that completes ends it with a check, which fades.
 ///
 /// The rest of the title still drags the window; only the ring and its pill are pressed. Tab reaches it among the
 /// toolbar's buttons (`ToolbarKeyboard`), where Return or Space opens the list.
@@ -288,17 +289,14 @@ final class TitleActivityView: NSView, ToolbarListAnchor {
         return path
     }
 
-    /// The pill: under the count, and under the ring alone while the pointer is over it, it is pressed or its list is
-    /// open.
+    /// The pill, under the ring and its count: only while the pointer is over it, it is pressed or its list is open.
     private func updatePill() {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         defer { CATransaction.commit() }
         pill.frame = bounds
         pill.cornerRadius = bounds.height / 2
-        let hasCount = !countField.isHidden
-        let alpha: CGFloat =
-            if pressed || isOn { 0.16 } else if hovering { 0.10 } else if hasCount { 0.06 } else { 0 }
+        let alpha: CGFloat = if pressed || isOn { 0.16 } else if hovering { 0.10 } else { 0 }
         effectiveAppearance.performAsCurrentDrawingAppearance {
             pill.backgroundColor = NSColor.labelColor.withAlphaComponent(alpha).cgColor
         }
