@@ -11,10 +11,11 @@ Don't run it again to see whether it passes. Look once and find the cause:
 - A full run of more than about a minute, with nothing else running, means something is wrong.
 - Only one `scripts/ci.sh` or `swift test` runs at a time on one Mac; several at once stall each other (see `CLAUDE.md`).
 
-Two causes found so far, worth a look first:
+Three causes found so far, worth a look first:
 
 - **Swift's shared threads held by work that blocks.** Tests that held a stand-in disk on those threads stalled a whole bundle for 60 s. Work that can block goes through `BlockingWork.run`.
 - **The main actor of the app bundle's tests kept busy.** Guards that ran seconds of CPU on the main actor made every wait on the clock there (20 s then) a coin toss. Speed guards of code with no views belong in `FTFoundationTests`; a wait on the main actor only stops a hang (60 s), it doesn't check speed. To see who holds it, sample the bundle's main thread and add up the samples by test.
+- **A resource fork written through `file/..namedfork/rsrc` isn't in the file yet.** macOS writes it into a stand-in file and copies it into the file at the open file's last close, and a process spawned by another thread (`ditto`, `hdiutil`) holds the open file for a moment, until its exec drops the close-on-exec descriptors. When the child's close was the last, `getxattr` found no fork for a while after the write had returned: a check of the fork saw a source without one (`ResourceForkCheckTests`, 2026-11-17). Eight threads spawning `/bin/sleep` in a loop brought it back 11 times in 5,000 writes, and never without them; a `dup` held open shows it every time. Tests write a fork with `setxattr` (`NativeTestFiles.write`), which has put it in the file when it returns. The copy that once reported success with no fork on a full disk (`docs/decisions/file-operations.md`) was probably this too: its source's fork was written the same way, beside tests that mount disk images, and measured only after the copy.
 
 ## A Desktop, Documents or Downloads permission question
 

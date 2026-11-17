@@ -9,9 +9,13 @@ enum NativeTestFiles {
         let errnum: Int32
     }
 
-    /// Creates or truncates the file and writes `bytes`, also to a named fork
-    /// ("file/..namedfork/rsrc").
+    /// Creates or truncates the file and writes `bytes`, also to a resource fork ("file/..namedfork/rsrc").
     static func write(_ path: String, _ bytes: [UInt8]) throws(WriteFailure) {
+        let forkSuffix = "/..namedfork/rsrc"
+        if path.hasSuffix(forkSuffix) {
+            try writeResourceFork(String(path.dropLast(forkSuffix.count)), bytes)
+            return
+        }
         let descriptor = open(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0o644)
         guard descriptor >= 0 else { throw WriteFailure(errnum: errno) }
         defer { close(descriptor) }
@@ -21,6 +25,28 @@ enum NativeTestFiles {
             guard written > 0 else { throw WriteFailure(errnum: errno) }
             offset += written
         }
+    }
+
+    /// The fork goes in with setxattr, which has put it in the file when it returns. Written through
+    /// "..namedfork/rsrc", it goes into a stand-in file that macOS copies into the file only at the open file's last
+    /// close, and a process another thread spawns holds the open file for a moment (until its exec drops the
+    /// close-on-exec descriptors): when that was the last close, the file had no fork for a while after the write
+    /// had returned, and a test that read it then saw a file without one.
+    private static func writeResourceFork(_ file: String, _ bytes: [UInt8]) throws(WriteFailure) {
+        guard removexattr(file, XATTR_RESOURCEFORK_NAME, XATTR_NOFOLLOW) == 0 || errno == ENOATTR else {
+            throw WriteFailure(errnum: errno)
+        }
+        guard !bytes.isEmpty else { return }
+        let chunk = 1024 * 1024
+        var offset = 0
+        repeat {
+            let end = min(offset + chunk, bytes.count)
+            let result = bytes[offset..<end].withUnsafeBytes {
+                setxattr(file, XATTR_RESOURCEFORK_NAME, $0.baseAddress, $0.count, UInt32(offset), XATTR_NOFOLLOW)
+            }
+            guard result == 0 else { throw WriteFailure(errnum: errno) }
+            offset = end
+        } while offset < bytes.count
     }
 
     static func write(_ path: String, _ text: String) throws {
