@@ -1137,6 +1137,43 @@ private func settle() async {
         }
     }
 
+    // A measurement asked for as another ends (a window measuring several folders in turn asks for the next when it
+    // is told the last has ended) starts at once: the walk before it is over, so it doesn't wait. With one waiting
+    // longer, that one runs first, and the new one waits its turn.
+    @Test func aMeasurementAskedForAsAnotherEndsStartsAtOnce() async {
+        let native = MockNative()
+        var next: [String] = ["/test/b", "/test/c"]
+        var statuses: [FolderSizeJobStatus] = []
+        var jobs: FolderSizeJobs?
+        jobs = make(
+            native,
+            onSettled: { _, _ in
+                guard let jobs, !next.isEmpty else { return }
+                statuses.append(self.start(jobs, next.removeFirst(), owner: 1).status)
+            })
+        guard let jobs else { return }
+
+        _ = start(jobs, "/test/a", owner: 1)
+        native.resolveActive()
+        await settle()
+        #expect(statuses == [.running])
+        #expect(native.calls.map(\.path) == ["/test/a", "/test/b"])
+
+        // Another window's waits behind /test/b: it runs before the one asked for as /test/b ends.
+        let other = start(jobs, "/test/other", owner: 2)
+        #expect(other.status == .queued)
+        native.resolveActive()
+        await settle()
+        #expect(statuses == [.running, .queued])
+        #expect(native.calls.map(\.path) == ["/test/a", "/test/b", "/test/other"])
+        native.resolveActive()
+        await settle()
+        #expect(native.calls.map(\.path) == ["/test/a", "/test/b", "/test/other", "/test/c"])
+        native.resolveActive()
+        await settle()
+        #expect(jobs.activity.isEmpty)
+    }
+
     // The front window's automatic walk doesn't give way; a window coming to the front stops another's.
     @Test func theFrontWindowsAutomaticWalkDoesntGiveWay() async {
         let native = MockNative()

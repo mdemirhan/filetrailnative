@@ -157,7 +157,9 @@ public enum ActivityList {
                     id: run.id, kind: .folderSizeRun, title: "\(count) folders",
                     detail: run.isWaiting
                         ? "Waiting to calculate their sizes" : "Calculating sizes · \(done) of \(count) done",
-                    progress: run.isWaiting ? nil : Double(doneCount) / Double(max(1, run.folderCount)),
+                    // Kept while it waits behind another measurement part way: what is done stays done.
+                    progress: run.isWaiting && doneCount == 0
+                        ? nil : Double(doneCount) / Double(max(1, run.folderCount)),
                     isWaiting: run.isWaiting))
         }
         return items

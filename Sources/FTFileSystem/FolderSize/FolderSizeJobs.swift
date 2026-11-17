@@ -382,6 +382,7 @@ public final class FolderSizeJobs {
     }
 
     private func processQueue() {
+        guard activeJobId == nil else { return }
         queuedJobIds.removeAll { jobs[$0]?.status != .queued }
         // Asked for before automatic; of each, the front window's first; then in the order asked.
         var next: (index: Int, rank: (Int, Int, Int))?
@@ -476,7 +477,11 @@ public final class FolderSizeJobs {
         }
         let walk = native.getFolderSize(path, background: backgroundJobIds.contains(jobId), onFinished: onFinished)
         Task { @MainActor [self] in
-            switch await walk.result {
+            let outcome = await walk.result
+            // The walk is over: a measurement asked for while its end is told (a window measuring several folders
+            // in turn asks for the next one then) starts at once instead of waiting for this one to be put away.
+            if activeJobId == jobId { activeJobId = nil }
+            switch outcome {
             case .success(let result):
                 measured(result, jobId: jobId, path: path, measurement: measurement, run: run)
             case .failure(let error):
@@ -615,11 +620,14 @@ public final class FolderSizeJobs {
             backgroundJobIds.insert(jobId)
         }
 
-        if activeJobId != nil {
+        if activeJobId != nil || !queuedJobIds.isEmpty {
+            // It takes its place among those waiting: with no walk under way (one has just ended), the next in
+            // turn starts now, which is this one when none waited before it.
             queuedJobIds.append(jobId)
             setJob(jobId, job(jobId, request.path, .queued))
             dropAskedOverLimit()
             preemptForQueued()
+            processQueue()
             return FolderSizeStartResponse(jobId: jobId, status: jobs[jobId]?.status ?? .cancelled)
         }
 

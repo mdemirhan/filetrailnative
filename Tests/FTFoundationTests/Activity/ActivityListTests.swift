@@ -38,6 +38,12 @@ struct ActivityListTests {
         #expect(items[1].detail == "Calculating sizes · 300 of 1,200 done" && items[1].progress == 0.25)
         #expect(items[2].title == "2 folders" && items[2].detail == "Waiting to calculate their sizes")
         #expect(items[2].isWaiting && items[2].progress == nil)
+        // Waiting part way, behind another measurement, it keeps how far it got.
+        let waiting = ActivityList.items(
+            operation: nil, sizes: [],
+            runs: [FolderSizeRunActivity(id: "run:1:1", folderCount: 4, doneCount: 1, jobId: nil, isWaiting: true)])
+        #expect(waiting[0].isWaiting && waiting[0].progress == 0.25)
+        #expect(waiting[0].detail == "Waiting to calculate their sizes")
         #expect(ActivityList.indicator(items) == ActivityIndicator(progress: 0.25, isWaiting: false, moreCount: 2))
         #expect(ActivityList.endedDetail(.folderSizeRun, .completed) == "Done")
         #expect(ActivityList.endedDetail(.folderSizeRun, .stopped) == "Stopped")
