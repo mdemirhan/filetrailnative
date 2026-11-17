@@ -105,6 +105,8 @@ protocol ExplorerWindowContext: AnyObject {
     var currentFolder: URL { get }
     /// The folder on screen; empty once the tab has let go of it.
     var shownFolderPath: String { get }
+    /// The home folder whose Trash the window calls "Trash".
+    var trashHomePath: String { get }
     /// Opens the folder above the one on screen, as the toolbar's Enclosing Folder does.
     func goToParentFolder()
     func navigate(to url: URL, target: NavigationTarget)

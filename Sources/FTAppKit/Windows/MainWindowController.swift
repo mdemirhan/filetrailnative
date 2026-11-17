@@ -640,11 +640,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         guard let session = searchStore?.session else {
             return ExplorerTabs.describe(
                 currentPath: shownFolderPath, searchVisible: false, searchQuery: "", searchRootPath: "",
-                searchRunning: false, startupDiskName: services.startupDisk.name)
+                searchRunning: false, homePath: trashHomePath, startupDiskName: services.startupDisk.name)
         }
         return ExplorerTabs.describe(
             currentPath: shownFolderPath, searchVisible: session.resultsVisible, searchQuery: session.committedQuery,
-            searchRootPath: session.rootPath, searchRunning: session.isRunning,
+            searchRootPath: session.rootPath, searchRunning: session.isRunning, homePath: trashHomePath,
             startupDiskName: services.startupDisk.name)
     }
 
@@ -804,7 +804,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func updateTitle() {
         // The window title is the folder name, which the toolbar shows; the tab bar and the Window menu have the
         // tab's label (ExplorerTabGroup.refreshTitles).
-        let name = ExplorerTabs.folderDisplayName(shownFolderPath, startupDiskName: services.startupDisk.name)
+        let name = ExplorerTabs.folderDisplayName(
+            shownFolderPath, homePath: trashHomePath, startupDiskName: services.startupDisk.name)
         window?.title = name.isEmpty ? "File Trail" : name
         window?.representedURL = folderLetGo ? nil : folder
     }
@@ -1604,7 +1605,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    /// The home folder whose Trash gets the bar; tests use their own.
+    /// The home folder whose Trash gets the bar and is called "Trash" in the titles; tests use their own.
     var trashHomePath = FileManager.default.homeDirectoryForCurrentUser.path
 
     /// The Trash itself on screen has its bar, not a folder in it, and not over search results, in each pane. Empty

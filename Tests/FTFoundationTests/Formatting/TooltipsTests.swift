@@ -126,32 +126,53 @@ struct TooltipsTests {
     @Test func tabLabels() {
         #expect(
             TabText.describe(
-                currentPath: "/", searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false)
+                currentPath: "/", searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false,
+                homePath: "/Users/demo")
                 == TabDescription(label: "Macintosh HD", tooltip: "/", kind: .folder, searching: false))
         #expect(
             TabText.describe(
                 currentPath: "/Users/demo/Documents/", searchVisible: false, searchQuery: "", searchRootPath: "",
-                searchRunning: false
+                searchRunning: false, homePath: "/Users/demo"
             ).label
                 == "Documents")
         #expect(
             TabText.describe(
-                currentPath: "", searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false
+                currentPath: "", searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false,
+                homePath: "/Users/demo"
             ).label == "Favorites")
         #expect(
             TabText.describe(
                 currentPath: "/a", searchVisible: true, searchQuery: " report ", searchRootPath: "/Users/demo",
-                searchRunning: true)
+                searchRunning: true, homePath: "/Users/demo")
                 == TabDescription(
                     label: "“ report ” in demo", tooltip: "Searching /Users/demo", kind: .search, searching: true))
         // A blank query is no search; without a root the folder on screen is searched.
         #expect(
             TabText.describe(
-                currentPath: "/a", searchVisible: true, searchQuery: "  ", searchRootPath: "/b", searchRunning: true
+                currentPath: "/a", searchVisible: true, searchQuery: "  ", searchRootPath: "/b", searchRunning: true,
+                homePath: "/Users/demo"
             ).kind == .folder)
         #expect(
             TabText.describe(
-                currentPath: "/a", searchVisible: true, searchQuery: "x", searchRootPath: "", searchRunning: false
+                currentPath: "/a", searchVisible: true, searchQuery: "x", searchRootPath: "", searchRunning: false,
+                homePath: "/Users/demo"
             ).tooltip == "Searching /a")
+    }
+
+    /// The Trash is "Trash", as the path bar and the sidebar call it, not ".Trash"; what is in it keeps its name.
+    @Test func theTrashIsCalledTrash() {
+        let home = "/Users/demo"
+        #expect(TabText.folderDisplayName("/Users/demo/.Trash", homePath: home) == "Trash")
+        #expect(TabText.folderDisplayName("/Users/demo/.Trash/", homePath: home) == "Trash")
+        #expect(TabText.folderDisplayName("/Users/demo/.Trash/old", homePath: home) == "old")
+        #expect(TabText.folderDisplayName("/Volumes/Photos/.Trashes/501", homePath: home) == "Trash")
+        // Another user's Trash is a folder like any other.
+        #expect(TabText.folderDisplayName("/Users/other/.Trash", homePath: home) == ".Trash")
+        let search = TabText.describe(
+            currentPath: "/Users/demo/.Trash", searchVisible: true, searchQuery: "x", searchRootPath: "",
+            searchRunning: false, homePath: home)
+        #expect(search.label == "“x” in Trash")
+        let scopes = SearchBarText.scopeOptions(currentPath: "/Users/demo/.Trash", homePath: home)
+        #expect(scopes.first?.label == "\u{201C}Trash\u{201D}")
     }
 }

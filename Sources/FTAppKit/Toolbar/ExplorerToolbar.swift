@@ -420,12 +420,12 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         }
     }
 
-    /// The folder's name as the toolbar shows it (the startup disk's name for `/`); while searching, "Searching “…”"
+    /// The folder's name as the toolbar shows it (the startup disk's name for `/`, "Trash" for the Trash); while searching, "Searching “…”"
     /// with the folder the search runs from. `inMenu`: a long name is shortened, as the menus show names (the » menu).
     static func title(of context: ExplorerWindowContext, inMenu: Bool = false) -> String {
         let disk = context.services.startupDisk.name
         func name(_ path: String) -> String {
-            let name = ExplorerTabs.folderDisplayName(path, startupDiskName: disk)
+            let name = ExplorerTabs.folderDisplayName(path, homePath: context.trashHomePath, startupDiskName: disk)
             return inMenu ? MenuName.shortened(name) : name
         }
         if let root = context.searchRootPath {

@@ -32,6 +32,20 @@ extension ExplorerWindowlessTests {
             window.tab.content.contentShell.trashHeader
         }
 
+        /// The toolbar, the window and the tab call the Trash "Trash", as the bar and the path bar do, not ".Trash".
+        @Test func theTitlesCallTheTrashTrash() async throws {
+            let (window, trash) = try await open()
+            await go(window, to: trash)
+            #expect(ExplorerToolbar.title(of: window.tab) == "Trash")
+            #expect(window.tab.window?.title == "Trash")
+            #expect(window.tab.tabDescription.label == "Trash")
+
+            window.tab.go(to: trash.appendingPathComponent("Inner"))
+            #expect(await waitUntil { window.tab.shownFolderPath.hasSuffix("/.Trash/Inner") })
+            #expect(ExplorerToolbar.title(of: window.tab) == "Inner")
+            #expect(window.tab.window?.title == "Inner")
+        }
+
         @Test func onlyTheTrashItselfHasTheBarAboveItsList() async throws {
             let (window, trash) = try await open()
             let shell = window.tab.content.contentShell

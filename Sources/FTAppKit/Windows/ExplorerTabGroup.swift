@@ -639,6 +639,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         let descriptions = tabs.map(\.tabDescription)
         let labels = ExplorerTabs.disambiguate(
             zip(tabs, descriptions).map { TabLabel(label: $1.label, kind: $1.kind, path: $0.shownFolderPath) },
+            homePath: tabs.first?.trashHomePath ?? "",
             startupDiskName: tabs.first?.services.startupDisk.name ?? VolumePaths.defaultStartupDiskName)
         for (index, tab) in tabs.enumerated() {
             guard let window = tab.window else { continue }

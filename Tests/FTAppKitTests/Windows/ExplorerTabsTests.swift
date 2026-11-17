@@ -14,7 +14,7 @@ import Testing
         ) -> TabDescription {
             ExplorerTabs.describe(
                 currentPath: path, searchVisible: visible, searchQuery: query, searchRootPath: root,
-                searchRunning: running)
+                searchRunning: running, homePath: "/Users/demo")
         }
         let folder = describe("/Users/demo/Documents")
         #expect(folder.label == "Documents")
@@ -108,7 +108,7 @@ import Testing
         func tab(_ label: String, _ path: String, _ kind: TabDescription.Kind = .folder) -> TabLabel {
             TabLabel(label: label, kind: kind, path: path)
         }
-        let labels = ExplorerTabs.disambiguate([
+        let items = [
             tab("src", "/Users/demo/filetrail/src"),
             tab("src", "/Users/demo/codetrail/src"),
             tab("Documents", "/Users/demo/Documents"),
@@ -116,10 +116,15 @@ import Testing
             tab("Downloads", "/Users/demo/Downloads"),
             tab("Downloads", "/Users/demo/Downloads"),
             tab("“src” in demo", "/Users/demo", .search),
-        ]).map(\.label)
+            // A folder in the Trash is told apart by the Trash, as the path bar calls it.
+            tab("notes", "/Users/demo/notes"),
+            tab("notes", "/Users/demo/.Trash/notes"),
+        ]
+        let labels = ExplorerTabs.disambiguate(items, homePath: "/Users/demo").map(\.label)
         #expect(
             labels == [
                 "src — filetrail", "src — codetrail", "Documents", "Downloads", "Downloads", "“src” in demo",
+                "notes — demo", "notes — Trash",
             ])
     }
 

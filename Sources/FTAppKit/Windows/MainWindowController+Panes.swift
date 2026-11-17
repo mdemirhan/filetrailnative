@@ -373,10 +373,11 @@ extension MainWindowController {
             if let session = pane.searchStore?.session, session.resultsVisible {
                 return ExplorerTabs.describe(
                     currentPath: pane.shownFolderPath, searchVisible: true, searchQuery: session.committedQuery,
-                    searchRootPath: session.rootPath, searchRunning: session.isRunning, startupDiskName: disk
+                    searchRootPath: session.rootPath, searchRunning: session.isRunning,
+                    homePath: trashHomePath, startupDiskName: disk
                 ).label
             }
-            return ExplorerTabs.folderDisplayName(pane.shownFolderPath, startupDiskName: disk)
+            return ExplorerTabs.folderDisplayName(pane.shownFolderPath, homePath: trashHomePath, startupDiskName: disk)
         }
         return names.joined(separator: " | ")
     }

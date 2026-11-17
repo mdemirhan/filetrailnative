@@ -100,9 +100,9 @@ public enum SearchBarText {
         currentPath: String, homePath: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> [SearchScopeOption] {
         let volume = VolumePaths.volumeRootPath(currentPath)
-        let shown = TabText.folderDisplayName(currentPath, startupDiskName: startupDiskName)
+        let shown = TabText.folderDisplayName(currentPath, homePath: homePath, startupDiskName: startupDiskName)
         var candidates: [(String, String)] = [(currentPath, "\u{201C}\(shown)\u{201D}"), (homePath, "Home")]
-        if volume != "/" { candidates.append((volume, TabText.folderDisplayName(volume))) }
+        if volume != "/" { candidates.append((volume, TabText.folderDisplayName(volume, homePath: homePath))) }
         candidates.append(("/", startupDiskName))
         var options: [SearchScopeOption] = []
         for (path, label) in candidates

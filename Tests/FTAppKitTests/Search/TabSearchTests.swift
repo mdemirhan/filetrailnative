@@ -54,12 +54,13 @@ extension ExplorerWindowlessTests {
             timers.advance(0.4)
             #expect(engine.starts.first?.rootPath == harness.folder.path)
             #expect(tab.searchRootPath == harness.folder.path)
-            #expect(ExplorerToolbar.title(of: tab) == "Searching “\(TabText.folderDisplayName(harness.folder.path))”")
+            let folderName = TabText.folderDisplayName(harness.folder.path, homePath: tab.trashHomePath)
+            #expect(ExplorerToolbar.title(of: tab) == "Searching “\(folderName)”")
             #expect(Set(names(tab)) == ["note.txt", "notes.md"])
             #expect(tab.content.contentShell.searchHeader === tab.search.header)
             // The results bar: the scopes, the one searched pressed.
             let scopes = tab.search.header.scopes
-            #expect(scopes.first?.title == "“\(TabText.folderDisplayName(harness.folder.path))”")
+            #expect(scopes.first?.title == "“\(folderName)”")
             #expect(scopes.map(\.title).contains("Home"))
             #expect(scopes.filter(\.isSelected).count == 1)
             // The status line counts results.

@@ -10,19 +10,19 @@ struct StartupDiskNameTests {
 
     @Test func untoldItIsMacintoshHD() {
         #expect(VolumePaths.defaultStartupDiskName == "Macintosh HD")
-        #expect(TabText.folderDisplayName("/") == "Macintosh HD")
+        #expect(TabText.folderDisplayName("/", homePath: "/Users/demo") == "Macintosh HD")
     }
 
     @Test func tabsAndTheirSearches() {
-        #expect(TabText.folderDisplayName("/", startupDiskName: Self.name) == "Data")
-        #expect(TabText.folderDisplayName("/Users", startupDiskName: Self.name) == "Users")
+        #expect(TabText.folderDisplayName("/", homePath: "/Users/demo", startupDiskName: Self.name) == "Data")
+        #expect(TabText.folderDisplayName("/Users", homePath: "/Users/demo", startupDiskName: Self.name) == "Users")
         let folder = TabText.describe(
             currentPath: "/", searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false,
-            startupDiskName: Self.name)
+            homePath: "/Users/demo", startupDiskName: Self.name)
         #expect(folder.label == "Data")
         let search = TabText.describe(
             currentPath: "/Users", searchVisible: true, searchQuery: "notes", searchRootPath: "/", searchRunning: true,
-            startupDiskName: Self.name)
+            homePath: "/Users/demo", startupDiskName: Self.name)
         #expect(search.label == "“notes” in Data")
     }
 
