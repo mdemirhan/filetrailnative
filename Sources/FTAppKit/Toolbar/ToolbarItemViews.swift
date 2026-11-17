@@ -2,10 +2,15 @@ import AppKit
 import FTFoundation
 
 /// The toolbar's title: the folder's name in 15 pt semibold, cut short with an ellipsis, its full path as the
-/// tooltip. It takes the room the other items leave, and it drags the window.
+/// tooltip. It takes the room the other items leave, and it drags the window. While something runs in the background,
+/// the activity ring takes the end of its room (`activity`), and the name is cut short before the ring is.
 final class ToolbarTitleView: NSView, TextStyleSource {
     /// The title's field: its text starts at the block's padding.
     let field = FlushTextField(labelWithString: "")
+    /// The ring at the end of its room; hidden while nothing runs.
+    let activity = TitleActivityView()
+    /// Between the name and the ring.
+    static let activityGap = 8.0
     static let lineHeight = 1.2
     /// The title dims while its window isn't key.
     private var windowActivity: WindowActivity?
@@ -21,6 +26,8 @@ final class ToolbarTitleView: NSView, TextStyleSource {
         field.cell?.truncatesLastVisibleLine = true
         field.setAccessibilityIdentifier("toolbar.title")
         addSubview(field)
+        addSubview(activity)
+        activity.onWidthChange = { [weak self] in self?.activityWidthChanged() }
         setAccessibilityIdentifier("toolbar.titleBlock")
     }
 
@@ -29,17 +36,39 @@ final class ToolbarTitleView: NSView, TextStyleSource {
     override var isFlipped: Bool { true }
     override var mouseDownCanMoveWindow: Bool { true }
 
-    /// The block's height: one line of the title.
-    static var height: Double { (DesignTokens.toolbar.titleFontSize * lineHeight).rounded() }
+    /// One line of the title.
+    static var textHeight: Double { (DesignTokens.toolbar.titleFontSize * lineHeight).rounded() }
+    /// The block's height: room for the ring, the line centered in it.
+    static var height: Double { max(textHeight, TitleActivityView.height) }
 
     override func layout() {
         super.layout()
         let toolbar = DesignTokens.toolbar
+        // The ring keeps its room while it fades out.
+        let ringWidth = activity.isShown ? activity.preferredWidth : (activity.isHidden ? 0 : activity.frame.width)
+        activity.frame = NSRect(
+            x: bounds.width - toolbar.titlePaddingTrailing - ringWidth,
+            y: (bounds.height - TitleActivityView.height) / 2, width: ringWidth, height: TitleActivityView.height)
+        let reserved = ringWidth > 0 ? ringWidth + Self.activityGap : 0
         field.frame = NSRect(
-            x: toolbar.titlePaddingLeading, y: 0,
-            width: max(0, bounds.width - toolbar.titlePaddingLeading - toolbar.titlePaddingTrailing),
-            height: bounds.height)
+            x: toolbar.titlePaddingLeading, y: ((bounds.height - Self.textHeight) / 2).rounded(),
+            width: max(0, bounds.width - toolbar.titlePaddingLeading - toolbar.titlePaddingTrailing - reserved),
+            height: Self.textHeight)
         onLayout()
+    }
+
+    /// The ring came, went or its count changed: the count's pill grows or shrinks to the left, the ring staying put.
+    private func activityWidthChanged() {
+        guard window != nil, !activity.reducesMotion() else {
+            needsLayout = true
+            return
+        }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.2
+            context.allowsImplicitAnimation = true
+            needsLayout = true
+            layoutSubtreeIfNeeded()
+        }
     }
 
     override func mouseDown(with event: NSEvent) {

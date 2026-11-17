@@ -92,8 +92,9 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 ## Sizes and information
 
-- **Folder sizes**: ask for a folder's size and it is measured with every folder inside it, in one pass. Sorted by Size, each row of the List gets a bar.
+- **Folder sizes**: ask for a folder's size and it is measured with every folder inside it, in one pass. Sorted by Size, each row of the List gets a bar. Sizes you ask for are measured one after another, ahead of those measured by themselves and never stopping each other; a size measured in one window shows in all of them.
 - **Sizes only where you ask**: nothing is measured while you browse, so a large folder opens at once. With the Info panel or the Info Row open, the folder they show is measured by itself when it is in your home folder; Settings can turn that off.
+- **Activity**: while something runs in the background, a ring at the end of the toolbar's title shows it, filling as a file operation goes on, with "+2" when more runs or waits; a click lists them, the file operation and the folder sizes being measured or waiting, each with Stop.
 - **The Info panel** shows the selected item's kind, size, dates and permissions, with Open, Open With and quick actions. The **Info Row** shows the same along the bottom.
 
 ## Keyboard and commands

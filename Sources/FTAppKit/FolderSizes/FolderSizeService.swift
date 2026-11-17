@@ -36,6 +36,7 @@ final class FolderSizeService {
             onStored: {
                 MainActor.assumeIsolated { router.stored() }
             })
+        jobs.onActivityChanged = { ActivityCenter.shared.sizesChanged() }
     }
 
     /// The cache of the window `windowID`.

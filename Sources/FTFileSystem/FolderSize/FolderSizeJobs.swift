@@ -185,6 +185,20 @@ public final class FolderSizeJobs {
     // The size a folder had when it was asked to be measured again (Recalculate forgets it first): what the folders
     // holding it take the difference from once it is measured.
     private var previousSizes: [String: FolderSizeStats] = [:]
+    /// Told when what is measured or waits changes (`activity`), as often as a walk moves on: the caller spaces out
+    /// what it does with it.
+    public var onActivityChanged: (() -> Void)?
+
+    /// What is being measured and what waits, the one measured first, for the Activity list.
+    public var activity: [FolderSizeActivity] {
+        liveJobIds.compactMap { jobId in
+            guard let job = jobs[jobId], !job.status.isFinished else { return nil }
+            return FolderSizeActivity(
+                jobId: jobId, path: job.path, isRunning: job.status == .running,
+                isAutomatic: backgroundJobIds.contains(jobId), measuredFolderCount: job.measuredFolderCount)
+        }
+    }
+
     /// The window in front (the key window's front tab): its measurements go first among their kind, and its
     /// automatic walk is never stopped to give way.
     public var frontOwner: Int? {
@@ -276,6 +290,7 @@ public final class FolderSizeJobs {
                 onSettled?(owner, jobId)
             }
         }
+        onActivityChanged?()
     }
 
     private func pruneFinishedJobs() {
@@ -632,6 +647,7 @@ public final class FolderSizeJobs {
             }
         }
         preemptForQueued()
+        onActivityChanged?()
         return FolderSizeStartResponse(jobId: jobId, status: jobs[jobId]?.status ?? live.status)
     }
 

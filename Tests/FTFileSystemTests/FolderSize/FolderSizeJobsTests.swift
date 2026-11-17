@@ -1,3 +1,4 @@
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -910,6 +911,35 @@ private func settle() async {
         // The first measured again was counted by both, and corrected them; the second was measured after them.
         #expect(jobs.cachedSize("/test/a/b") == 70)
         #expect(jobs.cachedSize("/test/a") == nil && jobs.cachedSize("/test") == nil)
+    }
+
+    // What is measured and what waits, the one measured first, for the Activity list; told as it changes.
+    @Test func saysWhatIsMeasuredAndWhatWaits() async {
+        let native = MockNative()
+        let jobs = make(native)
+        var told = 0
+        jobs.onActivityChanged = { told += 1 }
+
+        let running = start(jobs, "/test/a", owner: 1, automatic: true)
+        let waiting = start(jobs, "/test/b", owner: 2)
+        native.finish(["/test/a/in": [5, 8, 1, 0]])
+        await settle()
+        #expect(told > 0)
+        // The automatic walk gave way to the one asked for.
+        native.rejectActive(cancelledError)
+        await settle()
+        #expect(
+            jobs.activity == [
+                FolderSizeActivity(
+                    jobId: waiting.jobId, path: "/test/b", isRunning: true, isAutomatic: false, measuredFolderCount: 0),
+                FolderSizeActivity(
+                    jobId: running.jobId, path: "/test/a", isRunning: false, isAutomatic: true, measuredFolderCount: 1),
+            ])
+        native.resolveActive()
+        await settle()
+        native.resolveActive()
+        await settle()
+        #expect(jobs.activity.isEmpty)
     }
 
     // Every window is told when sizes are stored, as the walk hands folders over and when it ends.

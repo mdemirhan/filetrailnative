@@ -137,6 +137,8 @@
     "info row": {"swift": "infoRow"},
     "folder tree button": {"swift": "toolbar.folderTree"},
     "info panel button": {"swift": "toolbar.infoPanel"},
+    "activity button": {"swift": "toolbar.activity"},
+    "activity row": {"swift": "activityPopover.row"},
     "sort button": {"swift": "toolbar.sort"},
     "view options button": {"swift": "toolbar.viewOptions"},
     "theme button": {"swift": "toolbar.theme"},

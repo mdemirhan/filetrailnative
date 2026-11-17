@@ -105,6 +105,10 @@ final class AppWriteOperations {
                 }
             })
         Self.current = self
+        // The Activity list's Stop for a file operation is its window's Stop.
+        ActivityCenter.shared.stopOperation = { [coordinator] operationId, owner in
+            _ = coordinator.cancel(operationId, window: owner)
+        }
     }
 
     // MARK: Windows
@@ -155,6 +159,7 @@ final class AppWriteOperations {
     /// Every window but the owner hears how the operation is doing; every window's tabs follow what it moved, and
     /// every window's folder sizes forget what it changed.
     private func broadcast(_ event: WriteOperationEvent, owner: any WriteOperationWindow) {
+        ActivityCenter.shared.writeProgress(event, owner: owner)
         guard let windows else { return }
         for group in windows.liveGroups {
             let session = session(for: group)

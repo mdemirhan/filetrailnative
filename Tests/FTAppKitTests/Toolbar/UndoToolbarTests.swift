@@ -46,6 +46,34 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The title's ring follows what runs in the background, its tooltip saying what; it is part of the title, no item
+        // of the toolbar's own, and a toolbar saved with the Activity item it once was drops it.
+        @Test func theTitlesRingFollowsWhatRuns() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let toolbar = tab.explorerToolbar
+            var running: [ActivityItem] = []
+            toolbar.activity = { running }
+            let title = try #require(toolbar.titleView)
+            title.activity.reducesMotion = { true }
+            toolbar.refreshStates()
+            #expect(!title.activity.isShown)
+            running = [
+                ActivityItem(
+                    id: "op", kind: .fileOperation, title: "Copying…", detail: "40%", progress: 0.4, isWaiting: false)
+            ]
+            toolbar.refreshStates()
+            #expect(title.activity.isShown && abs((title.activity.ringFill ?? 0) - 0.4) < 0.001)
+            #expect(title.activity.toolTip == "Copying…: 40%")
+            #expect(!toolbar.rowKeys.contains("activity"))
+            running = []
+            toolbar.refreshStates()
+            #expect(!title.activity.isShown)
+            let saved = ToolbarItems.sanitizeTopItems(.array([.string("back"), .string("activity")]))
+            #expect(!saved.map(\.rawValue).contains("activity") && saved.first == .back)
+            await harness.close()
+        }
+
         @Test func theHistoryButtonShowsOnlyWithSomethingToListAndItsListFollowsTheHistory() async throws {
             let harness = try ExplorerHarness.windowless()
             let history = UndoHistory()

@@ -33,6 +33,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     private var identifiersObservation: NSKeyValueObservation?
     private var sheetObservers: [NSObjectProtocol] = []
     private var historyObserver: NSObjectProtocol?
+    private var activityObserver: NSObjectProtocol?
+    /// What runs in the background, which the title's ring follows, and whether it has just ended with a file operation
+    /// completed; a test hands its own.
+    var activity: () -> [ActivityItem] = { ActivityCenter.shared.items }
+    var activityEndedWell: () -> Bool = { ActivityCenter.shared.endedWell }
     /// The app's file undo history, which Undo, Redo and the Undo History button follow; a test hands its own.
     var undoHistory: () -> UndoHistory? = { AppWriteOperations.current?.undoHistory }
     /// The search field's width: made once, as the field is, however many times its item is made.
@@ -64,6 +69,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     isolated deinit {
         for observer in sheetObservers { NotificationCenter.default.removeObserver(observer) }
         if let historyObserver { NotificationCenter.default.removeObserver(historyObserver) }
+        if let activityObserver { NotificationCenter.default.removeObserver(activityObserver) }
     }
 
     init(identifier: String) {
@@ -111,6 +117,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         // Undo and Redo, and the Undo History button, follow the history.
         historyObserver = NotificationCenter.default.addObserver(
             forName: UndoHistoryMenu.changed, object: nil, queue: .main
+        ) { [weak self] _ in MainActor.assumeIsolated { self?.refreshStates() } }
+        // The title's ring follows what runs in the background.
+        activityObserver = NotificationCenter.default.addObserver(
+            forName: ActivityCenter.changed, object: nil, queue: .main
         ) { [weak self] _ in MainActor.assumeIsolated { self?.refreshStates() } }
         reload()
     }
@@ -389,6 +399,9 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         } else if let title = views[id] as? ToolbarTitleView {
             title.field.stringValue = Self.title(of: context)
             title.field.toolTip = context.shownFolderPath
+            let running = activity()
+            title.activity.setSummary(ActivityList.summary(running))
+            title.activity.show(ActivityList.indicator(running), endedWell: activityEndedWell())
         } else if ToolbarItems.isSearchField(id) {
             searchField.isEnabled = !isCustomizing
             searchField.takeClearButton()
@@ -458,15 +471,20 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     }
 
     /// Whether `location` (window coordinates) is on something in the band that takes presses: any control, the system's
-    /// » button and a folded search's magnifier as well as the items' own. Not the title, which drags the window as the
-    /// band's empty room does.
+    /// » button and a folded search's magnifier as well as the items' own, and the title's activity ring while it shows. Not
+    /// the rest of the title, which drags the window as the band's empty room does.
     func hasPressableItem(at location: NSPoint) -> Bool {
         guard let band = context?.window?.standardWindowButton(.closeButton)?.superview else { return false }
         return Self.hasControl(in: band, at: location)
     }
 
     private static func hasControl(in view: NSView, at location: NSPoint) -> Bool {
-        if view.isHidden || view is ToolbarTitleView { return false }
+        if view.isHidden { return false }
+        if let title = view as? ToolbarTitleView {
+            // The title drags the window; its ring is pressed.
+            let ring = title.activity
+            return ring.isShown && !ring.isHidden && ring.convert(ring.bounds, to: nil).contains(location)
+        }
         if view is NSControl, view.convert(view.bounds, to: nil).contains(location) { return true }
         return view.subviews.contains { hasControl(in: $0, at: location) }
     }
@@ -678,6 +696,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 let fill = title.widthAnchor.constraint(equalToConstant: Self.titleFillWidth)
                 fill.priority = NSLayoutConstraint.Priority(1)
                 fill.isActive = true
+                title.activity.onClick = { [weak self, weak title] in
+                    guard let ring = title?.activity, let tab = self?.context as? MainWindowController else { return }
+                    tab.activityUI.toggle(from: ring)
+                }
             } else {
                 title.widthAnchor.constraint(equalToConstant: minWidth).isActive = true
                 title.field.stringValue = definition.label

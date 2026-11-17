@@ -288,6 +288,10 @@ enum ToolbarKeyboard {
                 guard !field.isHidden else { return [] }
                 return [field.optionsButton, field] + (field.clearStop.isHidden ? [] : [field.clearStop])
             }
+            if let title = item.view as? ToolbarTitleView {
+                // The title's ring, while it shows.
+                return title.activity.isShown && !title.activity.isHidden ? [title.activity] : []
+            }
             if let viewSwitch = item.view as? ToolbarViewSwitch {
                 return viewSwitch.isEnabled && !viewSwitch.isHidden ? [viewSwitch] : []
             }
@@ -342,6 +346,7 @@ enum ToolbarKeyboard {
         case let viewSwitch as ToolbarViewSwitch: viewSwitch.takeKeyboard(backward: backward)
         case let options as ToolbarSearchOptionsButton: _ = options.takeKeyboard()
         case let clear as KeyboardStopView: clear.takeKeyboard()
+        case let ring as TitleActivityView: ring.takeKeyboard()
         default: window.makeFirstResponder(stop)
         }
     }

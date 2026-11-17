@@ -1,6 +1,14 @@
 // A list under a toolbar button, in a popover: the clipboard's and the Undo History's
 import AppKit
 
+/// What a list opens under: drawn "on" while the list is open.
+@MainActor
+protocol ToolbarListAnchor: AnyObject {
+    var isOn: Bool { get set }
+}
+
+extension ToolbarButton: ToolbarListAnchor {}
+
 /// A tab's list while it is open under its toolbar button: the popover, the window's events while it shows, and the
 /// keys the popover itself gets. A press outside the list and its button, and the window no longer being the main
 /// one, ask the owner to close it (`dismiss`); the owner says what a key does (`key`).
@@ -37,7 +45,7 @@ final class ToolbarListPopover {
         anchor = button
         self.window = window
         popover.show(from: button, in: window)
-        (button as? ToolbarButton)?.isOn = true
+        (button as? any ToolbarListAnchor)?.isOn = true
         keys = WindowEventRouting.add(window) { [weak self] event in self?.intercept(event) ?? false }
         // A click inside can give the popover the keyboard, though the window stays the main one: the keys still go
         // to the list.
@@ -64,7 +72,7 @@ final class ToolbarListPopover {
         if let popoverKeys { NSEvent.removeMonitor(popoverKeys) }
         popoverKeys = nil
         content.removeFromSuperview()
-        (anchor as? ToolbarButton)?.isOn = false
+        (anchor as? any ToolbarListAnchor)?.isOn = false
         anchor = nil
         if let keys, let window { WindowEventRouting.remove(keys, from: window) }
         keys = nil
