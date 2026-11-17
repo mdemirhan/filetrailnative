@@ -106,6 +106,7 @@ extension RealWalks {
                 #expect(result.folderCount == 3)  // sub, sub/deep, empty
                 #expect(result.total >= 135)  // at least 10+20+5+100
                 #expect(result.diskTotal >= result.total)  // disk >= logical
+                #expect(result.partial.isComplete)
 
                 // Sub-directory entries exist for sub, sub/deep, and empty
                 let dirs = walk.dirs
@@ -209,6 +210,10 @@ extension RealWalks {
                 #expect(walk.dirs[locked] == nil)
                 let sub = try #require(walk.dirs["\(root)/sub"])
                 #expect(sub.sizeBytes == 105 && sub.fileCount == 2 && sub.folderCount == 2)
+                // The size knows it left the folder out, and so does every folder holding it; one beside it doesn't.
+                #expect(sub.partial == .noAccess && walk.result.partial == .noAccess)
+                #expect(walk.dirs["\(root)/sub/deep"]?.partial.isComplete == true)
+                #expect(walk.dirs["\(root)/empty"]?.partial.isComplete == true)
             }
         }
 
@@ -221,7 +226,7 @@ extension RealWalks {
                 let gone = "\(root)/sub/gone"
                 try makeFolder(gone)
                 try write("\(gone)/big.bin", 50_000)
-                VanishingFolder.change.withLock { $0 = (at: gone, movingAway: nil) }
+                VanishingFolder.change.withLock { $0 = (at: gone, change: .remove) }
                 ft_folder_walk_set_open_hook(changeVanishingFolder)
                 defer { ft_folder_walk_set_open_hook(nil) }
 
@@ -230,28 +235,63 @@ extension RealWalks {
                 #expect(walk.result.total < 50_000)
                 #expect(totals(walk, "\(root)/sub")?.sizeBytes == 105)
                 #expect(walk.dirs["\(gone)"] == nil)
+                #expect(totals(walk, "\(root)/sub")?.partial == .changed && walk.result.partial == .changed)
+                #expect(walk.dirs["\(root)/sub/deep"]?.partial.isComplete == true)
             }
         }
 
-        // The folder it was listed in moved away meanwhile: what was counted is no longer that folder's size, so the
-        // folders holding it are not reported whole and the walk fails, rather than a size being kept that leaves out
-        // everything under the folder that moved.
-        @Test func aSubfolderGoneWithTheFolderItWasListedInLeavesTheFoldersHoldingItIncomplete() async throws {
+        // The folder it was listed in moved away meanwhile: what is under it is left out, and the walk gives the size
+        // of the rest, which knows something changed.
+        @Test func aSubfolderGoneWithTheFolderItWasListedInIsLeftOut() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
                 try makeTree(root)
-                VanishingFolder.change.withLock { $0 = (at: "\(root)/sub/deep", movingAway: "\(root)/sub") }
+                VanishingFolder.change.withLock { $0 = (at: "\(root)/sub/deep", change: .moveAway("\(root)/sub")) }
                 ft_folder_walk_set_open_hook(changeVanishingFolder)
                 defer { ft_folder_walk_set_open_hook(nil) }
-                var batches: [FinishedFolders] = []
-                let walk = NativeFolderSize().getFolderSize(root, background: false) { batches.append($0) }
 
-                let error = await #expect(throws: FolderSizeError.self) { try await walk.value }
+                let walk = try await measure(NativeFolderSize(), root)
+
+                #expect(walk.dirs["\(root)/sub/deep"] == nil)
+                #expect(totals(walk, "\(root)/sub")?.sizeBytes == 5)
+                #expect(totals(walk, "\(root)/sub")?.partial == .changed)
+                #expect(walk.result.partial == .changed)
+                #expect(walk.dirs["\(root)/empty"]?.partial.isComplete == true)
+            }
+        }
+
+        // A sub-folder replaced by a file between its folder's listing and its own opening: the file isn't counted
+        // (the listing saw a folder), and the size says something changed.
+        @Test func aSubfolderReplacedByAFileIsLeftOut() async throws {
+            try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
+                let root = directory.path
+                try makeTree(root)
+                VanishingFolder.change.withLock { $0 = (at: "\(root)/sub/deep", change: .replaceWithFile) }
+                ft_folder_walk_set_open_hook(changeVanishingFolder)
+                defer { ft_folder_walk_set_open_hook(nil) }
+
+                let walk = try await measure(NativeFolderSize(), root)
+
+                #expect(walk.dirs["\(root)/sub/deep"] == nil)
+                #expect(totals(walk, "\(root)/sub")?.sizeBytes == 5)
+                #expect(walk.result.partial == .changed)
+            }
+        }
+
+        // The folder measured itself moved away while it was walked: what was counted is no folder's at its path,
+        // and the walk fails.
+        @Test func theFolderMeasuredMovedAwayWhileItWasWalkedFails() async throws {
+            try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
+                let root = "\(directory.path)/measured"
+                try makeTree(root)
+                VanishingFolder.change.withLock { $0 = (at: "\(root)/sub/deep", change: .moveAway(root)) }
+                ft_folder_walk_set_open_hook(changeVanishingFolder)
+                defer { ft_folder_walk_set_open_hook(nil) }
+
+                let error = await #expect(throws: FolderSizeError.self) {
+                    try await measure(NativeFolderSize(), root)
+                }
                 #expect(error?.errnum == ENOENT)
-                let finished = Set(batches.flatMap { $0.dirs.map(\.path) })
-                #expect(!finished.contains(root) && !finished.contains("\(root)/sub"))
-                // A folder beside it is whole.
-                #expect(finished.contains("\(root)/empty"))
             }
         }
 
@@ -398,6 +438,7 @@ extension RealWalks {
 
             #expect(walk.result.folderCount == FileLimitChild.folderCount * 13)
             #expect(walk.dirs.count == FileLimitChild.folderCount * 13)
+            #expect(walk.result.partial.isComplete)
         }
     }
 }
@@ -617,22 +658,33 @@ extension RealWalks {
     }
 }
 
-/// The folder the walk's open hook removes, for the test that removes one as it is about to be opened.
+/// What the walk's open hook does to a folder as it is about to be opened, for the tests that change one then.
 private enum VanishingFolder {
-    /// The folder the walk is about to open, and the folder to move away then (nil: the folder itself is removed).
-    static let change = OSAllocatedUnfairLock<(at: String, movingAway: String?)>(
-        initialState: (at: "", movingAway: nil))
+    enum Change: Sendable {
+        /// The folder is removed.
+        case remove
+        /// The folder given (one holding it, or the folder measured) is moved away.
+        case moveAway(String)
+        /// The folder is removed and a file put at its path.
+        case replaceWithFile
+    }
+
+    /// The folder the walk is about to open, and what happens then.
+    static let change = OSAllocatedUnfairLock<(at: String, change: Change)>(initialState: (at: "", change: .remove))
 }
 
-/// The walk's open hook for those tests: called on the walk's threads, it removes the folder about to be opened, or
-/// moves the folder holding it away.
+/// The walk's open hook for those tests: called on the walk's threads, it changes the folder about to be opened.
 private func changeVanishingFolder(_ path: UnsafePointer<CChar>?) {
     let change = VanishingFolder.change.withLock { $0 }
     guard let path, String(cString: path) == change.at else { return }
-    if let away = change.movingAway {
-        try? FileManager.default.moveItem(atPath: away, toPath: away + "-moved")
-    } else {
+    switch change.change {
+    case .remove:
         try? FileManager.default.removeItem(atPath: change.at)
+    case .moveAway(let away):
+        try? FileManager.default.moveItem(atPath: away, toPath: away + "-moved")
+    case .replaceWithFile:
+        try? FileManager.default.removeItem(atPath: change.at)
+        try? write(change.at, 3)
     }
 }
 

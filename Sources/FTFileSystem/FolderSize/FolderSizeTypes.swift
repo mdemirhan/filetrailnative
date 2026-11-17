@@ -1,4 +1,25 @@
+import CFileTrail
 import Foundation
+
+/// What a size leaves out, and why, as the walk found while it measured: empty when it is complete. Kept with each
+/// size; nothing shows it yet. *No access* is kept apart because it is ordinary (the home folder, without Full Disk
+/// Access, holds app containers no walk may read), where the others are not.
+public struct FolderSizePartial: OptionSet, Hashable, Sendable {
+    public let rawValue: Int32
+
+    public init(rawValue: Int32) {
+        self.rawValue = rawValue
+    }
+
+    /// Something inside changed while it was walked: a sub-folder gone, renamed, or replaced by a file or a link.
+    public static let changed = FolderSizePartial(rawValue: FT_PARTIAL_CHANGED)
+    /// A sub-folder it has no permission to read, counted as an empty folder.
+    public static let noAccess = FolderSizePartial(rawValue: FT_PARTIAL_NO_ACCESS)
+    /// A listing that broke part way, or a sub-folder that couldn't be opened for another reason.
+    public static let readError = FolderSizePartial(rawValue: FT_PARTIAL_READ_ERROR)
+
+    public var isComplete: Bool { isEmpty }
+}
 
 /// A path as a dictionary key: compared and hashed by its exact UTF-8.
 /// Swift's `String` takes NFC and NFD spellings as equal, and a folder can have either as its name.
@@ -38,9 +59,12 @@ public struct FolderSizeStats: Equatable, Sendable {
     public var folderCount: Int
     public var dev: Int64?
     public var measurement: Int
+    /// What the measurement left out of it.
+    public var partial: FolderSizePartial
 
     public init(
-        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, dev: Int64?, measurement: Int
+        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, dev: Int64?, measurement: Int,
+        partial: FolderSizePartial = []
     ) {
         self.sizeBytes = sizeBytes
         self.diskBytes = diskBytes
@@ -48,6 +72,7 @@ public struct FolderSizeStats: Equatable, Sendable {
         self.folderCount = folderCount
         self.dev = dev
         self.measurement = measurement
+        self.partial = partial
     }
 }
 
@@ -105,12 +130,17 @@ public struct FolderTotals: Equatable, Sendable {
     public var diskBytes: Int64
     public var fileCount: Int
     public var folderCount: Int
+    /// What the walk left out of it.
+    public var partial: FolderSizePartial
 
-    public init(sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int) {
+    public init(
+        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, partial: FolderSizePartial = []
+    ) {
         self.sizeBytes = sizeBytes
         self.diskBytes = diskBytes
         self.fileCount = fileCount
         self.folderCount = folderCount
+        self.partial = partial
     }
 }
 
@@ -144,10 +174,12 @@ public struct FolderSizeResult: Equatable, Sendable {
     public var folderCount: Int
     public var dev: Int64?
     public var dirs: [FinishedFolders.Folder]
+    /// What the walk left out of the folder.
+    public var partial: FolderSizePartial
 
     public init(
         total: Int64, diskTotal: Int64, fileCount: Int, folderCount: Int, dev: Int64? = nil,
-        dirs: [FinishedFolders.Folder] = []
+        dirs: [FinishedFolders.Folder] = [], partial: FolderSizePartial = []
     ) {
         self.total = total
         self.diskTotal = diskTotal
@@ -155,6 +187,7 @@ public struct FolderSizeResult: Equatable, Sendable {
         self.folderCount = folderCount
         self.dev = dev
         self.dirs = dirs
+        self.partial = partial
     }
 }
 

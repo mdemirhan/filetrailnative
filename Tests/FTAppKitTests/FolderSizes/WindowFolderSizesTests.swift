@@ -229,6 +229,22 @@ struct WindowFolderSizesTests {
         _ = second
     }
 
+    // The window keeps what a ready size leaves out, from a probe and from its own measurement.
+    @Test func keepsWhatAReadySizeLeavesOut() async {
+        jobs.statuses["job-1"] = FolderSizeJob(
+            jobId: "job-1", path: "/a", status: .ready, sizeBytes: 7, diskBytes: 8, fileCount: 1, folderCount: 0,
+            partial: .readError)
+        sizes.calculate("/a")
+        #expect(sizes.partial("/a") == nil)
+        timers.advance(WindowFolderSizes.pollInterval)
+        #expect(sizes.readySize("/a") == 7)
+        #expect(sizes.partial("/a") == .readError)
+        jobs.known = ["/b": 3]
+        _ = sizes.entry("/b")
+        await settle()
+        #expect(sizes.partial("/b")?.isComplete == true)
+    }
+
     // Repaints come at most every 100 ms; the first at once.
     @Test func repaintsAreMergedWithinAHundredMilliseconds() {
         var repaints = 0

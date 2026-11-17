@@ -4,12 +4,22 @@
 
 #include <stdint.h>
 
+/// Why a folder's totals leave something out (bits of `partial`; 0 when they are complete): something inside
+/// changed while it was walked (a sub-folder gone, renamed, or replaced by a file or a link)…
+#define FT_PARTIAL_CHANGED 1
+/// …a sub-folder it has no permission to read, counted as an empty folder…
+#define FT_PARTIAL_NO_ACCESS 2
+/// …or a listing that broke part way, or a sub-folder that couldn't be opened for another reason.
+#define FT_PARTIAL_READ_ERROR 4
+
 /// What a folder holds, at any depth.
 typedef struct {
     int64_t size_bytes;
     int64_t disk_bytes;
     int64_t file_count;
     int64_t folder_count;
+    /// What its totals leave out, anywhere inside it (`FT_PARTIAL_…`).
+    int32_t partial;
 } ft_folder_stats;
 
 /// A folder the walk has finished, with the totals of everything in it. Lists are in the order the
@@ -34,7 +44,10 @@ typedef struct {
     int64_t folder_count;
     /// The disk walked: the walk never leaves it.
     int64_t dev;
-    /// 0, or the errno the walk failed with (the first read error for an incomplete root).
+    /// What the totals leave out (`FT_PARTIAL_…`).
+    int32_t partial;
+    /// 0, or the errno the walk failed with: the folder itself couldn't be opened or listed, was gone or replaced
+    /// when the walk ended, or the walk couldn't run (no threads, no memory).
     int errnum;
     /// Set when `ft_folder_walk_cancel` was called before the walk ended.
     int cancelled;

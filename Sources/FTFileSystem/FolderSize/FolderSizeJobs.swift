@@ -20,10 +20,13 @@ public struct FolderSizeJob: Equatable, Sendable {
     /// waiting on when this goes up.
     public var measuredFolderCount: Int
     public var error: String?
+    /// What the measured size leaves out, once it is ready.
+    public var partial: FolderSizePartial
 
     public init(
         jobId: String, path: String, status: FolderSizeJobStatus, sizeBytes: Int64? = nil, diskBytes: Int64? = nil,
-        fileCount: Int? = nil, folderCount: Int? = nil, measuredFolderCount: Int = 0, error: String? = nil
+        fileCount: Int? = nil, folderCount: Int? = nil, measuredFolderCount: Int = 0, error: String? = nil,
+        partial: FolderSizePartial = []
     ) {
         self.jobId = jobId
         self.path = path
@@ -34,6 +37,7 @@ public struct FolderSizeJob: Equatable, Sendable {
         self.folderCount = folderCount
         self.measuredFolderCount = measuredFolderCount
         self.error = error
+        self.partial = partial
     }
 }
 
@@ -67,13 +71,19 @@ public struct FolderSizeProbe: Equatable, Sendable {
     public var diskBytes: Int64
     public var fileCount: Int
     public var folderCount: Int
+    /// What the size leaves out.
+    public var partial: FolderSizePartial
 
-    public init(path: String, sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int) {
+    public init(
+        path: String, sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int,
+        partial: FolderSizePartial = []
+    ) {
         self.path = path
         self.sizeBytes = sizeBytes
         self.diskBytes = diskBytes
         self.fileCount = fileCount
         self.folderCount = folderCount
+        self.partial = partial
     }
 }
 
@@ -343,7 +353,7 @@ public final class FolderSizeJobs {
                 FolderSizeStats(
                     sizeBytes: folder.totals.sizeBytes, diskBytes: folder.totals.diskBytes,
                     fileCount: folder.totals.fileCount, folderCount: folder.totals.folderCount, dev: dev,
-                    measurement: measurement))
+                    measurement: measurement, partial: folder.totals.partial))
         }
         return dirs.count
     }
@@ -398,13 +408,14 @@ public final class FolderSizeJobs {
             path,
             FolderSizeStats(
                 sizeBytes: result.total, diskBytes: result.diskTotal, fileCount: result.fileCount,
-                folderCount: result.folderCount, dev: result.dev, measurement: measurement))
+                folderCount: result.folderCount, dev: result.dev, measurement: measurement, partial: result.partial))
         let stored = storeMeasured(result.dev, result.dirs, measurement: measurement)
         var ready = job(jobId, path, .ready, measuredFolderCount: (jobs[jobId]?.measuredFolderCount ?? 0) + stored)
         ready.sizeBytes = result.total
         ready.diskBytes = result.diskTotal
         ready.fileCount = result.fileCount
         ready.folderCount = result.folderCount
+        ready.partial = result.partial
         setJob(jobId, ready)
     }
 
@@ -474,6 +485,7 @@ public final class FolderSizeJobs {
             ready.diskBytes = cached.diskBytes
             ready.fileCount = cached.fileCount
             ready.folderCount = cached.folderCount
+            ready.partial = cached.partial
             setJob(jobId, ready)
             pruneFinishedJobs()
             return FolderSizeStartResponse(jobId: jobId, status: .ready)
@@ -522,7 +534,7 @@ public final class FolderSizeJobs {
             guard let stats = cache.get(path) else { return nil }
             return FolderSizeProbe(
                 path: path, sizeBytes: stats.sizeBytes, diskBytes: stats.diskBytes, fileCount: stats.fileCount,
-                folderCount: stats.folderCount)
+                folderCount: stats.folderCount, partial: stats.partial)
         }
     }
 

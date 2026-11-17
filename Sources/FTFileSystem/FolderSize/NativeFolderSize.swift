@@ -135,7 +135,7 @@ private final class FolderWalk {
                     path: String(cString: current.pointee.path),
                     totals: FolderTotals(
                         sizeBytes: stats.size_bytes, diskBytes: stats.disk_bytes, fileCount: Int(stats.file_count),
-                        folderCount: Int(stats.folder_count))))
+                        folderCount: Int(stats.folder_count), partial: FolderSizePartial(rawValue: stats.partial))))
             entry = current.pointee.next
         }
         return folders
@@ -179,6 +179,7 @@ private final class FolderWalk {
         }
         return FolderSizeResult(
             total: result.size_bytes, diskTotal: result.disk_bytes, fileCount: Int(result.file_count),
-            folderCount: Int(result.folder_count), dev: dev, dirs: leftover)
+            folderCount: Int(result.folder_count), dev: dev, dirs: leftover,
+            partial: FolderSizePartial(rawValue: result.partial))
     }
 }

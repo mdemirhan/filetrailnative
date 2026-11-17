@@ -135,6 +135,27 @@ private func settle() async {
         jobs.start(FolderSizeStartRequest(path: path, recalculate: recalculate, automatic: automatic), owner: owner)
     }
 
+    // What a measurement left out goes with its size: in the job, in what is stored, and with the folders inside.
+    @Test func whatASizeLeavesOutGoesWithItWhereverItIsKept() async {
+        let native = MockNative()
+        let jobs = make(native)
+        var inside = FinishedFolders.Folder(
+            path: "/test/a/locked-in", totals: FolderTotals(sizeBytes: 5, diskBytes: 8, fileCount: 1, folderCount: 1))
+        inside.totals.partial = .noAccess
+        let measured = start(jobs, "/test/a")
+        native.resolveActive(
+            FolderSizeResult(
+                total: 10, diskTotal: 16, fileCount: 2, folderCount: 2, dirs: [inside], partial: [.noAccess, .changed]))
+        await settle()
+
+        #expect(jobs.getStatus(jobId: measured.jobId).partial == [.noAccess, .changed])
+        let probes = jobs.probeMany(["/test/a", "/test/a/locked-in"])
+        #expect(probes.map(\.partial) == [[.noAccess, .changed], .noAccess])
+        // A size asked for again comes from what is stored, with what it left out.
+        let again = start(jobs, "/test/a")
+        #expect(jobs.getStatus(jobId: again.jobId).partial == [.noAccess, .changed])
+    }
+
     // The window that asked hears when its measurement ends, whichever way, and only once.
     @Test func tellsTheWindowThatAskedWhenItsMeasurementHasEnded() async {
         let native = MockNative()

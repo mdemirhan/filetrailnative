@@ -16,14 +16,13 @@
 // /System/Volumes/Data, where the data volume is mounted: measuring / goes through the firmlinks and
 // leaves out /System/Volumes/Data, so each folder is counted once, under the path it is browsed at.
 //
-// A folder whose listing fails part way (EIO, say), or that holds a sub-folder that couldn't be opened
-// for a reason other than having no access to it, is incomplete: it and the folders holding it are
-// never reported finished, and a walk whose root is incomplete fails with the error. A sub-folder gone
-// along with the folder it was listed in (a folder above it was renamed or removed), or replaced by
-// something else, makes its folder incomplete too: what was counted is no longer that folder's size. One
-// removed from a folder still in its place holds nothing now and is left out, so a cache or a build
-// folder deleted meanwhile doesn't fail the walk of everything above it. A sub-folder the walk has no
-// access to is counted as a folder with nothing in it, as Finder does.
+// A measurement is best effort: what can't be counted is left out, and the folder holding it says why
+// (`FT_PARTIAL_…`), a reason found in a folder carried up to every folder holding it. A sub-folder gone,
+// renamed or replaced by a file or a link since it was listed is left out (changed); one the walk has no
+// access to is counted as a folder with nothing in it, as Finder does (no access); a listing that breaks
+// part way keeps what it read, and a sub-folder that can't be opened for another reason is left out (read
+// error). The walk fails only when the folder itself can't be opened or listed, or isn't there any more
+// when the walk ends.
 //
 // Each folder is finished as soon as everything inside it has been walked: it counts its own listing
 // and each sub-folder not finished yet, and whichever thread brings that count to zero adds the
@@ -112,14 +111,11 @@ typedef struct walk_dir {
   struct walk_dir *parent; /* NULL for the root */
   /* Its own listing, plus each sub-folder not finished yet: zero once all is counted. */
   atomic_int pending;
-  /* Set when part of it couldn't be read: its totals leave something out. */
-  atomic_int incomplete;
+  /* What its totals leave out, here or anywhere inside it (`FT_PARTIAL_…`). */
+  atomic_int partial;
   /* Set when it turned out not to be walked after it was queued (no access, gone, on
      another disk): it counts only as a folder in its parent and is never finished. */
   atomic_int skipped;
-  /* Which folder it was when it was opened (0 until then): how a sub-folder that has gone
-     tells whether this one is still where it was listed. */
-  _Atomic uint64_t ino;
   /* Its own files and folders, plus the totals of each finished sub-folder. */
   _Atomic int64_t size_bytes;
   _Atomic int64_t disk_bytes;
@@ -140,9 +136,8 @@ static walk_dir_t *walk_dir_new(char *path, walk_dir_t *parent) {
   dir->path = path;
   dir->parent = parent;
   atomic_init(&dir->pending, 1);
-  atomic_init(&dir->incomplete, 0);
+  atomic_init(&dir->partial, 0);
   atomic_init(&dir->skipped, 0);
-  atomic_init(&dir->ino, 0);
   atomic_init(&dir->size_bytes, 0);
   atomic_init(&dir->disk_bytes, 0);
   atomic_init(&dir->file_count, 0);
@@ -177,7 +172,7 @@ typedef struct {
   dev_t root_dev;
   atomic_int *cancelled;
   atomic_int failed;     /* set on allocation failure; walk aborts with ENOMEM */
-  atomic_int read_errno; /* the first error that left a folder incomplete */
+  atomic_int root_errno; /* why the folder walked couldn't be listed at all */
 } work_queue_t;
 
 static void wq_init(work_queue_t *wq, dev_t dev, atomic_int *cancelled) {
@@ -189,21 +184,28 @@ static void wq_init(work_queue_t *wq, dev_t dev, atomic_int *cancelled) {
   wq->root_dev = dev;
   wq->cancelled = cancelled;
   atomic_store(&wq->failed, 0);
-  atomic_store(&wq->read_errno, 0);
+  atomic_store(&wq->root_errno, 0);
 }
 
-/* `dir` leaves out part of what is in it, which couldn't be read for `errnum`. */
-static void mark_incomplete(work_queue_t *wq, walk_dir_t *dir, int errnum) {
-  int none = 0;
-  atomic_compare_exchange_strong(&wq->read_errno, &none, errnum != 0 ? errnum : EIO);
-  atomic_store(&dir->incomplete, 1);
-}
+/* `dir`'s totals leave something out, for `reason` (`FT_PARTIAL_…`). */
+static void mark_partial(walk_dir_t *dir, int reason) { atomic_fetch_or(&dir->partial, reason); }
 
-/* Whether a sub-folder that couldn't be opened for `errnum` is simply left out, as one
-   the walk has no access to; anything else (replaced since it was listed, no file
-   descriptors left, an I/O error) leaves its folder incomplete, but for one that is gone
-   (see `open_queued_dir`). */
-static int is_skippable_open_error(int errnum) { return errnum == EACCES || errnum == EPERM; }
+/* Why a sub-folder that couldn't be opened for `errnum` is left out of the folder holding it:
+   no access to it; gone, renamed or replaced by a file or a link since it was listed; or
+   anything else (no file descriptors left, an I/O error). */
+static int open_error_reason(int errnum) {
+  switch (errnum) {
+  case EACCES:
+  case EPERM:
+    return FT_PARTIAL_NO_ACCESS;
+  case ENOENT:
+  case ENOTDIR:
+  case ELOOP:
+    return FT_PARTIAL_CHANGED;
+  default:
+    return FT_PARTIAL_READ_ERROR;
+  }
+}
 
 /* For tests: called with each queued sub-folder's path just before it is opened. */
 static _Atomic(ft_folder_walk_open_hook) open_hook = NULL;
@@ -335,16 +337,24 @@ static process_dir_result_t process_dir(int dirfd, walk_dir_t *dir, thread_arg_t
   int64_t direct_disk_bytes = 0;
   int64_t direct_file_count = 0;
   int64_t direct_folder_count = 0;
+  int listed = 0;
 
   for (;;) {
     if (wq_stopped(wq)) break;
 
     int count = getattrlistbulk(dirfd, &g_attrlist, buf, BULK_BUF_SIZE, 0);
     if (count < 0) {
-      /* The rest of the listing can't be read: what it holds is only partly counted. */
-      mark_incomplete(wq, dir, errno);
+      int errnum = errno != 0 ? errno : EIO;
+      if (dir->parent == NULL && !listed) {
+        /* The folder measured can't be listed at all: there is nothing to measure. */
+        atomic_store(&wq->root_errno, errnum);
+      } else {
+        /* The rest of the listing can't be read: what was read is counted. */
+        mark_partial(dir, FT_PARTIAL_READ_ERROR);
+      }
       break;
     }
+    listed = 1;
     if (count == 0) break;
 
     char *ptr = buf;
@@ -460,10 +470,10 @@ static process_dir_result_t process_dir(int dirfd, walk_dir_t *dir, thread_arg_t
 }
 
 /* Marks one part of `dir` done: its own listing, or a sub-folder. The part that finishes
-   the folder puts it on the finished list and adds its totals into its parent's, which
-   is one part of the parent done in turn. Once the walk has stopped nothing more is
-   finished, as a listing cut short may have counted only part of a folder. An incomplete
-   folder isn't finished either, and leaves its parent incomplete. */
+   the folder puts it on the finished list and adds its totals, and what they leave out,
+   into its parent's, which is one part of the parent done in turn. Once the walk has
+   stopped nothing more is finished, as a listing cut short may have counted only part of
+   a folder. */
 static void finish_part(thread_arg_t *ta, walk_dir_t *dir) {
   while (atomic_fetch_sub(&dir->pending, 1) == 1) {
     walk_dir_t *parent = dir->parent;
@@ -475,16 +485,12 @@ static void finish_part(thread_arg_t *ta, walk_dir_t *dir) {
       dir = parent;
       continue;
     }
-    if (atomic_load(&dir->incomplete)) {
-      atomic_store(&parent->incomplete, 1);
-      dir = parent;
-      continue;
-    }
     dir_stats_t stats;
     stats.size_bytes = atomic_load(&dir->size_bytes);
     stats.disk_bytes = atomic_load(&dir->disk_bytes);
     stats.file_count = atomic_load(&dir->file_count);
     stats.folder_count = atomic_load(&dir->folder_count);
+    stats.partial = atomic_load(&dir->partial);
     if (!finished_push(ta->finished, dir->path, stats)) {
       wq_fail(ta->wq);
       return;
@@ -494,6 +500,7 @@ static void finish_part(thread_arg_t *ta, walk_dir_t *dir) {
     atomic_fetch_add(&parent->disk_bytes, stats.disk_bytes);
     atomic_fetch_add(&parent->file_count, stats.file_count);
     atomic_fetch_add(&parent->folder_count, stats.folder_count);
+    mark_partial(parent, stats.partial);
     dir = parent;
   }
 }
@@ -538,36 +545,17 @@ static int open_dir_path(const char *path) {
   return fd;
 }
 
-/* Whether the folder `dir` was listed in is still that folder, at its path: then a `dir`
-   that is gone was itself removed, and nothing above it was moved away. A path too long
-   for one call isn't looked at, and counts as not there. */
-static int listed_in_is_still_there(work_queue_t *wq, walk_dir_t *dir) {
-  walk_dir_t *parent = dir->parent;
-  if (parent == NULL) return 0;
-  uint64_t ino = atomic_load(&parent->ino);
-  struct stat st;
-  return ino != 0 && lstat(parent->path, &st) == 0 && S_ISDIR(st.st_mode) &&
-         (uint64_t)st.st_ino == ino && st.st_dev == wq->root_dev;
-}
-
-/* Opens a queued sub-folder, or -1 when it isn't walked. One the walk has no access to, or
-   on another disk (an open can cross onto one, as an automount does), is skipped, and so
-   is one removed since it was listed, from a folder still in its place: it holds nothing
-   now. One that couldn't be opened for another reason leaves it incomplete: gone with the
-   folder it was listed in (a folder above it was renamed or removed, and what was counted
-   is no longer that folder's size), replaced by something else, no descriptors left. */
+/* Opens a queued sub-folder, or -1 when it isn't walked. One on another disk (an open can
+   cross onto one, as an automount does) is skipped. One that couldn't be opened is skipped
+   too, and the folder holding it says why (`open_error_reason`). */
 static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
   ft_folder_walk_open_hook hook = atomic_load(&open_hook);
   if (hook != NULL) hook(dir->path);
   int fd = open_dir_path(dir->path);
   if (fd < 0) {
-    int errnum = errno;
-    if (is_skippable_open_error(errnum) ||
-        (errnum == ENOENT && listed_in_is_still_there(wq, dir))) {
-      atomic_store(&dir->skipped, 1);
-    } else {
-      mark_incomplete(wq, dir, errnum);
-    }
+    int reason = open_error_reason(errno);
+    atomic_store(&dir->skipped, 1);
+    if (dir->parent != NULL) mark_partial(dir->parent, reason);
     return -1;
   }
   struct stat sub_stat;
@@ -576,7 +564,6 @@ static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
     atomic_store(&dir->skipped, 1);
     return -1;
   }
-  atomic_store(&dir->ino, (uint64_t)sub_stat.st_ino);
   return fd;
 }
 
@@ -697,7 +684,6 @@ void ft_folder_walk_run(ft_folder_walk *w) {
     close(root_fd);
     return;
   }
-  atomic_store(&root->ino, (uint64_t)root_stat.st_ino);
   work_queue_t wq;
   wq_init(&wq, root_stat.st_dev, &w->cancelled);
   if (!wq_push(&wq, root_fd, root)) {
@@ -753,12 +739,22 @@ void ft_folder_walk_run(ft_folder_walk *w) {
   }
 
   result->cancelled = atomic_load(&w->cancelled);
+  result->partial = atomic_load(&root->partial);
+  struct stat end_stat;
   if (created == 0) {
     result->errnum = create_error;
   } else if (atomic_load(&wq.failed)) {
     result->errnum = ENOMEM;
-  } else if (atomic_load(&root->incomplete) && !result->cancelled) {
-    result->errnum = atomic_load(&wq.read_errno);
+  } else if (atomic_load(&wq.root_errno) != 0) {
+    result->errnum = atomic_load(&wq.root_errno);
+  } else if (!result->cancelled) {
+    /* The folder measured was moved away, removed or replaced while it was walked: what was
+       counted is no folder's at that path. */
+    if (stat(w->root_path, &end_stat) != 0) {
+      result->errnum = errno;
+    } else if (end_stat.st_ino != root_stat.st_ino || end_stat.st_dev != root_stat.st_dev) {
+      result->errnum = ENOENT;
+    }
   }
 
   for (int i = 0; i < NUM_THREADS; i++) {

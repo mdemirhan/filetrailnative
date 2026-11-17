@@ -39,6 +39,8 @@ final class WindowFolderSizes {
 
     private struct Slot {
         var entry: FolderSizeEntry
+        /// What a ready size leaves out.
+        var partial: FolderSizePartial = []
         var sequence: Int
         /// The repaint (`version`) at which it was last stored or read.
         var readAt: Int
@@ -138,17 +140,17 @@ final class WindowFolderSizes {
     // MARK: The cache
 
     /// Stores an entry without repainting; the caller repaints once for all it stored.
-    private func setEntry(_ path: String, _ entry: FolderSizeEntry) {
+    private func setEntry(_ path: String, _ entry: FolderSizeEntry, partial: FolderSizePartial = []) {
         sequence += 1
-        cache[path] = Slot(entry: entry, sequence: sequence, readAt: version)
+        cache[path] = Slot(entry: entry, partial: partial, sequence: sequence, readAt: version)
         trimCache()
         if case .calculating = entry { return }
         let waiters = finishWaiters.removeValue(forKey: path) ?? []
         for resolve in waiters { resolve(entry) }
     }
 
-    private func updateEntry(_ path: String, _ entry: FolderSizeEntry) {
-        setEntry(path, entry)
+    private func updateEntry(_ path: String, _ entry: FolderSizeEntry, partial: FolderSizePartial = []) {
+        setEntry(path, entry, partial: partial)
         bumpVersion()
     }
 
@@ -207,6 +209,12 @@ final class WindowFolderSizes {
     /// What the cache holds, without asking anything.
     func cachedEntry(_ path: String) -> FolderSizeEntry? { cache[path]?.entry }
 
+    /// What a ready size leaves out, and why (empty: complete); nil without a ready size. Nothing shows it yet.
+    func partial(_ path: String) -> FolderSizePartial? {
+        guard let slot = cache[path], case .ready = slot.entry else { return nil }
+        return slot.partial
+    }
+
     var isCalculating: Bool {
         cache.values.contains { if case .calculating = $0.entry { true } else { false } }
     }
@@ -242,8 +250,8 @@ final class WindowFolderSizes {
                 let size = FolderSizeEntry.ready(
                     sizeBytes: probe.sizeBytes, diskBytes: probe.diskBytes, fileCount: probe.fileCount,
                     folderCount: probe.folderCount)
-                if current != size {
-                    setEntry(path, size)
+                if current != size || cache[path]?.partial != probe.partial {
+                    setEntry(path, size, partial: probe.partial)
                     changed = true
                 }
             } else if kind == .refresh {
@@ -325,7 +333,8 @@ final class WindowFolderSizes {
                 path,
                 .ready(
                     sizeBytes: size, diskBytes: result.diskBytes ?? size, fileCount: result.fileCount ?? 0,
-                    folderCount: result.folderCount ?? 0))
+                    folderCount: result.folderCount ?? 0),
+                partial: result.partial)
             // Known sizes inside are asked about too: they may have changed.
             askAgainInside(path, includeKnown: true)
         case .error:
@@ -371,7 +380,8 @@ final class WindowFolderSizes {
                     path,
                     .ready(
                         sizeBytes: size, diskBytes: status.diskBytes ?? size, fileCount: status.fileCount ?? 0,
-                        folderCount: status.folderCount ?? 0))
+                        folderCount: status.folderCount ?? 0),
+                    partial: status.partial)
                 askAgainInside(path, includeKnown: true)
                 return
             }
