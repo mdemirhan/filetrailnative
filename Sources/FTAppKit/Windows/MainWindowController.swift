@@ -1722,8 +1722,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         // The tab on screen is the one live search; the others of its window go on in the background.
         for other in group?.tabs ?? [] where other !== self {
             for pane in other.panes { pane.searchStore?.session.enterBackground() }
+            // Behind this one now: its automatic folder size goes.
+            other.infoController?.update()
         }
         for pane in panes { pane.searchStore?.session.returnToForeground() }
+        infoController?.update()
         group?.tabBecameKey(self)
         // Its folder sizes go first, and its automatic one no longer gives way.
         FolderSizeService.shared.jobs.frontOwner = windowID
@@ -1744,10 +1747,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     func windowDidMiniaturize(_ notification: Notification) {
         group?.tabVisibilityChanged(self)
+        infoController?.update()
     }
 
     func windowDidDeminiaturize(_ notification: Notification) {
         group?.tabVisibilityChanged(self)
+        infoController?.update()
     }
 
     // MARK: Observers

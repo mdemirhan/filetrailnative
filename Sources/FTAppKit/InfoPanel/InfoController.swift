@@ -553,7 +553,11 @@ final class InfoController {
             let item = resolved?.item
             folder = (folderPath, item?.path == folderPath ? item?.kind ?? .directory : .directory)
         }
-        let measures = preferences.autoCalculateFolderSizes
+        // A tab behind another tab, or in a minimized window, measures nothing by itself: what it asked for goes,
+        // and it asks again when it is shown.
+        let window = host.window
+        let hidden = window?.isBehindAnotherTab == true || window?.isMiniaturized == true
+        let measures = preferences.autoCalculateFolderSizes && !hidden
         let shown = targetOverride == nil ? nil : resolved?.item
         auto.setPath(
             AutoFolderSize.path(
