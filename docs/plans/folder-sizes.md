@@ -1,6 +1,6 @@
 # Folder sizes
 
-The plan for how File Trail measures folders: what asks for a measurement, in what order measurements run, what stops one, what each view shows while it waits, runs, ends or fails, and how long a size stays true. Today's behavior grew one fix at a time; this puts it in one place, says where it falls short, and proposes one set of rules. The owner answered its questions on 2026-11-16 ("Decisions" below); the standing rules are in [decisions/file-operations.md](../decisions/file-operations.md). This file moves to `records/` once it is built.
+The plan for how File Trail measures folders: what asks for a measurement, in what order measurements run, what stops one, what each view shows while it waits, runs, ends or fails, and how long a size stays true. Today's behavior grew one fix at a time; this puts it in one place, says where it falls short, and proposes one set of rules. The owner answered its questions on 2026-11-16 and 2026-11-17 ("Decisions" below); the standing rules are in [decisions/file-operations.md](../decisions/file-operations.md). This file moves to `records/` once it is built.
 
 What is said of today was read in the code and, where marked *(tried)*, seen in a debug build driven by a scratch scenario on the owner's home folder.
 
@@ -8,7 +8,7 @@ What is said of today was read in the code and, where marked *(tried)*, seen in 
 
 ### The pieces
 
-- **The walker** (`Sources/CFileTrail/foldersize.c`, `NativeFolderSize`): one walk at a time, on 4 threads, at the utility QoS when the app started it itself. It stays on the disk it starts on, counts a folder it has no access to as empty (as Finder does), and fails as incomplete when a listing breaks part way or a sub-folder is replaced or goes with its parent (decisions/file-operations.md). Every folder inside is measured whole and handed back as it finishes. Stop sets a flag the threads look at before each listing: a walk stopped *(tried)* ended within 40–50 ms.
+- **The walker** (`Sources/CFileTrail/foldersize.c`, `NativeFolderSize`): one walk at a time, on 4 threads, at the utility QoS when the app started it itself. It stays on the disk it starts on, counts a folder it has no access to as empty (as Finder does), and fails as incomplete when a listing breaks part way or a sub-folder is replaced or goes with its parent (to be replaced by best effort, decision 8). Every folder inside is measured whole and handed back as it finishes. Stop sets a flag the threads look at before each listing: a walk stopped *(tried)* ended within 40–50 ms.
 - **The jobs** (`FolderSizeJobs`, one for the app): the queue, and the cache of every size measured, for all windows. One job runs; each window has at most one more waiting, and asking again replaces it. A window's new request stops that window's running walk and goes first; another window's walk is left to finish, and the new request waits behind it. Nothing checks whether the folder asked for is already being walked or waiting.
 - **The window's cache** (`WindowFolderSizes`, one for each window or tab): what that window knows, asked of the jobs as its views draw folders (one request for all the folders of a redraw, a folder not known asked again only after 5 s), and a running job looked at every 0.2 s or as soon as it ends. It repaints its own views at most every 100 ms. Another window's walk does not repaint it.
 - **Auto measure** (`AutoFolderSizeController`, in the Info controller): with *Calculate folder sizes automatically* on and the Info panel or the Info Row open, the folder they describe is measured once it has stayed 0.5 s: Show Info's item, else the one item selected, else the folder on screen; only the home folder, folders in it, and bundles anywhere. It stops its own walk when the folder changes, when both views close or the setting goes off. While another folder of the window is being measured it waits, as starting would stop that one, and measures once it ends.
@@ -49,6 +49,7 @@ Each is found in the code; those marked *(tried)* were seen in the app.
 9. **What couldn't be read is not said**: a folder with no access counts as empty, silently; Finder does the same. Kept as it is (decision 6).
 10. **Stop just as a walk finishes** shows no size until the folder is asked about again (known-issues.md).
 11. **Hard links are counted each time they are met** (the walker keeps no record of the files it has seen). How iCloud files not downloaded to the Mac are counted, and how Finder counts either, is not checked. Left as it is (decision 7).
+12. **A walk fails when something changes while it runs**: a sub-folder replaced by a file or a link, or gone with a folder above it, or a listing broken part way by a read error, fails the whole measurement, with no size at all. These happen most in `~` and `~/Library`, the folders measured most. Replaced by best effort (decision 8).
 
 ## Proposed rules
 
@@ -89,6 +90,21 @@ A request belongs to the window it came from, and knows whether that window is i
 - **Every window that shows a folder repaints when its size arrives**, not only the window that asked. The jobs already tell each window when a measurement settles; they would tell every window.
 - **A failed folder is not measured again automatically** in the same session, so a folder that always fails doesn't keep walking; Try Again does.
 
+### Best effort, and what the code knows of it
+
+A measurement counts what it can and gives a size; it fails only when nothing can be measured.
+
+- **Left out, and the walk goes on**:
+  - a sub-folder gone, replaced by a file or a link, gone with a folder above it, or renamed before the walk reached it (*changed*);
+  - a sub-folder with no permission to read, counted as an empty folder, as now (*no access*);
+  - a listing that breaks part way, or a sub-folder that can't be opened for another reason (an I/O error, too many files open): what was read is counted (*read error*).
+- **Failed**: the folder itself is gone, isn't a folder, or can't be opened or listed at all, or the walk can't start (no threads, no memory). With what failed as its message.
+- **Stopped** stays apart from both, as now.
+
+Each size knows how complete it is: **complete**, or **partial** with the reasons found (*changed*, *no access*, *read error*), for the folder and for every folder inside it the walk hands back, a reason found in a folder carried up to every folder holding it. The reasons go with the size wherever it goes: the walker's result, the jobs' cache, a job's status and the window's entry. Nothing shows them for now (decision 8). They are kept apart because *no access* is ordinary (the home folder without Full Disk Access meets protected app containers on every walk) and the others are not: whatever is done with them later, a note shown on every home folder's size is not wanted.
+
+A size taken off or added to by the app's writes keeps the completeness it had.
+
 ### How long a size stays true
 
 - **A size measured again inside a folder corrects the folders holding it**: the difference is added to each, as removals already are (`FolderSizeAdjust`). Where that can't be done exactly (a folder holding it counted on another measurement that is gone), those sizes are forgotten and shown as not measured.
@@ -124,38 +140,42 @@ Each with today's behavior and the proposed.
 **Stopping and failing**
 
 15. *Stop on a folder.* Today: back to "Calculate"; what was measured inside is kept. Proposed: the same, and no other window's view of it is stopped.
-16. *A folder whose listing fails part way (a disk ejected, an I/O error).* Today: shows "Calculate"; the error is not shown. Proposed: "Couldn't Calculate" with the message, Try Again.
-17. *A folder with sub-folders that can't be read (another user's, a protected app container).* Today: counted as empty, silently. Proposed: the same (decision 6).
-18. *Quit while measuring.* Today: the walk stops and nothing waiting runs. Proposed: the same.
+16. *A sub-folder's listing fails part way (an I/O error).* Today: the whole folder fails and shows "Calculate"; the error is not shown. Proposed: the size of what was read, partial (*read error*), shown as any size.
+17. *A cache folder deleted, or a folder renamed, inside `~/Library` while it is walked.* Today: a deleted one is left out; a renamed one, or one gone with its parent, fails the walk. Proposed: left out, the size shown, partial (*changed*).
+18. *The disk is ejected while one of its folders is walked.* Today: fails, shows "Calculate". Proposed: the folder itself can't be read any more, so it fails: "Couldn't Calculate" with the message, Try Again.
+19. *A folder with sub-folders it has no permission to read (another user's, a protected app container).* Today: counted as empty, silently. Proposed: the same, partial (*no access*), shown as any size (decision 6).
+20. *Quit while measuring.* Today: the walk stops and nothing waiting runs. Proposed: the same.
 
 **Changes**
 
-19. *Move a file into a measured folder in the app.* Today: the folders it touched are measured again when next asked for; removals are taken off exactly. Proposed: the same.
-20. *Measure `~/Library/Caches` again after deleting caches in Terminal.* Today: Caches is right, `~/Library` and `~` keep their old totals. Proposed: they are corrected by the difference.
-21. *Download a 4 GB file into `~/Downloads` with another app.* Today: `~/Downloads` keeps its old size until measured again. Proposed: the same (decision 4).
+21. *Move a file into a measured folder in the app.* Today: the folders it touched are measured again when next asked for; removals are taken off exactly. Proposed: the same.
+22. *Measure `~/Library/Caches` again after deleting caches in Terminal.* Today: Caches is right, `~/Library` and `~` keep their old totals. Proposed: they are corrected by the difference.
+23. *Download a 4 GB file into `~/Downloads` with another app.* Today: `~/Downloads` keeps its old size until measured again. Proposed: the same (decision 4).
 
 **Disks and kinds**
 
-22. *Show Info on a folder on another disk or a network volume.* Today: not measured automatically; Calculate Size measures it. Proposed: the same.
-23. *A bundle (an app) anywhere.* Today: measured automatically. Proposed: the same.
-24. *The Trash.* Today: only the home folder's Trash is measured (known-issues.md). Proposed: out of scope here.
+24. *Show Info on a folder on another disk or a network volume.* Today: not measured automatically; Calculate Size measures it. Proposed: the same.
+25. *A bundle (an app) anywhere.* Today: measured automatically. Proposed: the same.
+26. *The Trash.* Today: only the home folder's Trash is measured (known-issues.md). Proposed: out of scope here.
 
-## Decisions (2026-11-16)
+## Decisions (2026-11-16, 2026-11-17)
 
 1. **A size asked for is never stopped by another request.** A second one waits its turn. This is for sizes asked for (Calculate Size by any route, the Calculate link, the refresh button); automatic walks give way (2). **At most 10 asked requests wait**, for the whole app, a run of several folders counting as one; past that the oldest waiting one is dropped, never the one running.
 2. **Automatic walks of a window not in front give way** to any asked request and to the front window's automatic one, and are put back in the queue while the window still describes the folder. **When the view that asked moves to another folder or closes, its automatic request is taken out of the queue**, or stopped if it runs.
 3. **A tab behind another tab, or a minimized window, drops its automatic walk.** A window merely behind another keeps its place, after the front window's.
 4. **Changes made outside the app leave sizes as they are**, as today. Asked to choose between forgetting the sizes of the folders the watchers see change, marking them as possibly outdated, and this; the owner chose this.
 5. **A walk waiting shows "Waiting…"**, apart from one running: a dimmed spinner with Stop and the tooltip "Waiting for another folder" in the Info panel and Info Row, "Waiting…" in the List's Size column and the status bar.
-6. **A size that left out folders it couldn't read doesn't say so**, as Finder doesn't.
+6. **A size that left out folders it has no permission to read doesn't say so**, as Finder doesn't.
 7. **Hard links and iCloud files are counted as they are now**; not part of this plan.
+8. **Calculating a size is best effort** (2026-11-17): what is gone, changed or can't be read while the walk runs is left out, and the size is shown; a measurement fails only when the folder itself can't be measured. This replaces the earlier rule that failed a walk when a sub-folder was replaced or went with a folder above it, or when a listing broke part way. **The code knows a complete size from a partial one, and why it is partial**, with nothing shown for now, so something can be done with it later.
 
 ## Order of work
 
-1. **The jobs** (`FolderSizeJobs`): asked and automatic kinds, the queue order, front window, joining a job already running or waiting, joining a walk of a folder holding it, the stop rules and the cap of 10 waiting. Tests with the fake walker. Nothing changes in the views yet.
-2. **Every window hears of every size** (the jobs tell each window; each repaints what it shows). The front window is told to the jobs by the window controllers.
-3. **The states shown**: waiting, failed with its message and Try Again, in the Info panel, the Info Row, the List and the status bar. `help-content.json` and Help if they describe it.
-4. **Sizes kept true**: a size measured again inside corrects the folders holding it.
-5. **Hidden tabs and minimized windows** drop their automatic walks.
+1. **Best effort in the walker** (`foldersize.c`, `NativeFolderSize`): the *changed* and *read error* cases left out instead of failing the walk, and each folder's completeness and reasons handed back with its size and carried up. Then the completeness kept with each size in the jobs' cache, a job's status and the window's entry. Its tests: a walk with a sub-folder removed, replaced, renamed, unreadable and failing part way, each with its total and reasons; the root gone or not a folder fails.
+2. **The jobs** (`FolderSizeJobs`): asked and automatic kinds, the queue order, front window, joining a job already running or waiting, joining a walk of a folder holding it, the stop rules and the cap of 10 waiting. Tests with the fake walker. Nothing changes in the views yet.
+3. **Every window hears of every size** (the jobs tell each window; each repaints what it shows). The front window is told to the jobs by the window controllers.
+4. **The states shown**: waiting, failed with its message and Try Again, in the Info panel, the Info Row, the List and the status bar. `help-content.json` and Help if they describe it.
+5. **Sizes kept true**: a size measured again inside corrects the folders holding it.
+6. **Hidden tabs and minimized windows** drop their automatic walks.
 
 Each step is tried in the app with a scratch scenario on a large folder (the home folder) and two windows, and lands on its own.
