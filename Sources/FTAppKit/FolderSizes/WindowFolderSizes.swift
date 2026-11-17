@@ -376,6 +376,11 @@ final class WindowFolderSizes {
             updateEntry(path, .idle)
             askAgainInside(path, includeKnown: false)
         default:
+            // Waiting, or measured now: what it shows follows.
+            let waiting = result.status == .queued
+            if case .calculating(let jobID, let was)? = cache[path]?.entry, was != waiting {
+                updateEntry(path, .calculating(jobID: jobID, waiting: waiting))
+            }
             if result.measuredFolderCount > poll.measuredFolderCount {
                 poll.measuredFolderCount = result.measuredFolderCount
                 askAgainInside(path, includeKnown: false)
@@ -416,7 +421,7 @@ final class WindowFolderSizes {
                 return
             }
         }
-        updateEntry(path, .calculating(jobID: response.jobId))
+        updateEntry(path, .calculating(jobID: response.jobId, waiting: response.status == .queued))
         startPolling(path, response.jobId)
     }
 
@@ -463,7 +468,7 @@ final class WindowFolderSizes {
     /// Stop: polling stops, the jobs are told to cancel, the entry returns to idle and the sizes of folders inside
     /// that were already measured stay shown.
     func cancel(_ path: String) {
-        if case .calculating(let jobID)? = cache[path]?.entry {
+        if case .calculating(let jobID, _)? = cache[path]?.entry {
             stopPolling(path)
             if !jobID.isEmpty { backend.cancel(jobId: jobID, owner: owner) }
         }

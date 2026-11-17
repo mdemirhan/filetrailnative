@@ -5,6 +5,8 @@ import Foundation
 public enum StatusSize: Equatable, Sendable {
     case ready(sizeBytes: Int64)
     case calculating
+    /// Waiting for another measurement to end first.
+    case waiting
 }
 
 public enum StatusSummary {
@@ -14,8 +16,8 @@ public enum StatusSummary {
         if let total = selection.totalBytes {
             return .ready(sizeBytes: total)
         }
-        if case .calculating = selection.folderSizeEntry {
-            return .calculating
+        if case .calculating(_, let waiting) = selection.folderSizeEntry {
+            return waiting ? .waiting : .calculating
         }
         return nil
     }
@@ -23,7 +25,7 @@ public enum StatusSummary {
     public static func folderSize(_ entry: FolderSizeEntry) -> StatusSize? {
         switch entry {
         case .ready(let sizeBytes, _, _, _): .ready(sizeBytes: sizeBytes)
-        case .calculating: .calculating
+        case .calculating(_, let waiting): waiting ? .waiting : .calculating
         case .idle, .error: nil
         }
     }
@@ -33,6 +35,7 @@ public enum StatusSummary {
         case nil: nil
         case .ready(let sizeBytes): SizeText.size(sizeBytes)
         case .calculating: "Calculating…"
+        case .waiting: "Waiting…"
         }
     }
 

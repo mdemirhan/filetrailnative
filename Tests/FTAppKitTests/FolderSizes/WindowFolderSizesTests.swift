@@ -265,6 +265,19 @@ struct WindowFolderSizesTests {
         #expect(sizes.readySize("/elsewhere") == 5 && sizes.readySize("/known") == 4)
     }
 
+    // A size waiting behind another measurement says so until its walk starts.
+    @Test func aSizeWaitingBehindAnotherSaysSoUntilItsWalkStarts() {
+        jobs.nextStart = FolderSizeStartResponse(jobId: "job-1", status: .queued)
+        jobs.statuses["job-1"] = FolderSizeJob(jobId: "job-1", path: "/a", status: .queued)
+        sizes.calculate("/a")
+        #expect(sizes.cachedEntry("/a") == .calculating(jobID: "job-1", waiting: true))
+        timers.advance(WindowFolderSizes.pollInterval)
+        #expect(sizes.cachedEntry("/a") == .calculating(jobID: "job-1", waiting: true))
+        jobs.statuses["job-1"] = FolderSizeJob(jobId: "job-1", path: "/a", status: .running)
+        timers.advance(WindowFolderSizes.pollInterval)
+        #expect(sizes.cachedEntry("/a") == .calculating(jobID: "job-1"))
+    }
+
     // Repaints come at most every 100 ms; the first at once.
     @Test func repaintsAreMergedWithinAHundredMilliseconds() {
         var repaints = 0

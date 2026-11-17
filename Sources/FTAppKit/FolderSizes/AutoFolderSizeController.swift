@@ -36,7 +36,9 @@ final class AutoFolderSizeController {
     private func leave() {
         timer?.cancel()
         timer = nil
-        if let startedPath, let startedJob, case .calculating(let job) = sizes.entry(startedPath), job == startedJob {
+        if let startedPath, let startedJob, case .calculating(let job, _) = sizes.entry(startedPath),
+            job == startedJob
+        {
             sizes.cancel(startedPath)
         }
         startedPath = nil
@@ -48,7 +50,7 @@ final class AutoFolderSizeController {
         guard path == target else { return }
         guard case .idle = sizes.entry(target) else { return }
         sizes.calculate(target, recalculate: false, automatic: true)
-        if case .calculating(let job) = sizes.entry(target), !job.isEmpty {
+        if case .calculating(let job, _) = sizes.entry(target), !job.isEmpty {
             startedPath = target
             startedJob = job
         }

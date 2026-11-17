@@ -41,6 +41,20 @@ struct SelectionStatusTests {
         #expect(size.folderSizeEntry == .calculating(jobID: ""))
     }
 
+    // Waiting while every folder being calculated waits; calculating as soon as one is measured.
+    @Test func showsWaitingOnlyWhileNoFolderIsBeingMeasured() {
+        let waiting = summarize(
+            [folder("/x"), folder("/y")],
+            folders: ["/x": .calculating(jobID: "1", waiting: true), "/y": .calculating(jobID: "2", waiting: true)])
+        #expect(waiting.folderSizeEntry == .calculating(jobID: "", waiting: true))
+        #expect(StatusSummary.sizeText(StatusSummary.selectionSize(waiting)) == "Waiting…")
+        let mixed = summarize(
+            [folder("/x"), folder("/y")],
+            folders: ["/x": .calculating(jobID: "1", waiting: true), "/y": .calculating(jobID: "2")])
+        #expect(mixed.folderSizeEntry == .calculating(jobID: ""))
+        #expect(StatusSummary.folderSize(.calculating(jobID: "1", waiting: true)) == .waiting)
+    }
+
     @Test func sumsEverythingUpOnceEverySizeIsKnown() {
         let size = summarize(
             [folder("/x"), folder("/y"), file("/a")], files: ["/a": 50],

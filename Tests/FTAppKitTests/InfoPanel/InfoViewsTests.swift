@@ -32,7 +32,7 @@ struct FolderSizeCellTests {
         FolderSizeCellView(style: style, identifier: "test.cell")
     }
 
-    // Unknown (and failed) sizes offer Calculate.
+    // Unknown sizes offer Calculate.
     @Test func anUnknownSizeOffersCalculate() throws {
         let panel = cell(.panel)
         var calculated = 0
@@ -42,8 +42,45 @@ struct FolderSizeCellTests {
         link.onClick?()
         #expect(calculated == 1)
         #expect(cell(.row).subviews.compactMap { $0 as? TextLinkView }.first?.text == "Calculate size")
-        panel.update(.error(message: "x"))
-        #expect(!link.isHidden)
+    }
+
+    // A size that couldn't be calculated says so, why as its tooltip, and offers to try again; gone once it is known.
+    @Test func aFailedSizeSaysSoAndOffersToTryAgain() throws {
+        let panel = cell(.panel)
+        var calculated = 0
+        panel.onCalculate = { calculated += 1 }
+        panel.update(.error(message: "EIO: Input/output error"))
+        panel.frame = NSRect(origin: .zero, size: panel.naturalSize)
+        panel.layout()
+        let failed = try #require(findViews("test.cell.failed", in: panel).first as? NSTextField)
+        let link = try #require(panel.subviews.compactMap { $0 as? TextLinkView }.first)
+        #expect(!failed.isHidden && failed.stringValue == "Couldn't Calculate")
+        #expect(failed.toolTip == "EIO: Input/output error")
+        #expect(!link.isHidden && link.text == "Try Again")
+        #expect(link.frame.minX >= failed.frame.maxX)
+        link.onClick?()
+        #expect(calculated == 1)
+        #expect(panel.naturalSize.width > link.naturalWidth)
+
+        panel.update(.idle)
+        panel.layout()
+        #expect(failed.isHidden && link.text == "Calculate")
+        let row = cell(.row)
+        row.update(.error(message: "x"))
+        #expect(row.subviews.compactMap { $0 as? TextLinkView }.first?.text == "Try again")
+    }
+
+    // A size waiting for another folder shows its spinner dimmed, saying so, with Stop.
+    @Test func aWaitingSizeShowsItsSpinnerDimmed() async throws {
+        let view = cell(.panel)
+        view.update(.calculating(jobID: "j", waiting: true))
+        #expect(await waitUntil { Double(view.naturalSize.width) == 34.0 })
+        let spinner = try #require(view.subviews.compactMap { $0 as? InfoSpinnerView }.first)
+        let stop = try #require(view.subviews.compactMap { $0 as? ClearButton }.first)
+        #expect(spinner.alphaValue < 1 && spinner.toolTip == "Waiting for another folder")
+        #expect(stop.toolTip == "Stop Waiting")
+        view.update(.calculating(jobID: "j"))
+        #expect(spinner.alphaValue == 1 && spinner.toolTip == nil && stop.toolTip == "Stop Calculating")
     }
 
     // A spinner turns in place: about its own center, wherever it is put and however often, and never by the view's

@@ -22,13 +22,13 @@ enum ListCellText {
             metadata.sizeBytes, status: FTFoundation.SizeStatus(rawValue: metadata.sizeStatus.rawValue) ?? .unavailable)
     }
 
-    /// The Size cell: a calculated folder's size, "Calculating…", or `detailSize`.
+    /// The Size cell: a calculated folder's size, "Calculating…", "Waiting…" behind another, or `detailSize`.
     static func size(entry: DirectoryEntry, metadata: EntryMetadata?, folderSize: FolderSizeEntry) -> ListCellContent {
         var label: String?
         if entry.isFolderSizeEligible {
             switch folderSize {
             case .ready(let bytes, _, _, _): label = SizeText.size(bytes, status: .ready)
-            case .calculating: label = "Calculating…"
+            case .calculating(_, let waiting): label = waiting ? "Waiting…" : "Calculating…"
             default: break
             }
         }

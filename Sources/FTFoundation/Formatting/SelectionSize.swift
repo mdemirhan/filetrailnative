@@ -3,7 +3,8 @@ import Foundation
 /// What is known of one folder's size (the folder size cache's entry).
 public enum FolderSizeEntry: Equatable, Sendable {
     case idle
-    case calculating(jobID: String)
+    /// Being measured, or `waiting` for another measurement to end first.
+    case calculating(jobID: String, waiting: Bool = false)
     case ready(sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int)
     case error(message: String)
 }
@@ -72,9 +73,11 @@ public enum SelectionSizing {
         var innerFolderCount = 0
         var foldersKnown = true
         var anyCalculating = false
+        var anyRunning = false
         for folder in folderEntries {
-            if case .calculating = folder {
+            if case .calculating(_, let waiting) = folder {
                 anyCalculating = true
+                if !waiting { anyRunning = true }
             }
             guard case .ready(let size, let disk, let files, let folders) = folder else {
                 foldersKnown = false
@@ -92,7 +95,8 @@ public enum SelectionSizing {
         var folderSizeEntry: FolderSizeEntry?
         if !folderPaths.isEmpty {
             if anyCalculating {
-                folderSizeEntry = .calculating(jobID: "")
+                // Waiting only while none of them is being measured.
+                folderSizeEntry = .calculating(jobID: "", waiting: !anyRunning)
             } else if !foldersKnown {
                 folderSizeEntry = .idle
             } else if let totalBytes {

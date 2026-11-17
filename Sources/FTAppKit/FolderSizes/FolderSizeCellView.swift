@@ -88,8 +88,9 @@ final class TextLinkView: NSView, TextStyleSource {
     }
 }
 
-/// The folder size as the Info panel and the Info Row show it: Calculate, then a spinner and Stop, then the size over
-/// the counts (one line in the row) with a refresh button.
+/// The folder size as the Info panel and the Info Row show it: Calculate, then a spinner and Stop (dimmed while it
+/// waits for another folder), then the size over the counts (one line in the row) with a refresh button; a size that
+/// couldn't be calculated says so, with why as its tooltip, and offers to try again.
 final class FolderSizeCellView: NSView {
     enum Style { case panel, row }
 
@@ -100,6 +101,7 @@ final class FolderSizeCellView: NSView {
     var onCancel: () -> Void = {}
 
     private let calculate: TextLinkView
+    private let failedLine = FlushTextField(labelWithString: "")
     private let sizeLine = FlushTextField(labelWithString: "")
     private let itemsLine = FlushTextField(labelWithString: "")
     private let refresh: InfoIconButton
@@ -119,8 +121,12 @@ final class FolderSizeCellView: NSView {
             identifier: identifier + ".refresh", label: "Recalculate folder size")
         super.init(frame: .zero)
         setAccessibilityIdentifier(identifier)
-        calculate.text = style == .panel ? "Calculate" : "Calculate size"
+        calculate.text = calculateText
         calculate.font = tabularFont(DesignTokens.typeScale.callout, weight: style == .panel ? 600 : 400)
+        failedLine.stringValue = style == .panel ? "Couldn't Calculate" : "Couldn't calculate"
+        failedLine.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
+        failedLine.lineBreakMode = .byTruncatingTail
+        failedLine.setAccessibilityIdentifier(identifier + ".failed")
         for field in [sizeLine, itemsLine] {
             field.lineBreakMode = .byTruncatingTail
             field.alignment = style == .panel ? .right : .left
@@ -141,7 +147,9 @@ final class FolderSizeCellView: NSView {
         stop.setAccessibilityIdentifier(identifier + ".stop")
         stop.target = self
         stop.action = #selector(stopPressed)
-        for view in [calculate, sizeLine, itemsLine, refresh, spinner, stop] as [NSView] { addSubview(view) }
+        for view in [calculate, failedLine, sizeLine, itemsLine, refresh, spinner, stop] as [NSView] {
+            addSubview(view)
+        }
         delay.onChange = { [weak self] in
             self?.relayout()
             self?.onSizeChange?()
@@ -164,10 +172,27 @@ final class FolderSizeCellView: NSView {
         onSizeChange?()
     }
 
+    private var calculateText: String { style == .panel ? "Calculate" : "Calculate size" }
+    private var tryAgainText: String { style == .panel ? "Try Again" : "Try again" }
+
     private func apply() {
         var calculating = false
-        if case .calculating = entry { calculating = true }
+        var waiting = false
+        if case .calculating(_, let isWaiting) = entry {
+            calculating = true
+            waiting = isWaiting
+        }
         delay.update(active: calculating, delay: InfoMetrics.calculatingDelay)
+        spinner.alphaValue = waiting ? 0.4 : 1
+        spinner.toolTip = waiting ? "Waiting for another folder" : nil
+        stop.toolTip = waiting ? "Stop Waiting" : "Stop Calculating"
+        if case .error(let message) = entry {
+            calculate.text = tryAgainText
+            failedLine.toolTip = message
+        } else {
+            calculate.text = calculateText
+            failedLine.toolTip = nil
+        }
         switch entry {
         case .ready(let size, let disk, let files, let folders):
             let lines = InfoPanelModel.folderSizeLines(
@@ -195,8 +220,12 @@ final class FolderSizeCellView: NSView {
     /// The size the cell takes now.
     var naturalSize: NSSize {
         switch entry {
-        case .idle, .error:
+        case .idle:
             return NSSize(width: calculate.naturalWidth, height: calculate.naturalHeight)
+        case .error:
+            return NSSize(
+                width: width(failedLine) + Self.gap + calculate.naturalWidth,
+                height: max(calculate.naturalHeight, lineHeight.size))
         case .calculating:
             guard delay.value else { return NSSize(width: 0, height: 0) }
             return NSSize(width: 12 + Self.gap + ClearButton.size, height: ClearButton.size)
@@ -219,17 +248,29 @@ final class FolderSizeCellView: NSView {
         let theme = infoTheme
         sizeLine.textColor = NSColor(style == .panel ? theme.palette.textPrimary : theme.palette.textSecondary)
         itemsLine.textColor = NSColor(theme.palette.textSecondary)
+        failedLine.textColor = NSColor(theme.palette.textSecondary)
     }
 
     override func layout() {
         super.layout()
-        let hideAll = [calculate, sizeLine, itemsLine, refresh, spinner, stop] as [NSView]
+        let hideAll = [calculate, failedLine, sizeLine, itemsLine, refresh, spinner, stop] as [NSView]
         for view in hideAll { view.isHidden = true }
         switch entry {
-        case .idle, .error:
+        case .idle:
             calculate.isHidden = false
             calculate.frame = NSRect(
                 x: 0, y: (bounds.height - calculate.naturalHeight) / 2, width: bounds.width,
+                height: calculate.naturalHeight)
+        case .error:
+            // "Couldn't Calculate", then Try Again, the link kept whole and the words cut short when room is short.
+            calculate.isHidden = false
+            failedLine.isHidden = false
+            let link = min(bounds.width, calculate.naturalWidth)
+            let words = max(0, min(width(failedLine), bounds.width - link - Self.gap))
+            let height = lineHeight.size
+            failedLine.frame = NSRect(x: 0, y: (bounds.height - height) / 2, width: words, height: height)
+            calculate.frame = NSRect(
+                x: bounds.width - link, y: (bounds.height - calculate.naturalHeight) / 2, width: link,
                 height: calculate.naturalHeight)
         case .calculating:
             guard delay.value else { return }

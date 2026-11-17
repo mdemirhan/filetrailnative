@@ -132,6 +132,10 @@ struct ContentModelTests {
             ListCellText.size(entry: folder, metadata: nil, folderSize: .calculating(jobID: "j")).text == "Calculating…"
         )
         #expect(
+            ListCellText.size(entry: folder, metadata: nil, folderSize: .calculating(jobID: "j", waiting: true)).text
+                == "Waiting…")
+        #expect(ListCellText.size(entry: folder, metadata: nil, folderSize: .error(message: "x")).text == "--")
+        #expect(
             ListCellText.size(
                 entry: folder, metadata: nil,
                 folderSize: FolderSizeEntry.ready(sizeBytes: 1_500_000, diskBytes: 0, fileCount: 0, folderCount: 0)
