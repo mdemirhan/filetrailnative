@@ -874,6 +874,44 @@ private func settle() async {
         #expect(status.error == "Unknown folder size job.")
     }
 
+    // A folder measured again changes the sizes of the folders holding it by the difference, Recalculate included.
+    @Test func aFolderMeasuredAgainCorrectsTheFoldersHoldingIt() async {
+        let native = MockNative()
+        let jobs = make(native)
+
+        _ = start(jobs, "/test")
+        native.resolveActive(
+            result(1000, 1200, 42, 7, dirs: ["/test/sub": [500, 600, 20, 3], "/test/sub/in": [50, 60, 2, 0]]))
+        await settle()
+        _ = start(jobs, "/test/sub", recalculate: true)
+        native.resolveActive(result(300, 400, 15, 2, dirs: ["/test/sub/in": [40, 48, 1, 0]]))
+        await settle()
+
+        let probes = jobs.probeMany(["/test", "/test/sub"])
+        #expect(probes.map(\.sizeBytes) == [800, 300])
+        #expect(probes.first.map { [$0.diskBytes, Int64($0.fileCount), Int64($0.folderCount)] } == [1000, 37, 6])
+    }
+
+    // Where a folder holding it didn't count the size it had (the folder was measured again since), the folder
+    // holding it is forgotten rather than corrected.
+    @Test func forgetsAFolderHoldingOneThatItDidntCountAsItWas() async {
+        let native = MockNative()
+        let jobs = make(native)
+
+        _ = start(jobs, "/test")
+        native.resolveActive(
+            result(1000, 1200, 42, 7, dirs: ["/test/a": [500, 600, 20, 3], "/test/a/b": [100, 120, 5, 0]]))
+        await settle()
+        for size: Int64 in [90, 70] {
+            _ = start(jobs, "/test/a/b", recalculate: true)
+            native.resolveActive(result(size, size, 5, 0))
+            await settle()
+        }
+        // The first measured again was counted by both, and corrected them; the second was measured after them.
+        #expect(jobs.cachedSize("/test/a/b") == 70)
+        #expect(jobs.cachedSize("/test/a") == nil && jobs.cachedSize("/test") == nil)
+    }
+
     // Every window is told when sizes are stored, as the walk hands folders over and when it ends.
     @Test func tellsEveryWindowWhenSizesAreStored() async {
         let native = MockNative()

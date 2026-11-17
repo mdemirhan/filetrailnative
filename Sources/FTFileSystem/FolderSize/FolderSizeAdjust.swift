@@ -28,6 +28,34 @@ public enum FolderSizeAdjust {
         cache.forgetAtOrInside(removedFolders)
     }
 
+    /// `path` was measured again, `old` its size before (nil when not known) and `new` the size now: each measured
+    /// folder holding it takes the difference, when its measurement is known to have counted `old` (the same
+    /// measurement all the way down, on the same disk). Anything uncertain is forgotten, and measured again when next
+    /// asked for. A folder on another disk holds it only as a folder, which hasn't changed.
+    public static func adjustForRemeasure(
+        _ cache: FolderSizeCache, _ path: String, old: FolderSizeStats?, new: FolderSizeStats
+    ) {
+        for folder in ancestorsOf(path) {
+            guard let holder = cache.get(folder) else { continue }
+            if let holderDev = holder.dev, let newDev = new.dev, holderDev != newDev { continue }
+            guard let old, old.dev != nil, old.dev == holder.dev, old.measurement == holder.measurement,
+                countedIn(cache, NodePath.dirname(path), folder) == .yes
+            else {
+                cache.delete(folder)
+                continue
+            }
+            let change = Contribution(
+                sizeBytes: new.sizeBytes - old.sizeBytes, diskBytes: new.diskBytes - old.diskBytes,
+                fileCount: new.fileCount - old.fileCount, folderCount: new.folderCount - old.folderCount)
+            guard var next = add(holder, change) else {
+                cache.delete(folder)
+                continue
+            }
+            next.partial.formUnion(new.partial)
+            cache.set(folder, next)
+        }
+    }
+
     private static func adjustForRemoval(_ cache: FolderSizeCache, _ removal: RemovedItem, _ homeTrash: HomeTrash) {
         let path = removal.path
         let item = removal.item

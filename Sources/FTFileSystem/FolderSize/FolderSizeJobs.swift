@@ -182,6 +182,9 @@ public final class FolderSizeJobs {
     private var backgroundJobIds = Set<String>()
     // Automatic walks stopped to give way: back in the queue once the walk has ended.
     private var preemptedJobIds = Set<String>()
+    // The size a folder had when it was asked to be measured again (Recalculate forgets it first): what the folders
+    // holding it take the difference from once it is measured.
+    private var previousSizes: [String: FolderSizeStats] = [:]
     /// The window in front (the key window's front tab): its measurements go first among their kind, and its
     /// automatic walk is never stopped to give way.
     public var frontOwner: Int? {
@@ -294,6 +297,7 @@ public final class FolderSizeJobs {
     }
 
     private func forgetJob(_ jobId: String) {
+        previousSizes[jobId] = nil
         jobOwners[jobId] = nil
         backgroundJobIds.remove(jobId)
         preemptedJobIds.remove(jobId)
@@ -479,11 +483,13 @@ public final class FolderSizeJobs {
             run.runAgain = true
             return
         }
-        cache.store(
-            path,
-            FolderSizeStats(
-                sizeBytes: result.total, diskBytes: result.diskTotal, fileCount: result.fileCount,
-                folderCount: result.folderCount, dev: result.dev, measurement: measurement, partial: result.partial))
+        let measuredStats = FolderSizeStats(
+            sizeBytes: result.total, diskBytes: result.diskTotal, fileCount: result.fileCount,
+            folderCount: result.folderCount, dev: result.dev, measurement: measurement, partial: result.partial)
+        let old = previousSizes.removeValue(forKey: jobId) ?? cache.get(path)
+        // The folders holding it take the difference, or are forgotten, before its new size is stored.
+        FolderSizeAdjust.adjustForRemeasure(cache, path, old: old, new: measuredStats)
+        cache.store(path, measuredStats)
         let stored = storeMeasured(result.dev, result.dirs, measurement: measurement)
         answerWaiting(from: result.dirs)
         defer { onStored?() }
@@ -554,6 +560,7 @@ public final class FolderSizeJobs {
         if !stopped, let joined = join(request, owner: owner) {
             return joined
         }
+        let previous = cache.get(request.path)
         if request.recalculate {
             cache.delete(request.path)
         }
@@ -582,6 +589,7 @@ public final class FolderSizeJobs {
             leaveAutomatic(of: owner)
         }
         jobOwners[jobId] = [owner]
+        previousSizes[jobId] = previous
         if request.automatic {
             backgroundJobIds.insert(jobId)
         }
