@@ -8,13 +8,18 @@ protocol FolderSizeBackend: AnyObject {
     func probeMany(_ paths: [String]) -> [FolderSizeProbe]
     func start(_ request: FolderSizeStartRequest, owner: Int) -> FolderSizeStartResponse
     func getStatus(jobId: String) -> FolderSizeJob
-    func cancel(jobId: String)
+    /// The window no longer wants the measurement: it stops unless another window asked for it too.
+    func cancel(jobId: String, owner: Int)
 }
 
 extension FolderSizeJobs: FolderSizeBackend {
     /// A window always names itself.
     func start(_ request: FolderSizeStartRequest, owner: Int) -> FolderSizeStartResponse {
         start(request, owner: Optional(owner))
+    }
+
+    func cancel(jobId: String, owner: Int) {
+        cancel(jobId: jobId, owner: Optional(owner))
     }
 }
 
@@ -75,7 +80,9 @@ final class WindowFolderSizes {
     private var lookNow: [String: () -> Void] = [:]
     private var settledEarly: [String] = []
     private var finishWaiters: [String: [(FolderSizeEntry) -> Void]] = [:]
-    private var folderRun = 0
+    /// The runs of several folders under way, each with its folders: a new one doesn't stop another.
+    private var folderRuns: [Int: Set<String>] = [:]
+    private var lastFolderRun = 0
     private var probeMissedAt: [String: (time: TimeInterval, sequence: Int)] = [:]
     private var probeSequence = 0
     private var probeQueue: [String: ProbeKind] = [:]
@@ -394,16 +401,17 @@ final class WindowFolderSizes {
         calculate(path, recalculate: true)
     }
 
-    /// Several folders, one after another: the jobs measure one at a time, and a new calculation stops the one under
-    /// way. With `recalculate` false, folders whose size is known or being calculated are left alone. A folder
-    /// stopped part way stops the run.
+    /// Several folders, one after another, as one request: each waits for the one before. With `recalculate` false,
+    /// folders whose size is known or being calculated are left alone. A folder stopped part way (Stop, or dropped
+    /// from the jobs' queue) stops the run; another run doesn't.
     func calculate(_ paths: [String], recalculate: Bool = false) {
-        folderRun += 1
-        let run = folderRun
+        lastFolderRun += 1
+        let run = lastFolderRun
+        folderRuns[run] = Set(paths)
         func next(_ index: Int) {
             var index = index
             while index < paths.count {
-                guard folderRun == run else { return }
+                guard folderRuns[run] != nil else { return }
                 let path = paths[index]
                 index += 1
                 if !recalculate, let entry = cache[path]?.entry {
@@ -414,13 +422,17 @@ final class WindowFolderSizes {
                 }
                 let resume = index
                 finishWaiters[path, default: []].append { [weak self] entry in
-                    guard self != nil else { return }
-                    if case .idle = entry { return }
+                    guard let self else { return }
+                    if case .idle = entry {
+                        self.folderRuns[run] = nil
+                        return
+                    }
                     next(resume)
                 }
                 calculate(path, recalculate: recalculate)
                 return
             }
+            folderRuns[run] = nil
         }
         next(0)
     }
@@ -430,15 +442,18 @@ final class WindowFolderSizes {
     func cancel(_ path: String) {
         if case .calculating(let jobID)? = cache[path]?.entry {
             stopPolling(path)
-            if !jobID.isEmpty { backend.cancel(jobId: jobID) }
+            if !jobID.isEmpty { backend.cancel(jobId: jobID, owner: owner) }
         }
         updateEntry(path, .idle)
         askAgainInside(path, includeKnown: false)
     }
 
-    /// Stops a run of several folders, and the one of them being measured.
+    /// Stops the runs of several folders holding any of `paths`, and those of them being measured.
     func cancel(_ paths: [String]) {
-        folderRun += 1
+        let stopping = Set(paths)
+        for (run, runPaths) in folderRuns where !runPaths.isDisjoint(with: stopping) {
+            folderRuns[run] = nil
+        }
         for path in paths {
             if case .calculating? = cache[path]?.entry { cancel(path) }
         }

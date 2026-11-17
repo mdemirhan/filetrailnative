@@ -873,46 +873,205 @@ private func settle() async {
         #expect(status.error == "Unknown folder size job.")
     }
 
-    @Test func newStartWhileActiveCancelsPreviousAndQueues() {
-        let native = MockNative()
-        let jobs = make(native)
-
-        let first = start(jobs, "/test/a")
-        #expect(first.status == .running)
-
-        let second = start(jobs, "/test/b")
-        #expect(second.status == .queued)
-        #expect(native.cancelCount == 1)
-
-        // First job was cancelled
-        #expect(jobs.getStatus(jobId: first.jobId).status == .cancelled)
-    }
-
-    @Test func leavesAnotherWindowsWalkRunningAndQueuesBehindIt() async {
+    // A measurement asked for never stops another: it waits, and runs when the one before ends.
+    @Test func aNewMeasurementWaitsForTheOneRunning() async {
         let native = MockNative()
         let jobs = make(native)
 
         let first = start(jobs, "/test/a", owner: 1)
-        let second = start(jobs, "/test/b", owner: 2)
-        #expect(second.status == .queued)
+        let second = start(jobs, "/test/b", owner: 1)
+        #expect(first.status == .running && second.status == .queued)
         #expect(native.cancelCount == 0)
         #expect(jobs.getStatus(jobId: first.jobId).status == .running)
-
-        // The second window asks again: its own waiting job gives way, the first window's walk still runs.
-        let third = start(jobs, "/test/c", owner: 2)
-        #expect(jobs.getStatus(jobId: second.jobId).status == .cancelled)
-        #expect(third.status == .queued)
-        #expect(native.cancelCount == 0)
 
         native.resolveActive()
         await settle()
         #expect(jobs.getStatus(jobId: first.jobId).status == .ready)
-        #expect(native.calls.last?.path == "/test/c")
-        #expect(native.calls.last?.background == false)
+        #expect(native.calls.map(\.path) == ["/test/a", "/test/b"])
+    }
 
-        // The first window's next walk stops none of the second's.
-        _ = start(jobs, "/test/d", owner: 1)
+    // Several windows' measurements wait in the order asked for; none stops another.
+    @Test func measurementsWaitInTheOrderAskedFor() async {
+        let native = MockNative()
+        let jobs = make(native)
+
+        _ = start(jobs, "/test/a", owner: 1)
+        let second = start(jobs, "/test/b", owner: 2)
+        let third = start(jobs, "/test/c", owner: 2)
+        #expect(second.status == .queued && third.status == .queued)
         #expect(native.cancelCount == 0)
+
+        native.resolveActive()
+        await settle()
+        native.resolveActive()
+        await settle()
+        #expect(native.calls.map(\.path) == ["/test/a", "/test/b", "/test/c"])
+        #expect(native.calls.allSatisfy { !$0.background })
+    }
+
+    // A folder already being measured or waiting is joined: one walk, and every window that asked hears it end.
+    // Stop from one window leaves it going for the other.
+    @Test func aFolderAskedForTwiceIsWalkedOnce() async {
+        let native = MockNative()
+        var settled: [Int?] = []
+        let jobs = make(native) { owner, _ in settled.append(owner) }
+
+        let first = start(jobs, "/test/a", owner: 1)
+        let second = start(jobs, "/test/a", owner: 2, recalculate: true)
+        #expect(second.jobId == first.jobId && second.status == .running)
+        jobs.cancel(jobId: first.jobId, owner: 1)
+        #expect(native.cancelCount == 0)
+        #expect(jobs.getStatus(jobId: first.jobId).status == .running)
+
+        native.resolveActive()
+        await settle()
+        #expect(native.calls.count == 1)
+        #expect(settled == [2])
+
+        // Waiting, the same.
+        _ = start(jobs, "/test/b", owner: 1)
+        let waiting = start(jobs, "/test/c", owner: 1)
+        #expect(start(jobs, "/test/c", owner: 2).jobId == waiting.jobId)
+        jobs.cancel(jobId: waiting.jobId, owner: 2)
+        #expect(jobs.getStatus(jobId: waiting.jobId).status == .queued)
+        jobs.cancel(jobId: waiting.jobId, owner: 1)
+        #expect(jobs.getStatus(jobId: waiting.jobId).status == .cancelled)
+    }
+
+    // A folder waiting inside the one being walked gets its size from that walk, with no walk of its own.
+    @Test func aFolderInsideTheOneWalkedIsAnsweredByThatWalk() async {
+        let native = MockNative()
+        let jobs = make(native)
+
+        _ = start(jobs, "/test", owner: 1)
+        let inside = start(jobs, "/test/sub", owner: 2)
+        #expect(inside.status == .queued)
+        native.finish(["/test/sub": [500, 600, 20, 3]])
+        await settle()
+        let status = jobs.getStatus(jobId: inside.jobId)
+        #expect(status.status == .ready && status.sizeBytes == 500 && status.folderCount == 3)
+
+        native.resolveActive()
+        await settle()
+        #expect(native.calls.map(\.path) == ["/test"])
+    }
+
+    // Next to run: asked for before automatic; of each, the front window's first; then in the order asked.
+    @Test func runsWhatWasAskedForFirstAndTheFrontWindowsFirstAmongThem() async {
+        let native = MockNative()
+        let jobs = make(native)
+        jobs.frontOwner = 1
+
+        _ = start(jobs, "/test/running", owner: 1)
+        _ = start(jobs, "/test/auto", owner: 1, automatic: true)
+        _ = start(jobs, "/test/other-window", owner: 2)
+        _ = start(jobs, "/test/front", owner: 1)
+        for _ in 0..<3 {
+            native.resolveActive()
+            await settle()
+        }
+        #expect(
+            native.calls.map(\.path) == ["/test/running", "/test/front", "/test/other-window", "/test/auto"])
+    }
+
+    // An automatic walk of a window not in front gives way to a measurement asked for, from any window, and to the
+    // front window's automatic one; it waits again and runs after them.
+    @Test func anAutomaticWalkOfAWindowBehindGivesWay() async {
+        let native = MockNative()
+        let jobs = make(native)
+        jobs.frontOwner = 1
+
+        let behind = start(jobs, "/test/behind", owner: 2, automatic: true)
+        let asked = start(jobs, "/test/asked", owner: 3)
+        #expect(native.cancelCount == 1)
+        #expect(jobs.getStatus(jobId: behind.jobId).status == .queued)
+        native.rejectActive(cancelledError)
+        await settle()
+        #expect(native.calls.last?.path == "/test/asked")
+        #expect(jobs.getStatus(jobId: behind.jobId).status == .queued)
+
+        native.resolveActive()
+        await settle()
+        #expect(jobs.getStatus(jobId: asked.jobId).status == .ready)
+        #expect(native.calls.map(\.path) == ["/test/behind", "/test/asked", "/test/behind"])
+        #expect(native.calls.last?.background == true)
+
+        // The front window's automatic walk stops it too.
+        _ = start(jobs, "/test/front", owner: 1, automatic: true)
+        #expect(native.cancelCount == 2)
+    }
+
+    // The front window's automatic walk doesn't give way; a window coming to the front stops another's.
+    @Test func theFrontWindowsAutomaticWalkDoesntGiveWay() async {
+        let native = MockNative()
+        let jobs = make(native)
+        jobs.frontOwner = 1
+
+        _ = start(jobs, "/test/front", owner: 1, automatic: true)
+        _ = start(jobs, "/test/asked", owner: 2)
+        #expect(native.cancelCount == 0)
+        native.resolveActive()
+        await settle()
+
+        _ = start(jobs, "/test/behind", owner: 2, automatic: true)
+        _ = start(jobs, "/test/next", owner: 3, automatic: true)
+        #expect(native.calls.last?.path == "/test/asked")
+        native.resolveActive()
+        await settle()
+        #expect(native.calls.last?.path == "/test/behind")
+        #expect(native.cancelCount == 0)
+        jobs.frontOwner = 3
+        #expect(native.cancelCount == 1)
+    }
+
+    // Asked for too, an automatic walk no longer gives way.
+    @Test func anAutomaticWalkAskedForByAnotherWindowNoLongerGivesWay() {
+        let native = MockNative()
+        let jobs = make(native)
+        jobs.frontOwner = 1
+
+        let walk = start(jobs, "/test/a", owner: 2, automatic: true)
+        #expect(start(jobs, "/test/a", owner: 3).jobId == walk.jobId)
+        _ = start(jobs, "/test/b", owner: 1)
+        #expect(native.cancelCount == 0)
+    }
+
+    // A window has one automatic measurement at a time: a new one stops its other.
+    @Test func aWindowsNewAutomaticMeasurementStopsItsOther() {
+        let native = MockNative()
+        let jobs = make(native)
+
+        let first = start(jobs, "/test/a", owner: 1, automatic: true)
+        _ = start(jobs, "/test/b", owner: 1, automatic: true)
+        #expect(native.cancelCount == 1)
+        #expect(jobs.getStatus(jobId: first.jobId).status == .cancelled)
+    }
+
+    // Past the limit of those waiting, the one asked for longest ago is dropped; the one running never is.
+    @Test func dropsTheOldestWaitingPastTheLimit() {
+        let native = MockNative()
+        let jobs = make(native)
+
+        let running = start(jobs, "/test/running", owner: 1)
+        let waiting = (0...FolderSizeJobs.maxAskedWaiting).map { start(jobs, "/test/\($0)", owner: 2) }
+        #expect(jobs.getStatus(jobId: waiting[0].jobId).status == .cancelled)
+        #expect(waiting.dropFirst().allSatisfy { jobs.getStatus(jobId: $0.jobId).status == .queued })
+        #expect(jobs.getStatus(jobId: running.jobId).status == .running)
+        #expect(native.cancelCount == 0)
+    }
+
+    // A window closing stops what only it asked for.
+    @Test func aWindowClosingLeavesWhatAnotherAlsoAskedFor() {
+        let native = MockNative()
+        let jobs = make(native)
+
+        let shared = start(jobs, "/test/a", owner: 1)
+        _ = start(jobs, "/test/a", owner: 2)
+        jobs.forgetOwner(1)
+        #expect(native.cancelCount == 0)
+        #expect(jobs.getStatus(jobId: shared.jobId).status == .running)
+        jobs.forgetOwner(2)
+        #expect(native.cancelCount == 1)
     }
 
     @Test func subFolderCachePopulationFromWalkResults() async {

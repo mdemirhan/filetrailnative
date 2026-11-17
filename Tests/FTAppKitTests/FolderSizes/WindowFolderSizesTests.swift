@@ -64,7 +64,7 @@ final class FakeJobs: FolderSizeBackend {
         statuses[jobId] ?? FolderSizeJob(jobId: jobId, path: "", status: .running)
     }
 
-    func cancel(jobId: String) { cancels.append(jobId) }
+    func cancel(jobId: String, owner: Int) { cancels.append(jobId) }
 
     func finish(_ jobId: String, _ path: String, size: Int64) {
         statuses[jobId] = FolderSizeJob(

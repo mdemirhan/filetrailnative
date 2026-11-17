@@ -1725,6 +1725,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         for pane in panes { pane.searchStore?.session.returnToForeground() }
         group?.tabBecameKey(self)
+        // Its folder sizes go first, and its automatic one no longer gives way.
+        FolderSizeService.shared.jobs.frontOwner = windowID
     }
 
     func windowDidMove(_ notification: Notification) {

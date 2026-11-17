@@ -71,51 +71,26 @@ struct AutoFolderSizeControllerTests {
         #expect(jobs.starts.first?.automatic == true)
     }
 
-    // Known sizes and other calculations are left alone.
-    @Test func knownSizesAndOtherCalculationsAreLeftAlone() {
+    // A known size is left alone; another folder being measured is neither waited for nor stopped: the jobs run
+    // what was asked for first.
+    @Test func knownSizesAreLeftAloneAndOtherCalculationsAreNotStopped() {
         jobs.known = ["/Users/demo/known": 5]
         _ = sizes.entry("/Users/demo/known")
         sizes.flushProbes()
         auto.setPath("/Users/demo/known")
         wait()
         #expect(jobs.starts.isEmpty)
-        // Another folder being measured: a new calculation would stop it.
-        sizes.calculate("/Users/demo/other")
-        let before = jobs.starts.count
-        auto.setPath("/Users/demo/fresh")
-        wait()
-        #expect(jobs.starts.count == before)
-        #expect(jobs.cancels.isEmpty)
-    }
-
-    // A folder that waited on another's calculation is measured once that ends, and not if it was left meanwhile.
-    @Test func aFolderWaitingOnAnotherCalculationIsMeasuredWhenItEnds() {
         jobs.nextStart = FolderSizeStartResponse(jobId: "other", status: .running)
         sizes.calculate("/Users/demo/other")
-        jobs.nextStart = FolderSizeStartResponse(jobId: "auto", status: .running)
+        jobs.nextStart = FolderSizeStartResponse(jobId: "auto", status: .queued)
         auto.setPath("/Users/demo/fresh")
         wait()
-        #expect(jobs.starts.map(\.path) == ["/Users/demo/other"])
-        jobs.finish("other", "/Users/demo/other", size: 7)
-        timers.advance(WindowFolderSizes.pollInterval)
-        #expect(sizes.readySize("/Users/demo/other") == 7)
         #expect(jobs.starts.map(\.path) == ["/Users/demo/other", "/Users/demo/fresh"])
         #expect(jobs.starts.last?.automatic == true)
-        #expect(sizes.cachedEntry("/Users/demo/fresh") == .calculating(jobID: "auto"))
-        // Left, it is stopped as any started here.
+        #expect(jobs.cancels.isEmpty)
+        // Left while it waits, it is taken back.
         auto.setPath(nil)
         #expect(jobs.cancels == ["auto"])
-    }
-
-    @Test func aFolderLeftWhileWaitingIsNotMeasured() {
-        jobs.nextStart = FolderSizeStartResponse(jobId: "other", status: .running)
-        sizes.calculate("/Users/demo/other")
-        auto.setPath("/Users/demo/fresh")
-        wait()
-        auto.setPath(nil)
-        jobs.finish("other", "/Users/demo/other", size: 7)
-        timers.advance(WindowFolderSizes.pollInterval)
-        #expect(jobs.starts.map(\.path) == ["/Users/demo/other"])
     }
 
     // A failed measurement is not run again by itself.

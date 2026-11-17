@@ -32,7 +32,7 @@ private final class OneAtATimeJobs: FolderSizeBackend {
     func getStatus(jobId: String) -> FolderSizeJob {
         states[jobId] ?? FolderSizeJob(jobId: jobId, path: "", status: .running)
     }
-    func cancel(jobId: String) { cancels.append(jobId) }
+    func cancel(jobId: String, owner: Int) { cancels.append(jobId) }
 
     static func job(_ path: String) -> String { "job:\(path)" }
 
@@ -126,7 +126,7 @@ struct FolderSizeRunsTests {
         #expect(jobs.started == ["/a"])
     }
 
-    // A calculation started meanwhile stops the walk under way (the jobs cancel it) and ends the run.
+    // A folder the jobs dropped from their queue (too many waiting) ends the run.
     @Test func aWalkTheJobsCancelledEndsTheRun() {
         sizes.calculate(["/a", "/b"])
         jobs.states[OneAtATimeJobs.job("/a")] = FolderSizeJob(
@@ -136,13 +136,19 @@ struct FolderSizeRunsTests {
         #expect(jobs.started == ["/a"])
     }
 
-    // And a new run takes over from the one before, which starts nothing more.
-    @Test func aNewRunTakesOverFromTheOneBefore() {
+    // A new run doesn't stop the one before: both go on, each a folder at a time, and Stop on one leaves the other.
+    @Test func aNewRunLeavesTheOneBeforeGoing() {
         sizes.calculate(["/a", "/b"])
-        sizes.calculate(["/x"])
+        sizes.calculate(["/x", "/y"])
         jobs.finish("/a")
         sizes.settled(jobId: OneAtATimeJobs.job("/a"))
-        #expect(jobs.started == ["/a", "/x"])
+        #expect(jobs.started == ["/a", "/x", "/b"])
+        sizes.cancel(["/x", "/y"])
+        jobs.finish("/b")
+        sizes.settled(jobId: OneAtATimeJobs.job("/b"))
+        #expect(jobs.started == ["/a", "/x", "/b"])
+        #expect(sizes.readySize("/b") == 9)
+        #expect(jobs.cancels == [OneAtATimeJobs.job("/x")])
     }
 
     // A folder that fails was not stopped: the run goes on (only a folder back to idle, as a stopped one is, ends it).

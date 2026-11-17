@@ -136,6 +136,9 @@ public final class FolderSizeJobs {
     /// Finished folder-size jobs are kept so repeated status polls stay answerable, but only the most
     /// recent ones; queued and running jobs are never evicted.
     static let maxFinishedJobs = 256
+    /// The most measurements asked for (not automatic) that wait, for the whole app: past it, the one waiting
+    /// longest is dropped. The one running is never dropped.
+    public static let maxAskedWaiting = 10
 
     private let native: any FolderSizeNative
     private let homePath: String
@@ -166,14 +169,22 @@ public final class FolderSizeJobs {
     private var jobSequence = 0
 
     private var activeJobId: String?
-    // Measurements waiting for the one that runs, in the order they run. Each window has at most one here:
-    // asking again replaces it.
+    // Measurements waiting for the one that runs, in the order they were asked for. The next to run is the first
+    // asked for (not automatic), then the first of the window in front (`frontOwner`), then the first asked.
     private var queuedJobIds: [String] = []
-    // The window that asked for each job. A window's new measurement stops its own earlier one, never
-    // another window's: that one finishes, and the new one waits for it.
-    private var jobOwners: [String: Int?] = [:]
-    // The jobs the app started itself, which walk at a lower priority.
+    // The windows that asked for each job, in the order they asked: a window asking for a folder already being
+    // measured or waiting joins its job. nil stands for a caller that names no window.
+    private var jobOwners: [String: [Int?]] = [:]
+    // The jobs the app started itself (automatic), which walk at a lower priority and give way: an automatic walk
+    // of a window not in front is stopped for any measurement asked for and for the front window's automatic one.
     private var backgroundJobIds = Set<String>()
+    // Automatic walks stopped to give way: back in the queue once the walk has ended.
+    private var preemptedJobIds = Set<String>()
+    /// The window in front (the key window's front tab): its measurements go first among their kind, and its
+    /// automatic walk is never stopped to give way.
+    public var frontOwner: Int? {
+        didSet { if frontOwner != oldValue { preemptForQueued() } }
+    }
     // Set when the app quits: nothing more is measured.
     private var stopped = false
     // Makes each job's id. Random ids (the time in milliseconds and 24 random bits) can repeat
@@ -255,7 +266,9 @@ public final class FolderSizeJobs {
         let wasFinished = (jobs[jobId]?.status ?? .queued).isFinished
         setFolderSizeJob(jobId, job)
         if !wasFinished && job.status.isFinished {
-            onSettled?(jobOwners[jobId] ?? nil, jobId)
+            for owner in jobOwners[jobId] ?? [nil] {
+                onSettled?(owner, jobId)
+            }
         }
     }
 
@@ -277,27 +290,57 @@ public final class FolderSizeJobs {
         }
     }
 
-    private func isOwned(_ jobId: String, by owner: Int?) -> Bool {
-        guard let entry = jobOwners[jobId] else { return false }
-        return entry == owner
-    }
-
     private func forgetJob(_ jobId: String) {
         jobOwners[jobId] = nil
         backgroundJobIds.remove(jobId)
+        preemptedJobIds.remove(jobId)
     }
 
-    private func cancelQueuedJobs(of owner: Int?) {
-        queuedJobIds = queuedJobIds.filter { queuedId in
-            if !isOwned(queuedId, by: owner) {
-                return true
-            }
-            forgetJob(queuedId)
-            if var queued = jobs[queuedId] {
-                queued.status = .cancelled
-                setJob(queuedId, queued)
-            }
-            return false
+    /// The jobs waiting or running, the one running first.
+    private var liveJobIds: [String] { (activeJobId.map { [$0] } ?? []) + queuedJobIds }
+
+    /// Whether `jobId` is one the window in front asked for.
+    private func isFront(_ jobId: String) -> Bool {
+        guard let frontOwner else { return false }
+        return jobOwners[jobId]?.contains(frontOwner) == true
+    }
+
+    /// Takes a waiting job off the queue as stopped, telling every window that asked.
+    private func dropQueued(_ jobId: String) {
+        queuedJobIds.removeAll { $0 == jobId }
+        if var queued = jobs[jobId] {
+            queued.status = .cancelled
+            setJob(jobId, queued)
+        }
+        forgetJob(jobId)
+    }
+
+    /// Stops the running walk to give way: its job waits again once the walk has ended.
+    private func preemptActive() {
+        guard let activeJobId, var active = jobs[activeJobId], active.status == .running else { return }
+        preemptedJobIds.insert(activeJobId)
+        active.status = .queued
+        setJob(activeJobId, active)
+        native.cancelFolderSize()
+    }
+
+    /// An automatic walk of a window not in front gives way to a measurement asked for, and to the front window's
+    /// automatic one, waiting.
+    private func preemptForQueued() {
+        guard let activeJobId, backgroundJobIds.contains(activeJobId), !isFront(activeJobId),
+            !preemptedJobIds.contains(activeJobId)
+        else { return }
+        let waitingFor = queuedJobIds.contains { queued in
+            jobs[queued]?.status == .queued && (!backgroundJobIds.contains(queued) || isFront(queued))
+        }
+        if waitingFor { preemptActive() }
+    }
+
+    /// Past `maxAskedWaiting` measurements asked for waiting, the one waiting longest is dropped.
+    private func dropAskedOverLimit() {
+        var asked = queuedJobIds.filter { !backgroundJobIds.contains($0) && !preemptedJobIds.contains($0) }
+        while asked.count > Self.maxAskedWaiting {
+            dropQueued(asked.removeFirst())
         }
     }
 
@@ -317,12 +360,39 @@ public final class FolderSizeJobs {
     }
 
     private func processQueue() {
-        while !queuedJobIds.isEmpty {
-            let nextJobId = queuedJobIds.removeFirst()
-            if let next = jobs[nextJobId], next.status == .queued {
-                runJob(nextJobId, path: next.path)
-                return
+        queuedJobIds.removeAll { jobs[$0]?.status != .queued }
+        // Asked for before automatic; of each, the front window's first; then in the order asked.
+        var next: (index: Int, rank: (Int, Int, Int))?
+        for (index, jobId) in queuedJobIds.enumerated() {
+            let rank = (backgroundJobIds.contains(jobId) ? 1 : 0, isFront(jobId) ? 0 : 1, index)
+            if next == nil || rank < (next?.rank ?? rank) { next = (index, rank) }
+        }
+        guard let next else { return }
+        let jobId = queuedJobIds.remove(at: next.index)
+        guard let job = jobs[jobId] else { return }
+        runJob(jobId, path: job.path)
+    }
+
+    /// The sizes a walk just stored answer the measurements waiting for them (a folder inside the one walked): they
+    /// end now, with no walk of their own.
+    private func answerWaiting(from dirs: [FinishedFolders.Folder]) {
+        guard !queuedJobIds.isEmpty, !dirs.isEmpty else { return }
+        let waiting = queuedJobIds.filter { jobs[$0]?.status == .queued && !preemptedJobIds.contains($0) }
+        guard !waiting.isEmpty else { return }
+        let stored = Set(dirs.map { PathKey($0.path) })
+        for jobId in waiting {
+            guard let path = jobs[jobId]?.path, stored.contains(PathKey(path)), let stats = cache.get(path) else {
+                continue
             }
+            queuedJobIds.removeAll { $0 == jobId }
+            var ready = job(jobId, path, .ready)
+            ready.sizeBytes = stats.sizeBytes
+            ready.diskBytes = stats.diskBytes
+            ready.fileCount = stats.fileCount
+            ready.folderCount = stats.folderCount
+            ready.partial = stats.partial
+            setJob(jobId, ready)
+            forgetJob(jobId)
         }
     }
 
@@ -379,6 +449,7 @@ public final class FolderSizeJobs {
                 current.measuredFolderCount += stored
                 setJob(jobId, current)
             }
+            answerWaiting(from: measured.dirs)
         }
         let walk = native.getFolderSize(path, background: backgroundJobIds.contains(jobId), onFinished: onFinished)
         Task { @MainActor [self] in
@@ -410,6 +481,7 @@ public final class FolderSizeJobs {
                 sizeBytes: result.total, diskBytes: result.diskTotal, fileCount: result.fileCount,
                 folderCount: result.folderCount, dev: result.dev, measurement: measurement, partial: result.partial))
         let stored = storeMeasured(result.dev, result.dirs, measurement: measurement)
+        answerWaiting(from: result.dirs)
         var ready = job(jobId, path, .ready, measuredFolderCount: (jobs[jobId]?.measuredFolderCount ?? 0) + stored)
         ready.sizeBytes = result.total
         ready.diskBytes = result.diskTotal
@@ -430,8 +502,8 @@ public final class FolderSizeJobs {
             homeTrashCounted = false
         }
         let current = jobs[jobId]
-        if current?.status == .cancelled {
-            // Already marked as cancelled by the cancel handler
+        if current?.status == .cancelled || preemptedJobIds.contains(jobId) {
+            // Already marked as cancelled by the cancel handler, or waiting again after giving way.
         } else {
             let message = walkError?.message ?? error.localizedDescription
             setJob(
@@ -451,12 +523,10 @@ public final class FolderSizeJobs {
             forgetJob(jobId)
             return
         }
-        if run.runAgain && current?.status == .running {
-            if queuedJobIds.isEmpty {
-                pruneFinishedJobs()
-                runJob(jobId, path: path)
-                return
-            }
+        if preemptedJobIds.remove(jobId) != nil && current?.status == .queued {
+            // Gave way: it waits again, in its place.
+            queuedJobIds.append(jobId)
+        } else if run.runAgain && current?.status == .running {
             if var queued = current {
                 queued.status = .queued
                 setJob(jobId, queued)
@@ -471,9 +541,14 @@ public final class FolderSizeJobs {
 
     // MARK: Requests
 
-    /// `owner` is the window asking.
+    /// `owner` is the window asking. A folder already being measured or waiting is joined, whoever asked; a
+    /// measurement asked for never stops another (it waits), and an automatic one replaces the window's other
+    /// automatic one.
     @discardableResult
     public func start(_ request: FolderSizeStartRequest, owner: Int? = nil) -> FolderSizeStartResponse {
+        if !stopped, let joined = join(request, owner: owner) {
+            return joined
+        }
         if request.recalculate {
             cache.delete(request.path)
         }
@@ -498,33 +573,61 @@ public final class FolderSizeJobs {
             return FolderSizeStartResponse(jobId: jobId, status: .cancelled)
         }
 
-        jobOwners[jobId] = .some(owner)
+        if request.automatic, let owner {
+            leaveAutomatic(of: owner)
+        }
+        jobOwners[jobId] = [owner]
         if request.automatic {
             backgroundJobIds.insert(jobId)
         }
 
-        if let activeJobId {
-            cancelQueuedJobs(of: owner)
-            if isOwned(activeJobId, by: owner) {
-                // Cancel this window's active walk so the new one can start promptly. The native cancel sets a
-                // flag its walkers check before each listing, so the walk stops quickly; the new job, queued
-                // first, starts once the active job has ended.
-                native.cancelFolderSize()
-                if var activeJob = jobs[activeJobId] {
-                    activeJob.status = .cancelled
-                    setJob(activeJobId, activeJob)
-                }
-                queuedJobIds.insert(jobId, at: 0)
-            } else {
-                // Another window's walk goes on; this one waits its turn.
-                queuedJobIds.append(jobId)
-            }
+        if activeJobId != nil {
+            queuedJobIds.append(jobId)
             setJob(jobId, job(jobId, request.path, .queued))
-            return FolderSizeStartResponse(jobId: jobId, status: .queued)
+            dropAskedOverLimit()
+            preemptForQueued()
+            return FolderSizeStartResponse(jobId: jobId, status: jobs[jobId]?.status ?? .cancelled)
         }
 
         runJob(jobId, path: request.path)
         return FolderSizeStartResponse(jobId: jobId, status: .running)
+    }
+
+    /// Joins the job measuring or waiting to measure the same folder, if there is one: the window is told when it
+    /// ends, and a measurement asked for makes an automatic job one asked for (it no longer gives way; a walk
+    /// running keeps its priority).
+    private func join(_ request: FolderSizeStartRequest, owner: Int?) -> FolderSizeStartResponse? {
+        let key = PathKey(request.path)
+        guard
+            let jobId = liveJobIds.first(where: { liveId in
+                guard let live = jobs[liveId], !live.status.isFinished else { return false }
+                return PathKey(live.path) == key
+            }), let live = jobs[jobId]
+        else { return nil }
+        if request.automatic, let owner, !(jobOwners[jobId]?.contains(owner) ?? false) {
+            leaveAutomatic(of: owner)
+        }
+        if !(jobOwners[jobId]?.contains(owner) ?? false) {
+            jobOwners[jobId, default: []].append(owner)
+        }
+        if !request.automatic && backgroundJobIds.remove(jobId) != nil {
+            if preemptedJobIds.contains(jobId) {
+                // It gave way while automatic; asked for now, it is no longer put aside.
+                dropAskedOverLimit()
+            } else if queuedJobIds.contains(jobId) {
+                dropAskedOverLimit()
+            }
+        }
+        preemptForQueued()
+        return FolderSizeStartResponse(jobId: jobId, status: jobs[jobId]?.status ?? live.status)
+    }
+
+    /// A window has one automatic measurement at a time: its other one goes, stopped if it runs, unless another
+    /// window asked for it too, which keeps it.
+    private func leaveAutomatic(of owner: Int) {
+        for jobId in liveJobIds where backgroundJobIds.contains(jobId) && jobOwners[jobId]?.contains(owner) == true {
+            cancel(jobId: jobId, owner: owner)
+        }
     }
 
     /// The sizes known of `paths`, answered from what is stored: nothing is measured, and no job is made, so
@@ -546,11 +649,27 @@ public final class FolderSizeJobs {
     }
 
     public func cancel(jobId: String) {
+        cancel(jobId: jobId, owner: nil, forEveryone: true)
+    }
+
+    /// `owner` no longer wants the measurement: it stops when no other window asked for it, and goes on for those
+    /// that did.
+    public func cancel(jobId: String, owner: Int?) {
+        cancel(jobId: jobId, owner: owner, forEveryone: false)
+    }
+
+    private func cancel(jobId: String, owner: Int?, forEveryone: Bool) {
         // One that has ended keeps its answer.
         guard var current = jobs[jobId], !current.status.isFinished else { return }
+        if !forEveryone, var owners = jobOwners[jobId], let index = owners.firstIndex(of: owner), owners.count > 1 {
+            owners.remove(at: index)
+            jobOwners[jobId] = owners
+            return
+        }
+        let wasPreempted = preemptedJobIds.remove(jobId) != nil
         current.status = .cancelled
         setJob(jobId, current)
-        if jobId == activeJobId {
+        if jobId == activeJobId && !wasPreempted {
             native.cancelFolderSize()
         }
         if queuedJobIds.contains(jobId) {
@@ -560,15 +679,10 @@ public final class FolderSizeJobs {
     }
 
     /// A window closed, or loading its page again: its measurements are stopped, those waiting and the one
-    /// under way, and none is run again for it.
+    /// under way, unless another window asked for them too, and none is run again for it.
     public func forgetOwner(_ owner: Int) {
-        cancelQueuedJobs(of: owner)
-        if let activeJobId, var activeJob = jobs[activeJobId], activeJob.status == .running,
-            isOwned(activeJobId, by: owner)
-        {
-            activeJob.status = .cancelled
-            setJob(activeJobId, activeJob)
-            native.cancelFolderSize()
+        for jobId in liveJobIds where jobOwners[jobId]?.contains(owner) == true {
+            cancel(jobId: jobId, owner: owner)
         }
     }
 
