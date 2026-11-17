@@ -73,19 +73,20 @@ struct PaneWidthsTests {
         #expect(widths.inspectorWidth == 444 && widths.preferredInspectorWidth == 444)
     }
 
-    @Test func dropsAMenuFromTheEdgeOfItsButtonThatLeavesTheMostRoom() {
+    @Test func dropsAMenuFromTheLeftEdgeOfItsButton() {
         let left = MenuPlacement.dropdown(
-            anchorLeft: 100, anchorRight: 132, anchorBottom: 41, menuWidth: 220, menuHeight: 100, viewportWidth: 1000,
+            anchorLeft: 100, anchorBottom: 41, menuWidth: 220, menuHeight: 100, viewportWidth: 1000,
             viewportHeight: 700)
         #expect(left.left == 100 && left.top == 47)
+        // A button in the right half drops its menu from its left edge too.
         let right = MenuPlacement.dropdown(
-            anchorLeft: 900, anchorRight: 932, anchorBottom: 41, menuWidth: 220, menuHeight: 100,
-            viewportWidth: 1000, viewportHeight: 700)
-        #expect(right.left == 712)
-        // Kept 8 pt inside the window.
+            anchorLeft: 700, anchorBottom: 41, menuWidth: 220, menuHeight: 100, viewportWidth: 1000,
+            viewportHeight: 700)
+        #expect(right.left == 700)
+        // Moved left only as far as keeps it 8 pt inside the window.
         let edge = MenuPlacement.dropdown(
-            anchorLeft: 960, anchorRight: 999, anchorBottom: 41, menuWidth: 220, menuHeight: 800,
-            viewportWidth: 1000, viewportHeight: 700)
+            anchorLeft: 960, anchorBottom: 41, menuWidth: 220, menuHeight: 800, viewportWidth: 1000,
+            viewportHeight: 700)
         #expect(edge.left == 772 && edge.top == 8)
     }
 }

@@ -314,14 +314,14 @@ final class AppMenuPresenter {
         }
     }
 
-    /// Below `anchor`, from the edge of it that leaves the most room.
+    /// Below `anchor`, its left edge under the anchor's.
     func drop(_ menu: AppMenu, from anchor: NSView, owner: NSView? = nil, onClose: (() -> Void)? = nil) {
         guard let window = anchor.window, let host = Self.overlayHost(of: window) else { return }
         let rect = anchor.convert(anchor.bounds, to: host)
         let top = host.isFlipped ? rect.minY : host.bounds.height - rect.maxY
         let size = menu.size
         let place = MenuPlacement.dropdown(
-            anchorLeft: rect.minX, anchorRight: rect.maxX, anchorBottom: top + rect.height, menuWidth: size.width,
+            anchorLeft: rect.minX, anchorBottom: top + rect.height, menuWidth: size.width,
             menuHeight: size.height, viewportWidth: host.bounds.width, viewportHeight: host.bounds.height)
         show(menu, in: window, at: NSPoint(x: place.left, y: place.top), owner: owner ?? anchor, onClose: onClose)
     }

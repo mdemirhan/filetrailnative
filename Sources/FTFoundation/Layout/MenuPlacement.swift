@@ -19,20 +19,15 @@ public enum MenuPlacement {
         return 0
     }
 
-    /// Resolved to a left edge for a menu `menuWidth` wide: it lines up with the edge of its
-    /// button that leaves it the most room, the left edge for a button in the left half of the window, the right
-    /// edge for one in the right half; then it is held inside the window.
+    /// Resolved to a left edge for a menu `menuWidth` wide: its left edge under its button's, as the system's toolbar
+    /// menus drop, then moved back inside the window, so a menu near the right edge moves left only as far as it must.
     public static func dropdown(
-        anchorLeft: Double, anchorRight: Double, anchorBottom: Double, menuWidth: Double, menuHeight: Double,
-        viewportWidth: Double, viewportHeight: Double, gap: Double = dropGap, margin: Double = viewportMargin
+        anchorLeft: Double, anchorBottom: Double, menuWidth: Double, menuHeight: Double,
+        viewportWidth: Double, viewportHeight: Double, gap: Double = dropGap
     ) -> (left: Double, top: Double) {
-        let top = anchorBottom + gap
-        let left =
-            (anchorLeft + anchorRight) / 2 < viewportWidth / 2
-            ? max(margin, anchorLeft) : viewportWidth - max(margin, viewportWidth - anchorRight) - menuWidth
-        return keepInViewport(
-            left: left, top: top, width: menuWidth, height: menuHeight, viewportWidth: viewportWidth,
-            viewportHeight: viewportHeight)
+        keepInViewport(
+            left: anchorLeft, top: anchorBottom + gap, width: menuWidth, height: menuHeight,
+            viewportWidth: viewportWidth, viewportHeight: viewportHeight)
     }
 
     /// A box at (`left`, `top`) moved back inside the window.

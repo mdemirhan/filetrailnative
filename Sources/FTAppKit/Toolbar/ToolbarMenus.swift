@@ -34,13 +34,6 @@ extension ExplorerToolbar {
 
     private var sortButton: ToolbarButton? { button(.sort) }
 
-    /// The Sort menu's place: 8 below the button, its left edge kept 12 inside the window.
-    private func sortMenuOrigin(_ anchor: ToolbarButton) -> NSPoint? {
-        guard let rect = frameInContent(anchor), let host = menuHost(of: anchor) else { return nil }
-        let width = Self.sortMenuWidth
-        return NSPoint(x: max(12, min(rect.minX, host.bounds.width - width - 12)), y: rect.maxY + 8)
-    }
-
     static let sortMenuWidth = 200.0
 
     /// The window was resized: the Sort menu closes when its button goes to the » menu.
@@ -93,7 +86,7 @@ extension ExplorerToolbar {
     }
 
     func sortMenu(anchor: ToolbarButton) {
-        guard let context, let origin = sortMenuOrigin(anchor) else { return }
+        guard let context else { return }
         let view = context.viewState
         var items = SortByPreference.menuOrder.map { value in
             AppMenuItem(
@@ -113,7 +106,7 @@ extension ExplorerToolbar {
         }
         let menu = AppMenu(
             items: items, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item", minWidth: Self.sortMenuWidth)
-        present(menu, from: anchor, at: origin)
+        present(menu, from: anchor)
     }
 
     /// The View Mode Menu's menu: the four views, then the counts of the Previews segment's menu, checked while the pane
