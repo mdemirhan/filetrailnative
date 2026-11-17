@@ -12,6 +12,8 @@ final class ActivityView: NSView {
     static let width = 320.0
     static let rowHeight = 48.0
     static let headerHeight = 30.0
+    /// The rows it shows at once: with more, the rows scroll under the header, so a long list stays a short one.
+    static let visibleRows = 6
     private static var inset: Double { DesignTokens.menu.padding + DesignTokens.menu.borderWidth }
 
     private(set) var items: [ActivityItem]
@@ -19,7 +21,9 @@ final class ActivityView: NSView {
     /// How what a row listed ended, once it is no longer listed (nil: not known).
     var outcome: (ActivityItem) -> ActivityOutcome? = { _ in nil }
     private let title = ClipboardMenuText(identifier: "activityPopover.title")
-    private var rows: [ActivityRow] = []
+    private(set) var rows: [ActivityRow] = []
+    let scroll = NSScrollView()
+    private let rowsView = FlippedView()
 
     init(items: [ActivityItem]) {
         self.items = items
@@ -29,6 +33,13 @@ final class ActivityView: NSView {
         setAccessibilityLabel("Activity")
         setAccessibilityIdentifier("activityPopover")
         addSubview(title)
+        scroll.drawsBackground = false
+        scroll.hasVerticalScroller = true
+        scroll.autohidesScrollers = true
+        scroll.scrollerStyle = .overlay
+        scroll.verticalScrollElasticity = .none
+        scroll.documentView = rowsView
+        addSubview(scroll)
         let palette = AppearanceModel.shared.theme.palette
         title.set("Activity", font: ChromeColors.font(size: DesignTokens.typeScale.body, weight: 600))
         title.textColor = NSColor(palette.contextMenuText)
@@ -61,17 +72,17 @@ final class ActivityView: NSView {
                 guard let self, let row, !row.isEnded else { return }
                 self.onStop(row.item)
             }
-            addSubview(row)
+            rowsView.addSubview(row)
             rows.append(row)
         }
         needsLayout = true
     }
 
-    /// Its size: a row for everything it has listed since it opened.
+    /// Its size: a row for everything it has listed since it opened, up to `visibleRows` of them.
     var listSize: NSSize {
         NSSize(
             width: Self.width,
-            height: 2 * Self.inset + Self.headerHeight + Double(rows.count) * Self.rowHeight)
+            height: 2 * Self.inset + Self.headerHeight + Double(min(rows.count, Self.visibleRows)) * Self.rowHeight)
     }
 
     override func layout() {
@@ -82,11 +93,17 @@ final class ActivityView: NSView {
         title.frame = NSRect(
             x: inset + paddingHorizontal, y: inset + (Self.headerHeight - title.lineHeight) / 2,
             width: width - 2 * paddingHorizontal, height: title.lineHeight)
-        var y = inset + Self.headerHeight
+        let top = inset + Self.headerHeight
+        scroll.frame = NSRect(x: inset, y: top, width: width, height: max(0, bounds.height - top - inset))
+        // The rows keep their places, and where the list was scrolled to, as rows are added.
+        rowsView.frame = NSRect(
+            x: 0, y: 0, width: width, height: max(scroll.frame.height, Double(rows.count) * Self.rowHeight))
+        var y = 0.0
         for row in rows {
-            row.frame = NSRect(x: inset, y: y, width: width, height: Self.rowHeight)
+            row.frame = NSRect(x: 0, y: y, width: width, height: Self.rowHeight)
             y += Self.rowHeight
         }
+        if rows.count > Self.visibleRows { scroll.flashScrollers() }
     }
 }
 

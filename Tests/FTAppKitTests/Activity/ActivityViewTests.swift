@@ -21,7 +21,7 @@ struct ActivityViewTests {
         view.onStop = { stopped.append($0.id) }
         view.frame = NSRect(origin: .zero, size: view.listSize)
         view.layoutSubtreeIfNeeded()
-        let rows = view.subviews.compactMap { $0 as? ActivityRow }
+        let rows = view.rows
         #expect(rows.map(\.item.id) == ["op", "job"])
         let bars = rows.map { $0.subviews.compactMap { $0 as? NSProgressIndicator }.first }
         #expect(bars.map { $0?.isHidden } == [false, true])
@@ -31,9 +31,24 @@ struct ActivityViewTests {
         #expect(stopped == ["job"])
         #expect(view.listSize.height > 2 * ActivityView.rowHeight)
 
+        // More rows than it shows at once scroll under the header: the list grows no taller, and every row is there.
+        let many = ActivityView(
+            items: (0..<11).map {
+                ActivityItem(
+                    id: "job-\($0)", kind: .folderSize, title: "Folder \($0)", detail: "Waiting to calculate its size",
+                    progress: nil, isWaiting: true)
+            })
+        let six = ActivityView(items: Array(many.items.prefix(ActivityView.visibleRows)))
+        #expect(many.listSize == six.listSize)
+        many.frame = NSRect(origin: .zero, size: many.listSize)
+        many.layoutSubtreeIfNeeded()
+        #expect(many.rows.count == 11 && many.scroll.documentView?.frame.height == 11 * ActivityView.rowHeight)
+        #expect(abs(many.scroll.frame.height - Double(ActivityView.visibleRows) * ActivityView.rowHeight) < 0.5)
+        #expect(many.rows.allSatisfy { $0.frame.width == many.scroll.frame.width })
+
         // Opened on what runs, it lists that in its usual order.
         let later = ActivityView(items: [Self.items[1]])
-        #expect(later.subviews.compactMap { $0 as? ActivityRow }.map(\.item.id) == ["job"])
+        #expect(later.rows.map(\.item.id) == ["job"])
     }
 
     // The list is told what runs several times a second: a row whose item is still listed stays the view it was,
@@ -42,14 +57,14 @@ struct ActivityViewTests {
         let view = ActivityView(items: Self.items)
         var stopped: [ActivityItem] = []
         view.onStop = { stopped.append($0) }
-        let before = view.subviews.compactMap { $0 as? ActivityRow }
+        let before = view.rows
         var moved = Self.items
         moved[0].detail = "50%"
         moved[0].progress = 0.5
         moved[1].detail = "Calculating size"
         moved[1].isWaiting = false
         view.update(moved)
-        let after = view.subviews.compactMap { $0 as? ActivityRow }
+        let after = view.rows
         #expect(after.count == 2 && after[0] === before[0] && after[1] === before[1])
         #expect(after[0].subviews.compactMap { $0 as? NSProgressIndicator }.first?.doubleValue == 0.5)
         #expect(after.map(\.stop.toolTip) == ["Stop", "Stop"])
@@ -71,7 +86,7 @@ struct ActivityViewTests {
         view.outcome = { outcomes[$0.id] }
         var stopped: [String] = []
         view.onStop = { stopped.append($0.id) }
-        func rows() -> [ActivityRow] { view.subviews.compactMap { $0 as? ActivityRow } }
+        func rows() -> [ActivityRow] { view.rows }
         func pressStop(_ row: ActivityRow) { row.stop.sendAction(row.stop.action, to: row.stop.target) }
         func frames() -> [NSRect] {
             view.frame = NSRect(origin: .zero, size: view.listSize)
