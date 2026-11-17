@@ -28,9 +28,16 @@ struct ToolbarItemsTests {
     }
 
     @Test func putsAFixedItemThatAListIsMissingAtTheEnd() {
-        #expect(Self.sanitized(["search", "back", "title"]) == ["search", "back", "title", "viewOptions"])
-        #expect(Self.sanitized(["back", "view"]) == ["back", "view", "title", "search", "viewOptions"])
-        #expect(ToolbarItems.sanitizeTopItems(.null).map(\.rawValue) == ["title", "search", "viewOptions"])
+        #expect(Self.sanitized(["search", "back", "title"]) == ["search", "back", "title"])
+        #expect(Self.sanitized(["back", "view"]) == ["back", "view", "title", "search"])
+        #expect(ToolbarItems.sanitizeTopItems(.null).map(\.rawValue) == ["title", "search"])
+    }
+
+    // View Options is an item like the others: taken off, it stays off, and it is offered to put back.
+    @Test func letsViewOptionsBeTakenOff() {
+        #expect(Self.sanitized(["back", "title", "search"]) == ["back", "title", "search"])
+        #expect(ToolbarItems.paletteItems(excluding: [.title, .search]).contains(.viewOptions))
+        #expect(!ToolbarItems.isRequiredTopItem(.viewOptions))
     }
 
     // The clipboard and Undo History buttons can be taken off, and stay off; a new toolbar has the clipboard's only,
@@ -53,7 +60,7 @@ struct ToolbarItemsTests {
     // While the toolbar is short of room, these stay as long as the items that can't be taken off.
     @Test func keepsTheClipboardAndUndoHistoryButtonsWhileRoomIsShort() {
         let high = ToolbarItems.definitions.filter(\.highPriority).map(\.id)
-        #expect(high == [.title, .clipboard, .undoHistory, .viewOptions, .search])
+        #expect(high == [.title, .clipboard, .undoHistory, .search, .compactSearch])
     }
 
     @Test func preservesRepeatableSeparatorItemsWhileStillDedupingNormalItems() {
@@ -75,7 +82,7 @@ struct ToolbarItemsTests {
 
     @Test func offersEveryItemThatCanBeTakenOffSoEachCanBePutBack() {
         let palette = ToolbarItems.paletteItems(excluding: [])
-        let alwaysThere: Set<ToolbarItemID> = [.title, .search, .viewOptions]
+        let alwaysThere: Set<ToolbarItemID> = [.title, .search]
         for id in ToolbarItems.ids where !alwaysThere.contains(id) {
             #expect(palette.contains(id), "\(id)")
         }
@@ -83,7 +90,10 @@ struct ToolbarItemsTests {
 
     @Test func offersEveryItemTheToolbarDoesNotHoldAndTheSpaceAlways() {
         let palette = ToolbarItems.paletteItems(excluding: Self.defaults)
-        #expect(palette.first == .topSeparator)
+        // The space comes last, where the system puts its own; Search sits beside Compact Search.
+        #expect(palette.last == .topSeparator)
+        let all = ToolbarItems.paletteItems(excluding: [])
+        #expect(all.firstIndex(of: .compactSearch) == all.firstIndex(of: .search).map { $0 + 1 })
         #expect(palette.contains(.refresh))
         for id in Self.defaults where id != .topSeparator {
             #expect(!palette.contains(id), "\(id)")
@@ -102,16 +112,38 @@ struct ToolbarItemsTests {
     @Test func givesEveryButtonACommandToRunApartFromTheOnesTheToolbarDrawsItself() {
         let drawnByTheToolbar: Set<ToolbarItemID> = [
             .back, .forward, .up, .view, .viewMenu, .sort, .title, .clipboard, .undoHistory, .viewOptions, .search,
-            .foldersFirst, .hidden, .infoPanel, .infoRow, .theme, .topSeparator,
+            .compactSearch, .foldersFirst, .hidden, .infoPanel, .infoRow, .theme, .topSeparator,
         ]
         let withoutCommand = ToolbarItems.ids.filter { ToolbarItems.definition($0).commandType == nil }
         #expect(withoutCommand.filter { !drawnByTheToolbar.contains($0) } == [])
     }
 
+    // Compact Search is the search field folded: a toolbar holding it needs no Search, holds one of the two, and the
+    // one dragged in beside the other takes its place.
+    @Test func compactSearchStandsInForSearch() {
+        #expect(
+            Self.sanitized(["title", "compactSearch", "viewOptions"]) == ["title", "compactSearch", "viewOptions"])
+        #expect(
+            Self.sanitized(["compactSearch", "title", "search", "viewOptions"]) == [
+                "compactSearch", "title", "viewOptions",
+            ])
+        #expect(
+            Self.sanitized(["search", "title", "compactSearch", "viewOptions"]) == ["search", "title", "viewOptions"])
+        #expect(ToolbarItems.paletteItems(excluding: Self.defaults).contains(.compactSearch))
+        let both: [ToolbarItemID] = [.title, .search, .compactSearch, .viewOptions]
+        #expect(
+            ToolbarItems.replacingTheOtherSearch(both, previous: [.title, .search, .viewOptions])
+                == [.title, .compactSearch, .viewOptions])
+        #expect(
+            ToolbarItems.replacingTheOtherSearch(both, previous: [.title, .compactSearch, .viewOptions])
+                == [.title, .search, .viewOptions])
+        #expect(ToolbarItems.replacingTheOtherSearch([.title, .search], previous: []) == [.title, .search])
+    }
+
     @Test func theCatalogNamesEachItemOnce() {
         #expect(Set(ToolbarItems.ids).count == ToolbarItems.ids.count)
         #expect(ToolbarItems.definitions.filter(\.allowDuplicates).map(\.id) == [.topSeparator])
-        #expect(ToolbarItems.definitions.filter(\.topRequired).map(\.id) == [.title, .viewOptions, .search])
+        #expect(ToolbarItems.definitions.filter(\.topRequired).map(\.id) == [.title, .search])
         #expect(ToolbarItems.definition(.undo).shortcutCommand == .undo)
         #expect(ToolbarItems.definition(.redo).commandType == .redo)
         #expect(ToolbarItems.definition(.editSelection).tooltipLabel == "Edit in Text Editor")

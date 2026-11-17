@@ -89,9 +89,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -308,9 +311,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -569,9 +575,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -788,9 +797,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -1008,9 +1020,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -1228,9 +1243,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -1478,9 +1496,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -1698,9 +1719,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -1944,9 +1968,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -2226,9 +2253,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -4748,9 +4778,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -5620,9 +5653,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -5894,9 +5930,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -6114,9 +6153,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -6334,9 +6376,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -6554,9 +6599,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -6779,9 +6827,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -7008,9 +7059,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -7226,8 +7280,7 @@
             "topSeparator",
             "topSeparator",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -7437,8 +7490,7 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -7653,9 +7705,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -7886,9 +7941,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -8106,9 +8164,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -8326,9 +8387,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -8899,9 +8963,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -9438,8 +9505,7 @@
             "revealInFolder",
             "copySelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -9872,9 +9938,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -10095,8 +10164,7 @@
             "title",
             "calculateSize",
             "folderTree",
-            "openInTerminal",
-            "viewOptions"
+            "openInTerminal"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -10403,9 +10471,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -10624,8 +10695,7 @@
             "clipboard",
             "back",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -11109,8 +11179,7 @@
             "hidden",
             "editSelection",
             "newFolder",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -11431,9 +11500,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -11651,9 +11723,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -12187,9 +12262,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -12566,9 +12644,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -12788,8 +12869,7 @@
             "cutSelection",
             "view",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -13312,9 +13392,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -13596,8 +13679,7 @@
             "openSelection",
             "copySelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -13864,8 +13946,7 @@
             "forward",
             "sort",
             "help",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -14319,9 +14400,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -14576,9 +14660,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -15197,9 +15284,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -15655,8 +15745,7 @@
             "renameSelection",
             "revealInFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -16100,9 +16189,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -16405,9 +16497,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -16625,8 +16720,7 @@
             "infoRow",
             "theme",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -16884,9 +16978,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -17213,8 +17310,7 @@
             "pasteSelection",
             "back",
             "copyPath",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -17524,8 +17620,7 @@
             "refresh",
             "revealInFolder",
             "search",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -17752,8 +17847,7 @@
             "pasteSelection",
             "revealInFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -18010,8 +18104,7 @@
             "folderTree",
             "pasteSelection",
             "copySelection",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -18281,9 +18374,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -18529,8 +18625,7 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -18789,8 +18884,7 @@
             "refresh",
             "sort",
             "topSeparator",
-            "topSeparator",
-            "viewOptions"
+            "topSeparator"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -19022,9 +19116,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -19268,8 +19365,7 @@
             "showInFinder",
             "back",
             "topSeparator",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -19838,8 +19934,7 @@
             "showInFinder",
             "renameSelection",
             "up",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -20128,8 +20223,7 @@
             "foldersFirst",
             "sort",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -20404,8 +20498,7 @@
             "hidden",
             "search",
             "copySelection",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -20996,8 +21089,7 @@
             "revealInFolder",
             "calculateSize",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -21218,9 +21310,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -21646,9 +21741,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -22431,9 +22529,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -22717,8 +22818,7 @@
             "refresh",
             "openInTerminal",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -22951,9 +23051,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -23171,9 +23274,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -23632,8 +23738,7 @@
           "detailRowOpen": true,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -23912,8 +24017,7 @@
           "topToolbarItems": [
             "trashSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -24154,8 +24258,7 @@
             "search",
             "openInTerminal",
             "forward",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -24817,8 +24920,7 @@
             "cutSelection",
             "folderTree",
             "forward",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -25058,9 +25160,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -25414,9 +25519,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -25972,8 +26080,7 @@
             "openInTerminal",
             "hidden",
             "up",
-            "showInFinder",
-            "viewOptions"
+            "showInFinder"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -26253,8 +26360,7 @@
             "pasteSelection",
             "newFolder",
             "quickLook",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -26482,9 +26588,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -26825,8 +26934,7 @@
             "openSelection",
             "help",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -27108,8 +27216,7 @@
             "infoRow",
             "newFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -27356,8 +27463,7 @@
             "goToFolder",
             "clipboard",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -27573,9 +27679,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -27837,8 +27946,7 @@
             "revealInFolder",
             "back",
             "copySelection",
-            "openSelection",
-            "viewOptions"
+            "openSelection"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -28143,8 +28251,7 @@
             "calculateSize",
             "help",
             "topSeparator",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -28505,8 +28612,7 @@
             "pasteSelection",
             "view",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -29348,8 +29454,7 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -29550,8 +29655,7 @@
             "infoRow",
             "quickLook",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -29940,8 +30044,7 @@
             "showInFinder",
             "openInTerminal",
             "forward",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -30177,8 +30280,7 @@
             "forward",
             "refresh",
             "search",
-            "renameSelection",
-            "viewOptions"
+            "renameSelection"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -30555,9 +30657,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -30926,9 +31031,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -31206,8 +31314,7 @@
             "hidden",
             "pasteSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -31560,8 +31667,7 @@
             "back",
             "newFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -31787,9 +31893,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -32247,9 +32356,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -32706,8 +32818,7 @@
             "back",
             "revealInFolder",
             "search",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -32943,8 +33054,7 @@
           "detailRowOpen": true,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -33178,9 +33288,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -33501,8 +33614,7 @@
             "newFolder",
             "showInFinder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -33956,8 +34068,7 @@
             "openSelection",
             "clipboard",
             "renameSelection",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -34423,8 +34534,7 @@
             "moveSelection",
             "infoPanel",
             "infoRow",
-            "back",
-            "viewOptions"
+            "back"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -35160,8 +35270,7 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -35396,9 +35505,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -35644,9 +35756,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -36019,9 +36134,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -36298,8 +36416,7 @@
             "forward",
             "openInTerminal",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -36525,9 +36642,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -36720,8 +36840,7 @@
             "openInTerminal",
             "back",
             "infoPanel",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -36935,8 +37054,7 @@
             "showInFinder",
             "pasteSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -37179,9 +37297,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -37407,8 +37528,7 @@
             "copySelection",
             "refresh",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -37657,8 +37777,7 @@
             "openSelection",
             "goToFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -37951,9 +38070,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -38547,9 +38669,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -38789,9 +38914,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -39009,9 +39137,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -39229,9 +39360,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -39495,8 +39629,7 @@
             "back",
             "quickLook",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -39783,9 +39916,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -40337,8 +40473,7 @@
             "hidden",
             "infoRow",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -40760,9 +40895,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -41521,8 +41659,7 @@
             "calculateSize",
             "revealInFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -41746,9 +41883,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -41969,8 +42109,7 @@
             "theme",
             "infoPanel",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -42405,8 +42544,7 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -42653,9 +42791,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -42879,8 +43020,7 @@
             "sort",
             "quickLook",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -43242,9 +43382,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -43462,9 +43605,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -43693,8 +43839,7 @@
             "search",
             "forward",
             "goToFolder",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -44672,8 +44817,7 @@
           "topToolbarItems": [
             "openInTerminal",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -44904,9 +45048,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -45511,9 +45658,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -45728,8 +45878,7 @@
             "infoRow",
             "goToFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -45950,8 +46099,7 @@
             "back",
             "infoRow",
             "refresh",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -46210,9 +46358,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -46513,8 +46664,7 @@
             "folderTree",
             "back",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -46773,8 +46923,7 @@
             "pasteSelection",
             "openInTerminal",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -47176,8 +47325,7 @@
             "moveSelection",
             "pasteSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -47530,8 +47678,7 @@
             "folderTree",
             "infoRow",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -48120,8 +48267,7 @@
             "newFolder",
             "revealInFolder",
             "clipboard",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -48560,9 +48706,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -49408,8 +49557,7 @@
           "topToolbarItems": [
             "moveSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -49671,8 +49819,7 @@
             "refresh",
             "calculateSize",
             "forward",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -50013,8 +50160,7 @@
             "infoPanel",
             "duplicateSelection",
             "openSelection",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -50406,9 +50552,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -50632,8 +50781,7 @@
             "folderTree",
             "refresh",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -51139,9 +51287,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -51914,9 +52065,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -52401,8 +52555,7 @@
           "topToolbarItems": [
             "infoPanel",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -52724,8 +52877,7 @@
             "openInTerminal",
             "copyPath",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -52945,9 +53097,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -53169,8 +53324,7 @@
             "sort",
             "clipboard",
             "copyPath",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -53442,8 +53596,7 @@
             "help",
             "forward",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -53728,8 +53881,7 @@
             "hidden",
             "infoRow",
             "showInFinder",
-            "sort",
-            "viewOptions"
+            "sort"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -54027,8 +54179,7 @@
             "back",
             "copyPath",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -54537,8 +54688,7 @@
             "newTab",
             "hidden",
             "goToFolder",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -54903,9 +55053,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -55124,9 +55277,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -55465,8 +55621,7 @@
             "search",
             "title",
             "theme",
-            "moveSelection",
-            "viewOptions"
+            "moveSelection"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -55981,9 +56136,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -56201,9 +56359,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -56428,9 +56589,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -57437,9 +57601,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -57911,8 +58078,7 @@
             "newTab",
             "search",
             "theme",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -58292,9 +58458,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -58512,9 +58681,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -58965,9 +59137,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -59185,9 +59360,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -59409,8 +59587,7 @@
             "hidden",
             "clipboard",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -59647,8 +59824,7 @@
             "editSelection",
             "theme",
             "up",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -59971,9 +60147,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -60297,8 +60476,7 @@
             "moveSelection",
             "title",
             "foldersFirst",
-            "topSeparator",
-            "viewOptions"
+            "topSeparator"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -60654,8 +60832,7 @@
             "hidden",
             "help",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -60945,8 +61122,7 @@
             "pasteSelection",
             "infoRow",
             "cutSelection",
-            "clipboard",
-            "viewOptions"
+            "clipboard"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -61176,8 +61352,7 @@
             "copySelection",
             "newFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -61566,9 +61741,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -62214,9 +62392,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -63028,8 +63209,7 @@
             "openInTerminal",
             "theme",
             "revealInFolder",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -63584,9 +63764,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -63816,9 +63999,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -64036,9 +64222,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -64266,8 +64455,7 @@
             "help",
             "editSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -65528,8 +65716,7 @@
             "infoRow",
             "back",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -65846,8 +66033,7 @@
             "foldersFirst",
             "calculateSize",
             "editSelection",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -66409,8 +66595,7 @@
             "quickLook",
             "calculateSize",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -66609,9 +66794,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -67133,9 +67321,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -67659,9 +67850,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -67936,8 +68130,7 @@
             "search",
             "renameSelection",
             "hidden",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -68454,8 +68647,7 @@
             "theme",
             "copySelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -68693,8 +68885,7 @@
             "up",
             "duplicateSelection",
             "hidden",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -69244,8 +69435,7 @@
             "trashSelection",
             "clipboard",
             "view",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -69552,9 +69742,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -69773,9 +69966,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -69999,8 +70195,7 @@
             "goToFolder",
             "theme",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -70386,8 +70581,7 @@
             "sort",
             "calculateSize",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -70868,8 +71062,7 @@
             "moveSelection",
             "calculateSize",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -71176,8 +71369,7 @@
             "help",
             "editSelection",
             "clipboard",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -71739,8 +71931,7 @@
             "copyPath",
             "revealInFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -72102,9 +72293,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -72327,8 +72521,7 @@
             "duplicateSelection",
             "newFolder",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -72543,9 +72736,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -72923,8 +73119,7 @@
             "moveSelection",
             "hidden",
             "search",
-            "forward",
-            "viewOptions"
+            "forward"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -73201,8 +73396,7 @@
             "refresh",
             "view",
             "renameSelection",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -73485,9 +73679,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -74204,9 +74401,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -74530,8 +74730,7 @@
             "quickLook",
             "title",
             "calculateSize",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -74800,9 +74999,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -75022,9 +75224,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -75288,9 +75493,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -75631,8 +75839,7 @@
             "infoPanel",
             "topSeparator",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -75874,8 +76081,7 @@
             "newTab",
             "hidden",
             "title",
-            "view",
-            "viewOptions"
+            "view"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -76468,9 +76674,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -76921,8 +77130,7 @@
           "topToolbarItems": [
             "title",
             "infoRow",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -77193,8 +77401,7 @@
             "clipboard",
             "moveSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/System/Applications/TextEdit.app",
@@ -78016,9 +78223,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -78357,8 +78567,7 @@
           "topToolbarItems": [
             "pasteSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -78676,8 +78885,7 @@
             "showInFinder",
             "trashSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -78931,8 +79139,7 @@
             "copyPath",
             "duplicateSelection",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -79160,8 +79367,7 @@
           "detailRowOpen": false,
           "topToolbarItems": [
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -79387,9 +79593,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -79798,9 +80007,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -80168,9 +80380,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -80404,8 +80619,7 @@
             "quickLook",
             "refresh",
             "search",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -80629,8 +80843,7 @@
             "copySelection",
             "infoRow",
             "sort",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -80878,9 +81091,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -81098,9 +81314,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -81418,8 +81637,7 @@
             "newFolder",
             "duplicateSelection",
             "pasteSelection",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -81648,9 +81866,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -81869,8 +82090,7 @@
             "openSelection",
             "foldersFirst",
             "title",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -82098,9 +82318,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -82776,9 +82999,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -83064,9 +83290,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -84046,8 +84275,7 @@
             "theme",
             "sort",
             "up",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -84335,9 +84563,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -84820,8 +85051,7 @@
             "help",
             "newFolder",
             "revealInFolder",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": {
             "appPath": "/Applications/Zed.app",
@@ -85424,9 +85654,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -85824,8 +86057,7 @@
             "forward",
             "theme",
             "settings",
-            "title",
-            "viewOptions"
+            "title"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -86121,9 +86353,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -86491,8 +86726,7 @@
             "quickLook",
             "cutSelection",
             "trashSelection",
-            "search",
-            "viewOptions"
+            "search"
           ],
           "terminalApp": null,
           "defaultTextEditor": {
@@ -86741,9 +86975,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"
@@ -86961,9 +87198,12 @@
             "forward",
             "title",
             "clipboard",
-            "view",
+            "topSeparator",
+            "viewMenu",
             "sort",
+            "topSeparator",
             "search",
+            "topSeparator",
             "viewOptions",
             "twoPanes",
             "infoPanel"

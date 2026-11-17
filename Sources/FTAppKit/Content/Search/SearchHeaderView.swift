@@ -1,8 +1,8 @@
 import AppKit
 import FTFoundation
 
-/// The bar above search results, as in Finder: where the search runs, a field that narrows what it found, Stop while
-/// it runs on, and Done; and the banner when only the first matches are shown, or when something was added since that
+/// The bar above search results, as in Finder: where the search runs, a field that narrows what it found, Options (the
+/// field's magnifier menu, marked while an option differs from the defaults), Stop while it runs on, and Done; and the banner when only the first matches are shown, or when something was added since that
 /// they may not list, with Search Again. Where the scopes as segments leave the
 /// filter less than its minimum (a pane of two, a narrow window), they are one pop-up button instead, with no label.
 /// The results themselves are drawn by the folder's views.
@@ -16,6 +16,8 @@ final class SearchHeaderView: NSView {
     /// Tab or Shift-Tab from a button of the bar: the keyboard goes to the other pane, as Tab among the items sends it
     /// (`switchPane()`).
     var onSwitchPane: () -> Void = {}
+    /// Options was pressed: the search options menu opens under it.
+    var onOptions: () -> Void = {}
     var onStop: () -> Void = {}
     var onDone: () -> Void = {}
     /// The banner's Search Again.
@@ -35,6 +37,8 @@ final class SearchHeaderView: NSView {
     /// Whether the scopes show as the pop-up rather than the segments.
     private(set) var showsScopeMenu = false
     let filter = SearchFilterField()
+    let optionsButton = SearchSmallButton(
+        title: SearchBarText.optionsButton, spinner: false, icon: SearchHeaderView.optionsIcon)
     let stopButton = SearchSmallButton(title: SearchBarText.stop, spinner: true)
     let doneButton = SearchSmallButton(title: SearchBarText.done, spinner: false)
     let banner = SearchBannerView()
@@ -51,7 +55,9 @@ final class SearchHeaderView: NSView {
         bar.setAccessibilityLabel(SearchBarText.scopeToolbarName)
         label.setAccessibilityIdentifier("searchBar.label")
         addSubview(bar)
-        for view in [label, track, scopeMenu, filter, stopButton, doneButton] as [NSView] { bar.addSubview(view) }
+        for view in [label, track, scopeMenu, filter, optionsButton, stopButton, doneButton] as [NSView] {
+            bar.addSubview(view)
+        }
         scopeMenu.isHidden = true
         scopeMenu.onChoose = { [weak self] path in
             guard let self, path != self.rootPath else { return }
@@ -67,6 +73,9 @@ final class SearchHeaderView: NSView {
         banner.searchAgain.onPress = { [weak self] in self?.onSearchAgain() }
         banner.searchAgain.onMouseDown = { [weak self] in self?.onFocusResults() }
         banner.searchAgain.onTab = { [weak self] _ in self?.onSwitchPane() }
+        optionsButton.setAccessibilityIdentifier("searchBar.options")
+        optionsButton.toolTip = SearchBarText.optionsTitle
+        optionsButton.onPress = { [weak self] in self?.onOptions() }
         stopButton.isHidden = true
         stopButton.setAccessibilityIdentifier("searchBar.stop")
         stopButton.setAccessibilityLabel(SearchBarText.stopName)
@@ -86,7 +95,7 @@ final class SearchHeaderView: NSView {
         }
         // A press in the header gives the pane the keyboard.
         track.onMouseDown = { [weak self] in self?.onFocusResults() }
-        for button in [stopButton, doneButton] {
+        for button in [optionsButton, stopButton, doneButton] {
             button.onMouseDown = { [weak self] in self?.onFocusResults() }
             button.onTab = { [weak self, weak button] backward in
                 guard let self, let button else { return }
@@ -102,6 +111,28 @@ final class SearchHeaderView: NSView {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// Options' symbol: the system's sliders, at the bar's text size. Centered as it is, it sits a point above the
+    /// middle of the title's letters, so it is drawn a point lower, with room above it.
+    static let optionsIcon: NSImage? = {
+        guard
+            let symbol = NSImage(systemSymbolName: "slider.horizontal.3", accessibilityDescription: nil)?
+                .withSymbolConfiguration(.init(pointSize: DesignTokens.typeScale.callout, weight: .regular))
+        else { return nil }
+        let size = NSSize(width: symbol.size.width, height: symbol.size.height + 2)
+        let image = NSImage(size: size, flipped: false) { _ in
+            symbol.draw(in: NSRect(origin: .zero, size: symbol.size))
+            return true
+        }
+        image.isTemplate = true
+        return image
+    }()
+
+    /// What Options says of the search's options: marked and named in its tooltip when any differs from the defaults.
+    func showOptions(changed: [String]) {
+        optionsButton.marked = !changed.isEmpty
+        optionsButton.toolTip = SearchBarText.optionsTitle(changed: changed)
+    }
 
     override var isFlipped: Bool { true }
 
@@ -203,6 +234,7 @@ final class SearchHeaderView: NSView {
         filter.applyTheme(theme)
         stopButton.applyTheme(theme)
         doneButton.applyTheme(theme)
+        optionsButton.applyTheme(theme)
         banner.applyTheme(theme)
         needsDisplay = true
     }
@@ -243,10 +275,21 @@ final class SearchHeaderView: NSView {
                 height: layout.smallButtonHeight)
             right -= stopWidth + gap
         }
-        // The segments keep their width and the filter gives up room first, down to its minimum; with less room than
-        // that the scopes are one pop-up button and the filter takes the rest.
+        // Options keeps its title while the filter keeps its minimum beside the segments, or beside the pop-up at its
+        // narrowest; with less room it is its icon alone, before the filter gives up any of its minimum.
         let trackWidth = track.fittingWidth
         let segmentsEnd = x + labelWidth + layout.scopeLabelMarginTrailing + gap + trackWidth + gap
+        let titledRight = right - optionsButton.preferredWidth(showingTitle: true) - gap
+        optionsButton.showsTitle =
+            scopes.isEmpty || titledRight - segmentsEnd >= layout.filterMinWidth
+            || titledRight - x - gap - layout.filterMinWidth >= layout.scopeMenuMinWidth
+        let optionsWidth = optionsButton.preferredWidth
+        optionsButton.frame = NSRect(
+            x: right - optionsWidth, y: centerY - layout.smallButtonHeight / 2, width: optionsWidth,
+            height: layout.smallButtonHeight)
+        right -= optionsWidth + gap
+        // The segments keep their width and the filter gives up room first, down to its minimum; with less room than
+        // that the scopes are one pop-up button and the filter takes the rest.
         let compact = !scopes.isEmpty && right - segmentsEnd < layout.filterMinWidth
         showScopeMenu(compact)
         if compact {
@@ -258,9 +301,10 @@ final class SearchHeaderView: NSView {
                 scopeMenu.preferredWidth, layout.scopeMenuMaxWidth, max(layout.scopeMenuMinWidth, besideFilter),
                 max(0, right - x))
             scopeMenu.frame = NSRect(x: x, y: centerY - menuHeight / 2, width: menuWidth, height: menuHeight)
-            let filterX = scopeMenu.frame.maxX + gap
+            // No wider than beside the segments: the room left over stays between the pop-up and the filter.
+            let filterWidth = min(layout.filterWidth, max(0, right - scopeMenu.frame.maxX - gap))
             filter.frame = NSRect(
-                x: filterX, y: centerY - layout.fieldHeight / 2, width: max(0, right - filterX),
+                x: right - filterWidth, y: centerY - layout.fieldHeight / 2, width: filterWidth,
                 height: layout.fieldHeight)
         } else {
             label.frame = NSRect(
@@ -617,18 +661,53 @@ final class SearchSmallButton: SystemButton {
     var onTab: (_ backward: Bool) -> Void = { _ in }
     private var takingKeyboard = false
     private let spinner: InfoSpinnerView?
+    /// The symbol before the title (Options'), drawn by the system as the button's image.
+    private let icon: NSImage?
+    /// The title it shows while there is room for it.
+    private let fullTitle: String
     private static var layout: SearchLayout { .standard }
     private static var smallFont: NSFont { ThemeFonts.sans(DesignTokens.typeScale.callout) }
+    /// The dot's diameter, and how far in from the button's top right corner its center is.
+    static let markDiameter = 6.0
+    /// Each side of the symbol while it shows alone.
+    static let iconOnlyPadding = 6.0
+    static let markInset = 5.0
 
-    init(title: String, spinner hasSpinner: Bool) {
+    /// Only the icon shows: the bar is short of room. A button with no icon always shows its title.
+    var showsTitle = true {
+        didSet {
+            guard showsTitle != oldValue, icon != nil else { return }
+            title = showsTitle ? fullTitle : ""
+            imagePosition = showsTitle ? .imageLeading : .imageOnly
+            setAccessibilityLabel(fullTitle)
+            invalidateIntrinsicContentSize()
+        }
+    }
+
+    /// Something differs from the defaults: the icon takes the accent and a dot of it sits at the top right.
+    var marked = false {
+        didSet {
+            guard marked != oldValue else { return }
+            applyMark()
+        }
+    }
+
+    init(title: String, spinner hasSpinner: Bool, icon: NSImage? = nil) {
         let layout = Self.layout
         spinner = hasSpinner ? InfoSpinnerView(diameter: layout.spinnerSize, lineWidth: layout.spinnerLineWidth) : nil
+        self.icon = icon
+        fullTitle = title
         super.init(title: title, theme: AppearanceModel.shared.theme)
         font = Self.smallFont
         controlHeight = layout.smallButtonHeight
         refusesFirstResponder = true
         target = self
         action = #selector(pressed(_:))
+        if let icon {
+            image = icon
+            imagePosition = .imageLeading
+            imageHugsTitle = true
+        }
         if let spinner {
             // The room for the spinner, which lies over it.
             image = NSImage(size: NSSize(width: layout.spinnerSize + layout.smallButtonGap, height: 1))
@@ -642,11 +721,41 @@ final class SearchSmallButton: SystemButton {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var preferredWidth: CGFloat {
+        preferredWidth(showingTitle: showsTitle)
+    }
+
+    /// Its width with or without its title: the bar asks both of Options to choose.
+    func preferredWidth(showingTitle: Bool) -> CGFloat {
         let layout = Self.layout
+        let padding = layout.smallButtonPaddingHorizontal
+        let iconWidth = Double(icon?.size.width ?? 0)
+        // Its symbol alone is a small square, so the filter beside it keeps what it can.
+        guard showingTitle || icon == nil else { return Self.iconOnlyPadding * 2 + ceil(iconWidth) }
         let start =
-            layout.smallButtonPaddingHorizontal + (spinner == nil ? 0 : layout.spinnerSize + layout.smallButtonGap)
-        let text = Double(ceil((title as NSString).size(withAttributes: [.font: Self.smallFont]).width))
-        return start + text + layout.smallButtonPaddingHorizontal
+            padding + (spinner == nil ? 0 : layout.spinnerSize + layout.smallButtonGap)
+            + (icon == nil ? 0 : ceil(iconWidth) + layout.smallButtonGap)
+        let text = Double(ceil((fullTitle as NSString).size(withAttributes: [.font: Self.smallFont]).width))
+        return start + text + padding
+    }
+
+    private func applyMark() {
+        contentTintColor = marked ? NSColor(theme.accent.solidButton) : nil
+        needsDisplay = true
+    }
+
+    override func applyTheme(_ theme: Theme) {
+        super.applyTheme(theme)
+        if marked { applyMark() }
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        guard marked else { return }
+        let size = Self.markDiameter
+        let center = NSPoint(
+            x: bounds.maxX - Self.markInset, y: isFlipped ? Self.markInset : bounds.maxY - Self.markInset)
+        NSColor(theme.accent.solidButton).setFill()
+        NSBezierPath(ovalIn: NSRect(x: center.x - size / 2, y: center.y - size / 2, width: size, height: size)).fill()
     }
 
     override func layout() {

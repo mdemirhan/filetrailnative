@@ -20,7 +20,7 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             #expect(tab.workspace.bounds.width == 1200)
             var last = 288.0
-            for id in [ToolbarItemID.folderTree, .back, .forward, .view, .sort, .viewOptions, .infoPanel] {
+            for id in [ToolbarItemID.folderTree, .back, .forward, .viewMenu, .sort, .viewOptions, .infoPanel] {
                 let view = try #require(tab.explorerToolbar.item(id)?.view)
                 let rect = Self.frame(view, in: tab)
                 #expect(rect.minX >= last && rect.maxY <= 52, "\(id): \(rect)")

@@ -71,8 +71,8 @@ extension ExplorerWindowlessTests {
             let toolbar = tab.explorerToolbar
             #expect(
                 toolbar.rowKeys == [
-                    "folderTree", "topSeparator", "back", "forward", "title", "view", "sort", "search", "viewOptions",
-                    "twoPanes", "infoPanel",
+                    "folderTree", "topSeparator", "back", "forward", "title", "topSeparator", "viewMenu", "sort",
+                    "topSeparator", "search", "topSeparator", "viewOptions", "twoPanes", "infoPanel",
                 ])
             // One system item per command; a space is the system's.
             #expect(toolbar.toolbar.items.first?.itemIdentifier == .sidebarTrackingSeparator)
@@ -81,11 +81,12 @@ extension ExplorerWindowlessTests {
             #expect(toolbar.item(.clipboard)?.isHidden == true)
             #expect(toolbar.item(.back)?.view === toolbar.button(.back))
 
-            // A saved order is drawn as saved, wherever the required items are; a missing required item is added.
+            // A saved order is drawn as saved, wherever the required items are; a missing required item is added, and
+            // View Options isn't one.
             setItems(tab, [.viewOptions, .title, .back, .search], harness)
             #expect(toolbar.rowKeys == ["viewOptions", "title", "back", "search"])
             setItems(tab, [.back], harness)
-            #expect(toolbar.rowKeys == ["back", "title", "search", "viewOptions"])
+            #expect(toolbar.rowKeys == ["back", "title", "search"])
 
             // Something on the clipboard: the button shows, with its count.
             setItems(tab, ToolbarItems.defaultTopItems, harness)
@@ -220,7 +221,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let window = try #require(tab.window)
             window.setContentSize(NSSize(width: 1400, height: 500))
-            setItems(tab, [.back, .forward, .title, .view, .sort, .refresh, .search], harness)
+            setItems(tab, [.back, .forward, .title, .view, .sort, .refresh, .search, .viewOptions], harness)
             let toolbar = tab.explorerToolbar
             let frameView = try #require(window.contentView?.superview)
             frameView.layoutSubtreeIfNeeded()
@@ -380,7 +381,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.viewState.includeHidden)
             #expect(toolbar.item(.hidden)?.menuFormRepresentation?.state == .on)
             #expect(toolbar.item(.up)?.menuFormRepresentation?.title == "Enclosing Folder")
-            #expect(toolbar.item(.view)?.menuFormRepresentation?.submenu?.items.map(\.title).first == "as Icons")
+            #expect(toolbar.item(.viewMenu)?.menuFormRepresentation?.submenu?.items.map(\.title).first == "as Icons")
             #expect(toolbar.item(.sort)?.menuFormRepresentation?.submenu?.items.first?.title == "Sort by Name")
             #expect(
                 toolbar.item(.theme)?.menuFormRepresentation?.submenu?.items.map(\.title) == ["Auto", "Light", "Dark"])
@@ -427,6 +428,7 @@ extension ExplorerWindowlessTests {
         @Test func switchesTheViewFromTheMenuAndBackFromTheToolbar() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
+            setItems(tab, ToolbarItems.defaultTopItems + [.view], harness)
             tab.perform(.viewAsIcons)
             let switcher = try #require(tab.explorerToolbar.viewSwitch)
             #expect(switcher.selected == .icons)
@@ -445,6 +447,7 @@ extension ExplorerWindowlessTests {
         @Test func choosesHowManyPreviewsByHoldingThePreviewsSegment() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
+            setItems(tab, ToolbarItems.defaultTopItems + [.view], harness)
             tab.perform(.viewAsDetails)
             let switcher = try #require(tab.explorerToolbar.viewSwitch)
             let menu = try #require(switcher.menu(forSegment: ToolbarViewSwitch.previewsSegment))
@@ -471,7 +474,8 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let toolbar = tab.explorerToolbar
-            setItems(tab, ToolbarItems.defaultTopItems + [.viewMenu], harness)
+            // The default toolbar holds the View Mode Menu; the switch is put beside it.
+            setItems(tab, ToolbarItems.defaultTopItems + [.view], harness)
             tab.perform(.viewAsDetails)
             let button = try #require(button(tab, .viewMenu))
             #expect(button.iconName == .details && button.tooltip == "View as List")
@@ -511,6 +515,71 @@ extension ExplorerWindowlessTests {
             #expect(entry.title == "View Mode")
             #expect(entry.submenu?.items.map(\.title) == ["as Icons", "as List", "as Compact List", "as Previews"])
             await harness.close()
+        }
+
+        // Compact Search is the one search field, folded to the system's round magnifier until it is used: ⌘F puts the
+        // field in its place with the keyboard, and it folds again once the keyboard has left an empty field. Folded or
+        // open, the saved order holds Compact Search alone.
+        @Test func compactSearchIsFoldedUntilTheFieldIsUsed() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let toolbar = tab.explorerToolbar
+            let items = ToolbarItems.defaultTopItems.map { $0 == .search ? .compactSearch : $0 }
+            setItems(tab, items, harness)
+            #expect(toolbar.item(.search) == nil)
+            tab.content.focusList()
+            #expect(await waitUntil { !toolbar.searchOpen })
+            #expect(toolbar.item(.compactSearch)?.itemIdentifier == ExplorerToolbar.identifier(.compactSearch))
+            #expect(toolbar.searchItem == nil)
+            // Folded it is a magnifier button like the others, the last item to go to the » menu, where it opens the
+            // field too.
+            let magnifier = try #require(toolbar.item(.compactSearch)?.view as? ToolbarButton)
+            #expect(magnifier.accessibilityIdentifier() == "toolbar.search.folded")
+            #expect(toolbar.item(.compactSearch)?.visibilityPriority == .user)
+            #expect(toolbar.item(.compactSearch)?.menuFormRepresentation?.title == "Search")
+            magnifier.onClick?()
+            #expect(toolbar.searchOpen)
+            #expect(tab.searchField?.isActive == true)
+            tab.content.focusList()
+            #expect(await waitUntil { !toolbar.searchOpen })
+
+            tab.search.focusField()
+            #expect(toolbar.searchOpen)
+            #expect(
+                toolbar.item(.compactSearch)?.itemIdentifier == ExplorerToolbar.otherFormIdentifier(.compactSearch))
+            #expect(toolbar.searchItem?.searchField === tab.searchField)
+            #expect(tab.searchField?.isActive == true)
+
+            tab.content.focusList()
+            #expect(await waitUntil { !toolbar.searchOpen })
+            #expect(toolbar.item(.compactSearch)?.itemIdentifier == ExplorerToolbar.identifier(.compactSearch))
+            #expect(harness.store.preferences().topToolbarItems == items)
+            await harness.close()
+        }
+
+        // Each search item has a form it rests in and another, and both are the same item to the saved order.
+        @Test func aSearchItemsTwoFormsAreOneItem() {
+            for id: ToolbarItemID in [.search, .compactSearch] {
+                #expect(ExplorerToolbar.itemID(ExplorerToolbar.identifier(id)) == id)
+                #expect(ExplorerToolbar.itemID(ExplorerToolbar.otherFormIdentifier(id)) == id)
+            }
+            #expect(ExplorerToolbar.isSearchFieldForm(ExplorerToolbar.identifier(.search)))
+            #expect(!ExplorerToolbar.isSearchFieldForm(ExplorerToolbar.otherFormIdentifier(.search)))
+            #expect(!ExplorerToolbar.isSearchFieldForm(ExplorerToolbar.identifier(.compactSearch)))
+            #expect(ExplorerToolbar.isSearchFieldForm(ExplorerToolbar.otherFormIdentifier(.compactSearch)))
+            #expect(!ExplorerToolbar.isSearchFieldForm(ExplorerToolbar.identifier(.sort)))
+        }
+
+        // Search folds once the title is down to its least width, before an item goes to the » menu, and opens again
+        // only once the title has room for the field and a margin, so a window at the edge doesn't flip it.
+        @Test func searchFoldsWhenTheTitleHasNoRoomLeftAndOpensWithRoomToSpare() {
+            #expect(ExplorerToolbar.searchStaysOpen(wasOpen: true, titleSpare: 40))
+            #expect(!ExplorerToolbar.searchStaysOpen(wasOpen: true, titleSpare: 0))
+            #expect(!ExplorerToolbar.searchStaysOpen(wasOpen: false, titleSpare: 164))
+            #expect(!ExplorerToolbar.searchStaysOpen(wasOpen: false, titleSpare: ExplorerToolbar.searchOpenRoom - 1))
+            #expect(ExplorerToolbar.searchStaysOpen(wasOpen: false, titleSpare: ExplorerToolbar.searchOpenRoom))
+            // Opened with just the room it needs, it doesn't fold at once.
+            #expect(ExplorerToolbar.searchStaysOpen(wasOpen: true, titleSpare: ExplorerToolbar.searchOpenRoom - 164))
         }
 
         @Test func choosesAutoLightOrDarkFromTheThemeButtonsMenu() async throws {
@@ -572,7 +641,7 @@ extension ExplorerWindowlessTests {
 
             // Reset to Defaults, an import or the other tab's change come in through the preference.
             tab.updatePreferences { $0.topToolbarItems = [.back, .title] }
-            #expect(toolbar.rowKeys == ["back", "title", "search", "viewOptions"])
+            #expect(toolbar.rowKeys == ["back", "title", "search"])
             tab.updatePreferences { $0.topToolbarItems = ToolbarItems.defaultTopItems }
             #expect(harness.store.preferences().topToolbarItems == ToolbarItems.defaultTopItems)
             #expect(toolbar.toolbar.items.count == ToolbarItems.defaultTopItems.count + 1)

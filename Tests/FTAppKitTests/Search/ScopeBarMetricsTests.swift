@@ -61,10 +61,14 @@ import Testing
         #expect(wide.filter.modeChip.frame.minX == 4)
         #expect(wide.filter.input.frame.minX > wide.filter.modeChip.frame.maxX)
         #expect(wide.filter.input.frame.width >= 150)
+        // Options, with its title, between the filter and Done.
+        #expect(wide.optionsButton.showsTitle)
+        #expect(wide.filter.frame.maxX == wide.optionsButton.frame.minX - 6)
+        #expect(wide.optionsButton.frame.maxX == wide.doneButton.frame.minX - 6)
 
         // What the segments and the bar's right end take, whatever the width.
         let segmentsEnd = track.frame.maxX + 6
-        let trailing = 1_400 - (wide.doneButton.frame.minX - 6)
+        let trailing = 1_400 - (wide.optionsButton.frame.minX - 6)
 
         let tight = try shown(width: segmentsEnd + 240 + trailing)
         #expect(!tight.showsScopeMenu)
@@ -79,9 +83,14 @@ import Testing
         #expect(narrow.scopeMenu.frame.minX == 12)
         #expect(narrow.scopeMenu.frame.width <= 220)
         #expect(narrow.scopeMenu.titleOfSelectedItem == "“Application Support”")
-        #expect(narrow.filter.frame.minX == narrow.scopeMenu.frame.maxX + 6)
-        #expect(narrow.filter.frame.maxX == narrow.doneButton.frame.minX - 6)
+        // The filter is no wider than beside the segments: what is left over stays after the pop-up.
+        #expect(narrow.filter.frame.maxX == narrow.optionsButton.frame.minX - 6)
+        #expect(
+            narrow.filter.frame.width
+                == min(280, narrow.optionsButton.frame.minX - 6 - (narrow.scopeMenu.frame.maxX + 6)))
+        #expect(narrow.filter.frame.maxX == narrow.optionsButton.frame.minX - 6)
         #expect(narrow.filter.frame.width >= 200)
+        #expect(narrow.optionsButton.showsTitle)
 
         // The pop-up is as wide as the place searched, not its longest place: a shorter one leaves the filter more.
         let longWidth = narrow.scopeMenu.frame.width
@@ -94,20 +103,27 @@ import Testing
         narrow.layoutSubtreeIfNeeded()
         #expect(narrow.scopeMenu.titleOfSelectedItem == "Home")
         #expect(narrow.scopeMenu.frame.width < longWidth - 50)
-        #expect(narrow.filter.frame.minX == narrow.scopeMenu.frame.maxX + 6)
+        // The filter is no wider than beside the segments: what is left over stays after the pop-up.
+        #expect(narrow.filter.frame.maxX == narrow.optionsButton.frame.minX - 6)
+        #expect(
+            narrow.filter.frame.width
+                == min(280, narrow.optionsButton.frame.minX - 6 - (narrow.scopeMenu.frame.maxX + 6)))
 
-        // A pane of two at its narrowest, 280 pt: the place's name is cut short and the filter keeps what a filter
-        // needs, its chip inside it; while Stop shows too, the pop-up is at its smallest and the filter is still
-        // there.
+        // A pane of two at its narrowest, 280 pt: the place's name is cut short, Options is its icon alone, and the
+        // filter keeps what a filter needs, its chip inside it.
         let pane = try shown(width: 280)
         #expect(pane.showsScopeMenu)
         #expect(pane.scopeMenu.frame.width == 72)
-        #expect(pane.filter.frame.width >= 120)
-        #expect(pane.filter.frame.maxX == pane.doneButton.frame.minX - 6)
+        #expect(!pane.optionsButton.showsTitle)
+        #expect(pane.optionsButton.frame.width < 40)
+        #expect(pane.filter.frame.width >= 85)
+        #expect(pane.filter.frame.maxX == pane.optionsButton.frame.minX - 6)
         #expect(pane.filter.modeChip.frame.maxX < pane.filter.bounds.width)
         // A bar with room for the filter's 200 and less than the place's name: the name gives way, not the filter.
         let between = try shown(width: 400)
         #expect(between.showsScopeMenu)
+        // Options gives up its title before the filter gives up any of its 200.
+        #expect(!between.optionsButton.showsTitle)
         #expect(between.filter.frame.width == 200)
         #expect(between.scopeMenu.frame.width > 72 && between.scopeMenu.frame.width < longWidth)
     }

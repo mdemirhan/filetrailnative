@@ -414,7 +414,7 @@ extension HelpContent {
         HelpTopic(
             id: .search, title: "Searching",
             intro:
-                "Search looks for files and folders in the folder you are browsing, as you type in the search field. Return or ↓ moves into the results and Esc shows the folder again. The magnifier in the field opens the options.",
+                "Search looks for files and folders in the folder you are browsing, as you type in the search field. Return or ↓ moves into the results and Esc shows the folder again. The magnifier in the field, and Options over the results, open the options; a blue dot on either means an option differs from its default.",
             sections: [
                 HelpSection(
                     title: "Plain Text",

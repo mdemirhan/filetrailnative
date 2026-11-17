@@ -9,6 +9,8 @@ final class ToolbarTitleView: NSView, TextStyleSource {
     static let lineHeight = 1.2
     /// The title dims while its window isn't key.
     private var windowActivity: WindowActivity?
+    /// It was laid out, maybe at another width.
+    var onLayout: () -> Void = {}
 
     var styleTextField: NSTextField? { field }
 
@@ -37,6 +39,7 @@ final class ToolbarTitleView: NSView, TextStyleSource {
             x: toolbar.titlePaddingLeading, y: 0,
             width: max(0, bounds.width - toolbar.titlePaddingLeading - toolbar.titlePaddingTrailing),
             height: bounds.height)
+        onLayout()
     }
 
     override func mouseDown(with event: NSEvent) {
@@ -329,6 +332,8 @@ final class ToolbarSearchField: NSSearchField {
     var onOptions: (_ fromKeyboard: Bool) -> Void = { _ in }
     /// The ✕ was clicked.
     var onClear: () -> Void = {}
+    /// The field took the keyboard or let it go: the toolbar decides again whether it stays open (`updateSearchWidth`).
+    var onEditingChange: () -> Void = {}
     /// The press target over the system's magnifier, for automation and the accessibility tree.
     let optionsButton = ToolbarSearchOptionsButton()
     /// Where Tab stops at the system's ✕, which takes no keyboard itself.
@@ -405,8 +410,40 @@ final class ToolbarSearchField: NSSearchField {
 
     override func becomeFirstResponder() -> Bool {
         let took = super.becomeFirstResponder()
-        if took { onFocus() }
+        if took {
+            onFocus()
+            onEditingChange()
+        }
         return took
+    }
+
+    override func textDidEndEditing(_ notification: Notification) {
+        super.textDidEndEditing(notification)
+        onEditingChange()
+    }
+
+    /// Whether an option of the search the field drives differs from the defaults.
+    private var optionsChanged = false
+
+    /// The magnifier's tooltip names the options that differ from the defaults, and while any does, the magnifier is
+    /// marked as long as the field has the keyboard: the field at rest stays plain.
+    func showOptions(changed: [String]) {
+        optionsChanged = !changed.isEmpty
+        optionsButton.toolTip = SearchBarText.optionsTitle(changed: changed)
+        showOptionsMark()
+    }
+
+    /// The window moved the keyboard (`ExplorerTabWindow.makeFirstResponder`, which every move passes, the system's
+    /// own included): the magnifier's mark follows whether the field has it.
+    func showOptionsMark() {
+        applyOptionsMark()
+        // A move can be one step of several (the field, then its editor): looked at again once they are done.
+        DispatchQueue.main.async { [weak self] in self?.applyOptionsMark() }
+    }
+
+    private func applyOptionsMark() {
+        // Being edited: the field's own answer, which holds through every step of taking the keyboard.
+        optionsButton.marked = optionsChanged && (currentEditor() != nil || isActive)
     }
 
     /// Whether the field has the keyboard.
@@ -431,6 +468,11 @@ final class ToolbarSearchField: NSSearchField {
 /// the keyboard's focus ring, and the press comes from the toolbar (`ExplorerToolbar.pressSearchOptions`).
 final class ToolbarSearchOptionsButton: NSView {
     var onPress: (_ fromKeyboard: Bool) -> Void = { _ in }
+    /// An option differs from the defaults: a dot in the accent at the magnifier's top right, as the results bar's
+    /// Options has.
+    var marked = false {
+        didSet { if marked != oldValue { needsDisplay = true } }
+    }
     /// Set while the keyboard is given to the button: a press never takes it.
     private var takingKeyboard = false
 
@@ -459,6 +501,15 @@ final class ToolbarSearchOptionsButton: NSView {
         takingKeyboard = true
         defer { takingKeyboard = false }
         return window.makeFirstResponder(self)
+    }
+
+    override func draw(_ dirtyRect: NSRect) {
+        guard marked else { return }
+        let size = SearchSmallButton.markDiameter
+        // Over the magnifier's lens, whose top right is about a third in from the button's top right.
+        let center = NSPoint(x: bounds.maxX - bounds.width * 0.38, y: bounds.minY + bounds.height * 0.26)
+        NSColor(AppearanceModel.shared.theme.accent.solidButton).setFill()
+        NSBezierPath(ovalIn: NSRect(x: center.x - size / 2, y: center.y - size / 2, width: size, height: size)).fill()
     }
 
     override func drawFocusRingMask() {

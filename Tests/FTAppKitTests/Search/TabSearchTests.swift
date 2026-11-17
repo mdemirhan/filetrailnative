@@ -170,6 +170,47 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Options in the results bar opens the magnifier's menu under itself. An option off its default marks it, and
+        // the magnifier while the field has the keyboard, and their tooltips name what changed; back at the default,
+        // neither is marked.
+        @Test func theBarsOptionsOpensTheSameMenuAndAChangedOptionMarksItAndTheMagnifier() async throws {
+            let (harness, tab, engine, timers) = try await open()
+            engine.finds = { _ in (["note.txt"], false, false) }
+            try type("no", in: tab)
+            timers.advance(0.4)
+            let header = tab.search.header
+            let field = try #require(tab.searchField)
+            let options = header.optionsButton
+            #expect(!options.marked && !field.optionsButton.marked)
+            #expect(options.toolTip == "Search Options")
+            options.onPress()
+            let menu = try #require(AppMenuPresenter.shared.menu)
+            #expect(menu.identifier == "searchOptionsMenu")
+            #expect(menu.rows.map(\.title).contains("Regex"))
+            menu.onChoose(try #require(menu.items.firstIndex { $0.title == "Regex" }))
+            #expect(!AppMenuPresenter.shared.isOpen)
+            #expect(engine.starts.last?.patternMode == .regex)
+            #expect(options.marked)
+            // The magnifier is marked only while the field has the keyboard.
+            #expect(field.optionsButton.marked == field.isActive)
+            tab.window?.makeFirstResponder(field)
+            #expect(await waitUntil { field.optionsButton.marked })
+            tab.content.focusList()
+            #expect(!field.optionsButton.marked)
+            #expect(options.toolTip == "Search Options: Regex")
+            #expect(field.optionsButton.toolTip == "Search Options: Regex")
+            // Pressed again while open, it closes its menu.
+            options.onPress()
+            options.onPress()
+            #expect(!AppMenuPresenter.shared.isOpen)
+            options.onPress()
+            let again = try #require(AppMenuPresenter.shared.menu)
+            again.onChoose(try #require(again.items.firstIndex { $0.title == "Plain Text" }))
+            #expect(!options.marked && !field.optionsButton.marked)
+            #expect(options.toolTip == "Search Options")
+            await harness.close()
+        }
+
         // The arrows and Return are the system menu's while it is open.
         // Opened from the keyboard, the first item is marked; chosen, it does what it says.
         @Test func theOptionsMenuOpensMarkedFromTheKeyboard() async throws {

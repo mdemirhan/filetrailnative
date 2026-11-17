@@ -21,6 +21,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         session = SearchSession(preferences: tab.preferences, includeHidden: pane.includeHidden, engine: engine)
         super.init()
         session.host = self
+        header.showOptions(changed: changedOptions)
         header.onScopeChange = { [weak self] path in self?.session.changeRoot(path) }
         header.onFilterChange = { [weak self] text in
             guard let self else { return }
@@ -31,6 +32,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         header.onToggleFilterMode = { [weak self] in self?.pane.content.onToggleFilterMode?() }
         header.onFocusResults = { [weak self] in self?.pane.content.focusList() }
         header.onSwitchPane = { [weak self] in self?.pane.content.switchPane() }
+        header.onOptions = { [weak self] in self?.openOptionsFromBar() }
         header.onStop = { [weak self] in self?.session.stop() }
         header.onDone = { [weak self] in self?.done() }
         header.onSearchAgain = { [weak self] in self?.session.rerun() }
@@ -64,6 +66,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         field.onOptions = { [weak self] fromKeyboard in self?.openOptions(fromKeyboard: fromKeyboard) }
         field.onClear = { [weak self] in self?.clearPressed() }
         if field.stringValue != session.draftQuery { field.stringValue = session.draftQuery }
+        showOptionMarks()
     }
 
     private var escapeInterceptor: Int?
@@ -107,6 +110,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             field.stringValue = session.draftQuery
         }
         if !change.isDisjoint(with: [.results, .status, .visibility]) { refreshDisplay(change) }
+        if change.contains(.options) { showOptionMarks() }
         if change.contains(.status), !session.isRunning, session.selectFirstResultWhenDone {
             selectFirstResultWhenDone()
         }
@@ -381,6 +385,35 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             case .skipGitIgnored: $0.searchSkipGitIgnored = search.skipGitIgnored
             }
         }
+    }
+
+    /// The options that differ from the defaults, by the menu's names.
+    var changedOptions: [String] {
+        let search = session
+        return SearchBarText.changedOptions(
+            matchScope: search.matchScope, patternMode: search.patternMode, recursive: search.recursive,
+            skipGitFolders: search.skipGitFolders, skipGitIgnored: search.skipGitIgnored)
+    }
+
+    /// The bar's Options, and the toolbar's magnifier while this search drives the field, say whether an option differs
+    /// from the defaults.
+    func showOptionMarks() {
+        let changed = changedOptions
+        header.showOptions(changed: changed)
+        if drivesField { field?.showOptions(changed: changed) }
+    }
+
+    /// The bar's Options: the same menu as the magnifier's, under the button. The keyboard stays where it is.
+    func openOptionsFromBar() {
+        let presenter = AppMenuPresenter.shared
+        let button = header.optionsButton
+        if presenter.isOpen(from: button) {
+            presenter.close()
+            return
+        }
+        let menu = AppMenu(
+            items: optionItems(), identifier: "searchOptionsMenu", rowIdentifier: "searchOptionsMenu.item")
+        presenter.drop(menu, from: button)
     }
 
     /// The magnifier: the options as a menu with checkmarks. Opened with the mouse, the keyboard stays in the field;

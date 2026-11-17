@@ -16,6 +16,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case undoHistory
     case viewOptions
     case search
+    case compactSearch
     case goToFolder
     case foldersFirst
     case hidden
@@ -70,8 +71,10 @@ extension ToolbarItems {
         ToolbarItemDefinition(id: .title, label: "Title", icon: nil, topRequired: true),
         ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, highPriority: true),
         ToolbarItemDefinition(id: .undoHistory, label: "Undo History", icon: .undoHistory, highPriority: true),
-        ToolbarItemDefinition(id: .viewOptions, label: "View Options", icon: .viewOptions, topRequired: true),
+        ToolbarItemDefinition(id: .viewOptions, label: "View Options", icon: .viewOptions),
         ToolbarItemDefinition(id: .search, label: "Search", icon: .search, topRequired: true),
+        // The same field, folded to its magnifier until it is used: it stands in for Search (`sanitizeTopItems`).
+        ToolbarItemDefinition(id: .compactSearch, label: "Compact Search", icon: .search, highPriority: true),
         ToolbarItemDefinition(
             id: .goToFolder, label: "Go To", icon: .goTo, commandType: .openLocationSheet,
             shortcutCommand: .openLocationSheet),
@@ -162,7 +165,9 @@ extension ToolbarItems {
     ]
 
     /// The toolbar's items before it is customized. The Undo History button isn't one of them: it is there once it is
-    /// added while customizing.
+    /// added while customizing. The View Mode Menu rather than the switch, and spaces that make each group a pill of
+    /// its own: the folder tree, going about with the title and the clipboard, the view and its order, the search field,
+    /// and the view's options with the panels.
     public static let defaultTopItems: [ToolbarItemID] = [
         .folderTree,
         .topSeparator,
@@ -170,57 +175,34 @@ extension ToolbarItems {
         .forward,
         .title,
         .clipboard,
-        .view,
+        .topSeparator,
+        .viewMenu,
         .sort,
+        .topSeparator,
         .search,
+        .topSeparator,
         .viewOptions,
         .twoPanes,
         .infoPanel,
     ]
 
-    /// The order the items are offered in while the toolbar is customized.
+    /// The order the items are offered in while the toolbar is customized: in groups, the items that do the same kind
+    /// of thing together, as the menus group them. Going about; the title; how the folder is shown; the search field;
+    /// the panes and panels; opening the selection; changing files; the clipboard; undoing; where items are; the app.
+    /// The space comes last, where the system puts its own. The items every toolbar holds are in their groups too, so
+    /// Search sits beside Compact Search.
     static let paletteOrder: [ToolbarItemID] = [
+        .back, .forward, .up, .goToFolder, .refresh, .newTab,
+        .title,
+        .view, .viewMenu, .sort, .foldersFirst, .hidden, .viewOptions,
+        .search, .compactSearch,
+        .folderTree, .twoPanes, .infoPanel, .infoRow,
+        .openSelection, .quickLook, .editSelection, .share,
+        .newFolder, .renameSelection, .duplicateSelection, .moveSelection, .trashSelection,
+        .copySelection, .cutSelection, .pasteSelection, .pasteAsFile, .clipboard,
+        .undo, .redo, .undoHistory,
+        .revealInFolder, .showInFinder, .openInTerminal, .copyPath, .copyContents, .calculateSize,
+        .theme, .settings, .help,
         .topSeparator,
-        .back,
-        .forward,
-        .up,
-        .goToFolder,
-        .revealInFolder,
-        .refresh,
-        .newTab,
-        .view,
-        .viewMenu,
-        .sort,
-        .foldersFirst,
-        .hidden,
-        .folderTree,
-        .twoPanes,
-        .infoPanel,
-        .infoRow,
-        .calculateSize,
-        .openSelection,
-        .quickLook,
-        .editSelection,
-        .clipboard,
-        .copySelection,
-        .cutSelection,
-        .pasteSelection,
-        .pasteAsFile,
-        .undoHistory,
-        .undo,
-        .redo,
-        .renameSelection,
-        .moveSelection,
-        .duplicateSelection,
-        .newFolder,
-        .trashSelection,
-        .openInTerminal,
-        .showInFinder,
-        .copyPath,
-        .copyContents,
-        .share,
-        .theme,
-        .settings,
-        .help,
     ]
 }

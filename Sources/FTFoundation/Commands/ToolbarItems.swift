@@ -67,15 +67,32 @@ public enum ToolbarItems {
         definition(id).topRequired
     }
 
-    /// The three items every top toolbar holds, in the default's order.
+    /// The items every top toolbar holds, in the default's order.
     private static let requiredTopItems = defaultTopItems.filter(isRequiredTopItem)
 
-    /// Every top toolbar holds the title, search and View Options;
-    /// a list without one of them gets it at the end.
+    /// Every top toolbar holds the title and a search field; a list without one of them gets it at the end. Compact Search is the search field as much as Search is, and a list holds one of them: of both, the first.
     public static func sanitizeTopItems(_ value: JSONNode?) -> [ToolbarItemID] {
-        let next = sanitizeItemList(value)
-        return next + requiredTopItems.filter { !next.contains($0) }
+        var next = sanitizeItemList(value)
+        if let search = next.firstIndex(of: .search), let compact = next.firstIndex(of: .compactSearch) {
+            next.remove(at: max(search, compact))
+        }
+        return next
+            + requiredTopItems.filter { !next.contains($0) && !($0 == .search && next.contains(.compactSearch)) }
     }
+
+    /// The toolbar holds both search items once one is dragged in beside the other: the one it held before goes, so
+    /// the one just added takes its place.
+    public static func replacingTheOtherSearch(_ items: [ToolbarItemID], previous: [ToolbarItemID]) -> [ToolbarItemID] {
+        guard items.contains(.search), items.contains(.compactSearch) else { return items }
+        let old: ToolbarItemID? =
+            previous.contains(.compactSearch) && !previous.contains(.search)
+            ? .compactSearch : previous.contains(.search) && !previous.contains(.compactSearch) ? .search : nil
+        guard let old else { return items }
+        return items.filter { $0 != old }
+    }
+
+    /// The two items that hold the search field.
+    public static func isSearchField(_ id: ToolbarItemID) -> Bool { id == .search || id == .compactSearch }
 
     /// What can still be put in the toolbar. Every item it does not hold yet, and the
     /// space, which it can hold any number of times.

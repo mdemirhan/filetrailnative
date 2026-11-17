@@ -106,6 +106,9 @@ extension ExplorerWindowlessTests {
         // The toolbar's items dim as the dialog comes up and light again as it goes, with no other change to tell them.
         @Test func theToolbarDimsUnderADialogAtOnce() async throws {
             let (harness, tab) = try await open()
+            // The view switch, which the default toolbar no longer holds.
+            tab.updatePreferences { $0.topToolbarItems = ToolbarItems.defaultTopItems + [.view] }
+            harness.layout(tab)
             let switcher = try #require(tab.explorerToolbar.viewSwitch)
             #expect(switcher.isEnabled)
             _ = try openBox(tab)

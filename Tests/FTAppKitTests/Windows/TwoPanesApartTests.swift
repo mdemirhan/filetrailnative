@@ -491,6 +491,9 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
             let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            // The view switch, which the default toolbar no longer holds.
+            tab.updatePreferences { $0.topToolbarItems = ToolbarItems.defaultTopItems + [.view] }
+            harness.layout(tab)
             left.setMode(.details)
             let (info, asked) = try await showingInfo(tab, real(harness, "Gamma"), harness)
             let shows = toolbarShows(tab)

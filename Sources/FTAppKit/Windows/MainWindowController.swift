@@ -50,6 +50,17 @@ final class ExplorerTabWindow: NSWindow {
         syncWindowsMenuItem()
     }
 
+    // The toolbar's search field folds before the toolbar lays out a width it hasn't room for (`windowWillResize`).
+    override func setFrame(_ frameRect: NSRect, display flag: Bool) {
+        if frameRect.width != frame.width { explorerTab?.explorerToolbar.windowWillResize(toWidth: frameRect.width) }
+        super.setFrame(frameRect, display: flag)
+    }
+
+    override func setFrame(_ frameRect: NSRect, display displayFlag: Bool, animate animateFlag: Bool) {
+        if frameRect.width != frame.width { explorerTab?.explorerToolbar.windowWillResize(toWidth: frameRect.width) }
+        super.setFrame(frameRect, display: displayFlag, animate: animateFlag)
+    }
+
     /// Renames the window's Window menu item, once AppKit has made one.
     private func syncWindowsMenuItem() {
         guard let label = windowsMenuTitle, !isExcludedFromWindowsMenu,
@@ -1442,6 +1453,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// The keyboard moved in the window.
     func keyboardMoved() {
+        explorerToolbar.searchField.showOptionsMark()
         followKeyboardToPane()
         noteFocusedPane()
         let now = (pane: focusedPane, editing: isTextFieldEditing)

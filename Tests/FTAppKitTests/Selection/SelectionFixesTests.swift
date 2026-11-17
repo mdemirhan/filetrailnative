@@ -79,6 +79,9 @@ extension ExplorerWindowlessTests {
             let (tab, list) = try await harness.openList()
             await list.click(name: "note.txt")
             let toolbar = tab.explorerToolbar
+            // The view switch, which the default toolbar no longer holds.
+            tab.updatePreferences { $0.topToolbarItems = ToolbarItems.defaultTopItems + [.view] }
+            harness.layout(tab)
             let switcher = try #require(toolbar.viewSwitch)
             let sort = try #require(toolbar.button(.sort))
             #expect(switcher.isEnabled && sort.isEnabled)
@@ -119,6 +122,9 @@ extension ExplorerWindowlessTests {
             defer { withExtendedLifetime(writes) {} }
             let (tab, _) = try await harness.openList()
             let toolbar = tab.explorerToolbar
+            // The view switch, which the default toolbar no longer holds.
+            tab.updatePreferences { $0.topToolbarItems = ToolbarItems.defaultTopItems + [.view] }
+            harness.layout(tab)
             let switcher = try #require(toolbar.viewSwitch)
             let sort = try #require(toolbar.button(.sort))
             tab.perform(.newFolder)

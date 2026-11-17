@@ -66,6 +66,33 @@ public enum SearchBarText {
     public static let clearSearchName = "Clear file search"
     public static let optionsTitle = "Search Options"
     public static let optionsName = "Search options"
+    /// The results bar's button that opens the same menu as the field's magnifier.
+    public static let optionsButton = "Options"
+
+    /// The options of a search that differ from what a new install searches with, by the options menu's names, in
+    /// its order; empty while every one is at its default.
+    public static func changedOptions(
+        matchScope: SearchMatchScopePreference, patternMode: SearchPatternModePreference, recursive: Bool,
+        skipGitFolders: Bool, skipGitIgnored: Bool
+    ) -> [String] {
+        let defaults = AppPreferences.defaults()
+        var changed: [String] = []
+        if matchScope != defaults.searchMatchScope { changed.append(matchScope == .path ? "Full Path" : "Name") }
+        if patternMode != defaults.searchPatternMode { changed.append(patternMode.label) }
+        if recursive != defaults.searchRecursive { changed.append("Search Subfolders \(recursive ? "On" : "Off")") }
+        if skipGitFolders != defaults.searchSkipGitFolders {
+            changed.append("Skip .git Folders \(skipGitFolders ? "On" : "Off")")
+        }
+        if skipGitIgnored != defaults.searchSkipGitIgnored {
+            changed.append("Skip Files Ignored by Git \(skipGitIgnored ? "On" : "Off")")
+        }
+        return changed
+    }
+
+    /// The tooltip of the magnifier and the bar's Options button: what has been changed from the defaults, if anything.
+    public static func optionsTitle(changed: [String]) -> String {
+        changed.isEmpty ? optionsTitle : "\(optionsTitle): \(changed.joined(separator: ", "))"
+    }
 
     /// The folder on screen, Home, the disk it is on when that is another disk, and
     /// the startup disk, without repeats (the first of two with the same path wins).

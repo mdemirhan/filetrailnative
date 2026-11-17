@@ -45,6 +45,9 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             preferred,
         ]
     }()
+    /// Whether the toolbar's search item is the field, or folded to the magnifier button (`setSearchOpen`).
+    private(set) var searchOpen = true
+    private var searchWidthPending = false
     /// The toolbar is being set from the preference, not changed by the user.
     private var applying = false
     private var commitPending = false
@@ -74,6 +77,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         identifiersObservation = toolbar.observe(\.itemIdentifiers) { [weak self] _, _ in
             MainActor.assumeIsolated { self?.toolbarChanged() }
         }
+        searchField.onEditingChange = { [weak self] in self?.scheduleSearchWidth() }
     }
 
     func attach(_ context: ExplorerWindowContext) {
@@ -113,20 +117,52 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
 
     // MARK: Identifiers
 
-    /// The system's space is `topSeparator`: it ends one group of items and starts the next.
+    /// The system's space is `topSeparator`: it ends one group of items and starts the next. A search item has the
+    /// form it rests in: Search the field, Compact Search the magnifier button.
     static func identifier(_ id: ToolbarItemID) -> NSToolbarItem.Identifier {
         id == .topSeparator ? .space : NSToolbarItem.Identifier("filetrail.toolbar.\(id.rawValue)")
     }
+
+    /// The other form of a search item, which the toolbar holds while it isn't resting: Search folded, Compact Search
+    /// open.
+    static func otherFormIdentifier(_ id: ToolbarItemID) -> NSToolbarItem.Identifier {
+        NSToolbarItem.Identifier("filetrail.toolbar.\(id.rawValue)\(id == .search ? foldedSuffix : openSuffix)")
+    }
+
+    private static let foldedSuffix = ".folded"
+    private static let openSuffix = ".open"
 
     static func itemID(_ identifier: NSToolbarItem.Identifier) -> ToolbarItemID? {
         if identifier == .space { return .topSeparator }
         let prefix = "filetrail.toolbar."
         guard identifier.rawValue.hasPrefix(prefix) else { return nil }
-        return ToolbarItemID(rawValue: String(identifier.rawValue.dropFirst(prefix.count)))
+        var name = String(identifier.rawValue.dropFirst(prefix.count))
+        for suffix in [foldedSuffix, openSuffix] where name.hasSuffix(suffix) { name.removeLast(suffix.count) }
+        return ToolbarItemID(rawValue: name)
+    }
+
+    /// Whether the item `identifier` names is the search field rather than the magnifier button.
+    static func isSearchFieldForm(_ identifier: NSToolbarItem.Identifier) -> Bool {
+        switch itemID(identifier) {
+        case .search: identifier == Self.identifier(.search)
+        case .compactSearch: identifier == otherFormIdentifier(.compactSearch)
+        default: false
+        }
     }
 
     private static func identifiers(_ items: [ToolbarItemID]) -> [NSToolbarItem.Identifier] {
         [.sidebarTrackingSeparator] + items.map(identifier)
+    }
+
+    /// The identifiers of `items`, each search item in the form it has now.
+    private func currentIdentifiers(_ items: [ToolbarItemID]) -> [NSToolbarItem.Identifier] {
+        [.sidebarTrackingSeparator] + items.map(currentIdentifier)
+    }
+
+    private func currentIdentifier(_ id: ToolbarItemID) -> NSToolbarItem.Identifier {
+        guard ToolbarItems.isSearchField(id) else { return Self.identifier(id) }
+        let resting = id == .search
+        return searchOpen == resting ? Self.identifier(id) : Self.otherFormIdentifier(id)
     }
 
     /// The items a saved order draws, with room for them all: a space that divides nothing isn't one of them.
@@ -140,9 +176,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     }
 
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        // The palette's items, then the ones every toolbar holds.
-        let required = ToolbarItems.defaultTopItems.filter(ToolbarItems.isRequiredTopItem)
-        return Self.identifiers(ToolbarItems.paletteItems(excluding: []) + required)
+        // Every item, in the palette's groups: the ones every toolbar holds among them.
+        Self.identifiers(ToolbarItems.paletteItems(excluding: []))
     }
 
     func toolbarImmovableItemIdentifiers(_ toolbar: NSToolbar) -> Set<NSToolbarItem.Identifier> {
@@ -175,7 +210,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
 
     private func commitToolbarOrder() {
         guard !applying, context != nil else { return }
-        let held = toolbar.items.compactMap { Self.itemID($0.itemIdentifier) }
+        let held = ToolbarItems.replacingTheOtherSearch(
+            toolbar.items.compactMap { Self.itemID($0.itemIdentifier) }, previous: savedItems)
         let items = ToolbarItems.sanitizeTopItems(.array(held.map { .string($0.rawValue) }))
         // Against what the saved order draws: a saved idle space the toolbar never held is no change of the user's.
         let changed = Self.row(items) != Self.row(savedItems)
@@ -198,7 +234,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// user put it, with the item meant to go past it still to come; the idle ones go when the sheet ends.
     private func applySavedOrder(sheetEnded: Bool = false) {
         // A sheet that has ended is over, whatever the system's flag says at this moment.
-        let wanted = Self.identifiers(isCustomizing && !sheetEnded ? savedItems : Self.row(savedItems))
+        let sheetUp = isCustomizing && !sheetEnded
+        // A search item comes into the toolbar in the form it rests in, Search open and Compact Search folded, and
+        // keeps it while the sheet is up, where only those forms are offered.
+        if searchID == nil || sheetUp { searchOpen = !savedItems.contains(.compactSearch) }
+        let wanted = currentIdentifiers(sheetUp ? savedItems : Self.row(savedItems))
         guard toolbar.items.map(\.itemIdentifier) != wanted else { return }
         applying = true
         defer { applying = false }
@@ -269,6 +309,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         for item in toolbar.items {
             if let id = Self.itemID(item.itemIdentifier), id != .topSeparator { refresh(item, id, canPerform) }
         }
+        // Results shown or put away, the sheet up or down: the field may open or fold.
+        scheduleSearchWidth()
     }
 
     /// The system's customizing sheet is up.
@@ -347,11 +389,22 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         } else if let title = views[id] as? ToolbarTitleView {
             title.field.stringValue = Self.title(of: context)
             title.field.toolTip = context.shownFolderPath
-        } else if id == .search {
+        } else if ToolbarItems.isSearchField(id) {
             searchField.isEnabled = !isCustomizing
             searchField.takeClearButton()
+            if let magnifier = item.view as? ToolbarButton {
+                magnifier.tooltip = Tooltips.format(
+                    SearchBarText.fieldPlaceholder, shortcut: shortcuts.written(.focusFileSearch))
+            }
         }
-        if id != .search { item.menuFormRepresentation = overflowEntry(id, canPerform) }
+        if !ToolbarItems.isSearchField(id) {
+            item.menuFormRepresentation = overflowEntry(id, canPerform)
+        } else if !Self.isSearchFieldForm(item.itemIdentifier) {
+            // The magnifier in the » menu opens the field, as it does on the toolbar.
+            item.menuFormRepresentation = overflowItem(SearchBarText.fieldPlaceholder) { [weak self] in
+                self?.beginSearch()
+            }
+        }
     }
 
     /// The folder's name as the toolbar shows it (the startup disk's name for `/`); while searching, "Searching “…”"
@@ -370,9 +423,9 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
 
     // MARK: Looking at the items
 
-    /// The item in the toolbar for `id`.
+    /// The item in the toolbar for `id`, a search item in either form.
     func item(_ id: ToolbarItemID) -> NSToolbarItem? {
-        toolbar.items.first { $0.itemIdentifier == Self.identifier(id) }
+        toolbar.items.first { Self.itemID($0.itemIdentifier) == id }
     }
 
     /// The button of `id`, while the toolbar holds it.
@@ -384,7 +437,15 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     var titleView: ToolbarTitleView? { views[.title] as? ToolbarTitleView }
     var clipboardButton: ToolbarClipboardButton? { views[.clipboard] as? ToolbarClipboardButton }
     var undoHistoryButton: ToolbarButton? { views[.undoHistory] as? ToolbarButton }
-    var searchItem: NSSearchToolbarItem? { item(.search) as? NSSearchToolbarItem }
+    /// The search field's item, Search's or Compact Search's, while the toolbar holds it open.
+    var searchItem: NSSearchToolbarItem? {
+        guard searchOpen, let id = searchID else { return nil }
+        return item(id) as? NSSearchToolbarItem
+    }
+    /// Which search item the toolbar holds, in either form.
+    private var searchID: ToolbarItemID? {
+        item(.search) != nil ? .search : item(.compactSearch) != nil ? .compactSearch : nil
+    }
 
     /// The keys of the items on the toolbar, in order: the clipboard and Undo History buttons only while they show.
     var rowKeys: [String] {
@@ -419,7 +480,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// a window forward on a press, so that happens here: typing after the menu goes to this window's field.
     private func pressSearchOptions(_ event: NSEvent) -> Bool {
         let button = searchField.optionsButton
-        guard event.type == .leftMouseDown, item(.search) != nil, searchField.isEnabled,
+        guard event.type == .leftMouseDown, searchItem != nil, searchField.isEnabled,
             let window = context?.window, window.attachedSheet == nil,
             NSApp.modalWindow == nil || NSApp.modalWindow === window,
             let frame = window.contentView?.superview,
@@ -431,15 +492,106 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         return true
     }
 
-    /// The search field takes the keyboard, the system's item opening up first if it is folded.
+    /// The search field takes the keyboard, the folded search item opening first.
     func beginSearch() {
+        setSearchOpen(true)
         searchItem?.beginSearchInteraction()
         if !searchField.isActive { searchField.window?.makeFirstResponder(searchField) }
     }
 
-    /// The field lets go of the keyboard: the system's item folds again if it has no room.
+    /// The field lets go of the keyboard: it folds again if it is Compact Search or has no room.
     func endSearch() {
         searchItem?.endSearchInteraction()
+        scheduleSearchWidth()
+    }
+
+    // MARK: Open or folded
+
+    /// How far over its least width the title may be when Search folds: none to speak of, so it folds before an item
+    /// has to go to the » menu.
+    static let searchFoldSlack = 1.0
+    /// The room over its least width the title needs before a folded Search opens: what the field takes over its
+    /// magnifier, and a margin, so a window at the edge doesn't open and fold it in turn.
+    static var searchOpenRoom: Double {
+        DesignTokens.toolbar.searchWidth - ToolbarButton.iconOnlyWidth + 12
+    }
+
+    /// Whether Search is open, by the room the title has over its least width: an open field folds once the title has
+    /// none to speak of, and a folded one opens once the title has room for it and a margin.
+    static func searchStaysOpen(wasOpen: Bool, titleSpare: Double) -> Bool {
+        wasOpen ? titleSpare > searchFoldSlack : titleSpare >= searchOpenRoom
+    }
+
+    /// The field is in use: it has the keyboard or text, or its pane shows search results.
+    var searchInUse: Bool {
+        searchField.isActive || !SearchTiming.trimmed(searchField.stringValue).isEmpty
+            || context?.searchRootPath != nil
+    }
+
+    /// Looked at again once the toolbar has settled.
+    func scheduleSearchWidth() {
+        guard !searchWidthPending else { return }
+        searchWidthPending = true
+        DispatchQueue.main.async { [weak self] in
+            MainActor.assumeIsolated { self?.updateSearchWidth() }
+        }
+    }
+
+    /// The field while it is in use. Otherwise Compact Search is its magnifier, and Search is the field while the
+    /// title has room to spare and the magnifier once the title is down to its least width, before any item goes to
+    /// the » menu for want of room. While the toolbar is customized each keeps the form it rests in.
+    func updateSearchWidth() {
+        searchWidthPending = false
+        guard !isCustomizing, let id = searchID else { return }
+        if searchInUse {
+            setSearchOpen(true)
+        } else if id == .compactSearch {
+            setSearchOpen(false)
+        } else if let title = titleView, title.window?.isVisible == true {
+            setSearchOpen(
+                Self.searchStaysOpen(
+                    wasOpen: searchOpen, titleSpare: Double(title.frame.width) - DesignTokens.toolbar.titleMinWidth))
+        }
+    }
+
+    /// The window is about to take `width`. Search folds first if the title won't have room for it, so the toolbar lays
+    /// out the new width with the item it will hold; it opens first only while no item waits in the » menu, as those
+    /// come back before it opens.
+    func windowWillResize(toWidth width: Double) {
+        guard searchID == .search, !isCustomizing, !searchInUse, let window = context?.window, window.isVisible,
+            let title = titleView
+        else { return }
+        let spare = Double(title.frame.width) - DesignTokens.toolbar.titleMinWidth + width - Double(window.frame.width)
+        let open = Self.searchStaysOpen(wasOpen: searchOpen, titleSpare: spare)
+        guard !open || !hasOverflowedItems else { return }
+        setSearchOpen(open)
+    }
+
+    /// Whether any of the app's items is in the » menu: the system's separator over the sidebar never counts as shown.
+    private var hasOverflowedItems: Bool {
+        toolbar.items.contains { item in
+            guard let id = Self.itemID(item.itemIdentifier), id != .topSeparator else { return false }
+            return !item.isVisible && !item.isHidden
+        }
+    }
+
+    /// The search item becomes the field or the magnifier button, in its place. The toolbar lays its items out again
+    /// whenever one is put in or taken out, so it does so once, here, and the field itself never folds: the system's
+    /// own folding of a search field keeps a mode of its own and gave the field the keyboard back after Esc, and its
+    /// round magnifier made items in the » menu wait for more room than they needed before coming back.
+    private func setSearchOpen(_ open: Bool) {
+        guard open != searchOpen else { return }
+        searchOpen = open
+        guard let id = searchID, let index = toolbar.items.firstIndex(where: { Self.itemID($0.itemIdentifier) == id })
+        else { return }
+        applying = true
+        defer { applying = false }
+        closeSortMenu()
+        toolbar.removeItem(at: index)
+        toolbar.insertItem(withItemIdentifier: currentIdentifier(id), at: index)
+        // The toolbar puts the new item's view in the window as it lays out: at once, so the field can take the
+        // keyboard now and the change is drawn in one step.
+        context?.window?.standardWindowButton(.closeButton)?.superview?.layoutSubtreeIfNeeded()
     }
 
     // MARK: Customizing
@@ -458,16 +610,32 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         guard let id = Self.itemID(itemIdentifier) else { return nil }
         let definition = ToolbarItems.definition(id)
         let item: NSToolbarItem
-        if id == .search {
+        if ToolbarItems.isSearchField(id), Self.isSearchFieldForm(itemIdentifier) {
             let search = NSSearchToolbarItem(itemIdentifier: itemIdentifier)
             if flag {
+                // One field for both items: the other, on its way out, lets it go first.
+                for case let other as NSSearchToolbarItem in toolbar.items where other.searchField === searchField {
+                    other.searchField = NSSearchField()
+                }
                 search.searchField = searchField
+                // Always its width: it never folds itself (`setSearchOpen`).
                 NSLayoutConstraint.activate(searchFieldWidths)
+                searchOpen = true
                 // The ✕ keeps the keyboard in the field (TabSearch).
                 search.resignsFirstResponderWithCancel = false
             }
             search.preferredWidthForSearchField = DesignTokens.toolbar.searchWidth
             item = search
+        } else if ToolbarItems.isSearchField(id) {
+            // Folded: a magnifier button like the others, which opens the field; the same in the customizing sheet.
+            item = NSToolbarItem(itemIdentifier: itemIdentifier)
+            let magnifier = ToolbarButton(
+                icon: .search, label: SearchBarText.fieldPlaceholder, identifier: flag ? "toolbar.search.folded" : "")
+            if flag {
+                magnifier.onClick = { [weak self] in self?.beginSearch() }
+                searchOpen = false
+            }
+            item.view = magnifier
         } else {
             item = NSToolbarItem(itemIdentifier: itemIdentifier)
             item.view = flag ? liveView(id) : makeView(id, wired: false)
@@ -477,8 +645,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         item.label = definition.label
         item.paletteLabel = definition.label
         item.autovalidates = false
-        // The other items go to the » menu first; the required ones, the clipboard and Undo History last.
-        item.visibilityPriority = definition.highPriority ? .high : .standard
+        // The other items go to the » menu first; the required ones, the clipboard and Undo History last, and the
+        // search item after them all, as ⌘F needs it on the toolbar: the system keeps the field so of itself, and the
+        // magnifier is told.
+        item.visibilityPriority =
+            ToolbarItems.isSearchField(id) ? .user : definition.highPriority ? .high : .standard
         if flag, let context { refresh(item, id, context.commandAvailability()) }
         return item
     }
@@ -500,6 +671,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             title.heightAnchor.constraint(equalToConstant: ToolbarTitleView.height).isActive = true
             let minWidth = DesignTokens.toolbar.titleMinWidth
             if wired {
+                // The room the title is left decides whether Search is open.
+                title.onLayout = { [weak self] in self?.scheduleSearchWidth() }
                 title.widthAnchor.constraint(greaterThanOrEqualToConstant: minWidth).isActive = true
                 // As wide as the band lets it be, below every priority the toolbar lays its items out with.
                 let fill = title.widthAnchor.constraint(equalToConstant: Self.titleFillWidth)

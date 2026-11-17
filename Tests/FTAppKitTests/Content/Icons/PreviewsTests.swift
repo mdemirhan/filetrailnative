@@ -22,7 +22,7 @@ extension ExplorerWindowlessTests {
             #expect(previews.thumbnailStore === PreviewThumbnails.store)
             #expect(previews.picturesFillTheirPlace && previews.thumbnailPixelSize >= 256)
             #expect(probe.iconItems.count > 0)
-            #expect(tab.explorerToolbar.viewSwitch?.selected == .previews)
+            #expect(tab.explorerToolbar.button(.viewMenu)?.iconName == .previews)
             #expect(ApplicationMenu.sizeTitle(.increaseSize, viewMode: .previews) == "Make Previews Bigger")
             #expect(previews.itemsPerLine == 2)
             await harness.close()

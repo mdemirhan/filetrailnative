@@ -46,6 +46,7 @@ extension ExplorerToolbar {
     /// The window was resized: the Sort menu closes when its button goes to the » menu.
     func windowResized() {
         if item(.sort)?.isVisible == false { closeSortMenu() }
+        scheduleSearchWidth()
     }
 
     /// The items change: the Sort menu's button may move or go.
@@ -211,7 +212,7 @@ extension ExplorerToolbar {
             return entry
         }
         switch id {
-        case .topSeparator, .search:
+        case .topSeparator, .search, .compactSearch:
             return nil
         case .title:
             return overflowItem(Self.title(of: context, inMenu: true), enabled: false) {}
