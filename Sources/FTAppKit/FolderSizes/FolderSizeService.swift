@@ -17,6 +17,10 @@ final class FolderSizeService {
             guard let owner else { return }
             windows[owner]?.value?.settled(jobId: jobId)
         }
+
+        func stored() {
+            for window in windows.values { window.value?.sizesStored() }
+        }
     }
 
     private let router = Router()
@@ -28,6 +32,9 @@ final class FolderSizeService {
             native: NativeFolderSize(),
             onSettled: { owner, jobId in
                 MainActor.assumeIsolated { router.settled(owner: owner, jobId: jobId) }
+            },
+            onStored: {
+                MainActor.assumeIsolated { router.stored() }
             })
     }
 

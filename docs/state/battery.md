@@ -31,7 +31,7 @@ The Info panel on a volume reads its free space again at each tick of that timer
 Other repeating timers run only while something is going on, and stop when it ends:
 
 - **A search** asks for new results every 0.12 s while it runs, and once a second while its tab is in the background.
-- **A folder size** being calculated is asked about every 0.2 s.
+- **A folder size** being calculated is asked about every 0.2 s. While a walk stores sizes, every window looks up again, at most every 0.5 s, the sizes of the folders it shows (no walk: lookups in what is stored).
 - **A marquee** (dragging to select in the List, Icons or Compact List) looks at the pointer 60 times a second while the button is held, to scroll when it is past the edge.
 - **Leftover writes**: when a start finds crash-journal entries it can't finish yet (a disk not connected or not answering), they are tried again once a minute, while nothing is being written, until none is left.
 - **The Undo History list**, while it is open and lists an operation under an hour old, waits for the next minute one of them turns, to tell its times again; closed, nothing waits.

@@ -245,6 +245,26 @@ struct WindowFolderSizesTests {
         #expect(sizes.partial("/b")?.isComplete == true)
     }
 
+    // A size another window's walk stored shows here too: what the window shows is asked about again, at most every
+    // half second however often sizes are stored, and a size that changed is taken.
+    @Test func showsASizeAnotherWindowMeasured() async {
+        _ = sizes.entry("/elsewhere")
+        jobs.known = ["/known": 3]
+        _ = sizes.entry("/known")
+        await settle()
+        #expect(sizes.readySize("/elsewhere") == nil && jobs.probes.count == 1)
+
+        jobs.known = ["/elsewhere": 5, "/known": 4]
+        sizes.sizesStored()
+        sizes.sizesStored()
+        await settle()
+        #expect(jobs.probes.count == 1)
+        timers.advance(WindowFolderSizes.storedInterval)
+        await settle()
+        #expect(jobs.probes.count == 2)
+        #expect(sizes.readySize("/elsewhere") == 5 && sizes.readySize("/known") == 4)
+    }
+
     // Repaints come at most every 100 ms; the first at once.
     @Test func repaintsAreMergedWithinAHundredMilliseconds() {
         var repaints = 0

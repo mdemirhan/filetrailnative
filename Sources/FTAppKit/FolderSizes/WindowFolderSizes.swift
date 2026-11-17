@@ -37,6 +37,9 @@ final class WindowFolderSizes {
     static let maxEntries = 5_000
     /// The window repaints for new sizes at most this often.
     static let repaintInterval = 0.1
+    /// While sizes are being stored (a walk, any window's), what the window shows is asked about again at most
+    /// this often.
+    static let storedInterval = 0.5
 
     /// "ask": a size the window doesn't know, or one that may have changed (kept on no answer). "refresh": one a
     /// write may have changed, forgotten when the jobs no longer know it.
@@ -74,6 +77,7 @@ final class WindowFolderSizes {
 
     private var lastRepaint = -TimeInterval.infinity
     private var repaintTimer: TimerToken?
+    private var storedTimer: TimerToken?
     private var pollTimers: [String: TimerToken] = [:]
     private var pollJobs: [String: String] = [:]
     private var polls: [String: Poll] = [:]
@@ -113,6 +117,8 @@ final class WindowFolderSizes {
         lookNow.removeAll()
         repaintTimer?.cancel()
         repaintTimer = nil
+        storedTimer?.cancel()
+        storedTimer = nil
     }
 
     // MARK: Repainting
@@ -272,6 +278,23 @@ final class WindowFolderSizes {
             }
         }
         if changed { bumpVersion() }
+    }
+
+    /// Sizes were stored, by any window's measurement: what this window shows without a size, or with one that may
+    /// have changed, is asked about again (no walk: the answers are looked up), at most every `storedInterval`, so
+    /// a folder another window measured shows here when its size arrives.
+    func sizesStored() {
+        guard storedTimer == nil else { return }
+        storedTimer = scheduler.schedule(after: Self.storedInterval) { [weak self] in
+            guard let self else { return }
+            self.storedTimer = nil
+            var shown = Array(self.probeMissedAt.keys)
+            for (path, slot) in self.cache {
+                if case .calculating = slot.entry { continue }
+                shown.append(path)
+            }
+            self.queueProbes(shown, .ask)
+        }
     }
 
     /// The folders inside `path` without a size, or all of them (`includeKnown`), asked about again at once: a walk

@@ -113,9 +113,10 @@ private func settle() async {
 
 @MainActor @Suite(.serialized) struct FolderSizeJobsTests {
     private func make(
-        _ native: MockNative, homePath: String = NSHomeDirectory(), onSettled: ((Int?, String) -> Void)? = nil
+        _ native: MockNative, homePath: String = NSHomeDirectory(), onSettled: ((Int?, String) -> Void)? = nil,
+        onStored: (() -> Void)? = nil
     ) -> FolderSizeJobs {
-        let jobs = FolderSizeJobs(native: native, homePath: homePath, onSettled: onSettled)
+        let jobs = FolderSizeJobs(native: native, homePath: homePath, onSettled: onSettled, onStored: onStored)
         // Ids that can't repeat: the tests that count jobs start hundreds within a millisecond, where two of
         // the app's ids (the millisecond and 24 random bits) are the same about once in 400 runs, and the
         // second job replaces the first.
@@ -871,6 +872,21 @@ private func settle() async {
         #expect(status.fileCount == nil)
         #expect(status.folderCount == nil)
         #expect(status.error == "Unknown folder size job.")
+    }
+
+    // Every window is told when sizes are stored, as the walk hands folders over and when it ends.
+    @Test func tellsEveryWindowWhenSizesAreStored() async {
+        let native = MockNative()
+        var stored = 0
+        let jobs = make(native, onStored: { stored += 1 })
+
+        _ = start(jobs, "/test", owner: 1)
+        native.finish(["/test/sub": [5, 8, 1, 0]])
+        await settle()
+        #expect(stored == 1)
+        native.resolveActive()
+        await settle()
+        #expect(stored == 2)
     }
 
     // A measurement asked for never stops another: it waits, and runs when the one before ends.

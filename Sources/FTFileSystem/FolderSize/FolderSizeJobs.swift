@@ -148,6 +148,8 @@ public final class FolderSizeJobs {
     // Told when a measurement ends (measured, failed or stopped), with the window that asked: it learns at
     // once, rather than at its next look.
     private let onSettled: ((Int?, String) -> Void)?
+    // Told when sizes were stored, so every window can show those it is waiting for, not only the one that asked.
+    private let onStored: (() -> Void)?
 
     // Only a store adds a size, so none goes while removals are taken off. What was stored while a write ran
     // is noted there, until its end has been cleared.
@@ -194,7 +196,7 @@ public final class FolderSizeJobs {
     /// `homePath`: where the home folder is (tests use their own): its Trash is where deleted items go.
     public init(
         native: any FolderSizeNative, homePath: String = NSHomeDirectory(),
-        onSettled: ((Int?, String) -> Void)? = nil
+        onSettled: ((Int?, String) -> Void)? = nil, onStored: (() -> Void)? = nil
     ) {
         self.native = native
         self.homePath = homePath
@@ -202,6 +204,7 @@ public final class FolderSizeJobs {
         homeKey = PathKey(homePath)
         homeTrashKey = PathKey(homeTrashPath)
         self.onSettled = onSettled
+        self.onStored = onStored
         FolderSizeWrites.register(self)
     }
 
@@ -450,6 +453,7 @@ public final class FolderSizeJobs {
                 setJob(jobId, current)
             }
             answerWaiting(from: measured.dirs)
+            onStored?()
         }
         let walk = native.getFolderSize(path, background: backgroundJobIds.contains(jobId), onFinished: onFinished)
         Task { @MainActor [self] in
@@ -482,6 +486,7 @@ public final class FolderSizeJobs {
                 folderCount: result.folderCount, dev: result.dev, measurement: measurement, partial: result.partial))
         let stored = storeMeasured(result.dev, result.dirs, measurement: measurement)
         answerWaiting(from: result.dirs)
+        defer { onStored?() }
         var ready = job(jobId, path, .ready, measuredFolderCount: (jobs[jobId]?.measuredFolderCount ?? 0) + stored)
         ready.sizeBytes = result.total
         ready.diskBytes = result.diskTotal
