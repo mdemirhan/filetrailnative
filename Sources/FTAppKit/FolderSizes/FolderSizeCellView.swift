@@ -143,7 +143,6 @@ final class FolderSizeCellView: NSView {
         refresh.onClick = { [weak self] in self?.onRecalculate() }
         calculate.onClick = { [weak self] in self?.onCalculate() }
         stop.toolTip = "Stop Calculating"
-        stop.setAccessibilityLabel("Cancel folder size calculation")
         stop.setAccessibilityIdentifier(identifier + ".stop")
         stop.target = self
         stop.action = #selector(stopPressed)
@@ -186,6 +185,7 @@ final class FolderSizeCellView: NSView {
         spinner.alphaValue = waiting ? 0.4 : 1
         spinner.toolTip = waiting ? "Waiting for another folder" : nil
         stop.toolTip = waiting ? "Stop Waiting" : "Stop Calculating"
+        stop.setAccessibilityLabel(waiting ? "Stop waiting to calculate folder size" : "Cancel folder size calculation")
         if case .error(let message) = entry {
             calculate.text = tryAgainText
             failedLine.toolTip = message

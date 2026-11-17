@@ -195,6 +195,9 @@ public struct FolderSizeResult: Equatable, Sendable {
 public struct FolderSizeError: Error, Equatable, Sendable, CustomStringConvertible {
     public var errnum: Int32?
     public var message: String
+    /// The folder measured was moved away, removed or replaced while it was walked: what was measured inside it is
+    /// no longer at its path.
+    public var rootChanged = false
 
     public init(errnum: Int32?, message: String) {
         self.errnum = errnum

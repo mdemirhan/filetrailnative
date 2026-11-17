@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /// Why a folder's totals leave something out (bits of `partial`; 0 when they are complete): something inside
-/// changed while it was walked (a sub-folder gone, renamed, or replaced by a file or a link)…
+/// changed while it was walked (a sub-folder gone, renamed, or replaced by a file, a link or another folder)…
 #define FT_PARTIAL_CHANGED 1
 /// …a sub-folder it has no permission to read, counted as an empty folder…
 #define FT_PARTIAL_NO_ACCESS 2
@@ -51,6 +51,9 @@ typedef struct {
     int errnum;
     /// Set when `ft_folder_walk_cancel` was called before the walk ended.
     int cancelled;
+    /// Set, with `errnum`, when the folder was moved away, removed or replaced while it was walked: the folders
+    /// finished inside it are no longer at their paths.
+    int root_changed;
 } ft_folder_walk_result;
 
 /// A walk of `root_path`, not started. `background` walks at utility QoS. NULL when out of memory.

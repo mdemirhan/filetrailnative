@@ -35,6 +35,58 @@ struct ActivityViewTests {
         #expect(view.subviews.compactMap { $0 as? ActivityRow }.count == 1)
     }
 
+    // The list is told what runs several times a second: a row whose item is still listed stays the view it was,
+    // so a press on its Stop under way is not lost with it, and shows what changed.
+    @Test func keepsARowWhileItsItemIsListedAndShowsWhatChanged() throws {
+        let view = ActivityView(items: Self.items)
+        var stopped: [ActivityItem] = []
+        view.onStop = { stopped.append($0) }
+        let before = view.subviews.compactMap { $0 as? ActivityRow }
+        var moved = Self.items
+        moved[0].detail = "50%"
+        moved[0].progress = 0.5
+        moved[1].detail = "Calculating size"
+        moved[1].isWaiting = false
+        view.update(moved)
+        let after = view.subviews.compactMap { $0 as? ActivityRow }
+        #expect(after.count == 2 && after[0] === before[0] && after[1] === before[1])
+        #expect(after[0].subviews.compactMap { $0 as? NSProgressIndicator }.first?.doubleValue == 0.5)
+        #expect(after.map(\.stop.toolTip) == ["Stop", "Stop"])
+        #expect(after[1].accessibilityLabel() == "Library, Calculating size")
+        // Stop hands over the item as it is now.
+        after[1].stop.sendAction(after[1].stop.action, to: after[1].stop.target)
+        #expect(stopped == [moved[1]])
+    }
+
+    // When a row ends, the ones under it move up under the pointer: for a moment Stop is not taken, so a press aimed
+    // at the row that went doesn't stop the next one. A row added at the end moves none.
+    @Test func stopIsNotTakenJustAfterARowCameToAnotherPlace() throws {
+        let third = ActivityItem(
+            id: "job-2", kind: .folderSize, title: "Movies", detail: "Waiting to calculate its size", progress: nil,
+            isWaiting: true)
+        var time = 100.0
+        let view = ActivityView(items: Self.items)
+        view.now = { time }
+        var stopped: [String] = []
+        view.onStop = { stopped.append($0.id) }
+        func pressStop(_ index: Int) {
+            let row = view.subviews.compactMap { $0 as? ActivityRow }[index]
+            row.stop.sendAction(row.stop.action, to: row.stop.target)
+        }
+
+        view.update(Self.items + [third])
+        pressStop(2)
+        #expect(stopped == ["job-2"])
+
+        // The file operation ended: the two sizes moved up a row.
+        view.update([Self.items[1], third])
+        pressStop(0)
+        #expect(stopped == ["job-2"])
+        time += ActivityView.settleInterval
+        pressStop(0)
+        #expect(stopped == ["job-2", "job"])
+    }
+
     // The title's ring: as far round as a file operation has gone, spinning while that isn't known, a pill with the count
     // when others are listed, and gone once nothing runs, with a check when a file operation completed.
     @Test func theTitlesRingShowsHowFarAlongAndHowManyMore() {

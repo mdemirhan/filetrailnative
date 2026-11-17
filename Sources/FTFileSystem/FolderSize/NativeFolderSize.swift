@@ -172,10 +172,13 @@ private final class FolderWalk {
             throw FolderSizeError.cancelled
         }
         if result.errnum != 0 {
-            if result.errnum != ENOMEM {
+            // The folders finished inside a folder moved away or replaced are no longer at their paths.
+            if result.errnum != ENOMEM && result.root_changed == 0 {
                 handOver()
             }
-            throw NativeFolderSize.error(result.errnum, "folder size", path)
+            var error = NativeFolderSize.error(result.errnum, "folder size", path)
+            error.rootChanged = result.root_changed != 0
+            throw error
         }
         return FolderSizeResult(
             total: result.size_bytes, diskTotal: result.disk_bytes, fileCount: Int(result.file_count),

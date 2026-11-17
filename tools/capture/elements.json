@@ -139,6 +139,7 @@
     "info panel button": {"swift": "toolbar.infoPanel"},
     "activity button": {"swift": "toolbar.activity"},
     "activity row": {"swift": "activityPopover.row"},
+    "activity stop": {"swift": "activityPopover.stop"},
     "sort button": {"swift": "toolbar.sort"},
     "view options button": {"swift": "toolbar.viewOptions"},
     "theme button": {"swift": "toolbar.theme"},

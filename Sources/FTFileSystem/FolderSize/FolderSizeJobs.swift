@@ -527,6 +527,12 @@ public final class FolderSizeJobs {
         if PathKey(path) == homeTrashKey && (walkError?.errnum == EPERM || walkError?.errnum == EACCES) {
             homeTrashCounted = false
         }
+        if walkError?.rootChanged == true {
+            // Another folder is at the path now, or none: the sizes stored of the folders inside, by this walk as
+            // it went or by an earlier one, are not theirs.
+            cache.forgetAtOrInside([path])
+            onStored?()
+        }
         let current = jobs[jobId]
         if current?.status == .cancelled || preemptedJobIds.contains(jobId) {
             // Already marked as cancelled by the cancel handler, or waiting again after giving way.

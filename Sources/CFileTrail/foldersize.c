@@ -116,6 +116,8 @@ typedef struct walk_dir {
   /* Set when it turned out not to be walked after it was queued (no access, gone, on
      another disk): it counts only as a folder in its parent and is never finished. */
   atomic_int skipped;
+  /* Which folder it was when it was opened, set before any of its sub-folders is queued. */
+  ino_t ino;
   /* Its own files and folders, plus the totals of each finished sub-folder. */
   _Atomic int64_t size_bytes;
   _Atomic int64_t disk_bytes;
@@ -138,6 +140,7 @@ static walk_dir_t *walk_dir_new(char *path, walk_dir_t *parent) {
   atomic_init(&dir->pending, 1);
   atomic_init(&dir->partial, 0);
   atomic_init(&dir->skipped, 0);
+  dir->ino = 0;
   atomic_init(&dir->size_bytes, 0);
   atomic_init(&dir->disk_bytes, 0);
   atomic_init(&dir->file_count, 0);
@@ -547,7 +550,15 @@ static int open_dir_path(const char *path) {
 
 /* Opens a queued sub-folder, or -1 when it isn't walked. One on another disk (an open can
    cross onto one, as an automount does) is skipped. One that couldn't be opened is skipped
-   too, and the folder holding it says why (`open_error_reason`). */
+   too, and the folder holding it says why (`open_error_reason`).
+
+   It is opened by its path, and O_NOFOLLOW guards only the path's last part: were a folder
+   above it swapped for a link to another folder since it was listed, the path would open a
+   folder outside the one walked. So the folder opened must be inside the folder it was
+   listed in: its ".." is that folder, or it is left out as changed. The folders directly in
+   the folder walked aren't asked: what is above them is the folder walked, which the walk's
+   end checks, and at a volume's root ".." need not be the folder the path names (the
+   startup disk's firmlinks). */
 static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
   ft_folder_walk_open_hook hook = atomic_load(&open_hook);
   if (hook != NULL) hook(dir->path);
@@ -562,6 +573,16 @@ static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
   if (fstat(fd, &sub_stat) != 0 || sub_stat.st_dev != wq->root_dev) {
     close(fd);
     atomic_store(&dir->skipped, 1);
+    return -1;
+  }
+  dir->ino = sub_stat.st_ino;
+  walk_dir_t *parent = dir->parent;
+  struct stat up_stat;
+  if (parent != NULL && parent->parent != NULL && fstatat(fd, "..", &up_stat, 0) == 0 &&
+      up_stat.st_ino != parent->ino) {
+    close(fd);
+    atomic_store(&dir->skipped, 1);
+    mark_partial(parent, FT_PARTIAL_CHANGED);
     return -1;
   }
   return fd;
@@ -684,6 +705,7 @@ void ft_folder_walk_run(ft_folder_walk *w) {
     close(root_fd);
     return;
   }
+  root->ino = root_stat.st_ino;
   work_queue_t wq;
   wq_init(&wq, root_stat.st_dev, &w->cancelled);
   if (!wq_push(&wq, root_fd, root)) {
@@ -752,8 +774,10 @@ void ft_folder_walk_run(ft_folder_walk *w) {
        counted is no folder's at that path. */
     if (stat(w->root_path, &end_stat) != 0) {
       result->errnum = errno;
+      result->root_changed = 1;
     } else if (end_stat.st_ino != root_stat.st_ino || end_stat.st_dev != root_stat.st_dev) {
       result->errnum = ENOENT;
+      result->root_changed = 1;
     }
   }
 

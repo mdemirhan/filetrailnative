@@ -146,22 +146,28 @@ final class SearchHeaderView: NSView {
     /// A press on the header itself gives the pane the keyboard.
     override func mouseDown(with event: NSEvent) { onFocusResults() }
 
-    /// Tab or Shift-Tab from one of the bar's stops. Only Tab out of the filter walks along the bar: on to its ✕, Stop
-    /// or Done, whichever comes next, or back to the last scope. Every other stop belongs to the content pane, where
-    /// Tab and Shift-Tab alike go to the other pane (`switchPane()`), so the row is never walked past it.
+    /// Tab or Shift-Tab from one of the bar's stops. Tab walks on from the filter to the end of the row: its ✕ when it
+    /// shows, then Options, then Stop or Done, so each can be reached; Shift-Tab from the filter goes back to the last
+    /// scope. Every other move belongs to the content pane, where Tab and Shift-Tab alike go to the other pane
+    /// (`switchPane()`): Tab from Stop or Done or from a scope, and Shift-Tab from any button.
     fileprivate func moveKeyboard(from view: NSView, backward: Bool) {
-        guard view === filter.input else {
-            onSwitchPane()
-            return
-        }
-        if backward {
-            // With no scopes what comes before the filter is the toolbar.
-            let tookIt = showsScopeMenu ? scopeMenu.takeKeyboard() : track.takeKeyboard(backward: true)
-            if !tookIt, let window { ToolbarKeyboard.enterFromEnd(of: window) }
-        } else if !filter.clearButton.isHidden {
-            filter.clearStop.takeKeyboard()
+        let stopOrDone = stopButton.isHidden ? doneButton : stopButton
+        if view === filter.input {
+            if backward {
+                // With no scopes what comes before the filter is the toolbar.
+                let tookIt = showsScopeMenu ? scopeMenu.takeKeyboard() : track.takeKeyboard(backward: true)
+                if !tookIt, let window { ToolbarKeyboard.enterFromEnd(of: window) }
+            } else if !filter.clearButton.isHidden {
+                filter.clearStop.takeKeyboard()
+            } else if !optionsButton.takeKeyboard() {
+                stopOrDone.takeKeyboard()
+            }
+        } else if view === filter.clearStop, !backward {
+            if !optionsButton.takeKeyboard() { stopOrDone.takeKeyboard() }
+        } else if view === optionsButton, !backward {
+            stopOrDone.takeKeyboard()
         } else {
-            (stopButton.isHidden ? doneButton : stopButton).takeKeyboard()
+            onSwitchPane()
         }
     }
 

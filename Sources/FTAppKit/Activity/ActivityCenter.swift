@@ -29,6 +29,9 @@ final class ActivityCenter {
     var stopOperation: ((String, any WriteOperationWindow) -> Void)?
     /// The folder size jobs; a test hands its own.
     var jobs: () -> FolderSizeJobs? = { FolderSizeService.shared.jobs }
+    /// The runs of several folders with folders waiting their turn, and what stops one; a test hands its own.
+    var runs: () -> [FolderSizeRunActivity] = { FolderSizeService.shared.waitingRuns }
+    var stopRun: (String) -> Void = { FolderSizeService.shared.stopRun($0) }
     private var refreshQueued = false
 
     // MARK: What it hears
@@ -78,7 +81,7 @@ final class ActivityCenter {
 
     /// Works the list out again now, telling the windows when it changed.
     func refresh() {
-        let next = ActivityList.items(operation: operation, sizes: jobs()?.activity ?? [])
+        let next = ActivityList.items(operation: operation, sizes: jobs()?.activity ?? [], runs: runs())
         guard next != items else { return }
         endedWell = next.isEmpty && operationCompleted && items.contains { $0.kind == .fileOperation }
         items = next
@@ -87,7 +90,8 @@ final class ActivityCenter {
 
     // MARK: Stop
 
-    /// Stops what a row lists: the file operation as its card's Stop does, a folder size for every window that asked.
+    /// Stops what a row lists: the file operation as its card's Stop does, a folder size for every window that asked,
+    /// the folders of a run that wait their turn (the one being measured has its own row).
     func stop(_ item: ActivityItem) {
         switch item.kind {
         case .fileOperation:
@@ -95,6 +99,8 @@ final class ActivityCenter {
             stopOperation?(item.id, owner)
         case .folderSize:
             jobs()?.cancel(jobId: item.id)
+        case .folderSizeRun:
+            stopRun(item.id)
         }
         refresh()
     }

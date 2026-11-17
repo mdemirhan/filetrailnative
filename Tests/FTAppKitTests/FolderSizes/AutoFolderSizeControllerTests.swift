@@ -113,6 +113,24 @@ struct AutoFolderSizeControllerTests {
         #expect(jobs.cancels.isEmpty)
     }
 
+    // Calculate Size on the folder being measured by itself joins that measurement, under the same job: asked for
+    // now, it is not stopped when the selection moves on, nor when it is measured by itself again and left again.
+    @Test func itsOwnCalculationAskedForSinceIsNotStopped() {
+        auto.setPath("/Users/demo/a")
+        wait()
+        #expect(jobs.starts.map(\.automatic) == [true])
+        sizes.calculate("/Users/demo/a")
+        #expect(jobs.starts.map(\.automatic) == [true, false])
+        #expect(sizes.isAskedFor("/Users/demo/a"))
+        auto.setPath(nil)
+        #expect(jobs.cancels.isEmpty)
+        #expect(sizes.cachedEntry("/Users/demo/a") == .calculating(jobID: "job-1"))
+        // Once it has ended, the next one the app starts is its own again.
+        jobs.finish("job-1", "/Users/demo/a", size: 5)
+        sizes.settled(jobId: "job-1")
+        #expect(!sizes.isAskedFor("/Users/demo/a"))
+    }
+
     // Nor is one Calculate Size started over the controller's own: only its own job is stopped.
     @Test func aCalculationStartedOverItsOwnIsNotStopped() {
         auto.setPath("/Users/demo/a")

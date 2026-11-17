@@ -292,6 +292,33 @@ extension RealWalks {
                     try await measure(NativeFolderSize(), root)
                 }
                 #expect(error?.errnum == ENOENT)
+                #expect(error?.rootChanged == true)
+            }
+        }
+
+        // A folder above a sub-folder waiting to be opened is moved away and a link to a folder outside put at its
+        // path: the sub-folder's path now leads outside the folder measured, to a folder of the same name. It is
+        // left out, not counted, and the size says something changed.
+        @Test func aSubfolderReachedThroughALinkPutInPlaceOfAFolderAboveItIsLeftOut() async throws {
+            try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
+                let root = "\(directory.path)/measured"
+                try makeTree(root)
+                let outside = "\(directory.path)/outside"
+                try makeFolder("\(outside)/deep/deeper")
+                try write("\(outside)/deep/big.bin", 50_000)
+                try write("\(outside)/deep/deeper/more.bin", 70_000)
+                VanishingFolder.change.withLock {
+                    $0 = (at: "\(root)/sub/deep", change: .swapForLink(above: "\(root)/sub", to: outside))
+                }
+                ft_folder_walk_set_open_hook(changeVanishingFolder)
+                defer { ft_folder_walk_set_open_hook(nil) }
+
+                let walk = try await measure(NativeFolderSize(), root)
+
+                #expect(walk.result.total < 50_000)
+                #expect(walk.dirs["\(root)/sub/deep"] == nil && walk.dirs["\(root)/sub/deep/deeper"] == nil)
+                #expect(totals(walk, "\(root)/sub")?.sizeBytes == 5)
+                #expect(totals(walk, "\(root)/sub")?.partial == .changed && walk.result.partial == .changed)
             }
         }
 
@@ -667,6 +694,8 @@ private enum VanishingFolder {
         case moveAway(String)
         /// The folder is removed and a file put at its path.
         case replaceWithFile
+        /// The folder `above` it is moved away and a link to the folder `to` put at its path.
+        case swapForLink(above: String, to: String)
     }
 
     /// The folder the walk is about to open, and what happens then.
@@ -685,6 +714,9 @@ private func changeVanishingFolder(_ path: UnsafePointer<CChar>?) {
     case .replaceWithFile:
         try? FileManager.default.removeItem(atPath: change.at)
         try? write(change.at, 3)
+    case .swapForLink(let above, let to):
+        try? FileManager.default.moveItem(atPath: above, toPath: above + "-moved")
+        try? FileManager.default.createSymbolicLink(atPath: above, withDestinationPath: to)
     }
 }
 

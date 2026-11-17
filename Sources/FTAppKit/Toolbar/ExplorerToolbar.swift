@@ -121,7 +121,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         // The title's ring follows what runs in the background.
         activityObserver = NotificationCenter.default.addObserver(
             forName: ActivityCenter.changed, object: nil, queue: .main
-        ) { [weak self] _ in MainActor.assumeIsolated { self?.refreshStates() } }
+        ) { [weak self] _ in MainActor.assumeIsolated { self?.refreshActivity() } }
         reload()
     }
 
@@ -323,6 +323,19 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         scheduleSearchWidth()
     }
 
+    /// What runs in the background changed: only the title's ring follows it, several times a second while something
+    /// runs, so no other item is looked at.
+    func refreshActivity() {
+        guard let title = titleView else { return }
+        showActivity(in: title)
+    }
+
+    private func showActivity(in title: ToolbarTitleView) {
+        let running = activity()
+        title.activity.setSummary(ActivityList.summary(running))
+        title.activity.show(ActivityList.indicator(running), endedWell: activityEndedWell())
+    }
+
     /// The system's customizing sheet is up.
     var isCustomizing: Bool { toolbar.customizationPaletteIsRunning }
 
@@ -399,9 +412,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         } else if let title = views[id] as? ToolbarTitleView {
             title.field.stringValue = Self.title(of: context)
             title.field.toolTip = context.shownFolderPath
-            let running = activity()
-            title.activity.setSummary(ActivityList.summary(running))
-            title.activity.show(ActivityList.indicator(running), endedWell: activityEndedWell())
+            showActivity(in: title)
         } else if ToolbarItems.isSearchField(id) {
             searchField.isEnabled = !isCustomizing
             searchField.takeClearButton()
@@ -540,9 +551,9 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         wasOpen ? titleSpare > searchFoldSlack : titleSpare >= searchOpenRoom
     }
 
-    /// The field is in use: it has the keyboard or text, or its pane shows search results.
+    /// The field is in use: it or one of its stops has the keyboard, it has text, or its pane shows search results.
     var searchInUse: Bool {
-        searchField.isActive || !SearchTiming.trimmed(searchField.stringValue).isEmpty
+        searchField.holdsKeyboard || !SearchTiming.trimmed(searchField.stringValue).isEmpty
             || context?.searchRootPath != nil
     }
 

@@ -181,7 +181,7 @@ struct SystemControlsTests {
         return header
     }
 
-    // Only the filter is the key view loop's to Tab out of: to the next button, or back to the last scope.
+    // Tab from the filter goes on along the row, to Options and then Done, or back to the last scope.
     // There Return or Space presses it, and no arrow changes the scope.
     @Test func tabFromTheFilterReachesTheNextButtonAndTheLastScopeAndReturnPressesThem() throws {
         let (window, host) = hostWindow()
@@ -196,6 +196,13 @@ struct SystemControlsTests {
         #expect(window.makeFirstResponder(header.filter.input))
         let editor = try #require(window.firstResponder as? NSTextView)
         editor.doCommand(by: #selector(NSResponder.insertTab(_:)))
+        #expect(window.firstResponder === header.optionsButton)
+        #expect(header.optionsButton.showsFocusRing)
+        var options = 0
+        header.onOptions = { options += 1 }
+        header.optionsButton.keyDown(with: try key(36, "\r", window))
+        #expect(options == 1)
+        header.optionsButton.keyDown(with: try key(48, "\t", shift: false, window))
         #expect(window.firstResponder === header.doneButton)
         #expect(header.doneButton.showsFocusRing)
         header.doneButton.keyDown(with: try key(36, "\r", window))
@@ -217,8 +224,9 @@ struct SystemControlsTests {
         #expect(scopes == ["/b", "/b"])
     }
 
-    // Every button of the bar is in the content pane, where `paneTabSwitch` takes Tab and Shift-Tab alike. The row is
-    // never walked: Tab can't step from scope to scope, nor from the ✕ to Done.
+    // Every button of the bar is in the content pane, where `paneTabSwitch` takes Tab and Shift-Tab alike: Shift-Tab
+    // from any of them, and Tab from the last of the row and from a scope, go to the other pane. Tab can't step from
+    // scope to scope; from the ✕ and from Options it goes on along the row, so Options and Done can be reached.
     @Test func tabFromAButtonOfTheBarSwitchesPanes() throws {
         let (window, host) = hostWindow()
         defer { window.close() }
@@ -247,25 +255,39 @@ struct SystemControlsTests {
             #expect(window.firstResponder === tree)
         }
 
-        // The ✕, not Done, comes after the filter; and the next Tab leaves the row.
+        func tab() throws {
+            try #require(window.firstResponder).keyDown(with: try key(48, "\t", shift: false, window))
+        }
+
+        // The ✕ comes after the filter, then Options, then Stop; Tab from Stop leaves the row.
         try fromTheFilter(#selector(NSResponder.insertTab(_:)))
         #expect(window.firstResponder === header.filter.clearStop)
-        try expectSwitch(shift: false)
-        try fromTheFilter(#selector(NSResponder.insertTab(_:)))
-        try expectSwitch(shift: true)
-
-        // Stop follows the filter with no ✕.
-        header.filter.text = ""
-        try fromTheFilter(#selector(NSResponder.insertTab(_:)))
+        try tab()
+        #expect(window.firstResponder === header.optionsButton)
+        try tab()
         #expect(window.firstResponder === header.stopButton)
         try expectSwitch(shift: false)
+        // Shift-Tab from the ✕ and from Options leaves it too.
+        try fromTheFilter(#selector(NSResponder.insertTab(_:)))
+        try expectSwitch(shift: true)
+        try fromTheFilter(#selector(NSResponder.insertTab(_:)))
+        try tab()
+        #expect(window.firstResponder === header.optionsButton)
+        try expectSwitch(shift: true)
+
+        // Options follows the filter with no ✕.
+        header.filter.text = ""
+        try fromTheFilter(#selector(NSResponder.insertTab(_:)))
+        #expect(window.firstResponder === header.optionsButton)
 
         // Done, in either direction.
         header.stopButton.isHidden = true
-        try fromTheFilter(#selector(NSResponder.insertTab(_:)))
+        try tab()
         #expect(window.firstResponder === header.doneButton)
         try expectSwitch(shift: false)
         try fromTheFilter(#selector(NSResponder.insertTab(_:)))
+        try tab()
+        #expect(window.firstResponder === header.doneButton)
         try expectSwitch(shift: true)
 
         // A scope: the last is where the filter's Shift-Tab lands, the first where the toolbar's Tab does.

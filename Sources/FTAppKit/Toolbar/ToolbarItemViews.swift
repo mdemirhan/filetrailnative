@@ -481,6 +481,13 @@ final class ToolbarSearchField: NSSearchField {
         return editor.delegate === self
     }
 
+    /// Whether the keyboard is in the field or on one of its own stops, Search Options and the ✕, which Tab and
+    /// Shift-Tab reach from its text.
+    var holdsKeyboard: Bool {
+        guard let responder = window?.firstResponder else { return false }
+        return isActive || responder === optionsButton || responder === clearStop
+    }
+
     override func layout() {
         super.layout()
         guard let cell = cell as? NSSearchFieldCell else { return }

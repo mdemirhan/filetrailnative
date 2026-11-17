@@ -21,6 +21,20 @@ public struct FolderSizeActivity: Equatable, Sendable {
     }
 }
 
+/// The folders of a Calculate Size on several that wait their turn behind the one being measured: one request, so one
+/// row of the Activity list.
+public struct FolderSizeRunActivity: Equatable, Sendable {
+    /// The run's id, for Stop.
+    public var id: String
+    /// How many of its folders wait.
+    public var waitingCount: Int
+
+    public init(id: String, waitingCount: Int) {
+        self.id = id
+        self.waitingCount = waitingCount
+    }
+}
+
 /// What the ring at the end of the toolbar's title shows while something runs in the background.
 public struct ActivityIndicator: Equatable, Sendable {
     /// How far round the ring is filled, 0...1; nil while how far along is unknown, where it spins.
@@ -45,9 +59,11 @@ public struct ActivityItem: Equatable, Sendable, Identifiable {
     public enum Kind: Equatable, Sendable {
         case fileOperation
         case folderSize
+        /// The folders of a Calculate Size on several still waiting their turn.
+        case folderSizeRun
     }
 
-    /// The operation's id, or the folder size job's.
+    /// The operation's id, the folder size job's, or the run's.
     public var id: String
     public var kind: Kind
     /// "Copying…", or the folder's name.
@@ -72,9 +88,10 @@ public enum ActivityList {
     /// The rows: the file operation running (one at a time in the whole app), then the folder sizes, the one measured
     /// first and the rest in the order they wait. A walk the app started by itself is listed only while it runs with a
     /// size asked for waiting behind it, so the list says what holds that size up; otherwise it is quiet, as it is
-    /// meant to be.
+    /// meant to be. Last, a row for each Calculate Size on several folders with folders still waiting their turn.
     public static func items(
-        operation: (id: String, card: WriteOperationCardState)?, sizes: [FolderSizeActivity]
+        operation: (id: String, card: WriteOperationCardState)?, sizes: [FolderSizeActivity],
+        runs: [FolderSizeRunActivity] = []
     ) -> [ActivityItem] {
         var items: [ActivityItem] = []
         if let operation {
@@ -91,6 +108,15 @@ public enum ActivityList {
         for size in sizes.sorted(by: { $0.isRunning && !$1.isRunning }) {
             if size.isAutomatic && !(size.isRunning && askedWaiting) { continue }
             items.append(folderSizeItem(size))
+        }
+        for run in runs where run.waitingCount > 0 {
+            let one = run.waitingCount == 1
+            items.append(
+                ActivityItem(
+                    id: run.id, kind: .folderSizeRun,
+                    title: "\(ContextMenuRules.groupedCount(run.waitingCount)) more \(one ? "folder" : "folders")",
+                    detail: one ? "Waiting to calculate its size" : "Waiting to calculate their sizes",
+                    progress: nil, isWaiting: true))
         }
         return items
     }

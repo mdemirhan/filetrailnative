@@ -46,6 +46,34 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // What runs in the background changes several times a second: only the title's ring is brought up to date
+        // for it, and no other item of the toolbar is looked at.
+        @Test func whatRunsChangingRefreshesOnlyTheRing() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let toolbar = tab.explorerToolbar
+            let title = try #require(toolbar.titleView)
+            title.activity.reducesMotion = { true }
+            toolbar.activity = {
+                [
+                    ActivityItem(
+                        id: "op", kind: .fileOperation, title: "Copying…", detail: "40%", progress: 0.4,
+                        isWaiting: false)
+                ]
+            }
+            // A state the items would pick up were they refreshed.
+            let back = try #require(button(tab, .back))
+            back.isEnabled = !back.isEnabled
+            let was = back.isEnabled
+            NotificationCenter.default.post(name: ActivityCenter.changed, object: nil)
+            #expect(await waitUntil { title.activity.isShown })
+            #expect(abs((title.activity.ringFill ?? 0) - 0.4) < 0.001 && title.activity.toolTip == "Copying…: 40%")
+            #expect(back.isEnabled == was)
+            toolbar.refreshStates()
+            #expect(back.isEnabled != was)
+            await harness.close()
+        }
+
         // The title's ring follows what runs in the background, its tooltip saying what; it is part of the title, no item
         // of the toolbar's own, and a toolbar saved with the Activity item it once was drops it.
         @Test func theTitlesRingFollowsWhatRuns() async throws {

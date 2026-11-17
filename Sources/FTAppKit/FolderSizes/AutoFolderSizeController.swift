@@ -36,8 +36,10 @@ final class AutoFolderSizeController {
     private func leave() {
         timer?.cancel()
         timer = nil
+        // Asked for since (Calculate Size joins the measurement under way, under the same job), it is no longer
+        // this one's to stop.
         if let startedPath, let startedJob, case .calculating(let job, _) = sizes.entry(startedPath),
-            job == startedJob
+            job == startedJob, !sizes.isAskedFor(startedPath)
         {
             sizes.cancel(startedPath)
         }

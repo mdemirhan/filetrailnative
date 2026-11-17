@@ -1085,6 +1085,58 @@ private func settle() async {
         #expect(native.cancelCount == 2)
     }
 
+    // An automatic walk that gave way and is stopped before its walk has ended, by Stop or by its window closing,
+    // doesn't wait again: the walk is not stopped a second time, and it never runs after what it gave way to.
+    @Test func anAutomaticWalkStoppedAfterGivingWayIsNotRunAgain() async {
+        for closing in [false, true] {
+            let native = MockNative()
+            let jobs = make(native)
+            jobs.frontOwner = 1
+
+            let behind = start(jobs, "/test/behind", owner: 2, automatic: true)
+            let asked = start(jobs, "/test/asked", owner: 3)
+            #expect(native.cancelCount == 1)
+            #expect(jobs.getStatus(jobId: behind.jobId).status == .queued)
+            if closing {
+                jobs.forgetOwner(2)
+            } else {
+                jobs.cancel(jobId: behind.jobId, owner: 2)
+            }
+            #expect(jobs.getStatus(jobId: behind.jobId).status == .cancelled)
+            #expect(native.cancelCount == 1)
+            #expect(jobs.activity.map(\.path) == ["/test/asked"])
+
+            native.rejectActive(cancelledError)
+            await settle()
+            #expect(native.calls.map(\.path) == ["/test/behind", "/test/asked"])
+            #expect(jobs.getStatus(jobId: behind.jobId).status == .cancelled)
+            native.resolveActive()
+            await settle()
+            #expect(jobs.getStatus(jobId: asked.jobId).status == .ready)
+            #expect(native.calls.map(\.path) == ["/test/behind", "/test/asked"])
+            #expect(jobs.activity.isEmpty)
+        }
+    }
+
+    // A folder moved away or replaced while it was measured fails, and the sizes of the folders inside it, kept as
+    // the walk finished them, are forgotten: another folder is at that path now, or none. A walk that fails
+    // otherwise keeps them.
+    @Test func forgetsTheSizesInsideAFolderReplacedWhileItWasMeasured() async {
+        for replaced in [true, false] {
+            let native = MockNative()
+            let jobs = make(native)
+            let started = start(jobs, "/test")
+            native.finish(["/test/inside": [100, 200, 1, 0]])
+            #expect(jobs.cachedSize("/test/inside") == 100)
+            var error = FolderSizeError(errnum: ENOENT, message: "ENOENT: not found")
+            error.rootChanged = replaced
+            native.rejectActive(error)
+            await settle()
+            #expect(jobs.getStatus(jobId: started.jobId).status == .error)
+            #expect(jobs.cachedSize("/test/inside") == (replaced ? nil : 100))
+        }
+    }
+
     // The front window's automatic walk doesn't give way; a window coming to the front stops another's.
     @Test func theFrontWindowsAutomaticWalkDoesntGiveWay() async {
         let native = MockNative()

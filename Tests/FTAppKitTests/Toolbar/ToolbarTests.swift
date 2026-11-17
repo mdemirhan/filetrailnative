@@ -65,6 +65,33 @@ extension ToolbarTesting {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ToolbarTests: ToolbarTesting {
+        // Shift-Tab from the empty field goes to its Search Options button: the field is still in use, and Compact
+        // Search doesn't fold it away from under the keyboard.
+        @Test func theSearchFieldStaysOpenWhileItsOptionsButtonHasTheKeyboard() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let toolbar = tab.explorerToolbar
+            setItems(tab, ToolbarItems.defaultTopItems.map { $0 == .search ? .compactSearch : $0 }, harness)
+            tab.content.focusList()
+            #expect(await waitUntil { !toolbar.searchOpen })
+            tab.search.focusField()
+            #expect(toolbar.searchOpen)
+            let field = try #require(tab.searchField)
+            let window = try #require(tab.window)
+            let editor = try #require(window.firstResponder as? NSTextView)
+            _ = tab.search.control(field, textView: editor, doCommandBy: #selector(NSResponder.insertBacktab(_:)))
+            #expect(window.firstResponder === field.optionsButton)
+            #expect(field.holdsKeyboard && !field.isActive && toolbar.searchInUse)
+            toolbar.updateSearchWidth()
+            await settle()
+            #expect(toolbar.searchOpen && window.firstResponder === field.optionsButton)
+            #expect(field.optionsButton.window === window)
+            // The keyboard gone elsewhere, it folds as before.
+            tab.content.focusList()
+            #expect(await waitUntil { !toolbar.searchOpen })
+            await harness.close()
+        }
+
         @Test func drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

@@ -3,6 +3,23 @@ import Testing
 @testable import FTFoundation
 
 struct ActivityListTests {
+    // The folders of a Calculate Size on several that wait their turn are one row, after the sizes, and count as one
+    // more for the ring.
+    @Test func listsTheFoldersOfARunStillWaitingAsOneRow() {
+        let items = ActivityList.items(
+            operation: nil, sizes: [Self.size("/Users/demo/a", running: true)],
+            runs: [
+                FolderSizeRunActivity(id: "run:1:1", waitingCount: 1_200),
+                FolderSizeRunActivity(id: "run:2:1", waitingCount: 1),
+                FolderSizeRunActivity(id: "run:2:2", waitingCount: 0),
+            ])
+        #expect(items.map(\.kind) == [.folderSize, .folderSizeRun, .folderSizeRun])
+        #expect(items[1].id == "run:1:1" && items[1].title == "1,200 more folders" && items[1].isWaiting)
+        #expect(items[1].detail == "Waiting to calculate their sizes")
+        #expect(items[2].title == "1 more folder" && items[2].detail == "Waiting to calculate its size")
+        #expect(ActivityList.indicator(items)?.countLabel == "+2")
+    }
+
     static func size(
         _ path: String, running: Bool = false, automatic: Bool = false, measured: Int = 0
     ) -> FolderSizeActivity {

@@ -8,12 +8,18 @@ final class ActivityView: NSView {
     static let width = 320.0
     static let rowHeight = 48.0
     static let headerHeight = 30.0
+    /// How long Stop is not taken after a row came to another place: a press aimed at one row's Stop as the row
+    /// above it ended would land on the next one's.
+    static let settleInterval = 0.4
     private static var inset: Double { DesignTokens.menu.padding + DesignTokens.menu.borderWidth }
 
     private(set) var items: [ActivityItem]
     var onStop: (ActivityItem) -> Void = { _ in }
+    /// The time now, in seconds; a test hands its own.
+    var now: () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
     private let title = ClipboardMenuText(identifier: "activityPopover.title")
     private var rows: [ActivityRow] = []
+    private var movedAt = -TimeInterval.infinity
 
     init(items: [ActivityItem]) {
         self.items = items
@@ -23,6 +29,9 @@ final class ActivityView: NSView {
         setAccessibilityLabel("Activity")
         setAccessibilityIdentifier("activityPopover")
         addSubview(title)
+        let palette = AppearanceModel.shared.theme.palette
+        title.set("Activity", font: ChromeColors.font(size: DesignTokens.typeScale.body, weight: 600))
+        title.textColor = NSColor(palette.contextMenuText)
         update(items)
     }
 
@@ -30,20 +39,36 @@ final class ActivityView: NSView {
 
     override var isFlipped: Bool { true }
 
+    /// A row whose item is still listed is kept and told what changed, so a press on its Stop under way, its hover
+    /// and VoiceOver's place in it outlast the list's updates, which come several times a second while something
+    /// runs. Only the rows of items new to the list are made, and those of items gone removed.
     func update(_ items: [ActivityItem]) {
         self.items = items
-        let palette = AppearanceModel.shared.theme.palette
-        title.set("Activity", font: ChromeColors.font(size: DesignTokens.typeScale.body, weight: 600))
-        title.textColor = NSColor(palette.contextMenuText)
-        for row in rows { row.removeFromSuperview() }
-        rows = items.map { item in
+        let places = Dictionary(
+            rows.enumerated().map { ($0.element.item.id, $0.offset) }, uniquingKeysWith: { first, _ in first })
+        var kept = Dictionary(rows.map { ($0.item.id, $0) }, uniquingKeysWith: { first, _ in first })
+        var moved = false
+        rows = items.enumerated().map { index, item in
+            if let row = kept.removeValue(forKey: item.id) {
+                if places[item.id] != index { moved = true }
+                row.update(item)
+                return row
+            }
             let row = ActivityRow(item: item)
-            row.onStop = { [weak self] in self?.onStop(item) }
+            row.onStop = { [weak self, weak row] in
+                guard let self, let row, self.takesStop else { return }
+                self.onStop(row.item)
+            }
             addSubview(row)
             return row
         }
+        for row in kept.values { row.removeFromSuperview() }
+        if moved { movedAt = now() }
         needsLayout = true
     }
+
+    /// Whether a press on Stop counts: not just after a row came to another place.
+    var takesStop: Bool { now() - movedAt >= Self.settleInterval }
 
     var listSize: NSSize {
         NSSize(
@@ -69,7 +94,7 @@ final class ActivityView: NSView {
 
 /// One thing running or waiting: its name over how far along it is, a bar when that is known, and Stop.
 final class ActivityRow: NSView {
-    let item: ActivityItem
+    private(set) var item: ActivityItem
     var onStop: () -> Void = {}
     private let name = ClipboardMenuText(identifier: "activityPopover.name")
     private let detail = ClipboardMenuText(identifier: "activityPopover.detail")
@@ -79,34 +104,49 @@ final class ActivityRow: NSView {
     init(item: ActivityItem) {
         self.item = item
         super.init(frame: .zero)
-        let palette = AppearanceModel.shared.theme.palette
-        name.set(item.title, font: ChromeColors.font(size: DesignTokens.typeScale.body))
-        name.textColor = NSColor(item.isWaiting ? palette.contextMenuShortcut : palette.contextMenuText)
-        detail.set(item.detail, font: ChromeColors.font(size: DesignTokens.typeScale.small))
-        detail.textColor = NSColor(palette.contextMenuShortcut)
         bar.style = .bar
         bar.controlSize = .small
         bar.isIndeterminate = false
         bar.minValue = 0
         bar.maxValue = 1
-        bar.doubleValue = item.progress ?? 0
-        bar.isHidden = item.progress == nil
         bar.setAccessibilityIdentifier("activityPopover.progress")
-        stop.toolTip = item.isWaiting ? "Stop Waiting" : "Stop"
-        stop.setAccessibilityLabel("Stop \(item.title)")
         stop.setAccessibilityIdentifier("activityPopover.stop")
         stop.target = self
         stop.action = #selector(stopPressed)
         for view in [name, detail, bar, stop] as [NSView] { addSubview(view) }
         setAccessibilityElement(true)
         setAccessibilityRole(.group)
-        setAccessibilityLabel("\(item.title), \(item.detail)")
         setAccessibilityIdentifier("activityPopover.row")
+        show()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
+
+    /// The item moved on: the row says so, staying the view it was.
+    func update(_ next: ActivityItem) {
+        guard next != item else { return }
+        let hadBar = item.progress != nil
+        item = next
+        show()
+        if hadBar != (next.progress != nil) { needsLayout = true }
+    }
+
+    private func show() {
+        let palette = AppearanceModel.shared.theme.palette
+        name.set(item.title, font: ChromeColors.font(size: DesignTokens.typeScale.body))
+        name.textColor = NSColor(item.isWaiting ? palette.contextMenuShortcut : palette.contextMenuText)
+        detail.set(item.detail, font: ChromeColors.font(size: DesignTokens.typeScale.small))
+        detail.textColor = NSColor(palette.contextMenuShortcut)
+        bar.doubleValue = item.progress ?? 0
+        bar.isHidden = item.progress == nil
+        // Set only when it changes: setting a tooltip takes away the one showing.
+        let tip = item.isWaiting ? "Stop Waiting" : "Stop"
+        if stop.toolTip != tip { stop.toolTip = tip }
+        stop.setAccessibilityLabel("Stop \(item.title)")
+        setAccessibilityLabel("\(item.title), \(item.detail)")
+    }
 
     @objc private func stopPressed() { onStop() }
 
