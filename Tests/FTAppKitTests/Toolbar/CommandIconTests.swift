@@ -23,7 +23,8 @@ struct CommandIconTests {
     @Test func commandsSideBySideHaveSymbolsOfTheirOwn() {
         let groups: [[CommandIcon]] = [
             [.back, .forward, .up], [.icons, .details, .list], [.cut, .copy, .paste, .copyPath],
-            [.edit, .rename], [.folderTree, .infoPanel, .infoRow], [.trash, .deleteImmediately],
+            [.edit, .rename], [.folderTree, .twoPanes, .duplicatePane, .infoPanel, .infoRow],
+            [.trash, .deleteImmediately],
             [.open, .openInNewTab, .openInNewWindow, .openWith], [.move, .newFolder, .duplicate],
         ]
         for group in groups {

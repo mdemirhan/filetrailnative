@@ -45,9 +45,7 @@ import Testing
                 "as Icons", "as List", "as Compact List", "as Previews", "Show Previews", "-", "Make Bigger",
                 "Make Smaller",
                 "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "-", "Pin Filter", "Refresh",
-                "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes",
-                // Duplicate Pane, the item ⌥ shows in its place.
-                "Duplicate Pane", "Swap Panes",
+                "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Duplicate Pane", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…", "Command Palette…",
             ])
         #expect(
@@ -154,26 +152,17 @@ import Testing
         if let pane, let tab { #expect(file.index(of: tab) == file.index(of: pane) + 1) }
     }
 
-    @Test func duplicatePaneIsTheItemOptionShowsInTwoPanesPlace() {
+    @Test func duplicatePaneIsAnItemOfItsOwnAfterTwoPanes() {
         let (built, _) = build()
         let view = submenu(built.menu, "View")
         let panes = flatten(view).first { $0.identifier?.rawValue == "toggleTwoPanes" }
-        let here = flatten(view).first { $0.identifier?.rawValue == "duplicatePane" }
+        let duplicate = flatten(view).first { $0.identifier?.rawValue == "duplicatePane" }
         #expect(panes?.keyEquivalent == "\\")
         #expect(panes?.keyEquivalentModifierMask == [.command])
-        #expect(panes?.isAlternate == false)
-        #expect(here?.isAlternate == true)
-        #expect(here?.keyEquivalent == "\\")
-        #expect(here?.keyEquivalentModifierMask == [.option, .command])
-        if let panes, let here { #expect(view.index(of: here) == view.index(of: panes) + 1) }
-    }
-
-    @Test func duplicatePaneShowsAsAnItemOfItsOwnWhenTwoPanesHasAKeyItDoesNotPairWith() {
-        let bindings = ShortcutCommands.resolve(["toggleTwoPanes": ["Cmd+Shift+Y"]]).bindings
-        let (built, _) = build(.init(shortcuts: bindings))
-        let here = flatten(submenu(built.menu, "View")).first { $0.identifier?.rawValue == "duplicatePane" }
-        #expect(here?.isAlternate == false)
-        #expect(here?.keyEquivalent == "\\")
+        #expect(duplicate?.isAlternate == false)
+        #expect(duplicate?.keyEquivalent == "\\")
+        #expect(duplicate?.keyEquivalentModifierMask == [.option, .command])
+        if let panes, let duplicate { #expect(view.index(of: duplicate) == view.index(of: panes) + 1) }
     }
 
     @Test func closeTabGivenAnotherKeyShowsAsAnItemOfItsOwn() {

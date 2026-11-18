@@ -401,7 +401,8 @@ public enum CommandPalette {
         case .newTab, .openSelectionInNewTab: .newTab
         case .openSelectionInNewWindow: .openInNewWindow
         case .rootTreeAtSelection: .rootTreeHere
-        case .toggleTwoPanes, .duplicatePane: .twoPanes
+        case .toggleTwoPanes: .twoPanes
+        case .duplicatePane: .duplicatePane
         case .openSelection, .openSelectedItem: .open
         case .editSelection: .edit
         case .quickLookSelection: .quickLook

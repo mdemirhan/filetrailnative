@@ -6,7 +6,7 @@ public enum CommandIcon: String, CaseIterable, Sendable, Hashable {
     // The folder on screen
     case icons, details, list, previews, sortBy, viewAs, foldersFirst, hidden, hiddenShown, viewOptions, search
     // The window's panes
-    case folderTree, twoPanes, infoPanel, infoRow
+    case folderTree, twoPanes, duplicatePane, infoPanel, infoRow
     // Opening and looking
     case open, openFile, openInNewTab, openInNewWindow, openWith, quickLook, showPackageContents, edit, showInfo
     case calculateSize, revealInFolder, revealInTree, rootTreeHere, showInFinder, terminal

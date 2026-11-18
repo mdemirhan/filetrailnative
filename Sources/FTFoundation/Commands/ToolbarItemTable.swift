@@ -22,6 +22,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case hidden
     case folderTree
     case twoPanes
+    case duplicatePane
     case infoPanel
     case infoRow
     case newTab
@@ -89,6 +90,9 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .twoPanes, label: "Two Panes", icon: .twoPanes, commandType: .toggleTwoPanes,
             shortcutCommand: .toggleTwoPanes),
+        ToolbarItemDefinition(
+            id: .duplicatePane, label: "Duplicate Pane", icon: .duplicatePane, commandType: .duplicatePane,
+            shortcutCommand: .duplicatePane),
         ToolbarItemDefinition(
             id: .infoPanel, label: "Info Panel", icon: .infoPanel, commandType: .toggleInfoPanel,
             shortcutCommand: .toggleInfoPanel),
@@ -196,7 +200,7 @@ extension ToolbarItems {
         .title,
         .view, .viewMenu, .sort, .foldersFirst, .hidden, .viewOptions,
         .search, .compactSearch,
-        .folderTree, .twoPanes, .infoPanel, .infoRow,
+        .folderTree, .twoPanes, .duplicatePane, .infoPanel, .infoRow,
         .openSelection, .quickLook, .editSelection, .share,
         .newFolder, .renameSelection, .duplicateSelection, .moveSelection, .trashSelection,
         .copySelection, .cutSelection, .pasteSelection, .pasteAsFile, .clipboard,

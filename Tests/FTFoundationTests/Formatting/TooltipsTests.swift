@@ -69,6 +69,7 @@ struct TooltipsTests {
             "renameSelection": "Rename (↩)", "duplicateSelection": "Duplicate (⌘D)",
             "newFolder": "New Folder (⇧⌘N)", "trashSelection": "Move to Trash (⌘⌫)", "copySelection": "Copy (⌘C)",
             "cutSelection": "Cut (⌘X)", "pasteSelection": "Paste (⌘V)", "openInTerminal": "Open in Terminal (⌥⌘T)",
+            "duplicatePane": "Duplicate Pane (⌥⌘\\)",
             // No key until one is chosen in Settings.
             "showInFinder": "Show in Finder", "revealInFolder": "Reveal in Folder",
             "calculateSize": "Calculate Size", "copyPath": "Copy Path (⌥⌘C)", "settings": "Settings (⌘,)",
@@ -95,7 +96,7 @@ struct TooltipsTests {
             "selectAll", "selectNextTab", "selectPreviousTab", "settings", "showClipboard", "showInFinder",
             "showLastSearchResults", "sortByKind", "sortByModified", "sortByName", "sortBySize", "toggleFavorite",
             "toggleFolderTree", "toggleFoldersFirst", "toggleHiddenFiles", "toggleInfoPanel", "toggleInfoRow",
-            "toggleTwoPanes",
+            "toggleTwoPanes", "duplicatePane",
             "trashSelection", "undo", "viewAsDetails", "viewAsIcons", "viewAsList",
         ]
         for item in ToolbarItems.definitions {

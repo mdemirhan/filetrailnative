@@ -24,6 +24,8 @@ extension CommandIcon {
         case .folderTree, .revealInTree: "sidebar.leading"
         case .infoPanel: "sidebar.trailing"
         case .twoPanes: "rectangle.split.2x1"
+        // The same pane twice, side by side.
+        case .duplicatePane: "square.and.line.vertical.and.square"
         case .infoRow: "rectangle.bottomthird.inset.filled"
         case .open, .openFile: "arrow.up.forward.app"
         case .openInNewWindow: "macwindow.badge.plus"

@@ -263,7 +263,7 @@ extension ShortcutCommands {
             menuPath: "View > Two Panes"),
         ShortcutCommandDefinition(
             id: .duplicatePane, label: "Duplicate Pane", group: .tabs, defaults: ["Cmd+Option+\\"],
-            menuPath: "View > Two Panes, with Option"),
+            menuPath: "View > Duplicate Pane"),
         ShortcutCommandDefinition(
             id: .switchToOtherPane, label: "Switch to Other Pane", group: .tabs, defaults: [],
             menuPath: "Window > Switch to Other Pane"),
