@@ -236,6 +236,33 @@ extension ExplorerWindowlessTests {
             #expect(tab.panes.first === right)
         }
 
+        // ⌘\ brings a closed pane back as it was: its Back and Forward, filter mode, selection and filter.
+        @Test func aClosedPaneComesBackWithItsHistoryFilterModeSelectionAndFilter() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness)
+            await right.navigate(to: URL(fileURLWithPath: real(harness, "Alpha")))
+            await arrived(right)
+            right.content.setViewFilterMode(.contains)
+            right.content.select(paths: [real(harness, "Alpha/Inner")])
+            right.content.setFilter("inn")
+            let history = right.navigationHistory
+            #expect(history.paths == [real(harness), real(harness, "Alpha")])
+            left.content.setViewFilterMode(.fuzzy)
+
+            tab.perform(.toggleTwoPanes)
+            #expect(tab.panes.count == 1)
+            tab.perform(.toggleTwoPanes)
+            let back = try #require(tab.otherPane)
+            await arrived(back)
+            #expect(back.shownFolderPath == real(harness, "Alpha"))
+            #expect(back.navigationHistory == history)
+            #expect(back.content.folderFilterMode == .contains)
+            #expect(back.content.selection.paths == [real(harness, "Alpha/Inner")])
+            #expect(back.content.filter == "inn")
+            #expect(tab.activePane === left)
+        }
+
         @Test func aChangeInTheSecondPanesFolderIsReadThereByItsOwnWatch() async throws {
             let harness = try ExplorerHarness.windowless()
             defer { Task { await harness.close() } }
@@ -532,6 +559,109 @@ extension ExplorerWindowlessTests {
             let back = try await opened(tab, after: 1)
             #expect(back.panes.count == 2)
             #expect(back.panes[1].shownFolderPath == real(harness, "Alpha/Inner"))
+        }
+
+        // A tab comes back as it was closed: each pane's Back and Forward, selection and filter, which Duplicate Tab
+        // copies too.
+        @Test func reopenClosedTabBringsBackEachPanesHistorySelectionAndFilter() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let (tab, left, right) = try await twoPanes(harness, right: "Alpha")
+            let group = try #require(tab.group)
+            group.duplicateTab(tab)
+            let copy = try await opened(tab, after: 1)
+            let (copyLeft, copyRight) = (copy.panes[0], copy.panes[1])
+            await arrived(copyLeft)
+            copyLeft.go(to: URL(fileURLWithPath: real(harness, "Beta")))
+            #expect(await waitUntil { copyLeft.shownFolderPath == real(harness, "Beta") })
+            await arrived(copyLeft)
+            #expect(copy.activePane === copyLeft)
+            copy.perform(.goBack)
+            #expect(await waitUntil { copyLeft.shownFolderPath == real(harness) })
+            await arrived(copyLeft)
+            copyLeft.content.select(paths: [real(harness, "note.txt")])
+            copyRight.content.select(paths: [real(harness, "Alpha/Inner")])
+            copyRight.content.setFilter("inn")
+            let leftHistory = copyLeft.navigationHistory
+            let rightHistory = copyRight.navigationHistory
+            #expect(leftHistory.paths == [real(harness), real(harness, "Beta")])
+            #expect(leftHistory.index == 0)
+            #expect(left.navigationHistory.paths == [real(harness)])
+            #expect(right.content.selection.paths.isEmpty)
+
+            group.closeTab(copy)
+            #expect(await waitUntil { group.tabs.count == 1 })
+            group.reopenClosedTab(from: tab)
+            let back = try await opened(tab, after: 1)
+            await arrived(back.panes[0])
+            await arrived(back.panes[1])
+            #expect(back.panes[0].navigationHistory == leftHistory)
+            #expect(back.panes[1].navigationHistory == rightHistory)
+            #expect(back.panes[0].content.selection.paths == [real(harness, "note.txt")])
+            #expect(back.panes[1].content.selection.paths == [real(harness, "Alpha/Inner")])
+            #expect(back.panes[1].content.filter == "inn")
+            #expect(back.panes[0].content.filter.isEmpty)
+        }
+
+        // A pane closed in a tab is the tab's while it is open: the tab reopened has none to bring back, so ⌘\ in it
+        // opens a copy of the active pane.
+        @Test func aReopenedTabDoesNotBringBackAPaneClosedInIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await harness.open()
+            let group = try #require(tab.group)
+            group.openNewTab(from: tab)
+            let other = try await opened(tab, after: 1)
+            let second = other.openSecondPane(at: real(harness, "Gamma"))
+            await arrived(second)
+            other.perform(.toggleTwoPanes)
+            #expect(other.panes.count == 1)
+            #expect(other.closedSecondPane != nil)
+
+            group.closeTab(other)
+            #expect(await waitUntil { group.tabs.count == 1 })
+            group.reopenClosedTab(from: tab)
+            let back = try await opened(tab, after: 1)
+            #expect(back.closedSecondPane == nil)
+            back.perform(.toggleTwoPanes)
+            let copy = try #require(back.otherPane)
+            await arrived(copy)
+            #expect(copy.shownFolderPath == real(harness))
+        }
+
+        // A tab comes back where it was in the row, not after the tab on screen; with fewer tabs left, at the end.
+        @Test func reopenClosedTabPutsTheTabBackWhereItWas() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let first = try await harness.open()
+            let group = try #require(first.group)
+            group.openNewTab(from: first)
+            let middle = try await opened(first, after: 1)
+            await arrived(middle.activePane)
+            middle.activePane.go(to: URL(fileURLWithPath: real(harness, "Beta")))
+            #expect(await waitUntil { middle.activePane.shownFolderPath == real(harness, "Beta") })
+            group.openNewTab(from: middle)
+            let last = try await opened(middle, after: 2)
+            group.select(last)
+
+            group.closeTab(middle)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            #expect(group.session.closedTabs.last?.index == 1)
+            group.reopenClosedTab(from: last)
+            #expect(await waitUntil { group.tabs.count == 3 })
+            #expect(group.tabs[1].panes[0].folder.path == real(harness, "Beta"))
+            #expect(group.selected === group.tabs[1])
+
+            // Tabs closed one after another come back in their order.
+            let (beta, end) = (group.tabs[1], group.tabs[2])
+            group.closeTab(beta)
+            group.closeTab(end)
+            #expect(await waitUntil { group.tabs.count == 1 })
+            group.reopenClosedTab(from: first)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            group.reopenClosedTab(from: first)
+            #expect(await waitUntil { group.tabs.count == 3 })
+            #expect(group.tabs[1].panes[0].folder.path == real(harness, "Beta"))
         }
         // ⌘\ to open or close the second pane leaves the keyboard in a list, so Tab goes on between the panes.
         @Test func openingAndClosingTheSecondPaneKeepTheKeyboardInAList() async throws {

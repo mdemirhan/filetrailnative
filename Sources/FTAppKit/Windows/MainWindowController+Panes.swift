@@ -49,9 +49,11 @@ extension MainWindowController {
         let source = activePane
         var start: StartupTab
         var history: (paths: [String], index: Int)?
+        var view: TabViewState?
         if path == nil, reopening, let closed = closedSecondPane {
             start = closed.start
             history = (closed.history.paths, closed.history.index)
+            view = closed.view
         } else if let path, path != source.shownFolderPath {
             start = startupTab(of: source, path: path)
         } else {
@@ -66,6 +68,7 @@ extension MainWindowController {
         start.includeHidden = includeHidden
         let keyboard = paneWithKeyboard
         let pane = addSecondPane(start: start, history: history)
+        if let view { pane.carry(view) }
         pane.ensureLoaded()
         panesChanged()
         keepKeyboard(in: keyboard)
@@ -94,7 +97,8 @@ extension MainWindowController {
     /// window): its second pane as it was kept, read with the tab's first. It shows hidden files as the first does, the
     /// tab having one Hidden Files (`PreferencesSanitizer.openTabs` reads a file saved while each pane had its own).
     func restoreSecondPane(
-        _ saved: OpenPanePreference, history: (paths: [String], index: Int)?, active: Bool, split: Double?
+        _ saved: OpenPanePreference, history: (paths: [String], index: Int)?, view: TabViewState? = nil, active: Bool,
+        split: Double?
     ) {
         guard !showsTwoPanes else { return }
         let start = StartupTab(
@@ -103,6 +107,7 @@ extension MainWindowController {
             includeHidden: includeHidden, foldersFirst: saved.foldersFirst, favoritesExpanded: favoritesExpanded,
             locationsExpanded: locationsExpanded, viewSizes: saved.viewSizes, filterMode: saved.filterMode)
         let pane = addSecondPane(start: start, history: history)
+        if let view { pane.carry(view) }
         if let split { workspace.setPaneSplit(split) }
         if loaded { pane.ensureLoaded() }
         if active {
@@ -113,12 +118,14 @@ extension MainWindowController {
     }
 
     /// Closes the pane that isn't active; the active one takes the whole width. Where the closed one was is kept, for
-    /// ⌘\ to open it there again.
+    /// ⌘\ to open it there again as it was: its history, filter mode, selection, filters and scroll.
     func closeOtherPane() {
         guard let gone = otherPane else { return }
         let keep = activePane
         let keyboard = paneWithKeyboard
-        closedSecondPane = (startupTab(of: gone, path: gone.shownFolderPath), gone.navigationHistory)
+        var start = startupTab(of: gone, path: gone.shownFolderPath)
+        start.filterMode = gone.content.folderFilterMode
+        closedSecondPane = (start, gone.navigationHistory, gone.closedView)
         closedPaneWatchID = gone.watchID
         gone.searchStore?.session.close()
         gone.searchStore?.disconnect()

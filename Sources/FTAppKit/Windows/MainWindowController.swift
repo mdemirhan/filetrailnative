@@ -259,8 +259,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The tab's panes, left to right, and the one the toolbar, the sidebar, the Info panel and the commands follow.
     var panes: [BrowserPane]
     var activePaneIndex = 0
-    /// Where the second pane was when it was last closed, for ⌘\ to open it there again.
-    var closedSecondPane: (start: StartupTab, history: NavigationHistory)?
+    /// Where the second pane was when it was last closed, for ⌘\ to open it there again, with what it had on screen.
+    /// It is the tab's while it is open: Reopen Closed Tab and Duplicate Tab don't bring it.
+    var closedSecondPane: (start: StartupTab, history: NavigationHistory, view: TabViewState?)?
     /// The folder watch of a second pane just closed, for the window's watches to let go of.
     var closedPaneWatchID: Int?
     var activePane: BrowserPane { panes[activePaneIndex] }
@@ -461,7 +462,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         if loadNow { ensureLoaded() }
     }
 
-    /// A tab as `snapshot` kept it: its folder, tree, view and history (Reopen Closed Tab, Duplicate Tab).
+    /// A tab as `snapshot` kept it: its folder, tree, view and history, each pane's (Reopen Closed Tab, Duplicate Tab).
     convenience init(snapshot: TabSnapshot, frame: NSRect?) {
         // The tree's row is the active pane's: a favorite the second pane is on isn't the first pane's folder.
         let startup = StartupTab(
@@ -478,8 +479,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         if let view = snapshot.view { carry(view, of: snapshot) }
         if let second = snapshot.secondPane {
             restoreSecondPane(
-                second.pane, history: (second.historyPaths, second.historyIndex), active: snapshot.activePane == 1,
-                split: snapshot.paneSplit)
+                second.pane, history: (second.historyPaths, second.historyIndex), view: second.view,
+                active: snapshot.activePane == 1, split: snapshot.paneSplit)
         }
     }
 
@@ -616,7 +617,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             let second = panes[1]
             snapshot.secondPane = PaneSnapshot(
                 pane: savedPane(second), historyPaths: second.navigationHistory.paths,
-                historyIndex: max(0, second.navigationHistory.index))
+                historyIndex: max(0, second.navigationHistory.index), view: liveView(of: second))
             snapshot.activePane = activePaneIndex
             snapshot.paneSplit = workspace.paneSplit
         }
@@ -624,15 +625,33 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// The view on screen: the first pane's (`BrowserPane.liveView`), as the snapshot's other fields are, with the tree
-    /// as the tab has it. A view the pane was started with keeps its scrolls.
+    /// as the tab has it.
     private var liveView: TabViewState? {
-        guard var view = panes[0].liveView else { return nil }
+        guard var view = liveView(of: panes[0]) else { return nil }
         view.treeNodes = sidebar.model.nodes
-        if panes[0].carriedView == nil {
+        return view
+    }
+
+    /// `pane`'s view on screen, with the tree's scrolls as the tab has them, which the active pane puts back as it shows
+    /// its first folder. A view the pane was started with keeps its scrolls.
+    private func liveView(of pane: BrowserPane) -> TabViewState? {
+        guard var view = pane.liveView else { return nil }
+        if pane.carriedView == nil {
             view.treeScrollTop = sidebar.tree.scrollTop
             view.sidebarSectionsScrollTop = sidebar.sections.scrollTop
         }
         return view
+    }
+
+    /// What Reopen Closed Tab brings back of the tab: its snapshot, without what a search showing in a pane had on
+    /// screen, as the search isn't brought back.
+    var closedSnapshot: TabSnapshot {
+        var kept = snapshot
+        if panes[0].showsSearchResults { kept.view = kept.view?.leavingSearchResults() }
+        if panes.count > 1, panes[1].showsSearchResults, let view = kept.secondPane?.view {
+            kept.secondPane?.view = view.leavingSearchResults()
+        }
+        return kept
     }
 
     /// What the tab bar calls the tab; with two panes, its label names both (`twoPaneLabel`).

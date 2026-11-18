@@ -1,3 +1,4 @@
+import CoreGraphics
 import FTFileSystem
 import FTFoundation
 import FTOperations
@@ -58,21 +59,41 @@ import Testing
         #expect(nodes["/a"] == node)
     }
 
-    @Test func keepsAClosedTabsFolderAndViewNotItsHistoryOrWhatItHadOnScreen() {
+    @Test func keepsAClosedTabsHistoryAndWhatItHadOnScreenButTheErrorThere() {
         var view = TabViewState()
         view.contentSelection = .single("/Users/demo/work/a")
         view.listFilterQuery = "a"
         view.contentScroll.y = 40
-        let snapshot = TabSnapshot(
+        view.directoryError = FolderReadError(message: "No access", errnum: 13)
+        var snapshot = TabSnapshot(
             currentPath: "/Users/demo/work", historyPaths: ["/Users/demo", "/Users/demo/work"], historyIndex: 1,
             viewMode: .details, searchViewMode: .icons, sortBy: .size, sortDirection: .desc,
             treeRootPath: "/Users/demo", focusedPane: .tree, favoritesExpanded: false, view: view)
+        let second = OpenPanePreference(
+            path: "/Users/demo/b", viewMode: .icons, searchViewMode: .details, sortBy: .name, sortDirection: .asc,
+            includeHidden: false, foldersFirst: true)
+        snapshot.secondPane = PaneSnapshot(
+            pane: second, historyPaths: ["/Users/demo", "/Users/demo/b"], historyIndex: 0, view: view)
 
         var expected = snapshot
-        expected.historyPaths = ["/Users/demo/work"]
-        expected.historyIndex = 0
-        expected.view = nil
+        expected.view?.directoryError = nil
+        expected.secondPane?.view?.directoryError = nil
         #expect(ExplorerTabs.reopenable(snapshot) == expected)
+    }
+
+    @Test func aViewLeavingSearchResultsKeepsThePinnedFilterAndTheFoldersPlacesOnly() {
+        var view = TabViewState()
+        view.contentSelection = .single("/Users/demo/work/a")
+        view.listFilterQuery = "a"
+        view.listFilterMode = .contains
+        view.contentScroll = CGPoint(x: 3, y: 40)
+        view.pinnedListFilter = PinnedListFilter(query: "no", mode: .fuzzy)
+        view.folderViewMemories = ["/Users/demo": FolderViewMemory(selection: .single("/Users/demo/work"))]
+
+        var expected = TabViewState()
+        expected.pinnedListFilter = view.pinnedListFilter
+        expected.folderViewMemories = view.folderViewMemories
+        #expect(view.leavingSearchResults() == expected)
     }
 
     // `openNewTab`

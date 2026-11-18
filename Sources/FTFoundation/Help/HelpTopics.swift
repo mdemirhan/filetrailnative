@@ -66,7 +66,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Closing",
                             description:
-                                "{closePane} closes the tab, and the window when it is the last tab; in a tab with two panes it closes the pane you are in first. {closeTab} closes a tab with both its panes at once: in the File menu, hold Option. {reopenClosedTab} brings back the tab closed last. Right-click a tab for Close Other Tabs and Move Tab to New Window. Duplicate Tab is in the File menu, and Merge All Windows in the Window menu."
+                                "{closePane} closes the tab, and the window when it is the last tab; in a tab with two panes it closes the pane you are in first. {closeTab} closes a tab with both its panes at once: in the File menu, hold Option. {reopenClosedTab} brings back the tab closed last, where it was, with its Back and Forward, selection and filters. Right-click a tab for Close Other Tabs and Move Tab to New Window. Duplicate Tab is in the File menu, and Merge All Windows in the Window menu."
                         ),
                         HelpRow(
                             label: "Between tabs",

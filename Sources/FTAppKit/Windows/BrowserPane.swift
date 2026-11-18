@@ -185,6 +185,16 @@ final class BrowserPane {
         return view
     }
 
+    /// The pane shows search results.
+    var showsSearchResults: Bool { searchStore?.showsResults == true }
+
+    /// The view a pane closed comes back with (⌘\): as on screen, without what its search results had, as the search
+    /// isn't brought back.
+    var closedView: TabViewState? {
+        guard let view = liveView else { return nil }
+        return showsSearchResults ? view.leavingSearchResults() : view
+    }
+
     // MARK: The first read
 
     /// Reads the pane's folder the first time it is shown, or again when it was sent elsewhere in the background.

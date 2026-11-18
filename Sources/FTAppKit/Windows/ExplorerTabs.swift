@@ -22,6 +22,18 @@ public struct TabViewState: Equatable, Sendable {
     public var folderViewMemories: FolderViewMemories = [:]
 
     public init() {}
+
+    /// The view as a closed tab or pane comes back with it while it showed search results: the search isn't brought
+    /// back, so the results' selection, filter and scroll go with it. The pinned filter and the places Back and
+    /// Forward go back to stay.
+    public func leavingSearchResults() -> TabViewState {
+        var left = self
+        left.contentSelection = .empty
+        left.listFilterQuery = ""
+        left.listFilterMode = nil
+        left.contentScroll = .zero
+        return left
+    }
 }
 
 /// Everything a tab keeps of itself while another tab is on screen.
@@ -86,16 +98,21 @@ public struct TabSnapshot: Equatable, Sendable {
     }
 }
 
-/// A tab's second pane as a snapshot keeps it: how it shows its folder, and its history.
+/// A tab's second pane as a snapshot keeps it: how it shows its folder, its history, and what it had on screen.
 public struct PaneSnapshot: Equatable, Sendable {
     public var pane: OpenPanePreference
     public var historyPaths: [String]
     public var historyIndex: Int
+    /// Its selection, filters, scroll and the places Back and Forward go back to; nil for a pane whose folder is yet to
+    /// be read. The tree's parts are the tab's, in the snapshot's own `view`, but for its scrolls, which a pane that
+    /// is active puts back as it shows its first folder.
+    public var view: TabViewState?
 
-    public init(pane: OpenPanePreference, historyPaths: [String], historyIndex: Int) {
+    public init(pane: OpenPanePreference, historyPaths: [String], historyIndex: Int, view: TabViewState? = nil) {
         self.pane = pane
         self.historyPaths = historyPaths
         self.historyIndex = historyIndex
+        self.view = view
     }
 }
 
@@ -284,17 +301,12 @@ public enum ExplorerTabs {
         return new
     }
 
-    /// What is kept of a closed tab: its folder, its tree root, and how it showed the folder.
-    /// Its history, selection and search go with it.
+    /// What is kept of a closed tab: all of it, its panes' history, selection, filters and scroll among them, but for
+    /// the error that was on screen, as its folders are read again. Its search isn't in the snapshot (`closedSnapshot`).
     public static func reopenable(_ snapshot: TabSnapshot) -> TabSnapshot {
         var kept = snapshot
-        kept.historyPaths = snapshot.currentPath.isEmpty ? [] : [snapshot.currentPath]
-        kept.historyIndex = snapshot.currentPath.isEmpty ? -1 : 0
-        kept.view = nil
-        if let second = snapshot.secondPane, let path = second.pane.path, !path.isEmpty {
-            kept.secondPane?.historyPaths = [path]
-            kept.secondPane?.historyIndex = 0
-        }
+        kept.view?.directoryError = nil
+        kept.secondPane?.view?.directoryError = nil
         return kept
     }
 
@@ -323,6 +335,7 @@ public enum ExplorerTabs {
             left.secondPane?.pane.path = homePath
             left.secondPane?.historyPaths = history
             left.secondPane?.historyIndex = history.count - 1
+            left.secondPane?.view = nil
         }
         let secondIsActive = snapshot.activePane == 1 && second != nil
         if rootGone || (secondIsActive ? secondGone : firstGone) {
@@ -379,6 +392,7 @@ public enum ExplorerTabs {
         if let second = snapshot.secondPane {
             secondPane?.pane.path = second.pane.path.map { followMovedPath($0, moves) }
             secondPane?.historyPaths = second.historyPaths.map { followMovedPath($0, moves) }
+            if secondPane?.pane.path != second.pane.path { secondPane?.view = nil }
         }
         let moved =
             currentPath != snapshot.currentPath || treeRootPath != snapshot.treeRootPath

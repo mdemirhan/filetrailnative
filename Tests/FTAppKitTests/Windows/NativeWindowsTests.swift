@@ -45,9 +45,9 @@ extension ExplorerWindowlessTests {
             // ⌘W on the tab on screen: the one on its left takes over, as it was last.
             group.tabs[1].perform(.closeTab)
             #expect(await waitUntil { group.tabs.count == 1 && group.selected === first })
-            #expect(group.session.closedTabs.map(\.currentPath) == [folder.appending("Sub").path])
+            #expect(group.session.closedTabs.map(\.snapshot.currentPath) == [folder.appending("Sub").path])
 
-            // ⇧⌘T brings it back, at its folder, after the tab on screen.
+            // ⇧⌘T brings it back, at its folder, where it was in the row.
             first.perform(.reopenClosedTab)
             #expect(await waitUntil { group.tabs.count == 2 })
             #expect(group.tabs[1].folder.path == folder.appending("Sub").path)

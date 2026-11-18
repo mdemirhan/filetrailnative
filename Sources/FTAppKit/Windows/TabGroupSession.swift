@@ -31,9 +31,18 @@ public final class TabGroupSession {
         }
     }
 
+    /// A tab that was closed, and where it was in the row.
+    public struct ClosedTab: Equatable, Sendable {
+        public var snapshot: TabSnapshot
+        /// Its place in the row as it went, where Reopen Closed Tab puts it back; nil to put it after the tab on screen.
+        public var index: Int?
+        /// The tab while it is still closing (`tabLeft`), for its place to be the one it leaves.
+        var tab: ObjectIdentifier?
+    }
+
     public private(set) var panels: Panels
     /// The tabs that were closed, most recent last. They are not kept between launches.
-    public private(set) var closedTabs: [TabSnapshot] = []
+    public private(set) var closedTabs: [ClosedTab] = []
     /// Told when the panels change, so every tab shows them alike.
     public var onPanelsChanged: (Panels) -> Void = { _ in }
 
@@ -49,14 +58,25 @@ public final class TabGroupSession {
         onPanelsChanged(next)
     }
 
-    /// `rememberClosedTab`: a tab with no folder is not remembered; only the last `closedTabsLimit` are.
-    public func rememberClosedTab(_ snapshot: TabSnapshot?) {
+    /// `rememberClosedTab`: a tab with no folder is not remembered; only the last `closedTabsLimit` are. `index` is
+    /// its place in the row, which `tabLeft` sets again as it goes.
+    public func rememberClosedTab(_ snapshot: TabSnapshot?, at index: Int? = nil, tab: ObjectIdentifier? = nil) {
         guard let snapshot, !snapshot.currentPath.isEmpty else { return }
-        closedTabs = Array(closedTabs.suffix(ExplorerTabs.closedTabsLimit - 1)) + [ExplorerTabs.reopenable(snapshot)]
+        let closed = ClosedTab(snapshot: ExplorerTabs.reopenable(snapshot), index: index, tab: tab)
+        closedTabs = Array(closedTabs.suffix(ExplorerTabs.closedTabsLimit - 1)) + [closed]
+    }
+
+    /// The tab left the row from `index`: that is the place it comes back to. Tabs closed together (Close Other Tabs)
+    /// leave one after another, so each place is counted among the tabs still there, and reopened in turn they come
+    /// back in their order.
+    public func tabLeft(_ tab: ObjectIdentifier, at index: Int) {
+        guard let found = closedTabs.lastIndex(where: { $0.tab == tab }) else { return }
+        closedTabs[found].index = index
+        closedTabs[found].tab = nil
     }
 
     /// The tab closed last, which Reopen Closed Tab brings back; nil with none.
-    public func takeClosedTab() -> TabSnapshot? {
+    public func takeClosedTab() -> ClosedTab? {
         closedTabs.popLast()
     }
 }

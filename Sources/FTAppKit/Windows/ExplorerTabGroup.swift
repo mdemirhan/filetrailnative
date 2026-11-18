@@ -248,7 +248,10 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     }
 
     private func prepareToClose(_ tab: MainWindowController, remember: Bool) {
-        if remember { session.rememberClosedTab(tab.snapshot) }
+        if remember {
+            session.rememberClosedTab(
+                tab.closedSnapshot, at: tabs.firstIndex { $0 === tab }, tab: ObjectIdentifier(tab))
+        }
         if selected === tab,
             let next = ExplorerTabs.tabAfterClose(tabs.map(ObjectIdentifier.init), closing: ObjectIdentifier(tab)),
             let nextTab = tabs.first(where: { ObjectIdentifier($0) == next })
@@ -260,6 +263,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     func tabWillClose(_ tab: MainWindowController) {
         guard !closingAll, let index = tabs.firstIndex(where: { $0 === tab }) else { return }
         tabs.remove(at: index)
+        session.tabLeft(ObjectIdentifier(tab), at: index)
         tab.group = nil
         host?.tabGone(tab)
         keepAliveUntilClosed([tab])
@@ -338,12 +342,19 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         insert(opened, after: tab, select: true)
     }
 
-    /// `reopenClosedTab` (⇧⌘T): the tab closed last, after the tab on screen, at its folder.
+    /// `reopenClosedTab` (⇧⌘T): the tab closed last, back where it was in the row (at the end when fewer tabs are left)
+    /// and as it was: its folders, history, selection, filters and scroll. A pane closed in it before isn't kept, so ⌘\
+    /// in it opens a copy of the active pane.
     func reopenClosedTab(from tab: MainWindowController) {
-        guard !session.closedTabs.isEmpty, !isBlocked, hasRoomForTab(), let snapshot = session.takeClosedTab() else {
+        guard !session.closedTabs.isEmpty, !isBlocked, hasRoomForTab(), let closed = session.takeClosedTab() else {
             return
         }
-        insert(MainWindowController(snapshot: snapshot, frame: tabFrame), after: tab, select: true)
+        let reopened = MainWindowController(snapshot: closed.snapshot, frame: tabFrame)
+        if let index = closed.index {
+            insert(reopened, at: min(index, tabs.count), select: true)
+        } else {
+            insert(reopened, after: tab, select: true)
+        }
     }
 
     /// `duplicateTab` (Duplicate Tab, in the File menu): a copy of `tab` right after it and in front, on the same
@@ -368,14 +379,20 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     }
 
     private func insert(_ tab: MainWindowController, after anchor: MainWindowController, select selectIt: Bool) {
+        insert(tab, at: tabs.firstIndex { $0 === anchor }.map { $0 + 1 } ?? tabs.count, select: selectIt)
+    }
+
+    /// Puts `tab` at `index` in the row: after the tab before it, or before the first.
+    private func insert(_ tab: MainWindowController, at index: Int, select selectIt: Bool) {
         tab.group = self
         tab.showPanels(session.panels)
         tab.giveKeyboardToStartingPane()
-        let index = tabs.firstIndex { $0 === anchor }.map { $0 + 1 } ?? tabs.count
+        let index = max(0, min(index, tabs.count))
+        let neighbor = index > 0 ? tabs[index - 1] : tabs.first
         tabs.insert(tab, at: index)
-        if isMaterialized, let anchorWindow = anchor.window, let window = tab.window {
+        if isMaterialized, let anchorWindow = neighbor?.window, let window = tab.window {
             isArranging = true
-            anchorWindow.addTabbedWindow(window, ordered: .above)
+            anchorWindow.addTabbedWindow(window, ordered: index > 0 ? .above : .below)
             isArranging = false
         }
         if selectIt { select(tab) }
