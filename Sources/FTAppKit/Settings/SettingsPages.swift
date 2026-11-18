@@ -139,14 +139,16 @@ final class SettingsPageView: NSView {
         toggle(
             behavior, "Reopen the last folder and tabs", "Otherwise File Trail opens one tab in your home folder.",
             \.restoreSessionOnStartup)
-        toggle(behavior, "Show notifications", "When a copy, a move or the Trash finishes.", \.notificationsEnabled)
+        toggle(
+            behavior, "Show notifications",
+            "Short messages in the window, such as when a copy, a move or the Trash finishes.", \.notificationsEnabled)
         toggle(
             behavior, "Mark copied and cut items",
             "They keep a mark in the tree and the list while they are on the clipboard.",
             \.markClipboardItems)
         toggle(
             behavior, "Calculate folder sizes automatically",
-            "In the Info panel and Info Row, for your home folder, a folder in it, or an app.",
+            "In the Info panel and Info Row, for your home folder and any folder in it, and for apps anywhere.",
             \.autoCalculateFolderSizes)
     }
 
@@ -556,13 +558,13 @@ final class SettingsPageView: NSView {
         }
         popup(
             opening, "Open disk images and archives in",
-            "Where a disk opens, and what an archive gives when it goes to a folder you aren\u{2019}t looking at.",
+            "Where a mounted disk image opens, and where an extracted archive opens when it goes to a folder not on screen.",
             label: "Open disk images and archives in",
             options: [(DiskImageOpensIn.window, "New Window"), (.tab, "New Tab")], \.diskImageOpensIn)
         let limit = SettingsNumberField(
             value: preferences.openItemLimit, unit: "items", label: "Open and Edit item limit", theme: theme)
         limit.onChange = { [weak self] value in self?.update { $0.openItemLimit = value } }
-        opening.card.add(row("Ask before opening more than", "Opening or editing more at once asks first.", limit))
+        opening.card.add(row("Open or edit at most", "More at once opens nothing, and a notice says why.", limit))
         onRefresh { limit.update(value: $0.openItemLimit) }
 
         let editor = appPopup(
@@ -578,7 +580,7 @@ final class SettingsPageView: NSView {
 
         let openWith = section(
             "First in Open With",
-            note: "Listed first in Open With, after the app an item opens in, for the items each app can open.")
+            note: "These apps come first in Open With, after the item\u{2019}s default app, for items they can open.")
         openWith.card.add(openWithList(), fullWidth: true)
     }
 

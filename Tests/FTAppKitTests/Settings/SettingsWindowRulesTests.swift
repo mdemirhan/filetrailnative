@@ -61,6 +61,6 @@ import Testing
         let row = try Kit.row("Calculate folder sizes automatically", in: controller)
         #expect(
             row.descriptionText?.stringValue
-                == "In the Info panel and Info Row, for your home folder, a folder in it, or an app.")
+                == "In the Info panel and Info Row, for your home folder and any folder in it, and for apps anywhere.")
     }
 }

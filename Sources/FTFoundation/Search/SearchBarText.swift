@@ -49,7 +49,6 @@ public enum SearchBarText {
     /// A write put items inside the folder searched, which the results don't list.
     public static let mayBeMissingBanner = "Items added since this search may not be listed."
     public static let searchAgain = "Search Again"
-    public static let searchAgainTitle = "Search Again (⌘R)"
     public static let searchAgainName = "Search again"
 
     /// What the banner over the results says: that they were cut short, that they may be missing what was added, or

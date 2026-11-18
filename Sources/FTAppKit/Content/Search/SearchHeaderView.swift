@@ -22,6 +22,8 @@ final class SearchHeaderView: NSView {
     var onDone: () -> Void = {}
     /// The banner's Search Again.
     var onSearchAgain: () -> Void = {}
+    /// Refresh's key as it is set now, for Search Again's tooltip.
+    var searchAgainShortcut: () -> String? = { nil }
     /// The header's height changed (the banner came or went).
     var onHeightChange: () -> Void = {}
 
@@ -225,6 +227,7 @@ final class SearchHeaderView: NSView {
         let wasHeight = height
         let text = SearchBarText.banner(truncated: truncated, mayBeMissingItems: mayBeMissingItems)
         banner.show(text: text ?? "", searchAgain: mayBeMissingItems)
+        banner.searchAgain.toolTip = Tooltips.format(SearchBarText.searchAgain, shortcut: searchAgainShortcut())
         banner.isHidden = text == nil
         if wasHeight != height { onHeightChange() }
         needsLayout = true
@@ -823,7 +826,6 @@ final class SearchBannerView: NSView, TextStyleSource {
         addSubview(text)
         searchAgain.setAccessibilityIdentifier("searchBar.banner.searchAgain")
         searchAgain.setAccessibilityLabel(SearchBarText.searchAgainName)
-        searchAgain.toolTip = SearchBarText.searchAgainTitle
         searchAgain.isHidden = true
         addSubview(searchAgain)
     }

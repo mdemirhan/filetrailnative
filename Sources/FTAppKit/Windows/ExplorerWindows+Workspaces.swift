@@ -82,7 +82,7 @@ extension ExplorerWindows {
                 let question = WriteQuestion(
                     title: "Replace \u{201C}\(current[existing].name)\u{201D}?",
                     message:
-                        "A workspace with this name is kept already. Its tabs are replaced by this window\u{2019}s.",
+                        "A workspace with this name already exists. Its tabs will be replaced by this window\u{2019}s.",
                     confirmLabel: "Replace", destructive: false, cancelIsDefault: false)
                 guard await InWindowAlerts.confirm(question, in: window) else { return }
             } else if current.count >= Workspaces.limit {

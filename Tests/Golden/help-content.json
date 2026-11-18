@@ -94,12 +94,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -114,27 +114,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -169,7 +169,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -1255,12 +1255,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -1533,12 +1533,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -1865,6 +1865,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -1917,6 +1921,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -2495,12 +2503,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -2515,27 +2523,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -2570,7 +2578,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -3656,12 +3664,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -3934,12 +3942,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -4265,6 +4273,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -4317,6 +4329,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -4907,12 +4923,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -4922,27 +4938,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -4977,7 +4993,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -6058,12 +6074,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -6331,12 +6347,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -6663,6 +6679,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "Open in New Tab"
                 ],
@@ -6711,6 +6731,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -7294,12 +7318,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -7314,27 +7338,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -7369,7 +7393,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -8455,12 +8479,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -8733,12 +8757,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -9064,6 +9088,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -9113,6 +9141,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Opening",
+                  "Open in Terminal"
+                ],
                 [
                   "Copying and moving",
                   "Move to a folder"
@@ -9732,27 +9764,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -9787,7 +9819,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -11652,7 +11684,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -11662,7 +11694,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -11677,27 +11709,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -11732,7 +11764,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -12818,7 +12850,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -12828,7 +12860,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -13101,12 +13133,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -13443,6 +13475,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -13495,6 +13531,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -14079,12 +14119,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -14099,27 +14139,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -14154,7 +14194,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -15220,12 +15260,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -15498,12 +15538,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -15830,6 +15870,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -15886,6 +15930,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -16458,12 +16506,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -16478,27 +16526,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -16533,7 +16581,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -17609,12 +17657,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -17887,12 +17935,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -18218,6 +18266,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -18270,6 +18322,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -18866,7 +18922,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -18881,7 +18937,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -18896,27 +18952,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -18951,7 +19007,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -19997,7 +20053,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -20012,7 +20068,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -20274,12 +20330,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -20599,6 +20655,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -20652,6 +20712,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Opening",
+                  "Open in Terminal"
+                ],
                 [
                   "Copying and moving",
                   "Move to a folder"
@@ -21211,12 +21275,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -21236,27 +21300,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -21291,7 +21355,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -22377,12 +22441,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -22660,12 +22724,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -22991,6 +23055,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -23043,6 +23111,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -23640,7 +23712,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -23650,7 +23722,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+;",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -23665,27 +23737,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -23720,7 +23792,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -24773,12 +24845,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+;",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -25040,12 +25112,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+;",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -25377,6 +25449,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -25422,6 +25498,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Opening",
+                  "Open in Terminal"
+                ],
                 [
                   "Copying and moving",
                   "Move to a folder"
@@ -26019,12 +26099,12 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+S",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -26039,27 +26119,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -26094,7 +26174,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -27170,12 +27250,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Ctrl+Cmd+S",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -27442,12 +27522,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Ctrl+Cmd+S",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -27763,6 +27843,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -27815,6 +27899,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -28390,7 +28478,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -28400,7 +28488,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -28415,27 +28503,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -28470,7 +28558,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -29556,12 +29644,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -29829,12 +29917,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -30161,6 +30249,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -30213,6 +30305,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -30802,12 +30898,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -30822,27 +30918,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -30877,7 +30973,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -31975,12 +32071,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -32253,12 +32349,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -32584,6 +32680,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -32636,6 +32736,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -33223,12 +33327,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -33243,27 +33347,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -33298,7 +33402,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -34368,12 +34472,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -34640,12 +34744,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -34965,6 +35069,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -35017,6 +35125,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -35603,12 +35715,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -35623,27 +35735,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -35678,7 +35790,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -36759,12 +36871,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -37037,12 +37149,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -37369,6 +37481,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -37421,6 +37537,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -38019,7 +38139,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -38029,12 +38149,12 @@
           {
             "group": "navigation",
             "shortcut": "F5",
-            "description": "Open the Trash, to see what is in it or put something back"
+            "description": "Open the Trash, to see what is in it or drag something back out"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -38044,27 +38164,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -38099,7 +38219,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -38449,7 +38569,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Open the Trash, to see what is in it or put something back"
+                  "description": "Open the Trash, to see what is in it or drag something back out"
                 }
               ]
             },
@@ -38549,7 +38669,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "F5",
-                  "description": "Open the Trash, to see what is in it or put something back"
+                  "description": "Open the Trash, to see what is in it or drag something back out"
                 }
               ]
             },
@@ -39209,12 +39329,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -39477,12 +39597,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -39813,6 +39933,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "Open in New Tab"
                 ],
@@ -39861,6 +39985,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -40450,12 +40578,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -40475,27 +40603,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -40530,7 +40658,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -41616,12 +41744,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -41888,12 +42016,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -42213,6 +42341,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -42265,6 +42397,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -42856,7 +42992,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -42866,7 +43002,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -42881,27 +43017,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -42936,7 +43072,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -43980,7 +44116,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -43990,7 +44126,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -44268,12 +44404,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -44605,6 +44741,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -44657,6 +44797,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -45234,12 +45378,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -45254,27 +45398,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -45309,7 +45453,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -46380,12 +46524,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -46652,12 +46796,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -46977,6 +47121,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -47029,6 +47177,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -47620,12 +47772,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -47650,27 +47802,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -47705,7 +47857,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -48761,12 +48913,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -49044,12 +49196,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -49376,6 +49528,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -49428,6 +49584,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -50013,7 +50173,7 @@
           {
             "group": "navigation",
             "shortcut": "F7",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -50023,7 +50183,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -50038,27 +50198,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -50093,7 +50253,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -51169,7 +51329,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "F7",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -51179,7 +51339,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -51451,12 +51611,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "F7",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -51792,6 +51952,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -51844,6 +52008,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -52419,12 +52587,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -52434,27 +52602,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -52489,7 +52657,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -53565,12 +53733,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -53828,12 +53996,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -54160,6 +54328,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -54205,6 +54377,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Opening",
+                  "Open in Terminal"
+                ],
                 [
                   "Copying and moving",
                   "Move to a folder"
@@ -54798,7 +54974,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -54813,27 +54989,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -54868,7 +55044,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -55971,7 +56147,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -56244,7 +56420,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -56570,6 +56746,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -56622,6 +56802,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -57222,37 +57406,37 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Left",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -57287,7 +57471,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -58363,12 +58547,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Left",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -58625,12 +58809,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Left",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -58947,6 +59131,10 @@
                   "Go to Folder"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "Open in New Tab"
                 ],
@@ -58991,6 +59179,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -59559,12 +59751,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -59579,27 +59771,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -59634,7 +59826,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -60710,12 +60902,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -60988,12 +61180,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -61320,6 +61512,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -61372,6 +61568,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -61964,17 +62164,17 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Left",
-            "description": "Open the Trash, to see what is in it or put something back (Ctrl+Y also works)"
+            "description": "Open the Trash, to see what is in it or drag something back out (Ctrl+Y also works)"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -61989,27 +62189,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -62044,7 +62244,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -62389,7 +62589,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Left",
-                  "description": "Open the Trash, to see what is in it or put something back (Ctrl+Y also works)"
+                  "description": "Open the Trash, to see what is in it or drag something back out (Ctrl+Y also works)"
                 }
               ]
             },
@@ -62489,7 +62689,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Left",
-                  "description": "Open the Trash, to see what is in it or put something back (Ctrl+Y also works)"
+                  "description": "Open the Trash, to see what is in it or drag something back out (Ctrl+Y also works)"
                 }
               ]
             },
@@ -63142,12 +63342,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -63410,12 +63610,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -63741,6 +63941,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "Open in New Tab"
                 ],
@@ -63789,6 +63993,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -64375,12 +64583,12 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -64395,27 +64603,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -64450,7 +64658,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -65531,12 +65739,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -65809,12 +66017,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -66140,6 +66348,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -66192,6 +66404,10 @@
                 [
                   "Opening",
                   "Quick Look"
+                ],
+                [
+                  "Opening",
+                  "Open in Terminal"
                 ],
                 [
                   "Copying and moving",
@@ -66782,7 +66998,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+H",
-            "description": "Go Home and root the folder tree there"
+            "description": "Open your home folder and make it the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -66792,7 +67008,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Shift+R",
-            "description": "Root the folder tree at the selected folder"
+            "description": "Make the selected folder, or the one you are in, the top of the folder tree"
           },
           {
             "group": "navigation",
@@ -66807,27 +67023,27 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+1",
-            "description": "Open the first workspace"
+            "description": "Open the first workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+2",
-            "description": "Open the second workspace"
+            "description": "Open the second workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+3",
-            "description": "Open the third workspace"
+            "description": "Open the third workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+4",
-            "description": "Open the fourth workspace"
+            "description": "Open the fourth workspace in a new window"
           },
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+5",
-            "description": "Open the fifth workspace"
+            "description": "Open the fifth workspace in a new window"
           },
           {
             "group": "navigation",
@@ -66862,7 +67078,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+Option+\\",
-            "description": "Show a second pane as a copy of this one, never the pane closed last"
+            "description": "Show a copy of this pane beside it, in place of the other pane if there is one"
           },
           {
             "group": "navigation",
@@ -67943,7 +68159,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -67953,7 +68169,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 },
                 {
                   "group": "navigation",
@@ -68221,12 +68437,12 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+H",
-                  "description": "Go Home and root the folder tree there"
+                  "description": "Open your home folder and make it the top of the folder tree"
                 },
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+Shift+R",
-                  "description": "Root the folder tree at the selected folder"
+                  "description": "Make the selected folder, or the one you are in, the top of the folder tree"
                 }
               ]
             },
@@ -68553,6 +68769,10 @@
                   "Disks"
                 ],
                 [
+                  "Folders",
+                  "Tree root"
+                ],
+                [
                   "Tabs",
                   "New tab"
                 ],
@@ -68602,6 +68822,10 @@
             {
               "topic": "files",
               "rows": [
+                [
+                  "Opening",
+                  "Open in Terminal"
+                ],
                 [
                   "Copying and moving",
                   "Move to a folder"

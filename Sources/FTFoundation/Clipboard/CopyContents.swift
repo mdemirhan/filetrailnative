@@ -167,7 +167,8 @@ public enum CopyContents {
     }
 
     public static let notAnImageMessage = "It couldn\u{2019}t be opened as an image."
-    public static let unknownEncodingMessage = "Its text isn\u{2019}t in UTF-8 or UTF-16, which are what can be copied."
+    public static let unknownEncodingMessage =
+        "Its text isn\u{2019}t UTF-8 or UTF-16, the only kinds that can be copied."
     public static func unreadableMessage(_ name: String, _ reason: String) -> String {
         "File Trail couldn\u{2019}t read \u{201C}\(name)\u{201D}: \(reason)"
     }

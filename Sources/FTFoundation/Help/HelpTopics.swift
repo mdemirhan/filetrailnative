@@ -32,12 +32,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Disks",
                             description:
-                                "Disks you connect, disk images and servers appear under Locations. Opening a disk image opens its disk in a new window, or a new tab if you choose that in Settings; one that asks for a password or a license opens as in Finder. Click ⏏ beside one, right-click it and choose Eject, or select it and press {ejectVolume}, before you disconnect it. When a program is still using the disk, File Trail asks whether to try again or force it."
+                                "Disks you connect, disk images and servers appear under Locations. Opening a disk image opens its disk in a new window, or a new tab if you choose that in Settings → Files; macOS opens one that asks for a password or a license, as it does from Finder. Click ⏏ beside one, right-click it and choose Eject, or select it and press {ejectVolume}, before you disconnect it. When a program is still using the disk, File Trail asks whether to try again or force it."
                         ),
                         HelpRow(
                             label: "Tree root",
                             description:
-                                "Use as Tree Root makes a folder the top of the folder tree, until you open a folder outside it. Go > Home returns the tree to your home folder."
+                                "{rootTreeAtSelection}, or Use as Tree Root in a folder's right-click menu, makes that folder the top of the folder tree, until you open a folder outside it. Go > Home returns the tree to your home folder."
                         ),
                     ]),
                 HelpSection(
@@ -88,7 +88,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Two Panes",
                             description:
-                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search: the pane closed last in the tab comes back where it was, or else the new one is a copy of yours, with its folder, view and history. {duplicatePane} always opens that copy, and with two panes puts it in place of the other one. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
+                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. If you closed a pane in this tab, it comes back as you left it; otherwise the new pane is a copy of yours, with the same folder, view and history. {duplicatePane} opens a copy of your pane every time, in place of the other pane when two are open. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
                         ),
                         HelpRow(
                             label: "Moving between panes",
@@ -132,7 +132,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Workspaces",
                             description:
-                                "Window > Workspaces > Save Window as Workspace… keeps the window's tabs by name: each tab's folders and panes, the folder tree, the Info panel and the window's size. Choose the workspace in Window > Workspaces to open it as it was saved in a new window, or hold Option to open it in this one instead. The first five open with {openWorkspace1} to {openWorkspace5}, and in this window with {openWorkspace1InThisWindow} to {openWorkspace5InThisWindow}. A workspace changes only when a window is saved under its name again: the button at the end of the name field lists the saved ones. Settings → Browsing renames, removes and orders them."
+                                "Window > Workspaces > Save Window as Workspace… keeps the window's tabs by name: each tab's folders and panes, the folder tree, the Info panel and the window's size. Choose the workspace in Window > Workspaces to open it as it was saved in a new window, or hold Option to open it in this one instead. The first five open with {openWorkspace1} to {openWorkspace5}, and in this window with {openWorkspace1InThisWindow} to {openWorkspace5InThisWindow}. A workspace changes only when you save a window under its name again; the button at the end of the name field lists the saved names. Settings → Browsing renames, removes and orders them."
                         ),
                         HelpRow(
                             label: "Between windows",
@@ -142,7 +142,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Command palette",
                             description:
-                                "{showCommandPalette}, or View > Command Palette…, lists every command with its keys and where it is in the menus, also the ones only keys run. Type some letters of a command's name, in order, and press Return or click it to run it; Esc closes the list. A command that can't run now is dimmed and listed last. With nothing typed, the commands you ran from it lately come first."
+                                "{showCommandPalette}, or View > Command Palette…, lists every command with its keys and its place in the menus, including those that have keys but no menu item. Type some letters of a command's name, in order, and press Return or click it to run it; Esc closes the list. A command that can't run now is dimmed and listed last. With nothing typed, the commands you ran from it lately come first."
                         ),
                         HelpRow(
                             label: "Closing",
@@ -184,7 +184,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Type in the list",
                             description:
-                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The bar under the list shows what you typed, with Fuzzy and Contains: click Contains to keep only the names with the letters side by side. The list keeps the mode you chose for the filters you type in it next; other panes and windows keep theirs, and those you open later start in it. Backspace takes a character back, and Option-Backspace a word. Space types a space while you type and is Quick Look after a pause. Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
+                                "Narrows the folder to the names with the letters you type in that order, marks them and selects the best match; a plain letter also finds its accented forms. The bar under the list shows what you typed, with Fuzzy and Contains: click Contains to keep only the names with the letters side by side. Your choice stays for the next filters typed in this list, and panes and windows opened later start with it; those already open keep their own. Backspace takes a character back, and Option-Backspace a word. Space types a space while you type and is Quick Look after a pause. Esc shows everything again and keeps the selection. {focusFileSearch} looks for the same text in the subfolders."
                         ),
                         HelpRow(
                             label: "Type in the folder tree",
@@ -215,7 +215,8 @@ extension HelpContent {
                         HelpRow(
                             label: "Open in Terminal",
                             description:
-                                "Opens a Terminal window in the folder. Settings → Files chooses the terminal app."),
+                                "{openInTerminal} opens a terminal window in the selected folder, or the folder you are in when nothing is selected. Settings → Files chooses the terminal app."
+                        ),
                     ]),
                 HelpSection(
                     title: "Copying and moving",
@@ -292,7 +293,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Move to Trash",
                             description:
-                                "{undo} puts what you just moved to the Trash back. File Trail has no Put Back: to bring back something older, drag it out of the Trash."
+                                "{trashSelection} moves the selected items to the Trash, and {undo} puts them back. File Trail has no Put Back: to bring back something older, drag it out of the Trash."
                         ),
                         HelpRow(
                             label: "The Trash",
@@ -321,7 +322,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Extract To",
                             description:
-                                "File › Extract To… takes the archives apart in a folder you choose, found as Move to… finds one: it opens on the folder you are in, and a folder that doesn't exist yet can be made on the way. What isn't in a folder you're looking at opens in a new window, or a new tab, as Settings → Files says for disk images and archives."
+                                "File › Extract To… takes the archives apart in a folder you choose, picked as in Move to…: it opens on the folder you are in, and a folder that doesn't exist yet can be made on the way. When no pane shows that folder, what comes out opens in a new window or tab, as Settings → Files sets for disk images and archives."
                         ),
                         HelpRow(
                             label: "What isn’t extracted",
@@ -335,7 +336,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Undo",
                             description:
-                                "{undo} takes back the last thing you did to your files. Press it again to take back the one before, and so on, back to when you opened File Trail or last did something that can’t be undone (after about a million items, the oldest are let go). Edit › Undo shows what it will take back, such as “Undo Rename”."
+                                "{undo} takes back the last thing you did to your files. Press it again to take back the one before, and so on, back to when you opened File Trail or last did something that can’t be undone (once the list holds about a million items, the oldest drop off it). Edit › Undo shows what it will take back, such as “Undo Rename”."
                         ),
                         HelpRow(
                             label: "Redo",
@@ -365,7 +366,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What can’t be undone",
                             description:
-                                "Merging folders, moving items to another disk, anything made on a disk without a Trash (such as a network share): a copy, a new folder, a pasted or converted file, a zip or what is extracted, and anything deleted for good: Delete Immediately, Empty Trash, and Move to Trash or Replace on a disk without a Trash. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”, and nothing done before can be undone either."
+                                "Merging folders, moving items to another disk, and deleting for good: Delete Immediately and Empty Trash. On a disk without a Trash (such as a network share), Move to Trash and Replace delete for good too, and nothing made there can be undone: a copy, a new folder, a pasted or converted file, a zip or what is extracted. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”, and nothing done before can be undone either."
                         ),
                     ]),
                 HelpSection(
@@ -389,7 +390,7 @@ extension HelpContent {
                         HelpRow(
                             label: "An item is gone",
                             description:
-                                "If an item was deleted, emptied from the Trash, renamed or moved in another app, or its folder is gone, Undo can’t take it back. It does everything else and tells you what it left and why. If you’d rather have it all as it was, {redo} brings back what Undo did."
+                                "If an item was deleted, emptied from the Trash, renamed or moved in another app, or its folder is gone, Undo can’t take it back. It does everything else and tells you what it left and why. If you’d rather not have it half done, {redo} puts back what this Undo changed."
                         ),
                         HelpRow(
                             label: "It couldn’t be done",
@@ -542,7 +543,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Filter",
                             description:
-                                "The Filter field narrows what was found, by name or by the folder a result is in, without searching again. Its chip says how names match, as typing in a folder does; the folder always has to hold the text as typed. Typing in the results goes to the same filter, and Esc clears it."
+                                "The Filter field narrows what was found, by name or by the folder a result is in, without searching again. The Fuzzy or Contains button at its start sets how names match, as in a folder; the folder a result is in always has to hold the text with its letters side by side. Typing in the results goes to the same filter, and Esc clears it."
                         ),
                         HelpRow(
                             label: "Keep typing",
@@ -581,12 +582,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Icon size and column width",
                             description:
-                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, and a workspace brings them back; a pane opened from another starts with that pane’s. Sizes → Match Finder keeps sizes of its own."
+                                "The slider at the right of the status bar sets the size of the icons in the Icons view and the width of the columns in the Compact List, and shows the size while it moves. The View menu, {increaseSize} and {decreaseSize} change them a step at a time, and {resetSize} brings back the default size. Each pane keeps its own sizes, and a workspace brings them back; a pane opened from another starts with that pane’s. With Settings → Browsing → Sizes set to Match Finder, these sizes are kept apart from File Trail’s own."
                         ),
                         HelpRow(
                             label: "Previews",
                             description:
-                                "Shows 9, 4, 2 or 1 files at a time as large Quick Look previews, each in its own proportions with its name under it. The View menu, {increaseSize} and {decreaseSize}, or the slider in the status bar choose how many, and a scroll settles on a whole row. View → Show Previews, or holding the toolbar’s Previews button, switches to Previews at 9, 4, 2 or 1 at a time from any view, with the selected file on screen; Settings → Shortcuts gives each a key. Everything else works as in the Icons view."
+                                "Shows 9, 4, 2 or 1 files at a time as large Quick Look previews, each in its own proportions with its name under it. The View menu, {increaseSize} and {decreaseSize}, or the slider in the status bar choose how many, and a scroll settles on a whole row. View → Show Previews, or holding the toolbar’s Previews button, switches to Previews at 9, 4, 2 or 1 at a time from any view, with the selected file on screen; Settings → Shortcuts gives each a key. At 1 at a time, the file a scroll rests on is selected; everything else works as in the Icons view."
                         ),
                         HelpRow(
                             label: "Columns in List view",
@@ -601,12 +602,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Hidden files",
                             description:
-                                "Files whose names start with a dot, and items macOS marks as hidden, as Finder hides them. {toggleHiddenFiles} shows them in the tab on screen, with their icons faded; search follows this setting too."
+                                "Files whose names start with a dot, and items macOS marks as hidden, are hidden as in Finder. {toggleHiddenFiles} shows them in the tab on screen, with their icons faded; search follows this setting too."
                         ),
                         HelpRow(
                             label: "Pin Filter",
                             description:
-                                "View > Pin Filter, or the pin in the filter bar, keeps the filter you typed while the pane goes to other folders and searches. A pinned filter narrows files only, so folders always show, and typing selects a name instead of changing it. Choose Pin Filter again or click the pin to unpin it; the ✕ in the bar removes the filter."
+                                "View > Pin Filter, or the pin in the filter bar, keeps the filter you typed while the pane goes to other folders and searches. A pinned filter narrows files only, so folders always show, and typing selects the first name that starts with what you type, leaving the filter as it is. Choose Pin Filter again or click the pin to unpin it; the ✕ in the bar removes the filter."
                         ),
                         HelpRow(
                             label: "Dates",
@@ -633,7 +634,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder sizes",
                             description:
-                                "With the Info panel or the Info Row open, the folder they show is measured by itself when it is your home folder, a folder in it, or an app: the one you select, or with nothing selected the folder on screen, however you got there (turn it off with Calculate folder sizes automatically in Settings → General). Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. Right-click empty space to size the folder on screen. With several items selected it sizes the folders among them. The path bar's right end shows the size of the selection, or of the folder on screen when nothing is selected, once every size in it is known. Sizing a folder also sizes every folder inside it. Sizes you ask for are measured one at a time, those of the window in front first and then in the order you asked, ahead of those measured by themselves; one waiting its turn says Waiting…. While something runs in the background, a ring at the end of the toolbar's title shows it, filling as a file operation goes on, with a count when more runs or waits; click it for the list, a file operation and the sizes being measured or waiting, each with Stop. A size counts what it can: what changes or can't be read while the folder is measured is left out."
+                                "With the Info panel or the Info Row open, the folder they show (the one you select, or with nothing selected the folder on screen) is measured by itself when it is your home folder, a folder in it, or an app; Calculate folder sizes automatically in Settings → General turns this off. Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. This sizes the folders among the selected items, or, from a right-click on empty space, the folder on screen, and every folder inside them. Sizes you ask for are measured one at a time, the front window's first and then in the order you asked, ahead of those measured by themselves; one waiting its turn says Waiting…. Once every size in it is known, the right end of the path bar shows the size of the selection, or of the folder on screen. A size leaves out what changes or can't be read while it is measured. While something runs in the background, a ring at the end of the toolbar's title shows it, filling as a file operation goes on, with a count when more than one runs or waits; click it for the list, each with Stop."
                         ),
                         HelpRow(
                             label: "What takes the space",
@@ -653,7 +654,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Toolbar",
                             description:
-                                "View > Customize Toolbar…, or right-click the toolbar. Drag items in from the sheet, along the toolbar to move them, or out of it to remove them. Done when finished. Command-drag moves or removes items without the sheet."
+                                "View > Customize Toolbar…, or right-click the toolbar. Drag items in from the sheet, along the toolbar to move them, or out of it to remove them. Click Done when finished. Command-drag moves or removes items without the sheet."
                         ),
                     ]),
             ]),
@@ -676,7 +677,9 @@ extension HelpContent {
         HelpShortcutItem(
             group: .navigation, .command(.openLocationSheet),
             "Go to a folder by name or path, or pick one of those you use most"),
-        HelpShortcutItem(group: .navigation, .command(.goHomeRootTree), "Go Home and root the folder tree there"),
+        HelpShortcutItem(
+            group: .navigation, .command(.goHomeRootTree),
+            "Open your home folder and make it the top of the folder tree"),
         HelpShortcutItem(group: .navigation, .command(.goDocuments), "Open your Documents folder"),
         HelpShortcutItem(group: .navigation, .command(.goDesktop), "Open your Desktop folder"),
         HelpShortcutItem(group: .navigation, .command(.goDownloads), "Open your Downloads folder"),
@@ -684,9 +687,10 @@ extension HelpContent {
         HelpShortcutItem(group: .navigation, .command(.goMacintoshHD), "Open the startup disk"),
         HelpShortcutItem(group: .navigation, .command(.goApplications), "Open the Applications folder"),
         HelpShortcutItem(
-            group: .navigation, .command(.goTrash), "Open the Trash, to see what is in it or put something back"),
+            group: .navigation, .command(.goTrash), "Open the Trash, to see what is in it or drag something back out"),
         HelpShortcutItem(
-            group: .navigation, .command(.rootTreeAtSelection), "Root the folder tree at the selected folder"),
+            group: .navigation, .command(.rootTreeAtSelection),
+            "Make the selected folder, or the one you are in, the top of the folder tree"),
         HelpShortcutItem(group: .navigation, .command(.newWindow), "Open a new window on the folder you are in"),
         HelpShortcutItem(group: .navigation, .command(.newTab), "Open a new tab on the folder you are in"),
         HelpShortcutItem(group: .navigation, .command(.openSelectionInNewTab), "Open the selected folder in a new tab"),
@@ -697,11 +701,11 @@ extension HelpContent {
         HelpShortcutItem(
             group: .navigation, .command(.saveWorkspace),
             "Save this window's tabs and panes by name, to open again later"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace1), "Open the first workspace"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace2), "Open the second workspace"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace3), "Open the third workspace"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace4), "Open the fourth workspace"),
-        HelpShortcutItem(group: .navigation, .command(.openWorkspace5), "Open the fifth workspace"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace1), "Open the first workspace in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace2), "Open the second workspace in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace3), "Open the third workspace in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace4), "Open the fourth workspace in a new window"),
+        HelpShortcutItem(group: .navigation, .command(.openWorkspace5), "Open the fifth workspace in a new window"),
         HelpShortcutItem(
             group: .navigation, .command(.openWorkspace1InThisWindow), "Open the first workspace in this window"),
         HelpShortcutItem(
@@ -717,7 +721,7 @@ extension HelpContent {
             "Show a second pane beside this one, or close the pane you aren't in"),
         HelpShortcutItem(
             group: .navigation, .command(.duplicatePane),
-            "Show a second pane as a copy of this one, never the pane closed last"),
+            "Show a copy of this pane beside it, in place of the other pane if there is one"),
         HelpShortcutItem(group: .navigation, .command(.switchToOtherPane), "Move the keyboard to the other pane"),
         HelpShortcutItem(
             group: .navigation, .command(.openSelectionInOtherPane), "Open the selected folder in the other pane"),
@@ -780,7 +784,8 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.convertImages), "Convert the selected images to another format or size"),
         HelpShortcutItem(group: .files, .command(.compressSelection), "Compress the selected items into a zip"),
-        HelpShortcutItem(group: .files, .command(.extractSelection), "Extract the selected archives here"),
+        HelpShortcutItem(
+            group: .files, .command(.extractSelection), "Extract each selected archive into the folder it is in"),
         HelpShortcutItem(
             group: .files, .command(.extractSelectionTo), "Extract the selected archives to another folder"),
         HelpShortcutItem(
@@ -826,7 +831,7 @@ extension HelpContent {
             "Show or hide files whose names start with a dot, and other hidden items"),
         HelpShortcutItem(
             group: .views, .command(.togglePinFilter),
-            "Keep the filter typed in the list as you go to other folders, or let it go"),
+            "Keep the typed filter when you go to other folders, or turn that off"),
         HelpShortcutItem(
             group: .views, .command(.viewAsIcons), "View as large icons, with previews of photos and documents"),
         HelpShortcutItem(group: .views, .command(.viewAsDetails), "View as a list, with columns"),

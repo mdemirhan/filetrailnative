@@ -33,6 +33,23 @@ extension ExplorerWindowlessTests {
             box.textChanged(text)
         }
 
+        // The foot shows a command's Help line on one line and cuts off what doesn't fit: every command's line fits.
+        @Test func everyCommandsHelpLineFitsTheFoot() async throws {
+            let (harness, tab, menu) = try await open()
+            defer { NSApp.mainMenu = nil }
+            let box = try openBox(tab, menu)
+            let label = box.helpLabel
+            let cell = try #require(label.cell)
+            #expect(label.frame.width > 0)
+            var tooLong: [String] = []
+            for entry in box.entries where !entry.help.isEmpty {
+                label.stringValue = entry.help
+                if cell.cellSize.width > label.frame.width { tooLong.append(entry.help) }
+            }
+            #expect(tooLong.isEmpty, "Cut off in the command palette: \(tooLong)")
+            await harness.close()
+        }
+
         // ⇧⌘P opens the box with the keyboard in its field and every command listed; a name typed and Return run the
         // command in the tab, the box gone and the keyboard back in the list.
         @Test func aCommandTypedAndReturnRunItInTheTab() async throws {

@@ -51,7 +51,7 @@ public enum ShortcutSettingsText {
             "The icons in the Icons view, the columns in the Compact List, the previews in Previews."
         case .closePane: "Closes the tab when it has one pane."
         case .closeTab: "Closes the tab with both its panes."
-        case .duplicatePane: "Copies this pane, where Two Panes brings back the one closed last."
+        case .duplicatePane: "Opens a copy of this pane beside it, in place of the other pane if there is one."
         default: nil
         }
     }

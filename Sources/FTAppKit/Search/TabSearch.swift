@@ -36,6 +36,9 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         header.onStop = { [weak self] in self?.session.stop() }
         header.onDone = { [weak self] in self?.done() }
         header.onSearchAgain = { [weak self] in self?.session.rerun() }
+        header.searchAgainShortcut = { [weak self] in
+            self.flatMap { ShortcutDisplay(shortcuts: $0.pane.content.shortcuts).written(.refreshOrApplySearchSort) }
+        }
         header.onHeightChange = { [weak self] in self?.layoutHeader() }
         let content = pane.content
         content.onSearchSort = { [weak self] key in self?.sortByColumn(key) }

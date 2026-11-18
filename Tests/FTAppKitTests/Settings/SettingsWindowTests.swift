@@ -262,7 +262,9 @@ import Testing
             ])
         // No duration to set for notifications.
         let notifications = try Kit.row("Show notifications", in: controller)
-        #expect(notifications.descriptionText?.stringValue == "When a copy, a move or the Trash finishes.")
+        #expect(
+            notifications.descriptionText?.stringValue
+                == "Short messages in the window, such as when a copy, a move or the Trash finishes.")
     }
 
     // MARK: Saving
@@ -570,14 +572,14 @@ import Testing
         }
         #expect(
             titles == [
-                "Return key", "Open disk images and archives in", "Ask before opening more than", "Text editor",
+                "Return key", "Open disk images and archives in", "Open or edit at most", "Text editor",
                 "Terminal",
             ])
         let returnRow = try Kit.row("Return key", in: controller)
         #expect(returnRow.descriptionText?.stringValue == "⌘O and ⌘↓ always open.")
         try Kit.control("Return key", SettingsPopup.self, in: controller).choose("open")
         try Kit.control("Open disk images and archives in", SettingsPopup.self, in: controller).choose("tab")
-        let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)
+        let limit = try Kit.control("Open or edit at most", SettingsNumberField.self, in: controller)
         #expect(limit.field.stringValue == "5")
         // Not whole digits: the default; else brought into 1 to 50.
         limit.field.stringValue = "80"
@@ -599,7 +601,7 @@ import Testing
     @Test func theItemLimitIsCommittedWhenTheFieldIsLeft() throws {
         let (controller, recorder) = Kit.make(tab: .files)
         let window = try #require(controller.window)
-        let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)
+        let limit = try Kit.control("Open or edit at most", SettingsNumberField.self, in: controller)
         for (typed, shown) in [("2.5", "5"), ("80", "50"), ("7", "7")] {
             #expect(window.makeFirstResponder(limit.field))
             let editor = try #require(window.firstResponder as? NSTextView)
@@ -739,7 +741,7 @@ import Testing
     @Test func laysTheFilesTabOutWithItsAppMenuFoundRowByRow() throws {
         let (controller, _) = Kit.make(tab: .files)
         // The number sits right-aligned in a field 48 wide that reads whole numbers.
-        let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)
+        let limit = try Kit.control("Open or edit at most", SettingsNumberField.self, in: controller)
         limit.layoutSubtreeIfNeeded()
         #expect(limit.field.alignment == .right)
         #expect(limit.field.frame.minX == 0 && limit.field.frame.width == 48)

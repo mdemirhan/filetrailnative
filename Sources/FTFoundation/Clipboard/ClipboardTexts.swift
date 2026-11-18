@@ -101,7 +101,7 @@ public enum ClipboardTexts {
                 : "\(names) \(several ? "are" : "is") already in \(folderName)."
         case "parent_into_child":
             return names.isEmpty
-                ? "You can't place a folder into its own descendant."
+                ? "A folder can't go into a folder inside itself."
                 : "\(names) can't be \(cut ? "moved" : "copied") into a folder inside \(several ? "themselves" : "itself")."
         case "duplicate_destination_name":
             return "Two of the items are named \(destinationName), so one would replace the other."
