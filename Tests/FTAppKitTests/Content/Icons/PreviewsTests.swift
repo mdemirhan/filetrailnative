@@ -138,6 +138,61 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // At 1 at a time a scroll goes from file to file, and the file it rests on is selected, as ↓ would select it;
+        // a selection of several files is kept. With more than one on screen, scrolling leaves the selection alone.
+        @Test func aScrollAtOneAtATimeSelectsTheFileItRestsOn() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 12)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 0.02
+            tab.perform(.showPreviews1)
+            probe.layout()
+            try? await Task.sleep(for: .milliseconds(50))
+            let clip = previews.scroll.contentView
+            let entries = tab.content.entries
+            func scroll(by rows: Double) async {
+                clip.scroll(to: NSPoint(x: 0, y: clip.bounds.origin.y + rows * previews.layout.rowHeight))
+                previews.scroll.reflectScrolledClipView(clip)
+                try? await Task.sleep(for: .milliseconds(60))
+                _ = await waitUntil { !previews.isSettling }
+            }
+            func onRow(_ row: Double) -> Bool {
+                abs(Double(clip.bounds.origin.y) - row * previews.layout.rowHeight) < 0.5
+            }
+            #expect(previews.count == 1)
+            tab.content.select(paths: [entries[0].path])
+            // A notch down: the next file, selected.
+            await scroll(by: 0.1)
+            #expect(onRow(1))
+            #expect(tab.content.selection.paths == [entries[1].path])
+            await scroll(by: 2)
+            #expect(tab.content.selection.paths == [entries[3].path])
+            await scroll(by: -0.1)
+            #expect(tab.content.selection.paths == [entries[2].path])
+            // Nothing selected: the file on screen is.
+            tab.content.select(paths: [])
+            await scroll(by: 0.1)
+            #expect(tab.content.selection.paths == [entries[3].path])
+            // Several selected, the last of them on screen: they stay.
+            let several = [entries[1].path, entries[3].path]
+            tab.content.select(paths: several)
+            await scroll(by: 0.1)
+            #expect(onRow(4))
+            #expect(tab.content.selection.paths == several)
+
+            // 4 at a time: the selection stays where it was.
+            tab.perform(.showPreviews4)
+            probe.layout()
+            tab.content.select(paths: [entries[0].path])
+            previews.scrollClamped(to: .zero)
+            try? await Task.sleep(for: .milliseconds(60))
+            _ = await waitUntil { !previews.isSettling }
+            await scroll(by: 1.1)
+            #expect(onRow(2))
+            #expect(tab.content.selection.paths == [entries[0].path])
+            await harness.close()
+        }
+
         @Test func eachPaneShowsItsOwnView() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsPreviews, files: 6)

@@ -98,6 +98,7 @@ final class PreviewsViewController: IconViewController {
         settle?.cancel()
         settle = nil
         scrollStart = nil
+        scrolledByDrag = false
         gridColumns = PreviewGrid.shape(count).columns
         setGrid(density: next, layout: fitted)
         collection.collectionViewLayout?.invalidateLayout()
@@ -250,13 +251,19 @@ final class PreviewsViewController: IconViewController {
             from: scrollStart ?? Double(clip.bounds.origin.y), to: Double(clip.bounds.origin.y),
             rowHeight: layout.rowHeight, maxScrollTop: maxScrollTop, share: share)
         scrollStart = nil
-        guard abs(top - Double(clip.bounds.origin.y)) >= 0.5 else { return }
+        let byDrag = scrolledByDrag
+        scrolledByDrag = false
+        guard abs(top - Double(clip.bounds.origin.y)) >= 0.5 else {
+            selectFileOnScreen(unlessDragged: byDrag)
+            return
+        }
         isSnapping = true
         // A window that isn't on screen draws no frames to move over: the pane goes there at once.
         guard scroll.window?.isVisible == true else {
             scrollClamped(to: NSPoint(x: clip.bounds.origin.x, y: top))
             isSnapping = false
             lastTop = Double(clip.bounds.origin.y)
+            selectFileOnScreen(unlessDragged: byDrag)
             return
         }
         NSAnimationContext.runAnimationGroup { context in
@@ -268,8 +275,24 @@ final class PreviewsViewController: IconViewController {
                 self.isSnapping = false
                 self.lastTop = Double(clip.bounds.origin.y)
                 self.scroll.reflectScrolledClipView(clip)
+                self.selectFileOnScreen(unlessDragged: byDrag)
             }
         }
+    }
+
+    /// At 1 at a time a scroll goes from file to file, as ↓ does, and the file it rests on is the one selected, so
+    /// Space, the Info panel and Move to Trash act on the file on screen. A selection of several files is kept, and so
+    /// is one made by a drag that scrolled the pane (a drag-to-select or a drag of files held at the edge), and one
+    /// being renamed. With more than one on screen, scrolling leaves the selection alone, as in the Icons view.
+    private func selectFileOnScreen(unlessDragged byDrag: Bool) {
+        guard count == 1, !byDrag, renamingPath == nil, !entries.isEmpty, layout.rowHeight > 0, let host,
+            host.selection.paths.count <= 1
+        else { return }
+        let top = Double(scroll.contentView.bounds.origin.y)
+        let index = min(layout.row(atScrollTop: top + layout.rowHeight / 2), entries.count - 1)
+        let path = entries[index].path
+        guard host.selection.paths != [path] else { return }
+        host.selectionChanged(.single(path))
     }
 
     private var observers: [any NSObjectProtocol] = []
@@ -277,6 +300,8 @@ final class PreviewsViewController: IconViewController {
     private var scrollStart: Double?
     /// A swipe, or a drag of the scroller, is under way: the system says when it ends.
     private var isLiveScrolling = false
+    /// The scroll under way moved while the mouse button was held outside the scroller: a drag scrolled the pane.
+    private var scrolledByDrag = false
     /// The pane is moving to a row's top by itself.
     private var isSnapping = false
     /// Where the pane was scrolled to when it last moved.
@@ -312,6 +337,7 @@ final class PreviewsViewController: IconViewController {
         }
         guard placingDepth == 0, !isLiveScrolling, !isSnapping, top != lastTop else { return }
         if scrollStart == nil { scrollStart = lastTop }
+        if NSEvent.pressedMouseButtons & 1 != 0 { scrolledByDrag = true }
         settleAfterRest()
     }
 
