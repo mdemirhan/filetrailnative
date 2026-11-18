@@ -348,15 +348,14 @@
                 table.selectRowIndexes(rows, byExtendingSelection: false)
                 if let first = rows.first { table.scrollRowToVisible(first) }
                 window.makeFirstResponder(table)
-            } else if let collection = Views.first(NSCollectionView.self, in: window.contentView),
-                let source = collection.dataSource
+            } else if let collection = Views.first(NSCollectionView.self, in: window.contentView) as? ItemGridView,
+                let pane = collection.pane
             {
+                // By the pane's entries, whose names the items show: an item asked of the data source for a file off
+                // screen is a view the collection never tracks, left drawn at its place when the items move.
                 var paths = Set<IndexPath>()
-                for index in 0..<collection.numberOfItems(inSection: 0) {
-                    let path = IndexPath(item: index, section: 0)
-                    let item =
-                        collection.item(at: path) ?? source.collectionView(collection, itemForRepresentedObjectAt: path)
-                    if let name = item.textField?.stringValue, missing.remove(name) != nil { paths.insert(path) }
+                for (index, entry) in pane.entries.enumerated() where missing.remove(entry.name) != nil {
+                    paths.insert(IndexPath(item: index, section: 0))
                 }
                 collection.selectionIndexPaths = paths
                 window.makeFirstResponder(collection)
