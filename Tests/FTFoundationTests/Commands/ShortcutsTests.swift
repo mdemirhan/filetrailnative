@@ -432,7 +432,7 @@ struct ShortcutsTests {
             (.openWorkspace1InThisWindow, ["Ctrl+Cmd+Option+1"]), (.openWorkspace2InThisWindow, ["Ctrl+Cmd+Option+2"]),
             (.openWorkspace3InThisWindow, ["Ctrl+Cmd+Option+3"]), (.openWorkspace4InThisWindow, ["Ctrl+Cmd+Option+4"]),
             (.openWorkspace5InThisWindow, ["Ctrl+Cmd+Option+5"]),
-            (.toggleTwoPanes, ["Cmd+\\"]), (.switchToOtherPane, []),
+            (.toggleTwoPanes, ["Cmd+\\"]), (.duplicatePane, ["Cmd+Option+\\"]), (.switchToOtherPane, []),
             (.openSelectionInOtherPane, ["Cmd+Option+Down"]), (.copyToOtherPane, ["F5"]),
             (.moveToOtherPane, ["F6"]), (.swapPanes, ["Cmd+U"]), (.showFolderInOtherPane, []),
             (.goToOtherPaneFolder, []), (.equalizePanes, []),

@@ -1938,6 +1938,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
         case .saveWorkspace: group?.saveWorkspace(from: self)
         case .toggleTwoPanes: toggleTwoPanes()
+        case .duplicatePane: duplicatePane()
         case .switchToOtherPane: switchToOtherPane()
         case .openSelectionInOtherPane:
             if let target = selectedFolder { openSelectedFolder(target, place: .otherPane) }

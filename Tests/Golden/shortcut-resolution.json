@@ -321,6 +321,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -589,6 +592,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -2606,6 +2613,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -2874,6 +2884,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -3191,6 +3205,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -3459,6 +3476,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -3770,6 +3791,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -4038,6 +4062,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -4357,6 +4385,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -4624,6 +4655,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -4982,6 +5017,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -5250,6 +5288,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -5565,6 +5607,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -5825,6 +5870,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -6144,6 +6193,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -6413,6 +6465,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -6729,6 +6785,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -6997,6 +7056,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -7309,6 +7372,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -7578,6 +7644,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -7789,6 +7859,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -8170,6 +8243,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -8470,6 +8547,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -8734,6 +8814,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -9041,6 +9125,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -9297,6 +9384,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -9615,6 +9706,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -9879,6 +9973,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -10198,6 +10296,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -10465,6 +10566,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -10776,6 +10881,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -11032,6 +11140,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -11350,6 +11462,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -11613,6 +11728,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -11942,6 +12061,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -12206,6 +12328,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -12667,6 +12793,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -12935,6 +13064,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -13490,6 +13623,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -13853,6 +13989,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -14154,6 +14294,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -14528,6 +14671,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -14907,6 +15054,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -15177,6 +15327,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -15425,6 +15579,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -15802,6 +15959,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -16108,6 +16269,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -16484,6 +16648,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -16838,6 +17006,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -17208,6 +17379,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -17667,6 +17842,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -18056,6 +18234,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -18657,6 +18839,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -19025,6 +19210,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -19546,6 +19735,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -19921,6 +20113,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -20185,6 +20381,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -20563,6 +20762,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -21086,6 +21289,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -21356,6 +21562,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -21800,6 +22010,9 @@
             "Ctrl+Cmd+Option+5"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -22141,6 +22354,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -22695,6 +22912,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -23053,6 +23273,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -23318,6 +23542,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -23697,6 +23924,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -24095,6 +24326,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -24449,6 +24683,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -24846,6 +25084,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -25114,6 +25355,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -25394,6 +25639,9 @@
             "Cmd+Q"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -25770,6 +26018,10 @@
             "openWorkspace5InThisWindow"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -26058,6 +26310,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -26432,6 +26687,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -26747,6 +27006,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -27123,6 +27385,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -27425,6 +27691,9 @@
           "selectNextTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -27777,6 +28046,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -28246,6 +28519,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -28622,6 +28898,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -28991,6 +29271,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -29259,6 +29542,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -29676,6 +29963,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -30053,6 +30343,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -30388,6 +30682,9 @@
           "openSelectionInNewWindow": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -30750,6 +31047,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -31372,6 +31673,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -31717,6 +32021,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -32152,6 +32460,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -32420,6 +32731,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -32803,6 +33118,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -33167,6 +33485,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -33554,6 +33876,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -33924,6 +34249,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -34548,6 +34877,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -34816,6 +35148,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -35197,6 +35533,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -35563,6 +35902,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -36065,6 +36408,9 @@
             "Cmd+'"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -36440,6 +36786,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -37682,6 +38032,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -38060,6 +38413,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -38539,6 +38896,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -38807,6 +39167,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -39156,6 +39520,9 @@
           "halfPageDown": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -39516,6 +39883,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -39947,6 +40318,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -40299,6 +40673,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -41046,6 +41424,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -41415,6 +41796,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -41873,6 +42258,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -42217,6 +42605,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -42741,6 +43133,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -43098,6 +43493,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -43644,6 +44043,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -44009,6 +44411,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -44599,6 +45005,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -44941,6 +45350,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -45386,6 +45799,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -45654,6 +46070,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -46138,6 +46558,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -46406,6 +46829,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -46805,6 +47232,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -47169,6 +47599,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -47659,6 +48093,9 @@
             "Cmd+\\"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -48049,6 +48486,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -48625,6 +49066,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -49001,6 +49445,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -50081,6 +50529,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -50454,6 +50905,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -50872,6 +51327,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -51136,6 +51594,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -51477,6 +51939,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -51857,6 +52322,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -52356,6 +52825,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -52735,6 +53207,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -53074,6 +53550,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -53448,6 +53927,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -53930,6 +54413,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -54190,6 +54676,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -54639,6 +55129,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -54986,6 +55479,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -55648,6 +56145,9 @@
             "Cmd+T"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -55997,6 +56497,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -56428,6 +56932,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -56698,6 +57205,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -57068,6 +57579,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -57413,6 +57927,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -58085,6 +58603,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -58451,6 +58972,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -58891,6 +59416,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -59159,6 +59687,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -59812,6 +60344,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -60159,6 +60694,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -60771,6 +61310,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -61149,6 +61691,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -61673,6 +62219,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -62048,6 +62597,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -63375,6 +63928,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -63729,6 +64285,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -64696,6 +65256,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -64964,6 +65527,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -65359,6 +65926,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -65718,6 +66288,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -66555,6 +67129,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -66823,6 +67400,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -67264,6 +67845,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -67532,6 +68116,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -67934,6 +68522,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -68300,6 +68891,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -68679,6 +69274,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -69028,6 +69626,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -69558,6 +70160,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -69932,6 +70537,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -70554,6 +71163,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -70935,6 +71547,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -71430,6 +72046,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -71770,6 +72389,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -72419,6 +73042,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -72766,6 +73392,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -73474,6 +74104,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -73837,6 +74470,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -74233,6 +74870,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -74585,6 +75225,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -75264,6 +75908,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -75637,6 +76284,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -76084,6 +76735,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -76446,6 +77100,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -76873,6 +77531,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -77231,6 +77892,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -77738,6 +78403,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -78097,6 +78765,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -78582,6 +79254,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -78951,6 +79626,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -79589,6 +80268,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -79859,6 +80541,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -80299,6 +80985,9 @@
           ],
           "newTab": [],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -80678,6 +81367,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -81796,6 +82489,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -82064,6 +82760,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -82555,6 +83255,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -82823,6 +83526,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -83163,6 +83870,9 @@
           "closeTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -83529,6 +84239,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -83824,6 +84538,9 @@
           "pageDown": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -84190,6 +84907,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -84761,6 +85482,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -85086,6 +85810,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -85813,6 +86541,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -86188,6 +86919,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -87448,6 +88183,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -87831,6 +88569,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -88369,6 +89111,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -88637,6 +89382,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -89065,6 +89814,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -89418,6 +90170,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -90246,6 +91002,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -90595,6 +91354,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -91769,6 +92532,9 @@
           ],
           "moveTabToNewWindow": [],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -92099,6 +92865,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -92693,6 +93463,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -92963,6 +93736,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -93214,6 +93991,9 @@
           "goBack": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -93570,6 +94350,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -93959,6 +94743,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -94227,6 +95014,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -94599,6 +95390,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -94952,6 +95746,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -95537,6 +96335,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -95914,6 +96715,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -96409,6 +97214,9 @@
             "Cmd+Option+K"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -96780,6 +97588,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -97189,6 +98001,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -97567,6 +98382,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -98181,6 +99000,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -98449,6 +99271,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -98831,6 +99657,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -99180,6 +100009,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -100155,6 +100988,9 @@
             "Cmd+PageUp"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -100504,6 +101340,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -101211,6 +102051,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -101467,6 +102310,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -101851,6 +102698,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -102212,6 +103062,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -102607,6 +103461,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -102927,6 +103784,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -103672,6 +104533,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -104041,6 +104905,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -104963,6 +105831,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -105231,6 +106102,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -105562,6 +106437,9 @@
           "newTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -105929,6 +106807,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -106406,6 +107288,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -106674,6 +107559,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -107087,6 +107976,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -107412,6 +108304,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -108160,6 +109056,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -108420,6 +109319,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -108766,6 +109669,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -109114,6 +110020,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -109682,6 +110592,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -109950,6 +110863,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -110312,6 +111229,9 @@
           "openSelectionInNewTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -110681,6 +111601,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -111033,6 +111957,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -111409,6 +112336,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -111834,6 +112765,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -112105,6 +113039,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -112586,6 +113524,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -112938,6 +113879,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -113351,6 +114296,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -113716,6 +114664,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -114184,6 +115136,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -114546,6 +115501,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -114974,6 +115933,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -115371,6 +116333,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -115907,6 +116873,9 @@
             "F12"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -116287,6 +117256,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -116698,6 +117671,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -116966,6 +117942,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -117293,6 +118273,9 @@
           "halfPageUp": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -117664,6 +118647,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -118007,6 +118994,9 @@
           "selectNextTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -118352,6 +119342,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -119017,6 +120011,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -119331,6 +120328,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -119681,6 +120682,9 @@
           "newWindow": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -120046,6 +121050,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -120738,6 +121746,9 @@
             "Ctrl+Cmd+Option+5"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -121009,6 +122020,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -121413,6 +122428,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -121766,6 +122784,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -122186,6 +123208,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -122446,6 +123471,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -122971,6 +124000,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -123285,6 +124317,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -124136,6 +125172,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -124511,6 +125550,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -125048,6 +126091,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -125308,6 +126354,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -125846,6 +126896,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -126223,6 +127276,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -126651,6 +127708,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -127029,6 +128089,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -127644,6 +128708,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -127918,6 +128985,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -128320,6 +129391,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -128693,6 +129767,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -129121,6 +130199,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -129501,6 +130582,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -129783,6 +130868,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -130165,6 +131253,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -130607,6 +131699,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -130973,6 +132068,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -131591,6 +132690,9 @@
             "Ctrl+Cmd+Option+5"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -131884,6 +132986,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -132727,6 +133833,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -133033,6 +134142,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -133403,6 +134516,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -133671,6 +134787,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -134063,6 +135183,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -134367,6 +135490,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -134821,6 +135948,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -135170,6 +136300,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -135801,6 +136935,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -136069,6 +137206,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -136567,6 +137708,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -136894,6 +138038,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -137531,6 +138679,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -137890,6 +139041,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -138728,6 +139883,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -139097,6 +140255,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -139504,6 +140666,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -139880,6 +141045,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -140196,6 +141365,9 @@
           "goTrash": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -140569,6 +141741,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -141044,6 +142220,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -141415,6 +142594,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -141990,6 +143173,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -142359,6 +143545,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -142819,6 +144009,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -143087,6 +144280,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -143644,6 +144841,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -143994,6 +145194,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -145302,6 +146506,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -145570,6 +146777,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -145982,6 +147193,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -146250,6 +147464,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -146700,6 +147918,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -146968,6 +148189,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -147446,6 +148671,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -147714,6 +148942,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -148061,6 +149293,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -148429,6 +149664,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -148701,6 +149940,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -149078,6 +150320,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -149494,6 +150740,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -149873,6 +151122,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -150357,6 +151610,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -150718,6 +151974,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -151153,6 +152413,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -151524,6 +152787,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -151832,6 +153099,9 @@
           "goTrash": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -152205,6 +153475,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -152646,6 +153920,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -153017,6 +154294,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -153540,6 +154821,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -153920,6 +155204,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -154595,6 +155883,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -154863,6 +156154,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -155224,6 +156519,9 @@
           "moveTabToNewWindow": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -155617,6 +156915,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -156101,6 +157403,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -156446,6 +157751,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -157474,6 +158783,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -157847,6 +159159,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -158339,6 +159655,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -158609,6 +159928,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -158863,6 +160186,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -159233,6 +160559,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -159654,6 +160984,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -159918,6 +161251,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -160482,6 +161819,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -160750,6 +162090,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -161268,6 +162612,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -161536,6 +162883,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -161914,6 +163265,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -162281,6 +163635,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -162728,6 +164086,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -162998,6 +164359,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -163431,6 +164796,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -163699,6 +165067,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -164121,6 +165493,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -164389,6 +165764,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -164798,6 +166177,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -165165,6 +166547,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -165535,6 +166921,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -165914,6 +167303,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -166466,6 +167859,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -166788,6 +168184,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -167188,6 +168588,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -167452,6 +168855,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -167811,6 +169218,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -168179,6 +169589,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -168604,6 +170018,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -168872,6 +170289,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -169332,6 +170753,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -169667,6 +171091,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -170502,6 +171930,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -170864,6 +172295,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -171341,6 +172776,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -171724,6 +173162,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -172673,6 +174115,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -173044,6 +174489,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -173398,6 +174847,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -173666,6 +175118,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -174057,6 +175513,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -174325,6 +175784,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -174674,6 +176137,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -175050,6 +176516,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -175550,6 +177020,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -175919,6 +177392,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -176261,6 +177738,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -176636,6 +178116,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -177105,6 +178589,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -177472,6 +178959,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -178002,6 +179493,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -178270,6 +179764,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -178636,6 +180134,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -179001,6 +180502,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -179465,6 +180970,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -179838,6 +181346,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -180248,6 +181760,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -180618,6 +182133,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -181046,6 +182565,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -181318,6 +182840,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -181872,6 +183398,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -182223,6 +183752,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -182955,6 +184488,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -183223,6 +184759,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -183740,6 +185280,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -184157,6 +185700,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -184520,6 +186067,9 @@
             "Cmd+K"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -184901,6 +186451,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -185457,6 +187011,9 @@
             "Cmd+Q"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -185828,6 +187385,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -186294,6 +187855,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -186562,6 +188126,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -187007,6 +188575,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -187275,6 +188846,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -187654,6 +189229,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -187922,6 +189500,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -188358,6 +189940,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -188616,6 +190201,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -189020,6 +190609,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -189397,6 +190989,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -189901,6 +191497,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -190264,6 +191863,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -190564,6 +192167,9 @@
           "selectNextTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -190921,6 +192527,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -191359,6 +192969,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -191728,6 +193341,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -192152,6 +193769,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -192524,6 +194144,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -192923,6 +194547,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -193295,6 +194922,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -193804,6 +195435,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -194072,6 +195706,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -194425,6 +196063,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -194809,6 +196450,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -195544,6 +197189,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -195812,6 +197460,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -196224,6 +197876,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -196484,6 +198139,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -196848,6 +198507,9 @@
           "closeTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -197214,6 +198876,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -197857,6 +199523,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -198129,6 +199798,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -198534,6 +200207,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -198900,6 +200576,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -199453,6 +201133,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -199790,6 +201473,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -200242,6 +201929,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -200610,6 +202300,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -201071,6 +202765,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -201445,6 +203142,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -202028,6 +203729,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -202288,6 +203992,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -202803,6 +204511,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -203071,6 +204782,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -203501,6 +205216,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -203879,6 +205597,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -204328,6 +206050,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -204596,6 +206321,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -205049,6 +206778,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -205422,6 +207154,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -206010,6 +207746,9 @@
           ],
           "openSelectionInNewWindow": [],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -206412,6 +208151,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -207126,6 +208869,9 @@
             "Cmd+\\"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -207498,6 +209244,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -207982,6 +209732,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -208357,6 +210110,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -208802,6 +210559,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -209141,6 +210901,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -209827,6 +211591,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -210095,6 +211862,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -210477,6 +212248,9 @@
           "goTrash": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -210863,6 +212637,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -211198,6 +212976,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -211556,6 +213337,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -212109,6 +213894,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -212385,6 +214173,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -212704,6 +214496,9 @@
             "Cmd+\\"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -213073,6 +214868,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -213568,6 +215367,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -213920,6 +215722,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -214412,6 +216218,9 @@
             "Ctrl+Cmd+Option+5"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -214751,6 +216560,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -215184,6 +216997,9 @@
             "Ctrl+Cmd+Option+5"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -215513,6 +217329,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -215989,6 +217809,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -216364,6 +218187,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -216793,6 +218620,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -217171,6 +219001,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -217747,6 +219581,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -218117,6 +219954,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -218431,6 +220272,9 @@
           "newWindow": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -218797,6 +220641,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -219119,6 +220967,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -219482,6 +221333,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -219981,6 +221836,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -220249,6 +222107,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -220764,6 +222626,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -221032,6 +222897,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -221510,6 +223379,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -221859,6 +223731,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -222186,6 +224062,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -222558,6 +224437,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -223000,6 +224883,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -223373,6 +225259,10 @@
             "toggleTwoPanes"
           ],
           [
+            "Cmd+Option+\\",
+            "duplicatePane"
+          ],
+          [
             "Cmd+Option+Down",
             "openSelectionInOtherPane"
           ],
@@ -223743,6 +225633,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -224011,6 +225904,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -224379,6 +226276,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -224758,6 +226658,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -225285,6 +227189,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -225553,6 +227460,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -225875,6 +227786,9 @@
           "goMacintoshHD": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -226258,6 +228172,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -226718,6 +228636,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -227048,6 +228969,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -228305,6 +230230,9 @@
             "Ctrl+Cmd+Option+5"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -228634,6 +230562,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -229666,6 +231598,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -229934,6 +231869,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -230253,6 +232192,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -230615,6 +232557,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -231032,6 +232978,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -231300,6 +233249,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -231809,6 +233762,9 @@
             "Ctrl+Cmd+Option+5"
           ],
           "toggleTwoPanes": [],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -232083,6 +234039,10 @@
           [
             "Ctrl+Cmd+Option+5",
             "openWorkspace5InThisWindow"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -232575,6 +234535,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -232843,6 +234806,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -233164,6 +235131,9 @@
           ],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -233537,6 +235507,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -233939,6 +235913,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -234322,6 +236299,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -234827,6 +236808,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -235194,6 +237178,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -235783,6 +237771,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -236160,6 +238151,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -236693,6 +238688,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -236961,6 +238959,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -237330,6 +239332,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -237674,6 +239679,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -238334,6 +240343,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -238702,6 +240714,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -239430,6 +241446,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -239694,6 +241713,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -240080,6 +242103,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -240430,6 +242456,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -241037,6 +243067,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -241305,6 +243338,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -241811,6 +243848,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -242071,6 +244111,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -242416,6 +244460,9 @@
           "selectPreviousTab": [],
           "toggleTwoPanes": [
             "Cmd+\\"
+          ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
           ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
@@ -242786,6 +244833,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -243510,6 +245561,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -243885,6 +245939,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -244544,6 +246602,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -244814,6 +246875,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -245260,6 +247325,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -245524,6 +247592,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -245941,6 +248013,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -246310,6 +248385,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -246716,6 +248795,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -247105,6 +249187,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -247510,6 +249596,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -247885,6 +249974,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",
@@ -248648,6 +250741,9 @@
           "toggleTwoPanes": [
             "Cmd+\\"
           ],
+          "duplicatePane": [
+            "Cmd+Option+\\"
+          ],
           "switchToOtherPane": [],
           "openSelectionInOtherPane": [
             "Cmd+Option+Down"
@@ -249027,6 +251123,10 @@
           [
             "Cmd+\\",
             "toggleTwoPanes"
+          ],
+          [
+            "Cmd+Option+\\",
+            "duplicatePane"
           ],
           [
             "Cmd+Option+Down",

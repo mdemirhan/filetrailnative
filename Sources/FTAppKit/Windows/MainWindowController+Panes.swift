@@ -28,10 +28,20 @@ extension MainWindowController {
         }
     }
 
-    /// Opens the second pane, to the right, on `path`; without one, where it was last closed in this tab, or else on the
-    /// active pane's folder. The active pane stays active. With two panes already, the other one opens `path`.
+    /// View ▸ Duplicate Pane (⌥⌘\): the second pane opens as a copy of the active one, never where a pane was last
+    /// closed. With two panes already, the other one is put in its place as that copy, on its side and at its width.
+    func duplicatePane() {
+        let activeOnTheRight = showsTwoPanes && activePaneIndex == 1
+        if showsTwoPanes { closeOtherPane() }
+        openSecondPane(reopening: false)
+        if activeOnTheRight { swapPanes() }
+    }
+
+    /// Opens the second pane, to the right, on `path`; without one, where it was last closed in this tab (unless
+    /// `reopening` is false), or else as a copy of the active pane. The active pane stays active. With two panes
+    /// already, the other one opens `path`.
     @discardableResult
-    func openSecondPane(at path: String? = nil) -> BrowserPane {
+    func openSecondPane(at path: String? = nil, reopening: Bool = true) -> BrowserPane {
         if let other = otherPane {
             if let path { other.go(to: URL(fileURLWithPath: path)) }
             return other
@@ -39,11 +49,18 @@ extension MainWindowController {
         let source = activePane
         var start: StartupTab
         var history: (paths: [String], index: Int)?
-        if path == nil, let closed = closedSecondPane {
+        if path == nil, reopening, let closed = closedSecondPane {
             start = closed.start
             history = (closed.history.paths, closed.history.index)
+        } else if let path, path != source.shownFolderPath {
+            start = startupTab(of: source, path: path)
         } else {
-            start = startupTab(of: source, path: path ?? source.shownFolderPath)
+            // A pane opened on the active pane's own folder is a copy of it, as Duplicate Tab copies a tab: its view,
+            // order and sizes, its folder's filter mode, and its Back and Forward. What is typed (a filter, a search)
+            // and what is selected are left behind.
+            start = startupTab(of: source, path: source.shownFolderPath)
+            start.filterMode = source.content.folderFilterMode
+            history = (source.navigationHistory.paths, source.navigationHistory.index)
         }
         // Hidden Files is the tab's: a pane opened again where it was takes it as the tab has it now.
         start.includeHidden = includeHidden

@@ -68,6 +68,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case openWorkspace4InThisWindow
     case openWorkspace5InThisWindow
     case toggleTwoPanes
+    case duplicatePane
     case switchToOtherPane
     case openSelectionInOtherPane
     case copyToOtherPane
@@ -260,6 +261,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .toggleTwoPanes, label: "Two Panes", group: .tabs, defaults: ["Cmd+\\"],
             menuPath: "View > Two Panes"),
+        ShortcutCommandDefinition(
+            id: .duplicatePane, label: "Duplicate Pane", group: .tabs, defaults: ["Cmd+Option+\\"],
+            menuPath: "View > Two Panes, with Option"),
         ShortcutCommandDefinition(
             id: .switchToOtherPane, label: "Switch to Other Pane", group: .tabs, defaults: [],
             menuPath: "Window > Switch to Other Pane"),

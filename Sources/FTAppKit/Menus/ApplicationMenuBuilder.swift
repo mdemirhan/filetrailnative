@@ -187,7 +187,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.toggleInfoPanel, "Info Panel"))
             menu.addItem(context.command(.toggleInfoRow, "Info Row"))
             menu.addItem(.separator())
-            menu.addItem(context.command(.toggleTwoPanes, "Two Panes"))
+            for item in context.twoPanesItems() { menu.addItem(item) }
             menu.addItem(context.command(.swapPanes, "Swap Panes"))
             menu.addItem(context.command(.equalizePanes, "Make Panes Equal Width"))
             menu.addItem(.separator())
@@ -320,16 +320,29 @@ enum ApplicationMenuBuilder {
 
         /// File ▸ Close Pane, and Close Tab in its place while ⌥ is held, when their keys differ by ⌥ alone.
         func closeItems() -> [NSMenuItem] {
-            let pane = command(.closePane, "Close Tab")
-            let tab = command(.closeTab, "Close Tab")
-            if ApplicationMenuBuilder.pairs(chosenKey(.closePane), chosenKey(.closeTab)) {
-                if chosenKey(.closePane) == nil {
-                    pane.keyEquivalentModifierMask = []
-                    tab.keyEquivalentModifierMask = .option
+            optionPair(command(.closePane, "Close Tab"), .closePane, command(.closeTab, "Close Tab"), .closeTab)
+        }
+
+        /// View ▸ Two Panes, and Duplicate Pane in its place while ⌥ is held, when their keys differ by ⌥ alone.
+        func twoPanesItems() -> [NSMenuItem] {
+            optionPair(
+                command(.toggleTwoPanes, "Two Panes"), .toggleTwoPanes, command(.duplicatePane, "Duplicate Pane"),
+                .duplicatePane)
+        }
+
+        /// An item and the one ⌥ shows in its place, while their keys differ by ⌥ alone or neither has one; otherwise
+        /// both show, each with its own key.
+        private func optionPair(
+            _ item: NSMenuItem, _ id: ShortcutCommandID, _ alternate: NSMenuItem, _ alternateID: ShortcutCommandID
+        ) -> [NSMenuItem] {
+            if ApplicationMenuBuilder.pairs(chosenKey(id), chosenKey(alternateID)) {
+                if chosenKey(id) == nil {
+                    item.keyEquivalentModifierMask = []
+                    alternate.keyEquivalentModifierMask = .option
                 }
-                tab.isAlternate = true
+                alternate.isAlternate = true
             }
-            return [pane, tab]
+            return [item, alternate]
         }
 
         /// Window ▸ Workspaces: saving, the workspaces, the first five with their keys, and Manage. Each

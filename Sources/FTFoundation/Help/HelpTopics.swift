@@ -88,7 +88,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Two Panes",
                             description:
-                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
+                                "{toggleTwoPanes} shows a second pane beside the first, each with its own folder, history, view, filter and search: the pane closed last in the tab comes back where it was, or else the new one is a copy of yours, with its folder, view and history. {duplicatePane} always opens that copy, and with two panes puts it in place of the other one. The toolbar, the folder tree and the Info panel follow the active pane, the one with the blue selection. The same key closes the pane that isn’t active, and {closePane} closes the one you are in."
                         ),
                         HelpRow(
                             label: "Moving between panes",
@@ -715,6 +715,9 @@ extension HelpContent {
         HelpShortcutItem(
             group: .navigation, .command(.toggleTwoPanes),
             "Show a second pane beside this one, or close the pane you aren't in"),
+        HelpShortcutItem(
+            group: .navigation, .command(.duplicatePane),
+            "Show a second pane as a copy of this one, never the pane closed last"),
         HelpShortcutItem(group: .navigation, .command(.switchToOtherPane), "Move the keyboard to the other pane"),
         HelpShortcutItem(
             group: .navigation, .command(.openSelectionInOtherPane), "Open the selected folder in the other pane"),

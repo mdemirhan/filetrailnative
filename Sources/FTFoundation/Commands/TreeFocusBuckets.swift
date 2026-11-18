@@ -17,7 +17,7 @@ extension ShortcutPolicy {
             .newWindow, .newTab, .duplicateTab, .reopenClosedTab, .closePane, .closeTab, .selectNextTab,
             .selectPreviousTab,
             .moveTabToNewWindow,
-            .mergeAllWindows, .saveWorkspace, .toggleTwoPanes, .switchToOtherPane,
+            .mergeAllWindows, .saveWorkspace, .toggleTwoPanes, .duplicatePane, .switchToOtherPane,
             .openSelectionInOtherPane, .swapPanes,
             .showFolderInOtherPane, .goToOtherPaneFolder, .equalizePanes, .calculateSize, .toggleFavorite,
             .showInFinder,

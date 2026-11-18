@@ -168,6 +168,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -894,6 +899,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -2560,6 +2569,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -3286,6 +3300,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -4958,6 +4976,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -5696,6 +5719,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -7341,6 +7368,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -8067,6 +8099,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -9750,6 +9786,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -10271,6 +10312,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -11686,6 +11731,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -12412,6 +12462,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -14099,6 +14153,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -14810,6 +14869,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -16469,6 +16532,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -17185,6 +17253,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -18878,6 +18950,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -19569,6 +19646,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -21209,6 +21290,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -21935,6 +22021,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -23629,6 +23719,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -24322,6 +24417,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -25994,6 +26093,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -26710,6 +26814,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -28361,6 +28469,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -29092,6 +29205,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -30759,6 +30876,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -31497,6 +31619,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -33171,6 +33297,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -33886,6 +34017,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -35542,6 +35677,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -36263,6 +36403,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -37954,6 +38098,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -38709,6 +38858,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -40376,6 +40529,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -41097,6 +41255,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -42773,6 +42935,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -43479,6 +43646,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -45137,6 +45308,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -45853,6 +46029,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -47524,6 +47704,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -48220,6 +48405,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -49903,6 +50092,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -50624,6 +50818,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -52290,6 +52488,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -53011,6 +53214,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -54660,6 +54867,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -55398,6 +55610,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -57070,6 +57286,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -57791,6 +58012,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -59408,6 +59633,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -60129,6 +60359,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -61809,6 +62043,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -62547,6 +62786,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -64206,6 +64449,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -64927,6 +65175,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
@@ -66609,6 +66861,11 @@
           },
           {
             "group": "navigation",
+            "shortcut": "Cmd+Option+\\",
+            "description": "Show a second pane as a copy of this one, never the pane closed last"
+          },
+          {
+            "group": "navigation",
             "shortcut": "Cmd+Option+Down",
             "description": "Open the selected folder in the other pane"
           },
@@ -67330,6 +67587,10 @@
                 [
                   "Tabs",
                   "Next launch"
+                ],
+                [
+                  "Two panes",
+                  "Two Panes"
                 ],
                 [
                   "Two panes",
