@@ -259,7 +259,7 @@ public enum CopyPasteReview {
         guard let conflictClass = node.conflictClass else { return nil }
         return CopyPasteChoices.choiceForConflict(
             conflictClass: conflictClass, replaceBlockedReason: node.replaceBlockedReason, policy: policy,
-            override: overrides[node.id], dates: modifiedDates(node))
+            override: overrides[node.id], dates: modifiedDates(node), isPackage: isPackageConflict(node))
     }
 
     /// The dates Replace Older compares.
@@ -354,12 +354,13 @@ public enum CopyPasteReview {
                 if choice == nil, !(showNewItems && depth == 0) { continue }
                 // Nested paths are shown below the folder the top-level item was copied from.
                 let base = depth == 0 ? dirname(node.sourcePath) : basePath
-                let notNewer =
-                    node.conflictClass.map {
-                        CopyPasteChoices.isSkippedAsNotNewer(
-                            conflictClass: $0, policy: policy, override: overrides[node.id], dates: modifiedDates(node))
-                    } ?? false
-                rows.append(row(node, depth, choice, report.mode, base, now, dates, notNewer: notNewer))
+                let leftByReplaceOlder = node.conflictClass.flatMap {
+                    CopyPasteChoices.replaceOlderSkip(
+                        conflictClass: $0, policy: policy, override: overrides[node.id], dates: modifiedDates(node),
+                        isPackage: isPackageConflict(node))
+                }
+                rows.append(
+                    row(node, depth, choice, report.mode, base, now, dates, leftByReplaceOlder: leftByReplaceOlder))
                 if choice == .merge { visit(node.children, depth + 1, base) }
             }
         }
@@ -415,12 +416,14 @@ public enum CopyPasteReview {
 
     private static func row(
         _ node: ReviewNode, _ depth: Int, _ choice: CopyPasteChoice?, _ mode: ReviewMode, _ basePath: String,
-        _ now: Double, _ dates: ReviewDateText, notNewer: Bool = false
+        _ now: Double, _ dates: ReviewDateText, leftByReplaceOlder: ReplaceOlderSkip? = nil
     ) -> ReviewRow {
         let detail =
-            notNewer
-            ? (text: describeNotNewer(node, mode, now, dates), tone: ReviewTone.muted)
-            : describeRow(node, choice, mode, now, dates)
+            switch leftByReplaceOlder {
+            case .notNewer: (text: describeNotNewer(node, mode, now, dates), tone: ReviewTone.muted)
+            case .packageNotCompared: (text: describePackageNotCompared(node, mode), tone: ReviewTone.muted)
+            case nil: describeRow(node, choice, mode, now, dates)
+            }
         let relativePath: String
         if !basePath.isEmpty, JSString.hasPrefix(node.sourcePath, basePath + "/") {
             relativePath = JSString.string(Array(node.sourcePath.utf16).dropFirst(basePath.utf16.count + 1))
@@ -497,8 +500,18 @@ public enum CopyPasteReview {
         let existing = node.destinationFingerprint.mtimeMs.map {
             " \u{B7} the existing one is from \(dates.format($0, now: now))"
         }
-        let stays = mode == .cut ? " \u{B7} stays in \u{201C}\(leafName(dirname(node.sourcePath)))\u{201D}" : ""
-        return "Not newer\(existing ?? "")\(stays)"
+        return "Not newer\(existing ?? "")\(staysWhenMoved(node, mode))"
+    }
+
+    /// A package Replace Older leaves alone, whatever its date: the date is the outer folder's, which says nothing
+    /// of what changed deeper inside, so the row doesn't call it newer or not.
+    private static func describePackageNotCompared(_ node: ReviewNode, _ mode: ReviewMode) -> String {
+        "Package \u{B7} not compared\(staysWhenMoved(node, mode))"
+    }
+
+    /// " · stays in “Folder”" for a move, whose item left alone stays where it was.
+    private static func staysWhenMoved(_ node: ReviewNode, _ mode: ReviewMode) -> String {
+        mode == .cut ? " \u{B7} stays in \u{201C}\(leafName(dirname(node.sourcePath)))\u{201D}" : ""
     }
 
     /// Two packages (apps, Keynote documents) clash like two files: one replaces the other or both are kept.

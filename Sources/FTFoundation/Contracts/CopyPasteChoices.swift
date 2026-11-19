@@ -43,6 +43,16 @@ public struct CopyPastePolicy: Codable, Equatable, Sendable {
     }
 }
 
+/// Why Replace Older leaves an item that has no choice of its own.
+public enum ReplaceOlderSkip: Equatable, Sendable {
+    /// A file no newer than the one there.
+    case notNewer
+    /// A package clashing with one there. A package's date is its outer folder's, which stays as it was when
+    /// something deeper inside changes (a virtual machine's disk, a photo library's database), so the dates say
+    /// neither that it is newer nor that it isn't.
+    case packageNotCompared
+}
+
 /// The modification dates of the item pasted and of the one there, which Replace Older compares.
 public struct ModifiedDates: Equatable, Sendable {
     public var sourceMs: Double?
@@ -73,10 +83,11 @@ public enum CopyPasteChoices {
     /// both decide here, so the sheet says what the paste will do.
     ///
     /// With Replace Older (`policy.replaceOlderToleranceMs`), a file without a choice of its own is replaced only when
-    /// it is newer than the one there (`dates`), and skipped otherwise (`isSkippedAsNotNewer`).
+    /// it is newer than the one there (`dates`), and skipped otherwise; a package that clashes like a file
+    /// (`isPackage`) is skipped whatever its dates (`replaceOlderSkip` says which).
     public static func choiceForConflict(
         conflictClass: ConflictClass, replaceBlockedReason: String?, policy: CopyPastePolicy,
-        override: CopyPasteChoice?, dates: ModifiedDates? = nil
+        override: CopyPasteChoice?, dates: ModifiedDates? = nil, isPackage: Bool = false
     ) -> CopyPasteChoice {
         let choice: CopyPasteChoice
         if let override, isChoiceAllowed(for: conflictClass, override) {
@@ -86,7 +97,7 @@ public enum CopyPasteChoices {
             case .directoryConflict: choice = policy.directory
             case .typeMismatch: choice = policy.mismatch
             case .fileConflict:
-                choice = isNotNewer(policy, dates) ? .skip : policy.file
+                choice = replaceOlderLeaves(policy, dates, isPackage: isPackage) == nil ? policy.file : .skip
             }
         }
         if choice == .overwrite && replaceBlockedReason != nil {
@@ -95,18 +106,24 @@ public enum CopyPasteChoices {
         return choice
     }
 
-    /// Whether `choiceForConflict` skips the item because Replace Older found it no newer than the one there.
-    public static func isSkippedAsNotNewer(
-        conflictClass: ConflictClass, policy: CopyPastePolicy, override: CopyPasteChoice?, dates: ModifiedDates?
-    ) -> Bool {
+    /// Why `choiceForConflict` skips the item on Replace Older's account; nil when it doesn't, or the item has a
+    /// choice of its own.
+    public static func replaceOlderSkip(
+        conflictClass: ConflictClass, policy: CopyPastePolicy, override: CopyPasteChoice?, dates: ModifiedDates?,
+        isPackage: Bool
+    ) -> ReplaceOlderSkip? {
         let hasOwnChoice = override.map { isChoiceAllowed(for: conflictClass, $0) } ?? false
-        return conflictClass == .fileConflict && !hasOwnChoice && isNotNewer(policy, dates)
+        guard conflictClass == .fileConflict, !hasOwnChoice else { return nil }
+        return replaceOlderLeaves(policy, dates, isPackage: isPackage)
     }
 
-    /// Replace Older is chosen for files, and this one isn't newer than the one there.
-    private static func isNotNewer(_ policy: CopyPastePolicy, _ dates: ModifiedDates?) -> Bool {
-        guard policy.file == .overwrite, let tolerance = policy.replaceOlderToleranceMs else { return false }
-        return dates?.sourceIsNewer(toleranceMs: tolerance) != true
+    /// Replace Older is chosen for files, and it leaves this one: a package, or a file no newer than the one there.
+    private static func replaceOlderLeaves(_ policy: CopyPastePolicy, _ dates: ModifiedDates?, isPackage: Bool)
+        -> ReplaceOlderSkip?
+    {
+        guard policy.file == .overwrite, let tolerance = policy.replaceOlderToleranceMs else { return nil }
+        if isPackage { return .packageNotCompared }
+        return dates?.sourceIsNewer(toleranceMs: tolerance) == true ? nil : .notNewer
     }
 
     /// How far apart, in milliseconds, two modification dates of one file can be once copied between disks of

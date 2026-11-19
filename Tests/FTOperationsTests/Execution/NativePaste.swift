@@ -184,12 +184,13 @@ func withOtherDisk(
 }
 
 /// `runPaste`: reviews and pastes as the write service would, answering each question with `resolve` ("skip"
-/// without one).
+/// without one). `overrides` gives the choices made for single rows of the review, from its report.
 func runPaste(
     mode: CopyPasteMode, sources: [String], into destination: String,
     policy: CopyPastePolicy = NativePaste.keepExisting,
     fileSystem: any WriteServiceFileSystem = NativeWriteFileSystem(), signal: StopSignal = StopSignal(),
     writeJournal: (any WriteJournal)? = nil, beforeExecute: (() throws -> Void)? = nil,
+    overrides: ((CopyPasteAnalysisReport) -> [CopyPasteNodeOverride])? = nil,
     resolve: (@Sendable (CopyPasteRuntimeConflict) -> CopyPasteChoice?)? = nil,
     onEvent: (@Sendable (CopyPasteProgressEvent) -> Void)? = nil
 ) async throws -> PasteRun {
@@ -203,8 +204,9 @@ func runPaste(
     if !report.issues.isEmpty {
         return PasteRun(report: report, result: nil, conflicts: [], events: [])
     }
+    let chosen = overrides?(report) ?? []
     let resolvedNodes = try await WriteService.withRoomForDepth(name: "test plan") {
-        try resolveAnalysisWithPolicy(report: report, policy: policy, fileSystem: fileSystem)
+        try resolveAnalysisWithPolicy(report: report, policy: policy, overrides: chosen, fileSystem: fileSystem)
     }
     try beforeExecute?()
     await executeCopyPasteFromAnalysis(

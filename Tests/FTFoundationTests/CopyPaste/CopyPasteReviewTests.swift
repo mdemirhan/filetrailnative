@@ -220,6 +220,54 @@ private struct Triple: Equatable {
         #expect(kept.detail == "The existing \u{201C}Foo.app\u{201D} stays")
     }
 
+    // Replace Older leaves a package that clashes with one there, newer by its outer date or not, and its row says
+    // it wasn't compared rather than "Not newer"; the row's own Replace still replaces it, and files beside it are
+    // compared as ever.
+    @Test func leavesAPackageUncomparedWithReplaceOlder() {
+        func package(_ id: String, _ name: String, sourceMs: Double, destinationMs: Double) -> ReviewNode {
+            node(
+                id, "/src/\(name)", conflictClass: .fileConflict, sourceKind: .directory, destinationKind: .directory,
+                sourceFingerprint: fingerprint(.directory, nil, sourceMs),
+                destinationFingerprint: fingerprint(.directory, nil, destinationMs))
+        }
+        let sameDate = package("item-vm", "Work.sparsebundle", sourceMs: jan1, destinationMs: jan1)
+        let newerOutside = package("item-app", "Foo.app", sourceMs: now - 60_000, destinationMs: jan1)
+        let all = report([sameDate, newerOutside, notes], newerToleranceMs: 1)
+        let policy = CopyPasteReview.policy(for: .replaceOlder, toleranceMs: 1)
+        let listed = rows(all, policy)
+        #expect(
+            listed.map { Triple(name: $0.name, choice: $0.choice, detail: $0.detail) } == [
+                Triple(name: "Work.sparsebundle", choice: .skip, detail: "Package \u{B7} not compared"),
+                Triple(name: "Foo.app", choice: .skip, detail: "Package \u{B7} not compared"),
+                Triple(name: "notes.txt", choice: .overwrite, detail: listed[2].detail),
+            ])
+        #expect(listed[0].tone == .muted && listed[1].tone == .muted)
+        #expect(listed[2].detail.hasPrefix("Replaces "))
+        #expect(listed[0].choices == [.keepBoth, .overwrite, .skip])
+        let summary = CopyPasteReview.summarize(all, policy: policy, overrides: [:])
+        #expect(summary.replaced == 1 && summary.skipped == 2)
+        #expect(CopyPasteReview.currentAllConflictsChoice(all, policy, [:]) == .replaceOlder)
+
+        // The row's own Replace wins, and the bar then says items were set separately.
+        let own = CopyPasteReview.overrides(setting: .overwrite, for: newerOutside, policy: policy, overrides: [:])
+        #expect(own == ["item-app": .overwrite])
+        let chosen = rows(all, policy, own)
+        #expect(chosen.map(\.choice) == [.skip, .overwrite, .overwrite])
+        #expect(chosen[1].detail == "Replaces the existing \u{201C}Foo.app\u{201D} from Jan 1")
+        #expect(chosen[1].tone == .danger)
+        #expect(CopyPasteReview.currentAllConflictsChoice(all, policy, own) == nil)
+        // A row set to Skip by hand is the person's Skip, not Replace Older's.
+        #expect(rows(all, policy, ["item-vm": .skip])[0].detail == "Left as is")
+
+        // A move says the package stays where it was, as it says of a file that isn't newer.
+        let moved = rows(report([sameDate], .cut, newerToleranceMs: 1), policy)
+        #expect(moved.map(\.detail) == ["Package \u{B7} not compared \u{B7} stays in \u{201C}src\u{201D}"])
+
+        // Plain Replace still replaces a package whole.
+        let replaceAll = CopyPasteReview.policy(for: .overwrite)
+        #expect(rows(all, replaceAll).map(\.choice) == [.overwrite, .overwrite, .overwrite])
+    }
+
     @Test func getsSingularPluralAndUnnamedItemsRightInWhatReplaceDeletes() {
         func describe(_ only: ReviewDestinationOnly) -> String? {
             var folder = photos

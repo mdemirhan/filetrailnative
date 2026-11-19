@@ -2153,6 +2153,14 @@ extension MainWindowController: ExplorerWindowContext {
         CommandAvailability.canRun(command, commandContext)
     }
 
+    /// Whether `command` could run were no file operation running. A write command reached by the key of its
+    /// dimmed item asks this of what is selected before it starts, and leaves the busy notice to its own start.
+    func selectionAllows(_ command: AppCommand) -> Bool {
+        var context = commandContext
+        context.writeOperationLocked = false
+        return CommandAvailability.canRun(command, context)
+    }
+
     func commandAvailability() -> (AppCommand) -> Bool {
         let context = commandContext
         return { CommandAvailability.canRun($0, context) }

@@ -112,6 +112,10 @@ extension MainWindowController {
             else { return true }
             Task { _ = await actions.newFolder(in: target) }
         case .saveAsTemplate:
+            // Its item is dimmed for anything but files outside the Trash, and the key of a dimmed item still comes
+            // here (`keyOfDimmedItem`), where a selected folder would be copied whole into the Templates folder,
+            // which New File never lists.
+            guard selectionAllows(.saveAsTemplate) else { return true }
             saveAsTemplate(selectedPaths)
         case .newTextFile:
             // Into the folder on screen, whatever is selected, as New Folder.
@@ -180,7 +184,7 @@ extension MainWindowController {
             return
         }
         Self.templatesFolderOpened?()
-        Task { _ = await actions.copyTo(paths, destination: folder) }
+        Task { actions.reviewIfAsked(await actions.copyTo(paths, destination: folder), action: .copyTo) }
     }
 
     /// File ▸ New File ▸ Open Templates Folder: the folder in this tab, made the first time.

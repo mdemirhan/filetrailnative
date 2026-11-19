@@ -130,6 +130,8 @@ extension ResultItem {
         self.init(
             sourcePath: item.sourcePath, destinationPath: item.destinationPath, status: status, error: item.error,
             skippedAfterChange: item.skipReason == .runtimeConflictResolution,
-            skippedAsNotNewer: item.skipReason == .notNewer, childFailureCount: item.childFailureCount, note: item.note)
+            skippedAsNotNewer: item.skipReason == .notNewer,
+            skippedAsPackageNotCompared: item.skipReason == .packageNotCompared,
+            childFailureCount: item.childFailureCount, note: item.note)
     }
 }

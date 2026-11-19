@@ -1,6 +1,7 @@
 // The built application menu, its keys and the toolbar: the commands they run and when each is available
 import AppKit
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -491,6 +492,33 @@ extension ExplorerWindowlessTests {
             tab.perform(.undo)
             #expect(await waitUntil { window.exists("Gamma") })
             await window.close()
+        }
+
+        // File ▸ New File ▸ a template's item makes a file from it in the window that has the keyboard, named in its
+        // row; the item is on where Text File is.
+        @Test(.restoresWindowSeams) func aTemplatesMenuItemMakesAFileFromIt() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let home = try TemporaryDirectory(prefix: "filetrail-templates")
+            let folder = home.path + "/Templates"
+            try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: false)
+            try "Dear reader".write(toFile: folder + "/Letter.txt", atomically: true, encoding: .utf8)
+            MainWindowController.templatesFolderPath = folder
+            let menu = RealMenu(window.harness, tab)
+            let item = NSMenuItem(title: "Letter.txt", action: nil, keyEquivalent: "")
+            item.identifier = NSUserInterfaceItemIdentifier(ApplicationMenu.templateItemID("Letter.txt"))
+            #expect(menu.isEnabled("newTextFile"))
+            #expect(menu.router.validateMenuItem(item))
+
+            menu.choose(ApplicationMenu.templateItemID("Letter.txt"))
+            #expect(await waitUntil { tab.content.inlineRename != nil && !tab.isWriteLocked })
+            #expect(tab.content.inlineRename.map { NodePath.basename($0.path) } == "Letter.txt")
+            let made = try String(contentsOf: window.folder.appendingPathComponent("Letter.txt"), encoding: .utf8)
+            #expect(made == "Dear reader")
+            #expect(window.recorder.shown.isEmpty)
+            tab.content.renameCancelled()
+            await window.close()
+            home.remove()
         }
 
         // Rename, duplicate and move, reached by the same keys, take the clicked row too.

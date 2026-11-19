@@ -37,7 +37,7 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
         for node in nodes {
             itemResults.append(
                 node.action == .skip
-                    ? itemResult(node, .skipped, nil, node.skippedAsNotNewer ? .notNewer : .plannedConflictPolicy)
+                    ? itemResult(node, .skipped, nil, plannedSkipReason(node))
                     : itemResult(node, .cancelled, message))
         }
     }
@@ -284,13 +284,21 @@ func emitProgress(
 
 // MARK: One item, with what changed since the review
 
+/// Why the plan skips an item: the choice made for it or for all conflicts, or Replace Older's own reason.
+private func plannedSkipReason(_ node: ResolvedCopyPasteNode) -> CopyPasteItemResult.SkipReason {
+    switch node.replaceOlderSkip {
+    case nil: .plannedConflictPolicy
+    case .notNewer: .notNewer
+    case .packageNotCompared: .packageNotCompared
+    }
+}
+
 func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCopyPasteNode) throws
     -> ExecuteNodeResult
 {
     var currentNode = resolvedNode
     if currentNode.action == .skip {
-        return .skipped(
-            currentNode.skippedAsNotNewer ? .notNewer : .plannedConflictPolicy, currentNode.destinationPath)
+        return .skipped(plannedSkipReason(currentNode), currentNode.destinationPath)
     }
     let fileSystem = context.fileSystem
     var check = detectRuntimeConflict(currentNode, context.report.analysisId, fileSystem)

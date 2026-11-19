@@ -131,6 +131,7 @@ extension WriteSkipReason {
         case .plannedConflictPolicy: self = .plannedConflictPolicy
         case .runtimeConflictResolution: self = .runtimeConflictResolution
         case .notNewer: self = .notNewer
+        case .packageNotCompared: self = .packageNotCompared
         }
     }
 }

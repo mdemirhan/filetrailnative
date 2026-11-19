@@ -14,15 +14,18 @@ public struct ResultItem: Equatable, Sendable {
     public var skippedAfterChange: Bool
     /// Skipped by Replace Older: the item there was as new or newer.
     public var skippedAsNotNewer: Bool
+    /// Skipped by Replace Older: a package clashing with one there, which it doesn't compare.
+    public var skippedAsPackageNotCompared: Bool
     public var childFailureCount: Int?
     public var note: Bool
 
     public init(
         sourcePath: String?, destinationPath: String?, status: Status, error: String? = nil,
-        skippedAfterChange: Bool = false, skippedAsNotNewer: Bool = false, childFailureCount: Int? = nil,
-        note: Bool = false
+        skippedAfterChange: Bool = false, skippedAsNotNewer: Bool = false,
+        skippedAsPackageNotCompared: Bool = false, childFailureCount: Int? = nil, note: Bool = false
     ) {
         self.skippedAsNotNewer = skippedAsNotNewer
+        self.skippedAsPackageNotCompared = skippedAsPackageNotCompared
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
         self.status = status
@@ -190,6 +193,9 @@ public struct CopyPasteResultText: Equatable, Sendable {
                 if undoing { return item.error ?? "Left as it is" }
                 if renaming { return item.error ?? "Its new name was taken" }
                 if item.skippedAsNotNewer { return "Already there, as new or newer \u{B7} Replace Older left it" }
+                if item.skippedAsPackageNotCompared {
+                    return "Already there, a package, not compared \u{B7} Replace Older left it"
+                }
                 return item.skippedAfterChange
                     ? "Skipped after it changed during the operation" : "Already existed \u{B7} you chose Skip"
             },

@@ -456,10 +456,6 @@ final class WindowWriteActions {
 
     // MARK: Paste as File
 
-    /// The image or text on the system's clipboard becomes a new file in `folder`, the folder on screen, under a free
-    /// name ("Pasted Image.png"), which is then edited in its row, as New Folder's is. Files copied in another app,
-    /// and a clipboard with nothing to write, are only told of; what a password manager marked as private is asked
-    /// about first.
     /// File ▸ New File: a file holding `contents` (none for Text File, a template's for a template) in the folder on
     /// screen, under `name` or the next free one ("untitled 2.txt"), and then named in its row.
     func newFile(in folder: String, named name: String, contents: Data) async -> CopyLikeOutcome {
@@ -486,6 +482,10 @@ final class WindowWriteActions {
         return outcome
     }
 
+    /// The image or text on the system's clipboard becomes a new file in `folder`, the folder on screen, under a free
+    /// name ("Pasted Image.png"), which is then edited in its row, as New Folder's is. Files copied in another app,
+    /// and a clipboard with nothing to write, are only told of; what a password manager marked as private is asked
+    /// about first.
     func pasteAsFile(in folder: String, from clipboard: SystemClipboard) async -> CopyLikeOutcome {
         let contents = await clipboard.read()
         if contents.choice == .files {

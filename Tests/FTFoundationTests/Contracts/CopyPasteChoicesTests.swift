@@ -38,20 +38,62 @@ struct CopyPasteChoicesTests {
         #expect(choice(9000, 4000, blocked: "It holds what is pasted") == .keepBoth)
         #expect(choice(1, 9, .directoryConflict) == .merge)
         #expect(choice(9, 1, .typeMismatch) == .skip)
+        let older = ModifiedDates(sourceMs: 3000, destinationMs: 4000)
         #expect(
-            CopyPasteChoices.isSkippedAsNotNewer(
-                conflictClass: .fileConflict, policy: policy, override: nil,
-                dates: ModifiedDates(sourceMs: 3000, destinationMs: 4000)))
+            CopyPasteChoices.replaceOlderSkip(
+                conflictClass: .fileConflict, policy: policy, override: nil, dates: older, isPackage: false)
+                == .notNewer)
         #expect(
-            !CopyPasteChoices.isSkippedAsNotNewer(
-                conflictClass: .fileConflict, policy: policy, override: .skip,
-                dates: ModifiedDates(sourceMs: 3000, destinationMs: 4000)))
+            CopyPasteChoices.replaceOlderSkip(
+                conflictClass: .fileConflict, policy: policy, override: .skip, dates: older, isPackage: false) == nil)
         // Plain Replace replaces whatever the dates.
         #expect(
             CopyPasteChoices.choiceForConflict(
                 conflictClass: .fileConflict, replaceBlockedReason: nil,
                 policy: CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite), override: nil,
                 dates: ModifiedDates(sourceMs: 1, destinationMs: 9)) == .overwrite)
+    }
+
+    // A package's date is its outer folder's, which a change deeper inside leaves as it was: Replace Older leaves a
+    // package whatever the dates say, and says it didn't compare; the item's own choice still wins.
+    @Test func leavesAPackageWithReplaceOlderWhateverItsDates() {
+        let policy = CopyPastePolicy(
+            file: .overwrite, directory: .merge, mismatch: .skip, replaceOlderToleranceMs: 1000)
+        func choice(_ source: Double?, _ destination: Double?, override: CopyPasteChoice? = nil) -> CopyPasteChoice {
+            CopyPasteChoices.choiceForConflict(
+                conflictClass: .fileConflict, replaceBlockedReason: nil, policy: policy, override: override,
+                dates: ModifiedDates(sourceMs: source, destinationMs: destination), isPackage: true)
+        }
+        func reason(_ source: Double?, _ destination: Double?, override: CopyPasteChoice? = nil) -> ReplaceOlderSkip? {
+            CopyPasteChoices.replaceOlderSkip(
+                conflictClass: .fileConflict, policy: policy, override: override,
+                dates: ModifiedDates(sourceMs: source, destinationMs: destination), isPackage: true)
+        }
+        #expect(choice(4000, 4000) == .skip)
+        #expect(reason(4000, 4000) == .packageNotCompared)
+        // Newer by its outer date: still left, not replaced whole.
+        #expect(choice(9000, 4000) == .skip)
+        #expect(reason(9000, 4000) == .packageNotCompared)
+        #expect(choice(3000, 4000) == .skip)
+        #expect(reason(3000, 4000) == .packageNotCompared)
+        #expect(choice(4000, 4000, override: .overwrite) == .overwrite)
+        #expect(reason(4000, 4000, override: .overwrite) == nil)
+        #expect(choice(9000, 4000, override: .keepBoth) == .keepBoth)
+        // Plain Replace, and any other answer for all conflicts, treat a package as before.
+        for plain in [
+            CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite),
+            CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth),
+            CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip),
+        ] {
+            #expect(
+                CopyPasteChoices.choiceForConflict(
+                    conflictClass: .fileConflict, replaceBlockedReason: nil, policy: plain, override: nil,
+                    dates: ModifiedDates(sourceMs: 1, destinationMs: 9), isPackage: true) == plain.file)
+            #expect(
+                CopyPasteChoices.replaceOlderSkip(
+                    conflictClass: .fileConflict, policy: plain, override: nil,
+                    dates: ModifiedDates(sourceMs: 1, destinationMs: 9), isPackage: true) == nil)
+        }
     }
 
     @Test func offersMergeOnlyForTwoFolders() {

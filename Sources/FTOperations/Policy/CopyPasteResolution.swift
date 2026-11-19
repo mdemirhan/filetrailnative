@@ -22,18 +22,19 @@ public struct ResolvedCopyPasteNode: Equatable, Sendable {
     public var action: ResolvedCopyPasteAction
     public var destinationPath: String
     public var children: [ResolvedCopyPasteNode]
-    /// Skipped by Replace Older: the item there is as new or newer.
-    public var skippedAsNotNewer: Bool
+    /// Skipped by Replace Older, and why: the item there is as new or newer, or the two are packages, which it
+    /// doesn't compare.
+    public var replaceOlderSkip: ReplaceOlderSkip?
 
     public init(
         node: CopyPasteAnalysisNode, action: ResolvedCopyPasteAction, destinationPath: String,
-        children: [ResolvedCopyPasteNode], skippedAsNotNewer: Bool = false
+        children: [ResolvedCopyPasteNode], replaceOlderSkip: ReplaceOlderSkip? = nil
     ) {
         self.node = node
         self.action = action
         self.destinationPath = destinationPath
         self.children = children
-        self.skippedAsNotNewer = skippedAsNotNewer
+        self.replaceOlderSkip = replaceOlderSkip
     }
 }
 
@@ -135,7 +136,7 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
     ) throws -> ResolvedCopyPasteNode {
         let baseDestinationPath = destinationPathOverride ?? node.destinationPath
         let action: ResolvedCopyPasteAction
-        var skippedAsNotNewer = false
+        var replaceOlderSkip: ReplaceOlderSkip?
         if let explicitAction {
             action = explicitAction
         } else if let conflictClass = node.conflictClass {
@@ -145,15 +146,17 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
                 throw OperationError("Missing \(Self.kindName(conflictClass)) conflict policy.")
             }
             // As the review sheet decides it (an item Replace can't take gets the safe choice; Replace Older skips
-            // one that isn't newer).
+            // a file that isn't newer, and a package). Two folders clash like files only when either is a package.
             let dates = ModifiedDates(
                 sourceMs: node.sourceFingerprint.mtimeMs, destinationMs: node.destinationFingerprint.mtimeMs)
+            let isPackage = conflictClass == .fileConflict && node.sourceKind == .directory
             action = ResolvedCopyPasteAction(
                 CopyPasteChoices.choiceForConflict(
                     conflictClass: conflictClass, replaceBlockedReason: node.replaceBlockedReason,
-                    policy: policy ?? .defaultCopyPaste, override: override, dates: dates))
-            skippedAsNotNewer = CopyPasteChoices.isSkippedAsNotNewer(
-                conflictClass: conflictClass, policy: policy ?? .defaultCopyPaste, override: override, dates: dates)
+                    policy: policy ?? .defaultCopyPaste, override: override, dates: dates, isPackage: isPackage))
+            replaceOlderSkip = CopyPasteChoices.replaceOlderSkip(
+                conflictClass: conflictClass, policy: policy ?? .defaultCopyPaste, override: override, dates: dates,
+                isPackage: isPackage)
         } else {
             action = .create
         }
@@ -195,7 +198,7 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
 
         return ResolvedCopyPasteNode(
             node: normalizedNode, action: action, destinationPath: destinationPath, children: children,
-            skippedAsNotNewer: skippedAsNotNewer)
+            replaceOlderSkip: replaceOlderSkip)
     }
 
     private static func kindName(_ conflictClass: ConflictClass) -> String {

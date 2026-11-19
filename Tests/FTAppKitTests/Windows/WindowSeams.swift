@@ -7,7 +7,7 @@ import Testing
 @testable import FTAppKit
 
 /// The window's static seams a test may replace (the visited folders' store, the dialogs' timers, the folder picker,
-/// the batch rename and image conversion runners), as they were before each test, put back after it whether it
+/// the batch rename and image conversion runners, the Templates folder), as they were before each test, put back after it whether it
 /// passed or threw. The suites that replace them are inside ExplorerWindowlessTests, which runs one test at a time,
 /// so no two of them overlap.
 @MainActor
@@ -19,6 +19,8 @@ enum WindowSeams {
         var runBatchRename: @MainActor (WindowWriteActions, BatchRenameRequest) async -> Void
         var runConvertImages: @MainActor (WindowWriteActions, [String], ImageConversionOptions) async -> Void
         var readImageInfos: @Sendable ([String]) async -> [ImageInfo?]
+        var templatesFolderPath: String?
+        var templatesFolderOpened: (@MainActor () -> Void)?
     }
 
     private static var saved: [Int: Saved] = [:]
@@ -30,7 +32,9 @@ enum WindowSeams {
             visitStore: MainWindowController.visitStore, dialogTimers: MainWindowController.dialogTimers,
             pickDirectory: MainWindowController.pickDirectory, runBatchRename: MainWindowController.runBatchRename,
             runConvertImages: MainWindowController.runConvertImages,
-            readImageInfos: MainWindowController.readImageInfos)
+            readImageInfos: MainWindowController.readImageInfos,
+            templatesFolderPath: MainWindowController.templatesFolderPath,
+            templatesFolderOpened: MainWindowController.templatesFolderOpened)
         return next
     }
 
@@ -42,6 +46,8 @@ enum WindowSeams {
         MainWindowController.runBatchRename = seams.runBatchRename
         MainWindowController.runConvertImages = seams.runConvertImages
         MainWindowController.readImageInfos = seams.readImageInfos
+        MainWindowController.templatesFolderPath = seams.templatesFolderPath
+        MainWindowController.templatesFolderOpened = seams.templatesFolderOpened
     }
 }
 
