@@ -69,8 +69,13 @@ struct ContextMenuGoldenTests {
                     ContextMenuItems.items(surface: surface, options: Self.options(members["options"])))
             default:
                 guard let action = Self.string(members["action"]) else { return .null }
+                // The keys are the defaults, but in a case that says which the user chose (`shortcutOverrides`, as
+                // the preferences keep them).
+                let shortcuts =
+                    members["shortcutOverrides"].map { ShortcutDisplay(shortcuts: ShortcutCommands.resolve($0)) }
+                    ?? .defaults
                 let label = ShortcutPolicy.contextMenuShortcutLabel(
-                    actionID: action, context: Self.context(members["context"]))
+                    actionID: action, context: Self.context(members["context"]), shortcuts: shortcuts)
                 return label.map { .string($0) } ?? .null
             }
         }

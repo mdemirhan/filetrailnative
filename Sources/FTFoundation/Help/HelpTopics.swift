@@ -905,7 +905,9 @@ extension HelpContent {
         HelpShortcutItem(
             group: .views, .command(.resetFolderView),
             "Forget this folder's own view; it shows the one above or the pane's"),
-        HelpShortcutItem(group: .views, .command(.manageFolderViews), "List every folder's view in Settings"),
+        HelpShortcutItem(
+            group: .views, .command(.manageFolderViews),
+            "List every customized folder in the Folder Customizations window"),
         HelpShortcutItem(group: .views, .command(.fullScreen), "Enter or leave full screen"),
         HelpShortcutItem(group: .views, .command(.minimize), "Minimize the window into the Dock"),
         HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail's windows until you come back to it"),

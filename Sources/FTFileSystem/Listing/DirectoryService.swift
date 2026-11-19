@@ -77,15 +77,19 @@ public final class DirectoryService: Sendable {
     }
 
     /// Details of items in one folder, in the order asked; a folder's size is deferred. The folder is named as
-    /// asked, not resolved, and only the items not kept are checked to be in it.
+    /// asked, not resolved, and only the items not kept are checked to be in it. `listedAdded` has the Date Added the
+    /// folder read gave each item that came from a listing (`DirectoryEntry.addedMs`), which is shown as it is; an
+    /// item not in it is asked for its own.
     @concurrent
-    public func metadata(directoryPath: String, paths: [String]) async throws -> MetadataBatch {
+    public func metadata(
+        directoryPath: String, paths: [String], listedAdded: [String: Int64?] = [:]
+    ) async throws -> MetadataBatch {
         let fileSystem = fileSystem
         let kinds = kinds
         let items = try await cache.metadata(for: paths) { missing in
             try await BlockingWork.run(qos: .utility) {
                 try ExplorerListing.metadataBatch(
-                    directoryPath: directoryPath, paths: missing, fileSystem, kinds: kinds
+                    directoryPath: directoryPath, paths: missing, listedAdded: listedAdded, fileSystem, kinds: kinds
                 ).items
             }
         }

@@ -38,7 +38,7 @@ struct ReviewStaleDetailsTests {
     private func loadedController() async -> (ContentPaneController, [DirectoryEntry]) {
         let entries = [ContentModelTests.entry("a.txt"), ContentModelTests.entry("b.txt")]
         let loaders = ContentLoaders(
-            metadata: { _, paths in
+            metadata: { _, paths, _ in
                 paths.compactMap { path in
                     let json: [String: Any] = [
                         "path": path, "kindLabel": "Plain Text", "createdAt": "2026-10-13T14:30:00.000Z",
@@ -107,7 +107,7 @@ struct ReviewStaleDetailsTests {
         let entries = [ContentModelTests.entry("a.txt")]
         var reads = 0
         let loaders = ContentLoaders(
-            metadata: { _, _ in
+            metadata: { _, _, _ in
                 reads += 1
                 return []
             }, hiddenCount: { _ in 0 }, iconStore: { nil }, homePath: "/", openPrivacySettings: {})
@@ -136,7 +136,7 @@ struct ReviewStaleDetailsTests {
 
         var loaders: ContentLoaders {
             ContentLoaders(
-                metadata: { [self] _, paths in
+                metadata: { [self] _, paths, _ in
                     count += 1
                     let sizeAtStart = size
                     await withCheckedContinuation { waiting.append($0) }

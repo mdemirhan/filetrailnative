@@ -25,6 +25,9 @@ struct CommandAvailabilityGoldenTests {
         let currentPath: String
         let selectedPaths: [String]
         let entries: [Entry]
+        /// Whether the list shows anything. A window gives the rules only the selected entries, so a case says it
+        /// apart from them.
+        let listShowsItems: Bool
         let selectedEntry: Entry?
         let selectedTreeTargetPath: String?
         let clipboardHasItems: Bool
@@ -71,7 +74,8 @@ struct CommandAvailabilityGoldenTests {
             })
         let context = CommandAvailabilityContext(
             shortcutContext: shortcut, currentPath: input.currentPath, selectedPathsInViewOrder: input.selectedPaths,
-            activeContentEntries: input.entries.map(entry), selectedEntry: input.selectedEntry.map(entry),
+            activeContentEntries: input.entries.map(entry), listShowsItems: input.listShowsItems,
+            selectedEntry: input.selectedEntry.map(entry),
             selectedTreeTargetPath: input.selectedTreeTargetPath, clipboardHasItems: input.clipboardHasItems,
             pasteDestinationPath: input.pasteDestinationPath, isSearchMode: input.isSearchMode,
             openItemLimit: input.openItemLimit, writeOperationLocked: input.writeOperationLocked,
@@ -102,7 +106,7 @@ struct CommandAvailabilityGoldenTests {
 
     @Test func commandAvailabilityMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try GoldenChanges.load(suite: "command-availability")
-        #expect(cases.count >= 300)
+        #expect(cases.count >= 301)
         Golden.expectMatches(cases) { Self.run($0) }
     }
 }

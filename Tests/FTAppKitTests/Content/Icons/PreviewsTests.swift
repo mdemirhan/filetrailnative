@@ -193,6 +193,146 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        /// The file leaves the disk and the folder is read again. `byThisWindow`: as a write of this window ends, its
+        /// selection letting go of the file before the read; otherwise as the read alone finds it gone.
+        private func remove(
+            _ path: String, from tab: MainWindowController, _ probe: GridProbe, byThisWindow: Bool
+        ) async throws {
+            try FileManager.default.removeItem(atPath: path)
+            if byThisWindow {
+                tab.content.keepOrderBeforeRemoval()
+                tab.content.dropFromSelection([path])
+            }
+            tab.refresh()
+            #expect(await waitUntil { !tab.content.entries.contains { $0.path == path } && !tab.isNavigating })
+            probe.layout()
+        }
+
+        // At 1 at a time, the file that takes the place of the selected one when it is removed is selected: the next
+        // one, or the one before when it was the last. Another file removed, or the file on screen removed with
+        // nothing selected, leaves the selection as it was.
+        @Test func atOneAtATimeTheFileInPlaceOfTheRemovedSelectedOneIsSelected() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 6)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            tab.perform(.showPreviews1)
+            probe.layout()
+            let clip = previews.scroll.contentView
+            let paths = tab.content.entries.map(\.path)
+            func onRow(_ row: Double) -> Bool {
+                abs(Double(clip.bounds.origin.y) - row * previews.layout.rowHeight) < 0.5
+            }
+            // Opening the folder selected nothing.
+            #expect(tab.content.selection.isEmpty)
+
+            tab.content.select(paths: [paths[1]])
+            probe.layout()
+            #expect(onRow(1))
+            try await remove(paths[1], from: tab, probe, byThisWindow: true)
+            #expect(tab.content.selection.paths == [paths[2]])
+            #expect(onRow(1))
+
+            // The last one: the one before it comes on screen, and is selected. Listed: 0, 2, 3, 4, 5.
+            tab.content.select(paths: [paths[5]])
+            probe.layout()
+            #expect(onRow(4))
+            try await remove(paths[5], from: tab, probe, byThisWindow: true)
+            #expect(tab.content.selection.paths == [paths[4]])
+            #expect(onRow(3))
+
+            // Found gone by the read alone, as in a tab the write wasn't started from. Listed: 0, 2, 3, 4.
+            try await remove(paths[4], from: tab, probe, byThisWindow: false)
+            #expect(tab.content.selection.paths == [paths[3]])
+            #expect(onRow(2))
+
+            // Another file removed: the selected one stays selected. Listed: 0, 2, 3.
+            try await remove(paths[0], from: tab, probe, byThisWindow: true)
+            #expect(tab.content.selection.paths == [paths[3]])
+
+            // Nothing selected, and the file on screen removed: nothing is selected. Listed: 2, 3.
+            tab.content.selectionChanged(.empty)
+            try await remove(paths[3], from: tab, probe, byThisWindow: true)
+            #expect(tab.content.selection.isEmpty)
+            #expect(tab.content.entries.map(\.path) == [paths[2]])
+            await harness.close()
+        }
+
+        // With more than one on screen a removed selection leaves nothing selected, as in the Icons view.
+        @Test func atFourAtATimeARemovedSelectionLeavesNothingSelected() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 6)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            #expect(previews.count == 4)
+            let paths = tab.content.entries.map(\.path)
+            tab.content.select(paths: [paths[1]])
+            probe.layout()
+            try await remove(paths[1], from: tab, probe, byThisWindow: true)
+            #expect(tab.content.selection.isEmpty)
+            tab.content.select(paths: [paths[2]])
+            try await remove(paths[2], from: tab, probe, byThisWindow: false)
+            #expect(tab.content.selection.isEmpty)
+            await harness.close()
+        }
+
+        // Move to Trash at 1 at a time, twice: each acts on the file on screen.
+        @Test func moveToTrashAtOneAtATimeGoesOnToTheFileThatComesOnScreen() async throws {
+            PreparingSheet.isEnabled = false
+            let harness = try ExplorerHarness.windowless()
+            let writes = try harness.writeOperations()
+            defer { withExtendedLifetime(writes) {} }
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 4)
+            tab.perform(.showPreviews1)
+            probe.layout()
+            let paths = tab.content.entries.map(\.path)
+            tab.content.select(paths: [paths[0]])
+            tab.content.focusList()
+            for index in 0..<2 {
+                #expect(tab.canPerform(.trashSelection))
+                tab.perform(.trashSelection)
+                #expect(
+                    await waitUntil {
+                        !FileManager.default.fileExists(atPath: paths[index]) && !tab.isWriteLocked
+                            && tab.content.selection.paths == [paths[index + 1]]
+                    }, "file \(index) trashed, the next one selected")
+            }
+            #expect(tab.content.entries.map(\.path) == [paths[2], paths[3]])
+            await harness.close()
+        }
+
+        // At 1 at a time a name being edited keeps its file selected while the pane scrolls away from it; once the
+        // name is let go of, a scroll selects the file it rests on again.
+        @Test func aScrollAtOneAtATimeKeepsTheFileBeingRenamedSelected() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 6)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 0.02
+            tab.perform(.showPreviews1)
+            probe.layout()
+            let clip = previews.scroll.contentView
+            let paths = tab.content.entries.map(\.path)
+            func scrollARow() async {
+                clip.scroll(to: NSPoint(x: 0, y: clip.bounds.origin.y + previews.layout.rowHeight))
+                previews.scroll.reflectScrolledClipView(clip)
+                // The pane waits for the scroll to rest, and then says which file it rests on.
+                #expect(previews.isSettling)
+                #expect(await waitUntil { !previews.isSettling })
+            }
+            tab.content.select(paths: [paths[0]])
+            probe.layout()
+            #expect(tab.content.beginRename(path: paths[0]))
+            #expect(tab.content.inlineRename?.path == paths[0])
+            await scrollARow()
+            #expect(abs(Double(clip.bounds.origin.y) - previews.layout.rowHeight) < 0.5)
+            #expect(tab.content.inlineRename?.path == paths[0])
+            #expect(tab.content.selection.paths == [paths[0]])
+
+            tab.content.endRename()
+            #expect(tab.content.inlineRename == nil)
+            await scrollARow()
+            #expect(tab.content.selection.paths == [paths[2]])
+            await harness.close()
+        }
+
         @Test func eachPaneShowsItsOwnView() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsPreviews, files: 6)

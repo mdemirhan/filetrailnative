@@ -7270,6 +7270,96 @@
       "output": null
     },
     {
+      "name": "shortcut newFolderWithSelection: content/null",
+      "input": {
+        "kind": "shortcut",
+        "action": "newFolderWithSelection",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "content",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": null
+        }
+      },
+      "output": "⌃⌘N"
+    },
+    {
+      "name": "shortcut newFolderWithSelection: tree/filesystemFolder",
+      "input": {
+        "kind": "shortcut",
+        "action": "newFolderWithSelection",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "tree",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": "filesystemFolder"
+        }
+      },
+      "output": null
+    },
+    {
+      "name": "shortcut saveAsTemplate, no key given: content/null",
+      "input": {
+        "kind": "shortcut",
+        "action": "saveAsTemplate",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "content",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": null
+        }
+      },
+      "output": null
+    },
+    {
+      "name": "shortcut saveAsTemplate, given a key: content/null",
+      "input": {
+        "kind": "shortcut",
+        "action": "saveAsTemplate",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "content",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": null
+        },
+        "shortcutOverrides": {
+          "saveAsTemplate": [
+            "Ctrl+Cmd+T"
+          ]
+        }
+      },
+      "output": "⌃⌘T"
+    },
+    {
+      "name": "shortcut saveAsTemplate, given a key: tree/filesystemFolder",
+      "input": {
+        "kind": "shortcut",
+        "action": "saveAsTemplate",
+        "context": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "tree",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": "filesystemFolder"
+        },
+        "shortcutOverrides": {
+          "saveAsTemplate": [
+            "Ctrl+Cmd+T"
+          ]
+        }
+      },
+      "output": null
+    },
+    {
       "name": "shortcut random 0: duplicate",
       "input": {
         "kind": "shortcut",

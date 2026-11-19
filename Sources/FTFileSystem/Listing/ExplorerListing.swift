@@ -242,6 +242,7 @@ enum ExplorerListing {
                 var entry = DirectoryEntry(
                     path: entryPath, name: record.name, fileExtension: fileExtension, kind: kind, isHidden: hidden,
                     isSymlink: kind == .symlinkDirectory || kind == .symlinkFile)
+                entry.addedMs = record.addedMs
                 if needsExecutableFlag, let stats {
                     entry.isExecutable = stats.mode & 0o111 != 0
                 }
@@ -382,9 +383,13 @@ enum ExplorerListing {
     // MARK: Metadata
 
     /// The details of items of one folder: every path must be directly inside `directoryPath`, so a batch can't be
-    /// used to look at any path on the disk.
+    /// used to look at any path on the disk. `listedAdded` has the Date Added the folder read gave each item that came
+    /// from a listing (nil where the disk keeps none): it is shown as it is, so a row shows the date its folder is
+    /// sorted by, which for a mount point is not the one the item itself gives, and no row is asked for it again.
+    /// An item not in it (a search result) is asked.
     static func metadataBatch(
-        directoryPath: String, paths: [String], _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        directoryPath: String, paths: [String], listedAdded: [String: Int64?] = [:],
+        _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
     ) throws -> MetadataBatch {
         let resolvedDirectoryPath = try resolveDirectoryPath(directoryPath, fileSystem)
         var items: [EntryMetadata] = []
@@ -394,16 +399,27 @@ enum ExplorerListing {
             if NodePath.dirname(resolvedPath) != resolvedDirectoryPath {
                 throw ExplorerError.outsideDirectory(path: resolvedPath, directory: resolvedDirectoryPath)
             }
-            items.append(entryMetadata(path: resolvedPath, fileSystem, kinds: kinds))
+            items.append(
+                entryMetadata(
+                    path: resolvedPath, added: listedAdded[path].map(DateAdded.listed) ?? .unread, fileSystem,
+                    kinds: kinds))
         }
         return MetadataBatch(directoryPath: resolvedDirectoryPath, items: items)
     }
 
+    /// Where an item's Date Added comes from.
+    private enum DateAdded {
+        /// The folder read gave it with the listing (nil: the disk keeps none).
+        case listed(Int64?)
+        /// No listing gave it: the item is asked.
+        case unread
+    }
+
     private static func entryMetadata(
-        path: String, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        path: String, added: DateAdded, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
     ) -> EntryMetadata {
         // Directory sizes are intentionally deferred; everything else is cheap enough for bulk reads.
-        let details = readDetails(path: path, fileSystem, kinds: kinds)
+        let details = readDetails(path: path, added: added, fileSystem, kinds: kinds)
         return EntryMetadata(
             path: path, kindLabel: details.kindLabel, createdAt: details.createdAt, modifiedAt: details.modifiedAt,
             sizeBytes: details.sizeBytes, sizeStatus: details.sizeStatus, permissionMode: details.permissionMode,
@@ -423,20 +439,27 @@ enum ExplorerListing {
         var lastOpenedAt: Date?
     }
 
-    private static func readDetails(path: String, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler) -> Details {
+    private static func readDetails(
+        path: String, added: DateAdded = .unread, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+    ) -> Details {
         let symlinkStats = safeLstat(path, fileSystem)
         let stats = safeStat(path, fileSystem)
         let metadataStats = stats ?? symlinkStats
         let isSymlink = symlinkStats?.isSymbolicLink ?? false
         let kind = stats.map { self.kind(from: $0, isSymlink: isSymlink, path: path) } ?? .other
         let size = readEntrySize(kind: kind, stats: stats, symlinkStats: symlinkStats)
+        let addedMs: Int64? =
+            switch added {
+            case .listed(let known): known
+            case .unread: fileSystem.addedMs(path)
+            }
         return Details(
             kind: kind, kindLabel: kinds.label(for: kind, path: path), isSymlink: isSymlink,
             createdAt: metadataStats?.birthtimeMs.flatMap(FileTime.date(milliseconds:)),
             modifiedAt: metadataStats?.mtimeMs.flatMap(FileTime.date(milliseconds:)),
             sizeBytes: size.bytes, sizeStatus: size.status,
             permissionMode: metadataStats.map { Int($0.mode & 0o777) },
-            addedAt: symlinkStats == nil ? nil : fileSystem.addedMs(path).flatMap(FileTime.date(milliseconds:)),
+            addedAt: symlinkStats == nil ? nil : addedMs.flatMap(FileTime.date(milliseconds:)),
             lastOpenedAt: symlinkStats == nil
                 ? nil : fileSystem.lastOpenedMs(path).flatMap(FileTime.date(milliseconds:)))
     }

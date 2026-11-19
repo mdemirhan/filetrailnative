@@ -295,6 +295,19 @@ final class PreviewsViewController: IconViewController {
         host.selectionChanged(.single(path))
     }
 
+    /// At 1 at a time, a listing that took the selected file away (Move to Trash, a move, a delete in Finder) leaves
+    /// another file in its place on screen, and that file is selected, as a scroll to it would select it: Move to Trash
+    /// pressed again acts on the file shown, not on nothing. Only when this listing took something away and the
+    /// selection is empty because its files left (`gapIndex`): a folder just opened, a selection cleared by hand and a
+    /// listing that took away some other file change nothing. A listing that comes in while the mouse button is held
+    /// counts as a drag's.
+    private func selectFileInPlaceOfOneRemoved(listedBefore: [String]) {
+        guard count == 1, let host, host.selection.isEmpty, host.selection.gapIndex != nil else { return }
+        let listed = indexByPath
+        guard listedBefore.contains(where: { listed[$0] == nil }) else { return }
+        selectFileOnScreen(unlessDragged: NSEvent.pressedMouseButtons & 1 != 0)
+    }
+
     private var observers: [any NSObjectProtocol] = []
     /// Where the scroll under way started.
     private var scrollStart: Double?
@@ -519,7 +532,12 @@ final class PreviewsViewController: IconViewController {
     }
 
     override func reload(scrollToTop: Bool) {
-        placing { super.reload(scrollToTop: scrollToTop) }
+        // What was listed, for telling whether this listing took the selected file away; only 1 at a time asks.
+        let listedBefore = count == 1 && !scrollToTop ? entryPaths : []
+        placing {
+            super.reload(scrollToTop: scrollToTop)
+            selectFileInPlaceOfOneRemoved(listedBefore: listedBefore)
+        }
         askAgainForPrefetches()
         let listed = indexByPath
         pictureShapes = pictureShapes.filter { listed[$0.key] != nil }

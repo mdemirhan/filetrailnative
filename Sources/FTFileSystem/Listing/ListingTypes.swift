@@ -71,6 +71,10 @@ public struct DirectoryEntry: Sendable, Hashable, Codable {
     /// Only for an item with a Finder label, which macOS gives every item with a colored tag: the colors of its
     /// tags, read with the folder so they show with it.
     public var tagColors: [FinderTagColor]?
+    /// When the item was put in its folder (Date Added), in milliseconds since 1970, as the folder read gave it: the
+    /// date a listing sorted by Date Added is ordered by. Nil on a disk that doesn't keep it, and for an entry no
+    /// folder read gave (a search result).
+    public var addedMs: Int64?
 }
 
 public struct DirectorySnapshot: Sendable, Hashable, Codable {

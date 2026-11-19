@@ -160,6 +160,60 @@ struct ContentModelTests {
         #expect(ListCellText.readsInMinutes(metadata.modifiedAt, now: now))
     }
 
+    // The Date Added and Date Last Opened columns, from a file on disk to the cell: the folder read gives when the
+    // file was put in the folder, macOS's own attribute when it was last opened, and each cell says its date. A row
+    // whose details aren't read yet, and a file never opened, show nothing.
+    @Test func theDateAddedAndLastOpenedCellsShowAFilesDates() async throws {
+        try await withTemporaryDirectory(prefix: "date-columns") { folder in
+            let opened = folder.url.appendingPathComponent("opened.txt").path
+            let fresh = folder.url.appendingPathComponent("fresh.txt").path
+            for path in [opened, fresh] { FileManager.default.createFile(atPath: path, contents: Data("a".utf8)) }
+            // What macOS writes when a file is opened: seconds and nanoseconds.
+            var stamp = (Int64(1_700_000_000).littleEndian, Int64(250_000_000).littleEndian)
+            let written = withUnsafeBytes(of: &stamp) {
+                setxattr(opened, "com.apple.lastuseddate#PS", $0.baseAddress, $0.count, 0, 0)
+            }
+            #expect(written == 0)
+
+            let service = DirectoryService()
+            let listing = try await service.snapshot(path: folder.path)
+            #expect(listing.entries.map(\.name) == ["fresh.txt", "opened.txt"])
+            var listedAdded: [String: Int64?] = [:]
+            for entry in listing.entries { listedAdded.updateValue(entry.addedMs, forKey: entry.path) }
+            let items = try await service.metadata(
+                directoryPath: folder.path, paths: listing.entries.map(\.path), listedAdded: listedAdded
+            ).items
+            let entry = try #require(listing.entries.last)
+            let metadata = try #require(items.last)
+            #expect(metadata.path == entry.path)
+
+            // The temporary folder's disk keeps Date Added: the one the folder read gave, to the millisecond.
+            let addedMs = try #require(entry.addedMs)
+            let added = try #require(metadata.addedAt)
+            #expect(abs(added.timeIntervalSince1970 * 1000 - Double(addedMs)) < 1)
+            #expect(abs(added.timeIntervalSinceNow) < 3600)
+            let lastOpened = try #require(metadata.lastOpenedAt)
+            #expect(abs(lastOpened.timeIntervalSince1970 - 1_700_000_000.25) < 0.001)
+            #expect(items.first?.lastOpenedAt == nil)
+            #expect(items.first?.addedAt != nil)
+
+            let now = Date()
+            func cell(_ column: DetailColumn, _ metadata: EntryMetadata?) -> ListCellContent {
+                ListCellText.content(column: column, entry: entry, metadata: metadata, folderSize: .idle, now: now)
+            }
+            #expect(cell(.added, metadata) == ListCellText.date(added, now: now))
+            #expect(!cell(.added, metadata).text.isEmpty)
+            #expect(cell(.added, metadata).tooltip?.isEmpty == false)
+            #expect(cell(.lastOpened, metadata) == ListCellText.date(lastOpened, now: now))
+            #expect(!cell(.lastOpened, metadata).text.isEmpty)
+            #expect(cell(.lastOpened, metadata).tooltip?.isEmpty == false)
+            // Details not read yet, and a file never opened.
+            #expect(cell(.added, nil).text == "")
+            #expect(cell(.lastOpened, nil).text == "")
+            #expect(cell(.lastOpened, items.first).text == "")
+        }
+    }
+
     // A selection keeps the paths that still exist (an anchor that left falls back to the lead).
     @Test func aSelectionKeepsWhatStillExists() {
         let selection = ContentSelection(paths: ["/a", "/b", "/c"], anchorPath: "/a", leadPath: "/c")

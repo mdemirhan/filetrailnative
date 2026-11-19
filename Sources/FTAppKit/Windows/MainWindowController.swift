@@ -1277,9 +1277,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func wireContent(_ pane: BrowserPane) {
         let content = pane.content
         content.loaders = ContentLoaders(
-            metadata: { [weak self] folder, paths in
+            metadata: { [weak self] folder, paths, listedAdded in
                 guard let service = self?.services.directoryService else { return [] }
-                return (try? await service.metadata(directoryPath: folder, paths: paths).items) ?? []
+                let batch = try? await service.metadata(
+                    directoryPath: folder, paths: paths, listedAdded: listedAdded)
+                return batch?.items ?? []
             },
             hiddenCount: { [weak self] folder in
                 guard let service = self?.services.directoryService else { return 0 }
@@ -2178,6 +2180,7 @@ extension MainWindowController: ExplorerWindowContext {
         return CommandAvailabilityContext(
             shortcutContext: shortcutContext,
             currentPath: shownFolderPath, selectedPathsInViewOrder: selectedPaths, activeContentEntries: entries,
+            listShowsItems: !content.entryPaths.isEmpty,
             selectedEntry: entries.first { $0.path == lead } ?? entries.first,
             selectedTreeTargetPath: sidebar.selectedTreeTargetPath,
             clipboardHasItems: services.clipboard.contents.hasItems, pasteDestinationPath: pasteDestinationPath,

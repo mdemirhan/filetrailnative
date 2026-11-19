@@ -49,6 +49,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var currentPath: String
     public var selectedPathsInViewOrder: [String]
     public var activeContentEntries: [CommandEntry]
+    /// The list shows at least one item, selected or not: of a folder, what its filter leaves; or search results.
+    public var listShowsItems: Bool
     public var selectedEntry: CommandEntry?
     public var selectedTreeTargetPath: String?
     /// The clipboard holds items to paste.
@@ -91,6 +93,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
         selectedPathsInViewOrder: [String] = [], activeContentEntries: [CommandEntry] = [],
+        listShowsItems: Bool = false,
         selectedEntry: CommandEntry? = nil, selectedTreeTargetPath: String? = nil, clipboardHasItems: Bool = false,
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
@@ -105,6 +108,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.currentPath = currentPath
         self.selectedPathsInViewOrder = selectedPathsInViewOrder
         self.activeContentEntries = activeContentEntries
+        self.listShowsItems = listShowsItems
         self.selectedEntry = selectedEntry
         self.selectedTreeTargetPath = selectedTreeTargetPath
         self.clipboardHasItems = clipboardHasItems
@@ -442,8 +446,9 @@ public enum CommandAvailability {
         case .deselectAll:
             return selectedCount > 0
         case .invertSelection:
-            // Something in the list to select; with everything selected it selects nothing, as it says.
-            return !context.activeContentEntries.isEmpty
+            // Something in the list to select: with nothing selected it selects everything shown, and with everything
+            // selected nothing, as it says. The entries the window gives are the selected ones, so they can't tell.
+            return context.listShowsItems
         case .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash:
             return GoMenuPlaceCommand(rawValue: command.rawValue)?.place(homePath: context.homePath ?? "") != nil
         case .calculateSize:

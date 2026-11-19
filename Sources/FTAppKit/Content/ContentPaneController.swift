@@ -7,11 +7,13 @@ import FTFoundation
 struct ContentLoaders {
     /// Until the window wires its own.
     static let placeholder = ContentLoaders(
-        metadata: { _, _ in [] }, hiddenCount: { _ in 0 }, iconStore: { nil },
+        metadata: { _, _, _ in [] }, hiddenCount: { _ in 0 }, iconStore: { nil },
         homePath: FileManager.default.homeDirectoryForCurrentUser.path, openPrivacySettings: {})
 
-    /// The details of items in the folder.
-    var metadata: @MainActor (_ folder: String, _ paths: [String]) async -> [EntryMetadata]
+    /// The details of items in the folder. `listedAdded` has the Date Added the folder read gave each of them that came
+    /// from a listing; the others are asked for theirs.
+    var metadata:
+        @MainActor (_ folder: String, _ paths: [String], _ listedAdded: [String: Int64?]) async -> [EntryMetadata]
     /// How many items a folder has with hidden files shown.
     var hiddenCount: @MainActor (_ folder: String) async -> Int
     var iconStore: @MainActor () -> FileIconStore?
@@ -1443,9 +1445,18 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func readMetadata(in folder: String, _ paths: [String]) {
         let listKey = listKey
         let generation = details.generation
+        // A folder's rows have their Date Added from the folder read, the one the folder is sorted by; search
+        // results came from no folder read.
+        var listedAdded: [String: Int64?] = [:]
+        if searchDisplay == nil {
+            let rows = rowsByPath
+            for path in paths {
+                if let row = rows[path] { listedAdded.updateValue(row.addedMs, forKey: path) }
+            }
+        }
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let items = await self.loaders.metadata(folder, paths)
+            let items = await self.loaders.metadata(folder, paths, listedAdded)
             let belongs = listKey == self.listKey
             let answers = Dictionary(items.map { ($0.path, $0) }) { $1 }
             let known = paths.filter { self.details[$0] != nil }

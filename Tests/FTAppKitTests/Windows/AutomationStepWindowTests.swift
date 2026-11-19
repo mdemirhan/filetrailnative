@@ -143,9 +143,9 @@
                 tab.search.session.timers = timers
                 let details = tab.content.loaders.metadata
                 let gate = Gate()
-                tab.content.loaders.metadata = { folder, paths in
+                tab.content.loaders.metadata = { folder, paths, listedAdded in
                     await gate.wait()
-                    return await details(folder, paths)
+                    return await details(folder, paths, listedAdded)
                 }
                 let field = try #require(tab.searchField)
                 tab.window?.makeFirstResponder(field)

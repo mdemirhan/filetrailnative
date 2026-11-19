@@ -32,7 +32,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 </p>
 
 - **Tabs**, up to 25 in a window, each with its own folder, history, folder tree, view, sort order and search. ⇧⌘T reopens the tab closed last, as it was.
-- **Two panes** in a tab (⌘\\), each with its own folder, history, view, filter and search. F5 copies what is selected to the other pane and F6 moves it; ⌥⌘↓ opens the selected folder there, and ⌘U swaps the panes.
+- **Two panes** in a tab (⌘\\), each with its own folder, history, view, filter and search. F5 copies what is selected to the other pane and F6 moves it; ⌥⌘↓ opens the selected folder there, and ⌘U swaps the panes. **Duplicate Pane** (⌥⌘\\, in the View menu, and a toolbar button you can add) opens a copy of the pane you are in beside it, with the same folder, view and history, in place of the other pane when two are open.
 - **Windows**, each with its own tabs. Move a tab into a window of its own, or merge every window back into one.
 - **Workspaces**: save a window's tabs with their panes, views and sizes, the folder tree and the Info panel under a name. Window ▸ Workspaces opens it again in a new window, or with ⌥ in place of the one you are in, and the first five open with ⌃⌘1 to ⌃⌘5. Settings → Browsing renames, removes and reorders them.
 - **Back as you left it**: your windows, tabs and panes come back when you open File Trail again, if you want them.
@@ -88,7 +88,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Compact List** packs a folder into columns of names.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
 - **Quick Look** on Space and ⌘Y, in every view.
-- **Sorting** by name, kind, date last opened, date added, date modified or size, with folders kept first when you want them, and hidden files on a key (⇧⌘.).
+- **Sorting** by name, date modified, date created, date last opened, date added, size or kind, with folders kept first when you want them, and hidden files on a key (⇧⌘.).
 - **Names sorted the way your language sorts them**, with numbers in order (`file2` before `file10`), and documents such as Keynote files shown as one item, not a folder.
 - **Dates that read the way you would say them** ("24 min ago", "Yesterday, 6:03 PM").
 - **Finder's tags** show as colored dots, and the right-click menu sets them.

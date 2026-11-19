@@ -1,5 +1,5 @@
-// A List selection made from outside reaches the window, Edit › Select All selects the list, Space is the filter's text
-// while typing, the filter bar's ✕ clears it, and a filter nothing matches is said in place of the whole view
+// A List selection made from outside reaches the window, Edit › Select All selects the list, Deselect All and Invert
+// Selection act on what the list shows, Space is the filter's text while typing, the filter bar's ✕ clears it, and a filter nothing matches is said in place of the whole view
 import AppKit
 import FTFoundation
 import Foundation
@@ -52,6 +52,130 @@ extension ExplorerWindowlessTests {
             tab.perform(.focusTreePane)
             tab.perform(.editSelectAll)
             #expect(tab.content.selection.isEmpty)
+            await harness.close()
+        }
+
+        // Edit ▸ Invert Selection is on with nothing selected, as long as the list shows something, and then selects
+        // all of it; an empty folder leaves it off. Deselect All needs a selection.
+        @Test func invertSelectionIsOnWheneverTheListShowsSomething() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, list) = try await harness.openList()
+            tab.content.focusList()
+            #expect(tab.content.selection.isEmpty)
+            #expect(tab.canPerform(.invertSelection))
+            #expect(!tab.canPerform(.deselectAll))
+            tab.perform(.invertSelection)
+            #expect(list.selectedNames == ["Alpha", "Beta", "Gamma", "note.txt"])
+            #expect(tab.canPerform(.invertSelection))
+            #expect(tab.canPerform(.deselectAll))
+            tab.perform(.deselectAll)
+            #expect(tab.content.selection.isEmpty)
+            #expect(list.table?.selectedRowIndexes.isEmpty == true)
+            // Part of it selected: the rest, and only the rest.
+            tab.content.select(paths: [path(tab, "Beta")].compactMap { $0 })
+            tab.perform(.invertSelection)
+            #expect(list.selectedNames == ["Alpha", "Gamma", "note.txt"])
+
+            let empty = try harness.makeFolder(named: "Empty", files: 0)
+            tab.go(to: empty)
+            #expect(await waitUntil { tab.shownFolderPath == empty.path && !tab.isNavigating })
+            tab.content.focusList()
+            #expect(tab.focusedPane == .content)
+            #expect(tab.content.entries.isEmpty)
+            #expect(!tab.canPerform(.invertSelection))
+            #expect(!tab.canPerform(.deselectAll))
+            await harness.close()
+        }
+
+        // With a filter typed the two commands act on what the list shows: Invert selects the shown items that
+        // weren't selected and drops a selected one the filter hides, and Deselect All leaves nothing selected.
+        @Test func deselectAllAndInvertSelectionActOnWhatAFilterShows() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let folder = try harness.makeFolder(named: "Files", files: 0)
+            for name in ["Report.txt", "Readme.md", "notes.txt", "Amy.txt"] {
+                try "x".write(to: folder.appendingPathComponent(name), atomically: true, encoding: .utf8)
+            }
+            let (tab, list) = try await harness.openList(folder.path)
+            let amy = try #require(path(tab, "Amy.txt"))
+            tab.content.focusList()
+            list.type("re")
+            #expect(list.rowNames == ["Readme.md", "Report.txt"])
+            let readme = try #require(path(tab, "Readme.md"))
+            let report = try #require(path(tab, "Report.txt"))
+            // Nothing selected (typing selected its first match): everything the filter shows, and nothing it hides.
+            tab.content.selectionChanged(.empty)
+            #expect(tab.canPerform(.invertSelection))
+            tab.perform(.invertSelection)
+            #expect(tab.selectedPaths == [readme, report])
+            // One shown and one hidden selected: the other shown one alone.
+            tab.content.applySelection(.of([report, amy]))
+            tab.perform(.invertSelection)
+            #expect(tab.selectedPaths == [readme])
+            tab.content.applySelection(.of([readme, amy]))
+            #expect(tab.canPerform(.deselectAll))
+            tab.perform(.deselectAll)
+            #expect(tab.content.selection.isEmpty)
+            // The filter stays as typed.
+            #expect(tab.content.filter == "re")
+            #expect(list.rowNames == ["Readme.md", "Report.txt"])
+            await harness.close()
+        }
+
+        // Search results are a list as a folder's is: the two commands act on the results.
+        @Test func deselectAllAndInvertSelectionActOnSearchResults() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let folder = try harness.makeFolder(named: "Found", files: 0)
+            for name in ["one.txt", "two.txt", "three.txt"] {
+                try "x".write(to: folder.appendingPathComponent(name), atomically: true, encoding: .utf8)
+            }
+            let (tab, list) = try await harness.openList(folder.path)
+            let engine = FakeSearchEngine()
+            let timers = ManualTimers()
+            tab.search.session.engine = engine
+            tab.search.session.timers = timers
+            engine.finds = { _ in (["one.txt", "two.txt", "three.txt"], false, false) }
+            let field = try #require(tab.searchField)
+            field.stringValue = "txt"
+            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            timers.advance(0.4)
+            #expect(
+                await waitUntil {
+                    timers.advance(0.2)
+                    return tab.searchRootPath != nil && tab.content.entries.count == 3
+                })
+            tab.content.focusList()
+            #expect(tab.focusedPane == .content)
+            #expect(tab.content.selection.isEmpty)
+            #expect(tab.canPerform(.invertSelection))
+            #expect(!tab.canPerform(.deselectAll))
+            tab.perform(.invertSelection)
+            #expect(tab.selectedPaths == tab.content.entries.map(\.path))
+            let first = try #require(tab.content.entries.first?.path)
+            tab.content.applySelection(.of([first]))
+            tab.perform(.invertSelection)
+            #expect(tab.selectedPaths == tab.content.entries.dropFirst().map(\.path))
+            #expect(list.selectedNames.count == 2)
+            #expect(tab.canPerform(.deselectAll))
+            tab.perform(.deselectAll)
+            #expect(tab.content.selection.isEmpty)
+            #expect(tab.searchRootPath != nil)
+            await harness.close()
+        }
+
+        // With the folder tree focused the two commands are off, whatever the list has selected: they are the
+        // list's.
+        @Test func deselectAllAndInvertSelectionAreOffWithTheTreeFocused() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, list) = try await harness.openList()
+            tab.content.focusList()
+            tab.content.select(paths: [path(tab, "Beta")].compactMap { $0 })
+            #expect(tab.canPerform(.deselectAll))
+            #expect(tab.canPerform(.invertSelection))
+            tab.perform(.focusTreePane)
+            #expect(tab.focusedPane == .tree)
+            #expect(!tab.canPerform(.deselectAll))
+            #expect(!tab.canPerform(.invertSelection))
+            #expect(list.selectedNames == ["Beta"])
             await harness.close()
         }
 

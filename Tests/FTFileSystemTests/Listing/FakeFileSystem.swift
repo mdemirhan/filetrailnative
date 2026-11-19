@@ -13,11 +13,20 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     var realpathHandler: @Sendable (String) throws -> String = { $0 }
     var tagColorsHandler: @Sendable (String) -> [FinderTagColor] = { _ in [] }
     var lastOpenedHandler: @Sendable (String) -> Int64? = { _ in nil }
+    var addedHandler: @Sendable (String) -> Int64? = { _ in nil }
 
     private let lock = NSLock()
     private var statPaths: [String] = []
     private var lstatPaths: [String] = []
     private var tagPaths: [String] = []
+    private var addedPaths: [String] = []
+
+    /// The paths asked one by one when they were put in their folder.
+    var addedRead: [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return addedPaths
+    }
 
     /// The paths whose tags were read.
     var tagsRead: [String] {
@@ -36,6 +45,13 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     func readDirectory(_ path: String) throws -> [DirectoryRecord] { try directory(path) }
 
     func lastOpenedMs(_ path: String) -> Int64? { lastOpenedHandler(path) }
+
+    func addedMs(_ path: String) -> Int64? {
+        lock.lock()
+        addedPaths.append(path)
+        lock.unlock()
+        return addedHandler(path)
+    }
 
     func stat(_ path: String) throws -> FileStats {
         lock.lock()

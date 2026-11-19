@@ -83,6 +83,57 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The first tab of a window with others, closed and reopened: it is first again, in front, where it was
+        // scrolled, with its pinned filter, its selection and the tree's opened folders.
+        @Test func aReopenedFirstTabComesBackFirstWithItsScrollPinnedFilterAndOpenedBranches() async throws {
+            let harness = try ExplorerHarness.windowless()
+            for index in 100..<400 {
+                try "x".write(to: harness.folder.appending("f\(index).txt"), atomically: false, encoding: .utf8)
+            }
+            let tab = try await tabWithAlphaOpen(harness)
+            harness.layout(tab)
+            tab.content.setFilter("f1")
+            tab.perform(.togglePinFilter)
+            let pin = try #require(tab.content.pinnedFilter)
+            #expect(pin.query == "f1")
+            #expect(tab.content.filter.isEmpty)
+            let chosen = real(harness, "f150.txt")
+            tab.content.select(paths: [chosen])
+            harness.layout(tab)
+            tab.content.pane?.scrollPosition = (top: 60, left: 0)
+            let scroll = try #require(tab.content.pane?.scrollPosition)
+            #expect(scroll.top > 0)
+            let shown = tab.content.entries.map(\.path)
+            let history = tab.navigationHistory
+            let group = try #require(tab.group)
+            tab.perform(.newTab)
+            let other = try await opened(tab, after: 1)
+            #expect(group.tabs.first === tab)
+
+            group.closeTab(tab)
+            #expect(await waitUntil { group.tabs.count == 1 })
+            #expect(group.session.closedTabs.last?.index == 0)
+            group.reopenClosedTab(from: other)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            let back = try #require(group.tabs.first)
+            #expect(back !== other && back !== tab)
+            #expect(group.tabs.last === other)
+            #expect(group.selected === back)
+            back.servicesOverride = other.servicesOverride
+            await firstRead(back)
+            harness.layout(back)
+
+            #expect(back.shownFolderPath == real(harness, ""))
+            #expect(back.content.pinnedFilter == pin)
+            #expect(back.content.filter.isEmpty)
+            #expect(back.content.entries.map(\.path) == shown)
+            #expect(back.selectedPaths == [chosen])
+            #expect(back.content.pane?.scrollPosition.top == scroll.top)
+            #expect(back.navigationHistory == history)
+            #expect(back.sidebarController.model.nodes[real(harness, "Alpha")]?.expanded == true)
+            await harness.close()
+        }
+
         @Test func aNewTabKeepsTheOpenedBranchesAndNotTheSelectionFilterOrMemories() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await tabWithAlphaOpen(harness)

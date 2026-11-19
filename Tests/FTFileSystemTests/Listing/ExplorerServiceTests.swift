@@ -372,6 +372,48 @@ struct ExplorerServiceTests {
         #expect(size.entries.map { [$0.name, $0.kind.rawValue] } == [["notes.txt", "file"], ["dangling", "other"]])
     }
 
+    // A listed row shows the Date Added its folder read gave, the one the folder is sorted by, and isn't asked for it
+    // again: a mount point's own date differs from the one its folder gives. An item no listing gave is asked.
+    @Test func aListedRowShowsTheDateAddedOfTheFolderReadAndIsNotAskedAgain() async throws {
+        var mount = fakeDirent("Disk", directory: true)
+        mount.addedMs = jan2 + 5_000
+        var file = fakeDirent("notes.txt", file: true)
+        file.addedMs = jan2 + 9_000
+        // A disk that keeps no Date Added gives none.
+        let bare = fakeDirent("bare.txt", file: true)
+        let fake = workspace(
+            [mount, file, bare],
+            stat: { path in
+                fakeStats(
+                    directory: path == "/workspace" || path.hasSuffix("Disk"), file: path.hasSuffix(".txt"), size: 3)
+            })
+        // What each item says of itself: another date.
+        fake.addedHandler = { _ in jan2 + 77_000 }
+        let service = service(fake)
+        let listing = try await service.snapshot(path: "/workspace", sortBy: .added, foldersFirst: false)
+        #expect(listing.entries.map(\.name) == ["Disk", "notes.txt", "bare.txt"])
+        #expect(listing.entries.map(\.addedMs) == [jan2 + 5_000, jan2 + 9_000, nil])
+
+        var listedAdded: [String: Int64?] = [:]
+        for entry in listing.entries { listedAdded.updateValue(entry.addedMs, forKey: entry.path) }
+        let listed = try await service.metadata(
+            directoryPath: "/workspace", paths: listing.entries.map(\.path), listedAdded: listedAdded)
+        #expect(
+            listed.items.map(\.addedAt) == [
+                FileTime.date(milliseconds: jan2 + 5_000), FileTime.date(milliseconds: jan2 + 9_000), nil,
+            ])
+        #expect(fake.addedRead.isEmpty)
+
+        // With no listing behind it (a search result), the item is asked.
+        let alone = try await self.service(fake).metadata(directoryPath: "/workspace", paths: ["/workspace/Disk"])
+        #expect(alone.items.map(\.addedAt) == [FileTime.date(milliseconds: jan2 + 77_000)])
+        #expect(fake.addedRead == ["/workspace/Disk"])
+        // So is the item the Info panel describes.
+        let properties = await self.service(fake).itemProperties(path: "/workspace/notes.txt")
+        #expect(properties.addedAt == FileTime.date(milliseconds: jan2 + 77_000))
+        #expect(fake.addedRead == ["/workspace/Disk", "/workspace/notes.txt"])
+    }
+
     @Test func rejectsMetadataRequestsForPathsOutsideTheRequestedDirectory() async {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 0) }
