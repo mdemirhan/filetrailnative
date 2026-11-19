@@ -106,18 +106,18 @@ public struct ApplicationMenuItemState: Equatable, Sendable {
 /// The menu's enable, check and title rules.
 public enum ApplicationMenu {
     /// The commands that still do something while a window other than an explorer window (Settings) has the keyboard:
-    /// the edit commands act on its text field, ⌘W closes it, and New Window opens one beside the explorer window in
-    /// front.
+    /// the edit commands act on its text field, ⌘W closes it, New Window opens one beside the explorer window in
+    /// front, and Help and Keyboard Shortcuts open Help, as from anywhere.
     public static let commandsForAnyWindow: Set<AppCommand> = [
         .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .closePane, .closeTab,
-        .newWindow,
+        .newWindow, .openHelp, .openKeyboardShortcuts,
     ]
 
-    /// What the menu still does with no explorer window open, as Finder's does: New Window, and the Go menu's places,
-    /// which open a window there.
+    /// What the menu still does with no explorer window open, as Finder's does: New Window, the Go menu's places,
+    /// which open a window there, and Help.
     public static let commandsWithoutExplorerWindow: Set<AppCommand> = [
         .newWindow, .goHomeRootTree, .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD,
-        .goApplications, .goTrash, .openLocationSheet,
+        .goApplications, .goTrash, .openLocationSheet, .openHelp, .openKeyboardShortcuts,
     ]
 
     /// What the files' Undo and Redo say: the file operation they would undo or redo, or that there is one that can't

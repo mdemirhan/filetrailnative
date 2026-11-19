@@ -19,18 +19,24 @@ struct ApplicationMenuTests {
     }
 
     @Test func withNoExplorerWindowOpenOffersOnlyWhatOpensOneBesidesAnotherWindowsOwn() {
-        let placesAndNewWindow: [AppCommand] = [
+        // Help opens from anywhere, as the places and New Window open a window.
+        let placesNewWindowAndHelp: Set<AppCommand> = [
             .openLocationSheet, .goHomeRootTree, .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD,
-            .goApplications, .goTrash, .newWindow,
+            .goApplications, .goTrash, .newWindow, .openHelp, .openKeyboardShortcuts,
         ]
         #expect(
-            Self.enabledCommands(Window(explorerFocused: false, explorerWindowCount: 0, otherWindowFocused: false))
-                == placesAndNewWindow)
+            Set(Self.enabledCommands(Window(explorerFocused: false, explorerWindowCount: 0, otherWindowFocused: false)))
+                == placesNewWindowAndHelp)
         // Settings has the keyboard: its text fields' edit commands and ⌘W work too.
         #expect(
-            Self.enabledCommands(Window(explorerFocused: false, explorerWindowCount: 0, otherWindowFocused: true))
-                == [.undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll]
-                + placesAndNewWindow.dropLast() + [.newWindow, .closePane, .closeTab])
+            Set(Self.enabledCommands(Window(explorerFocused: false, explorerWindowCount: 0, otherWindowFocused: true)))
+                == placesNewWindowAndHelp.union([
+                    .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .closePane, .closeTab,
+                ]))
+        // Help itself in front of a file window: Help and Keyboard Shortcuts stay on.
+        let helpInFront = Window(explorerFocused: false, explorerWindowCount: 1, otherWindowFocused: true)
+        #expect(Self.stateOf("openHelp", Self.initial, helpInFront).enabled == true)
+        #expect(Self.stateOf("openKeyboardShortcuts", Self.initial, helpInFront).enabled == true)
     }
 
     @Test func offersMergeAllWindowsOnlyWithAnotherExplorerWindowOpen() {
@@ -196,11 +202,12 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("redo", typing, window).enabled == true)
     }
 
-    @Test func keepsOnlyTheEditCommandsCmdWAndNewWindowWhileAnotherWindowHasTheKeyboard() {
+    @Test func keepsOnlyTheEditCommandsCmdWNewWindowAndHelpWhileAnotherWindowHasTheKeyboard() {
         let settingsFocused = Window(explorerFocused: false)
         #expect(
-            Self.enabledCommands(settingsFocused) == [
+            Set(Self.enabledCommands(settingsFocused)) == [
                 .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .newWindow, .closePane, .closeTab,
+                .openHelp, .openKeyboardShortcuts,
             ])
         #expect(Self.stateOf("toggleFavorite", Self.initial, settingsFocused).enabled == false)
     }
