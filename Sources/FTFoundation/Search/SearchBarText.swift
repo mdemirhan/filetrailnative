@@ -32,7 +32,6 @@ public struct SearchScopeOption: Equatable, Sendable {
 
 /// The words of the results bar and its states.
 public enum SearchBarText {
-    public static let scopeLabel = "Search:"
     public static let scopeToolbarName = "Search scope"
     public static let filterPlaceholder = "Name or folder"
     public static let filterAccessibilityName = "Filter results"
@@ -100,7 +99,7 @@ public enum SearchBarText {
     ) -> [SearchScopeOption] {
         let volume = VolumePaths.volumeRootPath(currentPath)
         let shown = TabText.folderDisplayName(currentPath, homePath: homePath, startupDiskName: startupDiskName)
-        var candidates: [(String, String)] = [(currentPath, "\u{201C}\(shown)\u{201D}"), (homePath, "Home")]
+        var candidates: [(String, String)] = [(currentPath, shown), (homePath, "Home")]
         if volume != "/" { candidates.append((volume, TabText.folderDisplayName(volume, homePath: homePath))) }
         candidates.append(("/", startupDiskName))
         var options: [SearchScopeOption] = []

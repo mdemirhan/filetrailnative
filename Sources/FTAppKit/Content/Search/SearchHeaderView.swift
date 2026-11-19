@@ -4,7 +4,7 @@ import FTFoundation
 /// The bar above search results, as in Finder: where the search runs, a field that narrows what it found, Options (the
 /// field's magnifier menu, marked while an option differs from the defaults), Stop while it runs on, and Done; and the banner when only the first matches are shown, or when something was added since that
 /// they may not list, with Search Again. Where the scopes as segments leave the
-/// filter less than its minimum (a pane of two, a narrow window), they are one pop-up button instead, with no label.
+/// filter less than its minimum (a pane of two, a narrow window), they are one pop-up button instead.
 /// The results themselves are drawn by the folder's views.
 final class SearchHeaderView: NSView {
     var onScopeChange: (String) -> Void = { _ in }
@@ -31,7 +31,6 @@ final class SearchHeaderView: NSView {
     private(set) var theme = AppearanceModel.shared.theme
     private let backdrop = ContentBackdrop()
     private let bar = SearchScopeBarView()
-    private let label = FlushTextField(labelWithString: SearchBarText.scopeLabel)
     private let track = SearchSegmentTrack()
     private(set) var scopes: [SearchScopeButton] = []
     /// The scopes as one button, while the bar is too narrow for the segments.
@@ -55,9 +54,8 @@ final class SearchHeaderView: NSView {
         bar.setAccessibilityElement(true)
         bar.setAccessibilityRole(.toolbar)
         bar.setAccessibilityLabel(SearchBarText.scopeToolbarName)
-        label.setAccessibilityIdentifier("searchBar.label")
         addSubview(bar)
-        for view in [label, track, scopeMenu, filter, optionsButton, stopButton, doneButton] as [NSView] {
+        for view in [track, scopeMenu, filter, optionsButton, stopButton, doneButton] as [NSView] {
             bar.addSubview(view)
         }
         scopeMenu.isHidden = true
@@ -235,9 +233,6 @@ final class SearchHeaderView: NSView {
 
     func applyTheme(_ theme: Theme) {
         self.theme = theme
-        let palette = theme.palette
-        label.font = Self.font(DesignTokens.typeScale.callout)
-        label.textColor = NSColor(palette.textSecondary)
         track.applyTheme(theme)
         for scope in scopes { scope.setSelected(scope.path == rootPath, theme: theme) }
         filter.applyTheme(theme)
@@ -268,8 +263,6 @@ final class SearchHeaderView: NSView {
         let trackHeight = Self.trackHeight
         let centerY = DesignTokens.paneContentTop + trackHeight / 2
         let x = layout.scopeBarPaddingHorizontal
-        let labelSize = label.intrinsicContentSize
-        let labelWidth = Double((label.stringValue as NSString).size(withAttributes: [.font: label.font as Any]).width)
         // From the right: Done, Stop, then the filter field.
         var right = bounds.width - layout.scopeBarPaddingHorizontal
         let doneWidth = doneButton.preferredWidth
@@ -284,14 +277,12 @@ final class SearchHeaderView: NSView {
                 height: layout.smallButtonHeight)
             right -= stopWidth + gap
         }
-        // Options keeps its title while the filter keeps its minimum beside the segments, or beside the pop-up at its
-        // narrowest; with less room it is its icon alone, before the filter gives up any of its minimum.
+        // Options keeps its title while the segments keep the filter's minimum beside it; with less room it is its icon
+        // alone, before the scopes become the pop-up, and stays so beside the pop-up.
         let trackWidth = track.fittingWidth
-        let segmentsEnd = x + labelWidth + layout.scopeLabelMarginTrailing + gap + trackWidth + gap
+        let segmentsEnd = x + trackWidth + gap
         let titledRight = right - optionsButton.preferredWidth(showingTitle: true) - gap
-        optionsButton.showsTitle =
-            scopes.isEmpty || titledRight - segmentsEnd >= layout.filterMinWidth
-            || titledRight - x - gap - layout.filterMinWidth >= layout.scopeMenuMinWidth
+        optionsButton.showsTitle = scopes.isEmpty || titledRight - segmentsEnd >= layout.filterMinWidth
         let optionsWidth = optionsButton.preferredWidth
         optionsButton.frame = NSRect(
             x: right - optionsWidth, y: centerY - layout.smallButtonHeight / 2, width: optionsWidth,
@@ -316,16 +307,12 @@ final class SearchHeaderView: NSView {
                 x: right - filterWidth, y: centerY - layout.fieldHeight / 2, width: filterWidth,
                 height: layout.fieldHeight)
         } else {
-            label.frame = NSRect(
-                x: x, y: (centerY - labelSize.height / 2).rounded(), width: ceil(labelWidth),
-                height: labelSize.height)
             let filterWidth = min(layout.filterWidth, max(0, right - segmentsEnd))
             filter.frame = NSRect(
                 x: right - filterWidth, y: centerY - layout.fieldHeight / 2, width: filterWidth,
                 height: layout.fieldHeight)
-            let trackX = x + labelWidth + layout.scopeLabelMarginTrailing + gap
-            let shownWidth = min(trackWidth, max(0, filter.frame.minX - gap - trackX))
-            track.frame = NSRect(x: trackX, y: centerY - trackHeight / 2, width: shownWidth, height: trackHeight)
+            let shownWidth = min(trackWidth, max(0, filter.frame.minX - gap - x))
+            track.frame = NSRect(x: x, y: centerY - trackHeight / 2, width: shownWidth, height: trackHeight)
         }
         if !banner.isHidden {
             banner.frame = NSRect(
@@ -334,14 +321,13 @@ final class SearchHeaderView: NSView {
         }
     }
 
-    /// Shows the scopes as the pop-up or as the label and the segments. The keyboard, on one of them, moves to the
+    /// Shows the scopes as the pop-up or as the segments. The keyboard, on one of them, moves to the
     /// other, so it never stays on a control out of sight.
     private func showScopeMenu(_ compact: Bool) {
         guard compact != showsScopeMenu else { return }
         let hadKeyboard = window?.firstResponder === (compact ? track : scopeMenu)
         showsScopeMenu = compact
         scopeMenu.isHidden = !compact
-        label.isHidden = compact
         track.isHidden = compact
         guard hadKeyboard else { return }
         if compact { scopeMenu.takeKeyboard() } else { track.takeKeyboard() }
@@ -379,6 +365,8 @@ final class SearchSegmentTrack: SystemSegmentedControl {
         font = SearchHeaderView.font(DesignTokens.typeScale.callout)
         refusesFirstResponder = true
         setAccessibilityIdentifier("searchBar.scopes")
+        // With no "Search:" before them, the segments say what they are as the pop-up does.
+        setAccessibilityLabel(SearchBarText.scopeToolbarName)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -507,7 +495,7 @@ final class SearchScopeButton: TextControl {
     override var acceptsFirstResponder: Bool { false }
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 
-    /// Its text and 12 each side, at most 220.
+    /// Its text and 12 each side, at most 160.
     var preferredWidth: Double {
         let layout = Self.layout
         let text = Double((title as NSString).size(withAttributes: [.font: Self.font]).width)

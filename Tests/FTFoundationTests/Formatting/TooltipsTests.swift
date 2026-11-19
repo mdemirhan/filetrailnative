@@ -174,6 +174,6 @@ struct TooltipsTests {
             searchRunning: false, homePath: home)
         #expect(search.label == "“x” in Trash")
         let scopes = SearchBarText.scopeOptions(currentPath: "/Users/demo/.Trash", homePath: home)
-        #expect(scopes.first?.label == "\u{201C}Trash\u{201D}")
+        #expect(scopes.first?.label == "Trash")
     }
 }

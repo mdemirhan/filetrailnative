@@ -230,7 +230,6 @@
     "folded search button": {"swift": "toolbar.search.folded"},
     "search options menu heading": {"swift": "menu.heading"},
     "search results header": {"swift": "searchHeader"},
-    "search scope label": {"swift": "searchBar.label"},
     "search scope track": {"swift": "searchBar.scopes"},
     "search scope menu": {"swift": "searchBar.scopeMenu"},
     "search filter box": {"swift": "searchBar.filterField"},

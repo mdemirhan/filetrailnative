@@ -12,13 +12,11 @@ public struct SearchLayout: Equatable, Sendable {
     public var scopeBarPaddingBottom: Double
     public var scopeBarPaddingHorizontal: Double
     public var scopeBarGap: Double
-    /// The gap after the scope label.
-    public var scopeLabelMarginTrailing: Double
     /// The line under the results header.
     public var headerBorderWidth: Double
 
     /// The segmented control: the control height, a 2 pt track around segments 2 apart; a segment: padding 0 12,
-    /// 20 high, at most 220 wide.
+    /// 20 high, at most 160 wide.
     public var segmentedTrackPadding: Double
     public var segmentedGap: Double
     public var segmentPaddingHorizontal: Double
@@ -76,8 +74,8 @@ public struct SearchLayout: Equatable, Sendable {
 
     public static let standard = SearchLayout(
         scopeBarPaddingBottom: 6, scopeBarPaddingHorizontal: 12, scopeBarGap: 6,
-        scopeLabelMarginTrailing: 2, headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
-        segmentPaddingHorizontal: 12, segmentHeight: 20, segmentMaxWidth: 220,
+        headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
+        segmentPaddingHorizontal: 12, segmentHeight: 20, segmentMaxWidth: 160,
         filterWidth: 280, filterMinWidth: 200, scopeMenuMaxWidth: 220, scopeMenuMinWidth: 72,
         fieldHeight: 24,
         fieldPaddingLeading: 4, fieldPaddingTrailing: 4, fieldGap: 6, clearButtonSize: 16, smallButtonHeight: 24,

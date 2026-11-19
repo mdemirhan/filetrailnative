@@ -14,7 +14,7 @@ import Testing
         let header = SearchHeaderView(frame: NSRect(x: 0, y: 0, width: 912, height: 41))
         header.show(
             scopes: [
-                SearchScopeOption(path: "/a/components", label: "“components”"),
+                SearchScopeOption(path: "/a/components", label: "components"),
                 SearchScopeOption(path: "/", label: "Macintosh HD"),
             ],
             rootPath: "/a/components", isRunning: false, truncated: false, filterText: "")
@@ -30,20 +30,22 @@ import Testing
             (font?.fontDescriptor.object(forKey: .traits) as? [NSFontDescriptor.TraitKey: Any])?[.weight] as? Double
         }
         #expect(weight(chip.font) == weight(NSFont.systemFont(ofSize: 12, weight: .medium)))
-        let label = try #require(
-            Views.first(NSTextField.self, in: header) { $0.accessibilityIdentifier() == "searchBar.label" })
-        #expect(weight(label.font) == weight(NSFont.systemFont(ofSize: 12, weight: .medium)))
+        // No "Search:" before the segments: they start at the bar's edge and say what they are to VoiceOver.
+        let track = try #require(Views.first(SearchSegmentTrack.self, in: header) { _ in true })
+        #expect(track.frame.minX == 12)
+        #expect(track.accessibilityLabel() == SearchBarText.scopeToolbarName)
+        #expect(Views.first(NSTextField.self, in: header) { $0.accessibilityIdentifier() == "searchBar.label" } == nil)
     }
 
     // The results' filter is 280 wide where there is room and gives up room first beside the segments, down to 200.
-    // With less room than that the scopes are one pop-up button, with no label, and the filter takes the rest. The
-    // filter has no icon: its mode chip is at its start.
+    // With less room Options is its icon alone, and with less again the scopes are one pop-up button and the filter
+    // takes the rest. The filter has no icon: its mode chip is at its start.
     @Test func theScopesBecomeAPopUpWhereTheSegmentsLeaveTheFilterTooLittle() throws {
         func shown(width: CGFloat) throws -> SearchHeaderView {
             let header = SearchHeaderView(frame: NSRect(x: 0, y: 0, width: width, height: 41))
             header.show(
                 scopes: [
-                    SearchScopeOption(path: "/a/Application Support", label: "“Application Support”"),
+                    SearchScopeOption(path: "/a/Application Support", label: "Application Support"),
                     SearchScopeOption(path: "/a", label: "Home"), SearchScopeOption(path: "/", label: "Macintosh HD"),
                 ],
                 rootPath: "/a/Application Support", isRunning: false, truncated: false, filterText: "")
@@ -54,9 +56,8 @@ import Testing
         }
         let wide = try shown(width: 1_400)
         let track = try #require(Views.first(SearchSegmentTrack.self, in: wide) { _ in true })
-        let label = try #require(
-            Views.first(NSTextField.self, in: wide) { $0.accessibilityIdentifier() == "searchBar.label" })
-        #expect(!wide.showsScopeMenu && wide.scopeMenu.isHidden && !track.isHidden && !label.isHidden)
+        #expect(!wide.showsScopeMenu && wide.scopeMenu.isHidden && !track.isHidden)
+        #expect(track.frame.minX == 12)
         #expect(wide.filter.frame.width == 280)
         #expect(wide.filter.modeChip.frame.minX == 4)
         #expect(wide.filter.input.frame.minX > wide.filter.modeChip.frame.maxX)
@@ -69,20 +70,29 @@ import Testing
         // What the segments and the bar's right end take, whatever the width.
         let segmentsEnd = track.frame.maxX + 6
         let trailing = 1_400 - (wide.optionsButton.frame.minX - 6)
+        let titleWidth = wide.optionsButton.frame.width - wide.optionsButton.preferredWidth(showingTitle: false)
+        #expect(titleWidth > 30)
 
         let tight = try shown(width: segmentsEnd + 240 + trailing)
         #expect(!tight.showsScopeMenu)
+        #expect(tight.optionsButton.showsTitle)
         #expect(tight.filter.frame.width == 240)
 
-        let narrow = try shown(width: segmentsEnd + 190 + trailing)
+        // Short of the filter's 200 beside the segments, Options gives up its title before the scopes become the
+        // pop-up, and the filter has the room it gave.
+        let iconOnly = try shown(width: segmentsEnd + 190 + trailing)
+        #expect(!iconOnly.showsScopeMenu)
+        #expect(!iconOnly.optionsButton.showsTitle)
+        #expect(iconOnly.filter.frame.width == 190 + titleWidth)
+
+        let narrow = try shown(width: segmentsEnd + 190 + trailing - titleWidth)
         #expect(narrow.showsScopeMenu)
-        // The segments and "Search:" are hidden, which the finder of views passes over.
+        // The segments are hidden, which the finder of views passes over.
         #expect(Views.first(SearchSegmentTrack.self, in: narrow) { _ in true } == nil)
-        #expect(Views.first(NSTextField.self, in: narrow) { $0.accessibilityIdentifier() == "searchBar.label" } == nil)
         #expect(!narrow.scopeMenu.isHidden)
         #expect(narrow.scopeMenu.frame.minX == 12)
         #expect(narrow.scopeMenu.frame.width <= 220)
-        #expect(narrow.scopeMenu.titleOfSelectedItem == "“Application Support”")
+        #expect(narrow.scopeMenu.titleOfSelectedItem == "Application Support")
         // The filter is no wider than beside the segments: what is left over stays after the pop-up.
         #expect(narrow.filter.frame.maxX == narrow.optionsButton.frame.minX - 6)
         #expect(
@@ -90,13 +100,14 @@ import Testing
                 == min(280, narrow.optionsButton.frame.minX - 6 - (narrow.scopeMenu.frame.maxX + 6)))
         #expect(narrow.filter.frame.maxX == narrow.optionsButton.frame.minX - 6)
         #expect(narrow.filter.frame.width >= 200)
-        #expect(narrow.optionsButton.showsTitle)
+        // Options stays its icon beside the pop-up, so it doesn't get its title back as the window narrows.
+        #expect(!narrow.optionsButton.showsTitle)
 
         // The pop-up is as wide as the place searched, not its longest place: a shorter one leaves the filter more.
         let longWidth = narrow.scopeMenu.frame.width
         narrow.show(
             scopes: [
-                SearchScopeOption(path: "/a/Application Support", label: "“Application Support”"),
+                SearchScopeOption(path: "/a/Application Support", label: "Application Support"),
                 SearchScopeOption(path: "/a", label: "Home"), SearchScopeOption(path: "/", label: "Macintosh HD"),
             ],
             rootPath: "/a", isRunning: false, truncated: false, filterText: "")

@@ -60,7 +60,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.contentShell.searchHeader === tab.search.header)
             // The results bar: the scopes, the one searched pressed.
             let scopes = tab.search.header.scopes
-            #expect(scopes.first?.title == "“\(folderName)”")
+            #expect(scopes.first?.title == folderName)
             #expect(scopes.map(\.title).contains("Home"))
             #expect(scopes.filter(\.isSelected).count == 1)
             // The status line counts results.

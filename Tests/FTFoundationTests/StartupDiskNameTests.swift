@@ -88,9 +88,9 @@ struct StartupDiskNameTests {
 
     @Test func searchScopes() {
         let atRoot = SearchBarText.scopeOptions(currentPath: "/", homePath: "/Users/demo", startupDiskName: Self.name)
-        #expect(atRoot.map(\.label) == ["“Data”", "Home"])
+        #expect(atRoot.map(\.label) == ["Data", "Home"])
         let inHome = SearchBarText.scopeOptions(
             currentPath: "/Users/demo/Projects", homePath: "/Users/demo", startupDiskName: Self.name)
-        #expect(inHome.map(\.label) == ["“Projects”", "Home", "Data"])
+        #expect(inHome.map(\.label) == ["Projects", "Home", "Data"])
     }
 }
