@@ -600,15 +600,25 @@ final class BrowserPane {
     private func readFolder(_ url: URL, view: FolderViewOnScreen?) async -> Result<DirectorySnapshot, any Error> {
         let service = tab.services.directoryService
         let path = url.path
-        let key = DirectorySortKey(rawValue: (view?.shown.sort?.by ?? sortBy).rawValue) ?? .name
-        let direction: SortDirection =
-            (view?.shown.sort?.direction ?? sortDirection) == .asc ? .ascending : .descending
+        let order = readOrder(view)
+        let key = DirectorySortKey(rawValue: order.by.rawValue) ?? .name
+        let direction: SortDirection = order.direction == .asc ? .ascending : .descending
         let hidden = includeHidden
-        let first = view?.shown.foldersFirst ?? foldersFirst
+        let first = order.foldersFirst
         return await Result {
             try await service.snapshot(
                 path: path, includeHidden: hidden, sortBy: key, sortDirection: direction, foldersFirst: first)
         }
+    }
+
+    /// The order a folder shown with `view` is read in: the view's where it keeps one, else the pane's.
+    private func readOrder(_ view: FolderViewOnScreen?) -> (
+        by: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool
+    ) {
+        (
+            view?.shown.sort?.by ?? sortBy, view?.shown.sort?.direction ?? sortDirection,
+            view?.shown.foldersFirst ?? foldersFirst
+        )
     }
 
     /// Reads `url`, then shows it. False when a later navigation replaced this one or the folder didn't open. `open`
@@ -736,10 +746,26 @@ final class BrowserPane {
         // A folder opened (not read again in place) shows its own view, or the one above it that covers it, over what
         // the pane carries; what was changed of the view left and not saved is dropped.
         let opensAnotherFolder = !hasShownFolder || folderLetGo || url.comparablePath != folder.comparablePath
-        let view = opensAnotherFolder ? folderViewUse(for: url.path).map(FolderViewOnScreen.init) : folderView
+        // Looked up by the path as it was asked for, before the read, which needs the order the view keeps.
+        var view = opensAnotherFolder ? folderViewUse(for: url.path).map(FolderViewOnScreen.init) : folderView
         content.beginLoading(quiet: quiet)
-        let read = await readFolder(url, view: view)
-        guard token == navigationToken, let tab else { return .superseded }
+        var read = await readFolder(url, view: view)
+        guard token == navigationToken else { return .superseded }
+        // A folder asked for by another spelling of its path (a link, `/tmp`) has the view saved for its real path,
+        // which its listing gives. Where that isn't the view it was read with, it is the one shown, and where its
+        // order is another the folder is read once more, in that order, before anything shows.
+        if opensAnotherFolder, case .success(let snapshot) = read, snapshot.path != url.path {
+            let real = folderViewUse(for: snapshot.path).map(FolderViewOnScreen.init)
+            if real != view {
+                let sameOrder = readOrder(real) == readOrder(view)
+                view = real
+                if !sameOrder {
+                    read = await readFolder(URL(fileURLWithPath: snapshot.path), view: real)
+                    guard token == navigationToken else { return .superseded }
+                }
+            }
+        }
+        guard let tab else { return .superseded }
 
         var entries: [DirectoryEntry] = []
         // The folder is known by the real path its listing gives (`response.path`), not the spelling it was asked by; one

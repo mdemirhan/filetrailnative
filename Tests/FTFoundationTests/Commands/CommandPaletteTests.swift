@@ -217,6 +217,11 @@ struct CommandPaletteTests {
         }
     }
 
+    // Folder View Options has the symbol its toolbar button has.
+    @Test func folderViewOptionsHasTheFolderViewSymbol() {
+        #expect(Self.entry("folderViewOptions")?.icon == .folderView)
+    }
+
     // MARK: Recent commands
 
     @Test func keepsTheRecentCommandsLastFirstEachOnce() {

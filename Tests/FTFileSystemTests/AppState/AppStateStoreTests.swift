@@ -284,7 +284,7 @@ struct AppStateStoreTests {
             let timer = ManualTimer()
             let store = Kit.store(path, timer: timer)
             let view = FolderView(
-                path: "/Users/demo/Pictures", volume: "A", fileID: 7, subfolders: true,
+                path: "/Users/demo/Pictures", subfolders: true,
                 keeps: FolderViewKeeps(view: .previews, sort: FolderViewSort(by: .modified, direction: .desc)))
             store.updateFolderViews { $0.set(view) }
             // Saved on purpose: written soon.
@@ -294,9 +294,13 @@ struct AppStateStoreTests {
             // No change writes nothing.
             store.updateFolderViews { $0.set(view) }
             #expect(timer.pendingDelays == [])
-            // A file that isn't the app's reads as none.
+            // A file that isn't the app's reads as none, and is reported as the other files are.
             try "[1, 2]".write(toFile: folder + "/folder-views.json", atomically: true, encoding: .utf8)
-            #expect(Kit.store(path).folderViews().isEmpty)
+            let failures = Failures()
+            let unread = AppStateStore(
+                filePath: path, defaultTheme: .dark, timer: ManualTimer(), onReadError: { failures.add($0) })
+            #expect(unread.folderViews().isEmpty)
+            #expect(failures.all.count == 1)
         }
     }
 

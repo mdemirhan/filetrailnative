@@ -18,6 +18,17 @@ extension MainWindowController {
     /// View ▸ Folder View's commands, for the active pane.
     func performFolderViewCommand(_ command: AppCommand) {
         let pane = activePane
+        // Each acts only where its menu item is on, as its rule in `CommandAvailability` has it: a dimmed item's
+        // key still comes here. Search results are no folder, and a pane with no folder has none to customize.
+        switch command {
+        case .manageFolderViews:
+            break
+        case .rememberFolderView, .folderViewOptions:
+            guard pane.searchRootPath == nil, !pane.shownFolderPath.isEmpty else { return }
+        default:
+            // Update, Revert and Reset look for something unsaved, or a view of the folder's own, themselves.
+            guard pane.searchRootPath == nil else { return }
+        }
         switch command {
         case .rememberFolderView:
             pane.rememberFolderView()
@@ -61,7 +72,7 @@ extension MainWindowController {
                 keeps.columns = columns
             }
         } else {
-            updatePreferences { preferences in
+            pane.changeSharedSettings { preferences in
                 var visibility = preferences.detailColumns
                 var order = preferences.detailColumnOrder
                 toggle(&visibility, &order)
@@ -91,19 +102,40 @@ extension MainWindowController {
         if pane.folderViewKeeps(.columns) {
             pane.changeShownFolderView { $0.columns?.order = order }
         } else {
-            updatePreferences { $0.detailColumnOrder = order }
+            pane.changeSharedSettings { $0.detailColumnOrder = order }
         }
     }
 
-    /// A column dragged to another place among those shown (`before`: the column it now comes before; nil for last).
-    func dropColumn(_ key: OptionalDetailColumnKey, before: OptionalDetailColumnKey?, in pane: BrowserPane) {
+    /// Moves a column of search results one place left or right among those shown, in their own order; Name stays
+    /// first, and Folder moves as any other.
+    func moveSearchColumn(_ key: OptionalSearchColumnKey, by offset: Int) {
+        let shown = preferences.searchColumns
+        guard let order = ColumnOrder.moving(key, by: offset, in: preferences.searchColumnOrder, isShown: { shown[$0] })
+        else { return }
+        updatePreferences { $0.searchColumnOrder = order }
+    }
+
+    /// A column title dragged to another place among those shown (`before`: the column it now comes before; nil for
+    /// last). Search results have columns and an order of their own: a drag there moves theirs, never a folder's.
+    func dropColumn(_ column: DetailColumn, before: DetailColumn?, in pane: BrowserPane) {
+        if pane.showsSearchResults {
+            guard let key = OptionalSearchColumnKey(rawValue: column.rawValue) else { return }
+            let order = ColumnOrder.placing(
+                key, before: before.flatMap { OptionalSearchColumnKey(rawValue: $0.rawValue) },
+                in: preferences.searchColumnOrder)
+            guard order != preferences.searchColumnOrder else { return }
+            updatePreferences { $0.searchColumnOrder = order }
+            return
+        }
+        guard let key = OptionalDetailColumnKey(rawValue: column.rawValue) else { return }
         let shown = pane.shownPreferences(preferences)
-        let order = ColumnOrder.placing(key, before: before, in: shown.detailColumnOrder)
+        let order = ColumnOrder.placing(
+            key, before: before.flatMap { OptionalDetailColumnKey(rawValue: $0.rawValue) }, in: shown.detailColumnOrder)
         guard order != shown.detailColumnOrder else { return }
         if pane.folderViewKeeps(.columns) {
             pane.changeShownFolderView { $0.columns?.order = order }
         } else {
-            updatePreferences { $0.detailColumnOrder = order }
+            pane.changeSharedSettings { $0.detailColumnOrder = order }
         }
     }
 
@@ -116,7 +148,7 @@ extension MainWindowController {
             }
         } else {
             pane.setViewSize { $0.detailColumnWidths = .defaults }
-            updatePreferences {
+            pane.changeSharedSettings {
                 $0.detailColumns = .defaults
                 $0.detailColumnOrder = AppPreferenceLimits.defaultDetailColumnOrder
                 $0.detailColumnWidths = .defaults
@@ -127,11 +159,11 @@ extension MainWindowController {
 
     /// Keep Columns for “…”: the folder's own view keeps the columns on screen, or keeps them no more.
     func keepColumns(_ keep: Bool, in pane: BrowserPane) {
-        pane.setFolderViewKeeps(.columns, keep)
+        pane.keepOwnColumns(keep)
     }
 
     /// The List header's right-click menu: Keep Columns for the folder, the columns to show, moving the one clicked,
-    /// Size All Columns to Fit and Reset Columns. Search results have their own columns, and no Keep.
+    /// Size All Columns to Fit and Reset Columns. Search results have the same of their own columns, and no Keep.
     func headerMenu(for column: DetailColumn?, in pane: BrowserPane) -> NSMenu {
         activate(pane)
         let menu = NSMenu(title: "Columns")
@@ -145,6 +177,18 @@ extension MainWindowController {
                     })
             }
             menu.addItem(.separator())
+            if let column, let key = OptionalSearchColumnKey(rawValue: column.rawValue) {
+                let title = DetailsColumns.title(column)
+                let (order, shown) = (preferences.searchColumnOrder, preferences.searchColumns)
+                let left = ActionMenuItem("Move “\(title)” Left") { [weak self] in self?.moveSearchColumn(key, by: -1) }
+                left.isEnabled = ColumnOrder.moving(key, by: -1, in: order, isShown: { shown[$0] }) != nil
+                let right = ActionMenuItem("Move “\(title)” Right") { [weak self] in
+                    self?.moveSearchColumn(key, by: 1)
+                }
+                right.isEnabled = ColumnOrder.moving(key, by: 1, in: order, isShown: { shown[$0] }) != nil
+                menu.addItem(left)
+                menu.addItem(right)
+            }
             menu.addItem(ActionMenuItem("Size All Columns to Fit") { [weak pane] in pane?.content.fitAllColumns() })
             menu.addItem(
                 ActionMenuItem("Reset Columns") { [weak self, weak pane] in
@@ -160,7 +204,9 @@ extension MainWindowController {
         }
         let name = FolderViewText.name(pane.shownFolderPath)
         let view = pane.shownFolderView
-        let ownKeeps = view?.use.own == true && view?.shown.keeps(.columns) == true
+        // Checked where the columns are, or at Save will be, this folder's own: a view from above that keeps
+        // columns leaves it unchecked, and choosing it there gives the folder its own.
+        let ownKeeps = pane.keepsOwnColumns
         let keep = ActionMenuItem("Keep Columns for “\(name)”", checked: ownKeeps) { [weak self, weak pane] in
             guard let pane else { return }
             self?.keepColumns(!ownKeeps, in: pane)
@@ -170,7 +216,7 @@ extension MainWindowController {
         let whereTo: String
         if let view, view.shown.keeps(.columns) {
             whereTo =
-                view.use.own
+                view.use.own || view.becomesOwn
                 ? "Changes go to this folder's view, until Save"
                 : "Changes go to “\(FolderViewText.name(view.use.view.path))” view, until Save"
         } else {
@@ -229,17 +275,13 @@ extension MainWindowController {
         guard let window else { return }
         if let shown = folderViewPopover {
             let same = shown.pane === pane
-            shown.close()
-            folderViewPopover = nil
+            closeFolderViewPopover()
             // A second click on the symbol closes it.
             if same, anchor != nil { return }
         }
         let popover = FolderViewPopover(
             pane: pane, tab: self,
-            dismiss: { [weak self] in
-                self?.folderViewPopover?.close()
-                self?.folderViewPopover = nil
-            })
+            dismiss: { [weak self] in self?.closeFolderViewPopover() })
         folderViewPopover = popover
         let symbol = pane.content.contentShell.pathBarRow.folderViewButton
         popover.show(
@@ -247,14 +289,28 @@ extension MainWindowController {
     }
 }
 
-/// Moving one of the List's columns in the order of all of them (hidden ones keep their place).
+extension MainWindowController {
+    /// Folder Customization closes: asked to, or its pane is no longer there to customize.
+    func closeFolderViewPopover() {
+        folderViewPopover?.close()
+        folderViewPopover = nil
+    }
+}
+
+/// Moving one of the List's columns, a folder's or search results', in the order of all of them (hidden ones keep
+/// their place).
 enum ColumnOrder {
     /// `key` one place left or right among the columns shown; nil when it can't go further.
     static func moving(
         _ key: OptionalDetailColumnKey, by offset: Int, in order: [OptionalDetailColumnKey],
         visible: DetailColumnVisibility
     ) -> [OptionalDetailColumnKey]? {
-        let shown = order.filter { visible[$0] }
+        moving(key, by: offset, in: order, isShown: { visible[$0] })
+    }
+
+    /// The same for any list's columns, a folder's or search results'.
+    static func moving<Key: Equatable>(_ key: Key, by offset: Int, in order: [Key], isShown: (Key) -> Bool) -> [Key]? {
+        let shown = order.filter(isShown)
         guard let at = shown.firstIndex(of: key) else { return nil }
         let target = at + offset
         guard shown.indices.contains(target) else { return nil }
@@ -281,9 +337,7 @@ enum ColumnOrder {
     }
 
     /// `key` put just before `before` (nil: at the end).
-    static func placing(
-        _ key: OptionalDetailColumnKey, before: OptionalDetailColumnKey?, in order: [OptionalDetailColumnKey]
-    ) -> [OptionalDetailColumnKey] {
+    static func placing<Key: Equatable>(_ key: Key, before: Key?, in order: [Key]) -> [Key] {
         var next = order.filter { $0 != key }
         if let before, let index = next.firstIndex(of: before) {
             next.insert(key, at: index)

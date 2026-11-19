@@ -85,9 +85,7 @@ public final class AppStateStore: @unchecked Sendable {
         visitedFolders = Self.readVisitedFolders(visitsFilePath, fileSystem, readFailed)
         destinationFolders = Self.readVisitedFolders(destinationsFilePath, fileSystem, readFailed)
         commands = Self.readRecentCommands(recentCommandsFilePath, fileSystem, readFailed)
-        views =
-            fileSystem.exists(folderViewsFilePath)
-            ? FolderViews.parse((try? fileSystem.read(folderViewsFilePath)) ?? Data()) : FolderViews()
+        views = Self.readFolderViews(folderViewsFilePath, fileSystem, readFailed)
     }
 
     // MARK: Preferences
@@ -494,6 +492,18 @@ public final class AppStateStore: @unchecked Sendable {
         } catch {
             onReadError(error)
             return AppState()
+        }
+    }
+
+    private static func readFolderViews(
+        _ path: String, _ fileSystem: any StateFileSystem, _ onReadError: @Sendable (any Error) -> Void
+    ) -> FolderViews {
+        guard fileSystem.exists(path) else { return FolderViews() }
+        do {
+            return try FolderViews.read(try fileSystem.read(path))
+        } catch {
+            onReadError(error)
+            return FolderViews()
         }
     }
 

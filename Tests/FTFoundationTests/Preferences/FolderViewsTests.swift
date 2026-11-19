@@ -32,11 +32,17 @@ struct FolderViewsTests {
         #expect(views.use(for: "/Users/me/PicturesOld") == nil)
     }
 
-    @Test func aViewKeptForAnotherDiskAtTheSamePathIsNotThisFolders() {
-        let views = FolderViews([FolderView(path: "/Volumes/Photos", volume: "A", keeps: Self.previews)])
-        #expect(views.use(for: "/Volumes/Photos", volume: "A") != nil)
-        #expect(views.use(for: "/Volumes/Photos", volume: "B") == nil)
-        #expect(views.use(for: "/Volumes/Photos", volume: nil) != nil)
+    // A view is its path's and nothing else's: the same path on another disk of the same name uses it too.
+    @Test func aViewIsFoundByItsPathAloneAndGoesWithAMoveToAnotherDisk() {
+        var views = views()
+        views.moved(from: "/Users/me/Pictures", to: "/Volumes/Photos/Pictures")
+        #expect(
+            views.all.map(\.path) == [
+                "/Volumes/Photos/Pictures", "/Volumes/Photos/Pictures/Scans", "/Volumes/Photos/Pictures/Work",
+            ])
+        #expect(views.use(for: "/Volumes/Photos/Pictures")?.own == true)
+        #expect(views.use(for: "/Volumes/Photos/Pictures/Iceland")?.view.path == "/Volumes/Photos/Pictures")
+        #expect(views.use(for: "/Users/me/Pictures") == nil)
     }
 
     @Test func anEmptyViewIsNotKept() {
@@ -56,16 +62,6 @@ struct FolderViewsTests {
         views.moved(from: "/Users/me/Photos/Scans", to: "/Users/me/Archive/Scans")
         #expect(views.own("/Users/me/Archive/Scans") != nil)
         #expect(views.inside("/Users/me/Photos").map(\.path) == ["/Users/me/Photos/Work"])
-    }
-
-    @Test func aFolderRenamedOutsideTheAppTakesOverTheViewWithItsFileID() {
-        var views = FolderViews([FolderView(path: "/Users/me/Old", volume: "A", fileID: 42, keeps: Self.previews)])
-        let whileThere = views.adopt(path: "/Users/me/New", volume: "A", fileID: 42, exists: { $0 == "/Users/me/Old" })
-        #expect(!whileThere)
-        let gone = views.adopt(path: "/Users/me/New", volume: "A", fileID: 42, exists: { _ in false })
-        #expect(gone)
-        #expect(views.own("/Users/me/New")?.keeps == Self.previews)
-        #expect(views.own("/Users/me/Old") == nil)
     }
 
     @Test func differencesNameTheSettingsWithAnotherValueOrKeptInOneOnly() {
@@ -104,5 +100,84 @@ struct FolderViewsTests {
             """
         #expect(FolderViews.parse(Data(broken.utf8)).all.map(\.path) == ["/a"])
         #expect(FolderViews.parse(Data("not json".utf8)).isEmpty)
+        #expect(throws: (any Error).self) { try FolderViews.read(Data("not json".utf8)) }
+        #expect(throws: (any Error).self) { try FolderViews.read(Data("[1, 2]".utf8)) }
+    }
+
+    // A file written while a view was found by its disk and file ID has both with each view: it loads, without them.
+    @Test func aFileThatKeptADiskAndAFileIDWithEachViewLoadsWithoutThem() throws {
+        let old = """
+            {"version":1,"views":[
+            {"path":"/Users/me/Pictures","volume":"6B1F2C1E-0000-4000-8000-000000000001","fileID":4242,
+             "subfolders":true,"keeps":{"view":"previews","sort":{"by":"modified","direction":"desc"}}},
+            {"path":"/Volumes/Photos/Scans","fileID":7,"subfolders":false,"keeps":{"foldersFirst":false}}]}
+            """
+        let views = try FolderViews.read(Data(old.utf8))
+        #expect(
+            views.own("/Users/me/Pictures")
+                == FolderView(
+                    path: "/Users/me/Pictures", subfolders: true,
+                    keeps: FolderViewKeeps(view: .previews, sort: FolderViewSort(by: .modified, direction: .desc))))
+        #expect(views.own("/Volumes/Photos/Scans")?.keeps == FolderViewKeeps(foldersFirst: false))
+        // Written again, neither is there any more.
+        #expect(!views.serialize().contains("volume") && !views.serialize().contains("fileID"))
+    }
+
+    // A column added to the app later is missing from every view saved before it: such a view keeps its columns, the
+    // new ones as they first are, and the views beside it are kept too.
+    @Test func aViewWhoseColumnsLackTheNewerOnesLoadsWithTheOthersKept() throws {
+        let saved = """
+            {"version":1,"views":[
+            {"path":"/a","subfolders":false,"keeps":{"view":"details","columns":{
+              "visibility":{"modified":false,"size":true,"kind":false,"created":true,"permissions":true},
+              "order":["size","created","permissions","modified","kind","someday"],
+              "widths":{"name":410,"modified":160,"size":90,"kind":148,"created":152,"permissions":108,"someday":50}}}},
+            {"path":"/b","subfolders":true,"keeps":{"view":"someday","size":{"iconSizes":{"standard":96}}}},
+            {"path":"/c","subfolders":false,"keeps":{"view":"list"}}]}
+            """
+        let views = try FolderViews.read(Data(saved.utf8))
+        #expect(views.all.map(\.path) == ["/a", "/b", "/c"])
+        let columns = try #require(views.own("/a")?.keeps.columns)
+        var visibility = DetailColumnVisibility.defaults
+        visibility.modified = false
+        visibility.kind = false
+        visibility.created = true
+        visibility.permissions = true
+        #expect(columns.visibility == visibility)
+        #expect(!columns.visibility.added && !columns.visibility.lastOpened)
+        // The order saved first, then the columns it doesn't have, in the menus' order.
+        #expect(columns.order == [.size, .created, .permissions, .modified, .kind, .lastOpened, .added])
+        #expect(columns.widths.name == 410 && columns.widths.size == 90)
+        #expect(columns.widths.added == DetailColumnWidths.defaults.added)
+        #expect(views.own("/a")?.keeps.view == .details)
+        // A view the app doesn't know is not kept; the size beside it is, the sizes it lacks as they first are.
+        let other = try #require(views.own("/b"))
+        #expect(other.subfolders && other.keeps.view == nil)
+        #expect(other.keeps.size?.iconSizes == DensitySizes(standard: 96, finder: DensitySizes.iconDefaults.finder))
+        #expect(other.keeps.size?.previewCounts == .previewCountDefaults)
+    }
+
+    @Test func aViewThatKeepsColumnsAndSizeIsReadBackAsWritten() throws {
+        var visibility = DetailColumnVisibility.defaults
+        visibility.added = true
+        visibility.size = false
+        var widths = DetailColumnWidths.defaults
+        widths.name = 512
+        widths.lastOpened = 201
+        let view = FolderView(
+            path: "/Users/me/Downloads", subfolders: true,
+            keeps: FolderViewKeeps(
+                view: .details, sort: FolderViewSort(by: .added, direction: .desc), foldersFirst: false,
+                columns: FolderViewColumns(
+                    visibility: visibility,
+                    order: [.added, .modified, .created, .lastOpened, .size, .kind, .permissions], widths: widths),
+                size: FolderViewSizes(
+                    iconSizes: DensitySizes(standard: 96, finder: 48),
+                    compactListWidths: DensitySizes(standard: 400, finder: 252),
+                    previewCounts: DensitySizes(standard: 9, finder: 1))))
+        let views = FolderViews([view])
+        let read = try FolderViews.read(Data(views.serialize().utf8))
+        #expect(read.own("/Users/me/Downloads") == view)
+        #expect(read.serialize() == views.serialize())
     }
 }

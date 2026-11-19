@@ -445,6 +445,7 @@ public enum CommandPalette {
         case .sortByName, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize:
             .sortBy
         case .toggleFoldersFirst: .foldersFirst
+        case .folderViewOptions: .folderView
         case .toggleHiddenFiles: .hiddenShown
         case .toggleFolderTree: .folderTree
         case .toggleInfoPanel: .infoPanel

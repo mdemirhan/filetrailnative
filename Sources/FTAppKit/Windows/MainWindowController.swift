@@ -1366,7 +1366,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 return
             }
             pane.setViewSize { $0.compactListWidths[density] = width }
-            self?.updatePreferences { $0.compactListWidths[density] = width }
+            pane.changeSharedSettings { $0.compactListWidths[density] = width }
             if let self { self.group?.tabChanged(self) }
         }
         content.onIconSizeChanged = { [weak self, weak pane] density, size in
@@ -1376,7 +1376,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 return
             }
             pane.setViewSize { $0.iconSizes[density] = size }
-            self?.updatePreferences { $0.iconSizes[density] = size }
+            pane.changeSharedSettings { $0.iconSizes[density] = size }
             if let self { self.group?.tabChanged(self) }
         }
         content.onPreviewCountChanged = { [weak self, weak pane] density, count in
@@ -1386,7 +1386,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 return
             }
             pane.setViewSize { $0.previewCounts[density] = count }
-            self?.updatePreferences { $0.previewCounts[density] = count }
+            pane.changeSharedSettings { $0.previewCounts[density] = count }
             if let self { self.group?.tabChanged(self) }
         }
         content.onHeaderMenu = { [weak self, weak pane] column in
@@ -1394,8 +1394,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             return self.headerMenu(for: column, in: pane)
         }
         content.onColumnMoved = { [weak self, weak pane] column, before in
-            guard let self, let pane, let key = OptionalDetailColumnKey(rawValue: column.rawValue) else { return }
-            self.dropColumn(key, before: before.flatMap { OptionalDetailColumnKey(rawValue: $0.rawValue) }, in: pane)
+            guard let self, let pane else { return }
+            self.dropColumn(column, before: before, in: pane)
         }
         content.contentShell.pathBarRow.onFolderViewClick = { [weak self, weak pane] anchor in
             guard let self, let pane else { return }
@@ -1440,7 +1440,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 return
             }
             pane.setViewSize { $0.detailColumnWidths = kept }
-            updatePreferences { $0.detailColumnWidths = kept }
+            pane.changeSharedSettings { $0.detailColumnWidths = kept }
         }
         // Saved with the pane. A drag calls this at each step, so the folders watched aren't gone over again.
         group?.saveSession()
@@ -1939,8 +1939,10 @@ extension MainWindowController: ExplorerWindowHandle {
             }
         case .togglePinFilter:
             content.togglePin()
+        // Search results have columns of their own, chosen on their header: a folder's aren't changed from there.
         case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
             .showLastOpenedColumn, .showPermissionsColumn:
+            guard searchRootPath == nil else { return }
             if let key = OptionalDetailColumnKey(columnCommand: command) { toggleColumn(key, in: activePane) }
         case .rememberFolderView, .updateFolderView, .revertFolderView, .folderViewOptions, .resetFolderView,
             .manageFolderViews:

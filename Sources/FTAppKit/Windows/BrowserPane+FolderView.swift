@@ -1,17 +1,16 @@
 // A pane and the folder's view it shows (View ▸ Folder View)
 import AppKit
-import FTFileSystem
 import FTFoundation
 
-/// What a pane carried as it came into a folder: its view, order, Folders First and sizes, and the app's columns and
-/// sizes (what a change in a folder with no view of its own goes to).
+/// What a pane carried as it came into a folder: its view, order, Folders First and sizes; and what it has changed
+/// since, in that folder, of the columns and sizes every folder without its own shares.
 struct PaneSettingsOnArrival {
     var viewMode: ExplorerViewMode
     var sortBy: SortByPreference
     var sortDirection: SortDirectionPreference
     var foldersFirst: Bool
     var viewSizes: PaneViewSizes?
-    var app: AppPreferences
+    var shared = SharedSettingChanges()
 
     @MainActor
     init(_ pane: BrowserPane) {
@@ -20,7 +19,92 @@ struct PaneSettingsOnArrival {
         sortDirection = pane.sortDirection
         foldersFirst = pane.foldersFirst
         viewSizes = pane.viewSizes
-        app = pane.tab?.preferences ?? .defaults()
+    }
+}
+
+/// The columns and sizes every folder without its own shares (the app's), as one pane changed them in the folder it
+/// shows: each as it was before the pane's first change of it there, and as the pane last left it. Only these go back
+/// once the folder keeps the setting, and only where they are still as the pane left them, so a column shown or a size
+/// set from another tab or window meanwhile stays.
+struct SharedSettingChanges: Equatable {
+    struct Change<Value: Equatable>: Equatable {
+        var before: Value
+        var after: Value
+    }
+
+    var columns: [OptionalDetailColumnKey: Change<Bool>] = [:]
+    var columnOrder: Change<[OptionalDetailColumnKey]>?
+    var columnWidths: [DetailColumnKey: Change<Int>] = [:]
+    var iconSizes: [Density: Change<Int>] = [:]
+    var compactListWidths: [Density: Change<Int>] = [:]
+    var previewCounts: [Density: Change<Int>] = [:]
+
+    /// The value before the first change stays; one changed back to it is no change.
+    private static func noted<Value: Equatable>(_ change: Change<Value>?, _ before: Value, _ after: Value)
+        -> Change<Value>?
+    {
+        guard before != after else { return change }
+        let first = change?.before ?? before
+        return first == after ? nil : Change(before: first, after: after)
+    }
+
+    /// The pane changed the app's settings from `before` to `after`.
+    mutating func note(from before: AppPreferences, to after: AppPreferences) {
+        for key in OptionalDetailColumnKey.allCases {
+            columns[key] = Self.noted(columns[key], before.detailColumns[key], after.detailColumns[key])
+        }
+        columnOrder = Self.noted(columnOrder, before.detailColumnOrder, after.detailColumnOrder)
+        for key in DetailColumnKey.allCases {
+            columnWidths[key] = Self.noted(
+                columnWidths[key], before.detailColumnWidths[key], after.detailColumnWidths[key])
+        }
+        for density in Density.allCases {
+            iconSizes[density] = Self.noted(iconSizes[density], before.iconSizes[density], after.iconSizes[density])
+            compactListWidths[density] = Self.noted(
+                compactListWidths[density], before.compactListWidths[density], after.compactListWidths[density])
+            previewCounts[density] = Self.noted(
+                previewCounts[density], before.previewCounts[density], after.previewCounts[density])
+        }
+    }
+
+    /// `now` with the columns the pane changed as they were before, where they are still as it left them.
+    func columnsPutBack(in now: AppPreferences) -> AppPreferences {
+        var next = now
+        for (key, change) in columns where now.detailColumns[key] == change.after {
+            next.detailColumns[key] = change.before
+        }
+        if let columnOrder, now.detailColumnOrder == columnOrder.after { next.detailColumnOrder = columnOrder.before }
+        for (key, change) in columnWidths where now.detailColumnWidths[key] == change.after {
+            next.detailColumnWidths[key] = change.before
+        }
+        return next
+    }
+
+    /// `now` with the sizes the pane changed as they were before, where they are still as it left them.
+    func sizesPutBack(in now: AppPreferences) -> AppPreferences {
+        var next = now
+        for (density, change) in iconSizes where now.iconSizes[density] == change.after {
+            next.iconSizes[density] = change.before
+        }
+        for (density, change) in compactListWidths where now.compactListWidths[density] == change.after {
+            next.compactListWidths[density] = change.before
+        }
+        for (density, change) in previewCounts where now.previewCounts[density] == change.after {
+            next.previewCounts[density] = change.before
+        }
+        return next
+    }
+
+    mutating func forgetColumns() {
+        columns = [:]
+        columnOrder = nil
+        columnWidths = [:]
+    }
+
+    mutating func forgetSizes() {
+        iconSizes = [:]
+        compactListWidths = [:]
+        previewCounts = [:]
     }
 }
 
@@ -33,10 +117,9 @@ extension BrowserPane {
         return folderView
     }
 
-    /// The view the folder at `path` uses, found by its canonical path.
+    /// The view the folder at `path` uses, found by the path as it is: a look in memory, with no call to the disk.
     func folderViewUse(for path: String) -> FolderViewUse? {
-        guard let tab, !tab.services.folderViews.views.isEmpty else { return nil }
-        return tab.services.folderViews.use(for: FolderIdentity.canonicalPath(path))
+        tab?.services.folderViews.use(for: path)
     }
 
     // MARK: Showing it
@@ -134,12 +217,7 @@ extension BrowserPane {
     /// not saved yet, let go of again once nothing is changed.
     private func changeOnScreen(_ change: (inout FolderViewOnScreen) -> Void) {
         let path = folder.path
-        var view =
-            folderView
-            ?? .draft(
-                FolderView(
-                    path: path, volume: FolderIdentity.volume(of: path), fileID: FolderIdentity.fileID(of: path),
-                    keeps: FolderViewKeeps()))
+        var view = folderView ?? .draft(FolderView(path: path, keeps: FolderViewKeeps()))
         let before = (shownSortBy, shownSortDirection, shownFoldersFirst)
         change(&view)
         folderView = view.isDraft && !view.hasUnsavedChanges ? nil : view
@@ -156,7 +234,7 @@ extension BrowserPane {
         var view =
             folderViews.views.own(path)
             ?? FolderView(
-                path: path, volume: FolderIdentity.volume(of: path), fileID: FolderIdentity.fileID(of: path),
+                path: path,
                 // A folder using a view from above starts from a copy of it, as on screen.
                 keeps: folderView?.shown ?? FolderViewKeeps())
         change(&view)
@@ -169,8 +247,22 @@ extension BrowserPane {
         if refresh { refreshFolderView() }
     }
 
+    /// A change the pane makes to the columns or sizes every folder without its own shares (the app's): noted, so
+    /// it can go back if the folder on screen comes to keep that setting.
+    func changeSharedSettings(_ change: (inout EditedPreferences) -> Void) {
+        guard let tab else { return }
+        guard settingsOnArrival != nil else {
+            tab.updatePreferences(change)
+            return
+        }
+        let before = tab.preferences
+        tab.updatePreferences(change)
+        settingsOnArrival?.shared.note(from: before, to: tab.preferences)
+    }
+
     /// The pane's own `settings` as they were when it came into the folder on screen; for the columns and sizes,
-    /// every folder's (the app's) too, as a change here went to them.
+    /// what the pane changed here of every folder's (the app's) too, as a change here went to them. What was changed
+    /// of them elsewhere meanwhile, in another tab or window, is not the pane's to put back.
     func restoreArrivalSettings(_ settings: [FolderViewSetting]) {
         guard let arrival = settingsOnArrival, let tab, !settings.isEmpty else { return }
         for setting in settings {
@@ -190,18 +282,34 @@ extension BrowserPane {
                         $0.previewCounts = sizes.previewCounts
                     }
                 }
-                tab.updatePreferences {
-                    $0.iconSizes = arrival.app.iconSizes
-                    $0.compactListWidths = arrival.app.compactListWidths
-                    $0.previewCounts = arrival.app.previewCounts
+                let now = tab.preferences
+                let back = arrival.shared.sizesPutBack(in: now)
+                if back != now {
+                    tab.updatePreferences {
+                        if back.iconSizes != now.iconSizes { $0.iconSizes = back.iconSizes }
+                        if back.compactListWidths != now.compactListWidths {
+                            $0.compactListWidths = back.compactListWidths
+                        }
+                        if back.previewCounts != now.previewCounts { $0.previewCounts = back.previewCounts }
+                    }
                 }
+                settingsOnArrival?.shared.forgetSizes()
             case .columns:
                 if let sizes = arrival.viewSizes { setViewSize { $0.detailColumnWidths = sizes.detailColumnWidths } }
-                tab.updatePreferences {
-                    $0.detailColumns = arrival.app.detailColumns
-                    $0.detailColumnOrder = arrival.app.detailColumnOrder
-                    $0.detailColumnWidths = arrival.app.detailColumnWidths
+                let now = tab.preferences
+                let back = arrival.shared.columnsPutBack(in: now)
+                if back != now {
+                    tab.updatePreferences {
+                        if back.detailColumns != now.detailColumns { $0.detailColumns = back.detailColumns }
+                        if back.detailColumnOrder != now.detailColumnOrder {
+                            $0.detailColumnOrder = back.detailColumnOrder
+                        }
+                        if back.detailColumnWidths != now.detailColumnWidths {
+                            $0.detailColumnWidths = back.detailColumnWidths
+                        }
+                    }
                 }
+                settingsOnArrival?.shared.forgetColumns()
             }
         }
         tab.group?.tabChanged(tab)
@@ -242,6 +350,7 @@ extension BrowserPane {
         changeOnScreen { view in
             view.shown = view.saved
             view.shownSubfolders = view.savedSubfolders
+            view.becomesOwn = false
         }
     }
 
@@ -276,6 +385,32 @@ extension BrowserPane {
                 view.shown.forget(setting)
             }
         }
+    }
+
+    /// Keep Columns for “…” in the List header's menu: the folder's own view keeps the columns on screen, or keeps
+    /// them no more; on screen until Save, as a Keep box is. In a folder using a view from above it is a view of its
+    /// own the folder is to have, also where the view above keeps the very same columns, which would otherwise be no
+    /// change at all.
+    func keepOwnColumns(_ keep: Bool) {
+        let current = shownKeeps
+        changeOnScreen { view in
+            if keep {
+                view.shown.take(.columns, from: current)
+                if !view.use.own { view.becomesOwn = true }
+            } else if view.use.own {
+                view.shown.forget(.columns)
+            } else {
+                // Unchosen again: the folder goes on using the view above, with what that view keeps.
+                view.becomesOwn = false
+                if !view.saved.keeps(.columns) { view.shown.forget(.columns) }
+            }
+        }
+    }
+
+    /// Whether the columns on screen are, or at Save will be, kept by a view of the folder's own.
+    var keepsOwnColumns: Bool {
+        guard let view = shownFolderView else { return false }
+        return view.shown.keeps(.columns) && (view.use.own || view.becomesOwn)
     }
 
     /// A value changed in Folder Customization: kept, with that value, on screen until Save.

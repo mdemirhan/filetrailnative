@@ -215,6 +215,319 @@ extension ExplorerWindowlessTests {
             #expect(second.activePane.shownMode == .previews)
         }
 
+        /// Search results over the pane's folder, as typing in the search field and Return bring them.
+        private func search(_ tab: MainWindowController, for text: String) async throws {
+            tab.search.session.engine = FakeSearchEngine()
+            tab.search.session.timers = ManualTimers()
+            let field = try #require(tab.searchField)
+            field.stringValue = text
+            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            _ = tab.search.session.submit(text)
+            #expect(await waitUntil { tab.search.showsResults })
+        }
+
+        /// The item of the List header's menu titled `title`, chosen as a click chooses it.
+        private func choose(_ title: String, in menu: NSMenu) throws {
+            let index = try #require(menu.items.firstIndex { $0.title == title }, "\(title) is in the menu")
+            #expect(menu.items[index].isEnabled, "\(title) is on")
+            menu.performActionForItem(at: index)
+        }
+
+        // A view is found by the path alone, so the path a folder is asked for by finds nothing where it isn't the
+        // folder's real one; its listing gives that, and the view saved for it shows, in its order.
+        @Test func aFolderOpenedThroughALinkShowsTheViewOfItsRealPath() async throws {
+            let harness = try ExplorerHarness.windowless()
+            for name in ["b.txt", "a.txt", "c.txt"] {
+                try "x".write(to: harness.folder.appending("Beta/\(name)"), atomically: false, encoding: .utf8)
+            }
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            let beta = real(harness, "Beta")
+            let link = real(harness, "") + "/Link"
+            try FileManager.default.createSymbolicLink(atPath: link, withDestinationPath: beta)
+            pane.folderViews.update(from: nil) {
+                $0.set(
+                    FolderView(
+                        path: beta,
+                        keeps: FolderViewKeeps(
+                            view: .icons, sort: FolderViewSort(by: .name, direction: .desc), foldersFirst: false)))
+            }
+            #expect(pane.folderViewUse(for: link) == nil)
+            await tab.navigate(to: URL(fileURLWithPath: link))
+            #expect(await waitUntil { !tab.isNavigating })
+            #expect(pane.shownFolderPath == beta)
+            #expect(pane.shownFolderView?.use.own == true)
+            #expect(pane.content.mode == .icons)
+            // Read in the order the view keeps, though the first read had only the pane's to go by.
+            #expect(pane.content.entries.map(\.name) == ["Inner", "c.txt", "b.txt", "a.txt"])
+            #expect(pane.sortBy == .name && pane.sortDirection == .asc)
+        }
+
+        // Nothing ties a view to a disk: a folder the app moves to another disk has its view there, and finding it
+        // asks nothing of the disk (none of these folders is anywhere).
+        @Test func aFolderMovedInTheAppToAnotherDiskTakesItsViewAlong() {
+            let shared = SharedFolderViews()
+            shared.update(from: nil) {
+                $0.set(
+                    FolderView(
+                        path: "/Users/me/Pictures", subfolders: true, keeps: FolderViewKeeps(view: .previews)))
+                $0.set(FolderView(path: "/Users/me/Pictures/Scans", keeps: FolderViewKeeps(view: .details)))
+            }
+            shared.followMoves([PathMove(from: "/Users/me/Pictures", to: "/Volumes/Photos/Pictures")])
+            #expect(shared.use(for: "/Volumes/Photos/Pictures")?.own == true)
+            #expect(shared.use(for: "/Volumes/Photos/Pictures/Scans")?.view.keeps.view == .details)
+            #expect(shared.use(for: "/Volumes/Photos/Pictures/Trips/2026")?.view.path == "/Volumes/Photos/Pictures")
+            #expect(shared.use(for: "/Users/me/Pictures") == nil)
+            #expect(shared.use(for: "/Users/me/Pictures/Scans") == nil)
+        }
+
+        @Test func aColumnMovedInSearchResultsMovesTheSearchsOwnColumnAndAFoldersStaysAsItWas() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openList()
+            let pane = tab.activePane
+            // In a folder, a title dragged moves the folder List's column.
+            pane.content.columnMoved(.size, before: .modified)
+            let folderOrder = tab.preferences.detailColumnOrder
+            #expect(folderOrder.prefix(2) == [.size, .modified])
+            let searchOrder = tab.preferences.searchColumnOrder
+            #expect(searchOrder == AppPreferenceLimits.defaultSearchColumnOrder)
+
+            try await search(tab, for: "note")
+            // In search results it moves theirs: Size before Folder, right after Name.
+            pane.content.columnMoved(.size, before: .folder)
+            #expect(tab.preferences.detailColumnOrder == folderOrder)
+            #expect(tab.preferences.searchColumnOrder.prefix(3) == [.size, .folder, .modified])
+            #expect(pane.columns(from: tab.preferences).columns == [.name, .size, .folder, .modified])
+
+            // The header's menu moves the title clicked, and has no Keep item.
+            var menu = tab.headerMenu(for: .size, in: pane)
+            #expect(!menu.items.contains { $0.title.hasPrefix("Keep Columns") })
+            #expect(menu.items.first { $0.title == "Move “Size” Left" }?.isEnabled == false)
+            try choose("Move “Size” Right", in: menu)
+            #expect(tab.preferences.searchColumnOrder.prefix(3) == [.folder, .size, .modified])
+            menu = tab.headerMenu(for: .modified, in: pane)
+            #expect(menu.items.first { $0.title == "Move “Date Modified” Right" }?.isEnabled == false)
+            try choose("Move “Date Modified” Left", in: menu)
+            #expect(tab.preferences.searchColumnOrder.prefix(3) == [.folder, .modified, .size])
+            // Folder moves as any other; Name has no Move items.
+            try choose("Move “Folder” Right", in: tab.headerMenu(for: .folder, in: pane))
+            #expect(pane.columns(from: tab.preferences).columns == [.name, .modified, .folder, .size])
+            #expect(!tab.headerMenu(for: .name, in: pane).items.contains { $0.title.hasPrefix("Move") })
+            #expect(tab.preferences.detailColumnOrder == folderOrder)
+
+            // Back in the folder, a drag is the folder's again.
+            tab.search.session.hideResults()
+            #expect(await waitUntil { !tab.search.showsResults })
+            pane.content.columnMoved(.kind, before: .size)
+            #expect(tab.preferences.detailColumnOrder.prefix(3) == [.kind, .size, .modified])
+            #expect(tab.preferences.searchColumnOrder.prefix(3) == [.modified, .folder, .size])
+            await harness.close()
+        }
+
+        // What a pane puts back once its folder keeps a setting is what it changed there itself: a column shown from
+        // another tab meanwhile is every folder's, and stays.
+        @Test func rememberPutsBackOnlyWhatThePaneChangedItselfAndLeavesWhatAnotherTabChanged() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let first = try await harness.open()
+            await go(first, harness, "Alpha")
+            let group = try #require(first.group)
+            group.duplicateTab(first)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            let second = group.tabs[1]
+            second.servicesOverride = first.servicesOverride
+            #expect(await waitUntil { second.activePane.loaded && !second.isNavigating })
+            #expect(!first.preferences.detailColumns[.added] && !first.preferences.detailColumns[.permissions])
+
+            // The first shows Permissions in Alpha; the second then shows Date Added.
+            first.toggleColumn(.permissions, in: first.activePane)
+            second.toggleColumn(.added, in: second.activePane)
+            #expect(first.preferences.detailColumns[.added] && first.preferences.detailColumns[.permissions])
+            first.perform(.rememberFolderView)
+            // Alpha keeps the columns that were on screen; the pane's own change goes back, the other tab's stays.
+            let kept = try #require(first.activePane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns)
+            #expect(kept.visibility.permissions && kept.visibility.added)
+            #expect(!first.preferences.detailColumns[.permissions])
+            #expect(first.preferences.detailColumns[.added])
+            #expect(first.preferences.detailColumnOrder.contains(.added))
+        }
+
+        // A size the pane set here goes back as the folder comes to keep it, unless it was set again elsewhere since.
+        @Test func aSizeSetAgainElsewhereSinceThePaneSetItIsNotPutBack() {
+            var changes = SharedSettingChanges()
+            var before = AppPreferences.defaults()
+            before.iconSizes[.standard] = 64
+            var after = before
+            after.iconSizes[.standard] = 96
+            after.detailColumns.permissions = true
+            changes.note(from: before, to: after)
+            // Still as the pane left them: both go back.
+            #expect(changes.sizesPutBack(in: after).iconSizes[.standard] == 64)
+            #expect(!changes.columnsPutBack(in: after).detailColumns.permissions)
+            // Set again elsewhere, and another column shown there: neither is the pane's to undo.
+            var elsewhere = after
+            elsewhere.iconSizes[.standard] = 112
+            elsewhere.detailColumns.added = true
+            #expect(changes.sizesPutBack(in: elsewhere).iconSizes[.standard] == 112)
+            let columns = changes.columnsPutBack(in: elsewhere).detailColumns
+            #expect(columns.added && !columns.permissions)
+            // Changed back by hand, it is no change of the pane's any more.
+            changes.note(from: after, to: before)
+            #expect(changes == SharedSettingChanges())
+        }
+
+        // A dimmed item's key still reaches the command: it does nothing where the item is dimmed.
+        @Test func theFolderViewAndColumnCommandsDoNothingOverSearchResultsOrWithNoFolder() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openList()
+            let pane = tab.activePane
+            try await search(tab, for: "note")
+            // Commands do arrive: the view is the results' own to change.
+            tab.perform(.viewAsIcons)
+            #expect(pane.searchViewMode == .icons)
+
+            let columns = tab.preferences.detailColumns
+            #expect(!tab.canPerform(.folderViewOptions) && !tab.canPerform(.showPermissionsColumn))
+            tab.perform(.folderViewOptions)
+            #expect(tab.folderViewPopover == nil)
+            tab.perform(.showPermissionsColumn)
+            tab.perform(.showSizeColumn)
+            #expect(tab.preferences.detailColumns == columns)
+            tab.perform(.rememberFolderView)
+            #expect(pane.folderViews.views.isEmpty)
+            tab.perform(.updateFolderView)
+            tab.perform(.revertFolderView)
+            tab.perform(.resetFolderView)
+            #expect(pane.folderViews.views.isEmpty && pane.folderView == nil)
+
+            // With no folder on screen there is none to customize.
+            tab.search.session.hideResults()
+            #expect(await waitUntil { !tab.search.showsResults })
+            pane.showNoFolder()
+            #expect(!tab.canPerform(.folderViewOptions) && !tab.canPerform(.rememberFolderView))
+            tab.perform(.folderViewOptions)
+            #expect(tab.folderViewPopover == nil)
+            tab.perform(.rememberFolderView)
+            #expect(pane.folderViews.views.isEmpty)
+            await harness.close()
+        }
+
+        @Test func keepColumnsUnderAViewFromAboveThatKeepsColumnsGivesTheFolderItsOwnAtSave() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            await go(tab, harness, "Alpha")
+            tab.perform(.viewAsDetails)
+            tab.perform(.rememberFolderView)
+            pane.setFolderViewSubfolders(true)
+            tab.perform(.updateFolderView)
+            #expect(pane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns != nil)
+
+            await go(tab, harness, "Alpha/Inner")
+            let inner = real(harness, "Alpha/Inner")
+            #expect(pane.shownFolderView?.use.own == false && pane.folderViewKeeps(.columns))
+            let keep = "Keep Columns for “Inner”"
+            var menu = tab.headerMenu(for: .size, in: pane)
+            #expect(menu.items.first?.title == keep && menu.items.first?.state == .off)
+            #expect(menu.items[1].title == "Changes go to “Alpha” view, until Save")
+            try choose(keep, in: menu)
+            // A change on screen as any other: checked, the dot shows, nothing is saved until Save.
+            menu = tab.headerMenu(for: .size, in: pane)
+            #expect(menu.items.first?.state == .on)
+            #expect(menu.items[1].title == "Changes go to this folder's view, until Save")
+            #expect(pane.shownFolderView?.hasUnsavedChanges == true)
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.changed == true)
+            #expect(tab.canPerform(.updateFolderView))
+            #expect(pane.folderViews.views.own(inner) == nil)
+            // Chosen again, it is unchosen: nothing is changed.
+            try choose(keep, in: menu)
+            #expect(pane.shownFolderView?.hasUnsavedChanges == false)
+            #expect(tab.headerMenu(for: .size, in: pane).items.first?.state == .off)
+            // Revert drops it too.
+            try choose(keep, in: tab.headerMenu(for: .size, in: pane))
+            tab.perform(.revertFolderView)
+            #expect(pane.shownFolderView?.hasUnsavedChanges == false && !pane.keepsOwnColumns)
+
+            try choose(keep, in: tab.headerMenu(for: .size, in: pane))
+            tab.perform(.updateFolderView)
+            let own = try #require(pane.folderViews.views.own(inner))
+            #expect(own.keeps.columns == pane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns)
+            #expect(!own.subfolders)
+            #expect(pane.shownFolderView?.isOwnSaved == true && pane.shownFolderView?.hasUnsavedChanges == false)
+            #expect(tab.headerMenu(for: .size, in: pane).items.first?.state == .on)
+        }
+
+        @Test func folderCustomizationClosesWhenItsPaneIsClosedOrReplaced() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let left = tab.activePane
+            var right = tab.openSecondPane(at: real(harness, "Alpha"))
+            #expect(await waitUntil { right.loaded && !right.isNavigating })
+            #expect(tab.activePane === left)
+            // Open on the pane that stays, it stays.
+            tab.folderViewPopover = FolderViewPopover(pane: left, tab: tab, dismiss: {})
+            tab.toggleTwoPanes()
+            #expect(!tab.showsTwoPanes && tab.folderViewPopover?.pane === left)
+
+            // Open on the pane ⌘\ closes, it closes with it.
+            right = tab.openSecondPane(at: real(harness, "Alpha"))
+            #expect(await waitUntil { right.loaded && !right.isNavigating })
+            tab.folderViewPopover = FolderViewPopover(pane: right, tab: tab, dismiss: {})
+            tab.toggleTwoPanes()
+            #expect(tab.folderViewPopover == nil)
+
+            // Duplicate Pane puts a copy of the active pane in the other one's place: that one is gone too.
+            right = tab.openSecondPane(at: real(harness, "Beta"))
+            #expect(await waitUntil { right.loaded && !right.isNavigating })
+            tab.folderViewPopover = FolderViewPopover(pane: right, tab: tab, dismiss: {})
+            tab.duplicatePane()
+            #expect(tab.showsTwoPanes && tab.otherPane !== right)
+            #expect(tab.folderViewPopover == nil)
+            #expect(await waitUntil { tab.panes.allSatisfy { $0.loaded && !$0.isNavigating } })
+            await harness.close()
+        }
+
+        // Search results are no folder: over a customized folder they show in the search's own view and columns, the
+        // Folder View commands are off, and the folder's view is back when they close.
+        @Test func searchResultsOverACustomizedFolderUseTheSearchsOwnViewAndTheFoldersComesBack() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            tab.setMode(.icons)
+            await go(tab, harness, "Alpha")
+            tab.setMode(.details)
+            tab.toggleColumn(.permissions, in: pane)
+            tab.perform(.rememberFolderView)
+            // The pane carries Icons, and Permissions is Alpha's alone.
+            #expect(pane.viewMode == .icons && !tab.preferences.detailColumns.permissions)
+            let folderColumns = pane.columns(from: tab.preferences).columns
+            #expect(folderColumns.contains(.permissions) && !folderColumns.contains(.folder))
+            tab.setSearchViewMode(.list)
+
+            try await search(tab, for: "note")
+            #expect(pane.content.mode == .list && tab.menuState.viewMode == .list)
+            #expect(pane.columns(from: tab.preferences).columns == [.name, .folder, .modified, .size])
+            #expect(pane.shownFolderView == nil)
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark == nil)
+            for command: AppCommand in [
+                .rememberFolderView, .updateFolderView, .revertFolderView, .folderViewOptions, .resetFolderView,
+                .showPermissionsColumn,
+            ] {
+                #expect(!tab.canPerform(command), "\(command)")
+            }
+            // The view chosen over the results is theirs: Alpha's view isn't changed by it.
+            tab.setMode(.previews)
+            #expect(pane.searchViewMode == .previews && pane.folderView?.hasUnsavedChanges == false)
+
+            tab.search.session.hideResults()
+            #expect(await waitUntil { !tab.search.showsResults })
+            #expect(pane.content.mode == .details)
+            #expect(pane.shownFolderView?.isOwnSaved == true && pane.shownFolderView?.hasUnsavedChanges == false)
+            #expect(pane.columns(from: tab.preferences).columns == folderColumns)
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.whose == .own)
+            #expect(tab.canPerform(.folderViewOptions) && tab.canPerform(.resetFolderView))
+            await harness.close()
+        }
+
         @Test func aColumnShownTakesItsStandardPlaceAmongThoseShown() {
             // The order saved before the standard one changed: Date Created after Kind.
             let saved: [OptionalDetailColumnKey] = [

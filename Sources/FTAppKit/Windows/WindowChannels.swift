@@ -110,21 +110,6 @@ public final class SharedFolderViews {
     public var onChanged: (_ senderID: Int?) -> Void = { _ in }
     /// Posted after every change, for what isn't a window (Settings' list).
     public static let didChange = Notification.Name("FileTrailFolderViewsChanged")
-    /// The disk, the file ID and whether a folder is there, read from the disk; tests put their own.
-    var identity = Identity.disk
-
-    struct Identity {
-        var volume: (String) -> String?
-        var fileID: (String) -> UInt64?
-        var isFolder: (String) -> Bool
-
-        static var disk: Identity {
-            Identity(
-                volume: FolderIdentity.volume(of:), fileID: FolderIdentity.fileID(of:),
-                isFolder: FolderIdentity.isFolder)
-        }
-    }
-
     /// With no store, as in tests, the views are kept for the run only.
     public init(store: AppStateStore? = nil) {
         self.store = store
@@ -143,27 +128,15 @@ public final class SharedFolderViews {
         return views
     }
 
-    /// The view the folder at `path` (canonical) uses. A view kept with a disk is checked against the folder's disk; a
-    /// folder with no view of its own takes over one whose folder is gone and that has its file ID (it was renamed or
-    /// moved outside the app).
+    /// The view the folder at `path` uses, found by the path alone: a look in memory, with no call to the disk, so
+    /// opening a folder costs nothing more however many views are saved.
     public func use(for path: String) -> FolderViewUse? {
         guard !views.isEmpty, !path.isEmpty else { return nil }
-        // Only where a view has this folder's file ID is its disk read and its folder looked for.
-        if views.own(path) == nil, let fileID = identity.fileID(path),
-            views.byPath.values.contains(where: { $0.fileID == fileID })
-        {
-            let volume = identity.volume(path)
-            var adopted = views
-            if adopted.adopt(path: path, volume: volume, fileID: fileID, exists: identity.isFolder) {
-                update(from: nil) { $0 = adopted }
-            }
-        }
-        guard let found = views.use(for: path) else { return nil }
-        guard found.view.volume != nil else { return found }
-        return views.use(for: path, volume: identity.volume(path))
+        return views.use(for: path)
     }
 
-    /// Folders renamed or moved by the app (and by its Undo): their views, and the views inside them, go along.
+    /// Folders renamed or moved by the app (and by its Undo): their views, and the views inside them, go along, to
+    /// another disk too, as nothing ties a view to a disk.
     public func followMoves(_ moves: [PathMove]) {
         guard !moves.isEmpty else { return }
         update(from: nil) { views in
