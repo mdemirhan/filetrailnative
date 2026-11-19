@@ -191,7 +191,18 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// folders has ended, every window's tabs follow them.
     /// The write coordinator sends every progress event here (`AppWriteOperations`).
     func writeOperationProgress(_ event: WriteOperationProgress) {
-        itemsMoved(ExplorerTabs.followedMoves(event))
+        let moves = ExplorerTabs.followedMoves(event)
+        // The folders' views go along first, so the tabs that follow find them at the new place.
+        folderViews?.followMoves(moves)
+        itemsMoved(moves)
+    }
+
+    /// Every folder's view (`SharedFolderViews`), which follows the folders the app renames and moves.
+    var folderViews: SharedFolderViews?
+
+    /// A folder's view was saved, changed or removed: every pane on a folder it covers shows it.
+    func folderViewsChanged(from senderID: Int?) {
+        for tab in allTabs { tab.folderViewsChanged() }
     }
 
     /// Folders renamed or moved: every window's tabs follow them.

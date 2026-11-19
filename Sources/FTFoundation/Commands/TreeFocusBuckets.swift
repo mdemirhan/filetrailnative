@@ -25,9 +25,12 @@ extension ShortcutPolicy {
             .showLastSearchResults, .viewAsIcons,
             .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
             .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .sortByName,
-            .sortByModified, .sortByAdded, .sortByLastOpened,
+            .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened,
             .sortBySize, .sortByKind, .toggleFoldersFirst,
-            .toggleHiddenFiles, .togglePinFilter, .goBack, .goForward, .goEnclosingFolder, .focusTreePane,
+            .toggleHiddenFiles, .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn,
+            .showAddedColumn, .showLastOpenedColumn, .showPermissionsColumn, .rememberFolderView, .updateFolderView,
+            .revertFolderView, .folderViewOptions, .resetFolderView, .manageFolderViews, .togglePinFilter, .goBack,
+            .goForward, .goEnclosingFolder, .focusTreePane,
             .focusContentPane, .openHelp, .openKeyboardShortcuts:
             .globalExplorer
         case .openSelection, .editSelection, .openInTerminal, .moveSelection, .renameSelection, .duplicateSelection,

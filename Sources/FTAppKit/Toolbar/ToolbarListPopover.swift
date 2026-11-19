@@ -41,10 +41,10 @@ final class ToolbarListPopover {
     }
 
     /// Under `button`, which shows as on while the list is open.
-    func show(from button: NSView, in window: NSWindow) {
+    func show(from button: NSView, in window: NSWindow, above: Bool = false) {
         anchor = button
         self.window = window
-        popover.show(from: button, in: window)
+        popover.show(from: button, in: window, above: above)
         (button as? any ToolbarListAnchor)?.isOn = true
         keys = WindowEventRouting.add(window) { [weak self] event in self?.intercept(event) ?? false }
         // A click inside can give the popover the keyboard, though the window stays the main one: the keys still go

@@ -126,10 +126,32 @@ enum StateTestKit {
 
     static func store(
         _ path: String, theme: ThemePreference = .dark, fileSystem: any StateFileSystem = DiskFileSystem(),
-        timer: any StateTimer = ManualTimer(), onPersistError: (@Sendable (any Error) -> Void)? = nil
+        timer: any StateTimer = ManualTimer(), clock: @escaping @Sendable () -> Double = { 0 },
+        onPersistError: (@Sendable (any Error) -> Void)? = nil
     ) -> AppStateStore {
         AppStateStore(
-            filePath: path, defaultTheme: theme, fileSystem: fileSystem, timer: timer,
+            filePath: path, defaultTheme: theme, fileSystem: fileSystem, timer: timer, clock: clock,
             onReadError: { _ in }, onPersistError: onPersistError)
+    }
+}
+
+/// A value a test changes while the store reads it from its own closures (the clock).
+final class LockedValue<Value: Sendable>: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stored: Value
+
+    init(_ value: Value) { stored = value }
+
+    var value: Value {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return stored
+        }
+        set {
+            lock.lock()
+            stored = newValue
+            lock.unlock()
+        }
     }
 }

@@ -335,6 +335,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var openBatchRename: (([DirectoryEntry]) -> Void)?
     /// Opens Settings (⌘,, the toolbar's Settings button): the app's Settings window, unless a test puts its own.
     var openSettings: (() -> Void)?
+    /// The folder view's popover while it is open (`showFolderViewPopover`).
+    var folderViewPopover: FolderViewPopover?
     /// Opens the Help window on a topic (`?`, the toolbar's Help): the app's, unless a test puts its own.
     var openHelp: ((HelpTopicID?) -> Void)?
     /// Previews an item: the system's Quick Look panel, unless a test puts its own, so nothing comes on screen.
@@ -1356,28 +1358,57 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
         // A size set here is this pane's own, and the app's from now on: what a pane with none of its own starts
         // from. The other panes keep theirs.
+        // In a folder whose view keeps the size, a size set is a change of that view, unsaved until Update.
         content.onCompactListWidthChanged = { [weak self, weak pane] density, width in
-            pane?.setViewSize { $0.compactListWidths[density] = width }
+            guard let pane else { return }
+            if pane.folderViewKeeps(.size) {
+                pane.changeShownFolderView { $0.size?.compactListWidths[density] = width }
+                return
+            }
+            pane.setViewSize { $0.compactListWidths[density] = width }
             self?.updatePreferences { $0.compactListWidths[density] = width }
             if let self { self.group?.tabChanged(self) }
         }
         content.onIconSizeChanged = { [weak self, weak pane] density, size in
-            pane?.setViewSize { $0.iconSizes[density] = size }
+            guard let pane else { return }
+            if pane.folderViewKeeps(.size) {
+                pane.changeShownFolderView { $0.size?.iconSizes[density] = size }
+                return
+            }
+            pane.setViewSize { $0.iconSizes[density] = size }
             self?.updatePreferences { $0.iconSizes[density] = size }
             if let self { self.group?.tabChanged(self) }
         }
         content.onPreviewCountChanged = { [weak self, weak pane] density, count in
-            pane?.setViewSize { $0.previewCounts[density] = count }
+            guard let pane else { return }
+            if pane.folderViewKeeps(.size) {
+                pane.changeShownFolderView { $0.size?.previewCounts[density] = count }
+                return
+            }
+            pane.setViewSize { $0.previewCounts[density] = count }
             self?.updatePreferences { $0.previewCounts[density] = count }
             if let self { self.group?.tabChanged(self) }
         }
+        content.onHeaderMenu = { [weak self, weak pane] column in
+            guard let self, let pane else { return nil }
+            return self.headerMenu(for: column, in: pane)
+        }
+        content.onColumnMoved = { [weak self, weak pane] column, before in
+            guard let self, let pane, let key = OptionalDetailColumnKey(rawValue: column.rawValue) else { return }
+            self.dropColumn(key, before: before.flatMap { OptionalDetailColumnKey(rawValue: $0.rawValue) }, in: pane)
+        }
+        content.contentShell.pathBarRow.onFolderViewClick = { [weak self, weak pane] anchor in
+            guard let self, let pane else { return }
+            self.activate(pane)
+            self.showFolderViewPopover(for: pane, from: anchor)
+        }
         content.setView(
-            sortBy: pane.sortBy, direction: pane.sortDirection, foldersFirst: pane.foldersFirst,
+            sortBy: pane.shownSortBy, direction: pane.shownSortDirection, foldersFirst: pane.shownFoldersFirst,
             includeHidden: pane.includeHidden)
         content.setViewFilterMode(pane.startFilterMode ?? preferences.listFilterMatch)
         content.sizeShortcuts = sizeShortcuts
         content.setColumns(pane.columns(from: preferences))
-        content.setMode(pane.viewMode)
+        content.setMode(pane.shownMode)
     }
 
     /// The List's widths, as a drag, a step or a double-click left them in `pane`: that pane's own, as its other sizes
@@ -1402,6 +1433,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             for key in DetailColumnKey.allCases {
                 let column = DetailColumn(rawValue: key.rawValue) ?? .name
                 kept[key] = AppPreferenceLimits.clampDetailColumnWidth(key, width(column))
+            }
+            // A folder's view that keeps its columns keeps their widths: a change of the view, unsaved until Update.
+            if pane.folderViewKeeps(.columns) {
+                pane.changeShownFolderView { $0.columns?.widths = kept }
+                return
             }
             pane.setViewSize { $0.detailColumnWidths = kept }
             updatePreferences { $0.detailColumnWidths = kept }
@@ -1572,7 +1608,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let context = commandContext
         let panels = group?.session.panels
         return ApplicationMenuState.build(
-            viewMode: shownViewMode, previewCount: content.previewCount, sortBy: sortBy, foldersFirst: foldersFirst,
+            viewMode: shownViewMode, previewCount: content.previewCount, sortBy: activePane.shownSortBy,
+            foldersFirst: activePane.shownFoldersFirst,
             hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
             infoRowOpen: panels?.detailRowOpen ?? false, twoPanesShown: showsTwoPanes,
@@ -1586,7 +1623,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             compressTitle: ArchiveNames.compressTitle(
                 count: context.selectedPathsInViewOrder.count,
                 firstName: context.selectedPathsInViewOrder.first.map(NodePath.basename)),
-            convertImagesCount: context.selectedPathsInViewOrder.count
+            convertImagesCount: context.selectedPathsInViewOrder.count,
+            folderViewRemembered: activePane.shownFolderView?.isOwnSaved == true,
+            shownColumns: shownColumns
         ) { CommandAvailability.canRun($0, context) }
     }
 
@@ -1884,22 +1923,28 @@ extension MainWindowController: ExplorerWindowHandle {
         case .increaseSize, .decreaseSize, .resetSize:
             if let change = ViewSize.Change(command) { content.stepViewSize(change) }
         // Search results have an order of their own, chosen in the List view's headers.
-        case .sortByName, .sortByKind, .sortByModified, .sortByAdded, .sortByLastOpened, .sortBySize,
+        case .sortByName, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize,
             .toggleFoldersFirst:
             guard searchRootPath == nil else { return }
             switch command {
             case .sortByName: sort(by: .name)
             case .sortByKind: sort(by: .kind)
             case .sortByModified: sort(by: .modified)
+            case .sortByCreated: sort(by: .created)
             case .sortByAdded: sort(by: .added)
             case .sortByLastOpened: sort(by: .lastOpened)
             case .sortBySize: sort(by: .size)
             default:
-                foldersFirst.toggle()
-                viewChanged()
+                activePane.toggleFoldersFirst()
             }
         case .togglePinFilter:
             content.togglePin()
+        case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
+            .showLastOpenedColumn, .showPermissionsColumn:
+            if let key = OptionalDetailColumnKey(columnCommand: command) { toggleColumn(key, in: activePane) }
+        case .rememberFolderView, .updateFolderView, .revertFolderView, .folderViewOptions, .resetFolderView,
+            .manageFolderViews:
+            performFolderViewCommand(command)
         case .toggleHiddenFiles:
             includeHidden.toggle()
             sidebar.hiddenFilesChanged(includeHidden)
@@ -2145,7 +2190,10 @@ extension MainWindowController: ExplorerWindowContext {
             trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)),
             viewSizeSteps: content.viewSize?.steps ?? .unavailable, filterPinnable: content.canTogglePin,
             // While a text field has the keyboard, what is on the clipboard is for it.
-            systemClipboard: isTextFieldEditing ? nil : systemClipboard.choice)
+            systemClipboard: isTextFieldEditing ? nil : systemClipboard.choice,
+            folderView: FolderViewCommandState(
+                own: activePane.shownFolderView?.isOwnSaved == true,
+                unsaved: activePane.shownFolderView?.hasUnsavedChanges == true))
     }
 
     /// The folders File > Calculate Size measures now.

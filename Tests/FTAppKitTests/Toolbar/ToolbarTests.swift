@@ -720,11 +720,21 @@ extension ExplorerWindowlessTests {
             _ = button(tab, .viewOptions)?.accessibilityPerformPress()
             #expect(
                 titles(menu) == [
-                    "Folders First", "Hidden Files", "-", "Info Panel", "Info Row", "-", "Customize Toolbar…",
+                    "Folders First", "Hidden Files", "Folder View", "-", "Info Panel", "Info Row", "-",
+                    "Customize Toolbar…",
                 ])
             #expect(
                 menu?.items.first?.key
                     == ShortcutDisplay.defaults.written(.toggleFoldersFirst).flatMap(MenuKeyEquivalent.parse))
+            // Folder View opens View ▸ Folder View's items, as the list's right-click menu does.
+            let folderView = try #require(menu?.items.first { $0.title == "Folder View" }?.submenu)
+            #expect(
+                folderView.map(\.title) == [
+                    "Remember View for This Folder", "Update Folder View", "Revert to Saved View", "",
+                    "Folder View Options…", "", "Reset Folder View", "Manage Folder Customizations…",
+                ])
+            // Nothing is changed in the folder's view: Update is dimmed.
+            #expect(folderView.first { $0.title == "Update Folder View" }?.enabled == false)
             // Escape closes it.
             key(53, "\u{1b}", in: tab.window)
             #expect(menu == nil)
@@ -737,7 +747,8 @@ extension ExplorerWindowlessTests {
             _ = sort.accessibilityPerformPress()
             #expect(
                 titles(menu) == [
-                    "Name", "Kind", "Date Last Opened", "Date Added", "Date Modified", "Size", "-", "Ascending",
+                    "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind", "-",
+                    "Ascending",
                     "Descending",
                 ])
             #expect(menu?.nsMenu.minimumWidth == 200)

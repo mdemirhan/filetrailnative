@@ -58,6 +58,8 @@
     "checked path bar folder menu item": {"swift": "pathBarMenu.item.checked"},
     "path editor": {"swift": "pathBar.editor"},
     "status bar": {"swift": "statusBar"},
+    "folder view symbol": {"swift": "statusBar.folderView"},
+    "folder view popover": {"swift": "folderViewPopover"},
     "info panel": {"swift": "infoPanel"},
     "context submenu": {"swift": "contextMenu.submenu"},
     "alert": {"swift": "alert"},

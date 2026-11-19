@@ -6003,6 +6003,12 @@
           "hasSubmenu": true
         },
         {
+          "id": "folderView",
+          "label": "Folder View",
+          "icon": "folderView",
+          "hasSubmenu": true
+        },
+        {
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
@@ -6102,6 +6108,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "folderView",
+          "label": "Folder View",
+          "icon": "folderView",
           "hasSubmenu": true
         },
         {
@@ -6207,6 +6219,12 @@
           "hasSubmenu": true
         },
         {
+          "id": "folderView",
+          "label": "Folder View",
+          "icon": "folderView",
+          "hasSubmenu": true
+        },
+        {
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
@@ -6306,6 +6324,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "folderView",
+          "label": "Folder View",
+          "icon": "folderView",
           "hasSubmenu": true
         },
         {
@@ -6411,6 +6435,12 @@
           "hasSubmenu": true
         },
         {
+          "id": "folderView",
+          "label": "Folder View",
+          "icon": "folderView",
+          "hasSubmenu": true
+        },
+        {
           "id": "otherPane",
           "label": "Other Pane",
           "icon": "twoPanes",
@@ -6510,6 +6540,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "folderView",
+          "label": "Folder View",
+          "icon": "folderView",
           "hasSubmenu": true
         },
         {
@@ -6615,6 +6651,12 @@
           "id": "sortBy",
           "label": "Sort By",
           "icon": "sortBy",
+          "hasSubmenu": true
+        },
+        {
+          "id": "folderView",
+          "label": "Folder View",
+          "icon": "folderView",
           "hasSubmenu": true
         },
         {

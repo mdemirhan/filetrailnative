@@ -20,6 +20,8 @@ struct AppMenuItem {
     /// The app whose icon the row shows before its label.
     var appPath: String?
     var action: () -> Void = {}
+    /// The rows of the submenu the row opens (Folder View's); nil for a row that acts.
+    var submenu: [AppMenuItem]?
     #if DEBUG
         /// What automation calls this row, when it isn't the menu's name for its rows (a note in the folder menu).
         var rowIdentifier: String?
@@ -106,8 +108,35 @@ final class AppMenu: NSObject, NSMenuDelegate {
             }
             if let path = item.appPath { entry.showApplicationIcon(path) }
             applyText(of: item, to: entry)
+            if let rows = item.submenu {
+                entry.action = nil
+                entry.submenu = Self.submenu(item.title, rows)
+            }
             return entry
         }
+    }
+
+    /// A submenu's rows, each running its own action; the system closes the whole menu on a choice.
+    private static func submenu(_ title: String, _ rows: [AppMenuItem]) -> NSMenu {
+        let menu = NSMenu(title: title)
+        menu.autoenablesItems = false
+        for row in rows {
+            switch row.kind {
+            case .separator:
+                menu.addItem(.separator())
+            case .heading:
+                menu.addItem(.sectionHeader(title: row.title))
+            case .item:
+                let entry = ActionMenuItem(row.title, checked: row.checked, run: row.action)
+                entry.isEnabled = row.enabled
+                if let key = row.key {
+                    entry.keyEquivalent = key.key
+                    entry.keyEquivalentModifierMask = key.modifiers
+                }
+                menu.addItem(entry)
+            }
+        }
+        return menu
     }
 
     /// A menu has no width of its own to cut text at: a long name or folder is cut here.

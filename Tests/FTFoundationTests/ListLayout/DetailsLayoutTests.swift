@@ -65,7 +65,7 @@ struct DetailsLayoutTests {
 
     @Test func headerClicksSortOnlyBySortableColumns() {
         #expect(DetailsSorting.sortKey(for: .name, search: false) == "name")
-        #expect(DetailsSorting.sortKey(for: .created, search: false) == nil)
+        #expect(DetailsSorting.sortKey(for: .created, search: false) == "created")
         #expect(DetailsSorting.sortKey(for: .permissions, search: false) == nil)
         #expect(DetailsSorting.sortKey(for: .folder, search: false) == nil)
         #expect(DetailsSorting.sortKey(for: .folder, search: true) == "path")

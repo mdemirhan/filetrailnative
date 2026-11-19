@@ -125,11 +125,25 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case sortByName
     case sortByKind
     case sortByModified
+    case sortByCreated
     case sortByAdded
     case sortByLastOpened
     case sortBySize
     case toggleFoldersFirst
     case toggleHiddenFiles
+    case showModifiedColumn
+    case showSizeColumn
+    case showKindColumn
+    case showCreatedColumn
+    case showAddedColumn
+    case showLastOpenedColumn
+    case showPermissionsColumn
+    case rememberFolderView
+    case updateFolderView
+    case revertFolderView
+    case folderViewOptions
+    case resetFolderView
+    case manageFolderViews
     case togglePinFilter
     case toggleFolderTree
     case toggleInfoPanel
@@ -422,24 +436,66 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .sortByName, label: "Sort by Name", group: .view, defaults: [], menuPath: "View > Sort By > Name"),
         ShortcutCommandDefinition(
-            id: .sortByKind, label: "Sort by Kind", group: .view, defaults: [], menuPath: "View > Sort By > Kind"),
-        ShortcutCommandDefinition(
             id: .sortByModified, label: "Sort by Date Modified", group: .view, defaults: [],
             menuPath: "View > Sort By > Date Modified"),
         ShortcutCommandDefinition(
-            id: .sortByAdded, label: "Sort by Date Added", group: .view, defaults: [],
-            menuPath: "View > Sort By > Date Added"),
+            id: .sortByCreated, label: "Sort by Date Created", group: .view, defaults: [],
+            menuPath: "View > Sort By > Date Created"),
         ShortcutCommandDefinition(
             id: .sortByLastOpened, label: "Sort by Date Last Opened", group: .view, defaults: [],
             menuPath: "View > Sort By > Date Last Opened"),
         ShortcutCommandDefinition(
+            id: .sortByAdded, label: "Sort by Date Added", group: .view, defaults: [],
+            menuPath: "View > Sort By > Date Added"),
+        ShortcutCommandDefinition(
             id: .sortBySize, label: "Sort by Size", group: .view, defaults: [], menuPath: "View > Sort By > Size"),
+        ShortcutCommandDefinition(
+            id: .sortByKind, label: "Sort by Kind", group: .view, defaults: [], menuPath: "View > Sort By > Kind"),
         ShortcutCommandDefinition(
             id: .toggleFoldersFirst, label: "Folders First", group: .view, defaults: [],
             menuPath: "View > Folders First"),
         ShortcutCommandDefinition(
             id: .toggleHiddenFiles, label: "Hidden Files", group: .view, defaults: ["Cmd+Shift+."],
             menuPath: "View > Hidden Files"),
+        ShortcutCommandDefinition(
+            id: .showModifiedColumn, label: "Date Modified Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Date Modified"),
+        ShortcutCommandDefinition(
+            id: .showCreatedColumn, label: "Date Created Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Date Created"),
+        ShortcutCommandDefinition(
+            id: .showLastOpenedColumn, label: "Date Last Opened Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Date Last Opened"),
+        ShortcutCommandDefinition(
+            id: .showAddedColumn, label: "Date Added Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Date Added"),
+        ShortcutCommandDefinition(
+            id: .showSizeColumn, label: "Size Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Size"),
+        ShortcutCommandDefinition(
+            id: .showKindColumn, label: "Kind Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Kind"),
+        ShortcutCommandDefinition(
+            id: .showPermissionsColumn, label: "Permissions Column", group: .view, defaults: [],
+            menuPath: "View > Columns > Permissions"),
+        ShortcutCommandDefinition(
+            id: .rememberFolderView, label: "Remember View for This Folder", group: .view, defaults: [],
+            menuPath: "View > Folder View > Remember View for This Folder"),
+        ShortcutCommandDefinition(
+            id: .updateFolderView, label: "Update Folder View", group: .view, defaults: [],
+            menuPath: "View > Folder View > Update Folder View"),
+        ShortcutCommandDefinition(
+            id: .revertFolderView, label: "Revert to Saved View", group: .view, defaults: [],
+            menuPath: "View > Folder View > Revert to Saved View"),
+        ShortcutCommandDefinition(
+            id: .folderViewOptions, label: "Folder View Options…", group: .view, defaults: ["Cmd+J"],
+            menuPath: "View > Folder View > Folder View Options…"),
+        ShortcutCommandDefinition(
+            id: .resetFolderView, label: "Reset Folder View", group: .view, defaults: [],
+            menuPath: "View > Folder View > Reset Folder View"),
+        ShortcutCommandDefinition(
+            id: .manageFolderViews, label: "Manage Folder Customizations…", group: .view, defaults: [],
+            menuPath: "View > Folder View > Manage Folder Customizations…"),
         ShortcutCommandDefinition(
             id: .togglePinFilter, label: "Pin Filter", group: .view, defaults: [], menuPath: "View > Pin Filter"),
         ShortcutCommandDefinition(

@@ -463,6 +463,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
+          },
+          {
+            "group": "views",
             "shortcut": "Ctrl+Cmd+F",
             "description": "Enter or leave full screen"
           },
@@ -1479,6 +1484,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -1499,6 +1508,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -2024,6 +2038,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -2896,6 +2914,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -3915,6 +3938,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -3935,6 +3962,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -4459,6 +4491,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -5338,6 +5374,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -6347,6 +6388,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -6367,6 +6412,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -6888,6 +6938,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -7765,6 +7819,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -8784,6 +8843,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -8804,6 +8867,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -9324,6 +9392,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -10056,6 +10128,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -10891,6 +10968,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -10906,7 +10987,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -11347,6 +11434,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "Appearance",
@@ -12178,6 +12269,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -13202,6 +13298,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -13222,6 +13322,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -13757,6 +13862,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -14630,6 +14739,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -15634,6 +15748,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -15654,6 +15772,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -16179,6 +16302,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "Appearance",
@@ -17049,6 +17176,11 @@
             "group": "views",
             "shortcut": "Cmd+;",
             "description": "Order the list by size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -18058,6 +18190,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -18078,6 +18214,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -18602,6 +18743,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -19477,6 +19622,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -20486,6 +20636,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -20501,7 +20655,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -21010,6 +21170,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "Appearance",
@@ -21877,6 +22041,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -22901,6 +23070,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -22921,6 +23094,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -23445,6 +23623,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -24331,6 +24513,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -25316,6 +25503,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -25336,6 +25527,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -25858,6 +26054,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -26740,6 +26940,11 @@
             "group": "views",
             "shortcut": "Cmd+Plus",
             "description": "Order the list by name, numbers in counting order"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -27759,6 +27964,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -27774,7 +27983,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -28283,6 +28498,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "Appearance",
@@ -29161,6 +29380,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -30175,6 +30399,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -30195,6 +30423,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -30720,6 +30953,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -31603,6 +31840,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -32634,6 +32876,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -32654,6 +32900,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -33178,6 +33429,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -34059,6 +34314,11 @@
             "group": "views",
             "shortcut": "Ctrl+Cmd+S",
             "description": "Order the list by name, numbers in counting order (Cmd+; also works)"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -35062,6 +35322,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -35077,7 +35341,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -35594,6 +35864,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -36469,6 +36743,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -37488,6 +37767,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -37508,6 +37791,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -38033,6 +38321,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -38925,6 +39217,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -39963,6 +40260,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -39983,6 +40284,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -40508,6 +40814,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -41391,6 +41701,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -42415,6 +42730,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -42430,7 +42749,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -42947,6 +43272,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -43827,6 +44156,11 @@
             "group": "views",
             "shortcut": "Cmd+;",
             "description": "List the folders before the files, or among them"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -44819,6 +45153,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -44844,6 +45182,11 @@
                   "group": "views",
                   "shortcut": "Cmd+;",
                   "description": "List the folders before the files, or among them"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -45374,6 +45717,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -46235,6 +46582,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -47249,6 +47601,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -47264,7 +47620,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -47781,6 +48143,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -48656,6 +49022,11 @@
             "group": "views",
             "shortcut": "F7",
             "description": "List the folders before the files, or among them (Cmd+; also works)"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -49665,6 +50036,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -49690,6 +50065,11 @@
                   "group": "views",
                   "shortcut": "F7",
                   "description": "List the folders before the files, or among them (Cmd+; also works)"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -50211,6 +50591,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "Appearance",
@@ -51094,6 +51478,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -52118,6 +52507,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -52133,7 +52526,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -52662,6 +53061,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "Appearance",
@@ -53525,6 +53928,11 @@
             "group": "views",
             "shortcut": "Cmd+Y",
             "description": "Order the list by name, numbers in counting order"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -54524,6 +54932,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -54544,6 +54956,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -55057,6 +55474,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -55944,6 +56365,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -56975,6 +57401,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -56995,6 +57425,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -57514,6 +57949,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -58388,6 +58827,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -59397,6 +59841,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -59412,7 +59860,13 @@
                   "What takes the space"
                 ]
               ],
-              "shortcuts": []
+              "shortcuts": [
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
+                }
+              ]
             }
           ],
           [
@@ -59918,6 +60372,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -60775,6 +61233,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -61789,6 +62252,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -61809,6 +62276,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -62334,6 +62806,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -63215,6 +63691,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -64246,6 +64727,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -64266,6 +64751,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -64786,6 +65276,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -65661,6 +66155,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -66680,6 +67179,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -66700,6 +67203,11 @@
                   "group": "views",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Show or hide the folder tree"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -67224,6 +67732,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",
@@ -68108,6 +68620,11 @@
             "group": "views",
             "shortcut": "Cmd+0",
             "description": "Icons, columns or previews back to their default size"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+J",
+            "description": "Choose what the folder's view keeps, and its folders inside"
           },
           {
             "group": "views",
@@ -69127,6 +69644,10 @@
                 ],
                 [
                   "The list",
+                  "Folder views"
+                ],
+                [
+                  "The list",
                   "Sort"
                 ],
                 [
@@ -69147,6 +69668,11 @@
                   "group": "views",
                   "shortcut": "Cmd+;",
                   "description": "Show or hide the folder tree (Cmd+Y also works)"
+                },
+                {
+                  "group": "views",
+                  "shortcut": "Cmd+J",
+                  "description": "Choose what the folder's view keeps, and its folders inside"
                 }
               ]
             }
@@ -69668,6 +70194,10 @@
                 [
                   "The list",
                   "Previews"
+                ],
+                [
+                  "The list",
+                  "Folder views"
                 ],
                 [
                   "The list",

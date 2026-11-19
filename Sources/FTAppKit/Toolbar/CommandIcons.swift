@@ -16,6 +16,7 @@ extension CommandIcon {
         case .list: "rectangle.split.3x1"
         case .previews: "photo.on.rectangle"
         case .sortBy: "arrow.up.arrow.down"
+        case .folderView: "folder.badge.gearshape"
         case .foldersFirst: "text.below.folder"
         case .hidden: "eye.slash"
         case .hiddenShown: "eye"

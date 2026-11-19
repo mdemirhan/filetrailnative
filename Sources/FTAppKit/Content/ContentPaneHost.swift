@@ -125,6 +125,10 @@ protocol ContentPaneHost: AnyObject {
     func sortSetFromOutside(_ sortBy: SortByPreference, ascending: Bool)
     /// A column was resized (drag, arrow keys or double-click): the widths to keep.
     func columnWidthsChanged(_ widths: [DetailColumn: Double])
+    /// The menu for a right-click on the List's header: the columns to show, and what to do with the one clicked.
+    func headerMenu(for column: DetailColumn?) -> NSMenu?
+    /// A column's title was dragged to another place: it now comes before `before` (nil: last).
+    func columnMoved(_ column: DetailColumn, before: DetailColumn?)
     /// The menu for a right-click on the entries, or on the background (nil entries).
     func contextMenu(for entries: [DirectoryEntry]?) -> NSMenu?
     var dragHooks: ContentDragHooks { get }

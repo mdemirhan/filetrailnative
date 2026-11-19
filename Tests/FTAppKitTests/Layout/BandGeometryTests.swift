@@ -55,7 +55,8 @@ extension ExplorerWindowlessTests {
             press()
             #expect(
                 titles(menu) == [
-                    "Name", "Kind", "Date Last Opened", "Date Added", "Date Modified", "Size", "-", "Ascending",
+                    "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind", "-",
+                    "Ascending",
                     "Descending",
                 ])
             #expect(sort.menuOpen)

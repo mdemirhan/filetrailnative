@@ -20,12 +20,21 @@ final class BrowserPane {
     /// The pane let go of its folder: it shows none until one is opened, and keeps none: its label, snapshot and saved
     /// tab have an empty path (`shownFolderPath`). `folder` is then only where a new read would start from.
     private(set) var folderLetGo = false
+    /// What the pane carries from folder to folder: its view, order and Folders First. A folder's view is laid over
+    /// them while the pane shows that folder (`folderView`); what is shown is `shownMode`, `shownSortBy` and the rest.
+    /// They are what the pane is saved and copied with.
     var viewMode: ExplorerViewMode
     var searchViewMode: ExplorerViewMode
     var sortBy: SortByPreference
     var sortDirection: SortDirectionPreference
     var includeHidden: Bool
     var foldersFirst: Bool
+    /// The view of the folder on screen, if a folder's view covers it (View ▸ Folder View), with what is changed of it
+    /// on screen and not saved yet.
+    var folderView: FolderViewOnScreen?
+    /// What the pane carried as it came into the folder on screen: what a setting goes back to in the pane once the
+    /// folder keeps it, so a change made here before the folder was customized stays with the folder alone.
+    var settingsOnArrival: PaneSettingsOnArrival?
     /// The pane's history: folder paths and the one on screen.
     var navigationHistory: NavigationHistory
     /// How the folders in the history were left, for Back and Forward.
@@ -145,12 +154,19 @@ final class BrowserPane {
     var shownFolderPath: String { folderLetGo ? "" : folder.path }
 
     /// The view on screen: search results have one of their own.
-    var shownViewMode: ExplorerViewMode { searchStore?.showsResults == true ? searchViewMode : viewMode }
+    var shownViewMode: ExplorerViewMode { searchStore?.showsResults == true ? searchViewMode : shownMode }
 
+    /// The folder's view, order and Folders First as on screen: its view's where it keeps them, else the pane's.
+    var shownMode: ExplorerViewMode { folderView?.shown.view ?? viewMode }
+    var shownSortBy: SortByPreference { folderView?.shown.sort?.by ?? sortBy }
+    var shownSortDirection: SortDirectionPreference { folderView?.shown.sort?.direction ?? sortDirection }
+    var shownFoldersFirst: Bool { folderView?.shown.foldersFirst ?? foldersFirst }
+
+    /// What the toolbar and the menus show: the view on screen.
     var viewState: ExplorerViewState {
         ExplorerViewState(
-            viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
-            includeHidden: includeHidden, foldersFirst: foldersFirst)
+            viewMode: shownMode, searchViewMode: searchViewMode, sortBy: shownSortBy,
+            sortDirection: shownSortDirection, includeHidden: includeHidden, foldersFirst: shownFoldersFirst)
     }
 
     // MARK: What the pane keeps
@@ -459,7 +475,7 @@ final class BrowserPane {
     /// A folder read again in place: the selection, scroll and details stay; the error clears when the answer arrives.
     private func quietRead(_ changedPaths: [String]?) async {
         let url = folder
-        let result = await readFolder(url)
+        let result = await readFolder(url, view: folderView)
         // The folder was left meanwhile: the user's folder wins. A folder being opened settles what waits for a
         // write's end itself.
         guard url == folder, !isNavigating, !folderLetGo else {
@@ -581,13 +597,14 @@ final class BrowserPane {
 
     /// Reads a folder through the directory service: in the order the pane keeps, with hidden files and folders first
     /// as the pane has them.
-    private func readFolder(_ url: URL) async -> Result<DirectorySnapshot, any Error> {
+    private func readFolder(_ url: URL, view: FolderViewOnScreen?) async -> Result<DirectorySnapshot, any Error> {
         let service = tab.services.directoryService
         let path = url.path
-        let key = DirectorySortKey(rawValue: sortBy.rawValue) ?? .name
-        let direction: SortDirection = sortDirection == .asc ? .ascending : .descending
+        let key = DirectorySortKey(rawValue: (view?.shown.sort?.by ?? sortBy).rawValue) ?? .name
+        let direction: SortDirection =
+            (view?.shown.sort?.direction ?? sortDirection) == .asc ? .ascending : .descending
         let hidden = includeHidden
-        let first = foldersFirst
+        let first = view?.shown.foldersFirst ?? foldersFirst
         return await Result {
             try await service.snapshot(
                 path: path, includeHidden: hidden, sortBy: key, sortDirection: direction, foldersFirst: first)
@@ -716,8 +733,12 @@ final class BrowserPane {
         case .push, .none, .replace: break
         }
         let keepsSearch = keepingSearch
+        // A folder opened (not read again in place) shows its own view, or the one above it that covers it, over what
+        // the pane carries; what was changed of the view left and not saved is dropped.
+        let opensAnotherFolder = !hasShownFolder || folderLetGo || url.comparablePath != folder.comparablePath
+        let view = opensAnotherFolder ? folderViewUse(for: url.path).map(FolderViewOnScreen.init) : folderView
         content.beginLoading(quiet: quiet)
-        let read = await readFolder(url)
+        let read = await readFolder(url, view: view)
         guard token == navigationToken, let tab else { return .superseded }
 
         var entries: [DirectoryEntry] = []
@@ -789,6 +810,14 @@ final class BrowserPane {
         let carried = url.comparablePath == folder.comparablePath ? carriedView : nil
         folder = shown
         folderLetGo = false
+        if opensAnotherFolder { settingsOnArrival = PaneSettingsOnArrival(self) }
+        // Nothing to show where neither the folder left nor this one has a view: the common case does no more work.
+        if opensAnotherFolder, folderView != nil || view != nil {
+            folderView = view
+            showFolderView()
+        } else if opensAnotherFolder {
+            folderViewChanged()
+        }
 
         // Opening a folder normally starts with nothing selected, and the list at the top.
         let memory =
@@ -897,26 +926,46 @@ final class BrowserPane {
         // Search results have a view of their own in each pane (`searchViewMode`).
         if let search = searchStore, search.showsResults {
             searchViewMode = mode
+        } else if folderView?.shown.keeps(.view) == true {
+            // A folder's view that keeps the view: changed on screen only, until Save.
+            folderView?.shown.view = mode
         } else {
             viewMode = mode
         }
         content.setMode(mode)
         tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
+        folderViewChanged()
     }
 
     /// The sort commands and the column headers: the field already in use reverses the direction;
     /// another sorts by it, descending for Date Modified and Size and ascending for Name and Kind.
     func sort(by field: SortByPreference) {
-        let next = DetailsSorting.next(current: sortBy, direction: sortDirection, requested: field)
+        let next = DetailsSorting.next(current: shownSortBy, direction: shownSortDirection, requested: field)
         setSort(next.sortBy, next.direction)
     }
 
     /// Puts the folder in this order: it is read again ("replace"), and the selection is not kept.
     func setSort(_ field: SortByPreference, _ direction: SortDirectionPreference) {
-        sortBy = field
-        sortDirection = direction
+        if folderView?.shown.keeps(.sort) == true {
+            folderView?.shown.sort = FolderViewSort(by: field, direction: direction)
+        } else {
+            sortBy = field
+            sortDirection = direction
+        }
         viewChanged()
+        folderViewChanged()
+    }
+
+    /// Folders First on or off, for the folder's view where it keeps it.
+    func toggleFoldersFirst() {
+        if folderView?.shown.keeps(.foldersFirst) == true {
+            folderView?.shown.foldersFirst = !shownFoldersFirst
+        } else {
+            foldersFirst.toggle()
+        }
+        viewChanged()
+        folderViewChanged()
     }
 
     /// The pane's order, Folders First or hidden files changed: the content pane shows it, the folder is read again in
@@ -927,7 +976,8 @@ final class BrowserPane {
     /// top with nothing selected.
     func viewChanged(keepingTree: Bool = false, keepingSelection: Bool = false) {
         content.setView(
-            sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
+            sortBy: shownSortBy, direction: shownSortDirection, foldersFirst: shownFoldersFirst,
+            includeHidden: includeHidden)
         tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
         // No folder to read again (`toggleHiddenFiles` with an empty currentPath).
@@ -968,9 +1018,11 @@ final class BrowserPane {
     /// The columns and the density from the preferences, the search's own columns while results show, at the pane's
     /// own sizes.
     func columns(from preferences: AppPreferences) -> ListColumnState {
-        let shown = viewSizes?.applied(to: preferences) ?? preferences
-        if let search = searchStore, search.showsResults { return search.columnState(shown) }
-        return ListColumnState(preferences: shown)
+        if let search = searchStore, search.showsResults {
+            return search.columnState(viewSizes?.applied(to: preferences) ?? preferences)
+        }
+        // A folder's view lays its columns and sizes over the pane's.
+        return ListColumnState(preferences: shownPreferences(preferences))
     }
 
     /// A size was set in the pane: it is the pane's own from now on.

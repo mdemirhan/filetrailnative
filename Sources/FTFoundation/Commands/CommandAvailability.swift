@@ -30,6 +30,19 @@ public struct CommandEntry: Equatable, Sendable {
     }
 }
 
+/// Where the folder on screen stands with folders' views (View ▸ Folder View).
+public struct FolderViewCommandState: Equatable, Sendable {
+    /// The folder has a view of its own.
+    public var own: Bool
+    /// Something kept by the view it uses is changed on screen and not saved.
+    public var unsaved: Bool
+
+    public init(own: Bool, unsaved: Bool) {
+        self.own = own
+        self.unsaved = unsaved
+    }
+}
+
 /// What the window knows when it asks whether a command can run.
 public struct CommandAvailabilityContext: Equatable, Sendable {
     public var shortcutContext: ShortcutContext
@@ -72,6 +85,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var viewSizeSteps: ViewSize.Steps?
     /// View ▸ Pin Filter can act: a filter is typed in the folder, or one is pinned (nil: it can).
     public var filterPinnable: Bool?
+    /// The folder's view (nil: every Folder View command can act).
+    public var folderView: FolderViewCommandState?
 
     public init(
         shortcutContext: ShortcutContext = ShortcutContext(), currentPath: String = "",
@@ -84,7 +99,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         homePath: String? = nil,
         trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false,
         viewSizeSteps: ViewSize.Steps? = nil, filterPinnable: Bool? = nil,
-        systemClipboard: PasteAsFileChoice? = nil
+        systemClipboard: PasteAsFileChoice? = nil, folderView: FolderViewCommandState? = nil
     ) {
         self.shortcutContext = shortcutContext
         self.currentPath = currentPath
@@ -112,6 +127,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.viewSizeSteps = viewSizeSteps
         self.filterPinnable = filterPinnable
         self.systemClipboard = systemClipboard
+        self.folderView = folderView
     }
 }
 
@@ -441,12 +457,22 @@ public enum CommandAvailability {
             return !showInFinderPaths(target).isEmpty
         case .showLastSearchResults:
             return context.hasCachedSearch != false && !context.isSearchMode
-        case .sortByName, .sortByModified, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind,
+        case .sortByName, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind,
             .toggleFoldersFirst:
             // Search results have an order of their own, chosen in the List view's headers.
             return !context.isSearchMode
         case .togglePinFilter:
             return context.filterPinnable != false
+        // Search results are no folder: they have no folder's view, and columns of their own.
+        case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
+            .showLastOpenedColumn, .showPermissionsColumn:
+            return !context.isSearchMode
+        case .rememberFolderView, .folderViewOptions:
+            return !context.isSearchMode && !context.currentPath.isEmpty
+        case .updateFolderView, .revertFolderView:
+            return !context.isSearchMode && context.folderView?.unsaved != false
+        case .resetFolderView:
+            return !context.isSearchMode && context.folderView?.own != false
         case .goBack:
             return context.canGoBack != false
         case .goForward:

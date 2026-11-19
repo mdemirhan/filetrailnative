@@ -41,6 +41,11 @@ public enum AppStatePaths {
         userData.appendingPathComponent("Templates", isDirectory: true)
     }
 
+    /// The folders' views (View ▸ Folder View), next to the state file.
+    public static func folderViews(besideAppState appState: URL) -> URL {
+        appState.deletingLastPathComponent().appendingPathComponent("folder-views.json")
+    }
+
     /// `logs/app.log` in the user data folder.
     public static func appLog(in userData: URL) -> URL {
         userData.appendingPathComponent("logs", isDirectory: true).appendingPathComponent("app.log")

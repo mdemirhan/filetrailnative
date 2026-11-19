@@ -220,7 +220,7 @@ enum ExplorerListing {
         var entries: [DirectoryEntry] = []
         entries.reserveCapacity(recordCount)
         var keys = NameKeys(capacity: recordCount, order: order)
-        // The time compared: modified, added or last opened.
+        // The time compared: modified, created, added or last opened.
         var times: [Int64?] = []
         var sizes: [Int64?] = []
         var labels: [String] = []
@@ -237,7 +237,7 @@ enum ExplorerListing {
                 // permissions tell apart. Other entries are not looked at unless the sort needs it.
                 let needsExecutableFlag = kind == .file && fileExtension.isEmpty
                 let stats =
-                    sortBy == .modified || sortBy == .size || needsExecutableFlag
+                    sortBy == .modified || sortBy == .created || sortBy == .size || needsExecutableFlag
                     ? bestEffortStats(record, path: entryPath, fileSystem) : nil
                 var entry = DirectoryEntry(
                     path: entryPath, name: record.name, fileExtension: fileExtension, kind: kind, isHidden: hidden,
@@ -258,6 +258,9 @@ enum ExplorerListing {
                 switch sortBy {
                 case .modified:
                     times.append(stats?.mtimeMs)
+                case .created:
+                    // The folder read gives it, as it gives the time modified.
+                    times.append(stats?.birthtimeMs)
                 case .added:
                     // The folder read gives it; a disk that doesn't keep it leaves every item without one.
                     times.append(record.addedMs)
@@ -328,7 +331,7 @@ enum ExplorerListing {
                 }
                 var compared = 0
                 switch sortBy {
-                case .modified, .added, .lastOpened:
+                case .modified, .created, .added, .lastOpened:
                     // Items without a value stay at the end in both directions.
                     let missing = compareMissing(times[left], times[right])
                     if missing != 0 { return missing < 0 }

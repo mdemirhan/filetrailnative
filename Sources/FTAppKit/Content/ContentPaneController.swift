@@ -87,6 +87,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onSortSetFromOutside: ((SortByPreference, Bool) -> Void)?
     var onSelectionChanged: ((ContentSelection) -> Void)?
     var onColumnWidthsChanged: (([DetailColumn: Double]) -> Void)?
+    /// The List header's right-click menu, for the column clicked (nil: between columns).
+    var onHeaderMenu: ((DetailColumn?) -> NSMenu?)?
+    var onColumnMoved: ((DetailColumn, DetailColumn?) -> Void)?
     var onCompactListWidthChanged: ((Density, Int) -> Void)?
     var onIconSizeChanged: ((Density, Int) -> Void)?
     var onPreviewCountChanged: ((Density, Int) -> Void)?
@@ -1229,6 +1232,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         pane?.columnsChanged()
         onColumnWidthsChanged?(widths)
     }
+
+    func headerMenu(for column: DetailColumn?) -> NSMenu? { onHeaderMenu?(column) }
+
+    /// Size All Columns to Fit, from the header's menu.
+    func fitAllColumns() { (pane as? ListViewController)?.fitAllColumns() }
+
+    func columnMoved(_ column: DetailColumn, before: DetailColumn?) { onColumnMoved?(column, before) }
 
     /// The status bar's slider set the Compact List's column width: the columns follow it while it moves, and the
     /// width is saved once it is let go (or set by a click or a key).

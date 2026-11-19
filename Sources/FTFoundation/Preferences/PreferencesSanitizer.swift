@@ -114,6 +114,7 @@ public enum PreferencesSanitizer {
         case "size": .size
         case "added": .added
         case "lastOpened": .lastOpened
+        case "created": .created
         default: .name
         }
     }

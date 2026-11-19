@@ -47,7 +47,8 @@ import Testing
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "as Previews", "Show Previews", "-", "Make Bigger",
                 "Make Smaller",
-                "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "-", "Pin Filter", "Refresh",
+                "Default Size", "-", "Sort By", "Folders First", "Hidden Files", "Columns", "Folder View", "-",
+                "Pin Filter", "Refresh",
                 "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Two Panes", "Duplicate Pane", "Swap Panes",
                 "Make Panes Equal Width", "-", "Customize Toolbar…", "Command Palette…",
             ])
@@ -294,8 +295,9 @@ import Testing
             return
         }
         let expected: [(String, AppCommand)] = [
-            ("Name", .sortByName), ("Kind", .sortByKind), ("Date Last Opened", .sortByLastOpened),
-            ("Date Added", .sortByAdded), ("Date Modified", .sortByModified), ("Size", .sortBySize),
+            ("Name", .sortByName), ("Date Modified", .sortByModified), ("Date Created", .sortByCreated),
+            ("Date Last Opened", .sortByLastOpened),
+            ("Date Added", .sortByAdded), ("Size", .sortBySize), ("Kind", .sortByKind),
         ]
         #expect(titles(sortMenu) == expected.map(\.0))
         for (title, command) in expected {

@@ -229,6 +229,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         header.onDrag = { [weak self] column, width, saved in self?.resize(column, to: width, from: saved) }
         header.onNudge = { [weak self] column, direction in self?.nudge(column, direction) }
         header.onFit = { [weak self] column in self?.fitToContent(column) }
+        header.onMenu = { [weak self] column in self?.host?.headerMenu(for: column) }
+        header.onMove = { [weak self] column, before in self?.host?.columnMoved(column, before: before) }
         root.addSubview(scroll)
         root.addSubview(headerShell)
         view = root
@@ -645,7 +647,29 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     /// A double-click on a separator fits the column to its title and its widest value, every row's and not only those
     /// on screen: their text is measured in the fonts the cells are drawn in.
     private func fitToContent(_ column: DetailColumn) {
-        guard let host, let headerCell = header.cell(for: column) else { return }
+        guard let host, let width = fittedWidth(column) else { return }
+        var saved = host.columnState.widths
+        guard width != saved[column] else { return }
+        saved[column] = width
+        host.columnWidthsChanged(saved)
+        keepDividerInView(column)
+    }
+
+    /// The header's Size All Columns to Fit: every column shown at the width that fits its title and values, in one
+    /// change.
+    func fitAllColumns() {
+        guard let host else { return }
+        var saved = host.columnState.widths
+        for column in host.columnState.columns {
+            if let width = fittedWidth(column) { saved[column] = width }
+        }
+        guard saved != host.columnState.widths else { return }
+        host.columnWidthsChanged(saved)
+    }
+
+    /// The width that shows a column's title and its widest value whole.
+    private func fittedWidth(_ column: DetailColumn) -> Double? {
+        guard let host, let headerCell = header.cell(for: column) else { return nil }
         let layout = layoutMetrics
         let titleFont = ListFonts.header(layout, active: headerCell.active)
         var headerWidth = ceil(
@@ -663,14 +687,9 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             return Double((text as NSString).size(withAttributes: [.font: font]).width)
         }
         let extra = column == .name ? layout.iconSize + layout.nameIconGap : 0
-        let width = DetailsColumns.fitWidth(
+        return DetailsColumns.fitWidth(
             for: column, headerWidth: headerWidth, valueWidths: widths, valueExtraWidth: extra, layout: layout
         ) { [search = host.search != nil] in DetailsColumns.clamp($0, column: column, search: search) }
-        var saved = host.columnState.widths
-        guard width != saved[column] else { return }
-        saved[column] = width
-        host.columnWidthsChanged(saved)
-        keepDividerInView(column)
     }
 
     /// A column made wider than the pane has room for scrolls the list sideways, so its divider stays in view.

@@ -3,15 +3,20 @@ import Foundation
 import os
 
 /// The app's own files: `app-state.json` (preferences, the explorer windows, the window closed last) and, beside it,
-/// `visited-folders.json`, `destination-folders.json` and `recent-commands.json`. Sanitizing and migration are `AppStateReader`'s and `PreferencesSanitizer`'s.
+/// `visited-folders.json`, `destination-folders.json`, `recent-commands.json` and `folder-views.json`. Sanitizing and
+/// migration are `AppStateReader`'s and `PreferencesSanitizer`'s.
 ///
-/// Changes are written in two tiers. A deliberate change (a setting, a favorite) is written 150 ms later, one write for
-/// a burst. What only follows where the user is (the navigation keys, folder visits, the windows and their bounds) waits
-/// for the next write, for quit, or for 5 minutes after the first unsaved change, whichever comes first. Only files with
-/// changes are rewritten, each through a `.tmp` file renamed over the target.
+/// Changes are written in two tiers, at most twice a minute. A deliberate change (a setting, a favorite, a folder's
+/// view) is written 1 s later, one write for a burst, or 30 s after the last write when that is later; changes made
+/// meanwhile don't put it off. What only follows where the user is (the navigation keys, folder visits, the windows
+/// and their bounds) waits for the next write, for quit, or for 5 minutes after the first unsaved change, whichever
+/// comes first. Only files with changes are rewritten, each through a `.tmp` file renamed over the target, and a file
+/// whose text is what was written last is left alone.
 public final class AppStateStore: @unchecked Sendable {
-    /// How long after a deliberate change the file is written.
-    public static let promptSaveDelayMilliseconds = 150
+    /// How long after a deliberate change the file is written, at the soonest.
+    public static let promptSaveDelayMilliseconds = 1000
+    /// The least time between two writes, but at quit: the files are written at most twice a minute.
+    public static let minimumSaveIntervalMilliseconds = 30 * 1000
     /// How long after the first unsaved change, at most, navigation waits for a write.
     public static let deferredSaveDelayMilliseconds = 5 * 60 * 1000
 
@@ -23,21 +28,29 @@ public final class AppStateStore: @unchecked Sendable {
         .foldersFirst, .favoritesExpanded, .locationsExpanded,
     ]
 
-    private enum StoreFile: Hashable { case state, visits, destinations, recentCommands }
+    private enum StoreFile: Hashable { case state, visits, destinations, recentCommands, folderViews }
 
     private let lock = NSLock()
     public let filePath: String
     private let visitsFilePath: String
     private let destinationsFilePath: String
     private let recentCommandsFilePath: String
+    private let folderViewsFilePath: String
     private let defaults: AppPreferences
     private let fileSystem: any StateFileSystem
     private let timer: any StateTimer
+    /// Milliseconds on a clock that only goes forward, for the time between writes.
+    private let clock: @Sendable () -> Double
     private let onPersistError: @Sendable (any Error) -> Void
     private var state: AppState
     private var visitedFolders: [VisitedFolder]
     private var destinationFolders: [VisitedFolder]
     private var commands: [String]
+    private var views: FolderViews
+    /// When the files were last written, on `clock`.
+    private var lastSaveAt: Double?
+    /// The text each file was last written with, or read with.
+    private var writtenText: [StoreFile: String] = [:]
     private var unsavedFiles: Set<StoreFile> = []
     private var cancelPromptSave: (@Sendable () -> Void)?
     private var cancelDeferredSave: (@Sendable () -> Void)?
@@ -47,11 +60,13 @@ public final class AppStateStore: @unchecked Sendable {
     public init(
         filePath: String, defaultTheme: ThemePreference = .auto, fileSystem: any StateFileSystem = DiskFileSystem(),
         timer: any StateTimer = DispatchStateTimer(),
+        clock: @escaping @Sendable () -> Double = { ProcessInfo.processInfo.systemUptime * 1000 },
         onReadError: (@Sendable (any Error) -> Void)? = nil, onPersistError: (@Sendable (any Error) -> Void)? = nil
     ) {
         self.filePath = filePath
         self.fileSystem = fileSystem
         self.timer = timer
+        self.clock = clock
         let readFailed =
             onReadError ?? { error in
                 Self.log.error("[filetrail] failed reading app state \(String(describing: error), privacy: .public)")
@@ -65,10 +80,14 @@ public final class AppStateStore: @unchecked Sendable {
         visitsFilePath = AppStatePaths.visitedFolders(besideAppState: URL(fileURLWithPath: filePath)).path
         destinationsFilePath = AppStatePaths.destinationFolders(besideAppState: URL(fileURLWithPath: filePath)).path
         recentCommandsFilePath = AppStatePaths.recentCommands(besideAppState: URL(fileURLWithPath: filePath)).path
+        folderViewsFilePath = AppStatePaths.folderViews(besideAppState: URL(fileURLWithPath: filePath)).path
         state = Self.readState(filePath, fileSystem, defaults, readFailed)
         visitedFolders = Self.readVisitedFolders(visitsFilePath, fileSystem, readFailed)
         destinationFolders = Self.readVisitedFolders(destinationsFilePath, fileSystem, readFailed)
         commands = Self.readRecentCommands(recentCommandsFilePath, fileSystem, readFailed)
+        views =
+            fileSystem.exists(folderViewsFilePath)
+            ? FolderViews.parse((try? fileSystem.read(folderViewsFilePath)) ?? Data()) : FolderViews()
     }
 
     // MARK: Preferences
@@ -156,6 +175,29 @@ public final class AppStateStore: @unchecked Sendable {
             commands = recorded
             markUnsaved(.recentCommands)
             saveLater()
+        }
+    }
+
+    // MARK: Folder views
+
+    /// Every folder's view (View ▸ Folder View).
+    public func folderViews() -> FolderViews {
+        locked { views }
+    }
+
+    /// Changes the folders' views and returns them. A folder's view is saved on purpose (Update, Remember, a Keep box),
+    /// so it is written soon; no change writes nothing.
+    @discardableResult
+    public func updateFolderViews(_ change: (inout FolderViews) -> Void) -> FolderViews {
+        locked {
+            var changed = views
+            change(&changed)
+            if changed != views {
+                views = changed
+                markUnsaved(.folderViews)
+                saveSoon()
+            }
+            return views
         }
     }
 
@@ -356,11 +398,16 @@ public final class AppStateStore: @unchecked Sendable {
     }
 
     private func saveSoon() {
-        cancelPromptSave?()
         cancelDeferredSave?()
         cancelDeferredSave = nil
-        // Debounced so a burst of changes (a drag, repeated toggles) is one write.
-        cancelPromptSave = timer.schedule(afterMilliseconds: Self.promptSaveDelayMilliseconds) { [weak self] in
+        // One write takes in a burst of changes (a drag, repeated toggles), and the changes after it don't put it off.
+        guard cancelPromptSave == nil else { return }
+        var delay = Self.promptSaveDelayMilliseconds
+        if let lastSaveAt {
+            let wait = lastSaveAt + Double(Self.minimumSaveIntervalMilliseconds) - clock()
+            delay = max(delay, Int(wait.rounded(.up)))
+        }
+        cancelPromptSave = timer.schedule(afterMilliseconds: delay) { [weak self] in
             self?.flushFromTimer()
         }
     }
@@ -384,28 +431,40 @@ public final class AppStateStore: @unchecked Sendable {
         cancelDeferredSave?()
         cancelDeferredSave = nil
         // A file whose write failed stays unsaved: the next write, or the one at quit, tries it again.
-        if unsavedFiles.contains(.visits), writeAtomically(visitsFilePath, VisitedFolders.serialize(visitedFolders)) {
+        if unsavedFiles.contains(.visits), write(.visits, visitsFilePath, VisitedFolders.serialize(visitedFolders)) {
             unsavedFiles.remove(.visits)
         }
         if unsavedFiles.contains(.destinations),
-            writeAtomically(destinationsFilePath, VisitedFolders.serialize(destinationFolders))
+            write(.destinations, destinationsFilePath, VisitedFolders.serialize(destinationFolders))
         {
             unsavedFiles.remove(.destinations)
         }
         if unsavedFiles.contains(.recentCommands),
-            writeAtomically(recentCommandsFilePath, Self.serializeRecentCommands(commands))
+            write(.recentCommands, recentCommandsFilePath, Self.serializeRecentCommands(commands))
         {
             unsavedFiles.remove(.recentCommands)
         }
+        if unsavedFiles.contains(.folderViews), write(.folderViews, folderViewsFilePath, views.serialize()) {
+            unsavedFiles.remove(.folderViews)
+        }
         if unsavedFiles.contains(.state) {
             do {
-                if writeAtomically(filePath, try AppStateJSON.serialize(state)) {
+                if write(.state, filePath, try AppStateJSON.serialize(state)) {
                     unsavedFiles.remove(.state)
                 }
             } catch {
                 onPersistError(error)
             }
         }
+    }
+
+    /// Writes `file` unless its text is what was written last. Whether it is on disk as `text`.
+    private func write(_ file: StoreFile, _ path: String, _ text: String) -> Bool {
+        if writtenText[file] == text { return true }
+        guard writeAtomically(path, text) else { return false }
+        writtenText[file] = text
+        lastSaveAt = clock()
+        return true
     }
 
     // Write a sibling temp file and rename it over the target so a crash mid-write leaves the previous state intact

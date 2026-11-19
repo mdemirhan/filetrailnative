@@ -99,3 +99,78 @@ public final class SharedClipboard {
         return true
     }
 }
+
+/// Every folder's view, as every window sees it (View ▸ Folder View): saved in the store, and told to every window when
+/// it changes, so a pane on a folder whose view was saved elsewhere shows it.
+@MainActor
+public final class SharedFolderViews {
+    private let store: AppStateStore?
+    public private(set) var views: FolderViews
+    /// Told of every change, with the window it came from.
+    public var onChanged: (_ senderID: Int?) -> Void = { _ in }
+    /// Posted after every change, for what isn't a window (Settings' list).
+    public static let didChange = Notification.Name("FileTrailFolderViewsChanged")
+    /// The disk, the file ID and whether a folder is there, read from the disk; tests put their own.
+    var identity = Identity.disk
+
+    struct Identity {
+        var volume: (String) -> String?
+        var fileID: (String) -> UInt64?
+        var isFolder: (String) -> Bool
+
+        static var disk: Identity {
+            Identity(
+                volume: FolderIdentity.volume(of:), fileID: FolderIdentity.fileID(of:),
+                isFolder: FolderIdentity.isFolder)
+        }
+    }
+
+    /// With no store, as in tests, the views are kept for the run only.
+    public init(store: AppStateStore? = nil) {
+        self.store = store
+        views = store?.folderViews() ?? FolderViews()
+    }
+
+    /// Changes the views; every window is told, when something changed.
+    @discardableResult
+    public func update(from senderID: Int?, _ change: (inout FolderViews) -> Void) -> FolderViews {
+        var changed = views
+        change(&changed)
+        guard changed != views else { return views }
+        views = store?.updateFolderViews { $0 = changed } ?? changed
+        onChanged(senderID)
+        NotificationCenter.default.post(name: Self.didChange, object: self)
+        return views
+    }
+
+    /// The view the folder at `path` (canonical) uses. A view kept with a disk is checked against the folder's disk; a
+    /// folder with no view of its own takes over one whose folder is gone and that has its file ID (it was renamed or
+    /// moved outside the app).
+    public func use(for path: String) -> FolderViewUse? {
+        guard !views.isEmpty, !path.isEmpty else { return nil }
+        // Only where a view has this folder's file ID is its disk read and its folder looked for.
+        if views.own(path) == nil, let fileID = identity.fileID(path),
+            views.byPath.values.contains(where: { $0.fileID == fileID })
+        {
+            let volume = identity.volume(path)
+            var adopted = views
+            if adopted.adopt(path: path, volume: volume, fileID: fileID, exists: identity.isFolder) {
+                update(from: nil) { $0 = adopted }
+            }
+        }
+        guard let found = views.use(for: path) else { return nil }
+        guard found.view.volume != nil else { return found }
+        return views.use(for: path, volume: identity.volume(path))
+    }
+
+    /// Folders renamed or moved by the app (and by its Undo): their views, and the views inside them, go along.
+    public func followMoves(_ moves: [PathMove]) {
+        guard !moves.isEmpty else { return }
+        update(from: nil) { views in
+            // The deepest first, so a folder moved out of a folder renamed in the same operation goes where it went.
+            for move in moves.sorted(by: { $0.from.utf16.count > $1.from.utf16.count }) {
+                views.moved(from: move.from, to: move.to)
+            }
+        }
+    }
+}

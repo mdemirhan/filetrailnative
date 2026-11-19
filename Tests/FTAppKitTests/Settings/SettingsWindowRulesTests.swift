@@ -19,23 +19,6 @@ import Testing
         #expect(after.searchField.text == "dup")
     }
 
-    /// ColumnList keeps the selected key, so the selection follows its column.
-    @Test func columnSelectionFollowsTheColumnAfterRestoreDefaults() throws {
-        let (controller, _) = Kit.make(tab: .browsing)
-        let list = try Kit.list("Columns in List view", in: controller)
-        list.select(2)
-        let chosen = list.rows[2].spec.name
-        list.move(2, to: 0)
-        Kit.layout(controller)
-        let moved = try Kit.list("Columns in List view", in: controller)
-        #expect(moved.rows[moved.selectedIndex ?? -1].spec.name == chosen)
-        let restore = try #require(
-            Kit.barButton("Restore the default column order", in: moved))
-        restore.press()
-        let restored = try Kit.list("Columns in List view", in: controller)
-        #expect(restored.rows[restored.selectedIndex ?? -1].spec.name == chosen)
-    }
-
     /// A row dropped in a gap of the table goes to the place the gap shows, the fixed row never counting.
     @Test func aDroppedRowGoesWhereTheGapIs() {
         let target = { (from: Int, row: Int, offset: Int) in

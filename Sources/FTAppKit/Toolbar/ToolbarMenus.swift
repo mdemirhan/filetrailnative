@@ -143,6 +143,7 @@ extension ExplorerToolbar {
         case .name: .sortByName
         case .kind: .sortByKind
         case .modified: .sortByModified
+        case .created: .sortByCreated
         case .added: .sortByAdded
         case .lastOpened: .sortByLastOpened
         case .size: .sortBySize
@@ -167,6 +168,8 @@ extension ExplorerToolbar {
         let items: [AppMenuItem] = [
             toggle("Folders First", .toggleFoldersFirst, view.foldersFirst, .toggleFoldersFirst),
             toggle("Hidden Files", .toggleHiddenFiles, view.includeHidden, .toggleHiddenFiles),
+            // View ▸ Folder View, as the list's right-click menu has it.
+            AppMenuItem(title: "Folder View", submenu: folderViewRows()),
             .separator,
             toggle("Info Panel", .toggleInfoPanel, panels.propertiesOpen, .toggleInfoPanel),
             toggle("Info Row", .toggleInfoRow, panels.detailRowOpen, .toggleInfoRow),
@@ -176,6 +179,27 @@ extension ExplorerToolbar {
                 action: { [weak self] in self?.context?.perform(.customizeToolbar) }),
         ]
         present(AppMenu(items: items, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item"), from: anchor)
+    }
+
+    /// View ▸ Folder View's items, as the menu bar has them now.
+    func folderViewRows() -> [AppMenuItem] {
+        guard let context else { return [] }
+        let canRun = context.commandAvailability()
+        let remembered = (context as? MainWindowController)?.activePane.shownFolderView?.isOwnSaved == true
+        func row(_ title: String, _ command: AppCommand, checked: Bool? = nil) -> AppMenuItem {
+            AppMenuItem(
+                title: title,
+                key: ShortcutCommandID(rawValue: command.rawValue).flatMap { shortcuts.written($0) }
+                    .flatMap(MenuKeyEquivalent.parse),
+                checked: checked, enabled: canRun(command),
+                action: { [weak self] in self?.context?.perform(command) })
+        }
+        return [
+            row("Remember View for This Folder", .rememberFolderView, checked: remembered),
+            row("Update Folder View", .updateFolderView), row("Revert to Saved View", .revertFolderView), .separator,
+            row("Folder View Options…", .folderViewOptions), .separator, row("Reset Folder View", .resetFolderView),
+            row("Manage Folder Customizations…", .manageFolderViews),
+        ]
     }
 
     func themeMenu(anchor: ToolbarButton) {

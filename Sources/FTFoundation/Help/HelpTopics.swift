@@ -122,7 +122,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Each window",
                             description:
-                                "Has its own tabs, Info panel and Info Row, and whether the folder tree shows and how wide it is. A new window opens with one tab, on the folder you were in, and takes the rest from the window it was opened from. Settings, favorites and the columns shown are the same in every window."
+                                "Has its own tabs, Info panel and Info Row, and whether the folder tree shows and how wide it is. A new window opens with one tab, on the folder you were in, and takes the rest from the window it was opened from. Settings, favorites, the columns shown and the folders’ views are the same in every window."
                         ),
                         HelpRow(
                             label: "Moving tabs",
@@ -582,7 +582,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Icons, List, Compact List and Previews",
                             description:
-                                "The four buttons in the toolbar, the View menu, or {viewAsIcons}, {viewAsDetails}, {viewAsList} and {viewAsPreviews} switch between large icons with previews of photos, PDFs and other files, a list with columns for date, size and kind, a compact list of names, and large previews of the files. Settings → Browsing chooses the columns, and Sizes → Match Finder uses Finder’s text and icon sizes in every view and the folder tree."
+                                "The four buttons in the toolbar, the View menu, or {viewAsIcons}, {viewAsDetails}, {viewAsList} and {viewAsPreviews} switch between large icons with previews of photos, PDFs and other files, a list with columns for date, size and kind, a compact list of names, and large previews of the files. A right-click on a column heading chooses the columns, and Settings → Browsing → Sizes → Match Finder uses Finder’s text and icon sizes in every view and the folder tree."
                         ),
                         HelpRow(
                             label: "Icon size and column width",
@@ -597,7 +597,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Columns in List view",
                             description:
-                                "Each column keeps the width you give it. Drag the divider at the right of a column’s heading to make it wider or narrower, or double-click the divider to fit the column to its widest value. Each pane keeps its own widths, as it keeps its sizes. When the columns are wider than the pane (a narrow window, or the Info panel open), the list scrolls sideways."
+                                "Each column keeps the width you give it. Drag the divider at the right of a column’s heading to make it wider or narrower, or double-click the divider to fit the column to its widest value. Each pane keeps its own widths, as it keeps its sizes. When the columns are wider than the pane (a narrow window, or the Info panel open), the list scrolls sideways. Right-click a column heading, or use View → Columns, to show or hide columns; drag a heading sideways to move its column. The heading’s menu also moves the column clicked left or right, fits every column, and puts the columns back as they first were."
+                        ),
+                        HelpRow(
+                            label: "Folder views",
+                            description:
+                                "A folder can keep its own view, order, Folders First, columns and size. View → Folder View → Remember View for This Folder keeps what is on screen, and {folderViewOptions} chooses which of them the folder keeps; the rest follow the pane, as in any folder. With Apply to Subfolders, the folders inside use it too, unless they have one of their own. A symbol at the right end of the status bar opens them in any folder: in the accent color where the folder has its own view, gray where it uses one from a folder above, faint where it has none, with a dot while a change isn’t saved. Any change, there or in the folder, shows at once but is kept only with Save ({updateFolderView}); Revert ({revertFolderView}) or leaving the folder drops it. In a folder using a view from above, Save customizes that folder on its own; the folder above is changed in it. View → Folder View → Manage Folder Customizations… lists every customized folder, each under the customized folder it is inside: Remove forgets a folder’s customization, and Remove with Subfolders those of the folders inside it too."
                         ),
                         HelpRow(
                             label: "Sort",
@@ -867,15 +872,40 @@ extension HelpContent {
             group: .views, .command(.decreaseSize), "Smaller icons, narrower columns, or more and smaller previews"),
         HelpShortcutItem(group: .views, .command(.resetSize), "Icons, columns or previews back to their default size"),
         HelpShortcutItem(group: .views, .command(.sortByName), "Order the list by name, numbers in counting order"),
-        HelpShortcutItem(group: .views, .command(.sortByKind), "Order the list by kind, each type of file together"),
         HelpShortcutItem(group: .views, .command(.sortByModified), "Order the list by when each item last changed"),
-        HelpShortcutItem(
-            group: .views, .command(.sortByAdded), "Order the list by when each item was put in the folder"),
+        HelpShortcutItem(group: .views, .command(.sortByCreated), "Order the list by when each item was made"),
         HelpShortcutItem(
             group: .views, .command(.sortByLastOpened), "Order the list by when each item was last opened"),
+        HelpShortcutItem(
+            group: .views, .command(.sortByAdded), "Order the list by when each item was put in the folder"),
         HelpShortcutItem(group: .views, .command(.sortBySize), "Order the list by size"),
+        HelpShortcutItem(group: .views, .command(.sortByKind), "Order the list by kind, each type of file together"),
         HelpShortcutItem(
             group: .views, .command(.toggleFoldersFirst), "List the folders before the files, or among them"),
+        HelpShortcutItem(
+            group: .views, .command(.showModifiedColumn), "Show or hide the Date Modified column in List view"),
+        HelpShortcutItem(
+            group: .views, .command(.showCreatedColumn), "Show or hide the Date Created column in List view"),
+        HelpShortcutItem(
+            group: .views, .command(.showLastOpenedColumn), "Show or hide the Date Last Opened column in List view"),
+        HelpShortcutItem(group: .views, .command(.showAddedColumn), "Show or hide the Date Added column in List view"),
+        HelpShortcutItem(group: .views, .command(.showSizeColumn), "Show or hide the Size column in List view"),
+        HelpShortcutItem(group: .views, .command(.showKindColumn), "Show or hide the Kind column in List view"),
+        HelpShortcutItem(
+            group: .views, .command(.showPermissionsColumn), "Show or hide the Permissions column in List view"),
+        HelpShortcutItem(
+            group: .views, .command(.rememberFolderView), "Keep this folder's view, order, columns and size as they are"
+        ),
+        HelpShortcutItem(
+            group: .views, .command(.updateFolderView), "Save the changes made to the folder's view on screen"),
+        HelpShortcutItem(
+            group: .views, .command(.revertFolderView), "Drop the unsaved changes and show the folder's saved view"),
+        HelpShortcutItem(
+            group: .views, .command(.folderViewOptions), "Choose what the folder's view keeps, and its folders inside"),
+        HelpShortcutItem(
+            group: .views, .command(.resetFolderView),
+            "Forget this folder's own view; it shows the one above or the pane's"),
+        HelpShortcutItem(group: .views, .command(.manageFolderViews), "List every folder's view in Settings"),
         HelpShortcutItem(group: .views, .command(.fullScreen), "Enter or leave full screen"),
         HelpShortcutItem(group: .views, .command(.minimize), "Minimize the window into the Dock"),
         HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail's windows until you come back to it"),

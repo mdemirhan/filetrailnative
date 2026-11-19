@@ -58,10 +58,12 @@ public enum SortDirectionPreference: String, Codable, CaseIterable, Sendable, Ha
 
 /// What the file list can be sorted by.
 public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, modified, kind, size, added, lastOpened
+    case name, modified, kind, size, added, lastOpened, created
 
-    /// The order every menu lists the fields in, Finder's.
-    public static let menuOrder: [SortByPreference] = [.name, .kind, .lastOpened, .added, .modified, .size]
+    /// The order every menu lists the fields in: the List's columns' order.
+    public static let menuOrder: [SortByPreference] = [
+        .name, .modified, .created, .lastOpened, .added, .size, .kind,
+    ]
 
     /// What every menu calls it.
     public var title: String {
@@ -72,6 +74,7 @@ public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable 
         case .size: "Size"
         case .added: "Date Added"
         case .lastOpened: "Date Last Opened"
+        case .created: "Date Created"
         }
     }
 }
@@ -124,6 +127,12 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
 /// The List's columns but Name, which is always shown: the ones that can be hidden and moved.
 public enum OptionalDetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     case modified, size, kind, created, added, lastOpened, permissions
+
+    /// The order the menus list them in (the column header's right-click menu, View ▸ Columns): Finder's, the dates
+    /// together after Date Modified.
+    public static let menuOrder: [OptionalDetailColumnKey] = [
+        .modified, .created, .lastOpened, .added, .size, .kind, .permissions,
+    ]
 }
 
 /// The columns of search results' List view (SearchColumnKey).
@@ -144,6 +153,11 @@ public enum SearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
 /// Search results' columns but Name, which is always shown, in the order of the columns.
 public enum OptionalSearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     case folder, modified, size, kind, created, added, lastOpened, permissions
+
+    /// The order the column header's right-click menu lists them in: Folder, then a folder's columns in Finder's order.
+    public static let menuOrder: [OptionalSearchColumnKey] = [
+        .folder, .modified, .created, .lastOpened, .added, .size, .kind, .permissions,
+    ]
 }
 
 /// `name` is always visible, so only optional columns are persisted as booleans.
@@ -596,8 +610,9 @@ public enum AppPreferenceLimits {
     }
 
     /// The order of the columns before any is moved: the order `OptionalDetailColumnKey` lists them in.
-    public static let defaultDetailColumnOrder: [OptionalDetailColumnKey] = OptionalDetailColumnKey.allCases
-    public static let defaultSearchColumnOrder: [OptionalSearchColumnKey] = OptionalSearchColumnKey.allCases
+    /// A column shown for the first time takes its place in the menus' order.
+    public static let defaultDetailColumnOrder: [OptionalDetailColumnKey] = OptionalDetailColumnKey.menuOrder
+    public static let defaultSearchColumnOrder: [OptionalSearchColumnKey] = OptionalSearchColumnKey.menuOrder
 
     /// macOS's own accents in System Settings order, then the copper the app used to default to.
     public static let accentOptions: [(value: String, label: String)] = [
@@ -636,11 +651,11 @@ public enum AppPreferenceLimits {
     /// The saved order of the List's columns, made whole: unknown and repeated keys are dropped, and columns the saved
     /// order leaves out follow in their default order.
     public static func normalizeDetailColumnOrder(_ value: JSONNode?) -> [OptionalDetailColumnKey] {
-        normalizeColumnOrder(value, defaults: OptionalDetailColumnKey.allCases)
+        normalizeColumnOrder(value, defaults: OptionalDetailColumnKey.menuOrder)
     }
 
     public static func normalizeSearchColumnOrder(_ value: JSONNode?) -> [OptionalSearchColumnKey] {
-        normalizeColumnOrder(value, defaults: OptionalSearchColumnKey.allCases)
+        normalizeColumnOrder(value, defaults: OptionalSearchColumnKey.menuOrder)
     }
 
     private static func normalizeColumnOrder<Key: RawRepresentable & Equatable>(

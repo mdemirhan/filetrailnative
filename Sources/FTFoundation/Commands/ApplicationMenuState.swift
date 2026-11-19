@@ -29,6 +29,10 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var compressTitle: String?
     /// How many images Convert Images would convert, which its item counts.
     public var convertImagesCount: Int
+    /// The folder on screen has a view of its own, which Remember View for This Folder checks.
+    public var folderViewRemembered: Bool
+    /// The List's columns shown in the folder on screen, which View ▸ Columns checks.
+    public var shownColumns: Set<OptionalDetailColumnKey>
 
     public init(
         disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list,
@@ -37,7 +41,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, twoPanesShown: Bool = false,
         filterPinned: Bool = false, favoriteIsSet: Bool = false,
         textEditing: Bool = false, pasteAsFileKind: PasteAsFileKind? = nil, copyContentsGuess: CopyContentsGuess? = nil,
-        compressTitle: String? = nil, convertImagesCount: Int = 0
+        compressTitle: String? = nil, convertImagesCount: Int = 0, folderViewRemembered: Bool = false,
+        shownColumns: Set<OptionalDetailColumnKey> = []
     ) {
         self.disabledCommands = disabledCommands
         self.viewMode = viewMode
@@ -56,6 +61,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.copyContentsGuess = copyContentsGuess
         self.compressTitle = compressTitle
         self.convertImagesCount = convertImagesCount
+        self.folderViewRemembered = folderViewRemembered
+        self.shownColumns = shownColumns
     }
 
     /// Before the window has reported: everything is available and nothing checked.
@@ -70,6 +77,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         filterPinned: Bool = false, favoriteIsSet: Bool, textEditing: Bool,
         pasteAsFileKind: PasteAsFileKind? = nil,
         copyContentsGuess: CopyContentsGuess? = nil, compressTitle: String? = nil, convertImagesCount: Int = 0,
+        folderViewRemembered: Bool = false, shownColumns: Set<OptionalDetailColumnKey> = [],
         canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
@@ -84,7 +92,8 @@ public struct ApplicationMenuState: Equatable, Sendable {
             infoRowOpen: infoRowOpen, twoPanesShown: twoPanesShown, filterPinned: filterPinned,
             favoriteIsSet: favoriteIsSet,
             textEditing: textEditing, pasteAsFileKind: pasteAsFileKind, copyContentsGuess: copyContentsGuess,
-            compressTitle: compressTitle, convertImagesCount: convertImagesCount)
+            compressTitle: compressTitle, convertImagesCount: convertImagesCount,
+            folderViewRemembered: folderViewRemembered, shownColumns: shownColumns)
     }
 }
 
@@ -213,6 +222,7 @@ public enum ApplicationMenu {
                 state.viewMode == .previews && PreviewGrid.valid(state.previewCount) == PreviewGrid.count(of: type)
             case .sortByName: state.sortBy == .name
             case .sortByModified: state.sortBy == .modified
+            case .sortByCreated: state.sortBy == .created
             case .sortByAdded: state.sortBy == .added
             case .sortByLastOpened: state.sortBy == .lastOpened
             case .sortBySize: state.sortBy == .size
@@ -223,6 +233,10 @@ public enum ApplicationMenu {
             case .toggleInfoRow: state.infoRowOpen
             case .toggleTwoPanes: state.twoPanesShown
             case .togglePinFilter: state.filterPinned
+            case .rememberFolderView: state.folderViewRemembered
+            case .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn, .showAddedColumn,
+                .showLastOpenedColumn, .showPermissionsColumn:
+                OptionalDetailColumnKey(columnCommand: type).map(state.shownColumns.contains)
             default: nil
             }
         }
@@ -337,6 +351,35 @@ public enum ApplicationMenu {
             if let title = state.title, control.title != title {
                 control.title = title
             }
+        }
+    }
+}
+
+extension OptionalDetailColumnKey {
+    /// The column View ▸ Columns' item shows or hides.
+    public init?(columnCommand command: AppCommand) {
+        switch command {
+        case .showModifiedColumn: self = .modified
+        case .showSizeColumn: self = .size
+        case .showKindColumn: self = .kind
+        case .showCreatedColumn: self = .created
+        case .showAddedColumn: self = .added
+        case .showLastOpenedColumn: self = .lastOpened
+        case .showPermissionsColumn: self = .permissions
+        default: return nil
+        }
+    }
+
+    /// View ▸ Columns' item for the column.
+    public var columnCommand: AppCommand {
+        switch self {
+        case .modified: .showModifiedColumn
+        case .size: .showSizeColumn
+        case .kind: .showKindColumn
+        case .created: .showCreatedColumn
+        case .added: .showAddedColumn
+        case .lastOpened: .showLastOpenedColumn
+        case .permissions: .showPermissionsColumn
         }
     }
 }

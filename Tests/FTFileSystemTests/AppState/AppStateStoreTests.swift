@@ -77,8 +77,8 @@ struct AppStateStoreTests {
             let t = Timed(folder)
             t.store.update { $0.notificationsEnabled = false }
             t.store.update { $0.markClipboardItems = false }
-            // A burst of changes is one write, a moment later.
-            #expect(t.timer.pendingDelays == [150])
+            // A burst of changes is one write, a moment later; the next waits until 30 s after it.
+            #expect(t.timer.pendingDelays == [1000])
             t.timer.run()
 
             #expect(t.files.written.count == 1)
@@ -89,7 +89,7 @@ struct AppStateStoreTests {
             #expect(t.timer.pendingDelays == [])
             t.store.recordFolderVisit("/Users/demo/gone", kind: .stay, now: 1_000)
             t.store.forgetVisitedFolder("/Users/demo/gone")
-            #expect(t.timer.pendingDelays == [150])
+            #expect(t.timer.pendingDelays == [30_000])
         }
     }
 
@@ -187,7 +187,7 @@ struct AppStateStoreTests {
             #expect(t.files.written.count == 1)
 
             t.store.update { $0.restoreSessionOnStartup = false }
-            #expect(t.timer.pendingDelays == [150])
+            #expect(t.timer.pendingDelays == [30_000])
             t.timer.run()
             #expect(t.files.written.count == 2)
         }
@@ -200,7 +200,7 @@ struct AppStateStoreTests {
             t.store.addExplorerWindow(id: "window-a", bounds: Kit.bounds, session: t.store.createWindowSession())
             t.store.update { $0.markClipboardItems = false }
             // The prompt write takes the place of the long timer.
-            #expect(t.timer.pendingDelays == [150])
+            #expect(t.timer.pendingDelays == [1000])
             t.timer.run()
 
             #expect(t.files.written.count == 1)
@@ -246,6 +246,60 @@ struct AppStateStoreTests {
     }
 
     // The commands run from the command palette have a file of their own, the last first, each once.
+    @Test func writesAtMostTwiceAMinuteAndNotAFileThatHasntChanged() throws {
+        try Kit.withFolder { folder in
+            let path = Kit.statePath(folder)
+            let timer = ManualTimer()
+            let files = RecordingFileSystem()
+            let now = LockedValue(0.0)
+            let store = Kit.store(path, fileSystem: files, timer: timer, clock: { now.value })
+            store.update { $0.notificationsEnabled = false }
+            #expect(timer.pendingDelays == [1000])
+            now.value = 1000
+            timer.run()
+            #expect(files.written == ["app-state.json"])
+            // 5 s later another change waits until 30 s after that write, and more changes meanwhile don't put it off.
+            now.value = 6000
+            store.update { $0.markClipboardItems = false }
+            now.value = 20_000
+            store.update { $0.notificationsEnabled = true }
+            #expect(timer.pendingDelays == [25_000])
+            now.value = 31_000
+            timer.run()
+            #expect(files.written == ["app-state.json", "app-state.json"])
+            // Long after, a change is written a moment later again.
+            now.value = 100_000
+            store.update { $0.notificationsEnabled = false }
+            #expect(timer.pendingDelays == [1000])
+            // Set back before it is written: the file's text is what was written last, and it isn't written again.
+            store.update { $0.notificationsEnabled = true }
+            timer.run()
+            #expect(files.written.count == 2)
+        }
+    }
+
+    @Test func remembersTheFoldersViewsAcrossRestarts() throws {
+        try Kit.withFolder { folder in
+            let path = Kit.statePath(folder)
+            let timer = ManualTimer()
+            let store = Kit.store(path, timer: timer)
+            let view = FolderView(
+                path: "/Users/demo/Pictures", volume: "A", fileID: 7, subfolders: true,
+                keeps: FolderViewKeeps(view: .previews, sort: FolderViewSort(by: .modified, direction: .desc)))
+            store.updateFolderViews { $0.set(view) }
+            // Saved on purpose: written soon.
+            #expect(timer.pendingDelays == [1000])
+            timer.run()
+            #expect(Kit.store(path).folderViews().own("/Users/demo/Pictures") == view)
+            // No change writes nothing.
+            store.updateFolderViews { $0.set(view) }
+            #expect(timer.pendingDelays == [])
+            // A file that isn't the app's reads as none.
+            try "[1, 2]".write(toFile: folder + "/folder-views.json", atomically: true, encoding: .utf8)
+            #expect(Kit.store(path).folderViews().isEmpty)
+        }
+    }
+
     @Test func remembersTheCommandsRunFromThePaletteAcrossRestarts() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -362,13 +416,16 @@ struct AppStateStoreTests {
             #expect(timer.delays == [5 * 60 * 1000])
             timer.delays.removeAll()
             store.updateWindow("window-a") { $0.treeWidth = 333 }
-            #expect(Set(timer.delays) == [150])
+            #expect(Set(timer.delays) == [1000])
             timer.delays.removeAll()
 
-            // The app already has this width (window A set it); window B's own changes, and is written promptly all the
-            // same.
+            // The app already has this width (window A set it); window B's own changes, and goes with the prompt write
+            // already waiting, which it doesn't put off.
             store.updateWindow("window-b") { $0.treeWidth = 333 }
-            #expect(timer.delays == [150])
+            #expect(timer.delays.isEmpty)
+            store.flush()
+            #expect(
+                Kit.readFile(path)["windows"]?.array?.compactMap { $0["session"]?["treeWidth"]?.number } == [333, 333])
         }
     }
 
@@ -425,10 +482,10 @@ struct AppStateStoreTests {
 
             // A change to its panels is still written promptly, and so is a setting sent through a window.
             t.store.updateWindow("window-a") { $0.treeWidth = 310 }
-            #expect(t.timer.pendingDelays == [150])
+            #expect(t.timer.pendingDelays == [30_000])
             t.timer.run()
             t.store.updateWindow("window-b") { $0.notificationsEnabled = false }
-            #expect(t.timer.pendingDelays == [150])
+            #expect(t.timer.pendingDelays == [30_000])
         }
     }
 

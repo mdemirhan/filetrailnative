@@ -15,6 +15,8 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case clipboard
     case undoHistory
     case viewOptions
+    /// Folder View Options (View ▸ Folder View); on no toolbar until added.
+    case folderView
     case search
     case compactSearch
     case goToFolder
@@ -84,6 +86,9 @@ extension ToolbarItems {
             shortcutCommand: .toggleFoldersFirst),
         ToolbarItemDefinition(
             id: .hidden, label: "Hidden Files", icon: .hidden, shortcutCommand: .toggleHiddenFiles),
+        ToolbarItemDefinition(
+            id: .folderView, label: "Folder View", icon: .folderView, commandType: .folderViewOptions,
+            shortcutCommand: .folderViewOptions),
         ToolbarItemDefinition(
             id: .folderTree, label: "Folder Tree", icon: .folderTree, commandType: .toggleFolderTree,
             shortcutCommand: .toggleFolderTree),
@@ -198,7 +203,7 @@ extension ToolbarItems {
     static let paletteOrder: [ToolbarItemID] = [
         .back, .forward, .up, .goToFolder, .refresh, .newTab,
         .title,
-        .view, .viewMenu, .sort, .foldersFirst, .hidden, .viewOptions,
+        .view, .viewMenu, .sort, .foldersFirst, .hidden, .viewOptions, .folderView,
         .search, .compactSearch,
         .folderTree, .twoPanes, .duplicatePane, .infoPanel, .infoRow,
         .openSelection, .quickLook, .editSelection, .share,

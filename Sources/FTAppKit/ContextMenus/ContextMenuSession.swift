@@ -15,6 +15,8 @@ struct ContextMenuRequest {
     var sortBy: SortByPreference
     /// What the Other Pane submenu offers, while the tab shows two panes.
     var otherPane: [OtherPaneMenuItem] = []
+    /// What the Folder View submenu offers, on the folder's background: View ▸ Folder View's items.
+    var folderView: [OtherPaneMenuItem] = []
     /// The files of the Templates folder the New File submenu lists, by name in order.
     var templates: [String] = []
 }
@@ -25,12 +27,24 @@ final class NewFileChoiceBox: NSObject {
     init(_ choice: NewFileChoice) { self.choice = choice }
 }
 
-/// One item of the Other Pane submenu: the pane command it runs, whether it can now, and its key.
+/// One item of a submenu of commands (Other Pane, Folder View): the command it runs, whether it can now, and its key.
+/// A command of nil is a line between groups.
 struct OtherPaneMenuItem {
     var title: String
-    var command: AppCommand
+    var command: AppCommand?
     var enabled: Bool
     var key: MenuKeyEquivalent?
+    var checked = false
+
+    init(title: String, command: AppCommand?, enabled: Bool, key: MenuKeyEquivalent?, checked: Bool = false) {
+        self.title = title
+        self.command = command
+        self.enabled = enabled
+        self.key = key
+        self.checked = checked
+    }
+
+    static let separator = OtherPaneMenuItem(title: "", command: nil, enabled: false, key: nil)
 }
 
 /// An item of the background's New File submenu.
@@ -237,14 +251,19 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
             submenu.addItem(.separator())
             add("Open Templates Folder", .openTemplatesFolder)
             entry.submenu = submenu
-        case .otherPane:
+        case .otherPane, .folderView:
             let submenu = NSMenu(title: entry.title)
             submenu.autoenablesItems = false
-            for choice in request.otherPane {
+            for choice in id == .otherPane ? request.otherPane : request.folderView {
+                guard let command = choice.command else {
+                    submenu.addItem(.separator())
+                    continue
+                }
                 let item = NSMenuItem(title: choice.title, action: #selector(chooseOtherPane(_:)), keyEquivalent: "")
                 item.target = self
-                item.representedObject = choice.command.rawValue
+                item.representedObject = command.rawValue
                 item.isEnabled = choice.enabled
+                item.state = choice.checked ? .on : .off
                 if let key = choice.key {
                     item.keyEquivalent = key.key
                     item.keyEquivalentModifierMask = key.modifiers

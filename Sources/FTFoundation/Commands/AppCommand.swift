@@ -95,12 +95,26 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case resetSize
     case sortByName
     case sortByModified
+    case sortByCreated
     case sortByAdded
     case sortByLastOpened
     case sortBySize
     case sortByKind
     case toggleFoldersFirst
     case toggleHiddenFiles
+    case showModifiedColumn
+    case showSizeColumn
+    case showKindColumn
+    case showCreatedColumn
+    case showAddedColumn
+    case showLastOpenedColumn
+    case showPermissionsColumn
+    case rememberFolderView
+    case updateFolderView
+    case revertFolderView
+    case folderViewOptions
+    case resetFolderView
+    case manageFolderViews
     case togglePinFilter
     case goBack
     case goForward

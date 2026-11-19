@@ -22,7 +22,7 @@
             "viewAsIcons", "viewAsList", "viewAsDetails", "viewAsPreviews", "showPreviews9", "showPreviews4",
             "showPreviews2", "showPreviews1", "increaseSize", "decreaseSize", "resetSize",
             "sortByName",
-            "sortByModified", "sortByAdded", "sortByLastOpened", "sortBySize", "sortByKind",
+            "sortByModified", "sortByCreated", "sortByAdded", "sortByLastOpened", "sortBySize", "sortByKind",
             "toggleFoldersFirst", "toggleHiddenFiles", "togglePinFilter", "goBack", "goForward", "goEnclosingFolder",
             "focusTreePane", "focusContentPane", "openHelp", "openKeyboardShortcuts",
         ]

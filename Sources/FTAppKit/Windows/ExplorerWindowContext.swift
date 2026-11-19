@@ -58,6 +58,8 @@ struct ExplorerServices {
     var preferences: WindowPreferenceChannel?
     /// What the startup disk is called.
     var startupDisk = StartupDisk.shared
+    /// Every folder's view (View ▸ Folder View); the app installs the one saved in the store.
+    var folderViews = SharedFolderViews()
 
     /// The services the app runs, which it installs before any window opens.
     static var current: ExplorerServices {

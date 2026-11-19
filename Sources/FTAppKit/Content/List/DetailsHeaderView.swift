@@ -158,6 +158,12 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
     private(set) var active = false
     var onSort: (DetailColumn) -> Void = { _ in }
     var onPress: () -> Void = {}
+    /// The title is being dragged sideways, by `offset` from where it was pressed; nil once it is let go.
+    var onDragTitle: (DetailColumn, Double?) -> Void = { _, _ in }
+    /// How far a press must move before the title is dragged rather than clicked.
+    static let dragThreshold = 4.0
+    private var pressX: Double?
+    private var dragging = false
 
     var styleTextField: NSTextField? { title }
 
@@ -226,16 +232,41 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
     override func hitTest(_ point: NSPoint) -> NSView? {
         let local = convert(point, from: superview)
         if separator.frame.contains(local) { return separator }
-        return bounds.contains(local) && sortable ? self : nil
+        // Name can't be moved, so a title that doesn't sort is only pressed where it could be dragged.
+        return bounds.contains(local) && (sortable || column != .name) ? self : nil
     }
 
-    /// A press gives the content pane the keyboard; the sort waits for the release.
-    override func mouseDown(with event: NSEvent) { onPress() }
+    /// A press gives the content pane the keyboard; the sort waits for the release, and a press that moves sideways
+    /// drags the column instead (Name stays first).
+    override func mouseDown(with event: NSEvent) {
+        onPress()
+        pressX = event.locationInWindow.x
+        dragging = false
+    }
+
+    override func mouseDragged(with event: NSEvent) {
+        guard column != .name, let pressX else { return }
+        let offset = event.locationInWindow.x - pressX
+        if !dragging, abs(offset) < Self.dragThreshold { return }
+        dragging = true
+        onDragTitle(column, offset)
+    }
 
     override func mouseUp(with event: NSEvent) {
+        defer {
+            pressX = nil
+            dragging = false
+        }
+        if dragging {
+            onDragTitle(column, nil)
+            return
+        }
         guard sortable, bounds.contains(convert(event.locationInWindow, from: nil)) else { return }
         onSort(column)
     }
+
+    /// The header's menu: the cell has none of its own.
+    override func menu(for event: NSEvent) -> NSMenu? { superview?.menu(for: event) }
 
     override func accessibilityPerformPress() -> Bool {
         guard sortable else { return false }
@@ -257,12 +288,25 @@ final class DetailsHeaderView: NSView {
     var onDrag: (DetailColumn, Double, [DetailColumn: Double]) -> Void = { _, _, _ in }
     var onFit: (DetailColumn) -> Void = { _ in }
     var onNudge: (DetailColumn, Int) -> Void = { _, _ in }
+    /// The right-click menu, for the column under the pointer (nil: none).
+    var onMenu: (DetailColumn?) -> NSMenu? = { _ in nil }
+    /// A column's title was dragged and let go: it comes before `before` (nil: last).
+    var onMove: (DetailColumn, DetailColumn?) -> Void = { _, _ in }
+    /// The column being dragged and how far, while one is.
+    private var dragged: (column: DetailColumn, offset: Double)?
+    /// The line showing where a dragged column would go.
+    private let dropLine = NSView()
 
     override var isFlipped: Bool { true }
 
     init() {
         super.init(frame: .zero)
         setAccessibilityIdentifier("list.header")
+        dropLine.wantsLayer = true
+        dropLine.layer?.backgroundColor = NSColor.controlAccentColor.cgColor
+        dropLine.layer?.cornerRadius = 1
+        dropLine.isHidden = true
+        addSubview(dropLine)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -282,6 +326,7 @@ final class DetailsHeaderView: NSView {
             let cell = DetailsHeaderCell()
             cell.onSort = { [weak self] column in self?.onSort(column) }
             cell.onPress = { [weak self] in self?.onPress() }
+            cell.onDragTitle = { [weak self] column, offset in self?.dragTitle(column, offset) }
             cell.separator.onBegin = { [weak self] column in self?.onBegin(column) ?? (0, [:]) }
             cell.separator.onDrag = { [weak self] column, width, saved in self?.onDrag(column, width, saved) }
             cell.separator.onFit = { [weak self] column in self?.onFit(column) }
@@ -311,10 +356,61 @@ final class DetailsHeaderView: NSView {
         for (index, cell) in cells.enumerated() where columnSet.columns.indices.contains(index) {
             let width = columnSet.width(columnSet.columns[index])
             let height = cell.title.lineHeight
-            cell.frame = NSRect(x: x, y: ((bounds.height - height) / 2), width: width, height: height)
+            let offset = dragged?.column == cell.column ? dragged?.offset ?? 0 : 0
+            cell.frame = NSRect(x: x + offset, y: ((bounds.height - height) / 2), width: width, height: height)
+            cell.alphaValue = dragged?.column == cell.column ? 0.6 : 1
             cell.layoutPieces(layout: layoutMetrics)
             x += width + layoutMetrics.columnGap
         }
+        if let dragged, let drop = dropPlace(of: dragged.column, offset: dragged.offset) {
+            dropLine.isHidden = false
+            dropLine.frame = NSRect(x: drop.x - 1, y: 2, width: 2, height: max(0, bounds.height - 4))
+        } else {
+            dropLine.isHidden = true
+        }
+    }
+
+    /// Where a column dragged by `offset` would go: the column it would come before (nil: last), and the x of the
+    /// gap there. Nil while it would stay where it is. Nothing goes before Name.
+    func dropPlace(of column: DetailColumn, offset: Double) -> (before: DetailColumn?, x: Double)? {
+        let columns = columnSet.columns
+        guard let index = columns.firstIndex(of: column) else { return nil }
+        var starts: [Double] = []
+        var x = layoutMetrics.rowPaddingInline
+        for shown in columns {
+            starts.append(x)
+            x += columnSet.width(shown) + layoutMetrics.columnGap
+        }
+        let center = starts[index] + columnSet.width(column) / 2 + offset
+        // The gap after the last column whose middle the dragged middle has passed; never before Name.
+        var target = 1
+        for (place, shown) in columns.enumerated() where place > 0 && shown != column {
+            if center > starts[place] + columnSet.width(shown) / 2 { target = place + 1 }
+        }
+        if target == index || target == index + 1 { return nil }
+        let before = target < columns.count ? columns[target] : nil
+        let gapX =
+            target < columns.count ? starts[target] - layoutMetrics.columnGap / 2 : x - layoutMetrics.columnGap / 2
+        return (before, gapX)
+    }
+
+    private func dragTitle(_ column: DetailColumn, _ offset: Double?) {
+        guard let offset else {
+            let drop = dragged.flatMap { dropPlace(of: $0.column, offset: $0.offset) }
+            dragged = nil
+            needsLayout = true
+            if let drop { onMove(column, drop.before) }
+            return
+        }
+        dragged = (column, offset)
+        needsLayout = true
+    }
+
+    /// The column under a right-click, if any.
+    override func menu(for event: NSEvent) -> NSMenu? {
+        let local = convert(event.locationInWindow, from: nil)
+        let column = cells.first { !$0.isHidden && $0.frame.contains(local) }?.column
+        return onMenu(column)
     }
 
     override func hitTest(_ point: NSPoint) -> NSView? {

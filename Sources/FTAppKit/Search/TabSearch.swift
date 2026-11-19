@@ -177,8 +177,10 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             showsResults = false
             content.endSearch()
             content.contentShell.searchHeader = nil
-            content.setMode(pane.viewMode)
+            // The folder's view, where one covers it, shows again.
+            content.setMode(pane.shownMode)
             pane.refreshColumns()
+            pane.folderViewChanged()
             return
         }
         let opening = !showsResults
@@ -186,6 +188,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             showsResults = true
             content.setMode(pane.searchViewMode)
             content.contentShell.searchHeader = header
+            // Results are no folder: the folder view's symbol goes while they show.
+            pane.folderViewChanged()
         }
         pane.refreshColumns()
         let rootPath = session.rootPath

@@ -86,6 +86,28 @@ struct ExplorerServiceTests {
         #expect(!fake.lookedUp.contains { $0.hasSuffix(".txt") })
     }
 
+    // Date Created comes with each item's times, as Date Modified does: the newest first when descending, an item
+    // without one last either way.
+    @Test func sortsByWhenEachItemWasCreated() async throws {
+        let created: [String: Int64?] = [
+            "/workspace/old.txt": 1_000, "/workspace/new.txt": 3_000, "/workspace/none.txt": nil,
+            "/workspace/mid.txt": 2_000,
+        ]
+        let fake = workspace(
+            ["old.txt", "new.txt", "none.txt", "mid.txt"].map { fakeDirent($0, file: true) },
+            stat: { path in
+                fakeStats(
+                    directory: path == "/workspace", file: path != "/workspace", size: 1,
+                    birthtimeMs: created[path] ?? nil)
+            })
+        let newestFirst = try await service(fake).snapshot(
+            path: "/workspace", sortBy: .created, sortDirection: .descending, foldersFirst: false)
+        #expect(newestFirst.entries.map(\.name) == ["new.txt", "mid.txt", "old.txt", "none.txt"])
+        let oldestFirst = try await service(fake).snapshot(
+            path: "/workspace", sortBy: .created, sortDirection: .ascending, foldersFirst: false)
+        #expect(oldestFirst.entries.map(\.name) == ["old.txt", "mid.txt", "new.txt", "none.txt"])
+    }
+
     // Date Last Opened is read for each item while sorted by it: the last opened first when descending, one never
     // opened last either way.
     @Test func sortsByWhenEachItemWasLastOpened() async throws {

@@ -180,17 +180,40 @@ enum ApplicationMenuBuilder {
             menu.addItem(.separator())
             let sortBy = NSMenuItem(title: "Sort By", action: nil, keyEquivalent: "")
             let sortMenu = NSMenu(title: "Sort By")
-            // Finder's order.
+            // The columns' order, as every list of them has it.
             sortMenu.addItem(context.command(.sortByName, "Name"))
-            sortMenu.addItem(context.command(.sortByKind, "Kind"))
+            sortMenu.addItem(context.command(.sortByModified, "Date Modified"))
+            sortMenu.addItem(context.command(.sortByCreated, "Date Created"))
             sortMenu.addItem(context.command(.sortByLastOpened, "Date Last Opened"))
             sortMenu.addItem(context.command(.sortByAdded, "Date Added"))
-            sortMenu.addItem(context.command(.sortByModified, "Date Modified"))
             sortMenu.addItem(context.command(.sortBySize, "Size"))
+            sortMenu.addItem(context.command(.sortByKind, "Kind"))
             sortBy.submenu = sortMenu
             menu.addItem(sortBy)
             menu.addItem(context.command(.toggleFoldersFirst, "Folders First"))
             menu.addItem(context.command(.toggleHiddenFiles, "Hidden Files"))
+            // The List's columns, as the header's right-click menu lists them; Name is always there.
+            let columns = NSMenuItem(title: "Columns", action: nil, keyEquivalent: "")
+            let columnsMenu = NSMenu(title: "Columns")
+            for key in OptionalDetailColumnKey.menuOrder {
+                columnsMenu.addItem(
+                    context.command(key.columnCommand, DetailColumnKey(rawValue: key.rawValue)?.label ?? ""))
+            }
+            columns.submenu = columnsMenu
+            menu.addItem(columns)
+            // A folder's own view (View ▸ Folder View); the list's right-click menu has the same items.
+            let folderView = NSMenuItem(title: "Folder View", action: nil, keyEquivalent: "")
+            let folderViewMenu = NSMenu(title: "Folder View")
+            folderViewMenu.addItem(context.command(.rememberFolderView, "Remember View for This Folder"))
+            folderViewMenu.addItem(context.command(.updateFolderView, "Update Folder View"))
+            folderViewMenu.addItem(context.command(.revertFolderView, "Revert to Saved View"))
+            folderViewMenu.addItem(.separator())
+            folderViewMenu.addItem(context.command(.folderViewOptions, "Folder View Options…"))
+            folderViewMenu.addItem(.separator())
+            folderViewMenu.addItem(context.command(.resetFolderView, "Reset Folder View"))
+            folderViewMenu.addItem(context.command(.manageFolderViews, "Manage Folder Customizations…"))
+            folderView.submenu = folderViewMenu
+            menu.addItem(folderView)
             menu.addItem(.separator())
             menu.addItem(context.command(.togglePinFilter, "Pin Filter"))
             menu.addItem(context.command(.refreshOrApplySearchSort, "Refresh"))

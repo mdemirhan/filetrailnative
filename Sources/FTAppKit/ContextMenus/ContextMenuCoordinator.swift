@@ -118,8 +118,10 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 returnKeyAction: preferences.returnKeyAction),
             textEditorName: preferences.defaultTextEditor.appName,
             pinnedApps: preferences.openWithApplications,
-            viewMode: tab.searchRootPath != nil ? tab.searchViewMode : tab.viewMode, sortBy: tab.sortBy)
+            viewMode: tab.searchRootPath != nil ? tab.searchViewMode : tab.activePane.shownMode,
+            sortBy: tab.activePane.shownSortBy)
         if tab.showsTwoPanes { request.otherPane = otherPaneItems(subject, request.shortcuts) }
+        if subject.surface == .background { request.folderView = folderViewItems(request.shortcuts) }
         if subject.surface == .background, let folder = MainWindowController.templatesFolderPath {
             request.templates = NewFileTemplates.names(in: folder)
         }
@@ -214,6 +216,25 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         }
     }
 
+    /// View ▸ Folder View's items, as the menu bar has them now.
+    private func folderViewItems(_ shortcuts: ShortcutDisplay) -> [OtherPaneMenuItem] {
+        let canRun = tab.commandAvailability()
+        let remembered = tab.activePane.shownFolderView?.isOwnSaved == true
+        func item(_ title: String, _ command: AppCommand, checked: Bool = false) -> OtherPaneMenuItem {
+            OtherPaneMenuItem(
+                title: title, command: command, enabled: canRun(command),
+                key: ShortcutCommandID(rawValue: command.rawValue).flatMap { shortcuts.written($0) }
+                    .flatMap(MenuKeyEquivalent.parse),
+                checked: checked)
+        }
+        return [
+            item("Remember View for This Folder", .rememberFolderView, checked: remembered),
+            item("Update Folder View", .updateFolderView), item("Revert to Saved View", .revertFolderView),
+            .separator, item("Folder View Options…", .folderViewOptions), .separator,
+            item("Reset Folder View", .resetFolderView), item("Manage Folder Customizations…", .manageFolderViews),
+        ]
+    }
+
     func contextMenu(otherPane command: AppCommand, subject: ContextMenuSubject) {
         switch command {
         case .openSelectionInOtherPane:
@@ -300,7 +321,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .cut, .copy, .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .newFolderWithSelection, .trash,
             .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo, .saveAsTemplate:
             fileOperation(action, subject)
-        case .openWith, .viewAs, .sortBy, .otherPane, .newFile:
+        case .openWith, .viewAs, .sortBy, .otherPane, .newFile, .folderView:
             break
         }
     }
@@ -378,7 +399,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         let isSidebarFolder = subject.surface == .treeFolder || subject.surface == .favorite
         let preferences = tab.preferences
         let shownInSizeColumn =
-            tab.searchRootPath == nil && tab.viewMode == .details && preferences.detailColumns.size
+            tab.searchRootPath == nil && tab.activePane.shownMode == .details
+            && tab.activePane.shownPreferences(preferences).detailColumns.size
             && tab.content.entries.contains { $0.path == target }
         if isSidebarFolder, target != tab.shownFolderPath, !shownInSizeColumn {
             showInfoPanel(for: target)

@@ -117,7 +117,13 @@ extension ExplorerWindowlessTests {
             #expect(
                 titles(background) == [
                     "New Folder", "New File", "-", "Show Info", "Calculate Size", "-", "Paste", "Copy Path", "-",
-                    "View As", "Sort By", "-", "Open in Terminal", "Show in Finder",
+                    "View As", "Sort By", "Folder View", "-", "Open in Terminal", "Show in Finder",
+                ])
+            // Folder View's submenu: View ▸ Folder View's items, Remember first.
+            #expect(
+                titles(try #require(item(background, "Folder View")).submenu) == [
+                    "Remember View for This Folder", "Update Folder View", "Revert to Saved View", "-",
+                    "Folder View Options…", "-", "Reset Folder View", "Manage Folder Customizations…",
                 ])
             // New File's submenu: Text File, then (with no templates) the Templates folder.
             #expect(
@@ -266,13 +272,13 @@ extension ExplorerWindowlessTests {
             let sortBy = try #require(item(menu, "Sort By")?.submenu)
             #expect(
                 sortBy.items.map(\.title) == [
-                    "Name", "Kind", "Date Last Opened", "Date Added", "Date Modified", "Size",
+                    "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind",
                 ])
-            #expect(sortBy.items.map(\.state) == [.on, .off, .off, .off, .off, .off])
+            #expect(sortBy.items.map(\.state) == [.on, .off, .off, .off, .off, .off, .off])
             let compact = try #require(viewAs.items.last)
             _ = NSApp.sendAction(try #require(compact.action), to: compact.target, from: compact)
             #expect(tab.viewMode == ExplorerViewMode.menuOrder.last)
-            let size = try #require(sortBy.items.last)
+            let size = try #require(sortBy.items.first { $0.title == "Size" })
             _ = NSApp.sendAction(try #require(size.action), to: size.target, from: size)
             #expect(tab.sortBy == .size)
             await harness.close()

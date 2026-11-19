@@ -88,6 +88,34 @@ final class PathBarRowView: NSView {
             }
         }
     }
+    /// How the folder's view shows beside the status text (View ▸ Folder View): in the accent when it is the folder's
+    /// own, grey when it comes from a folder above, faint when the folder has none (it opens Folder View Options all
+    /// the same), with a dot while something of it is unsaved.
+    struct FolderViewMark: Equatable {
+        enum Whose: Equatable {
+            case noView, own, above
+        }
+
+        var whose: Whose
+        var changed: Bool
+        var tooltip: String
+    }
+
+    /// Nil: no folder is shown (search results, a pane that let go of its folder), and nothing shows.
+    var folderViewMark: FolderViewMark? {
+        didSet {
+            guard folderViewMark != oldValue else { return }
+            folderViewButton.mark = folderViewMark
+            folderViewButton.isHidden = folderViewMark == nil || isEditing
+            needsLayout = true
+        }
+    }
+    /// The folder view's symbol was clicked.
+    var onFolderViewClick: (NSView) -> Void = { _ in }
+    let folderViewButton = FolderViewButton()
+    /// The symbol's width.
+    static let folderViewWidth = 18.0
+
     let pathBar = PathBarView()
     let editor = PathEditorView()
     private let folderMenu = PathFolderMenuController()
@@ -147,6 +175,11 @@ final class PathBarRowView: NSView {
         addSubview(status)
         addSubview(sizeSlider)
         addSubview(sizeLabel)
+        folderViewButton.isHidden = true
+        folderViewButton.setAccessibilityIdentifier("statusBar.folderView")
+        folderViewButton.target = self
+        folderViewButton.action = #selector(folderViewClicked(_:))
+        addSubview(folderViewButton)
         addSubview(editor)
         editor.isHidden = true
         showSegments()
@@ -191,6 +224,10 @@ final class PathBarRowView: NSView {
         needsLayout = true
     }
 
+    @objc private func folderViewClicked(_ sender: NSButton) {
+        onFolderViewClick(sender)
+    }
+
     @objc private func sizeSlid(_ slider: NSSlider) {
         let dragging = NSApp.currentEvent?.type == .leftMouseDragged
         onSizeSlide(slider.doubleValue, !dragging)
@@ -206,6 +243,7 @@ final class PathBarRowView: NSView {
         pathBar.isHidden = true
         status.isHidden = true
         sizeSlider.isHidden = true
+        folderViewButton.isHidden = true
         hideSizeValue(animated: false)
         editor.isHidden = false
         needsLayout = true
@@ -221,6 +259,7 @@ final class PathBarRowView: NSView {
         pathBar.isHidden = false
         status.isHidden = false
         sizeSlider.isHidden = !showsSizeSlider
+        folderViewButton.isHidden = folderViewMark == nil
         needsLayout = true
         if restoreFocus { onFocusContent() }
     }
@@ -265,8 +304,16 @@ final class PathBarRowView: NSView {
         let left = Self.paddingInline
         let contentTop = 1.0
         let contentHeight = bounds.height - contentTop
-        // The slider takes the right end; the path bar and the status text share what is left of it.
+        // The folder view's symbol takes the right end, where nothing that comes and goes (the slider) moves it, nor
+        // the popover that hangs from it; the slider comes next, and the path bar and the status text share the rest.
         var right = bounds.width - Self.paddingInline
+        if folderViewMark != nil && !isEditing {
+            right -= Self.folderViewWidth
+            folderViewButton.frame = NSRect(
+                x: right, y: contentTop + ((contentHeight - Self.folderViewWidth) / 2), width: Self.folderViewWidth,
+                height: Self.folderViewWidth)
+            right -= InfoMetrics.pathRowGap
+        }
         if showsSizeSlider && !isEditing {
             let height = sizeSlider.intrinsicContentSize.height
             right -= Self.sizeSliderWidth
@@ -288,15 +335,14 @@ final class PathBarRowView: NSView {
             editor.frame = NSRect(x: left, y: contentTop, width: width, height: contentHeight)
         } else {
             let size = NSSize(width: 0, height: lineBox(status.font))
-            let natural: Double? = status.stringValue.isEmpty ? nil : textExtent(status.stringValue, status.font)
-            let split = PathBarModel.rowLayout(contentWidth: width, statusWidth: natural)
+            let text: Double? = status.stringValue.isEmpty ? nil : textExtent(status.stringValue, status.font)
+            let split = PathBarModel.rowLayout(contentWidth: width, statusWidth: text)
             pathBar.frame = NSRect(x: left, y: contentTop, width: split.path, height: contentHeight)
             let spacing = InfoMetrics.pathRowGap + InfoMetrics.statusMarginLeft
-            status.isHidden = natural == nil
+            status.isHidden = text == nil
             status.frame = NSRect(
                 x: left + split.path + spacing, y: contentTop + ((contentHeight - size.height) / 2),
-                width: split.status,
-                height: size.height)
+                width: split.status, height: size.height)
         }
         let theme = infoTheme
         status.textColor = ChromeColors.color(theme.palette.textSecondary)
@@ -320,5 +366,49 @@ final class PathBarRowView: NSView {
 
     isolated deinit {
         folderMenu.close()
+    }
+}
+
+/// The folder view's symbol in the status bar: a folder with a slider, in the accent for the folder's own view and grey
+/// for one from a folder above, with an orange dot while something of it is unsaved.
+final class FolderViewButton: NSButton {
+    var mark: PathBarRowView.FolderViewMark? {
+        didSet {
+            guard mark != oldValue else { return }
+            toolTip = mark?.tooltip
+            setAccessibilityLabel(mark?.tooltip)
+            switch mark?.whose {
+            case .own: contentTintColor = .controlAccentColor
+            case .above: contentTintColor = .secondaryLabelColor
+            case .noView, nil: contentTintColor = .tertiaryLabelColor
+            }
+            needsDisplay = true
+        }
+    }
+
+    init() {
+        super.init(frame: .zero)
+        isBordered = false
+        bezelStyle = .regularSquare
+        imagePosition = .imageOnly
+        let configuration = NSImage.SymbolConfiguration(pointSize: 12, weight: .regular)
+        image =
+            (NSImage(systemSymbolName: "folder.badge.gearshape", accessibilityDescription: "Folder View")
+            ?? NSImage(systemSymbolName: "folder", accessibilityDescription: "Folder View"))?
+            .withSymbolConfiguration(configuration)
+        contentTintColor = .secondaryLabelColor
+        setButtonType(.momentaryChange)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        guard mark?.changed == true else { return }
+        let dot = NSRect(x: bounds.maxX - 6, y: isFlipped ? 0 : bounds.maxY - 6, width: 6, height: 6)
+        NSColor.windowBackgroundColor.setFill()
+        NSBezierPath(ovalIn: dot.insetBy(dx: -1.5, dy: -1.5)).fill()
+        NSColor.systemOrange.setFill()
+        NSBezierPath(ovalIn: dot).fill()
     }
 }

@@ -25,10 +25,13 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case otherPane
     /// A folder of the tree or the favorites shown in the other pane: the one thing its menu does there.
     case openInOtherPane
+    /// View ▸ Folder View's submenu, on the folder's background.
+    case folderView
 
     /// The items that open a submenu rather than act.
     public var isSubmenu: Bool {
         self == .openWith || self == .viewAs || self == .sortBy || self == .otherPane || self == .newFile
+            || self == .folderView
     }
 }
 
@@ -139,6 +142,7 @@ public enum ContextMenuItems {
                 item(.pasteAsFile, options.pasteAsFileLabel ?? PasteAsFile.commandLabel, .pasteAsFile),
                 item(.copyPath, "Copy Path", .copyPath), line("separator-background-clipboard"),
                 item(.viewAs, "View As", .viewAs, submenu: true), item(.sortBy, "Sort By", .sortBy, submenu: true),
+                item(.folderView, "Folder View", .folderView, submenu: true),
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),
                 line("separator-background-view"),
                 item(.terminal, "Open in Terminal", .terminal), item(.showInFinder, "Show in Finder", .showInFinder),

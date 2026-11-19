@@ -31,10 +31,13 @@ final class AnchoredPopover {
     }
 
     /// Under `anchor`, or, when it isn't in view (in the toolbar's » menu), under the top right of `window`'s content.
-    func show(from anchor: NSView, in window: NSWindow) {
+    /// `above`: over the anchor rather than under it (one at the foot of the window, as the status bar's).
+    func show(from anchor: NSView, in window: NSWindow, above: Bool = false) {
         guard window.isVisible else { return }
         if anchor.window === window, !anchor.isHiddenOrHasHiddenAncestor {
-            popover.show(relativeTo: anchor.bounds, of: anchor, preferredEdge: anchor.isFlipped ? .maxY : .minY)
+            let under: NSRectEdge = anchor.isFlipped ? .maxY : .minY
+            let over: NSRectEdge = anchor.isFlipped ? .minY : .maxY
+            popover.show(relativeTo: anchor.bounds, of: anchor, preferredEdge: above ? over : under)
         } else if let host = window.contentView {
             let corner = NSRect(x: host.bounds.maxX - 40, y: host.isFlipped ? 0 : host.bounds.maxY, width: 1, height: 1)
             popover.show(relativeTo: corner, of: host, preferredEdge: host.isFlipped ? .maxY : .minY)

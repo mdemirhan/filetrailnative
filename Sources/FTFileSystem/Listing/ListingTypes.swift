@@ -22,6 +22,8 @@ public enum DirectorySortKey: String, Sendable, Hashable, Codable, CaseIterable 
     case added
     /// When each item was last opened (Date Last Opened), read for each item.
     case lastOpened
+    /// When each item was made (Date Created), as the folder read gives it.
+    case created
 }
 
 public enum SortDirection: String, Sendable, Hashable, Codable, CaseIterable {

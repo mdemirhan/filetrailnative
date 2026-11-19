@@ -289,7 +289,9 @@ extension ExplorerWindowlessTests {
             #expect(bar.sizeSlider.minValue == 160 && bar.sizeSlider.maxValue == 600)
             probe.layout()
             bar.layoutSubtreeIfNeeded()
-            #expect(bar.sizeSlider.frame.maxX == bar.bounds.width - 10)
+            // Right of it, at the end, the folder view's symbol, which the slider coming and going doesn't move.
+            #expect(bar.folderViewButton.frame.maxX == bar.bounds.width - 10)
+            #expect(bar.sizeSlider.frame.maxX < bar.folderViewButton.frame.minX)
             #expect(bar.sizeLabel.frame.maxX + 6 == bar.sizeSlider.frame.minX && bar.sizeLabel.isHidden)
             #expect(bar.status.frame.maxX <= bar.sizeSlider.frame.minX)
             tab.perform(.viewAsIcons)

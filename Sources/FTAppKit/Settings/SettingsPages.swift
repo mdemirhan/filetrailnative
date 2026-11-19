@@ -181,24 +181,6 @@ final class SettingsPageView: NSView {
             views, "Expand folders with a single click", "In the folder tree, a click also opens or closes the folder.",
             \.singleClickExpandTreeItems)
 
-        let columns = section("Columns in List View", note: "Drag the columns into the order you want.")
-        columns.card.add(
-            columnList(
-                label: "Columns in List view", name: DetailColumnKey.name.label,
-                labels: { DetailColumnKey(rawValue: $0.rawValue)?.label ?? $0.rawValue },
-                defaultOrder: AppPreferenceLimits.defaultDetailColumnOrder, order: \.detailColumnOrder,
-                visible: { $0.detailColumns[$1] }, toggle: { $0.detailColumns[$1].toggle() }), fullWidth: true)
-
-        let resultColumns = section(
-            "Columns in Search Results",
-            note: "For search results in List view. Drag the columns into the order you want.")
-        resultColumns.card.add(
-            columnList(
-                label: "Columns in search results", name: SearchColumnKey.name.label,
-                labels: { SearchColumnKey(rawValue: $0.rawValue)?.label ?? $0.rawValue },
-                defaultOrder: AppPreferenceLimits.defaultSearchColumnOrder, order: \.searchColumnOrder,
-                visible: { $0.searchColumns[$1] }, toggle: { $0.searchColumns[$1].toggle() }), fullWidth: true)
-
         let favorites = section("Favorites")
         popup(
             favorites, "Show favorites", nil, label: "Show favorites",
@@ -317,71 +299,6 @@ final class SettingsPageView: NSView {
                 return .close
             }
         }
-    }
-
-    /// Name first and fixed, the other columns checked and in their order.
-    private func columnList<Key: Hashable & RawRepresentable>(
-        label: String, name: String, labels: @escaping (Key) -> String, defaultOrder: [Key],
-        order: WritableKeyPath<AppPreferences, [Key]>, visible: @escaping (AppPreferences, Key) -> Bool,
-        toggle: @escaping (inout AppPreferences, Key) -> Void
-    ) -> SettingsListView where Key.RawValue == String {
-        // A checked box that can't be changed: the box dims; the name beside it stays as it is.
-        let fixedCheckbox = SettingsCheckbox(label: name, isChecked: true)
-        fixedCheckbox.isEnabled = false
-        let list = SettingsListView(
-            label: label, keys: .columns,
-            fixedRow: SettingsListRow.Spec(
-                name: name, trailingNote: "Always first", draggable: false, disabled: true,
-                leading: fixedCheckbox,
-                height: SettingsMetrics.columnRowHeight),
-            theme: theme)
-        let up = SettingsListBarButton(.moveUp, label: "Move Up", tooltip: "Move Up")
-        let down = SettingsListBarButton(.moveDown, label: "Move Down", tooltip: "Move Down")
-        let restore = SettingsListBarButton(.text("Restore Defaults"), label: "Restore the default column order")
-        list.setBar([.segments([up, down]), .spacer, .button(restore)])
-        let move: (Int, Int) -> Void = { [weak self] from, to in
-            self?.update { $0[keyPath: order] = SettingsValues.move($0[keyPath: order], from: from, to: to) }
-        }
-        list.onMove = move
-        list.onToggle = { [weak self] index in
-            self?.update { preferences in
-                let keys = preferences[keyPath: order]
-                if keys.indices.contains(index) { toggle(&preferences, keys[index]) }
-            }
-        }
-        let syncBar = { [weak list, weak self] in
-            guard let list, let self else { return }
-            let keys = self.preferences[keyPath: order]
-            let index = list.selectedIndex
-            up.isEnabled = (index ?? 0) > 0
-            down.isEnabled = index.map { $0 < keys.count - 1 } ?? false
-            restore.isEnabled = keys != defaultOrder
-            let selected = index.flatMap { keys.indices.contains($0) ? labels(keys[$0]) : nil }
-            up.label = selected.map { "Move \($0) Up" } ?? "Move Up"
-            down.label = selected.map { "Move \($0) Down" } ?? "Move Down"
-        }
-        list.onSelectionChange = syncBar
-        up.onPress = { [weak list] in
-            guard let list, let index = list.selectedIndex else { return }
-            list.move(index, to: index - 1)
-        }
-        down.onPress = { [weak list] in
-            guard let list, let index = list.selectedIndex else { return }
-            list.move(index, to: index + 1)
-        }
-        restore.onPress = { [weak self] in self?.update { $0[keyPath: order] = defaultOrder } }
-        onRefresh { [weak list] preferences in
-            guard let list else { return }
-            list.setRows(
-                preferences[keyPath: order].enumerated().map { index, key in
-                    let checkbox = SettingsCheckbox(label: "Show \(labels(key))", isChecked: visible(preferences, key))
-                    checkbox.onPress = { [weak list] in list?.onToggle(index) }
-                    return SettingsListRow.Spec(
-                        name: labels(key), key: key.rawValue, leading: checkbox,
-                        height: SettingsMetrics.columnRowHeight)
-                })
-        }
-        return list
     }
 
     private func favoritesList() -> SettingsListView {

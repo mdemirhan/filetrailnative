@@ -82,12 +82,15 @@ import Testing
             let clip = view.scroll.contentView
             let document = try #require(clip.documentView)
             let rect = section.convert(section.bounds, to: document)
-            // The group goes to just under the title, or, last on the page, the page's end comes to the pane's.
-            let top = min(rect.minY - SettingsMetrics.pagePaddingTop, document.frame.height - clip.bounds.height)
-            return top > 0 && clip.bounds.minY == top && clip.bounds.contains(rect)
+            // The group goes to just under the title, or, last on the page, the page's end comes to the pane's; a page
+            // that fits the pane stays at its top.
+            let top = max(
+                0, min(rect.minY - SettingsMetrics.pagePaddingTop, document.frame.height - clip.bounds.height))
+            return clip.bounds.minY == top && clip.bounds.contains(rect)
         }
         #expect(try workspacesAtTop())
-        #expect(view.headerShowsLine)
+        // The title's line shows while the page is scrolled.
+        #expect(view.headerShowsLine == (view.scroll.contentView.bounds.minY > 0))
         // Scrolled away on the same page, or left on another, the menu item brings the list back.
         view.scroll.contentView.scroll(to: .zero)
         pages.openSettings(section: .workspaces)
@@ -431,13 +434,6 @@ import Testing
         #expect(recorder.directoryRequests.isEmpty)
         favorites.table.keyDown(with: Kit.key(Kit.down.0, code: Kit.down.1, window: controller.window))
         #expect(favorites.selectedIndex == 0)
-
-        let columns = try Kit.list("Columns in List view", in: controller)
-        controller.window?.makeFirstResponder(columns.table)
-        columns.table.deselectAll(nil)
-        #expect(columns.selectedIndex == nil)
-        columns.table.keyDown(with: Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window))
-        #expect(recorder.saved["detailColumns"] == nil)
     }
 
     // A folder that is a favorite already, chosen for Add or Change…: nothing changes, and a notice says so.
@@ -495,54 +491,11 @@ import Testing
         #expect(controller.settingsView.noticeText?.stringValue == "Couldn’t choose an app.")
     }
 
-    @Test func listsTheColumnsInTheirOrderWithNameFirstAndFixed() throws {
-        let (controller, recorder) = Kit.make(tab: .browsing)
-        let list = try Kit.list("Columns in List view", in: controller)
-        #expect(
-            Kit.names(list) == [
-                "Date Modified", "Size", "Kind", "Date Created", "Date Added", "Date Last Opened", "Permissions",
-            ])
-        let fixed = views("settings.list.row", in: list).compactMap { $0 as? SettingsListRow }.first
-        #expect(fixed?.spec.name == "Name")
-        #expect(fixed?.spec.trailingNote == "Always first")
-        #expect(fixed?.frame.height == 30)
-        let checks = list.rows.compactMap { $0.spec.leading as? SettingsCheckbox }
-        #expect(checks.map(\.isChecked) == [true, true, true, false, false, false, false])
-        #expect(checks[3].accessibilityLabel() == "Show Date Created")
-        // Checked with its checkbox, or with Space.
-        Kit.click(checks[3])
-        controller.window?.makeFirstResponder(list.table)
-        list.select(6)
-        list.keyDown(with: Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window))
-        #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
-        #expect(recorder.saved["detailColumns"]?["permissions"] == .bool(true))
-        // Moved with the arrow buttons, the keyboard, or a drag.
-        let restore = try #require(Kit.barButton("Restore the default column order", in: list))
-        #expect(!restore.isEnabled)
-        let down = try #require(Kit.barButton("Move Permissions Down", in: list))
-        #expect(!down.isEnabled)
-        list.select(0)
-        Kit.click(Kit.barButton("Move Date Modified Down", in: list))
-        #expect(Kit.names(list).prefix(2) == ["Size", "Date Modified"])
-        list.keyDown(with: Kit.key(Kit.up.0, code: Kit.up.1, modifiers: .command, window: controller.window))
-        #expect(Kit.names(list).prefix(2) == ["Date Modified", "Size"])
-        list.drop(6, on: 0)
-        #expect(Kit.names(list).first == "Permissions")
-        // Restore Defaults puts back the order and leaves the checked columns alone.
-        #expect(restore.isEnabled)
-        Kit.click(restore)
-        #expect(
-            Kit.names(list) == [
-                "Date Modified", "Size", "Kind", "Date Created", "Date Added", "Date Last Opened", "Permissions",
-            ])
-        #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
-    }
-
     // MARK: Search results' columns
 
-    // Browsing lists the columns of search results after those of a folder's List view, each list saving its own; no
-    // page or row sets the options searches start with, which are the ones last chosen in a search field.
-    @Test func listsSearchResultsColumnsOnBrowsingAfterAFolders() throws {
+    // Browsing has no columns (the List's header chooses them) and no row sets the options searches start with, which are
+    // the ones last chosen in a search field.
+    @Test func browsingHasNoColumnsNorSearchOptions() throws {
         #expect(SettingsTab.allCases == [.general, .browsing, .files, .shortcuts])
         let (controller, recorder) = Kit.make(tab: .browsing)
         let titles = views("settings.row.title", in: controller.settingsView).compactMap {
@@ -551,26 +504,9 @@ import Testing
         for gone in ["Search in", "Match as", "Search subfolders", "Typing filters by"] {
             #expect(!titles.contains(gone), "\(gone)")
         }
-        let folders = try Kit.list("Columns in List view", in: controller)
-        let results = try Kit.list("Columns in search results", in: controller)
-        #expect(
-            Kit.names(results) == [
-                "Folder", "Date Modified", "Size", "Kind", "Date Created", "Date Added", "Date Last Opened",
-                "Permissions",
-            ])
-        #expect(
-            results.rows.compactMap { ($0.spec.leading as? SettingsCheckbox)?.isChecked } == [
-                true, true, true, false, false, false, false, false,
-            ])
-        let lists = Kit.lists(in: controller)
-        let foldersAt = try #require(lists.firstIndex { $0 === folders })
-        let resultsAt = try #require(lists.firstIndex { $0 === results })
-        #expect(resultsAt == foldersAt + 1)
-        let created = try #require(
-            results.rows.first { $0.nameText.stringValue == "Date Created" }?.spec.leading as? SettingsCheckbox)
-        Kit.click(created)
-        #expect(recorder.saved["searchColumns"]?["created"] == .bool(true))
-        #expect(recorder.saved["detailColumns"] == nil)
+        // The columns are chosen on the List's header, not here.
+        #expect(!Kit.lists(in: controller).contains { $0.label.hasPrefix("Columns") })
+        #expect(recorder.saved.isEmpty)
     }
 
     // MARK: Files
@@ -718,9 +654,8 @@ import Testing
         #expect(!controller.popovers.isOpen)
     }
 
-    // A settings row keeps its line in its height (a row of a pop-up is 41, the last 40), and the checkbox of the
-    // column that is always on is checked and can't be changed.
-    @Test func rowsCountTheirLineAndTheFixedColumnsCheckboxIsDimmed() throws {
+    // A settings row keeps its line in its height (a row of a pop-up is 41, the last 40).
+    @Test func rowsCountTheirLine() throws {
         let (controller, _) = Kit.make(tab: .files)
         let rows = views("settings.row", in: controller.settingsView).compactMap { $0 as? SettingsRowView }
         let editor = try #require(rows.first { $0.titleText.stringValue == "Text editor" })
@@ -729,18 +664,16 @@ import Testing
         #expect(editor.titleText.frame.minY == 12.5)
         let terminal = try #require(rows.first { $0.titleText.stringValue == "Terminal" })
         #expect(terminal.frame.height == 40)
-
-        let (browsing, _) = Kit.make(tab: .browsing)
-        let boxes = views("settings.checkbox", in: browsing.settingsView).compactMap { $0 as? SettingsCheckbox }
-        let fixed = try #require(boxes.first { !$0.isEnabled })
-        #expect(fixed.isChecked)
-        #expect(boxes.filter(\.isEnabled).count > 1)
     }
 
     // A list row's name starts its gap after the control before it.
     @Test func aListRowsNameStartsAfterItsLeadingControl() throws {
-        let (controller, _) = Kit.make(tab: .browsing)
-        let names = views("settings.list.name", in: controller.settingsView).compactMap { $0 as? FlushTextField }
+        let preferences = AppPreferences.defaults(theme: .light).with {
+            $0.favorites = Favorites.defaults(homePath: "/Users/demo")
+        }
+        let (controller, _) = Kit.make(tab: .browsing, preferences: preferences)
+        let favorites = try Kit.list("Favorites", in: controller)
+        let names = views("settings.list.name", in: favorites).compactMap { $0 as? FlushTextField }
         let name = try #require(names.first)
         let row = try #require(name.superview as? SettingsListRow)
         let leading = try #require(row.spec.leading)
@@ -846,11 +779,15 @@ import Testing
         let clip = scroll.contentView
         let document = try #require(scroll.documentView)
         let row = list.rows[0]
-        #expect(clip.bounds.minY == 0)
+        // The page scrolled so the row is cut at the edge.
+        let cut = row.convert(row.bounds, to: document).midY
+        clip.scroll(to: NSPoint(x: 0, y: cut))
+        scroll.reflectScrolledClipView(clip)
+        #expect(clip.bounds.minY == cut)
         #expect(!clip.bounds.contains(row.convert(row.bounds, to: clip)))
         icons[0].focusForPress()
         Kit.click(icons[0])
-        #expect(clip.bounds.minY > 0)
+        #expect(clip.bounds.minY != cut)
         #expect(clip.bounds.contains(row.convert(row.bounds, to: clip)))
         #expect(controller.popovers.view is FavoriteIconGrid)
         // A press on an icon whose row is wholly in view leaves the page where it is.
