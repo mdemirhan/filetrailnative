@@ -426,7 +426,8 @@ public enum CopyPasteReview {
             switch leftByReplaceOlder {
             case .notNewer: (text: describeNotNewer(node, mode, now, dates), tone: ReviewTone.muted)
             case .packageNotCompared: (text: describePackageNotCompared(node, mode), tone: ReviewTone.muted)
-            case nil: describeRow(node, choice, mode, now, dates)
+            // A clash of kinds reads as any item left: there are no dates to set beside each other.
+            case .differentKind, nil: describeRow(node, choice, mode, now, dates)
             }
         let relativePath: String
         if !basePath.isEmpty, JSString.hasPrefix(node.sourcePath, basePath + "/") {

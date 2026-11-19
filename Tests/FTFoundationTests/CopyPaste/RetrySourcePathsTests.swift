@@ -17,7 +17,8 @@ import Testing
         #expect(CopyPasteResultText.retrySourcePaths(items) == ["/src/photos", "/src/c.txt", "/src/d.txt"])
     }
 
-    // What the result's Skipped section says of each kind of skip: Replace Older's two, beside the person's own.
+    // What the result's Skipped section says of each kind of skip: Replace Older's three, beside the person's own.
+    // A clash of kinds Replace Older left says so, and not that the person chose Skip.
     @Test func saysWhyEachSkippedItemWasLeft() {
         let items = [
             ResultItem(sourcePath: "/src/a.txt", destinationPath: "/dest/a.txt", status: .completed),
@@ -26,19 +27,23 @@ import Testing
             ResultItem(
                 sourcePath: "/src/Work.sparsebundle", destinationPath: "/dest/Work.sparsebundle", status: .skipped,
                 skippedAsPackageNotCompared: true),
+            ResultItem(
+                sourcePath: "/src/Notes", destinationPath: "/dest/Notes", status: .skipped,
+                skippedAsDifferentKind: true),
             ResultItem(sourcePath: "/src/c.txt", destinationPath: "/dest/c.txt", status: .skipped),
             ResultItem(
                 sourcePath: "/src/d.txt", destinationPath: "/dest/d.txt", status: .skipped, skippedAfterChange: true),
         ]
         let text = CopyPasteResultText(action: .paste, targetPath: "/dest", error: nil, items: items, canRetry: true)
-        #expect(text.message == "4 items were skipped.")
+        #expect(text.message == "5 items were skipped.")
         #expect(text.sections.map(\.label) == ["Skipped"])
         #expect(
-            text.sections.first?.rows.map(\.path) == ["b.txt", "Work.sparsebundle", "c.txt", "d.txt"])
+            text.sections.first?.rows.map(\.path) == ["b.txt", "Work.sparsebundle", "Notes", "c.txt", "d.txt"])
         #expect(
             text.sections.first?.rows.map(\.detail) == [
                 "Already there, as new or newer \u{B7} Replace Older left it",
                 "Already there, a package, not compared \u{B7} Replace Older left it",
+                "Already there, a different kind of item \u{B7} Replace Older left it",
                 "Already existed \u{B7} you chose Skip",
                 "Skipped after it changed during the operation",
             ])

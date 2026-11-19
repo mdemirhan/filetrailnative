@@ -155,6 +155,13 @@ public enum CommandAvailability {
         return entries.first { JSString.equals($0.path, path) }
     }
 
+    /// Whether Save as Template takes the item: a file New File would list once it is in the Templates folder, so not
+    /// a folder or a package, and not a name that starts with a dot, which New File leaves out as hidden: with one
+    /// such file among the selected, none is copied.
+    static func canBeTemplate(_ entry: CommandEntry) -> Bool {
+        entry.kind.isEditableFile && !ItemNames.isHidden(NodePath.basename(entry.path))
+    }
+
     /// The items at `paths`, in the order of `paths`, leaving out paths not there.
     static func entries(at paths: [String], in entries: [CommandEntry]) -> [CommandEntry] {
         if paths.isEmpty { return [] }
@@ -400,7 +407,7 @@ public enum CommandAvailability {
             // Files of the list, wherever they are but in the Trash: New File makes files from files only.
             guard focusedPane != .tree, selectedCount > 0, !selectionIsInTrash(context) else { return false }
             let selected = entries(at: context.selectedPathsInViewOrder, in: context.activeContentEntries)
-            return selected.count == selectedCount && selected.allSatisfy { $0.kind.isEditableFile }
+            return selected.count == selectedCount && selected.allSatisfy(canBeTemplate)
         case .newTextFile:
             // Into the folder on screen, as New Folder and Paste as File.
             return newFolderTargetPath(

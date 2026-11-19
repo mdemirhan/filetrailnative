@@ -84,7 +84,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 - **Icons** shows Quick Look previews of photos, PDFs and other documents, at the size you set.
 - **List** has columns for date, size and kind, and optionally date created, date added, date last opened and permissions. Right-click a column heading to show or hide columns, and drag a heading to move its column. Each column keeps the width you give it, in each pane apart.
-- **Folder views**: a folder can keep its own view, order, columns and size, for itself or for every folder inside it. Changes you make there are tried out on screen until you choose Update, and a small symbol in the status bar shows whether a folder has a view of its own and opens its options.
+- **Folder views**: a folder can keep its own view, order, columns and size, for itself or for every folder inside it. Changes you make there show at once but are kept only with Save (View ▸ Folder View ▸ Update Folder View), and a small symbol in the status bar shows whether a folder has a view of its own and opens its options.
 - **Compact List** packs a folder into columns of names.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
 - **Quick Look** on Space and ⌘Y, in every view.

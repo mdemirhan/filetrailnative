@@ -47,8 +47,8 @@ struct WriteEndMatrixTests {
         let planned = skipped(.plannedConflictPolicy)
         #expect(WriteEndNotices.isExpectedPlannedSkip(planned))
         #expect(!WriteEndNotices.needsResultSheet(planned))
-        // What Replace Older left, a file no newer or a package it doesn't compare, was planned too.
-        for reason in [WriteSkipReason.notNewer, .packageNotCompared] {
+        // What Replace Older left, a file no newer, a package it doesn't compare or a clash of kinds, was planned too.
+        for reason in [WriteSkipReason.notNewer, .packageNotCompared, .differentKind] {
             #expect(WriteEndNotices.isExpectedPlannedSkip(skipped(reason)))
             #expect(!WriteEndNotices.needsResultSheet(skipped(reason)))
             #expect(WriteEndNotices.toast(skipped(reason)) == WriteEndNotices.toast(planned))

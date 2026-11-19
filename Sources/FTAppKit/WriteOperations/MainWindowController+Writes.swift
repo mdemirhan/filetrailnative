@@ -112,9 +112,9 @@ extension MainWindowController {
             else { return true }
             Task { _ = await actions.newFolder(in: target) }
         case .saveAsTemplate:
-            // Its item is dimmed for anything but files outside the Trash, and the key of a dimmed item still comes
-            // here (`keyOfDimmedItem`), where a selected folder would be copied whole into the Templates folder,
-            // which New File never lists.
+            // Its item is dimmed for anything but files outside the Trash whose names don't start with a dot, and the
+            // key of a dimmed item still comes here (`keyOfDimmedItem`), where a selected folder would be copied
+            // whole into the Templates folder, or a `.gitignore` copied there, neither of which New File lists.
             guard selectionAllows(.saveAsTemplate) else { return true }
             saveAsTemplate(selectedPaths)
         case .newTextFile:

@@ -14,7 +14,7 @@ public enum NewFileTemplates {
         return
             names
             .filter { name in
-                guard !name.hasPrefix(".") else { return false }
+                guard !ItemNames.isHidden(name) else { return false }
                 var isFolder: ObjCBool = false
                 let path = (folder as NSString).appendingPathComponent(name)
                 return FileManager.default.fileExists(atPath: path, isDirectory: &isFolder) && !isFolder.boolValue

@@ -106,7 +106,7 @@ struct CommandAvailabilityGoldenTests {
 
     @Test func commandAvailabilityMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try GoldenChanges.load(suite: "command-availability")
-        #expect(cases.count >= 301)
+        #expect(cases.count >= 302)
         Golden.expectMatches(cases) { Self.run($0) }
     }
 }

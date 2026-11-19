@@ -132,6 +132,7 @@ extension ResultItem {
             skippedAfterChange: item.skipReason == .runtimeConflictResolution,
             skippedAsNotNewer: item.skipReason == .notNewer,
             skippedAsPackageNotCompared: item.skipReason == .packageNotCompared,
+            skippedAsDifferentKind: item.skipReason == .differentKind,
             childFailureCount: item.childFailureCount, note: item.note)
     }
 }

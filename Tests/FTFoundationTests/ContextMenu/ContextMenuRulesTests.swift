@@ -188,6 +188,22 @@ struct ContextMenuRulesTests {
         #expect(image.contains(["Compress \u{201C}p.png\u{201D}", "Convert Image…"]))
     }
 
+    /// Save as Template is for files New File would list: not a folder, and not a name that starts with a dot, alone
+    /// or among others, in a folder or in search results. A dot further on in the name is no matter.
+    @Test func saveAsTemplateIsLeftOutForAFolderAndForANameThatStartsWithADot() {
+        func leftOut(_ surface: ContextMenuSurface, _ entries: [(String, EntryKind)]) -> Bool {
+            hidden(subject(surface, entries), world(search: surface == .search)).contains(.saveAsTemplate)
+        }
+        for surface in [ContextMenuSurface.content, .search] {
+            #expect(!leftOut(surface, [("/a/b.txt", .file)]))
+            #expect(!leftOut(surface, [("/a/b.txt", .file), ("/a/.config/c.md", .symlinkFile)]))
+            #expect(leftOut(surface, [("/a/.gitignore", .file)]))
+            #expect(leftOut(surface, [("/a/b.txt", .file), ("/a/.env", .symlinkFile)]))
+            #expect(leftOut(surface, [("/a/F", .directory)]))
+            #expect(leftOut(surface, [("/a/b.txt", .file), ("/a/F", .directory)]))
+        }
+    }
+
     /// A folder of the tree or the favorites has one thing to do in the other pane, so no submenu for it.
     @Test func aTreeFolderOpensInTheOtherPaneFromItsOwnItemOnlyWithTwoPanes() {
         for surface in [ContextMenuSurface.treeFolder, .favorite] {

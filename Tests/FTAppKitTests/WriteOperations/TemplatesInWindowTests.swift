@@ -464,5 +464,49 @@ extension ExplorerWindowlessTests {
             #expect(templates.names == nil)
             await templates.close()
         }
+
+        // New File lists no template whose name starts with a dot, so Save as Template is dimmed for such a file,
+        // alone or among others, and left out of its right-click menu: its key copies nothing, and no toast says
+        // "Copied to Templates" of a template that would never be listed. The file beside it, alone, is still copied.
+        @Test func aFileWhoseNameStartsWithADotIsNoTemplate() async throws {
+            let templates = try await Templates()
+            let tab = templates.tab
+            tab.perform(.toggleHiddenFiles)
+            try await templates.add(".gitignore", "build/\n")
+            tab.updatePreferences { $0.shortcutOverrides = ["saveAsTemplate": ["F9"]] }
+            let f9 = try #require(
+                NSEvent.keyEvent(
+                    with: .keyDown, location: .zero, modifierFlags: .function, timestamp: 0, windowNumber: 0,
+                    context: nil, characters: "\u{F70C}", charactersIgnoringModifiers: "\u{F70C}", isARepeat: false,
+                    keyCode: 101))
+            func menuHasIt() throws -> Bool {
+                let menu = try #require(tab.contextMenus.contentMenu(for: tab.content.selectedEntries))
+                return menu.items.contains { $0.identifier?.rawValue == "saveAsTemplate" }
+            }
+
+            for selection in [[".gitignore"], [".gitignore", "note.txt"]] {
+                templates.window.select(selection)
+                #expect(tab.content.selectedEntries.count == selection.count)
+                #expect(!tab.canPerform(.saveAsTemplate))
+                #expect(try !menuHasIt())
+                #expect(tab.keyOfDimmedItem(f9))
+                // The folder is made before anything is copied: none means the command didn't start.
+                #expect(templates.names == nil)
+                for _ in 0..<20 { await Task.yield() }
+                #expect(templates.names == nil)
+                #expect(tab.writeActions?.session.card == nil)
+                #expect(!tab.isWriteLocked)
+            }
+            #expect(templates.opened == 0)
+            #expect(templates.toasts("Copied to Templates").isEmpty)
+            #expect(templates.window.recorder.shown.isEmpty)
+
+            templates.window.select(["note.txt"])
+            #expect(tab.canPerform(.saveAsTemplate))
+            #expect(try menuHasIt())
+            tab.perform(.saveAsTemplate)
+            #expect(await waitUntil { templates.names == ["note.txt"] && !tab.isWriteLocked })
+            await templates.close()
+        }
     }
 }

@@ -10,6 +10,10 @@ public enum ItemNames {
     /// bytes ("é" takes two, "日" three): within every disk's limit, also one that counts bytes.
     public static let maxBytes = 255
 
+    /// Whether a name is a hidden one: it starts with a dot, as `.gitignore` and Finder's `.DS_Store`. The one test of
+    /// it by name, for a folder's listing, the templates New File lists, and Save as Template.
+    public static func isHidden(_ name: String) -> Bool { name.utf8.first == UInt8(ascii: ".") }
+
     /// A user-supplied file or folder name must name a single entry inside its parent directory.
     /// Separators or dot segments would let "rename" or "new folder" write somewhere else entirely.
     /// Returns the message to show, or nil when the name is fine.

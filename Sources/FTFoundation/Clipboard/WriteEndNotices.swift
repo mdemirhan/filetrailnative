@@ -18,6 +18,8 @@ public enum WriteSkipReason: String, Sendable, Equatable {
     case notNewer = "not_newer"
     /// Replace Older left it: a package clashing with one there, which it doesn't compare.
     case packageNotCompared = "package_not_compared"
+    /// Replace Older left it: a clash of kinds, a file where a folder of that name is or the other way round.
+    case differentKind = "different_kind"
 }
 
 /// A finished operation and its result, as what is said about it looks at it.
@@ -116,7 +118,7 @@ public enum WriteEndNotices {
         else { return false }
         return write.items.filter { $0.status == .skipped }.allSatisfy {
             $0.skipReason == .plannedConflictPolicy || $0.skipReason == .notNewer
-                || $0.skipReason == .packageNotCompared
+                || $0.skipReason == .packageNotCompared || $0.skipReason == .differentKind
         }
     }
 

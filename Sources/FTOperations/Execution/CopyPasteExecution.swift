@@ -290,6 +290,7 @@ private func plannedSkipReason(_ node: ResolvedCopyPasteNode) -> CopyPasteItemRe
     case nil: .plannedConflictPolicy
     case .notNewer: .notNewer
     case .packageNotCompared: .packageNotCompared
+    case .differentKind: .differentKind
     }
 }
 

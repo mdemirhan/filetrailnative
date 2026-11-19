@@ -274,8 +274,8 @@ public enum ContextMenuRules {
         }
         // An item's New Folder makes the folder inside it, as its Paste pastes there.
         if !isSingleFolder { hidden.insert(.newFolder) }
-        // New File makes files from files only.
-        if entries.isEmpty || !entries.allSatisfy({ $0.kind.isEditableFile }) { hidden.insert(.saveAsTemplate) }
+        // New File makes files from files only, and lists none whose name starts with a dot.
+        if entries.isEmpty || !entries.allSatisfy(CommandAvailability.canBeTemplate) { hidden.insert(.saveAsTemplate) }
         // New Folder with Selection puts the items in a folder beside them: they are in the folder on screen.
         if CommandAvailability.newFolderWithSelectionTarget(
             currentPath: world.currentPath, selectedPaths: subject.paths, isSearchMode: world.isSearchMode,

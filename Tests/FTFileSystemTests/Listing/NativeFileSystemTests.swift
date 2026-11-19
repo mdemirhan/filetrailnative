@@ -205,6 +205,49 @@ struct NativeFileSystemTests {
         }
     }
 
+    // A folder sorted by Date Last Opened takes the home folder's path once for all its items. Read that way, the
+    // same folders are left unread as when one item is asked about: the home folder's Desktop, Documents and
+    // Downloads, and nothing inside them or beside them. A folder standing in for the home folder shows it, as each
+    // of its items has a date to be read or refused.
+    @Test func aFolderReadLeavesTheSameFoldersUnreadAsOneItems() throws {
+        try withTemporaryDirectory { directory in
+            let home = directory.path
+            let guarded = ["Desktop", "Documents", "Downloads"]
+            let read = ["Pictures", "Desktops", "Desktop/inner", "Documents/inner", "Downloads/inner"]
+            var stamp = (Int64(1_700_000_000).littleEndian, Int64(250_000_000).littleEndian)
+            for name in guarded + read {
+                let path = home + "/" + name
+                try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
+                let written = withUnsafeBytes(of: &stamp) {
+                    setxattr(path, FileTimes.lastUsedAttribute, $0.baseAddress, $0.count, 0, 0)
+                }
+                #expect(written == 0)
+            }
+            // Asked with the home folder's path ending in a slash, as with none.
+            for reader in [
+                FileTimes.lastOpenedReader(homePath: home), FileTimes.lastOpenedReader(homePath: home + "/"),
+            ] {
+                for name in guarded {
+                    #expect(reader(home + "/" + name) == nil, "\(name)")
+                    #expect(reader(home + "/" + name + "/") == nil, "\(name)")
+                    #expect(FileTimes.lastOpenedMs(home + "/" + name, homePath: home) == nil, "\(name)")
+                }
+                for name in read {
+                    #expect(reader(home + "/" + name) == 1_700_000_000_250, "\(name)")
+                    #expect(FileTimes.lastOpenedMs(home + "/" + name, homePath: home) == 1_700_000_000_250, "\(name)")
+                }
+            }
+            // With the real home folder, which is what the app's reads take: its three folders are refused, and
+            // the ones made here, outside it, are all read.
+            let real = native.lastOpenedReader()
+            for name in guarded {
+                #expect(real(NSHomeDirectory() + "/" + name) == nil, "\(name)")
+                #expect(real(home + "/" + name) == 1_700_000_000_250, "\(name)")
+                #expect(FileTimes.lastOpenedMs(home + "/" + name) == 1_700_000_000_250, "\(name)")
+            }
+        }
+    }
+
     @Test func readsAnEmptyFolder() throws {
         try withTemporaryDirectory { directory in
             let records = try native.readDirectory(directory.path)

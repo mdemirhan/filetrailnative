@@ -54,6 +54,41 @@ struct CopyPasteChoicesTests {
                 dates: ModifiedDates(sourceMs: 1, destinationMs: 9)) == .overwrite)
     }
 
+    // A clash of kinds (a file where a folder of that name is) is left by Replace Older and told as its doing; a Skip
+    // chosen on the row is the person's own, and the other answers for all conflicts give no reason of Replace
+    // Older's: Skip and Add Missing skip the clash as they skip a file, Keep All and Replace don't skip it at all.
+    @Test func aClashOfKindsLeftByReplaceOlderIsToldAsItsDoing() {
+        func reason(_ policy: CopyPastePolicy, override: CopyPasteChoice? = nil) -> ReplaceOlderSkip? {
+            CopyPasteChoices.replaceOlderSkip(
+                conflictClass: .typeMismatch, policy: policy, override: override,
+                dates: ModifiedDates(sourceMs: 9000, destinationMs: 4000), isPackage: false)
+        }
+        func choice(_ policy: CopyPastePolicy) -> CopyPasteChoice {
+            CopyPasteChoices.choiceForConflict(
+                conflictClass: .typeMismatch, replaceBlockedReason: nil, policy: policy, override: nil)
+        }
+        let replaceOlder = CopyPasteReview.policy(for: .replaceOlder, toleranceMs: 1000)
+        #expect(choice(replaceOlder) == .skip)
+        #expect(reason(replaceOlder) == .differentKind)
+        #expect(reason(replaceOlder, override: .skip) == nil)
+        #expect(reason(replaceOlder, override: .overwrite) == nil)
+        #expect(reason(replaceOlder, override: .keepBoth) == nil)
+        // Merge isn't a choice for a clash of kinds, so it isn't the row's own.
+        #expect(reason(replaceOlder, override: .merge) == .differentKind)
+        for (answer, expected) in [
+            (AllConflictsChoice.skip, CopyPasteChoice.skip), (.addMissing, .skip), (.keepAll, .keepBoth),
+            (.overwrite, .overwrite),
+        ] {
+            #expect(choice(CopyPasteReview.policy(for: answer)) == expected)
+            #expect(reason(CopyPasteReview.policy(for: answer)) == nil)
+        }
+        // Two folders merge under Replace Older: nothing is left.
+        #expect(
+            CopyPasteChoices.replaceOlderSkip(
+                conflictClass: .directoryConflict, policy: replaceOlder, override: nil, dates: nil, isPackage: false)
+                == nil)
+    }
+
     // A package's date is its outer folder's, which a change deeper inside leaves as it was: Replace Older leaves a
     // package whatever the dates say, and says it didn't compare; the item's own choice still wins.
     @Test func leavesAPackageWithReplaceOlderWhateverItsDates() {

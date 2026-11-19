@@ -22157,6 +22157,72 @@
           ]
         }
       }
+    },
+    {
+      "name": "301: one file whose name starts with a dot selected",
+      "base": "245: random 245",
+      "input": {
+        "shortcut": {
+          "actionNoticeOpen": false,
+          "copyPasteModalOpen": false,
+          "focusedPane": "content",
+          "locationSheetOpen": false,
+          "mainView": "explorer",
+          "selectedTreeTargetKind": null
+        },
+        "currentPath": "/Users/me/Documents",
+        "selectedPaths": [
+          "/Users/me/Documents/.gitignore"
+        ],
+        "entries": [
+          {
+            "path": "/Users/me/Documents/.gitignore",
+            "kind": "file"
+          }
+        ],
+        "listShowsItems": true,
+        "selectedEntry": {
+          "path": "/Users/me/Documents/.gitignore",
+          "kind": "file"
+        },
+        "selectedTreeTargetPath": null,
+        "clipboardHasItems": false,
+        "clipboardEmptyReady": false,
+        "pasteDestinationPath": null,
+        "isSearchMode": false,
+        "openItemLimit": 5,
+        "writeOperationLocked": false,
+        "textEditing": false,
+        "focusedPane": "content",
+        "lastFocusedPane": null,
+        "contextMenuPaths": [],
+        "homePath": "/Users/me"
+      },
+      "changes": {
+        "disabled": [
+          "calculateSize",
+          "clearClipboard",
+          "convertImages",
+          "ejectVolume",
+          "extractSelection",
+          "extractSelectionTo",
+          "openSelectionInNewTab",
+          "openSelectionInNewWindow",
+          "openSelectionInOtherPane",
+          "pasteAsFile",
+          "pasteSelection",
+          "revealInFolder",
+          "saveAsTemplate",
+          "showClipboard",
+          "toggleFavorite"
+        ],
+        "showInFinder": [
+          "/Users/me/Documents/.gitignore"
+        ],
+        "openTerminal": [
+          "/Users/me/Documents/.gitignore"
+        ]
+      }
     }
   ]
 }

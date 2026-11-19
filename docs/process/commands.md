@@ -45,11 +45,11 @@ The palette lists every row of the table and the menu items that aren't in it, s
 
 - These goldens are written as bases and each case's changes to its base (`Tests/FTTestSupport/GoldenChanges.swift` says how): a new command goes in the bases, and in a case only where that case gives it something other than its base does. A test that fails names the place that differs in each case.
 - `Tests/Golden/shortcut-resolution.json`: a new row in the base's `bindings`, and a new default key in its `commandByShortcut`, in the table's order.
-- `Tests/Golden/command-availability.json` lists the `AppCommand`s that can't run, by name: a new `AppCommand` goes in each base's list where it can't run there, and in the `$remove` or `$insert` of a case where it differs from its base.
+- `Tests/Golden/command-availability.json` lists the `AppCommand`s that can't run, by name: a new `AppCommand` goes in each base's list where it can't run there, and in the `$remove` or `$insert` of a case where it differs from its base. A base's list is kept in alphabetical order, as the test compares it with the sorted list: a new command goes in its alphabetical place, and an `$insert` names the neighbour before it.
 - `Tests/Golden/context-menu.json` and `Tests/Golden/toolbar-sanitize.json` take a new right-click item and a new toolbar button in their bases.
 - The lists kept by hand in `ShortcutsTests` and `ApplicationMenuLayoutTests` name every command and every menu item in order: a new one is added there.
 
-They are edited by hand, never written from the code's output.
+They are edited by hand, never written from the code's output (`docs/decisions/code.md`, "Goldens are expected results kept by hand", which also says the one thing a script may add).
 
 ## Before it lands
 

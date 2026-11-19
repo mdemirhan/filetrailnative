@@ -16,16 +16,20 @@ public struct ResultItem: Equatable, Sendable {
     public var skippedAsNotNewer: Bool
     /// Skipped by Replace Older: a package clashing with one there, which it doesn't compare.
     public var skippedAsPackageNotCompared: Bool
+    /// Skipped by Replace Older: a clash of kinds, a file where a folder of that name is or the other way round.
+    public var skippedAsDifferentKind: Bool
     public var childFailureCount: Int?
     public var note: Bool
 
     public init(
         sourcePath: String?, destinationPath: String?, status: Status, error: String? = nil,
         skippedAfterChange: Bool = false, skippedAsNotNewer: Bool = false,
-        skippedAsPackageNotCompared: Bool = false, childFailureCount: Int? = nil, note: Bool = false
+        skippedAsPackageNotCompared: Bool = false, skippedAsDifferentKind: Bool = false,
+        childFailureCount: Int? = nil, note: Bool = false
     ) {
         self.skippedAsNotNewer = skippedAsNotNewer
         self.skippedAsPackageNotCompared = skippedAsPackageNotCompared
+        self.skippedAsDifferentKind = skippedAsDifferentKind
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
         self.status = status
@@ -195,6 +199,10 @@ public struct CopyPasteResultText: Equatable, Sendable {
                 if item.skippedAsNotNewer { return "Already there, as new or newer \u{B7} Replace Older left it" }
                 if item.skippedAsPackageNotCompared {
                     return "Already there, a package, not compared \u{B7} Replace Older left it"
+                }
+                // Left by the answer for all conflicts, not by a Skip of the row's own: the person chose none.
+                if item.skippedAsDifferentKind {
+                    return "Already there, a different kind of item \u{B7} Replace Older left it"
                 }
                 return item.skippedAfterChange
                     ? "Skipped after it changed during the operation" : "Already existed \u{B7} you chose Skip"

@@ -266,7 +266,8 @@ struct ReplaceOlderTests {
             let reasons = Dictionary(uniqueKeysWithValues: skipped.map { ($0.sourcePath, $0.skipReason) })
             #expect(
                 reasons == [
-                    source + "/Doc.rtfd": .plannedConflictPolicy, source + "/Rev.rtfd": .plannedConflictPolicy,
+                    // Left by Replace Older, not by a Skip the person chose: the result says so.
+                    source + "/Doc.rtfd": .differentKind, source + "/Rev.rtfd": .differentKind,
                     source + "/Marked": .packageNotCompared, source + "/Plain": .packageNotCompared,
                     source + "/Old.app": .notNewer,
                 ])

@@ -84,16 +84,23 @@ public protocol ExplorerFileSystem: Sendable {
     func addedMs(_ path: String) -> Int64?
     /// When the item at `path` (a link itself) was last opened, in milliseconds since 1970; nil for one never opened.
     func lastOpenedMs(_ path: String) -> Int64?
+    /// `lastOpenedMs` for every item of one folder read, asked for once before its items are gone through: what each
+    /// item's read needs and no item changes (the home folder's path) is taken once, not once for each item.
+    func lastOpenedReader() -> @Sendable (String) -> Int64?
 }
 
 extension ExplorerFileSystem {
     public func tagColors(_ path: String) -> [FinderTagColor] { FinderTags.colors(path) }
     public func addedMs(_ path: String) -> Int64? { FileTimes.addedMs(path) }
     public func lastOpenedMs(_ path: String) -> Int64? { FileTimes.lastOpenedMs(path) }
+    /// Whatever `lastOpenedMs` is: a stand-in for the disk that answers it itself is asked item by item.
+    public func lastOpenedReader() -> @Sendable (String) -> Int64? { { lastOpenedMs($0) } }
 }
 
 public struct NativeFileSystem: ExplorerFileSystem {
     public init() {}
+
+    public func lastOpenedReader() -> @Sendable (String) -> Int64? { FileTimes.lastOpenedReader() }
 
     public func readDirectory(_ path: String) throws -> [DirectoryRecord] {
         var listing = FTDirListing()
@@ -129,8 +136,8 @@ public struct NativeFileSystem: ExplorerFileSystem {
     }
 
     /// What the read says of an entry, or nil when the disk left out something the listing sorts or decides by: the
-    /// listing then asks `lstat`. No creation time is no matter: nothing sorts by it. A folder never has a size from
-    /// the read.
+    /// listing then asks `lstat`. A creation time left out isn't asked for again: sorted by Date Created, an item
+    /// with none comes last. A folder never has a size from the read.
     static func knownStats(_ entry: FTDirEntry, type: FileType) -> FileStats? {
         guard entry.mode_valid != 0, entry.mtime_valid != 0, type == .directory || entry.size_valid != 0 else {
             return nil

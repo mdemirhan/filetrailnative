@@ -51,6 +51,10 @@ public enum ReplaceOlderSkip: Equatable, Sendable {
     /// something deeper inside changes (a virtual machine's disk, a photo library's database), so the dates say
     /// neither that it is newer nor that it isn't.
     case packageNotCompared
+    /// A clash of kinds: a file where a folder of that name is, a package where a plain file is. Replace Older
+    /// replaces a file with a newer file, and neither of these is that, so it is left; the result says Replace Older
+    /// left it, as the person never chose Skip.
+    case differentKind
 }
 
 /// The modification dates of the item pasted and of the one there, which Replace Older compares.
@@ -84,7 +88,8 @@ public enum CopyPasteChoices {
     ///
     /// With Replace Older (`policy.replaceOlderToleranceMs`), a file without a choice of its own is replaced only when
     /// it is newer than the one there (`dates`), and skipped otherwise; a package that clashes like a file
-    /// (`isPackage`) is skipped whatever its dates (`replaceOlderSkip` says which).
+    /// (`isPackage`) is skipped whatever its dates, and a clash of kinds is skipped as that answer's choice for one
+    /// says (`replaceOlderSkip` says which).
     public static func choiceForConflict(
         conflictClass: ConflictClass, replaceBlockedReason: String?, policy: CopyPastePolicy,
         override: CopyPasteChoice?, dates: ModifiedDates? = nil, isPackage: Bool = false
@@ -113,15 +118,24 @@ public enum CopyPasteChoices {
         isPackage: Bool
     ) -> ReplaceOlderSkip? {
         let hasOwnChoice = override.map { isChoiceAllowed(for: conflictClass, $0) } ?? false
-        guard conflictClass == .fileConflict, !hasOwnChoice else { return nil }
-        return replaceOlderLeaves(policy, dates, isPackage: isPackage)
+        guard !hasOwnChoice else { return nil }
+        switch conflictClass {
+        case .fileConflict: return replaceOlderLeaves(policy, dates, isPackage: isPackage)
+        case .typeMismatch: return isReplaceOlder(policy) && policy.mismatch == .skip ? .differentKind : nil
+        case .directoryConflict: return nil
+        }
+    }
+
+    /// The answer for all conflicts is Replace Older.
+    private static func isReplaceOlder(_ policy: CopyPastePolicy) -> Bool {
+        policy.file == .overwrite && policy.replaceOlderToleranceMs != nil
     }
 
     /// Replace Older is chosen for files, and it leaves this one: a package, or a file no newer than the one there.
     private static func replaceOlderLeaves(_ policy: CopyPastePolicy, _ dates: ModifiedDates?, isPackage: Bool)
         -> ReplaceOlderSkip?
     {
-        guard policy.file == .overwrite, let tolerance = policy.replaceOlderToleranceMs else { return nil }
+        guard isReplaceOlder(policy), let tolerance = policy.replaceOlderToleranceMs else { return nil }
         if isPackage { return .packageNotCompared }
         return dates?.sourceIsNewer(toleranceMs: tolerance) == true ? nil : .notNewer
     }

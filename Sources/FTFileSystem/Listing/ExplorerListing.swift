@@ -105,7 +105,7 @@ enum ExplorerListing {
         }
     }
 
-    static func isHidden(_ name: String) -> Bool { name.utf8.first == UInt8(ascii: ".") }
+    static func isHidden(_ name: String) -> Bool { ItemNames.isHidden(name) }
 
     /// Hidden as Finder hides it: by its name, or by the flag.
     static func isHidden(_ record: DirectoryRecord) -> Bool { record.hasHiddenFlag || isHidden(record.name) }
@@ -225,6 +225,8 @@ enum ExplorerListing {
         var sizes: [Int64?] = []
         var labels: [String] = []
         var tagsLeft = listedTagLimit
+        // Asked for once for the read: what it takes to read the date is the same for every item.
+        let lastOpened = sortBy == .lastOpened ? fileSystem.lastOpenedReader() : nil
         for folder in folders {
             for record in folder.records {
                 let hidden = isHidden(record)
@@ -267,7 +269,7 @@ enum ExplorerListing {
                     times.append(record.addedMs)
                 case .lastOpened:
                     // Not in the folder read: one look at each item, only while sorted by it.
-                    times.append(fileSystem.lastOpenedMs(entryPath))
+                    times.append(lastOpened?(entryPath))
                 case .size:
                     // A link to a folder is sized as the link itself (see readEntrySize).
                     if kind == .symlinkDirectory {
