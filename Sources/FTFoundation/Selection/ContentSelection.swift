@@ -107,6 +107,13 @@ public struct ContentSelection: Equatable, Sendable, Codable {
         return ContentSelection(paths: entryPaths, anchorPath: first, leadPath: entryPaths.last)
     }
 
+    /// Invert Selection: the entries not selected, in list order, with the first the anchor and the last the lead.
+    /// What is selected but not in `entryPaths` (hidden by a filter) is left out too.
+    public func inverted(entryPaths: [String]) -> ContentSelection {
+        let selected = Set(paths)
+        return .of(entryPaths.filter { !selected.contains($0) })
+    }
+
     /// The marquee's selection: the touched paths in list order, the lead the anchor.
     public static func marquee(entryPaths: [String], picked: [String], lead: String?) -> ContentSelection {
         let wanted = Set(picked)

@@ -33,7 +33,8 @@ extension ShortcutPolicy {
             .convertImages, .newFolder, .trashSelection, .copySelection, .cutSelection, .pasteSelection, .copyPath,
             .copyContents, .shareSelection,
             .openSelectionInNewTab, .openSelectionInNewWindow, .quickLookSelection, .revealInFolder, .copyToOtherPane,
-            .moveToOtherPane, .compressSelection, .extractSelection, .extractSelectionTo:
+            .moveToOtherPane, .compressSelection, .extractSelection, .extractSelectionTo, .deselectAll,
+            .invertSelection:
             .contentOnly
         }
     }

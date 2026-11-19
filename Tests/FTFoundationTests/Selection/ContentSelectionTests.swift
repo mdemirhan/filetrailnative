@@ -34,6 +34,23 @@ struct ContentSelectionTests {
         #expect(ContentSelection.single("/demo/gamma").sanitized(entryPaths: remaining) == .empty)
     }
 
+    @Test func invertsTheSelectionAmongTheEntriesShown() {
+        let some = ContentSelection(paths: ["/demo/beta"], anchorPath: "/demo/beta", leadPath: "/demo/beta")
+        #expect(
+            some.inverted(entryPaths: entries)
+                == ContentSelection(
+                    paths: ["/demo/alpha", "/demo/gamma", "/demo/delta"], anchorPath: "/demo/alpha",
+                    leadPath: "/demo/delta"))
+        // Nothing selected: everything; everything selected: nothing.
+        #expect(ContentSelection.empty.inverted(entryPaths: entries) == .all(entryPaths: entries))
+        #expect(ContentSelection.all(entryPaths: entries).inverted(entryPaths: entries) == .empty)
+        // A filter shows two: an item it hides is neither kept nor added.
+        let shown = ["/demo/alpha", "/demo/gamma"]
+        let hidden = ContentSelection.of(["/demo/alpha", "/demo/delta"])
+        #expect(hidden.inverted(entryPaths: shown) == .single("/demo/gamma"))
+        #expect(ContentSelection.empty.inverted(entryPaths: []) == .empty)
+    }
+
     @Test func computesRangePathsInEntryOrder() {
         #expect(
             ContentSelection.rangePaths(entryPaths: entries, anchor: "/demo/delta", target: "/demo/beta")

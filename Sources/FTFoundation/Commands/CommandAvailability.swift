@@ -391,6 +391,11 @@ public enum CommandAvailability {
             return newTabTargetPath(target) != nil
         case .quickLookSelection:
             return context.selectedEntry != nil
+        case .deselectAll:
+            return selectedCount > 0
+        case .invertSelection:
+            // Something in the list to select; with everything selected it selects nothing, as it says.
+            return !context.activeContentEntries.isEmpty
         case .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash:
             return GoMenuPlaceCommand(rawValue: command.rawValue)?.place(homePath: context.homePath ?? "") != nil
         case .calculateSize:

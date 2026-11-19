@@ -971,6 +971,17 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         selectionChanged(.all(entryPaths: entryPaths))
     }
 
+    /// Edit ▸ Deselect All.
+    func deselectAllEntries() {
+        selectionChanged(.empty)
+    }
+
+    /// Edit ▸ Invert Selection: every entry on screen that isn't selected, and none of those that are, nor any a
+    /// filter hides.
+    func invertSelection() {
+        selectionChanged(selection.inverted(entryPaths: entryPaths))
+    }
+
     /// Focuses the view of the folder.
     func focusList() {
         if let focus = pane?.focusView { view.window?.makeFirstResponder(focus) }

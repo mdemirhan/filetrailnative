@@ -123,11 +123,14 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.undo, "Undo", fixed: .undo))
             menu.addItem(context.command(.redo, "Redo", fixed: .redo))
             menu.addItem(.separator())
-            // Cut, Copy, Paste and Select All together, as in every app.
+            // Cut, Copy, Paste and Select All together, as in every app; Deselect All (Finder's, which shows with ⌥)
+            // and Invert Selection after Select All, as items of their own.
             menu.addItem(context.command(.editCut, "Cut", fixed: .cut))
             menu.addItem(context.command(.editCopy, "Copy", fixed: .copy))
             menu.addItem(context.command(.editPaste, "Paste", fixed: .paste))
             menu.addItem(context.command(.editSelectAll, "Select All", fixed: .selectAll))
+            menu.addItem(context.command(.deselectAll, "Deselect All"))
+            menu.addItem(context.command(.invertSelection, "Invert Selection"))
             menu.addItem(.separator())
             // What goes to and comes from the system's clipboard. After Copy and Paste, as AppKit lets an item with ⇧
             // take the press of the same key without it.

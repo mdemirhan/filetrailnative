@@ -81,6 +81,8 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case openSelectedItem
     case editSelection
     case quickLookSelection
+    case deselectAll
+    case invertSelection
     case calculateSize
     case renameSelection
     case duplicateSelection
@@ -297,6 +299,12 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .quickLookSelection, label: "Quick Look", group: .files, defaults: ["Cmd+Y", "Space"],
             menuPath: "File > Quick Look"),
+        ShortcutCommandDefinition(
+            id: .deselectAll, label: "Deselect All", group: .files, defaults: ["Cmd+Option+A"],
+            menuPath: "Edit > Deselect All"),
+        ShortcutCommandDefinition(
+            id: .invertSelection, label: "Invert Selection", group: .files, defaults: [],
+            menuPath: "Edit > Invert Selection"),
         ShortcutCommandDefinition(
             id: .calculateSize, label: "Calculate Size", group: .files, defaults: [], menuPath: "File > Calculate Size"),
         ShortcutCommandDefinition(

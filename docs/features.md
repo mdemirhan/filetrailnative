@@ -103,6 +103,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
   <img src="screenshots/settings-shortcuts.png" alt="The Shortcuts section of Settings" width="560">
 </p>
 
+- **Select All, Deselect All (⌥⌘A) and Invert Selection** act on what the list shows: select the few to leave out, and Invert Selection selects the rest.
 - **Everything from the keyboard**: Tab switches between the folder tree and the files, ⌘↑ goes up a folder and ⌘↓ opens what is selected, and Control-D and Control-U move half a page.
 - **The command palette (⇧⌘P)** lists every command with where it is in the menus, its keys and a line on what it does. Type a few of its letters and press Return; the commands you ran last come first.
 - **Your own shortcuts**: every command can have two, set in a list in Settings, with a warning before one is taken from another command. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.

@@ -796,6 +796,9 @@ extension HelpContent {
         HelpShortcutItem(group: .files, .command(.emptyTrash), "Empty the Trash (asks first)"),
         HelpShortcutItem(group: .files, .command(.ejectVolume), "Eject the disk selected in the sidebar"),
         HelpShortcutItem(group: .files, .command(.selectAll), "Select everything in the list"),
+        HelpShortcutItem(group: .files, .command(.deselectAll), "Select nothing in the list"),
+        HelpShortcutItem(
+            group: .files, .command(.invertSelection), "Select what isn't selected in the list, and only that"),
         HelpShortcutItem(group: .files, .command(.copyPath), "Copy the selected items' paths as text"),
         HelpShortcutItem(
             group: .files, .command(.copyContents), "Copy the selected file's image or text, to paste in another app"),

@@ -353,6 +353,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -2759,6 +2764,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -5177,6 +5187,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+=",
             "description": "Copy the selected items' paths as text (Cmd++ also works)"
           },
@@ -7577,6 +7592,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -9697,7 +9717,9 @@
           "toggleInfoRow": [],
           "customizeToolbar": [],
           "openHelp": [],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [],
+          "invertSelection": []
         },
         "returnKeyAction": "rename",
         "queries": [
@@ -11945,6 +11967,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -14378,6 +14405,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -16757,6 +16789,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -19181,6 +19218,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -21536,6 +21578,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -23971,6 +24018,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -26350,6 +26402,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -28734,6 +28791,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -31154,6 +31216,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -33586,6 +33653,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -35966,6 +36038,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -38395,6 +38472,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -40842,6 +40924,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -43251,6 +43338,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -45629,6 +45721,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -48018,6 +48115,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -50437,6 +50539,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -52828,6 +52935,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -55225,6 +55337,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -57650,6 +57767,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+;",
             "description": "Copy the selected items' paths as text (Cmd++ also works)"
           },
@@ -60002,6 +60124,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -62415,6 +62542,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",
@@ -64842,6 +64974,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Option+C",
             "description": "Copy the selected items' paths as text"
           },
@@ -67254,6 +67391,11 @@
             "group": "files",
             "shortcut": "Cmd+A",
             "description": "Select everything in the list"
+          },
+          {
+            "group": "files",
+            "shortcut": "Cmd+Option+A",
+            "description": "Select nothing in the list"
           },
           {
             "group": "files",

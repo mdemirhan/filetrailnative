@@ -454,7 +454,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -632,6 +636,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -2746,7 +2754,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -2924,6 +2936,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -3338,7 +3354,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -3516,6 +3536,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -3924,7 +3948,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -4102,6 +4130,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -4517,7 +4549,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -4691,6 +4727,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -5150,7 +5190,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -5328,6 +5372,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -5740,7 +5788,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -5910,6 +5962,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -6323,7 +6379,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -6497,6 +6557,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -6918,7 +6982,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -7096,6 +7164,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -7504,7 +7576,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -7678,6 +7754,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -8095,7 +8175,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -8273,6 +8357,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -8680,7 +8768,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -8854,6 +8946,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -9258,7 +9354,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -9424,6 +9524,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -9839,7 +9943,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -10013,6 +10121,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -10428,7 +10540,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -10602,6 +10718,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -11014,7 +11134,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -11180,6 +11304,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -11594,7 +11722,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -11764,6 +11896,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -12194,7 +12330,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -12368,6 +12508,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -12926,7 +13070,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -13104,6 +13252,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -13849,7 +14001,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -14027,6 +14183,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -14517,7 +14677,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -14711,6 +14875,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -15187,7 +15355,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -15365,6 +15537,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -15815,7 +15991,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -15997,6 +16177,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -16504,7 +16688,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -16686,6 +16874,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -17241,7 +17433,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -17419,6 +17615,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -18072,7 +18272,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -18274,6 +18478,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -19068,7 +19276,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -19246,6 +19458,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -19961,7 +20177,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -20147,6 +20367,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -20616,7 +20840,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -20802,6 +21030,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -21420,7 +21652,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -21602,6 +21838,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -22180,7 +22420,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -22386,6 +22630,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+V",
@@ -23133,7 +23381,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -23307,6 +23559,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -23778,7 +24034,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -23960,6 +24220,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -24529,7 +24793,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -24711,6 +24979,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -25217,7 +25489,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -25395,6 +25671,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -25874,7 +26154,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -26056,6 +26340,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -26547,7 +26835,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -26725,6 +27017,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -27233,7 +27529,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -27419,6 +27719,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -27916,7 +28220,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -28086,6 +28394,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -28756,7 +29068,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -28938,6 +29254,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -29404,7 +29724,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -29582,6 +29906,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -30191,7 +30519,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -30373,6 +30705,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -30905,7 +31241,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -31087,6 +31427,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -31863,7 +32207,11 @@
           "customizeToolbar": [],
           "showCommandPalette": [
             "Cmd+Shift+P"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -32049,6 +32397,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -32593,7 +32945,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -32771,6 +33127,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -33347,7 +33707,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -33525,6 +33889,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -34107,7 +34475,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -34289,6 +34661,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -35010,7 +35386,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -35188,6 +35568,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -35764,7 +36148,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -35942,6 +36330,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -36608,7 +37000,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -36814,6 +37210,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -38267,7 +38667,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -38453,6 +38857,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -39029,7 +39437,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -39207,6 +39619,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -39741,7 +40157,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -39923,6 +40343,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -40527,7 +40951,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -40709,6 +41137,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -41654,7 +42086,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -41836,6 +42272,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -42455,7 +42895,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -42645,6 +43089,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -43347,7 +43795,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -43525,6 +43977,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -44265,7 +44721,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -44451,6 +44911,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -45200,7 +45664,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -45386,6 +45854,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -45932,7 +46404,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -46110,6 +46586,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -46691,7 +47171,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -46869,6 +47353,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -47461,7 +47949,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -47631,6 +48123,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -48328,7 +48824,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -48526,6 +49026,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -49263,7 +49767,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -49477,6 +49985,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -50763,7 +51275,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -50945,6 +51461,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -51460,7 +51980,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -51634,6 +52158,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -52164,7 +52692,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -52362,6 +52894,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -53063,7 +53599,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -53245,6 +53785,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -53785,7 +54329,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -53967,6 +54515,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -54546,7 +55098,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -54716,6 +55272,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -55325,7 +55885,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -55519,6 +56083,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -56367,7 +56935,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -56537,6 +57109,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -57063,7 +57639,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -57245,6 +57825,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -57785,7 +58369,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -57967,6 +58555,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+N",
@@ -58834,7 +59426,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -59008,6 +59604,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -59549,7 +60149,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -59727,6 +60331,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -60516,7 +61124,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -60710,6 +61322,10 @@
           [
             "Cmd+U",
             "swapPanes"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+V",
@@ -61545,7 +62161,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -61731,6 +62351,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -62419,7 +63043,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -62637,6 +63265,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+M",
@@ -64139,7 +64771,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -64313,6 +64949,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -65389,7 +66029,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -65567,6 +66211,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -66138,7 +66786,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -66328,6 +66980,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -67262,7 +67918,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -67440,6 +68100,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -67978,7 +68642,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -68156,6 +68824,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -68753,7 +69425,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -68931,6 +69607,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -69500,7 +70180,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -69666,6 +70350,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -70391,7 +71079,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -70569,6 +71261,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -71397,7 +72093,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -71579,6 +72279,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -72219,7 +72923,11 @@
           "toggleInfoRow": [],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -72421,6 +73129,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+M",
@@ -73254,7 +73966,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -73428,6 +74144,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -74336,7 +75056,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -74510,6 +75234,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -75083,7 +75811,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -75257,6 +75989,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -76142,7 +76878,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -76324,6 +77064,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -76966,7 +77710,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -77140,6 +77888,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -77758,7 +78510,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -77932,6 +78688,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -78599,7 +79359,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -78797,6 +79561,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -79484,7 +80252,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -79666,6 +80438,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -80399,7 +81175,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -80577,6 +81357,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -81201,7 +81985,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -81403,6 +82191,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -82622,7 +83414,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -82800,6 +83596,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -83388,7 +84188,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -83566,6 +84370,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -84099,7 +84907,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -84277,6 +85089,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -84761,7 +85577,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -84943,6 +85763,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -85644,7 +86468,11 @@
           "toggleInfoRow": [],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -85838,6 +86666,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -86733,7 +87565,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -86943,6 +87779,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+M",
@@ -88419,7 +89259,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -88609,6 +89453,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -89244,7 +90092,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -89422,6 +90274,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -90024,7 +90880,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -90206,6 +91066,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -91200,7 +92064,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -91386,6 +92254,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -92719,7 +93591,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -92897,6 +93773,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -93596,7 +94476,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -93774,6 +94658,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -94220,7 +95108,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -94386,6 +95278,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -94876,7 +95772,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -95054,6 +95954,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -95604,7 +96508,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -95774,6 +96682,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -96573,7 +97485,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -96755,6 +97671,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -97438,7 +98358,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -97624,6 +98548,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -98236,7 +99164,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -98422,6 +99354,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+M",
@@ -99133,7 +100069,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -99311,6 +100251,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -99867,7 +100811,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -100037,6 +100985,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -101194,7 +102146,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -101380,6 +102336,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -102184,7 +103144,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -102350,6 +103314,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -102928,7 +103896,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -103102,6 +104074,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -103630,7 +104606,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -103812,6 +104792,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -104747,7 +105731,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -104945,6 +105933,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -105964,7 +106956,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -106142,6 +107138,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -106669,7 +107669,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -106843,6 +107847,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -107421,7 +108429,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -107599,6 +108611,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -108146,7 +109162,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -108336,6 +109356,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+M",
@@ -109189,7 +110213,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -109359,6 +110387,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -109870,7 +110902,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -110052,6 +111088,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -110725,7 +111765,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -110903,6 +111947,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -111461,7 +112509,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -111639,6 +112691,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -112194,7 +113250,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -112376,6 +113436,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -112897,7 +113961,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -113079,6 +114147,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -113749,7 +114821,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -113919,6 +114995,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -114526,7 +115606,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -114704,6 +115788,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -115355,7 +116443,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -115537,6 +116629,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -116163,7 +117259,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -116373,6 +117473,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -117106,7 +118210,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -117292,6 +118400,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -117804,7 +118916,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -117982,6 +119098,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -118503,7 +119623,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -118685,6 +119809,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -119212,7 +120340,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -119378,6 +120510,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -120174,7 +121310,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -120356,6 +121496,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -120908,7 +122052,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -121090,6 +122238,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -121878,7 +123030,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -122060,6 +123216,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -122630,7 +123790,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -122808,6 +123972,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -123341,7 +124509,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -123511,6 +124683,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -124167,7 +125343,11 @@
           "toggleInfoPanel": [
             "Cmd+I"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -124349,6 +125529,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+M",
@@ -125408,7 +126592,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -125590,6 +126778,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -126224,7 +127416,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -126394,6 +127590,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -127134,7 +128334,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -127316,6 +128520,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -127947,7 +129155,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -128129,6 +129341,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -128835,7 +130051,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -129017,6 +130237,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -129621,7 +130845,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -129807,6 +131035,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -130426,7 +131658,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -130612,6 +131848,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -131099,7 +132339,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -131289,6 +132533,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -131926,7 +133174,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -132108,6 +133360,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -132848,7 +134104,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -133018,6 +134278,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -133992,7 +135256,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -134182,6 +135450,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -134649,7 +135921,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -134827,6 +136103,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -135360,7 +136640,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -135526,6 +136810,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -136170,7 +137458,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -136340,6 +137632,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -137068,7 +138364,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -137246,6 +138546,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -137880,7 +139184,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -138070,6 +139378,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+V",
@@ -138879,7 +140191,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -139073,6 +140389,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -140117,7 +141437,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -140295,6 +141619,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -140897,7 +142225,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -141083,6 +142415,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -141599,7 +142935,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -141781,6 +143121,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -142448,7 +143792,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -142630,6 +143978,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -143407,7 +144759,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -143581,6 +144937,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -144142,7 +145502,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -144320,6 +145684,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -145012,7 +146380,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -145222,6 +146594,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -146639,7 +148015,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -146817,6 +148197,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -147326,7 +148710,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -147504,6 +148892,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -148051,7 +149443,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -148229,6 +149625,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -148804,7 +150204,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -148982,6 +150386,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -149524,7 +150932,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -149702,6 +151114,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -150170,7 +151586,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -150360,6 +151780,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -150972,7 +152396,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -151162,6 +152590,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -151840,7 +153272,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -152010,6 +153446,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -152639,7 +154079,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -152821,6 +154265,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -153333,7 +154781,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -153515,6 +154967,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -154148,7 +155604,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -154330,6 +155790,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -155046,7 +156510,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -155244,6 +156712,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -156016,7 +157488,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -156194,6 +157670,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -156749,7 +158229,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -156947,6 +158431,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -157601,7 +159089,11 @@
           "toggleInfoRow": [
             "Cmd+Shift+I"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -157783,6 +159275,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -159017,7 +160513,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -159199,6 +160699,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -159788,7 +161292,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -159966,6 +161474,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -160417,7 +161929,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -160595,6 +162111,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -161117,7 +162637,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -161291,6 +162815,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -161952,7 +163480,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -162130,6 +163662,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -162745,7 +164281,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -162923,6 +164463,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -163497,7 +165041,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -163675,6 +165223,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -164217,7 +165769,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -164399,6 +165955,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -164929,7 +166489,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -165107,6 +166671,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -165626,7 +167194,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -165804,6 +167376,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -166397,7 +167973,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -166583,6 +168163,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -167157,7 +168741,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -167343,6 +168931,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -168042,7 +169634,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -168224,6 +169820,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -168721,7 +170321,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -168895,6 +170499,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -169447,7 +171055,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -169629,6 +171241,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -170151,7 +171767,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -170329,6 +171949,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -170957,7 +172581,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -171127,6 +172755,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -172149,7 +173781,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -172323,6 +173959,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -172992,7 +174632,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -173194,6 +174838,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -174351,7 +175999,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -174529,6 +176181,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -174980,7 +176636,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -175158,6 +176818,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -175646,7 +177310,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -175824,6 +177492,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -176370,7 +178042,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -176552,6 +178228,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -177232,7 +178912,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -177426,6 +179110,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -177970,7 +179658,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -178152,6 +179844,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -178817,7 +180513,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -178995,6 +180695,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -179626,7 +181330,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -179804,6 +181512,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -180344,7 +182056,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -180542,6 +182258,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -181204,7 +182924,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -181386,6 +183110,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -181995,7 +183723,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -182173,6 +183905,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -182694,7 +184430,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -182880,6 +184620,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -183586,7 +185330,11 @@
           "toggleInfoRow": [],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -183784,6 +185532,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -184621,7 +186373,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -184799,6 +186555,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -185488,7 +187248,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -185722,6 +187486,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -186297,7 +188065,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -186487,6 +188259,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -187247,7 +189023,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -187421,6 +189201,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -187988,7 +189772,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -188166,6 +189954,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -188708,7 +190500,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -188886,6 +190682,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -189362,7 +191162,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -189540,6 +191344,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -190071,7 +191879,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -190241,6 +192053,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -190839,7 +192655,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -191029,6 +192849,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -191711,7 +193535,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -191901,6 +193729,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -192397,7 +194229,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -192567,6 +194403,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -193203,7 +195043,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -193381,6 +195225,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -193998,7 +195846,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -194184,6 +196036,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -194780,7 +196636,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -194962,6 +196822,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -195568,7 +197432,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -195746,6 +197614,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -196296,7 +198168,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -196486,6 +198362,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -197322,7 +199202,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -197500,6 +199384,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -198009,7 +199897,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -198179,6 +200071,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -198734,7 +200630,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -198916,6 +200816,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -199656,7 +201560,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -199838,6 +201746,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -200438,7 +202350,11 @@
           ],
           "openHelp": [
             "?"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -200616,6 +202532,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -201335,7 +203255,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -201513,6 +203437,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -202154,7 +204082,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -202340,6 +204272,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -202996,7 +204932,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -203182,6 +205122,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -203862,7 +205806,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -204032,6 +205980,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -204644,7 +206596,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -204822,6 +206778,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -205447,7 +207407,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -205637,6 +207601,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -206179,7 +208147,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -206361,6 +208333,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -207004,7 +208980,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -207194,6 +209174,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -207965,7 +209949,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -208187,6 +210175,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -209098,7 +211090,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -209284,6 +211280,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -209968,7 +211968,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -210150,6 +212154,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -210767,7 +212775,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -210925,6 +212937,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -211724,7 +213740,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -211902,6 +213922,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -212477,7 +214501,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -212667,6 +214695,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -213199,7 +215231,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -213377,6 +215413,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -214027,7 +216067,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -214213,6 +216257,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -214722,7 +216770,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -214908,6 +216960,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -215548,7 +217604,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -215750,6 +217810,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -216378,7 +218442,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -216592,6 +218660,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+N",
@@ -217171,7 +219243,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -217353,6 +219429,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+Shift+M",
@@ -218045,7 +220125,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -218223,6 +220307,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -218851,7 +220939,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -219041,6 +221133,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -219802,7 +221898,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -219984,6 +222084,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -220501,7 +222605,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -220667,6 +222775,10 @@
           [
             "Cmd+Down",
             "openSelectedItem"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -221199,7 +223311,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -221373,6 +223489,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -221969,7 +224089,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -222147,6 +224271,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -222759,7 +224887,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -222937,6 +225069,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -223579,7 +225715,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -223769,6 +225909,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -224291,7 +226435,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -224469,6 +226617,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -225111,7 +227263,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -225289,6 +227445,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -225766,7 +227926,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -225944,6 +228108,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -226512,7 +228680,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -226698,6 +228870,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -227322,7 +229498,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -227500,6 +229680,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -228022,7 +230206,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -228212,6 +230400,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -228803,7 +230995,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -228989,6 +231185,10 @@
           [
             "Cmd+O",
             "openSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -230400,7 +232600,11 @@
           ],
           "toggleInfoRow": [
             "Cmd+Shift+I"
-          ]
+          ],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -230602,6 +232806,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -231731,7 +233939,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -231909,6 +234121,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -232423,7 +234639,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -232593,6 +234813,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -233111,7 +235335,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -233289,6 +235517,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -233893,7 +236125,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -234079,6 +236315,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -234668,7 +236908,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -234846,6 +237090,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -235365,7 +237613,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -235547,6 +237799,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -236141,7 +238397,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -236335,6 +238595,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -237036,7 +239300,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -237218,6 +239486,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -237997,7 +240269,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -238191,6 +240467,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -238821,7 +241101,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -238999,6 +241283,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -239545,7 +241833,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -239719,6 +242011,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -240556,7 +242852,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -240754,6 +243054,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -241579,7 +243883,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -241753,6 +244061,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -242326,7 +244638,11 @@
           "showCommandPalette": [
             "Cmd+Shift+P"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -242496,6 +244812,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -243200,7 +245520,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -243378,6 +245702,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -243981,7 +246309,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -244151,6 +246483,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -244683,7 +247019,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -244873,6 +247213,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -245797,7 +248141,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -245979,6 +248327,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -246733,7 +249085,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -246915,6 +249271,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "Cmd+D",
@@ -247458,7 +249818,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -247632,6 +249996,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -248247,7 +250615,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -248425,6 +250797,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -249037,7 +251413,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -249227,6 +251607,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -249816,7 +252200,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -250006,6 +252394,10 @@
           [
             "Cmd+Shift+E",
             "editSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",
@@ -250977,7 +253369,11 @@
           "openHelp": [
             "?"
           ],
-          "openKeyboardShortcuts": []
+          "openKeyboardShortcuts": [],
+          "deselectAll": [
+            "Cmd+Option+A"
+          ],
+          "invertSelection": []
         },
         "commandByShortcut": [
           [
@@ -251163,6 +253559,10 @@
           [
             "Space",
             "quickLookSelection"
+          ],
+          [
+            "Cmd+Option+A",
+            "deselectAll"
           ],
           [
             "F2",

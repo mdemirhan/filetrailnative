@@ -7,6 +7,8 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case editCopy
     case editPaste
     case editSelectAll
+    case deselectAll
+    case invertSelection
     case focusFileSearch
     case openSelection
     case editSelection

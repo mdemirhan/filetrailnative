@@ -1989,6 +1989,8 @@ extension MainWindowController: ExplorerWindowHandle {
             } else {
                 _ = window?.firstResponder?.tryToPerform(#selector(NSResponder.selectAll(_:)), with: nil)
             }
+        case .deselectAll: content.deselectAllEntries()
+        case .invertSelection: content.invertSelection()
         case .calculateSize: infoController?.calculateSizeCommand()
         case .showClipboard: showClipboard()
         case .clearClipboard: clearClipboard()

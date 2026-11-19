@@ -29,6 +29,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -172,6 +174,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -308,6 +312,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -444,6 +450,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -572,6 +580,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -713,6 +723,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -864,6 +876,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -1102,6 +1116,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -1188,6 +1203,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -1337,6 +1354,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -1431,6 +1450,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -1580,6 +1601,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -1656,6 +1679,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -1811,6 +1836,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -1963,6 +1990,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -2102,6 +2131,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -2232,6 +2263,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -2327,6 +2360,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -2476,6 +2511,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -2609,6 +2646,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -2754,6 +2793,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -2852,6 +2893,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -2995,6 +3038,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -3275,6 +3320,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -3429,6 +3476,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -3590,6 +3639,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -3756,6 +3807,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -3903,6 +3956,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -4054,6 +4109,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -4152,6 +4209,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -4299,6 +4358,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -4440,6 +4501,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -4575,6 +4638,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -4675,6 +4740,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -4831,6 +4898,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -5003,6 +5072,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -5135,6 +5206,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -5233,6 +5306,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -5366,6 +5441,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -5454,6 +5531,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -5583,6 +5662,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -5732,6 +5813,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -5880,6 +5963,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -5995,6 +6080,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -6154,6 +6241,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -6249,6 +6338,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -6415,6 +6506,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -6588,6 +6681,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -6672,6 +6767,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -6842,6 +6939,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -6929,6 +7028,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -7026,6 +7127,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -7127,6 +7229,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -7270,6 +7374,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -7527,6 +7633,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -7626,6 +7734,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -7712,6 +7822,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -7799,6 +7911,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -7886,6 +8000,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -8021,6 +8137,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -8249,6 +8367,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -8387,6 +8507,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -8530,6 +8652,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -8678,6 +8802,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -8772,6 +8898,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -8908,6 +9036,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -9048,6 +9178,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -9198,6 +9330,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -9345,6 +9479,7 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -9425,6 +9560,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -9589,6 +9726,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -9728,6 +9867,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -9826,6 +9967,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -9929,6 +10072,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -10038,6 +10183,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -10119,6 +10266,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -10280,6 +10429,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -10403,6 +10553,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -10555,6 +10707,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -10650,6 +10804,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -10799,6 +10955,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -10937,6 +11095,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -11047,6 +11207,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -11207,6 +11369,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -11332,6 +11496,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -11494,6 +11660,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -11639,6 +11807,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -11839,6 +12009,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -11950,6 +12122,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -12103,6 +12277,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -12292,6 +12468,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -12429,6 +12607,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -12563,6 +12743,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -12710,6 +12892,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -12897,6 +13081,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -13039,6 +13225,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -13138,6 +13326,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -13250,6 +13440,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -13387,6 +13579,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "openSelection",
           "editSelection",
           "compressSelection",
@@ -13467,6 +13660,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "openSelection",
           "editSelection",
           "compressSelection",
@@ -13569,6 +13763,7 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -13660,6 +13855,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -13752,6 +13949,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -13845,6 +14044,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -13981,6 +14182,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -14103,6 +14306,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -14211,6 +14416,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -14354,6 +14561,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -14516,6 +14725,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "editSelection",
           "extractSelection",
           "extractSelectionTo",
@@ -14610,6 +14820,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -14746,6 +14958,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -14899,6 +15113,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -15121,6 +15337,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -15215,6 +15433,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -15315,6 +15534,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -15493,6 +15714,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -15654,6 +15877,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -15765,6 +15990,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -15897,6 +16124,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -15995,6 +16224,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -16115,6 +16346,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -16375,6 +16608,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -16525,6 +16760,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -16616,6 +16853,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -16788,6 +17027,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -16931,6 +17172,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -17078,6 +17321,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -17224,6 +17469,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -17303,6 +17550,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -17410,6 +17659,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -17563,6 +17814,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -17719,6 +17972,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -17803,6 +18058,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -17899,6 +18156,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -18035,6 +18294,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -18169,6 +18430,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -18285,6 +18548,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -18365,6 +18630,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -18680,6 +18947,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -18805,6 +19074,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -18938,6 +19209,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -19038,6 +19311,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -19137,6 +19412,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -19279,6 +19556,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -19400,6 +19679,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -19585,6 +19866,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -19684,6 +19967,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -19831,6 +20116,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "editSelection",
           "extractSelection",
           "extractSelectionTo",
@@ -19914,6 +20200,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -20030,6 +20318,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -20176,6 +20466,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -20279,6 +20571,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -20450,6 +20744,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -20585,6 +20881,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -20824,6 +21122,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -20966,6 +21266,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -21114,6 +21416,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -21270,6 +21574,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -21449,6 +21755,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -21554,6 +21862,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -21719,6 +22029,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -21885,6 +22197,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -22022,6 +22336,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -22161,6 +22477,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -22292,6 +22610,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -22444,6 +22764,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -22584,6 +22906,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -22725,6 +23049,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -22968,6 +23294,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -23114,6 +23442,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -23275,6 +23605,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -23490,6 +23822,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -23633,6 +23967,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -23763,6 +24099,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -23907,6 +24245,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -24084,6 +24424,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -24231,6 +24573,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -24378,6 +24722,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -24531,6 +24877,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -24681,6 +25029,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -24826,6 +25176,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -24903,6 +25255,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -25048,6 +25402,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -25199,6 +25555,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "openSelection",
           "editSelection",
           "compressSelection",
@@ -25298,6 +25655,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -25377,6 +25736,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -25663,6 +26024,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -25753,6 +26115,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -25845,6 +26209,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -25989,6 +26355,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -26085,6 +26452,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -26226,6 +26595,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -26375,6 +26746,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -26526,6 +26899,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -26689,6 +27064,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -26841,6 +27218,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -26978,6 +27357,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -27070,6 +27451,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -27187,6 +27569,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -27322,6 +27706,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -27464,6 +27850,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -27554,6 +27942,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -27657,6 +28047,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -27745,6 +28136,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -27848,6 +28241,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -28019,6 +28414,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -28130,6 +28526,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -28332,6 +28730,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -28442,6 +28842,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -28615,6 +29017,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -28793,6 +29197,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -28954,6 +29360,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -29100,6 +29508,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "editSelection",
           "extractSelection",
           "extractSelectionTo",
@@ -29187,6 +29596,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -29286,6 +29697,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -29382,6 +29795,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "editSelection",
           "compressSelection",
           "extractSelection",
@@ -29470,6 +29884,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -29609,6 +30025,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -29700,6 +30118,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -29786,6 +30205,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -29892,6 +30313,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -30036,6 +30459,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -30218,6 +30643,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -30472,6 +30899,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -30561,6 +30990,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -30710,6 +31141,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -30845,6 +31278,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -30936,6 +31370,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -31142,6 +31578,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -31260,6 +31698,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -31382,6 +31822,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -31517,6 +31959,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "editSelection",
           "extractSelection",
           "extractSelectionTo",
@@ -31608,6 +32051,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -31694,6 +32139,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -31787,6 +32234,7 @@
       },
       "output": {
         "disabled": [
+          "invertSelection",
           "editSelection",
           "compressSelection",
           "extractSelection",
@@ -31909,6 +32357,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -32084,6 +32534,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -32194,6 +32646,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -32433,6 +32887,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -32576,6 +33032,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -32709,6 +33167,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -32967,6 +33427,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -33125,6 +33587,7 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -33207,6 +33670,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -33445,6 +33910,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -33556,6 +34023,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -33686,6 +34155,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -33816,6 +34287,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -33961,6 +34434,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -34095,6 +34570,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -34289,6 +34766,7 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
           "openSelection",
           "editSelection",
           "moveSelection",
@@ -34403,6 +34881,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -34549,6 +35029,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -34696,6 +35178,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -34858,6 +35342,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -35011,6 +35497,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -35157,6 +35645,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -35258,6 +35748,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -35509,6 +36001,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -35662,6 +36156,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -35814,6 +36310,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -35955,6 +36453,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -36049,6 +36549,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -36319,6 +36821,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -36398,6 +36902,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "editSelection",
           "moveSelection",
           "compressSelection",
@@ -36520,6 +37026,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -36684,6 +37192,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
@@ -36825,6 +37335,8 @@
       },
       "output": {
         "disabled": [
+          "deselectAll",
+          "invertSelection",
           "openSelection",
           "editSelection",
           "openInTerminal",
@@ -36907,6 +37419,8 @@
         "disabled": [
           "undo",
           "redo",
+          "deselectAll",
+          "invertSelection",
           "focusFileSearch",
           "openSelection",
           "editSelection",
