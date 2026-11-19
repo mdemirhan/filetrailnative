@@ -86,13 +86,24 @@ public final class DirectoryService: Sendable {
     ) async throws -> MetadataBatch {
         let fileSystem = fileSystem
         let kinds = kinds
-        let items = try await cache.metadata(for: paths) { missing in
+        let kept = try await cache.metadata(for: paths) { missing in
             try await BlockingWork.run(qos: .utility) {
                 try ExplorerListing.metadataBatch(
                     directoryPath: directoryPath, paths: missing, listedAdded: listedAdded, fileSystem, kinds: kinds
                 ).items
             }
         }
+        // Details kept from a moment ago hold the Date Added they were read with: a row shows the one its listing
+        // gives now, the one it is sorted by, also when the file was replaced since.
+        let items =
+            listedAdded.isEmpty
+            ? kept
+            : kept.map { item in
+                guard let listed = listedAdded[item.path] else { return item }
+                var item = item
+                item.addedAt = listed.flatMap(FileTime.date(milliseconds:))
+                return item
+            }
         return MetadataBatch(directoryPath: directoryPath, items: items)
     }
 

@@ -73,6 +73,8 @@ protocol ContentPaneHost: AnyObject {
     func metadata(for path: String) -> EntryMetadata?
     /// Asks for the details of rows that came into view.
     func requestMetadata(for paths: [String])
+    /// The same for rows in hand, whose listing already gave their Date Added.
+    func requestMetadata(for entries: [DirectoryEntry])
     /// The colors of an item's Finder tags, as its listing or a read of the rows on screen found them.
     func tagColors(for entry: DirectoryEntry) -> [FinderTagColor]
     /// Asks for the tags of items that came into view.

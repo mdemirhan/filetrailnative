@@ -199,6 +199,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var staleMetadata: Set<String> { details.stale }
     /// Details asked for and not sent yet: they go together, a batch per folder, once the rows have all asked.
     private var metadataQueue: [String] = []
+    /// The Date Added of the folder's rows asked for by their entries, as their listing gave it, until they are read:
+    /// so the rows on screen are not looked up among all of the folder's.
+    private var queuedAdded: [String: Int64?] = [:]
     private var metadataFlushQueued = false
     /// The Finder tags of the rows on screen. They start over with another folder.
     private var tags = PathReadCache<[FinderTagColor]>()
@@ -461,6 +464,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let orderBefore = takeOrderBeforeRemoval()
         listed = newEntries
         rowsCache = nil
+        queuedAdded = [:]
         reorder()
         // Nil keeps the selection that still exists (a quiet read); a list of paths is the new selection.
         if let memory {
@@ -1415,7 +1419,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func startDetailsOver(keeping kept: PathReadCache<EntryMetadata>? = nil) {
         details.startOver(keeping: kept)
         metadataQueue = []
+        queuedAdded = [:]
         foldedNames.removeAll()
+    }
+
+    func requestMetadata(for entries: [DirectoryEntry]) {
+        // Search results came from no folder read, and are asked for their own date.
+        if searchDisplay == nil {
+            for entry in entries { queuedAdded.updateValue(entry.addedMs, forKey: entry.path) }
+        }
+        requestMetadata(for: entries.map(\.path))
     }
 
     func requestMetadata(for paths: [String]) {
@@ -1449,9 +1462,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         // results came from no folder read.
         var listedAdded: [String: Int64?] = [:]
         if searchDisplay == nil {
-            let rows = rowsByPath
+            // A row asked for by its path alone (read again after it changed) is found among the folder's rows.
+            var rows: [String: DirectoryEntry]?
             for path in paths {
-                if let row = rows[path] { listedAdded.updateValue(row.addedMs, forKey: path) }
+                if let added = queuedAdded.removeValue(forKey: path) {
+                    listedAdded.updateValue(added, forKey: path)
+                } else {
+                    if rows == nil { rows = rowsByPath }
+                    if let row = rows?[path] { listedAdded.updateValue(row.addedMs, forKey: path) }
+                }
             }
         }
         Task { @MainActor [weak self] in

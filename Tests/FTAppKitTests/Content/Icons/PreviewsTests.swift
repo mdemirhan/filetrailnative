@@ -274,6 +274,23 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A place left empty at 4 at a time is no reason to select anything later, at 1 at a time, when some other
+        // file goes.
+        @Test func aPlaceLeftEmptyAtAnotherCountSelectsNothingWhenAnotherFileGoes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 6)
+            let paths = tab.content.entries.map(\.path)
+            tab.content.select(paths: [paths[0]])
+            probe.layout()
+            try await remove(paths[0], from: tab, probe, byThisWindow: true)
+            #expect(tab.content.selection.isEmpty && tab.content.selection.gapIndex != nil)
+            tab.perform(.showPreviews1)
+            probe.layout()
+            try await remove(paths[4], from: tab, probe, byThisWindow: false)
+            #expect(tab.content.selection.isEmpty)
+            await harness.close()
+        }
+
         // Move to Trash at 1 at a time, twice: each acts on the file on screen.
         @Test func moveToTrashAtOneAtATimeGoesOnToTheFileThatComesOnScreen() async throws {
             PreparingSheet.isEnabled = false

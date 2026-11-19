@@ -414,6 +414,26 @@ struct ExplorerServiceTests {
         #expect(fake.addedRead == ["/workspace/Disk", "/workspace/notes.txt"])
     }
 
+    // Details kept from a moment ago don't hold a row to the Date Added it was read with: a file replaced by one of
+    // the same name shows the date its new listing gives.
+    @Test func aRowKeptFromAMomentAgoShowsTheDateAddedItsListingGivesNow() async throws {
+        let fake = workspace(
+            [fakeDirent("notes.txt", file: true)],
+            stat: { path in fakeStats(directory: path == "/workspace", file: path.hasSuffix(".txt"), size: 3) })
+        let service = service(fake)
+        let path = "/workspace/notes.txt"
+        let first = try await service.metadata(
+            directoryPath: "/workspace", paths: [path], listedAdded: [path: jan2 + 5_000])
+        #expect(first.items.map(\.addedAt) == [FileTime.date(milliseconds: jan2 + 5_000)])
+        let again = try await service.metadata(
+            directoryPath: "/workspace", paths: [path], listedAdded: [path: jan2 + 9_000])
+        #expect(again.items.map(\.addedAt) == [FileTime.date(milliseconds: jan2 + 9_000)])
+        // A disk that gives none now shows none.
+        let none = try await service.metadata(directoryPath: "/workspace", paths: [path], listedAdded: [path: nil])
+        #expect(none.items.map(\.addedAt) == [nil])
+        #expect(fake.addedRead.isEmpty)
+    }
+
     @Test func rejectsMetadataRequestsForPathsOutsideTheRequestedDirectory() async {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 0) }

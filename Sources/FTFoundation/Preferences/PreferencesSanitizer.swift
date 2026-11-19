@@ -101,7 +101,7 @@ public enum PreferencesSanitizer {
                 AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
             },
             previewCounts: densitySizes(record["previewCounts"], .previewCountDefaults) {
-                PreviewGrid.valid(Int($0.rounded()))
+                PreviewGrid.valid(read: $0)
             },
             detailColumnWidths: detailColumnWidths(record["detailColumnWidths"], columnWidths.detail),
             searchColumnWidths: searchColumnWidths(record["searchColumnWidths"], columnWidths.search))
@@ -257,7 +257,7 @@ public enum PreferencesSanitizer {
             },
             iconSizes: densitySizes(record["iconSizes"], defaults.iconSizes) { AppPreferenceLimits.clampIconSize($0) },
             previewCounts: densitySizes(record["previewCounts"], defaults.previewCounts) {
-                PreviewGrid.valid(Int($0.rounded()))
+                PreviewGrid.valid(read: $0)
             },
             notificationsEnabled: bool(record, "notificationsEnabled", defaults.notificationsEnabled),
             markClipboardItems: bool(record, "markClipboardItems", defaults.markClipboardItems),

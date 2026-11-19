@@ -357,7 +357,7 @@ final class InfoController {
     }
 
     private func requestFileDetails(_ entries: [DirectoryEntry]) {
-        content.requestMetadata(for: entries.filter { !$0.isFolderSizeEligible }.map(\.path))
+        content.requestMetadata(for: entries.filter { !$0.isFolderSizeEligible })
     }
 
     private func selectionDetails() -> SelectionDetails? {

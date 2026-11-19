@@ -297,14 +297,15 @@ final class PreviewsViewController: IconViewController {
 
     /// At 1 at a time, a listing that took the selected file away (Move to Trash, a move, a delete in Finder) leaves
     /// another file in its place on screen, and that file is selected, as a scroll to it would select it: Move to Trash
-    /// pressed again acts on the file shown, not on nothing. Only when this listing took something away and the
-    /// selection is empty because its files left (`gapIndex`): a folder just opened, a selection cleared by hand and a
-    /// listing that took away some other file change nothing. A listing that comes in while the mouse button is held
+    /// pressed again acts on the file shown, not on nothing. Only when the selection is empty because its files left
+    /// (`gapIndex`) and this listing is the one that took the file at that place away: a folder just opened, a
+    /// selection cleared by hand, a listing that took away some other file, and a place left empty long before (in
+    /// another view, or at another count) change nothing. A listing that comes in while the mouse button is held
     /// counts as a drag's.
     private func selectFileInPlaceOfOneRemoved(listedBefore: [String]) {
-        guard count == 1, let host, host.selection.isEmpty, host.selection.gapIndex != nil else { return }
-        let listed = indexByPath
-        guard listedBefore.contains(where: { listed[$0] == nil }) else { return }
+        guard count == 1, let host, host.selection.isEmpty, let gap = host.selection.gapIndex,
+            listedBefore.indices.contains(gap), indexByPath[listedBefore[gap]] == nil
+        else { return }
         selectFileOnScreen(unlessDragged: NSEvent.pressedMouseButtons & 1 != 0)
     }
 

@@ -729,9 +729,9 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         let overscan = 10
         let lower = max(0, rows.location - overscan)
         let upper = min(entries.count, rows.location + rows.length + overscan)
-        let paths = entries[lower..<upper].map(\.path)
-        host.requestMetadata(for: paths)
-        host.requestTags(for: paths)
+        let shown = Array(entries[lower..<upper])
+        host.requestMetadata(for: shown)
+        host.requestTags(for: shown.map(\.path))
     }
 
     // MARK: The clock

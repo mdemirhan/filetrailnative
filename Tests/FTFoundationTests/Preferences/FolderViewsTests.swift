@@ -157,6 +157,18 @@ struct FolderViewsTests {
         #expect(other.keeps.size?.previewCounts == .previewCountDefaults)
     }
 
+    // A number of any size can stand in a file edited by hand: one no Previews count could be reads as the default,
+    // and the app still starts.
+    @Test func aPreviewsCountNoNumberCouldBeReadsAsTheDefault() throws {
+        let saved = """
+            {"version":1,"views":[{"path":"/a","keeps":{"size":{"previewCounts":{"standard":1e30,"finder":-1e30}}}}]}
+            """
+        let sizes = try #require(try FolderViews.read(Data(saved.utf8)).own("/a")?.keeps.size)
+        #expect(sizes.previewCounts.standard == PreviewGrid.defaultCount)
+        #expect(sizes.previewCounts.finder == PreviewGrid.defaultCount)
+        #expect(PreviewGrid.valid(read: 9.4) == 9 && PreviewGrid.valid(read: .infinity) == PreviewGrid.defaultCount)
+    }
+
     @Test func aViewThatKeepsColumnsAndSizeIsReadBackAsWritten() throws {
         var visibility = DetailColumnVisibility.defaults
         visibility.added = true

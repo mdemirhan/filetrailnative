@@ -21,6 +21,11 @@ public enum PreviewGrid {
     /// `count` when it is one of the counts, the default otherwise (a size saved some other way).
     public static func valid(_ count: Int) -> Int { counts.contains(count) ? count : defaultCount }
 
+    /// A count read from a file, where a number of any size can stand: one that is no count gives the default.
+    public static func valid(read count: Double) -> Int {
+        Int(exactly: count.rounded()).map(valid) ?? defaultCount
+    }
+
     /// Where `count` is in `counts`.
     public static func index(of count: Int) -> Int { counts.firstIndex(of: valid(count)) ?? 1 }
 

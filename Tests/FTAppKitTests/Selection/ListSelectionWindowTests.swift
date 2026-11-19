@@ -57,6 +57,31 @@ extension ExplorerWindowlessTests {
 
         // Edit ▸ Invert Selection is on with nothing selected, as long as the list shows something, and then selects
         // all of it; an empty folder leaves it off. Deselect All needs a selection.
+        // The List's rows are asked for their details with the Date Added their listing gave, each of them, one with
+        // no date too (present, with none), so that none is asked for its own.
+        @Test func theListsRowsAreReadWithTheDateAddedOfTheirListing() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let read = tab.content.loaders.metadata
+            var asked: [String: Int64?] = [:]
+            var paths: Set<String> = []
+            tab.content.loaders.metadata = { folder, batch, listedAdded in
+                paths.formUnion(batch)
+                asked.merge(listedAdded) { _, new in new }
+                return await read(folder, batch, listedAdded)
+            }
+            tab.perform(.viewAsDetails)
+            #expect(await waitUntil { !tab.content.entries.isEmpty })
+            harness.layout(tab)
+            let entries = tab.content.entries
+            #expect(await waitUntil { entries.allSatisfy { tab.content.metadata(for: $0.path) != nil } })
+            #expect(!paths.isEmpty && paths == Set(asked.keys))
+            for entry in entries where paths.contains(entry.path) {
+                #expect(asked[entry.path] == .some(entry.addedMs))
+            }
+            await harness.close()
+        }
+
         @Test func invertSelectionIsOnWheneverTheListShowsSomething() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()

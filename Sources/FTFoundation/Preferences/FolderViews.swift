@@ -112,7 +112,7 @@ public struct FolderViewSizes: Codable, Equatable, Sendable {
             compactListWidths: sizes(.compactListWidths, .compactListDefaults) {
                 AppPreferenceLimits.clampPaneWidth($0, AppPreferenceLimits.compactListWidthRange)
             },
-            previewCounts: sizes(.previewCounts, .previewCountDefaults) { PreviewGrid.valid(Int($0.rounded())) })
+            previewCounts: sizes(.previewCounts, .previewCountDefaults) { PreviewGrid.valid(read: $0) })
     }
 }
 
