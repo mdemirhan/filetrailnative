@@ -95,6 +95,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case newFolderWithSelection
     case newTextFile
     case openTemplatesFolder
+    case saveAsTemplate
     case pasteAsFile
     case trashSelection
     case ejectVolume
@@ -343,6 +344,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .openTemplatesFolder, label: "Open Templates Folder", group: .files, defaults: [],
             menuPath: "File > New File > Open Templates Folder"),
+        ShortcutCommandDefinition(
+            id: .saveAsTemplate, label: "Save as Template", group: .files, defaults: [],
+            menuPath: "File > Save as Template"),
         ShortcutCommandDefinition(
             id: .pasteAsFile, label: "Paste as File", group: .files, defaults: ["Cmd+Shift+V"],
             menuPath: "Edit > Paste as File"),

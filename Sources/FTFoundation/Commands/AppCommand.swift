@@ -26,6 +26,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case newFolderWithSelection
     case newTextFile
     case openTemplatesFolder
+    case saveAsTemplate
     case trashSelection
     case emptyTrash
     case ejectVolume

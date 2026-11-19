@@ -57,7 +57,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Drag and drop** inside File Trail and with Finder and other apps, in both directions, by Finder's rules: Option copies, Command moves, and resting on a folder opens it.
 - **Replace Older** brings a backup up to date: when the same folders meet, only files newer than the ones there replace them. It is offered on APFS, HFS+, exFAT and SMB, not on FAT, whose dates can be an hour off.
 - **Undo and Redo (⌘Z, ⇧⌘Z)** for renames, moves, copies, Move to Trash, New Folder, New Folder with Selection, Compress, Extract and Convert Images, one step at a time. The toolbar can hold a button that lists what each would do.
-- **New File** makes an empty text file, or a copy of a file you keep in the Templates folder (File ▸ New File ▸ Open Templates Folder): a letter, a Markdown note, a spreadsheet to start from. It opens for naming, as New Folder does.
+- **New File** makes an empty text file, or a copy of a file you keep in the Templates folder (right-click a file and choose Save as Template, or File ▸ New File ▸ Open Templates Folder): a letter, a Markdown note, a spreadsheet to start from. It opens for naming, as New Folder does.
 - **Paste as File (⇧⌘V)** saves a screenshot or text you copied in another app as a new file in the folder you are in, and **Copy Contents (⇧⌘C)** copies a file's image or text to paste in another app.
 - **File Trail's clipboard for files is its own**: files cut or copied here are pasted here, not in Finder or other apps. Between apps, drag them.
 

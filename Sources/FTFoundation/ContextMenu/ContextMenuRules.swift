@@ -69,14 +69,15 @@ public enum ContextMenuRules {
     /// only fill a clipboard, so they stay available.
     public static let writeLockedActions: [ContextMenuActionID] = [
         .paste, .pasteAsFile, .move, .rename, .duplicate, .convertImages, .newFolder, .newFolderWithSelection, .newFile,
-        .trash, .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo,
+        .saveAsTemplate, .trash, .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo,
     ]
 
     /// What the menus leave out in the Trash: nothing is pasted, made, duplicated, converted, compressed or extracted
     /// there, and what is in it is in the Trash already (Delete Immediately is offered instead). Extract To takes an
     /// archive's items elsewhere.
     public static let trashHiddenActions: [ContextMenuActionID] = [
-        .paste, .newFolder, .newFolderWithSelection, .newFile, .duplicate, .convertImages, .trash, .compress, .extract,
+        .paste, .newFolder, .newFolderWithSelection, .newFile, .saveAsTemplate, .duplicate, .convertImages, .trash,
+        .compress, .extract,
     ]
 
     /// Background-menu actions that act on the folder on screen rather than on a selection.
@@ -273,6 +274,8 @@ public enum ContextMenuRules {
         }
         // An item's New Folder makes the folder inside it, as its Paste pastes there.
         if !isSingleFolder { hidden.insert(.newFolder) }
+        // New File makes files from files only.
+        if entries.isEmpty || !entries.allSatisfy({ $0.kind.isEditableFile }) { hidden.insert(.saveAsTemplate) }
         // New Folder with Selection puts the items in a folder beside them: they are in the folder on screen.
         if CommandAvailability.newFolderWithSelectionTarget(
             currentPath: world.currentPath, selectedPaths: subject.paths, isSearchMode: world.isSearchMode,

@@ -25,7 +25,8 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "File")) == [
-                "New Window", "New Tab", "Duplicate Tab", "New Folder", "New Folder with Selection", "New File", "-",
+                "New Window", "New Tab", "Duplicate Tab", "New Folder", "New Folder with Selection", "New File",
+                "Save as Template", "-",
                 "Open",
                 "Open in New Tab",
                 "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Reveal in Folder", "-",

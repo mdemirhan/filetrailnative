@@ -77,6 +77,7 @@ enum ApplicationMenuBuilder {
             let newFile = NSMenuItem(title: "New File", action: nil, keyEquivalent: "")
             newFile.submenu = context.newFileMenu()
             menu.addItem(newFile)
+            menu.addItem(context.command(.saveAsTemplate, "Save as Template"))
             menu.addItem(.separator())
             menu.addItem(context.command(.openSelection, "Open"))
             menu.addItem(context.command(.openSelectionInNewTab, "Open in New Tab"))

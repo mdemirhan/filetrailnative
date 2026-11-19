@@ -298,7 +298,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .eject:
             if let target = subject.targetPath ?? subject.paths.first { tab.sidebarController.eject(target) }
         case .cut, .copy, .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .newFolderWithSelection, .trash,
-            .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo:
+            .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo, .saveAsTemplate:
             fileOperation(action, subject)
         case .openWith, .viewAs, .sortBy, .otherPane, .newFile:
             break
@@ -317,6 +317,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .convertImages: return .operation(.convertImages)
         case .newFolder: return .operation(.newFolder)
         case .newFolderWithSelection: return .operation(.newFolderWithSelection)
+        case .saveAsTemplate: return .operation(.copyTo)
         case .pasteAsFile: return .operation(.pasteAsFile)
         case .compress: return .operation(.compress)
         case .extract, .extractTo: return .operation(.extract)

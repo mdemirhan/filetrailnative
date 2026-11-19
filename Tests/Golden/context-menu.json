@@ -128,6 +128,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -314,6 +319,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -504,6 +514,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -690,6 +705,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -880,6 +900,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -1066,6 +1091,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -1257,6 +1287,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -1452,6 +1487,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -1651,6 +1691,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -1846,6 +1891,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -2045,6 +2095,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -2242,6 +2297,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -2437,6 +2497,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -2637,6 +2702,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -4598,6 +4668,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -4790,6 +4865,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -4986,6 +5066,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -5178,6 +5263,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -5374,6 +5464,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -5566,6 +5661,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",
@@ -5763,6 +5863,11 @@
           "id": "newFolderWithSelection",
           "label": "New Folder with Selection",
           "icon": "newFolder"
+        },
+        {
+          "id": "saveAsTemplate",
+          "label": "Save as Template",
+          "icon": "newFile"
         },
         {
           "type": "separator",

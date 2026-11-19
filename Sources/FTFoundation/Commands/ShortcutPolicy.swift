@@ -129,7 +129,7 @@ public enum ShortcutPolicy {
         "quickLook": .quickLookSelection, "showInfo": .toggleInfoPanel, "calculateSize": .calculateSize,
         "revealInFolder": .revealInFolder, "edit": .editSelection, "cut": .cut, "copy": .copy, "paste": .paste,
         "move": .moveSelection, "rename": .renameSelection, "duplicate": .duplicateSelection, "newFolder": .newFolder,
-        "newFolderWithSelection": .newFolderWithSelection,
+        "newFolderWithSelection": .newFolderWithSelection, "saveAsTemplate": .saveAsTemplate,
         "pasteAsFile": .pasteAsFile, "terminal": .openInTerminal, "copyPath": .copyPath,
         "copyContents": .copyContents, "share": .shareSelection, "convertImages": .convertImages,
         "rootTreeHere": .rootTreeAtSelection, "trash": .trashSelection,
@@ -182,6 +182,8 @@ public enum ShortcutPolicy {
             return canHandleRaw(.newFolder, context)
         case "newFolderWithSelection":
             return canHandle(.newFolderWithSelection, context)
+        case "saveAsTemplate":
+            return canHandle(.saveAsTemplate, context)
         case "pasteAsFile":
             return canHandle(.pasteAsFile, context)
         case "terminal":

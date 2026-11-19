@@ -84,7 +84,7 @@ extension ExplorerWindowlessTests {
             let colors = try #require(ids.firstIndex(of: "tagColors"))
             #expect(
                 Array(ids[(colors - 5)...colors])
-                    == ["move", "newFolderWithSelection", "-", "compress", "-", "tagColors"])
+                    == ["newFolderWithSelection", "saveAsTemplate", "-", "compress", "-", "tagColors"])
             await harness.close()
         }
 

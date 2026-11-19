@@ -286,6 +286,11 @@ extension HelpContent {
                     title: "Changing",
                     rows: [
                         HelpRow(
+                            label: "New File",
+                            description:
+                                "File ▸ New File makes an empty text file, or a copy of one of your templates, in the folder you are in, and opens its name for typing. A template is any file you keep in the Templates folder, a letter or a note with your headings, say: right-click a file and choose Save as Template to add it, or choose Open Templates Folder at the end of New File’s menu to add, rename or remove them. Each one is listed by its name, and its copy is dated now. New File is also on the folder’s right-click menu."
+                        ),
+                        HelpRow(
                             label: "Rename",
                             description:
                                 "{renameSelection} renames the selected item. With several selected it opens the Rename sheet: replace or add text, number or date them, or change their case, with every new name shown before anything is renamed, and settings saved as presets. Settings → Files chooses whether Return renames or opens."
@@ -797,6 +802,9 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.openTemplatesFolder),
             "Open the folder of templates, the files New File makes new files from"),
+        HelpShortcutItem(
+            group: .files, .command(.saveAsTemplate),
+            "Copy the selected files to the templates New File makes files from"),
         HelpShortcutItem(
             group: .files, .command(.newFolderWithSelection),
             "Put the selected items in a new folder beside them, and name it"),

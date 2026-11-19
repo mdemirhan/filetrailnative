@@ -143,7 +143,8 @@ struct ContextMenuRulesTests {
         #expect(
             menu == [
                 "Open", "Open With", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy", "Copy Path",
-                "Copy Text", "Share…", "Rename", "Duplicate", "Move to…", "Compress \u{201C}b.txt\u{201D}",
+                "Copy Text", "Share…", "Rename", "Duplicate", "Move to…", "Save as Template",
+                "Compress \u{201C}b.txt\u{201D}",
                 "Open in Terminal", "Show in Finder", "Move to Trash",
             ])
         let folder = labels(
@@ -181,7 +182,7 @@ struct ContextMenuRulesTests {
             ).split { $0.actionID == nil }.map { $0.compactMap(\.label) }
         }
         let archive = groups(subject(.content, [("/a/Photos.zip", .file)]))
-        #expect(archive.contains(["Rename", "Duplicate", "Move to…"]))
+        #expect(archive.contains(["Rename", "Duplicate", "Move to…", "Save as Template"]))
         #expect(archive.contains(["Compress \u{201C}Photos.zip\u{201D}", "Extract", "Extract To…"]))
         let image = groups(subject(.content, [("/a/p.png", .file)]))
         #expect(image.contains(["Compress \u{201C}p.png\u{201D}", "Convert Image…"]))

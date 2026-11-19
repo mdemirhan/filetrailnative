@@ -426,7 +426,7 @@ public enum CommandPalette {
         case .extractSelection, .extractSelectionTo: .extract
         case .newFolder, .newFolderWithSelection: .newFolder
         case .pasteAsFile: .pasteAsFile
-        case .newTextFile: .newFile
+        case .newTextFile, .saveAsTemplate: .newFile
         case .trashSelection: .trash
         case .ejectVolume: .eject
         case .emptyTrash: .emptyTrash

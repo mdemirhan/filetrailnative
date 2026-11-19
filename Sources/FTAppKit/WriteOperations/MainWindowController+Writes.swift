@@ -8,7 +8,7 @@ extension MainWindowController {
     /// The commands that write, the clipboard's among them: each goes to the file operations.
     static let writeCommands: Set<AppCommand> = [
         .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .newFolderWithSelection, .newTextFile,
-        .pasteAsFile,
+        .saveAsTemplate, .pasteAsFile,
         .trashSelection, .emptyTrash, .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut,
         .editCopy, .editPaste,
         .compressSelection, .extractSelection, .extractSelectionTo,
@@ -111,6 +111,8 @@ extension MainWindowController {
                     isSearchMode: searchRootPath != nil, homePath: actions.session.coordinator.homePath)
             else { return true }
             Task { _ = await actions.newFolder(in: target) }
+        case .saveAsTemplate:
+            saveAsTemplate(selectedPaths)
         case .newTextFile:
             // Into the folder on screen, whatever is selected, as New Folder.
             guard let target = pasteAsFileTargetPath(actions) else { return true }
@@ -164,6 +166,21 @@ extension MainWindowController {
                     window)
             }
         }
+    }
+
+    /// File ▸ Save as Template: the files copied into the Templates folder (made the first time), as Copy To copies, so
+    /// a name already there is asked about and Undo takes the copies back; New File lists them from then on.
+    func saveAsTemplate(_ paths: [String]) {
+        guard let actions = writeActions, let folder = Self.templatesFolderPath, !paths.isEmpty else { return }
+        if actions.refuseWhileBusy(.operation(.copyTo)) { return }
+        do {
+            try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: true)
+        } catch {
+            actions.dialogs.show("The Templates folder couldn\u{2019}t be made", error.localizedDescription, window)
+            return
+        }
+        Self.templatesFolderOpened?()
+        Task { _ = await actions.copyTo(paths, destination: folder) }
     }
 
     /// File ▸ New File ▸ Open Templates Folder: the folder in this tab, made the first time.
@@ -235,6 +252,8 @@ extension MainWindowController {
             }
             guard let target else { return }
             Task { _ = await actions.newFolder(in: target, selectInTree: fromTree) }
+        case .saveAsTemplate:
+            saveAsTemplate(paths)
         case .newFolderWithSelection:
             guard
                 let target = CommandAvailability.newFolderWithSelectionTarget(
