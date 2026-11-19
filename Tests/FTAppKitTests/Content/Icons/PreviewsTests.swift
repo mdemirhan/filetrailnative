@@ -193,6 +193,93 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        /// The folder above is opened, the window made 100 pt shorter while it shows, and Back pressed: the folder
+        /// comes back as it was left, into a pane of another height.
+        private func leaveShortenAndComeBack(
+            _ harness: ExplorerHarness, _ tab: MainWindowController, _ probe: GridProbe
+        ) async throws {
+            let folder = tab.currentFolder
+            let window = try #require(tab.window)
+            let size = window.contentLayoutRect.size
+            await tab.navigate(to: folder.deletingLastPathComponent())
+            window.setContentSize(NSSize(width: size.width, height: size.height - 100))
+            harness.layout(tab)
+            probe.layout()
+            tab.goBack(nil)
+            #expect(await waitUntil { tab.currentFolder == folder && !tab.isNavigating })
+            harness.layout(tab)
+            probe.layout()
+        }
+
+        // At 1 at a time a row is as high as the pane, so the place a folder was left at is another file's row once
+        // the pane has another height: Back brings the one selected file on screen, the file Move to Trash acts on,
+        // and not the place saved. With nothing selected the saved place is gone to, at a whole row.
+        @Test func backAtOneAtATimeShowsTheSelectedFileInAPaneOfAnotherHeight() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 40)
+            tab.perform(.showPreviews1)
+            harness.layout(tab)
+            probe.layout()
+            var previews = try #require(probe.pane as? PreviewsViewController)
+            // No scroll of this test settles by itself and selects the file it rests on.
+            previews.settleDelay = 3600
+            let paths = tab.content.entries.map(\.path)
+            /// The row at the top of the pane; nil between rows.
+            func rowOnScreen() -> Int? {
+                let rows = Double(previews.scroll.contentView.bounds.origin.y) / previews.layout.rowHeight
+                return abs(rows - rows.rounded()) * previews.layout.rowHeight < 0.5 ? Int(rows.rounded()) : nil
+            }
+            tab.content.select(paths: [paths[30]])
+            probe.layout()
+            #expect(rowOnScreen() == 30)
+            let before = previews.layout.rowHeight
+
+            try await leaveShortenAndComeBack(harness, tab, probe)
+            previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 3600
+            let after = previews.layout.rowHeight
+            // The place saved is some rows further down in the shorter pane.
+            #expect(previews.count == 1 && after < before && (30 * before / after).rounded() > 30)
+            #expect(tab.content.selection.paths == [paths[30]])
+            #expect(rowOnScreen() == 30)
+
+            // Nothing selected, scrolled to the 20th row: the row nearest to the place saved, whole.
+            tab.content.select(paths: [])
+            previews.scrollClamped(to: NSPoint(x: 0, y: 20 * after))
+            #expect(tab.content.selection.isEmpty && rowOnScreen() == 20)
+            try await leaveShortenAndComeBack(harness, tab, probe)
+            previews = try #require(probe.pane as? PreviewsViewController)
+            let last = previews.layout.rowHeight
+            #expect(last < after && tab.content.selection.isEmpty)
+            #expect(rowOnScreen() == Int((20 * after / last).rounded()))
+            await harness.close()
+        }
+
+        // At 4 at a time the selection is a choice among the files on screen and may be scrolled away from: Back
+        // goes to the place saved, at a whole row, and leaves the selected file where it is.
+        @Test func backAtFourAtATimeGoesToThePlaceSavedWhateverIsSelected() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 40)
+            var previews = try #require(probe.pane as? PreviewsViewController)
+            previews.settleDelay = 3600
+            let paths = tab.content.entries.map(\.path)
+            tab.content.select(paths: [paths[30]])
+            probe.layout()
+            let before = previews.layout.rowHeight
+            previews.scrollClamped(to: NSPoint(x: 0, y: 3 * before))
+            #expect(previews.count == 4 && !previews.isWhollyInView(index: 30))
+
+            try await leaveShortenAndComeBack(harness, tab, probe)
+            previews = try #require(probe.pane as? PreviewsViewController)
+            let after = previews.layout.rowHeight
+            #expect(previews.count == 4 && after < before)
+            #expect(tab.content.selection.paths == [paths[30]])
+            let top = Double(previews.scroll.contentView.bounds.origin.y)
+            #expect(abs(top - (3 * before / after).rounded() * after) < 0.5)
+            #expect(!previews.isWhollyInView(index: 30))
+            await harness.close()
+        }
+
         /// The file leaves the disk and the folder is read again. `byThisWindow`: as a write of this window ends, its
         /// selection letting go of the file before the read; otherwise as the read alone finds it gone.
         private func remove(

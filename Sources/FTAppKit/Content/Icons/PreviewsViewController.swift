@@ -228,7 +228,8 @@ final class PreviewsViewController: IconViewController {
     /// A place to scroll to from outside (the one a folder was left at, which Back returns to) is taken to the row
     /// nearest to it: the pane may have had another size then, with rows of another height. While the mouse button
     /// is held the place is taken as it is, as a drag-to-select past the pane's edge scrolls by a few points at a
-    /// time; the pane settles on a row when it ends.
+    /// time; the pane settles on a row when it ends. At 1 at a time with one file selected the pane goes to that
+    /// file instead (`selectedFileTop`).
     override var scrollPosition: (top: Double, left: Double) {
         get { super.scrollPosition }
         set {
@@ -238,9 +239,21 @@ final class PreviewsViewController: IconViewController {
             }
             placing {
                 placeItems()
-                super.scrollPosition = (rowTop(nearest: newValue.top), newValue.left)
+                super.scrollPosition = (selectedFileTop ?? rowTop(nearest: newValue.top), newValue.left)
             }
         }
+    }
+
+    /// At 1 at a time, the top of the one selected file's row: where a view put back from outside rests, whatever
+    /// place was saved with it. A row is as high as the pane, so a place saved at another height of the pane is
+    /// another file's row now, and the pane would show a file that isn't the selected one, which Space, the Info
+    /// panel and Move to Trash act on. Nil at any other count, and with several files selected or none, where the
+    /// saved place is the one to go to.
+    private var selectedFileTop: Double? {
+        guard count == 1, layout.rowHeight > 0, let paths = host?.selection.paths, paths.count == 1,
+            let index = indexByPath[paths[0]]
+        else { return nil }
+        return min(maxScrollTop, Double(index / max(1, gridColumns)) * layout.rowHeight)
     }
 
     /// A scroll that ends between rows settles on the next row the way it went, or back where it started when it went
