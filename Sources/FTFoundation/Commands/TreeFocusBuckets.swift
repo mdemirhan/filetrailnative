@@ -30,7 +30,8 @@ extension ShortcutPolicy {
             .focusContentPane, .openHelp, .openKeyboardShortcuts:
             .globalExplorer
         case .openSelection, .editSelection, .openInTerminal, .moveSelection, .renameSelection, .duplicateSelection,
-            .convertImages, .newFolder, .trashSelection, .copySelection, .cutSelection, .pasteSelection, .copyPath,
+            .convertImages, .newFolder, .newFolderWithSelection, .trashSelection, .copySelection, .cutSelection,
+            .pasteSelection, .copyPath,
             .copyContents, .shareSelection,
             .openSelectionInNewTab, .openSelectionInNewWindow, .quickLookSelection, .revealInFolder, .copyToOtherPane,
             .moveToOtherPane, .compressSelection, .extractSelection, .extractSelectionTo, .deselectAll,

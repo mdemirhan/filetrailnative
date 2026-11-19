@@ -13,7 +13,7 @@ public enum ContextMenuScope: String, Sendable, Codable {
 public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codable {
     case revealInFolder, revealInTree, open, openInNewTab, openInNewWindow, openWith, quickLook
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
-    case newFolder, compress, extract, extractTo
+    case newFolder, newFolderWithSelection, compress, extract, extractTo
     case convertImages
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, copyContents, rootTreeHere, trash
     /// The system's share popover for the items: AirDrop, Mail, Messages and the rest macOS offers.
@@ -186,6 +186,7 @@ public enum ContextMenuItems {
                 line("separator-clipboard"),
                 item(.rename, options.renameLabel ?? "Rename", .rename), item(.duplicate, "Duplicate", .duplicate),
                 item(.move, "Move to…", .move), item(.newFolder, "New Folder", .newFolder),
+                item(.newFolderWithSelection, "New Folder with Selection", .newFolder),
                 line("separator-rename"),
                 // What makes new files from the items. Compress for any items of one folder; Extract and Extract To
                 // for archives; Convert Images for images only, every one of them (hidden by the caller otherwise).

@@ -438,7 +438,7 @@ import Testing
     @Test func findsCommandsByNameOrByKey() throws {
         let (controller, _, view) = try make()
         view.setQuery("new folder")
-        #expect(texts("settings.shortcuts.label", in: view) == ["New Folder"])
+        #expect(texts("settings.shortcuts.label", in: view) == ["New Folder", "New Folder with Selection"])
         view.setQuery("⇧⌘N")
         #expect(texts("settings.shortcuts.label", in: view).contains("New Folder"))
         view.setQuery("cmd+shift+n")

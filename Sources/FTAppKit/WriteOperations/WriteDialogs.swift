@@ -18,7 +18,7 @@ enum WriteStartAction: Equatable, Sendable {
             case .trash: "Couldn\u{2019}t Move to Trash"
             case .deleteImmediately: "Couldn\u{2019}t Delete"
             case .rename, .batchRename: "Couldn\u{2019}t Rename"
-            case .newFolder: "Couldn\u{2019}t Make a New Folder"
+            case .newFolder, .newFolderWithSelection: "Couldn\u{2019}t Make a New Folder"
             case .pasteAsFile: "Couldn\u{2019}t Paste as File"
             case .compress: "Couldn\u{2019}t Compress"
             case .extract: "Couldn\u{2019}t Extract"

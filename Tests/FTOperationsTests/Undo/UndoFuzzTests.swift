@@ -64,7 +64,7 @@ struct FuzzFailures: Sendable {
 @MainActor
 final class UndoFuzzCase {
     enum Operation: String, CaseIterable {
-        case rename, newFolder, trash, batch, copy, move, replace
+        case rename, newFolder, folderWithSelection, trash, batch, copy, move, replace
     }
 
     struct Item {
@@ -252,6 +252,18 @@ final class UndoFuzzCase {
             log.append("new folder \(relative("\(parent)/\(name)"))")
             _ = try await finish {
                 try await coordinator.createFolder(parentDirectoryPath: parent, folderName: name, window: window)
+            }
+        case .folderWithSelection:
+            let folder = random.pick(folders())
+            let children = items.filter { NodePath.dirname($0.path) == folder }
+            guard !children.isEmpty else { return kind }
+            let picked = Array(random.shuffle(children).prefix(random.integer(1, 3))).map(\.path)
+            let name = freshName()
+            log.append(
+                "new folder \(relative("\(folder)/\(name)")) with \(picked.map(relative).joined(separator: ", "))")
+            _ = try await finish {
+                try await coordinator.newFolderWithSelection(
+                    parentDirectoryPath: folder, itemPaths: picked, folderName: name, window: window)
             }
         case .trash:
             guard !items.isEmpty else { return kind }

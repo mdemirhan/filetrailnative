@@ -151,6 +151,12 @@ public struct UndoQuestionText: Equatable, Sendable {
                 "\u{201C}\(one)\u{201D} isn\u{2019}t empty anymore.",
                 "Undoing New Folder moves it to the Trash, along with what you put in it.")
         }
+        if made && action == .newFolderWithSelection, let one {
+            return text(
+                "Something else was put in \u{201C}\(one)\u{201D} since.",
+                "Undoing New Folder with Selection moves the items back out, then the folder to the Trash, along with what else is in it."
+            )
+        }
         return one.map {
             text(
                 "\u{201C}\($0)\u{201D} was changed after this was done.",

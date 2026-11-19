@@ -413,7 +413,7 @@ public enum CommandPalette {
         case .moveSelection, .moveToOtherPane: .move
         case .compressSelection: .compress
         case .extractSelection, .extractSelectionTo: .extract
-        case .newFolder: .newFolder
+        case .newFolder, .newFolderWithSelection: .newFolder
         case .pasteAsFile: .pasteAsFile
         case .trashSelection: .trash
         case .ejectVolume: .eject

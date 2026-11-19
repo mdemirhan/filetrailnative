@@ -9,6 +9,7 @@ public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
     case deleteImmediately = "delete_immediately"
     case rename
     case newFolder = "new_folder"
+    case newFolderWithSelection = "new_folder_with_selection"
     case pasteAsFile = "paste_as_file"
     case compress, extract
     case batchRename = "batch_rename"
@@ -72,6 +73,7 @@ public struct ProgressCardText: Equatable, Sendable {
         case .deleteImmediately: pair = ("Deleting…", "Delete Immediately")
         case .rename, .batchRename: pair = ("Renaming…", "Rename")
         case .newFolder: pair = ("Creating Folder…", "New Folder")
+        case .newFolderWithSelection: pair = ("Creating Folder…", "New Folder with Selection")
         case .pasteAsFile: pair = ("Saving File…", "Paste as File")
         case .compress: pair = ("Compressing…", "Compress")
         case .extract: pair = ("Extracting…", "Extract")

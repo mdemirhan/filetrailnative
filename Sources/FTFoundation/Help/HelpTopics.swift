@@ -792,6 +792,9 @@ extension HelpContent {
             group: .files, .command(.moveSelection), "Move the selected items to a folder chosen by name or path"),
         HelpShortcutItem(
             group: .files, .command(.newFolder), "Make a new folder in the folder you are in, and name it"),
+        HelpShortcutItem(
+            group: .files, .command(.newFolderWithSelection),
+            "Put the selected items in a new folder beside them, and name it"),
         HelpShortcutItem(group: .files, .command(.trashSelection), "Move the selected items to the Trash"),
         HelpShortcutItem(group: .files, .command(.emptyTrash), "Empty the Trash (asks first)"),
         HelpShortcutItem(group: .files, .command(.ejectVolume), "Eject the disk selected in the sidebar"),

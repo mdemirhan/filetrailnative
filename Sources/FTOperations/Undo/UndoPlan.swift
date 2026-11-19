@@ -388,8 +388,12 @@ public enum UndoPlan {
     }
 
     /// Whether the item a step would move to the Trash is still the one the operation made: refused when it is
-    /// gone, unreadable or another item; otherwise whether it changed since.
-    public static func checkTrash(_ fileSystem: some IdentityFileSystem, _ step: PlannedTrash) -> TrashCheck {
+    /// gone, unreadable or another item; otherwise whether it changed since. `changes`: what the steps before it in
+    /// the unit take away first. A folder the items it was made with go back out of (New Folder with Selection) is
+    /// looked at without them, as it will be by then.
+    public static func checkTrash(
+        _ fileSystem: some IdentityFileSystem, _ step: PlannedTrash, _ changes: UnitChanges = UnitChanges()
+    ) -> TrashCheck {
         let item: WriteServiceStats
         switch lookUp(step.path, { try fileSystem.lstat($0) }) {
         case .unreadable(let refusal): return .refused(refusal)
@@ -405,7 +409,22 @@ public enum UndoPlan {
         guard let stamp = step.stamp else {
             return .ok(changed: step.id == nil, id: id)
         }
-        let now = readItemStamp(StampReader(fileSystem), step.path)
+        let leaving = changes.movedAwayPaths
+        let reader =
+            leaving.isEmpty || stamp.kind != .directory
+            ? StampReader(fileSystem)
+            : StampReader(
+                lstat: { try fileSystem.lstat($0) },
+                readdir: { folder in
+                    // An item leaving takes its AppleDouble file ("._name") with it.
+                    func leaves(_ name: String) -> Bool { leaving.contains(placeKey(NodePath.join(folder, name))) }
+                    return try fileSystem.readdir(folder).filter { name in
+                        !leaves(name)
+                            && !(startsWith(name, "._") && name.utf16.count > 2
+                                && leaves(String(String.UnicodeScalarView(name.unicodeScalars.dropFirst(2)))))
+                    }
+                })
+        let now = readItemStamp(reader, step.path)
         return .ok(changed: now.map { !sameStamp(stamp, $0) } ?? true, id: id)
     }
 
@@ -609,7 +628,7 @@ public enum UndoPlan {
                     changes.filledPlaces.insert(placeKey(planned.to))
                 }
             case .trash(let planned):
-                switch checkTrash(fileSystem, planned) {
+                switch checkTrash(fileSystem, planned, changes) {
                 case .refused(let refusal):
                     if refusal.missing { continue steps }
                     break steps

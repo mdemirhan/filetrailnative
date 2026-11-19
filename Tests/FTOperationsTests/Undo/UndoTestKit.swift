@@ -158,6 +158,15 @@ final class UndoTest {
     }
 
     @discardableResult
+    func newFolderWithSelection(_ parent: String, _ items: [String], _ name: String = "untitled folder")
+        async throws -> WriteOperationEvent
+    {
+        try await finish(
+            coordinator.newFolderWithSelection(
+                parentDirectoryPath: parent, itemPaths: items, folderName: name, window: window))
+    }
+
+    @discardableResult
     func trash(_ paths: String...) async throws -> WriteOperationEvent {
         try await finish(coordinator.trash(paths: paths, window: window))
     }

@@ -352,6 +352,31 @@ final class WindowWriteActions {
         return outcome
     }
 
+    /// New Folder with Selection: as New Folder in the folder on screen, a folder with a free name, and the selected
+    /// items of that folder moved into it; its name is then edited in its row.
+    func newFolderWithSelection(_ items: [String], in folder: String) async -> CopyLikeOutcome {
+        let listedNames = tab?.content.listed.map(\.name) ?? []
+        let name = LocalWriteRules.freeNewFolderName(listedNames)
+        if refuseWhileBusy(.operation(.newFolderWithSelection)) { return .cancelled }
+        let pendingPath = Self.childPath(folder, name)
+        session.pendingInlineRenamePath = pendingPath
+        let outcome = await startLocal(
+            .newFolderWithSelection,
+            card: WriteOperationCardState(
+                action: .newFolderWithSelection, stage: .starting, targetPath: folder, totalItemCount: items.count),
+            showsRefusal: false,
+            start: { [coordinator, session] in
+                try await coordinator.newFolderWithSelection(
+                    parentDirectoryPath: folder, itemPaths: items, folderName: name, window: session)
+            })
+        if case .queued = outcome { return outcome }
+        if session.pendingInlineRenamePath == pendingPath { session.pendingInlineRenamePath = nil }
+        if case .error(let message) = outcome {
+            dialogs.show("The folder couldn\u{2019}t be made", message, window)
+        }
+        return outcome
+    }
+
     /// What `makeFolder(at:)` came to.
     enum MadeFolder: Equatable {
         case made(String)

@@ -123,6 +123,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -303,6 +308,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -489,6 +499,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -669,6 +684,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -855,6 +875,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -1035,6 +1060,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -1221,6 +1251,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -1411,6 +1446,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -1606,6 +1646,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -1795,6 +1840,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -1990,6 +2040,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -2179,6 +2234,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -2374,6 +2434,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -2566,6 +2631,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -4523,6 +4593,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -4709,6 +4784,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -4901,6 +4981,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -5087,6 +5172,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -5279,6 +5369,11 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
+          "icon": "newFolder"
+        },
+        {
           "type": "separator",
           "key": "separator-rename"
         },
@@ -5465,6 +5560,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {
@@ -5657,6 +5757,11 @@
         {
           "id": "newFolder",
           "label": "New Folder",
+          "icon": "newFolder"
+        },
+        {
+          "id": "newFolderWithSelection",
+          "label": "New Folder with Selection",
           "icon": "newFolder"
         },
         {

@@ -161,6 +161,105 @@ struct UndoExecutionTests {
         }
     }
 
+    // MARK: New Folder with Selection
+
+    @Test func putsTheItemsInANewFolderAndOneUndoPutsThemBack() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            try UndoDisk.write("\(root)/b.txt", "b")
+            try UndoDisk.write("\(root)/c.txt", "c")
+            try UndoDisk.mkdir("\(root)/untitled folder")
+            let t = UndoTest(root: root, trashDir: trashDir)
+            let before = t.snapshot()
+            let made = try await t.newFolderWithSelection(root, ["\(root)/a.txt", "\(root)/b.txt"])
+            #expect(made.status == .completed)
+            // "untitled folder" was taken: the next free name.
+            #expect(made.result?.targetPath == "\(root)/untitled folder 2")
+            #expect(UndoDisk.names("\(root)/untitled folder 2") == ["a.txt", "b.txt"])
+            #expect(UndoDisk.exists("\(root)/c.txt"))
+            #expect(t.history.menu() == UndoMenuLabels(undo: "New Folder with Selection", redo: nil, cantUndo: false))
+            let after = t.snapshot()
+            // The folder holds what it was made with: nothing to ask.
+            let prepared = try await t.prepare()
+            #expect(prepared.changed.isEmpty)
+            #expect(prepared.nameTaken.isEmpty)
+            #expect(try await t.undo().status == .completed)
+            #expect(t.snapshot() == before)
+            #expect(t.history.menu() == UndoMenuLabels(undo: nil, redo: "New Folder with Selection", cantUndo: false))
+            #expect(try await t.undo(.redo).status == .completed)
+            #expect(t.snapshot() == after)
+            await t.shutDown()
+        }
+    }
+
+    @Test func asksBeforeUndoingANewFolderWithSelectionSomethingElseWasPutIn() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            let t = UndoTest(root: root, trashDir: trashDir)
+            try await t.newFolderWithSelection(root, ["\(root)/a.txt"])
+            try UndoDisk.write("\(root)/untitled folder/notes.txt", "mine")
+            let prepared = try await t.prepare()
+            #expect(
+                prepared.changed
+                    == [UndoQuestion.ChangedItem(name: "untitled folder", putBack: false, replaced: false)])
+            await t.shutDown()
+        }
+    }
+
+    @Test func movesInWhatItCanAndUndoesThat() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            try UndoDisk.write("\(root)/b.txt", "b")
+            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
+                fileSystem.renameExclusiveImpl = { from, to in
+                    if from.hasSuffix("/b.txt") { throw codedError(.errno(EACCES), "EACCES: permission denied") }
+                    try fileSystem.base.renameExclusive(from, to)
+                }
+            }
+            let before = t.snapshot()
+            let made = try await t.newFolderWithSelection(root, ["\(root)/a.txt", "\(root)/b.txt"])
+            #expect(made.status == .partial)
+            #expect(made.result?.items.map(\.status) == [.completed, .failed])
+            #expect(UndoDisk.names("\(root)/untitled folder") == ["a.txt"])
+            t.fileSystem.renameExclusiveImpl = nil
+            #expect(try await t.undo().status == .completed)
+            #expect(t.snapshot() == before)
+            await t.shutDown()
+        }
+    }
+
+    @Test func leavesNoFolderWhenNothingCouldGoIn() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
+                fileSystem.renameExclusiveImpl = { _, _ in
+                    throw codedError(.errno(EACCES), "EACCES: permission denied")
+                }
+            }
+            let before = t.snapshot()
+            let made = try await t.newFolderWithSelection(root, ["\(root)/a.txt"])
+            #expect(made.status == .failed)
+            #expect(t.snapshot() == before)
+            #expect(t.history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: false))
+            await t.shutDown()
+        }
+    }
+
+    @Test func refusesItemsFromAnotherFolder() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.mkdir("\(root)/sub")
+            try UndoDisk.write("\(root)/sub/a.txt", "a")
+            let t = UndoTest(root: root, trashDir: trashDir)
+            await #expect(throws: WriteCoordinatorError.self) {
+                try await t.coordinator.newFolderWithSelection(
+                    parentDirectoryPath: root, itemPaths: ["\(root)/sub/a.txt"], folderName: "untitled folder",
+                    window: t.window)
+            }
+            #expect(!UndoDisk.exists("\(root)/untitled folder"))
+            await t.shutDown()
+        }
+    }
+
     @Test func doesntAskAboutANewFolderAnItemWasMovedIntoAndBackOutOf() async throws {
         // A folder's date changes with every item in or out, so it must not count as a change.
         try await withUndoFolder { root, trashDir in

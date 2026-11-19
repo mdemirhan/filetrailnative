@@ -281,7 +281,7 @@ public enum UndoHistoryRows {
     static func icon(_ entry: UndoEntry) -> CommandIcon {
         switch entry.action {
         case .rename, .batchRename: .rename
-        case .newFolder: .newFolder
+        case .newFolder, .newFolderWithSelection: .newFolder
         case .pasteAsFile: .pasteAsFile
         case .compress: .compress
         case .extract: .extract
@@ -312,6 +312,7 @@ public enum UndoHistoryRows {
             case .deleteImmediately: name = "Delete Immediately"
             case .rename, .batchRename: name = "Rename"
             case .newFolder: name = "New Folder"
+            case .newFolderWithSelection: name = "New Folder with Selection"
             case .pasteAsFile: name = "Paste as File"
             case .compress: name = "Compress"
             case .extract: name = "Extract"

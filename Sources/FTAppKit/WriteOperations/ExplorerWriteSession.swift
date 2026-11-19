@@ -326,6 +326,11 @@ final class ExplorerWriteSession: WriteOperationWindow {
             let madePath = event.result?.items.first?.destinationPath
             pendingInlineRenamePath = event.status == .completed ? madePath : nil
         }
+        // New Folder with Selection's folder is there once anything went into it.
+        if event.action == .newFolderWithSelection, pendingInlineRenamePath != nil {
+            pendingInlineRenamePath =
+                event.status == .completed || event.status == .partial ? event.result?.targetPath : nil
+        }
         activeOperationId = nil
         let selectionChanged = selectionChangedSinceWriteStarted()
         applyCard(nil)

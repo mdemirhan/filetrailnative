@@ -137,8 +137,11 @@ public enum WriteEndNotices {
                 kind: .success, title: write.action == .undo ? "Undone" : "Redone",
                 message: undoLabel?.isEmpty == false ? undoLabel : nil)
         }
-        // What was extracted is selected where it went, or opens in a new tab or window when no pane shows it.
-        if [.newFolder, .pasteAsFile, .rename, .batchRename, .duplicate, .compress, .extract].contains(write.action) {
+        // What was extracted is selected where it went, or opens in a new tab or window when no pane shows it. A new
+        // folder, with or without the selection in it, is selected and named.
+        if [.newFolder, .newFolderWithSelection, .pasteAsFile, .rename, .batchRename, .duplicate, .compress, .extract]
+            .contains(write.action)
+        {
             return nil
         }
         if write.action == .convertImages {

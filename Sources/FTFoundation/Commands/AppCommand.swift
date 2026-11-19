@@ -23,6 +23,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case duplicateSelection
     case convertImages
     case newFolder
+    case newFolderWithSelection
     case trashSelection
     case emptyTrash
     case ejectVolume

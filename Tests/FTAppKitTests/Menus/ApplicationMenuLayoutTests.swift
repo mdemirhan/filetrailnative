@@ -25,7 +25,8 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "File")) == [
-                "New Window", "New Tab", "Duplicate Tab", "New Folder", "-", "Open", "Open in New Tab",
+                "New Window", "New Tab", "Duplicate Tab", "New Folder", "New Folder with Selection", "-", "Open",
+                "Open in New Tab",
                 "Open in New Window", "Open in Other Pane", "Edit in Text Editor", "Reveal in Folder", "-",
                 "Calculate Size", "Rename", "-", "Compress", "Extract", "Extract To…", "-",
                 "Duplicate", "Move to…", "Convert Images…", "Quick Look", "-", "Share…", "-",
@@ -210,6 +211,7 @@ import Testing
             ("File", "New Tab", "Command+T", .newTab),
             ("File", "Duplicate Tab", nil, .duplicateTab),
             ("File", "New Folder", "Command+Shift+N", .newFolder),
+            ("File", "New Folder with Selection", "Control+Command+N", .newFolderWithSelection),
             ("File", "Open", "Command+O", .openSelection),
             ("File", "Open in New Tab", nil, .openSelectionInNewTab),
             ("File", "Open in New Window", nil, .openSelectionInNewWindow),

@@ -71,6 +71,7 @@ enum ApplicationMenuBuilder {
             // The system tab bar has no menu of the app's, so the File menu has it.
             menu.addItem(context.command(.duplicateTab, "Duplicate Tab"))
             menu.addItem(context.command(.newFolder, "New Folder"))
+            menu.addItem(context.command(.newFolderWithSelection, "New Folder with Selection"))
             menu.addItem(.separator())
             menu.addItem(context.command(.openSelection, "Open"))
             menu.addItem(context.command(.openSelectionInNewTab, "Open in New Tab"))

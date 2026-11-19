@@ -7,8 +7,9 @@ import FTOperations
 extension MainWindowController {
     /// The commands that write, the clipboard's among them: each goes to the file operations.
     static let writeCommands: Set<AppCommand> = [
-        .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .pasteAsFile, .trashSelection, .emptyTrash,
-        .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut, .editCopy, .editPaste,
+        .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .newFolderWithSelection, .pasteAsFile,
+        .trashSelection, .emptyTrash, .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut,
+        .editCopy, .editPaste,
         .compressSelection, .extractSelection, .extractSelectionTo,
     ]
 
@@ -109,6 +110,14 @@ extension MainWindowController {
                     isSearchMode: searchRootPath != nil, homePath: actions.session.coordinator.homePath)
             else { return true }
             Task { _ = await actions.newFolder(in: target) }
+        case .newFolderWithSelection:
+            let paths = selectedPaths
+            guard
+                let target = CommandAvailability.newFolderWithSelectionTarget(
+                    currentPath: shownFolderPath, selectedPaths: paths, isSearchMode: searchRootPath != nil,
+                    homePath: actions.session.coordinator.homePath)
+            else { return true }
+            Task { _ = await actions.newFolderWithSelection(paths, in: target) }
         case .pasteAsFile:
             // Into the folder on screen, whatever is selected and whichever pane has the keyboard, as New Folder.
             guard let target = pasteAsFileTargetPath(actions) else { return true }
@@ -185,6 +194,13 @@ extension MainWindowController {
             }
             guard let target else { return }
             Task { _ = await actions.newFolder(in: target, selectInTree: fromTree) }
+        case .newFolderWithSelection:
+            guard
+                let target = CommandAvailability.newFolderWithSelectionTarget(
+                    currentPath: shownFolderPath, selectedPaths: paths, isSearchMode: searchRootPath != nil,
+                    homePath: actions.session.coordinator.homePath)
+            else { return }
+            Task { _ = await actions.newFolderWithSelection(paths, in: target) }
         case .pasteAsFile:
             // Only the background's menu has it: the folder on screen.
             guard let target = pasteAsFileTargetPath(actions) else { return }

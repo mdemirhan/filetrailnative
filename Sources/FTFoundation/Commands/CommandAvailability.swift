@@ -121,8 +121,8 @@ public enum CommandAvailability {
     /// a clipboard, so they stay available. A held key runs them once per press (`WriteStartingShortcuts`).
     static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
-        .newFolder, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane, .compressSelection,
-        .extractSelection, .extractSelectionTo, .convertImages,
+        .newFolder, .newFolderWithSelection, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane,
+        .compressSelection, .extractSelection, .extractSelectionTo, .convertImages,
     ]
 
     // MARK: Helpers
@@ -172,6 +172,22 @@ public enum CommandAvailability {
             return nil
         }
         return target
+    }
+
+    /// Where New Folder with Selection makes its folder: the folder on screen, when every item selected is in it.
+    /// None in search results or in the Trash.
+    public static func newFolderWithSelectionTarget(
+        currentPath: String, selectedPaths: [String], isSearchMode: Bool, homePath: String
+    ) -> String? {
+        guard !selectedPaths.isEmpty,
+            let target = newFolderTargetPath(
+                currentPath: currentPath, selectedPaths: selectedPaths, isSearchMode: isSearchMode,
+                homePath: homePath)
+        else { return nil }
+        let inIt = selectedPaths.allSatisfy { path in
+            parentDirectoryPath(path).map { $0.utf8.elementsEqual(target.utf8) } ?? false
+        }
+        return inIt ? target : nil
     }
 
     // MARK: Targets
@@ -356,6 +372,10 @@ public enum CommandAvailability {
             return context.ejectTargetPath != nil
         case .newFolder:
             return newFolderTargetPath(
+                currentPath: context.currentPath, selectedPaths: context.selectedPathsInViewOrder,
+                isSearchMode: context.isSearchMode, homePath: context.homePath ?? "") != nil
+        case .newFolderWithSelection:
+            return newFolderWithSelectionTarget(
                 currentPath: context.currentPath, selectedPaths: context.selectedPathsInViewOrder,
                 isSearchMode: context.isSearchMode, homePath: context.homePath ?? "") != nil
         case .copySelection, .cutSelection:

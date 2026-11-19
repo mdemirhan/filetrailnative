@@ -333,6 +333,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -1404,6 +1409,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -2747,6 +2757,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -3818,6 +3833,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -5167,6 +5187,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -6228,6 +6253,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -7572,6 +7602,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -8643,6 +8678,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -9719,7 +9759,8 @@
           "openHelp": [],
           "openKeyboardShortcuts": [],
           "deselectAll": [],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": []
         },
         "returnKeyAction": "rename",
         "queries": [
@@ -11950,6 +11991,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -13026,6 +13072,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -14390,6 +14441,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Shift+Backspace",
             "description": "Empty the Trash (asks first)"
           },
@@ -15436,6 +15492,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -16777,6 +16838,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -17838,6 +17904,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -19203,6 +19274,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -20244,6 +20320,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -21561,6 +21642,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -22637,6 +22723,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -23998,6 +24089,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -25036,6 +25132,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -26390,6 +26491,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -27451,6 +27557,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -28774,6 +28885,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -29845,6 +29961,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -31199,6 +31320,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -32282,6 +32408,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -33633,6 +33764,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -34688,6 +34824,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -36021,6 +36162,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -37092,6 +37238,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -38455,6 +38606,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -39545,6 +39701,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+M",
                   "description": "Move the selected items to a folder chosen by name or path"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -40904,6 +41065,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -41975,6 +42141,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -43323,6 +43494,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Option+Return",
             "description": "Move the selected items to the Trash (Cmd+= also works)"
           },
@@ -44357,6 +44533,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -45704,6 +45885,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -46765,6 +46951,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -48103,6 +48294,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Shift+Backspace",
             "description": "Empty the Trash (asks first)"
           },
@@ -49159,6 +49355,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -50519,6 +50720,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -51590,6 +51796,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -52918,6 +53129,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -53974,6 +54190,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -55320,6 +55541,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -56403,6 +56629,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -57752,6 +57983,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -58803,6 +59039,11 @@
                   "group": "files",
                   "shortcut": "Ctrl+Cmd+S",
                   "description": "Make a new folder in the folder you are in, and name it (F7 also works)"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -60107,6 +60348,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -61173,6 +61419,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -62525,6 +62776,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -63608,6 +63864,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -64954,6 +65215,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -66020,6 +66286,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+N",
                   "description": "Make a new folder in the folder you are in, and name it"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",
@@ -67374,6 +67645,11 @@
           },
           {
             "group": "files",
+            "shortcut": "Ctrl+Cmd+N",
+            "description": "Put the selected items in a new folder beside them, and name it"
+          },
+          {
+            "group": "files",
             "shortcut": "Cmd+Backspace",
             "description": "Move the selected items to the Trash"
           },
@@ -68445,6 +68721,11 @@
                   "group": "files",
                   "shortcut": "Cmd+Shift+M",
                   "description": "Move the selected items to a folder chosen by name or path"
+                },
+                {
+                  "group": "files",
+                  "shortcut": "Ctrl+Cmd+N",
+                  "description": "Put the selected items in a new folder beside them, and name it"
                 },
                 {
                   "group": "files",

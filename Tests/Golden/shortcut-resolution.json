@@ -458,7 +458,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -656,6 +659,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -2758,7 +2765,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -2956,6 +2966,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -3358,7 +3372,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -3556,6 +3573,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -3952,7 +3973,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -4150,6 +4174,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -4553,7 +4581,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -4747,6 +4778,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -5194,7 +5229,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -5392,6 +5430,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -5792,7 +5834,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -5982,6 +6027,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -6383,7 +6432,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -6577,6 +6629,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -6986,7 +7042,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -7184,6 +7243,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -7580,7 +7643,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -7774,6 +7840,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -8179,7 +8249,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -8377,6 +8450,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -8772,7 +8849,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -8966,6 +9046,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -9358,7 +9442,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -9544,6 +9631,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -9947,7 +10038,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -10141,6 +10235,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -10544,7 +10642,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -10738,6 +10839,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -11138,7 +11243,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -11324,6 +11432,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -11726,7 +11838,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -11916,6 +12031,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -12334,7 +12453,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -12528,6 +12650,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -13074,7 +13200,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -13272,6 +13401,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -14005,7 +14138,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -14203,6 +14339,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -14681,7 +14821,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -14891,6 +15034,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -15359,7 +15506,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -15557,6 +15707,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -15995,7 +16149,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -16197,6 +16354,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -16692,7 +16853,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -16894,6 +17058,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -17437,7 +17605,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -17635,6 +17806,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -18276,7 +18451,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -18498,6 +18676,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -19280,7 +19462,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -19478,6 +19663,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -20181,7 +20370,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -20383,6 +20575,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -20844,7 +21040,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -21046,6 +21245,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -21656,7 +21859,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -21858,6 +22064,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -22424,7 +22634,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -22634,6 +22847,10 @@
           [
             "Cmd+Option+A",
             "deselectAll"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -23385,7 +23602,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -23575,6 +23795,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -24038,7 +24262,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -24240,6 +24467,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -24797,7 +25028,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -24995,6 +25229,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -25493,7 +25731,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -25691,6 +25932,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -26158,7 +26403,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -26360,6 +26608,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -26839,7 +27091,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -27037,6 +27292,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -27533,7 +27792,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -27731,6 +27993,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -28224,7 +28490,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -28406,6 +28675,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -29072,7 +29345,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -29274,6 +29550,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -29728,7 +30008,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -29926,6 +30209,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -30523,7 +30810,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -30725,6 +31015,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -31245,7 +31539,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -31443,6 +31740,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -32211,7 +32512,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -32413,6 +32717,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -32949,7 +33257,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -33147,6 +33458,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -33711,7 +34026,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -33909,6 +34227,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -34479,7 +34801,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -34677,6 +35002,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -35390,7 +35719,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -35588,6 +35920,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -36152,7 +36488,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -36350,6 +36689,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -37004,7 +37347,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -37226,6 +37572,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -38671,7 +39021,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -38877,6 +39230,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -39441,7 +39798,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -39639,6 +39999,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -40161,7 +40525,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -40363,6 +40730,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -40955,7 +41326,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -41153,6 +41527,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -42090,7 +42468,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -42292,6 +42673,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -42899,7 +43284,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -43109,6 +43497,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -43799,7 +44191,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -43993,6 +44388,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -44725,7 +45124,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -44927,6 +45329,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -45668,7 +46074,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -45874,6 +46283,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -46408,7 +46821,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -46606,6 +47022,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -47175,7 +47595,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -47373,6 +47796,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -47953,7 +48380,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -48143,6 +48573,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -48828,7 +49262,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -49046,6 +49483,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -49771,7 +50212,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -50001,6 +50445,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -51279,7 +51727,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -51481,6 +51932,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -51984,7 +52439,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -52178,6 +52636,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -52696,7 +53158,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -52910,6 +53375,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -53603,7 +54072,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -53805,6 +54277,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -54333,7 +54809,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -54535,6 +55014,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -55102,7 +55585,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -55292,6 +55778,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -55889,7 +56379,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -56103,6 +56596,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -56939,7 +57436,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -57129,6 +57629,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -57643,7 +58147,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -57845,6 +58352,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -58373,7 +58884,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -58563,6 +59077,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -59430,7 +59948,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -59624,6 +60145,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -60153,7 +60678,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -60351,6 +60879,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -61128,7 +61660,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -61326,6 +61861,10 @@
           [
             "Cmd+Option+A",
             "deselectAll"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -62165,7 +62704,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -62367,6 +62909,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -63047,7 +63593,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -63273,6 +63822,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -64775,7 +65328,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -64969,6 +65525,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -66033,7 +66593,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -66231,6 +66794,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -66790,7 +67357,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -66996,6 +67566,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -67922,7 +68496,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -68120,6 +68697,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -68646,7 +69227,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -68844,6 +69428,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -69429,7 +70017,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -69627,6 +70218,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -70184,7 +70779,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -70366,6 +70964,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -71083,7 +71685,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -71277,6 +71882,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -72097,7 +72706,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -72299,6 +72911,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -72927,7 +73543,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -73141,6 +73760,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -73970,7 +74593,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -74160,6 +74786,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -75060,7 +75690,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -75254,6 +75887,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -75815,7 +76452,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -76005,6 +76645,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -76882,7 +77526,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -77084,6 +77731,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -77714,7 +78365,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -77908,6 +78562,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -78514,7 +79172,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -78708,6 +79369,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -79363,7 +80028,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -79573,6 +80241,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -80256,7 +80928,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -80454,6 +81129,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -81179,7 +81858,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -81377,6 +82059,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -81989,7 +82675,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -82207,6 +82896,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -83418,7 +84111,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -83616,6 +84312,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -84192,7 +84892,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -84390,6 +85093,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -84911,7 +85618,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -85109,6 +85819,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -85581,7 +86295,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -85775,6 +86492,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -86472,7 +87193,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -86682,6 +87406,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -87569,7 +88297,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -87787,6 +88518,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -89263,7 +89998,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -89473,6 +90211,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -90096,7 +90838,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -90294,6 +91039,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -90884,7 +91633,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -91078,6 +91830,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -92068,7 +92824,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -92266,6 +93025,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -93595,7 +94358,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -93793,6 +94559,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -94480,7 +95250,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -94678,6 +95451,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -95112,7 +95889,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -95298,6 +96078,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -95776,7 +96560,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -95974,6 +96761,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -96512,7 +97303,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -96698,6 +97492,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -97489,7 +98287,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -97691,6 +98492,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -98362,7 +99167,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -98568,6 +99376,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -99168,7 +99980,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -99366,6 +100181,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -100073,7 +100892,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -100271,6 +101093,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -100815,7 +101641,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -101001,6 +101830,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -102150,7 +102983,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -102352,6 +103188,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -103148,7 +103988,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -103334,6 +104177,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -103900,7 +104747,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -104094,6 +104944,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -104610,7 +105464,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -104812,6 +105669,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -105735,7 +106596,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -105945,6 +106809,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -106960,7 +107828,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -107158,6 +108029,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -107673,7 +108548,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -107867,6 +108745,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -108433,7 +109315,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -108631,6 +109516,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -109166,7 +110055,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -109368,6 +110260,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -110217,7 +111113,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -110407,6 +111306,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -110906,7 +111809,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -111108,6 +112014,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -111769,7 +112679,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -111967,6 +112880,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -112513,7 +113430,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -112707,6 +113627,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -113254,7 +114178,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -113456,6 +114383,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -113965,7 +114896,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -114167,6 +115101,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -114825,7 +115763,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -115015,6 +115956,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -115610,7 +116555,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -115808,6 +116756,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -116447,7 +117399,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -116649,6 +117604,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -117263,7 +118222,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -117493,6 +118455,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -118214,7 +119180,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -118420,6 +119389,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -118920,7 +119893,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -119118,6 +120094,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -119627,7 +120607,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -119829,6 +120812,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -120344,7 +121331,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -120530,6 +121520,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -121314,7 +122308,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -121504,6 +122501,10 @@
           [
             "F2",
             "renameSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -122056,7 +123057,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -122250,6 +123254,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -123034,7 +124042,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -123236,6 +124247,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -123794,7 +124809,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -123984,6 +125002,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -124513,7 +125535,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -124703,6 +125728,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -125347,7 +126376,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -125541,6 +126573,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -126596,7 +127632,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -126798,6 +127837,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -127420,7 +128463,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -127610,6 +128656,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -128338,7 +129388,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -128540,6 +129593,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -129159,7 +130216,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -129361,6 +130421,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -130055,7 +131119,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -130257,6 +131324,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -130849,7 +131920,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -131051,6 +132125,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -131662,7 +132740,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -131868,6 +132949,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -132343,7 +133428,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -132553,6 +133641,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -133178,7 +134270,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -133380,6 +134475,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -134108,7 +135207,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -134294,6 +135396,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -135260,7 +136366,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -135466,6 +136575,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -135925,7 +137038,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -136123,6 +137239,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -136644,7 +137764,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -136830,6 +137953,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -137462,7 +138589,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -137648,6 +138778,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -138368,7 +139502,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -138566,6 +139703,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -139188,7 +140329,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -139382,6 +140526,10 @@
           [
             "Cmd+Option+A",
             "deselectAll"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -140195,7 +141343,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -140397,6 +141548,10 @@
           [
             "F2",
             "renameSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -141441,7 +142596,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -141635,6 +142793,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -142229,7 +143391,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -142435,6 +143600,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -142939,7 +144108,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -143141,6 +144313,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -143796,7 +144972,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -143994,6 +145173,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -144763,7 +145946,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -144957,6 +146143,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -145506,7 +146696,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -145704,6 +146897,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -146384,7 +147581,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -146606,6 +147806,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -148019,7 +149223,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -148217,6 +149424,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -148714,7 +149925,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -148912,6 +150126,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -149447,7 +150665,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -149645,6 +150866,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -150208,7 +151433,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -150406,6 +151634,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -150936,7 +152168,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -151130,6 +152365,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -151590,7 +152829,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -151796,6 +153038,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -152400,7 +153646,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -152610,6 +153859,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -153276,7 +154529,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -153466,6 +154722,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -154083,7 +155343,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -154285,6 +155548,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -154785,7 +156052,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -154983,6 +156253,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -155608,7 +156882,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -155810,6 +157087,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -156514,7 +157795,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -156728,6 +158012,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -157492,7 +158780,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -157690,6 +158981,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -158233,7 +159528,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -158447,6 +159745,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -159093,7 +160395,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -159295,6 +160600,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -160517,7 +161826,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -160719,6 +162031,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -161296,7 +162612,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -161494,6 +162813,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -161933,7 +163256,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -162131,6 +163457,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -162641,7 +163971,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -162835,6 +164168,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -163484,7 +164821,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -163682,6 +165022,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -164285,7 +165629,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -164483,6 +165830,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -165045,7 +166396,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -165243,6 +166597,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -165773,7 +167131,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -165975,6 +167336,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -166493,7 +167858,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -166691,6 +168059,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -167198,7 +168570,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -167396,6 +168771,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -167977,7 +169356,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -168179,6 +169561,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -168745,7 +170131,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -168951,6 +170340,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -169638,7 +171031,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -169836,6 +171232,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -170325,7 +171725,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -170519,6 +171922,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -171059,7 +172466,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -171261,6 +172671,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -171771,7 +173185,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -171969,6 +173386,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -172585,7 +174006,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -172771,6 +174195,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -173785,7 +175213,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -173975,6 +175406,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -174636,7 +176071,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -174850,6 +176288,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -176003,7 +177445,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -176201,6 +177646,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -176640,7 +178089,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -176838,6 +178290,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -177314,7 +178770,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -177512,6 +178971,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -178046,7 +179509,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -178248,6 +179714,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -178916,7 +180386,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -179126,6 +180599,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -179662,7 +181139,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -179860,6 +181340,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -180517,7 +182001,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -180715,6 +182202,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -181334,7 +182825,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -181532,6 +183026,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -182060,7 +183558,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -182274,6 +183775,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -182928,7 +184433,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -183130,6 +184638,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -183727,7 +185239,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -183925,6 +185440,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -184434,7 +185953,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -184632,6 +186154,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -185334,7 +186860,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -185548,6 +187077,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -186377,7 +187910,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -186575,6 +188111,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -187252,7 +188792,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -187494,6 +189037,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -188069,7 +189616,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -188275,6 +189825,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -189027,7 +190581,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -189221,6 +190778,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -189776,7 +191337,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -189974,6 +191538,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -190504,7 +192072,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -190702,6 +192273,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -191166,7 +192741,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -191364,6 +192942,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -191883,7 +193465,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -192069,6 +193654,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -192659,7 +194248,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -192869,6 +194461,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -193539,7 +195135,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -193745,6 +195344,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -194233,7 +195836,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -194423,6 +196029,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -195047,7 +196657,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -195245,6 +196858,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -195850,7 +197467,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -196056,6 +197676,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -196640,7 +198264,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -196842,6 +198469,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -197436,7 +199067,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -197634,6 +199268,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -198172,7 +199810,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -198378,6 +200019,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -199206,7 +200851,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -199404,6 +201052,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -199901,7 +201553,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -200091,6 +201746,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -200634,7 +202293,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -200828,6 +202490,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -201564,7 +203230,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -201766,6 +203435,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -202354,7 +204027,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -202552,6 +204228,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -203259,7 +204939,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -203453,6 +205136,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -204086,7 +205773,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -204288,6 +205978,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -204936,7 +206630,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -205134,6 +206831,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -205810,7 +207511,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -206000,6 +207704,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -206600,7 +208308,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -206798,6 +208509,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -207411,7 +209126,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -207621,6 +209339,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -208151,7 +209873,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -208353,6 +210078,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -208984,7 +210713,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -209190,6 +210922,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -209953,7 +211689,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -210187,6 +211926,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -211094,7 +212837,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -211292,6 +213038,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -211972,7 +213722,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -212174,6 +213927,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -212779,7 +214536,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -212953,6 +214713,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -213744,7 +215508,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -213942,6 +215709,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -214505,7 +216276,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -214715,6 +216489,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -215235,7 +217013,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -215433,6 +217214,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -216071,7 +217856,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -216277,6 +218065,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -216774,7 +218566,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -216976,6 +218771,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -217608,7 +219407,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -217826,6 +219628,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -218446,7 +220252,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -218668,6 +220477,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -219247,7 +221060,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -219441,6 +221257,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -220129,7 +221949,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -220327,6 +222150,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -220943,7 +222770,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -221149,6 +222979,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -221902,7 +223736,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -222104,6 +223941,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -222609,7 +224450,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -222791,6 +224635,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -223315,7 +225163,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -223509,6 +225360,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -224093,7 +225948,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -224291,6 +226149,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -224891,7 +226753,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -225089,6 +226954,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -225719,7 +227588,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -225921,6 +227793,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -226439,7 +228315,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -226637,6 +228516,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -227267,7 +229150,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -227465,6 +229351,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -227930,7 +229820,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -228128,6 +230021,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -228684,7 +230581,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -228886,6 +230786,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -229502,7 +231406,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -229700,6 +231607,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -230210,7 +232121,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -230420,6 +232334,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -230999,7 +232917,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -231201,6 +233122,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -232604,7 +234529,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -232818,6 +234746,10 @@
           [
             "Cmd+Shift+M",
             "moveSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -233943,7 +235875,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -234141,6 +236076,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -234643,7 +236582,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -234833,6 +236775,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -235339,7 +237285,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -235537,6 +237486,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -236129,7 +238082,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -236335,6 +238291,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -236912,7 +238872,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -237110,6 +239073,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -237617,7 +239584,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -237819,6 +239789,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -238401,7 +240375,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -238611,6 +240588,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -239304,7 +241285,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -239506,6 +241490,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -240273,7 +242261,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -240483,6 +242474,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -241105,7 +243100,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -241303,6 +243301,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -241837,7 +243839,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -242027,6 +244032,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -242856,7 +244865,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -243070,6 +245082,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -243887,7 +245903,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -244081,6 +246100,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -244642,7 +246665,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -244832,6 +246858,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -245524,7 +247554,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -245722,6 +247755,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -246313,7 +248350,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -246503,6 +248543,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -247023,7 +249067,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -247221,6 +249268,10 @@
           [
             "Cmd+D",
             "duplicateSelection"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -248145,7 +250196,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -248347,6 +250401,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -249089,7 +251147,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -249287,6 +251348,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -249822,7 +251887,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -250016,6 +252084,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -250619,7 +252691,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -250817,6 +252892,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -251417,7 +253496,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -251627,6 +253709,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -252204,7 +254290,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -252414,6 +254503,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",
@@ -253373,7 +255466,10 @@
           "deselectAll": [
             "Cmd+Option+A"
           ],
-          "invertSelection": []
+          "invertSelection": [],
+          "newFolderWithSelection": [
+            "Ctrl+Cmd+N"
+          ]
         },
         "commandByShortcut": [
           [
@@ -253579,6 +255675,10 @@
           [
             "Cmd+Shift+N",
             "newFolder"
+          ],
+          [
+            "Ctrl+Cmd+N",
+            "newFolderWithSelection"
           ],
           [
             "Cmd+Shift+V",

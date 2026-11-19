@@ -203,6 +203,8 @@ public final class UndoHistory {
             return count == 1 ? "Rename" : "Rename of \(count) Items"
         case .newFolder:
             return "New Folder"
+        case .newFolderWithSelection:
+            return "New Folder with Selection"
         case .pasteAsFile:
             return "Paste as File"
         case .compress:

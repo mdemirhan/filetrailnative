@@ -83,7 +83,8 @@ extension ExplorerWindowlessTests {
             let ids = menu.items.map { $0.isSeparatorItem ? "-" : $0.identifier?.rawValue ?? "" }
             let colors = try #require(ids.firstIndex(of: "tagColors"))
             #expect(
-                Array(ids[(colors - 5)...colors]) == ["duplicate", "move", "-", "compress", "-", "tagColors"])
+                Array(ids[(colors - 5)...colors])
+                    == ["move", "newFolderWithSelection", "-", "compress", "-", "tagColors"])
             await harness.close()
         }
 

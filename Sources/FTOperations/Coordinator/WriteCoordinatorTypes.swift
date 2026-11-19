@@ -68,7 +68,7 @@ public enum WriteOperationKind: String, Sendable, CaseIterable {
         case .deleteImmediately: self = .delete
         case .rename: self = .rename
         case .batchRename: self = .batchRename
-        case .newFolder: self = .newFolder
+        case .newFolder, .newFolderWithSelection: self = .newFolder
         case .pasteAsFile: self = .newFile
         case .compress: self = .compress
         case .extract: self = .extract

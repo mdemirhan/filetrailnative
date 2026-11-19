@@ -103,7 +103,7 @@ public enum WriteEffects {
     /// Whether a write gave items new paths: a rename, a move (Move To, an Undo or Redo), or a paste of what was cut.
     public static func movedItems(_ action: WriteOperationAction, cut: Bool) -> Bool {
         switch action {
-        case .rename, .batchRename, .moveTo, .undo, .redo: true
+        case .rename, .batchRename, .moveTo, .newFolderWithSelection, .undo, .redo: true
         case .paste, .copyTo, .duplicate, .trash, .deleteImmediately, .newFolder, .pasteAsFile, .compress, .extract:
             cut
         case .convertImages: false
@@ -136,8 +136,8 @@ public enum WriteEffects {
         case .undo, .redo:
             return items.compactMap { $0.status == .completed && $0.destinationPath == nil ? source($0) : nil }
                 + replacedPaths
-        case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .pasteAsFile, .batchRename, .compress, .extract,
-            .convertImages:
+        case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .newFolderWithSelection, .pasteAsFile,
+            .batchRename, .compress, .extract, .convertImages:
             return replacedPaths
         }
     }

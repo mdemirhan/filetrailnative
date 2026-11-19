@@ -2038,7 +2038,8 @@ extension MainWindowController: ExplorerWindowHandle {
         case .shareSelection:
             shareSelection()
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
-            .pasteAsFile, .trashSelection, .emptyTrash, .copySelection, .cutSelection, .pasteSelection,
+            .newFolderWithSelection, .pasteAsFile, .trashSelection, .emptyTrash, .copySelection, .cutSelection,
+            .pasteSelection,
             .compressSelection, .extractSelection, .extractSelectionTo:
             // The write commands: `performWriteCommand` took them, unless the toolbar is being customized.
             if let selector = MenuCommandRouter.nativeEditSelector(command) {

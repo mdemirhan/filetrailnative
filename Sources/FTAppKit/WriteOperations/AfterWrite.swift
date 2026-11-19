@@ -156,6 +156,14 @@ enum AfterWrite {
     static func selection(
         _ result: WriteOperationResult, currentPath: String, isSearching: Bool, selectionChanged: Bool
     ) -> [String]? {
+        // New Folder with Selection selects the folder it made, not what went into it.
+        if result.action == .newFolderWithSelection {
+            guard !isSearching, !selectionChanged, result.status == .completed || result.status == .partial,
+                let folder = nonEmpty(result.targetPath),
+                ExplorerTabs.parentDirectoryPath(folder).map({ currentPath.utf16.elementsEqual($0.utf16) }) == true
+            else { return nil }
+            return [folder]
+        }
         let made = result.items.compactMap { $0.status == .completed ? $0.destinationPath : nil }
         guard !isSearching, let folder = selectionDirectoryPath(result, selectedPaths: made),
             currentPath.utf16.elementsEqual(folder.utf16), !selectionChanged, !made.isEmpty
