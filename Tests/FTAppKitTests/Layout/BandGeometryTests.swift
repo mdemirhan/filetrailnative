@@ -53,7 +53,11 @@ extension ExplorerWindowlessTests {
                 sort.mouseUp(with: event)
             }
             press()
-            #expect(titles(menu) == ["Name", "Kind", "Date Modified", "Size", "-", "Ascending", "Descending"])
+            #expect(
+                titles(menu) == [
+                    "Name", "Kind", "Date Last Opened", "Date Added", "Date Modified", "Size", "-", "Ascending",
+                    "Descending",
+                ])
             #expect(sort.menuOpen)
             // A press on a row of the menu chooses it.
             let host = try #require(AppMenuPresenter.overlayHost(of: window))
