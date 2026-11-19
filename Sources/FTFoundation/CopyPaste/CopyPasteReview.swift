@@ -306,9 +306,13 @@ public enum CopyPasteReview {
                 ? "Folders merge. Files that exist are added with a \u{201C}copy\u{201D} name."
                 : "Files that exist are added with a \u{201C}copy\u{201D} name."
         case .replaceOlder:
-            return folders
+            let files =
+                folders
                 ? "Folders merge. Newer files replace older ones, which go to the Trash."
                 : "Newer files replace older ones, which go to the Trash."
+            // Said only when a package is among the clashes: its date says nothing of what changed inside, so
+            // Replace Older leaves it, and the line under the buttons would otherwise promise it is brought up to date.
+            return hasPackageConflict(report.nodes) ? files + " Packages are left as they are." : files
         case .overwrite: return "Existing items go to the Trash."
         }
     }
@@ -517,6 +521,11 @@ public enum CopyPasteReview {
     /// Two packages (apps, Keynote documents) clash like two files: one replaces the other or both are kept.
     private static func isPackageConflict(_ node: ReviewNode) -> Bool {
         node.sourceKind == .directory && node.conflictClass == .fileConflict
+    }
+
+    /// A package clashes with one already there, among these items or in the folders they would merge into.
+    private static func hasPackageConflict(_ nodes: [ReviewNode]) -> Bool {
+        nodes.contains { isPackageConflict($0) || hasPackageConflict($0.children) }
     }
 
     private static func describeReplacement(_ node: ReviewNode, _ now: Double, _ dates: ReviewDateText) -> String {

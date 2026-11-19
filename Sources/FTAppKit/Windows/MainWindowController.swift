@@ -1774,7 +1774,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         for pane in panes { pane.searchStore?.session.close() }
         group?.tabWillClose(self)
         for pane in panes { pane.visitTracker.dispose() }
-        // An open clipboard or Undo History list goes with the tab, and so does what it listens to.
+        // An open clipboard or Undo History list goes with the tab, and so does what it listens to; Folder
+        // Customization too, which would otherwise stay up with nothing left to customize.
+        closeFolderViewPopover()
         clipboardUI.close()
         undoHistoryUI.close()
         activityUI.close()

@@ -247,6 +247,13 @@ private struct Triple: Equatable {
         let summary = CopyPasteReview.summarize(all, policy: policy, overrides: [:])
         #expect(summary.replaced == 1 && summary.skipped == 2)
         #expect(CopyPasteReview.currentAllConflictsChoice(all, policy, [:]) == .replaceOlder)
+        // The line under the buttons says so too, only where a package clashes, at any depth.
+        #expect(
+            CopyPasteReview.describe(.replaceOlder, all)
+                == "Newer files replace older ones, which go to the Trash. Packages are left as they are.")
+        #expect(
+            CopyPasteReview.describe(.replaceOlder, report([notes], newerToleranceMs: 1))
+                == "Newer files replace older ones, which go to the Trash.")
 
         // The row's own Replace wins, and the bar then says items were set separately.
         let own = CopyPasteReview.overrides(setting: .overwrite, for: newerOutside, policy: policy, overrides: [:])

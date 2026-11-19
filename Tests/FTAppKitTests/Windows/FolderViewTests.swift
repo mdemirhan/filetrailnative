@@ -486,6 +486,17 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A tab or a window closed takes its Folder Customization with it: each tab is a window, and closing one
+        // tells it so.
+        @Test func folderCustomizationClosesWhenItsTabOrWindowIsClosed() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            tab.folderViewPopover = FolderViewPopover(pane: tab.activePane, tab: tab, dismiss: {})
+            tab.windowWillClose(Notification(name: NSWindow.willCloseNotification))
+            #expect(tab.folderViewPopover == nil)
+            await harness.close()
+        }
+
         // Search results are no folder: over a customized folder they show in the search's own view and columns, the
         // Folder View commands are off, and the folder's view is back when they close.
         @Test func searchResultsOverACustomizedFolderUseTheSearchsOwnViewAndTheFoldersComesBack() async throws {

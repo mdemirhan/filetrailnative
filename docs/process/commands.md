@@ -49,7 +49,7 @@ The palette lists every row of the table and the menu items that aren't in it, s
 - `Tests/Golden/context-menu.json` and `Tests/Golden/toolbar-sanitize.json` take a new right-click item and a new toolbar button in their bases.
 - The lists kept by hand in `ShortcutsTests` and `ApplicationMenuLayoutTests` name every command and every menu item in order: a new one is added there.
 
-They are edited by hand, never written from the code's output (`docs/decisions/code.md`).
+They are edited by hand, never written from the code's output.
 
 ## Before it lands
 
