@@ -14,6 +14,8 @@ public enum WriteItemEndStatus: String, Sendable, Equatable, Codable {
 public enum WriteSkipReason: String, Sendable, Equatable {
     case plannedConflictPolicy = "planned_conflict_policy"
     case runtimeConflictResolution = "runtime_conflict_resolution"
+    /// Replace Older left it: it wasn't newer than the item there.
+    case notNewer = "not_newer"
 }
 
 /// A finished operation and its result, as what is said about it looks at it.
@@ -110,7 +112,9 @@ public enum WriteEndNotices {
         guard write.status == .partial, write.skippedItemCount > 0, write.failedItemCount == 0,
             write.cancelledItemCount == 0
         else { return false }
-        return write.items.filter { $0.status == .skipped }.allSatisfy { $0.skipReason == .plannedConflictPolicy }
+        return write.items.filter { $0.status == .skipped }.allSatisfy {
+            $0.skipReason == .plannedConflictPolicy || $0.skipReason == .notNewer
+        }
     }
 
     /// The toast for an operation that needs no sheet; nil for none. `quietOnScreen`:

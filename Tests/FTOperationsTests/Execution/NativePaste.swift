@@ -39,6 +39,7 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     }
     func isAppleDouble(_ path: String) -> Bool { base.isAppleDouble(path) }
     func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
+    func fileSystemType(_ path: String) -> String? { base.fileSystemType(path) }
     func chmod(_ path: String, _ mode: UInt32) throws {
         if let chmodImpl { return try chmodImpl(path, mode) }
         try base.chmod(path, mode)

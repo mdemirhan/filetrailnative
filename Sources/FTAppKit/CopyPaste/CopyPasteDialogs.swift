@@ -64,7 +64,8 @@ extension ReviewReport {
             destinationDirectoryPath: report.destinationDirectoryPath, nodes: report.nodes.map(ReviewNode.init),
             summary: Summary(
                 totalNodeCount: report.summary.totalNodeCount,
-                directoryConflictCount: report.summary.directoryConflictCount))
+                directoryConflictCount: report.summary.directoryConflictCount),
+            newerToleranceMs: report.newerToleranceMs)
     }
 }
 
@@ -129,6 +130,6 @@ extension ResultItem {
         self.init(
             sourcePath: item.sourcePath, destinationPath: item.destinationPath, status: status, error: item.error,
             skippedAfterChange: item.skipReason == .runtimeConflictResolution,
-            childFailureCount: item.childFailureCount, note: item.note)
+            skippedAsNotNewer: item.skipReason == .notNewer, childFailureCount: item.childFailureCount, note: item.note)
     }
 }

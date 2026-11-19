@@ -283,10 +283,13 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
         }
 
         try annotateKeepBothNames(&nodes, fileSystem, caseSensitive: caseSensitive, signal: signal)
+        // Replace Older compares dates only where every disk involved keeps them so they can be.
+        let fileSystems = ([destinationDirectory] + request.sourcePaths).map { fileSystem.fileSystemType($0) }
         return CopyPasteAnalysisReport(
             analysisId: analysisId, mode: request.mode, sourcePaths: request.sourcePaths,
             destinationDirectoryPath: destinationDirectory, nodes: nodes, issues: issues,
-            summary: summarizeAnalysis(nodes), destinationCaseSensitive: caseSensitive)
+            summary: summarizeAnalysis(nodes), destinationCaseSensitive: caseSensitive,
+            newerToleranceMs: CopyPasteChoices.newerToleranceMs(fileSystems: fileSystems))
     }
 }
 

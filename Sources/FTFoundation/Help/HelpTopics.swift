@@ -279,7 +279,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Same name",
                             description:
-                                "If an item already exists, you choose for each one: Skip, Keep Both or Replace, and for a folder, Merge, which puts what you paste into the folder already there. Or choose for all of them at once: Skip, Keep All, Replace, and when copying folders, Add Missing, which merges them but adds only what the folder there lacks. Replaced items go to the Trash."
+                                "If an item already exists, you choose for each one: Skip, Keep Both or Replace, and for a folder, Merge, which puts what you paste into the folder already there. Or choose for all of them at once: Skip, Keep All, Replace, and when copying folders, Add Missing, which merges them but adds only what the folder there lacks. Replace Older merges folders and replaces only the files that are newer than the ones there, to bring a copy up to date; it is offered when both disks keep exact dates, so not on FAT (most USB sticks and memory cards) or on network shares other than SMB. Replaced items go to the Trash."
                         ),
                     ]),
                 HelpSection(

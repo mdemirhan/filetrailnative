@@ -61,7 +61,8 @@ extension ExplorerWindowlessTests {
                     == "Nothing is replaced unless you choose Replace. The other item will be added.")
             #expect(sheet.rowViewsShown.map { $0.row?.name } == ["a.txt", "b.txt"])
             #expect(sheet.rowViewsShown.map { $0.popUp.titleOfSelectedItem } == ["Skip", "Skip"])
-            #expect(sheet.bar?.control.segments.map(\.title) == ["Skip", "Keep All", "Replace"])
+            // On the startup disk, dates compare: Replace Older is offered.
+            #expect(sheet.bar?.control.segments.map(\.title) == ["Skip", "Keep All", "Replace Older", "Replace"])
             #expect(sheet.bar?.control.value == .skip)
             #expect(sheet.bar?.hint.stringValue == "Existing items stay as they are.")
             #expect(sheet.bar?.link.title == "Show 1 new item")
@@ -152,7 +153,8 @@ extension ExplorerWindowlessTests {
             await paste(["Alpha"], into: "Beta", window)
             let sheet = try #require(await reviewSheet(window))
             #expect(sheet.titleLabel.stringValue == "\u{201C}Alpha\u{201D} already exists in \u{201C}Beta\u{201D}")
-            #expect(sheet.bar?.control.segments.map(\.choice) == [.skip, .addMissing, .keepAll, .overwrite])
+            #expect(
+                sheet.bar?.control.segments.map(\.choice) == [.skip, .addMissing, .keepAll, .replaceOlder, .overwrite])
             sheet.bar?.control.pick(.addMissing)
             #expect(sheet.rowViewsShown.map { $0.row?.relativePath } == ["Alpha", "Alpha/Inner", "Alpha/Inner/x.txt"])
             #expect(sheet.rowViewsShown.map { $0.row?.depth } == [0, 1, 2])
@@ -174,7 +176,7 @@ extension ExplorerWindowlessTests {
             // The same folder moved: no Add Missing.
             await paste(["Alpha"], into: "Beta", window, cut: true)
             let move = try #require(await reviewSheet(window))
-            #expect(move.bar?.control.segments.map(\.choice) == [.skip, .keepAll, .overwrite])
+            #expect(move.bar?.control.segments.map(\.choice) == [.skip, .keepAll, .replaceOlder, .overwrite])
             #expect(move.primaryButton.title == "Move")
             press(53, "\u{1b}", window)
             await window.close()

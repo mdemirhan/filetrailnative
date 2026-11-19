@@ -159,12 +159,16 @@ public struct CopyPasteAnalysisReport: Codable, Equatable, Sendable {
     public var summary: CopyPasteAnalysisSummary
     /// Whether the destination volume tells names apart by letter case (default: no).
     public var destinationCaseSensitive: Bool
+    /// How far apart two dates of one file can be on the disks of the items and the destination, for Replace Older
+    /// (`CopyPasteChoices.newerToleranceMs`); nil when they can't be compared.
+    public var newerToleranceMs: Double?
 
     public init(
         analysisId: String, mode: CopyPasteMode, sourcePaths: [String], destinationDirectoryPath: String,
         nodes: [CopyPasteAnalysisNode], issues: [CopyPasteAnalysisIssue], summary: CopyPasteAnalysisSummary,
-        destinationCaseSensitive: Bool = false
+        destinationCaseSensitive: Bool = false, newerToleranceMs: Double? = nil
     ) {
+        self.newerToleranceMs = newerToleranceMs
         self.analysisId = analysisId
         self.mode = mode
         self.sourcePaths = sourcePaths
@@ -221,6 +225,8 @@ public struct CopyPasteItemResult: Codable, Equatable, Sendable {
     public enum SkipReason: String, Codable, Sendable {
         case plannedConflictPolicy = "planned_conflict_policy"
         case runtimeConflictResolution = "runtime_conflict_resolution"
+        /// Replace Older left the item there: it wasn't newer.
+        case notNewer = "not_newer"
     }
 
     public var sourcePath: String

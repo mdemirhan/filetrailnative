@@ -3,6 +3,57 @@ import Testing
 @testable import FTFoundation
 
 struct CopyPasteChoicesTests {
+    // The coarsest disk decides; any disk whose dates can't be compared leaves Replace Older out.
+    @Test func comparesDatesOnlyOnDisksThatKeepThemExactly() {
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: ["apfs", "apfs"]) == 1)
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: ["APFS", "hfs"]) == 1000)
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: ["exfat", "apfs"]) == 10)
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: ["apfs", "smbfs"]) == 2000)
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: ["apfs", "msdos"]) == nil)
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: ["nfs", "apfs"]) == nil)
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: ["apfs", nil]) == nil)
+        #expect(CopyPasteChoices.newerToleranceMs(fileSystems: []) == nil)
+    }
+
+    // Replace Older replaces a file only when it is newer by more than the tolerance; an item's own choice wins, and
+    // an item Replace can't take is kept both ways, as with Replace.
+    @Test func replacesOnlyANewerFileWithReplaceOlder() {
+        let policy = CopyPastePolicy(
+            file: .overwrite, directory: .merge, mismatch: .skip, replaceOlderToleranceMs: 1000)
+        func choice(
+            _ source: Double?, _ destination: Double?, _ conflictClass: ConflictClass = .fileConflict,
+            override: CopyPasteChoice? = nil, blocked: String? = nil
+        ) -> CopyPasteChoice {
+            CopyPasteChoices.choiceForConflict(
+                conflictClass: conflictClass, replaceBlockedReason: blocked, policy: policy, override: override,
+                dates: ModifiedDates(sourceMs: source, destinationMs: destination))
+        }
+        #expect(choice(5001, 4000) == .overwrite)
+        #expect(choice(5000, 4000) == .skip)
+        #expect(choice(3000, 4000) == .skip)
+        #expect(choice(nil, 4000) == .skip)
+        #expect(choice(5001, nil) == .skip)
+        #expect(choice(3000, 4000, override: .overwrite) == .overwrite)
+        #expect(choice(9000, 4000, override: .keepBoth) == .keepBoth)
+        #expect(choice(9000, 4000, blocked: "It holds what is pasted") == .keepBoth)
+        #expect(choice(1, 9, .directoryConflict) == .merge)
+        #expect(choice(9, 1, .typeMismatch) == .skip)
+        #expect(
+            CopyPasteChoices.isSkippedAsNotNewer(
+                conflictClass: .fileConflict, policy: policy, override: nil,
+                dates: ModifiedDates(sourceMs: 3000, destinationMs: 4000)))
+        #expect(
+            !CopyPasteChoices.isSkippedAsNotNewer(
+                conflictClass: .fileConflict, policy: policy, override: .skip,
+                dates: ModifiedDates(sourceMs: 3000, destinationMs: 4000)))
+        // Plain Replace replaces whatever the dates.
+        #expect(
+            CopyPasteChoices.choiceForConflict(
+                conflictClass: .fileConflict, replaceBlockedReason: nil,
+                policy: CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite), override: nil,
+                dates: ModifiedDates(sourceMs: 1, destinationMs: 9)) == .overwrite)
+    }
+
     @Test func offersMergeOnlyForTwoFolders() {
         #expect(CopyPasteChoices.isChoiceAllowed(for: .directoryConflict, .merge))
         #expect(!CopyPasteChoices.isChoiceAllowed(for: .fileConflict, .merge))

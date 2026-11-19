@@ -130,6 +130,7 @@ extension WriteSkipReason {
         switch reason {
         case .plannedConflictPolicy: self = .plannedConflictPolicy
         case .runtimeConflictResolution: self = .runtimeConflictResolution
+        case .notNewer: self = .notNewer
         }
     }
 }

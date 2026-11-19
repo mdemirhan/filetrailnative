@@ -22,15 +22,18 @@ public struct ResolvedCopyPasteNode: Equatable, Sendable {
     public var action: ResolvedCopyPasteAction
     public var destinationPath: String
     public var children: [ResolvedCopyPasteNode]
+    /// Skipped by Replace Older: the item there is as new or newer.
+    public var skippedAsNotNewer: Bool
 
     public init(
         node: CopyPasteAnalysisNode, action: ResolvedCopyPasteAction, destinationPath: String,
-        children: [ResolvedCopyPasteNode]
+        children: [ResolvedCopyPasteNode], skippedAsNotNewer: Bool = false
     ) {
         self.node = node
         self.action = action
         self.destinationPath = destinationPath
         self.children = children
+        self.skippedAsNotNewer = skippedAsNotNewer
     }
 }
 
@@ -132,6 +135,7 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
     ) throws -> ResolvedCopyPasteNode {
         let baseDestinationPath = destinationPathOverride ?? node.destinationPath
         let action: ResolvedCopyPasteAction
+        var skippedAsNotNewer = false
         if let explicitAction {
             action = explicitAction
         } else if let conflictClass = node.conflictClass {
@@ -140,11 +144,16 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
             if !usesOverride && policy == nil {
                 throw OperationError("Missing \(Self.kindName(conflictClass)) conflict policy.")
             }
-            // As the review sheet decides it (an item Replace can't take gets the safe choice).
+            // As the review sheet decides it (an item Replace can't take gets the safe choice; Replace Older skips
+            // one that isn't newer).
+            let dates = ModifiedDates(
+                sourceMs: node.sourceFingerprint.mtimeMs, destinationMs: node.destinationFingerprint.mtimeMs)
             action = ResolvedCopyPasteAction(
                 CopyPasteChoices.choiceForConflict(
                     conflictClass: conflictClass, replaceBlockedReason: node.replaceBlockedReason,
-                    policy: policy ?? .defaultCopyPaste, override: override))
+                    policy: policy ?? .defaultCopyPaste, override: override, dates: dates))
+            skippedAsNotNewer = CopyPasteChoices.isSkippedAsNotNewer(
+                conflictClass: conflictClass, policy: policy ?? .defaultCopyPaste, override: override, dates: dates)
         } else {
             action = .create
         }
@@ -185,7 +194,8 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
             node.children, explicitAction: childAction, parentDestinationPath: destinationPath)
 
         return ResolvedCopyPasteNode(
-            node: normalizedNode, action: action, destinationPath: destinationPath, children: children)
+            node: normalizedNode, action: action, destinationPath: destinationPath, children: children,
+            skippedAsNotNewer: skippedAsNotNewer)
     }
 
     private static func kindName(_ conflictClass: ConflictClass) -> String {

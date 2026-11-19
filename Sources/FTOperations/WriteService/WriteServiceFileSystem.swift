@@ -95,6 +95,7 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
     public func isPackage(_ path: String) throws -> Bool? { try disk.isPackage(path) }
     public func isAppleDouble(_ path: String) -> Bool { disk.isAppleDouble(path) }
     public func isQuarantined(_ path: String) -> Bool { disk.isQuarantined(path) }
+    public func fileSystemType(_ path: String) -> String? { disk.fileSystemType(path) }
 
     public func renameExclusive(_ from: String, _ to: String) throws {
         try NativeFS.renameExclusive(from, to)

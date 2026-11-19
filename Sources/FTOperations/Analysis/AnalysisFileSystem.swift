@@ -17,9 +17,13 @@ public protocol AnalysisFileSystem: IdentityFileSystem {
     /// Whether the item is in quarantine (it has `com.apple.quarantine`): it came from the internet. Without it,
     /// nothing is.
     func isQuarantined(_ path: String) -> Bool
+    /// The file system of the disk holding `path`, as `statfs` names it ("apfs", "hfs", "exfat", "msdos", "smbfs"…);
+    /// nil when it can't be told. Without it, Replace Older isn't offered.
+    func fileSystemType(_ path: String) -> String?
 }
 
 extension AnalysisFileSystem {
+    public func fileSystemType(_ path: String) -> String? { nil }
     public func isCaseSensitive(_ path: String) throws -> Bool? { nil }
     public func isPackage(_ path: String) throws -> Bool? { nil }
     public func isAppleDouble(_ path: String) -> Bool { false }
@@ -50,6 +54,14 @@ extension PosixFileSystem: AnalysisFileSystem {
 
     public func isQuarantined(_ path: String) -> Bool {
         getxattr(path, "com.apple.quarantine", nil, 0, 0, XATTR_NOFOLLOW) >= 0
+    }
+
+    public func fileSystemType(_ path: String) -> String? {
+        var info = statfs()
+        guard statfs(path, &info) == 0 else { return nil }
+        return withUnsafeBytes(of: &info.f_fstypename) { bytes in
+            String(decoding: bytes.prefix { $0 != 0 }, as: UTF8.self)
+        }
     }
 }
 

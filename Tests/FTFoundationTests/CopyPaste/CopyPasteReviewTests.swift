@@ -43,12 +43,15 @@ private func node(
         destinationOnly: destinationOnly, replaceBlockedReason: replaceBlockedReason, renameOnly: renameOnly)
 }
 
-private func report(_ nodes: [ReviewNode], _ mode: ReviewMode = .copy) -> ReviewReport {
+private func report(_ nodes: [ReviewNode], _ mode: ReviewMode = .copy, newerToleranceMs: Double? = nil)
+    -> ReviewReport
+{
     ReviewReport(
         analysisId: "analysis-1", mode: mode, destinationDirectoryPath: "/dest", nodes: nodes,
         summary: ReviewReport.Summary(
             totalNodeCount: nodes.count,
-            directoryConflictCount: nodes.filter { $0.conflictClass == .directoryConflict }.count))
+            directoryConflictCount: nodes.filter { $0.conflictClass == .directoryConflict }.count),
+        newerToleranceMs: newerToleranceMs)
 }
 
 private let notes = node(
@@ -96,6 +99,45 @@ private struct Triple: Equatable {
         let summary = CopyPasteReview.summarize(all, policy: CopyPasteReview.safePolicy, overrides: [:])
         #expect(summary.added == 1 && summary.skipped == 3 && summary.merged == 0)
         #expect(CopyPasteReview.currentAllConflictsChoice(all, CopyPasteReview.safePolicy, [:]) == .skip)
+    }
+
+    // Offered where the disks' dates can be compared, before Replace, for a copy or a move.
+    @Test func offersReplaceOlderOnlyWhereDatesCanBeCompared() {
+        #expect(
+            CopyPasteReview.allConflictsChoices(report([notes, photos])) == [.skip, .addMissing, .keepAll, .overwrite])
+        #expect(
+            CopyPasteReview.allConflictsChoices(report([notes, photos], newerToleranceMs: 1))
+                == [.skip, .addMissing, .keepAll, .replaceOlder, .overwrite])
+        #expect(
+            CopyPasteReview.allConflictsChoices(report([notes], .cut, newerToleranceMs: 1000))
+                == [.skip, .keepAll, .replaceOlder, .overwrite])
+    }
+
+    // A file newer than the one there replaces it, folders merge, and one that isn't newer says so.
+    @Test func replacesTheNewerFilesWithReplaceOlder() {
+        // a.jpg is half a second newer: newer on APFS, the same moment on HFS+.
+        let hfs = report([notes, photos, config], newerToleranceMs: 1000)
+        let policy = CopyPasteReview.policy(for: .replaceOlder, toleranceMs: 1000)
+        let listed = rows(hfs, policy)
+        #expect(listed.map(\.name) == ["notes.txt", "photos", "a.jpg", "config"])
+        #expect(listed.map(\.choice) == [.overwrite, .merge, .skip, .skip])
+        #expect(listed[2].detail.hasPrefix("Not newer \u{B7} the existing one is from "))
+        #expect(listed[2].tone == .muted)
+        #expect(listed[3].detail == "Left as is")
+        let summary = CopyPasteReview.summarize(hfs, policy: policy, overrides: [:])
+        #expect(summary.replaced == 1 && summary.skipped == 2 && summary.merged == 1)
+        #expect(CopyPasteReview.currentAllConflictsChoice(hfs, policy, [:]) == .replaceOlder)
+        #expect(
+            CopyPasteReview.describe(.replaceOlder, hfs)
+                == "Folders merge. Newer files replace older ones, which go to the Trash.")
+        // Set back to what Replace Older chose, a row has no choice of its own.
+        let apfs = report([notes, photos, config], newerToleranceMs: 1)
+        let exact = CopyPasteReview.policy(for: .replaceOlder, toleranceMs: 1)
+        #expect(rows(apfs, exact).map(\.choice) == [.overwrite, .merge, .overwrite, .skip])
+        #expect(CopyPasteReview.overrides(setting: .overwrite, for: photoA, policy: exact, overrides: [:]).isEmpty)
+        #expect(
+            CopyPasteReview.overrides(setting: .skip, for: photoA, policy: exact, overrides: [:])
+                == ["item-2/a.jpg": .skip])
     }
 
     @Test func mergesFoldersAndSkipsFilesThatExistWithAddMissing() {

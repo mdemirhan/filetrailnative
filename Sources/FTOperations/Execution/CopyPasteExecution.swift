@@ -37,7 +37,7 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
         for node in nodes {
             itemResults.append(
                 node.action == .skip
-                    ? itemResult(node, .skipped, nil, .plannedConflictPolicy)
+                    ? itemResult(node, .skipped, nil, node.skippedAsNotNewer ? .notNewer : .plannedConflictPolicy)
                     : itemResult(node, .cancelled, message))
         }
     }
@@ -289,7 +289,8 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
 {
     var currentNode = resolvedNode
     if currentNode.action == .skip {
-        return .skipped(.plannedConflictPolicy, currentNode.destinationPath)
+        return .skipped(
+            currentNode.skippedAsNotNewer ? .notNewer : .plannedConflictPolicy, currentNode.destinationPath)
     }
     let fileSystem = context.fileSystem
     var check = detectRuntimeConflict(currentNode, context.report.analysisId, fileSystem)

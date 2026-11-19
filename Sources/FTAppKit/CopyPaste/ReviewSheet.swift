@@ -40,7 +40,7 @@ final class ReviewSheetModel {
 
     /// "For all conflicts": the policy, and no choice per item.
     func choose(_ choice: AllConflictsChoice) {
-        policy = CopyPasteReview.policy(for: choice)
+        policy = CopyPasteReview.policy(for: choice, toleranceMs: review.newerToleranceMs)
         overrides = [:]
         refresh()
     }

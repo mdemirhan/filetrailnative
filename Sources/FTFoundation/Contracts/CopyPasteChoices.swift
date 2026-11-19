@@ -27,11 +27,36 @@ public struct CopyPastePolicy: Codable, Equatable, Sendable {
     public var file: CopyPasteChoice
     public var directory: CopyPasteChoice
     public var mismatch: CopyPasteChoice
+    /// Set for Replace Older: the files' Replace takes only a file newer than the one there, by more than this many
+    /// milliseconds (`CopyPasteChoices.newerToleranceMs`, how far the disks blur a date); the others are skipped. It
+    /// doesn't touch a choice made for one item.
+    public var replaceOlderToleranceMs: Double?
 
-    public init(file: CopyPasteChoice, directory: CopyPasteChoice, mismatch: CopyPasteChoice) {
+    public init(
+        file: CopyPasteChoice, directory: CopyPasteChoice, mismatch: CopyPasteChoice,
+        replaceOlderToleranceMs: Double? = nil
+    ) {
         self.file = file
         self.directory = directory
         self.mismatch = mismatch
+        self.replaceOlderToleranceMs = replaceOlderToleranceMs
+    }
+}
+
+/// The modification dates of the item pasted and of the one there, which Replace Older compares.
+public struct ModifiedDates: Equatable, Sendable {
+    public var sourceMs: Double?
+    public var destinationMs: Double?
+
+    public init(sourceMs: Double?, destinationMs: Double?) {
+        self.sourceMs = sourceMs
+        self.destinationMs = destinationMs
+    }
+
+    /// The item pasted is later than the one there by more than `toleranceMs`. Without either date, it isn't.
+    public func sourceIsNewer(toleranceMs: Double) -> Bool {
+        guard let sourceMs, let destinationMs else { return false }
+        return sourceMs > destinationMs + toleranceMs
     }
 }
 
@@ -46,9 +71,12 @@ public enum CopyPasteChoices {
     /// replaceable (the folder holding what is pasted, or another item being pasted): that item gets the
     /// safe choice instead, Merge for a folder and Keep Both otherwise. The review sheet and the paste
     /// both decide here, so the sheet says what the paste will do.
+    ///
+    /// With Replace Older (`policy.replaceOlderToleranceMs`), a file without a choice of its own is replaced only when
+    /// it is newer than the one there (`dates`), and skipped otherwise (`isSkippedAsNotNewer`).
     public static func choiceForConflict(
         conflictClass: ConflictClass, replaceBlockedReason: String?, policy: CopyPastePolicy,
-        override: CopyPasteChoice?
+        override: CopyPasteChoice?, dates: ModifiedDates? = nil
     ) -> CopyPasteChoice {
         let choice: CopyPasteChoice
         if let override, isChoiceAllowed(for: conflictClass, override) {
@@ -57,13 +85,51 @@ public enum CopyPasteChoices {
             switch conflictClass {
             case .directoryConflict: choice = policy.directory
             case .typeMismatch: choice = policy.mismatch
-            case .fileConflict: choice = policy.file
+            case .fileConflict:
+                choice = isNotNewer(policy, dates) ? .skip : policy.file
             }
         }
         if choice == .overwrite && replaceBlockedReason != nil {
             return conflictClass == .directoryConflict ? .merge : .keepBoth
         }
         return choice
+    }
+
+    /// Whether `choiceForConflict` skips the item because Replace Older found it no newer than the one there.
+    public static func isSkippedAsNotNewer(
+        conflictClass: ConflictClass, policy: CopyPastePolicy, override: CopyPasteChoice?, dates: ModifiedDates?
+    ) -> Bool {
+        let hasOwnChoice = override.map { isChoiceAllowed(for: conflictClass, $0) } ?? false
+        return conflictClass == .fileConflict && !hasOwnChoice && isNotNewer(policy, dates)
+    }
+
+    /// Replace Older is chosen for files, and this one isn't newer than the one there.
+    private static func isNotNewer(_ policy: CopyPastePolicy, _ dates: ModifiedDates?) -> Bool {
+        guard policy.file == .overwrite, let tolerance = policy.replaceOlderToleranceMs else { return false }
+        return dates?.sourceIsNewer(toleranceMs: tolerance) != true
+    }
+
+    /// How far apart, in milliseconds, two modification dates of one file can be once copied between disks of
+    /// these file systems (`statfs`'s names): the coarsest of them. Nil when any of them keeps dates that can't be
+    /// compared, and Replace Older isn't offered:
+    /// - APFS keeps nanoseconds, compared here in milliseconds; HFS+ whole seconds; exFAT 10 ms, with the time zone.
+    /// - SMB shares keep what the server's disk keeps; 2 seconds covers the coarsest of those.
+    /// - FAT keeps local time with no time zone, so a daylight-saving change or a trip moves every date by an hour,
+    ///   and anything else (NFS, AFP, WebDAV, NTFS, a disk not known) isn't relied on.
+    public static func newerToleranceMs(fileSystems: [String?]) -> Double? {
+        var tolerance = 0.0
+        for name in fileSystems {
+            let own: Double
+            switch name?.lowercased() {
+            case "apfs": own = 1
+            case "hfs": own = 1000
+            case "exfat": own = 10
+            case "smbfs": own = 2000
+            default: return nil
+            }
+            tolerance = max(tolerance, own)
+        }
+        return fileSystems.isEmpty ? nil : tolerance
     }
 
     /// The answers offered when something changed during an operation.

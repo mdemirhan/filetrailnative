@@ -120,15 +120,20 @@ public struct ReviewReport: Codable, Equatable, Sendable {
     public var destinationDirectoryPath: String
     public var nodes: [ReviewNode]
     public var summary: Summary
+    /// How far apart two dates of one file can be on the disks of this paste, for Replace Older
+    /// (`CopyPasteChoices.newerToleranceMs`); nil when their dates can't be compared, and Replace Older isn't offered.
+    public var newerToleranceMs: Double?
 
     public init(
-        analysisId: String, mode: ReviewMode, destinationDirectoryPath: String, nodes: [ReviewNode], summary: Summary
+        analysisId: String, mode: ReviewMode, destinationDirectoryPath: String, nodes: [ReviewNode], summary: Summary,
+        newerToleranceMs: Double? = nil
     ) {
         self.analysisId = analysisId
         self.mode = mode
         self.destinationDirectoryPath = destinationDirectoryPath
         self.nodes = nodes
         self.summary = summary
+        self.newerToleranceMs = newerToleranceMs
     }
 }
 
@@ -194,6 +199,7 @@ public enum AllConflictsChoice: String, Codable, CaseIterable, Equatable, Sendab
     case skip
     case addMissing = "add_missing"
     case keepAll = "keep_all"
+    case replaceOlder = "replace_older"
     case overwrite
 
     public var label: String {
@@ -201,6 +207,7 @@ public enum AllConflictsChoice: String, Codable, CaseIterable, Equatable, Sendab
         case .skip: "Skip"
         case .addMissing: "Add Missing"
         case .keepAll: "Keep All"
+        case .replaceOlder: "Replace Older"
         case .overwrite: "Replace"
         }
     }
@@ -252,25 +259,39 @@ public enum CopyPasteReview {
         guard let conflictClass = node.conflictClass else { return nil }
         return CopyPasteChoices.choiceForConflict(
             conflictClass: conflictClass, replaceBlockedReason: node.replaceBlockedReason, policy: policy,
-            override: overrides[node.id])
+            override: overrides[node.id], dates: modifiedDates(node))
     }
 
-    /// What a "For all conflicts" choice does: Add Missing and Keep All merge folders, so what is inside gets the same
-    /// treatment; Skip and Replace apply to the folder as a whole.
-    public static func policy(for choice: AllConflictsChoice) -> CopyPastePolicy {
+    /// The dates Replace Older compares.
+    static func modifiedDates(_ node: ReviewNode) -> ModifiedDates {
+        ModifiedDates(sourceMs: node.sourceFingerprint.mtimeMs, destinationMs: node.destinationFingerprint.mtimeMs)
+    }
+
+    /// What a "For all conflicts" choice does: Add Missing, Keep All and Replace Older merge folders, so what is inside
+    /// gets the same treatment; Skip and Replace apply to the folder as a whole. Replace Older replaces only files
+    /// newer than the ones there by more than `toleranceMs` (the paste's `newerToleranceMs`); without it, none.
+    public static func policy(for choice: AllConflictsChoice, toleranceMs: Double? = nil) -> CopyPastePolicy {
         switch choice {
         case .skip: CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
         case .addMissing: CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)
         case .keepAll: CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)
+        case .replaceOlder:
+            CopyPastePolicy(
+                file: .overwrite, directory: .merge, mismatch: .skip,
+                replaceOlderToleranceMs: toleranceMs ?? .greatestFiniteMagnitude)
         case .overwrite: CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite)
         }
     }
 
     /// Add Missing only differs from Skip when a folder already exists, and a move leaves it
-    /// out: it would split the folder between both places.
+    /// out: it would split the folder between both places. Replace Older is offered only where the disks keep dates
+    /// that can be compared (`newerToleranceMs`), for a copy or a move.
     public static func allConflictsChoices(_ report: ReviewReport) -> [AllConflictsChoice] {
-        report.mode == .cut || report.summary.directoryConflictCount == 0
-            ? [.skip, .keepAll, .overwrite] : [.skip, .addMissing, .keepAll, .overwrite]
+        var choices: [AllConflictsChoice] =
+            report.mode == .cut || report.summary.directoryConflictCount == 0
+            ? [.skip, .keepAll] : [.skip, .addMissing, .keepAll]
+        if report.newerToleranceMs != nil { choices.append(.replaceOlder) }
+        return choices + [.overwrite]
     }
 
     /// What the selected button does, shown under the buttons.
@@ -284,6 +305,10 @@ public enum CopyPasteReview {
             return folders
                 ? "Folders merge. Files that exist are added with a \u{201C}copy\u{201D} name."
                 : "Files that exist are added with a \u{201C}copy\u{201D} name."
+        case .replaceOlder:
+            return folders
+                ? "Folders merge. Newer files replace older ones, which go to the Trash."
+                : "Newer files replace older ones, which go to the Trash."
         case .overwrite: return "Existing items go to the Trash."
         }
     }
@@ -295,9 +320,13 @@ public enum CopyPasteReview {
     ) -> AllConflictsChoice? {
         // The buttons' own value comes first when several match (a stable sort, as `Array.sort` is).
         let offered = allConflictsChoices(report)
+        let tolerance = report.newerToleranceMs
         let candidates =
-            offered.filter { Self.policy(for: $0) == policy } + offered.filter { Self.policy(for: $0) != policy }
-        return candidates.first { sameDecisions(report.nodes, policy, overrides, Self.policy(for: $0)) }
+            offered.filter { Self.policy(for: $0, toleranceMs: tolerance) == policy }
+            + offered.filter { Self.policy(for: $0, toleranceMs: tolerance) != policy }
+        return candidates.first {
+            sameDecisions(report.nodes, policy, overrides, Self.policy(for: $0, toleranceMs: tolerance))
+        }
     }
 
     /// `sameDecisions`: whether the choices do what `expected` does with no per-item choices, inside merged folders too.
@@ -325,7 +354,12 @@ public enum CopyPasteReview {
                 if choice == nil, !(showNewItems && depth == 0) { continue }
                 // Nested paths are shown below the folder the top-level item was copied from.
                 let base = depth == 0 ? dirname(node.sourcePath) : basePath
-                rows.append(row(node, depth, choice, report.mode, base, now, dates))
+                let notNewer =
+                    node.conflictClass.map {
+                        CopyPasteChoices.isSkippedAsNotNewer(
+                            conflictClass: $0, policy: policy, override: overrides[node.id], dates: modifiedDates(node))
+                    } ?? false
+                rows.append(row(node, depth, choice, report.mode, base, now, dates, notNewer: notNewer))
                 if choice == .merge { visit(node.children, depth + 1, base) }
             }
         }
@@ -381,9 +415,12 @@ public enum CopyPasteReview {
 
     private static func row(
         _ node: ReviewNode, _ depth: Int, _ choice: CopyPasteChoice?, _ mode: ReviewMode, _ basePath: String,
-        _ now: Double, _ dates: ReviewDateText
+        _ now: Double, _ dates: ReviewDateText, notNewer: Bool = false
     ) -> ReviewRow {
-        let detail = describeRow(node, choice, mode, now, dates)
+        let detail =
+            notNewer
+            ? (text: describeNotNewer(node, mode, now, dates), tone: ReviewTone.muted)
+            : describeRow(node, choice, mode, now, dates)
         let relativePath: String
         if !basePath.isEmpty, JSString.hasPrefix(node.sourcePath, basePath + "/") {
             relativePath = JSString.string(Array(node.sourcePath.utf16).dropFirst(basePath.utf16.count + 1))
@@ -451,6 +488,17 @@ public enum CopyPasteReview {
             }
             return (compareFiles(node, now, dates), .normal)
         }
+    }
+
+    /// A file Replace Older leaves alone: "Not newer · the existing one is from Today, 9:12".
+    private static func describeNotNewer(_ node: ReviewNode, _ mode: ReviewMode, _ now: Double, _ dates: ReviewDateText)
+        -> String
+    {
+        let existing = node.destinationFingerprint.mtimeMs.map {
+            " \u{B7} the existing one is from \(dates.format($0, now: now))"
+        }
+        let stays = mode == .cut ? " \u{B7} stays in \u{201C}\(leafName(dirname(node.sourcePath)))\u{201D}" : ""
+        return "Not newer\(existing ?? "")\(stays)"
     }
 
     /// Two packages (apps, Keynote documents) clash like two files: one replaces the other or both are kept.
