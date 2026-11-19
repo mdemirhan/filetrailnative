@@ -299,6 +299,73 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // At 1 at a time the selected file is the one on screen after the other ways a selection leaves the list too:
+        // several selected files moved to the Trash at once; the selected file renamed in another app, which is on
+        // screen under its new name where that sorts in its place, and gives its place to the next file where it
+        // doesn't; and a selected folder that a filter comes to hide as it is unpinned.
+        @Test func atOneAtATimeTheFileOnScreenIsSelectedHoweverTheSelectedOnesLeftTheList() async throws {
+            PreparingSheet.isEnabled = false
+            let harness = try ExplorerHarness.windowless()
+            let writes = try harness.writeOperations()
+            defer { withExtendedLifetime(writes) {} }
+            let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 6)
+            let previews = try #require(probe.pane as? PreviewsViewController)
+            tab.perform(.showPreviews1)
+            probe.layout()
+            let clip = previews.scroll.contentView
+            let folder = try #require(tab.content.entries.first).url.deletingLastPathComponent().path
+            /// The file the pane shows, by its name.
+            func onScreen() -> String? {
+                let row = Int((Double(clip.bounds.origin.y) / previews.layout.rowHeight).rounded())
+                let entries = tab.content.entries
+                return entries.indices.contains(row) ? entries[row].name : nil
+            }
+            /// The folder read again, as after a change another app made.
+            func readAgain(until changed: @escaping () -> Bool) async {
+                tab.refresh()
+                #expect(await waitUntil { changed() && !tab.isNavigating })
+                probe.layout()
+            }
+            func listed(_ name: String) -> Bool { tab.content.entries.contains { $0.name == name } }
+
+            // Two of them, moved to the Trash together.
+            let paths = tab.content.entries.map(\.path)
+            tab.content.select(paths: [paths[1], paths[2]])
+            tab.content.focusList()
+            probe.layout()
+            tab.perform(.trashSelection)
+            #expect(await waitUntil { tab.content.entries.count == 4 && !tab.isWriteLocked })
+            probe.layout()
+            #expect(!listed("item-001.txt") && !listed("item-002.txt"))
+            #expect(probe.selectedNames.count == 1 && probe.selectedNames.first == onScreen())
+
+            // Renamed in another app, to a name that sorts where it was: the same file, still on screen.
+            tab.content.select(paths: [folder + "/item-003.txt"])
+            probe.layout()
+            #expect(onScreen() == "item-003.txt")
+            try FileManager.default.moveItem(atPath: folder + "/item-003.txt", toPath: folder + "/item-003b.txt")
+            await readAgain { listed("item-003b.txt") && !listed("item-003.txt") }
+            #expect(probe.selectedNames == ["item-003b.txt"] && onScreen() == "item-003b.txt")
+            // To a name that sorts last: the file that took its place is the one shown, and selected.
+            try FileManager.default.moveItem(atPath: folder + "/item-003b.txt", toPath: folder + "/zzz.txt")
+            await readAgain { listed("zzz.txt") && !listed("item-003b.txt") }
+            #expect(probe.selectedNames == ["item-004.txt"] && onScreen() == "item-004.txt")
+
+            // A pinned filter leaves folders alone; unpinned, it hides the folder selected.
+            try FileManager.default.createDirectory(atPath: folder + "/Sub", withIntermediateDirectories: false)
+            await readAgain { listed("Sub") }
+            for character in "item-0" { tab.content.applyFilterKey(.type(String(character))) }
+            tab.content.pinFilter()
+            tab.content.select(paths: [folder + "/Sub"])
+            probe.layout()
+            #expect(probe.selectedNames == ["Sub"] && onScreen() == "Sub")
+            tab.content.unpinFilter()
+            probe.layout()
+            #expect(!listed("Sub"))
+            #expect(probe.selectedNames.count == 1 && probe.selectedNames.first == onScreen())
+            await harness.close()
+        }
+
         // At 1 at a time a name being edited keeps its file selected while the pane scrolls away from it; once the
         // name is let go of, a scroll selects the file it rests on again.
         @Test func aScrollAtOneAtATimeKeepsTheFileBeingRenamedSelected() async throws {

@@ -188,6 +188,93 @@ struct ReplaceOlderTests {
         }
     }
 
+    /// Marks a folder as a package the way Finder's own flag does (the bundle bit), whatever its name.
+    private func markAsPackage(_ path: String) throws {
+        var info = [UInt8](repeating: 0, count: 32)
+        info[8] = 0x20
+        guard setxattr(path, "com.apple.FinderInfo", &info, info.count, 0, 0) == 0 else {
+            throw NativeError.errno(errno, syscall: "setxattr", path: path)
+        }
+    }
+
+    // What isn't a package on both sides: Replace Older replaces none of it, however new the item pasted is. A
+    // package against a plain file of its name, either way round, is a clash of kinds, left as Replace Older leaves
+    // every such clash. A package against a plain folder of its name, the package being on either side alone (a
+    // folder Finder was told to show as one item), clashes like two files and is left uncompared, not merged. Two
+    // files with a package's name are files, compared by their dates.
+    @Test func leavesAPackageThatClashesWithAFileOrAPlainFolderAndNothingElseIsReplaced() async throws {
+        try await withTemporaryDirectory { root in
+            let source = root.path + "/src/Project"
+            let destination = root.path + "/dest/Project"
+            // A package pasted onto a file, and a file onto a package.
+            try Disk.write(source + "/Doc.rtfd/TXT.rtf", "new text")
+            try Disk.write(destination + "/Doc.rtfd", "a file there")
+            try Disk.write(source + "/Rev.rtfd", "a file pasted")
+            try Disk.write(destination + "/Rev.rtfd/TXT.rtf", "old text")
+            // A package by Finder's flag alone, on one side only, against a plain folder.
+            try Disk.write(source + "/Marked/inside.txt", "new inside")
+            try Disk.write(source + "/Marked/added.txt", "added")
+            try Disk.write(destination + "/Marked/inside.txt", "old inside")
+            try markAsPackage(source + "/Marked")
+            try Disk.write(source + "/Plain/inside.txt", "new inside")
+            try Disk.write(destination + "/Plain/inside.txt", "old inside")
+            try markAsPackage(destination + "/Plain")
+            // Two files that only have a package's name.
+            try Disk.write(source + "/Kit.app", "new file")
+            try Disk.write(destination + "/Kit.app", "old file")
+            try Disk.write(source + "/Old.app", "old file")
+            try Disk.write(destination + "/Old.app", "new file")
+            let names = ["Doc.rtfd", "Rev.rtfd", "Marked", "Plain", "Kit.app"]
+            for name in names {
+                try setModified(source + "/" + name, 2_000_000)
+                try setModified(destination + "/" + name, 1_000_000)
+            }
+            for inner in ["Marked/inside.txt", "Plain/inside.txt"] {
+                try setModified(source + "/" + inner, 2_000_000)
+                try setModified(destination + "/" + inner, 1_000_000)
+            }
+            try setModified(source + "/Old.app", 1_000_000)
+            try setModified(destination + "/Old.app", 2_000_000)
+            let disk = NativeWriteFileSystem()
+            #expect(isPackageFolder(disk, source + "/Marked") && !isPackageFolder(disk, destination + "/Marked"))
+            #expect(!isPackageFolder(disk, source + "/Plain") && isPackageFolder(disk, destination + "/Plain"))
+
+            let trash = root.path + "/Trash"
+            try FileManager.default.createDirectory(atPath: trash, withIntermediateDirectories: false)
+            let run = try await runPaste(
+                mode: .copy, sources: [source], into: root.path + "/dest",
+                policy: CopyPasteReview.policy(for: .replaceOlder, toleranceMs: 1),
+                fileSystem: NativePaste.withTrash(trash))
+
+            func conflict(_ name: String) -> ConflictClass? {
+                node(at: source + "/" + name, in: run.report.nodes)?.conflictClass
+            }
+            #expect(conflict("Doc.rtfd") == .typeMismatch && conflict("Rev.rtfd") == .typeMismatch)
+            #expect(conflict("Marked") == .fileConflict && conflict("Plain") == .fileConflict)
+            #expect(conflict("Kit.app") == .fileConflict && conflict("Old.app") == .fileConflict)
+
+            // Everything there is as it was, but the one file that was older than the file pasted.
+            #expect(Disk.read(destination + "/Doc.rtfd") == "a file there")
+            #expect(Disk.read(destination + "/Rev.rtfd/TXT.rtf") == "old text")
+            #expect(Disk.read(destination + "/Marked/inside.txt") == "old inside")
+            #expect(!Disk.exists(destination + "/Marked/added.txt"))
+            #expect(Disk.read(destination + "/Plain/inside.txt") == "old inside")
+            #expect(Disk.read(destination + "/Kit.app") == "new file")
+            #expect(Disk.read(destination + "/Old.app") == "new file")
+            #expect(Disk.list(trash).count == 1)
+            let skipped = run.result?.items.filter { $0.status == .skipped } ?? []
+            let reasons = Dictionary(uniqueKeysWithValues: skipped.map { ($0.sourcePath, $0.skipReason) })
+            #expect(
+                reasons == [
+                    source + "/Doc.rtfd": .plannedConflictPolicy, source + "/Rev.rtfd": .plannedConflictPolicy,
+                    source + "/Marked": .packageNotCompared, source + "/Plain": .packageNotCompared,
+                    source + "/Old.app": .notNewer,
+                ])
+            #expect(run.result?.items.contains { $0.status == .failed || $0.status == .cancelled } == false)
+            #expect(run.conflicts.isEmpty)
+        }
+    }
+
     // FAT keeps local time with no time zone: Replace Older isn't offered for a paste onto it.
     @Test(.tags(.diskImage), .diskImages)
     func isntOfferedOntoAFATDisk() async throws {

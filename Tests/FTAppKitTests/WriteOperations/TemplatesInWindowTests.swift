@@ -298,6 +298,139 @@ extension ExplorerWindowlessTests {
             await templates.close()
         }
 
+        /// Save as Template asked for with "note.txt" selected while a template of that name is there: the question.
+        private func askedAboutNote(_ templates: Templates, after earlier: AlertCard? = nil) async throws -> AlertCard {
+            let reviews = CopyPasteReviewPresenter.shared
+            let tab = templates.tab
+            templates.window.select(["note.txt"])
+            tab.perform(.saveAsTemplate)
+            #expect(
+                await waitUntil {
+                    reviews.alert != nil && reviews.alert !== earlier && reviews.alert?.window === tab.window
+                })
+            return try #require(reviews.alert)
+        }
+
+        // The question's other two answers. Cancel copies nothing and leaves nothing to undo. Replace puts the file
+        // in the template's place, the template going to the Trash, and Undo brings the template back; Keep Both's
+        // copy is taken back by Undo. The file selected stays as it is throughout.
+        @Test func cancelLeavesTheTemplateAndReplaceReplacesItUntilUndo() async throws {
+            let templates = try await Templates()
+            let tab = templates.tab
+            try templates.write("note.txt", "the template there")
+
+            var alert = try await askedAboutNote(templates)
+            #expect(alert.asideButton?.title == "Cancel")
+            alert.asideButton?.perform()
+            #expect(await waitUntil { alert.window == nil })
+            #expect(templates.names == ["note.txt"] && templates.template("note.txt") == "the template there")
+            #expect(!tab.isWriteLocked && tab.writeActions?.session.card == nil)
+            #expect(undoLabel(templates) == nil)
+            #expect(templates.toasts("Copied to Templates").isEmpty && templates.window.recorder.shown.isEmpty)
+
+            alert = try await askedAboutNote(templates, after: alert)
+            try #require(alert.buttons.first { $0.title == "Replace" }).perform()
+            #expect(await waitUntil { templates.template("note.txt") == "x" && !tab.isWriteLocked })
+            #expect(await waitUntil { alert.window == nil })
+            #expect(templates.names == ["note.txt"])
+            #expect(undoLabel(templates) != nil)
+            tab.content.focusList()
+            tab.perform(.undo)
+            #expect(await waitUntil { templates.template("note.txt") == "the template there" && !tab.isWriteLocked })
+            #expect(templates.names == ["note.txt"] && undoLabel(templates) == nil)
+
+            alert = try await askedAboutNote(templates, after: alert)
+            try #require(alert.buttons.first { $0.title == "Keep Both" }).perform()
+            #expect(await waitUntil { templates.names == ["note copy.txt", "note.txt"] && !tab.isWriteLocked })
+            #expect(await waitUntil { alert.window == nil })
+            tab.content.focusList()
+            tab.perform(.undo)
+            #expect(await waitUntil { templates.names == ["note.txt"] && !tab.isWriteLocked })
+            #expect(templates.template("note.txt") == "the template there")
+            #expect(templates.text("note.txt") == "x")
+            #expect(templates.window.recorder.shown.isEmpty)
+            await templates.close()
+        }
+
+        // The command asks whether what is selected allows it as it starts, by the same rule that dims its item: it
+        // runs wherever the item is on. From the File menu; from the command palette, which is gone by the time the
+        // command asks; and from the menu right after its own question was cancelled. With the folder tree focused
+        // the item is dimmed in both, and the file's right-click menu, which names its own files, still copies.
+        @Test func saveAsTemplateRunsWhereverItsItemIsOn() async throws {
+            let templates = try await Templates()
+            let tab = templates.tab
+            let harness = templates.window.harness
+            let window = try #require(tab.window)
+            let menu = MainMenu(windows: harness.windows, focusedWindow: { tab.window })
+            menu.recentCommands = { [] }
+            menu.recordCommand = { _ in }
+            menu.build()
+            harness.windows.onMenuState = { [weak menu] id, state in menu?.sync.setWindowState(windowID: id, state) }
+            defer { NSApp.mainMenu = nil }
+            func item(in menu: NSMenu?) -> NSMenuItem? {
+                for each in menu?.items ?? [] {
+                    if each.identifier?.rawValue == "saveAsTemplate" { return each }
+                    if let found = item(in: each.submenu) { return found }
+                }
+                return nil
+            }
+            let fileItem = try #require(item(in: NSApp.mainMenu))
+            /// The copy arrived; the Templates folder goes again, for the next way in.
+            func copied() async -> Bool {
+                let did = await waitUntil { templates.names == ["note.txt"] && !tab.isWriteLocked }
+                try? FileManager.default.removeItem(atPath: templates.folder)
+                return did
+            }
+            func paletteRow() throws -> CommandPaletteEntry {
+                menu.toggleCommandPalette()
+                let box = try #require(tab.commandPaletteBox)
+                window.contentView?.layoutSubtreeIfNeeded()
+                box.field.stringValue = "save as template"
+                box.textChanged("save as template")
+                return try #require(box.rows.first { $0.entry.id == "saveAsTemplate" }).entry
+            }
+            templates.window.select(["note.txt"])
+            #expect(window.makeFirstResponder(tab.content.pane?.focusView))
+
+            #expect(menu.router.validateMenuItem(fileItem))
+            menu.router.choose(itemID: "saveAsTemplate")
+            #expect(await copied())
+
+            #expect(try paletteRow().enabled)
+            #expect(tab.commandPaletteBox?.selectedRow?.entry.id == "saveAsTemplate")
+            DialogKeys.press(36, "\r", in: window)
+            #expect(tab.commandPaletteBox == nil)
+            #expect(await copied())
+
+            tab.perform(.focusTreePane)
+            #expect(tab.sidebarController.isFocused)
+            #expect(!menu.router.validateMenuItem(fileItem) && !tab.canPerform(.saveAsTemplate))
+            #expect(try !paletteRow().enabled)
+            DialogKeys.press(53, "\u{1b}", in: window)
+            #expect(tab.commandPaletteBox == nil)
+            let entries = tab.content.selectedEntries
+            #expect(entries.map(\.name) == ["note.txt"])
+            tab.contextMenus.contextMenu(
+                perform: .saveAsTemplate,
+                subject: ContextMenuSubject(
+                    surface: .content, scope: .selection, paths: entries.map(\.path), targetPath: entries[0].path,
+                    entries: entries.map(ContextMenuCoordinator.commandEntry)))
+            #expect(await copied())
+
+            // Its own question, cancelled: the item is on again at once, and runs.
+            #expect(window.makeFirstResponder(tab.content.pane?.focusView))
+            try templates.write("note.txt", "there")
+            let alert = try await askedAboutNote(templates)
+            #expect(!menu.router.validateMenuItem(fileItem))
+            alert.asideButton?.perform()
+            #expect(menu.router.validateMenuItem(fileItem))
+            try FileManager.default.removeItem(atPath: templates.folder)
+            menu.router.choose(itemID: "saveAsTemplate")
+            #expect(await copied())
+            #expect(templates.window.recorder.shown.isEmpty)
+            await templates.close()
+        }
+
         // Save as Template is dimmed for a folder, alone or among files, and the key of a dimmed item still reaches
         // the command (`keyOfDimmedItem`): it copies nothing, and doesn't even make the Templates folder. With files
         // alone the item is on, and its key is the menu's.

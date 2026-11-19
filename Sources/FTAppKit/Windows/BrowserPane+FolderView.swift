@@ -11,6 +11,8 @@ struct PaneSettingsOnArrival {
     var foldersFirst: Bool
     var viewSizes: PaneViewSizes?
     var shared = SharedSettingChanges()
+    /// The pane is changing the app's columns or sizes itself, now: the change it hears of meanwhile is its own.
+    var isChangingShared = false
 
     @MainActor
     init(_ pane: BrowserPane) {
@@ -25,7 +27,8 @@ struct PaneSettingsOnArrival {
 /// The columns and sizes every folder without its own shares (the app's), as one pane changed them in the folder it
 /// shows: each as it was before the pane's first change of it there, and as the pane last left it. Only these go back
 /// once the folder keeps the setting, and only where they are still as the pane left them, so a column shown or a size
-/// set from another tab or window meanwhile stays.
+/// set from another tab or window meanwhile stays. One changed elsewhere is forgotten as the pane hears of it
+/// (`forgetWhatChangedElsewhere`), so it stays as well when it was set back to what the pane had left.
 struct SharedSettingChanges: Equatable {
     struct Change<Value: Equatable>: Equatable {
         var before: Value
@@ -93,6 +96,17 @@ struct SharedSettingChanges: Equatable {
             next.previewCounts[density] = change.before
         }
         return next
+    }
+
+    /// What isn't as the pane left it any more was changed elsewhere since, and is no longer the pane's to put back:
+    /// not even once it is set as the pane had left it again (a column hidden in another tab, then shown there).
+    mutating func forgetWhatChangedElsewhere(now: AppPreferences) {
+        columns = columns.filter { now.detailColumns[$0.key] == $0.value.after }
+        if let columnOrder, now.detailColumnOrder != columnOrder.after { self.columnOrder = nil }
+        columnWidths = columnWidths.filter { now.detailColumnWidths[$0.key] == $0.value.after }
+        iconSizes = iconSizes.filter { now.iconSizes[$0.key] == $0.value.after }
+        compactListWidths = compactListWidths.filter { now.compactListWidths[$0.key] == $0.value.after }
+        previewCounts = previewCounts.filter { now.previewCounts[$0.key] == $0.value.after }
     }
 
     mutating func forgetColumns() {
@@ -272,8 +286,19 @@ extension BrowserPane {
             return
         }
         let before = tab.preferences
+        settingsOnArrival?.isChangingShared = true
         tab.updatePreferences(change)
+        settingsOnArrival?.isChangingShared = false
         settingsOnArrival?.shared.note(from: before, to: tab.preferences)
+    }
+
+    /// The app's settings changed, here or in another pane, tab or window. What this pane noted of a column or a size
+    /// that was changed elsewhere since is forgotten, so a later Remember or Save here leaves it as it was set there.
+    func sharedSettingsChanged() {
+        guard let arrival = settingsOnArrival, !arrival.isChangingShared, arrival.shared != SharedSettingChanges(),
+            let tab
+        else { return }
+        settingsOnArrival?.shared.forgetWhatChangedElsewhere(now: tab.preferences)
     }
 
     /// The pane's own `settings` as they were when it came into the folder on screen; for the columns and sizes,

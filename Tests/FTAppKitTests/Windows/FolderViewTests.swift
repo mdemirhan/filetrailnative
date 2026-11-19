@@ -1,9 +1,53 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 import Foundation
 import Testing
 
 @testable import FTAppKit
+
+/// The disk, with one read of a folder, by its number among the reads of that folder, refused or held until the test
+/// lets it go: a folder reached through a link is read twice, and the second read is the one to fail or to wait.
+private final class NumberedReads: ExplorerFileSystem, @unchecked Sendable {
+    private struct Refused: Error {}
+
+    private let real = NativeFileSystem()
+    private let condition = NSCondition()
+    private var counts: [String: Int] = [:]
+    private var refused: (path: String, read: Int)?
+    private var held: (path: String, read: Int)?
+    private var waiting = false
+
+    func refuse(_ path: String, read: Int) { condition.withLock { refused = (path, read) } }
+    func hold(_ path: String, read: Int) { condition.withLock { held = (path, read) } }
+
+    func letGo() {
+        condition.withLock {
+            held = nil
+            condition.broadcast()
+        }
+    }
+
+    var isHolding: Bool { condition.withLock { waiting } }
+    func reads(of path: String) -> Int { condition.withLock { counts[path] ?? 0 } }
+
+    func readDirectory(_ path: String) throws -> [DirectoryRecord] {
+        try condition.withLock {
+            counts[path, default: 0] += 1
+            let number = counts[path] ?? 0
+            if let refused, refused.path == path, refused.read == number { throw Refused() }
+            guard let held, held.path == path, held.read == number else { return }
+            waiting = true
+            while self.held != nil { condition.wait() }
+            waiting = false
+        }
+        return try real.readDirectory(path)
+    }
+
+    func stat(_ path: String) throws -> FileStats { try real.stat(path) }
+    func lstat(_ path: String) throws -> FileStats { try real.lstat(path) }
+    func realpath(_ path: String) throws -> String { try real.realpath(path) }
+}
 
 extension ExplorerWindowlessTests {
     /// A folder's own view (View ▸ Folder View): laid over what the pane carries while it shows the folder, changed on
@@ -263,6 +307,119 @@ extension ExplorerWindowlessTests {
             #expect(pane.sortBy == .name && pane.sortDirection == .asc)
         }
 
+        /// A tab on the harness's folder that reads through `disk`, Beta holding three files and a view that keeps
+        /// Icons and names from Z to A, and a link to Beta beside it.
+        private func openBesideALink(_ harness: ExplorerHarness) async throws -> (
+            tab: MainWindowController, disk: NumberedReads, beta: String, link: String
+        ) {
+            for name in ["b.txt", "a.txt", "c.txt"] {
+                try "x".write(to: harness.folder.appending("Beta/\(name)"), atomically: false, encoding: .utf8)
+            }
+            let tab = try await harness.open()
+            let disk = NumberedReads()
+            tab.servicesOverride = ExplorerServices(
+                directoryService: DirectoryService(fileSystem: disk), iconStore: TestServices.icons,
+                clipboard: harness.windows.clipboard, preferences: harness.channel)
+            let beta = real(harness, "Beta")
+            let link = real(harness, "") + "/Link"
+            try FileManager.default.createSymbolicLink(atPath: link, withDestinationPath: beta)
+            tab.activePane.folderViews.update(from: nil) {
+                $0.set(
+                    FolderView(
+                        path: beta,
+                        keeps: FolderViewKeeps(
+                            view: .icons, sort: FolderViewSort(by: .name, direction: .desc), foldersFirst: false)))
+            }
+            return (tab, disk, beta, link)
+        }
+
+        // The second read of a folder reached through a link can fail though the first one worked (the folder went
+        // in between, a share stopped answering). The folder then didn't open, as when any read fails: the folder
+        // before stays, with the read's message over it, nothing of the first read shows, and the next try opens it.
+        @Test func aSecondReadThroughALinkThatFailsLeavesTheFolderBeforeAsAnyReadThatFails() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, disk, beta, link) = try await openBesideALink(harness)
+            let pane = tab.activePane
+            let root = pane.shownFolderPath
+            let listed = tab.content.entries.map(\.name)
+            let history = tab.navigationHistory.paths
+            let mode = pane.content.mode
+            disk.refuse(beta, read: 2)
+
+            let opened = await pane.navigate(to: URL(fileURLWithPath: link))
+            #expect(!opened && !tab.isNavigating)
+            #expect(disk.reads(of: beta) == 2)
+            #expect(pane.shownFolderPath == root && tab.content.entries.map(\.name) == listed)
+            #expect(tab.content.readError != nil)
+            #expect(pane.shownFolderView == nil && pane.content.mode == mode)
+            #expect(tab.navigationHistory.paths == history)
+
+            #expect(await pane.navigate(to: URL(fileURLWithPath: link)))
+            #expect(tab.content.readError == nil)
+            #expect(pane.shownFolderPath == beta && pane.shownFolderView?.use.own == true)
+            #expect(tab.content.entries.map(\.name) == ["Inner", "c.txt", "b.txt", "a.txt"])
+            await harness.close()
+        }
+
+        // While the second read is under way the folder before is still on screen, as it was, in the pane's own view:
+        // the first read's order never shows. A folder opened meanwhile takes its place, and the read that comes in
+        // late changes nothing.
+        @Test func theSecondReadThroughALinkShowsNothingUntilItEndsAndAnotherFolderOpenedMeanwhileWins() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, disk, beta, link) = try await openBesideALink(harness)
+            let pane = tab.activePane
+            let root = pane.shownFolderPath
+            let listed = tab.content.entries.map(\.name)
+            let mode = pane.content.mode
+            disk.hold(beta, read: 2)
+            pane.go(to: URL(fileURLWithPath: link))
+            #expect(await waitUntil { disk.isHolding })
+            #expect(pane.shownFolderPath == root && tab.content.entries.map(\.name) == listed)
+            #expect(pane.folderView == nil && pane.content.mode == mode)
+            #expect(tab.content.sortDirection == .asc)
+            #expect(tab.isNavigating)
+
+            let gamma = real(harness, "Gamma")
+            #expect(await tab.navigate(to: URL(fileURLWithPath: gamma)))
+            disk.letGo()
+            #expect(await waitUntil { !disk.isHolding && !tab.isNavigating })
+            await settle()
+            #expect(pane.shownFolderPath == gamma && tab.content.entries.map(\.name) == ["Inner"])
+            #expect(pane.folderView == nil && pane.content.mode == mode && tab.content.readError == nil)
+            #expect(tab.navigationHistory.paths == [root, gamma])
+            await harness.close()
+        }
+
+        // A view is found by its folder's real path alone, and the app saves one under no other. One put under a
+        // link's path by hand is no folder's: the folder shows the pane's settings by either path, and so do the
+        // folders inside it.
+        @Test func aViewPutUnderALinksPathByHandIsNoFoldersView() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _, beta, link) = try await openBesideALink(harness)
+            let pane = tab.activePane
+            let mode = pane.content.mode
+            pane.folderViews.update(from: nil) {
+                $0.remove(beta)
+                $0.set(
+                    FolderView(
+                        path: link, subfolders: true,
+                        keeps: FolderViewKeeps(
+                            view: .previews, sort: FolderViewSort(by: .name, direction: .desc), foldersFirst: false)))
+            }
+            for path in [link, beta] {
+                #expect(await tab.navigate(to: URL(fileURLWithPath: path)))
+                #expect(pane.shownFolderPath == beta && pane.shownFolderView == nil && pane.content.mode == mode)
+                #expect(tab.content.entries.map(\.name) == ["Inner", "a.txt", "b.txt", "c.txt"])
+                await go(tab, harness, "Gamma")
+            }
+            #expect(await tab.navigate(to: URL(fileURLWithPath: link + "/Inner")))
+            #expect(pane.shownFolderPath == beta + "/Inner" && pane.shownFolderView == nil)
+            // Remember there saves the folder's view under its real path, where it is found.
+            tab.perform(.rememberFolderView)
+            #expect(pane.folderViews.views.own(beta + "/Inner") != nil)
+            await harness.close()
+        }
+
         // Nothing ties a view to a disk: a folder the app moves to another disk has its view there, and finding it
         // asks nothing of the disk (none of these folders is anywhere).
         @Test func aFolderMovedInTheAppToAnotherDiskTakesItsViewAlong() {
@@ -370,6 +527,12 @@ extension ExplorerWindowlessTests {
             #expect(changes.sizesPutBack(in: elsewhere).iconSizes[.standard] == 112)
             let columns = changes.columnsPutBack(in: elsewhere).detailColumns
             #expect(columns.added && !columns.permissions)
+            // Heard of while it was set elsewhere, the size is forgotten, and stays when it is later set as the pane
+            // had left it; the column nobody else touched still goes back.
+            var heard = changes
+            heard.forgetWhatChangedElsewhere(now: elsewhere)
+            #expect(heard.sizesPutBack(in: after).iconSizes[.standard] == 96)
+            #expect(!heard.columnsPutBack(in: after).detailColumns.permissions)
             // Changed back by hand, it is no change of the pane's any more.
             changes.note(from: after, to: before)
             #expect(changes == SharedSettingChanges())
@@ -903,6 +1066,226 @@ extension ExplorerWindowlessTests {
             let widths = FolderViewPopover.sizeChoices(.list, current: 292).map(\.value)
             #expect(widths.contains(292) && widths.first == 160 && widths.last == 600)
             #expect(FolderViewPopover.sizeChoices(.details, current: 0).isEmpty)
+        }
+
+        /// The widths of every column as a drag reports them, Name at `name`.
+        private func draggedWidths(name: Double) -> [DetailColumn: Double] {
+            var widths: [DetailColumn: Double] = [:]
+            for key in DetailColumnKey.allCases {
+                widths[DetailColumn(rawValue: key.rawValue) ?? .name] = Double(DetailColumnWidths.defaults[key])
+            }
+            widths[.name] = name
+            return widths
+        }
+
+        /// A second tab on the first one's folder, with its services, once it has read its folder.
+        private func secondTab(of first: MainWindowController, _ harness: ExplorerHarness) async throws
+            -> MainWindowController
+        {
+            let group = try #require(first.group)
+            group.duplicateTab(first)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            let second = group.tabs[1]
+            second.servicesOverride = first.servicesOverride
+            // Its first folder shown: a folder opened before that would be replaced by it.
+            #expect(await waitUntil { second.activePane.hasShownFolder && !second.isNavigating })
+            harness.services.folderViews.onChanged = { [weak first, weak second] _ in
+                first?.folderViewsChanged()
+                second?.folderViewsChanged()
+            }
+            return second
+        }
+
+        // Reading a view checks its widths and sizes against their limits. What a drag, the slider and the size
+        // commands leave in a view is within them already, at the least and at the greatest too, so the file read
+        // back holds the views as they were saved.
+        @Test func theWidthsAndSizesTheWindowSavesAreReadBackAsTheyWere() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openList()
+            let pane = tab.activePane
+            // Set before the folder keeps them, far past the limits and between two points.
+            await go(tab, harness, "Alpha")
+            var widths = draggedWidths(name: 5000.4)
+            widths[.size] = 1
+            widths[.kind] = 152.5
+            widths[.permissions] = 5000
+            tab.content.onColumnWidthsChanged?(widths)
+            tab.perform(.viewAsIcons)
+            tab.content.iconSizeChanged(37, save: true)
+            tab.perform(.viewAsList)
+            tab.content.compactListWidthChanged(601.4, save: true)
+            tab.perform(.rememberFolderView)
+            // And in a folder that keeps them, where they are the view's own.
+            await go(tab, harness, "Beta")
+            tab.perform(.viewAsDetails)
+            tab.perform(.rememberFolderView)
+            widths[.name] = 0
+            tab.content.onColumnWidthsChanged?(widths)
+            tab.perform(.viewAsIcons)
+            tab.content.iconSizeChanged(1000, save: true)
+            tab.perform(.viewAsList)
+            tab.content.compactListWidthChanged(3, save: true)
+            tab.perform(.increaseSize)
+            tab.perform(.updateFolderView)
+
+            let views = pane.folderViews.views
+            let alpha = try #require(views.own(real(harness, "Alpha"))?.keeps)
+            #expect(alpha.columns?.widths.name == 1000 && alpha.columns?.widths.size == 60)
+            #expect(alpha.size?.iconSizes.standard == 40 && alpha.size?.compactListWidths.standard == 600)
+            let beta = try #require(views.own(real(harness, "Beta"))?.keeps)
+            #expect(beta.columns?.widths.name == 140)
+            #expect(beta.size?.iconSizes.standard == 128 && beta.size?.compactListWidths.standard == 200)
+            #expect(try FolderViews.read(Data(views.serialize().utf8)) == views)
+            await harness.close()
+        }
+
+        // What a pane changed of every folder's columns goes back at Remember only where nobody changed it since. A
+        // width set here and then set again in another tab stays as that tab set it; and a column shown here, then
+        // hidden and shown again in another tab, stays shown: it is as this pane left it, but it was that tab that
+        // showed it last.
+        @Test func whatAnotherTabChangedSinceStaysThoughItIsAsThisPaneLeftIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (first, _) = try await harness.openList()
+            await go(first, harness, "Alpha")
+            let second = try await secondTab(of: first, harness)
+            let pane = first.activePane
+            let alpha = real(harness, "Alpha")
+            #expect(first.preferences.detailColumnWidths.name == 320 && !first.preferences.detailColumns.permissions)
+
+            first.content.onColumnWidthsChanged?(draggedWidths(name: 400))
+            second.content.onColumnWidthsChanged?(draggedWidths(name: 500))
+            first.toggleColumn(.permissions, in: pane)
+            second.toggleColumn(.permissions, in: second.activePane)
+            #expect(!first.preferences.detailColumns.permissions)
+            second.toggleColumn(.permissions, in: second.activePane)
+            #expect(first.preferences.detailColumns.permissions)
+            // Shown here and left alone elsewhere: this one is the pane's to put back.
+            first.toggleColumn(.created, in: pane)
+
+            first.perform(.rememberFolderView)
+            let kept = try #require(pane.folderViews.views.own(alpha)?.keeps.columns)
+            #expect(kept.widths.name == 400 && kept.visibility.permissions && kept.visibility.created)
+            #expect(first.preferences.detailColumnWidths.name == 500)
+            #expect(first.preferences.detailColumns.permissions)
+            #expect(!first.preferences.detailColumns.created)
+            // The pane's own width is the one it came in with.
+            #expect(pane.viewSizes?.detailColumnWidths.name == 320)
+            await harness.close()
+        }
+
+        // Reset Columns in a folder with no view is a change of every folder's columns, as any other made there:
+        // once the folder keeps its columns, they are the first columns for it alone, and every other folder has
+        // back the columns, the order and the widths the pane came in with.
+        @Test func resetColumnsThenRememberGivesEveryOtherFolderItsColumnsBack() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openList()
+            let pane = tab.activePane
+            await go(tab, harness, "Beta")
+            tab.toggleColumn(.lastOpened, in: pane)
+            tab.content.onColumnWidthsChanged?(draggedWidths(name: 444))
+            tab.moveColumn(.size, by: -1, in: pane)
+            let carried = tab.preferences
+            #expect(carried.detailColumnOrder != AppPreferenceLimits.defaultDetailColumnOrder)
+
+            await go(tab, harness, "Alpha")
+            tab.resetColumns(in: pane)
+            #expect(tab.preferences.detailColumns == .defaults && tab.preferences.detailColumnWidths == .defaults)
+            tab.perform(.rememberFolderView)
+            let kept = try #require(pane.folderViews.views.own(real(harness, "Alpha"))?.keeps.columns)
+            #expect(
+                kept
+                    == FolderViewColumns(
+                        visibility: .defaults, order: AppPreferenceLimits.defaultDetailColumnOrder, widths: .defaults))
+            #expect(tab.preferences.detailColumns == carried.detailColumns)
+            #expect(tab.preferences.detailColumnOrder == carried.detailColumnOrder)
+            #expect(tab.preferences.detailColumnWidths == carried.detailColumnWidths)
+            #expect(pane.viewSizes?.detailColumnWidths.name == 444)
+            await go(tab, harness, "Beta")
+            #expect(pane.columns(from: tab.preferences).columns.contains(.lastOpened))
+            await harness.close()
+        }
+
+        // Keep Columns chosen in a folder that uses a view from above waits for Save as any change: Folder
+        // Customization shows it, a read in place keeps it, and leaving the folder drops it. While it waits, the view
+        // above saved again in another tab shows here with the choice still made; the folder given a view of its own
+        // there has it, with nothing left to save here; and the view above removed there leaves no view to keep.
+        @Test func keepColumnsThatWaitsForSaveFollowsWhatAnotherTabSaves() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let first = try await harness.open()
+            let pane = first.activePane
+            await go(first, harness, "Alpha")
+            first.perform(.viewAsDetails)
+            first.perform(.rememberFolderView)
+            pane.setFolderViewSubfolders(true)
+            first.perform(.updateFolderView)
+            let alpha = real(harness, "Alpha")
+            let inner = real(harness, "Alpha/Inner")
+            await go(first, harness, "Alpha/Inner")
+            let second = try await secondTab(of: first, harness)
+            let other = second.activePane
+
+            let popover = FolderViewPopover(pane: pane, tab: first, dismiss: {})
+            first.folderViewPopover = popover
+            defer { first.folderViewPopover = nil }
+            func saveIsOn() -> Bool? {
+                func find(_ view: NSView) -> NSView? {
+                    if view.accessibilityIdentifier() == "folderViewPopover.update" { return view }
+                    return view.subviews.lazy.compactMap(find).first
+                }
+                return (find(popover.contentView) as? NSButton)?.isEnabled
+            }
+            #expect(saveIsOn() == false)
+            pane.keepOwnColumns(true)
+            #expect(pane.folderView?.becomesOwn == true && pane.keepsOwnColumns)
+            #expect(saveIsOn() == true)
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.changed == true)
+            // A read in place keeps it.
+            first.refresh()
+            #expect(await waitUntil { !first.isNavigating })
+            #expect(pane.folderView?.becomesOwn == true)
+
+            // The view above, saved again elsewhere with another column: it shows here, the choice still made.
+            await go(second, harness, "Alpha")
+            second.toggleColumn(.permissions, in: other)
+            second.perform(.updateFolderView)
+            #expect(pane.folderViews.views.own(alpha)?.keeps.columns?.visibility.permissions == true)
+            #expect(pane.folderView?.becomesOwn == true && pane.folderView?.use.own == false)
+            #expect(pane.folderView?.shown.columns?.visibility.permissions == true)
+            #expect(saveIsOn() == true)
+            first.perform(.updateFolderView)
+            #expect(pane.folderViews.views.own(inner)?.keeps.columns?.visibility.permissions == true)
+            #expect(pane.folderView?.isOwnSaved == true && pane.folderView?.hasUnsavedChanges == false)
+            #expect(saveIsOn() == false)
+
+            // The folder given a view of its own elsewhere: it has one, and nothing waits here.
+            first.perform(.resetFolderView)
+            #expect(pane.folderViews.views.own(inner) == nil && pane.folderView?.use.own == false)
+            pane.keepOwnColumns(true)
+            await go(second, harness, "Alpha/Inner")
+            second.perform(.rememberFolderView)
+            #expect(pane.folderView?.isOwnSaved == true && pane.folderView?.hasUnsavedChanges == false)
+            #expect(pane.keepsOwnColumns && saveIsOn() == false)
+
+            // The view above removed elsewhere: no view is left to give the folder, and nothing waits.
+            first.perform(.resetFolderView)
+            pane.keepOwnColumns(true)
+            #expect(pane.folderView?.becomesOwn == true)
+            await go(second, harness, "Alpha")
+            second.perform(.resetFolderView)
+            #expect(pane.folderView == nil && !pane.keepsOwnColumns && !first.canPerform(.updateFolderView))
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.changed == false)
+
+            // Leaving the folder drops it.
+            second.perform(.rememberFolderView)
+            other.setFolderViewSubfolders(true)
+            second.perform(.updateFolderView)
+            #expect(pane.folderView?.use.own == false)
+            pane.keepOwnColumns(true)
+            await go(first, harness, "Beta")
+            await go(first, harness, "Alpha/Inner")
+            #expect(pane.folderView?.becomesOwn == false && pane.folderView?.hasUnsavedChanges == false)
+            #expect(pane.folderViews.views.own(inner) == nil)
+            await harness.close()
         }
     }
 }

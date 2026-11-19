@@ -1854,6 +1854,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// A preference changed in any window or in Settings: the keys the whole app shares.
     func preferencesChanged(_ change: PreferencesChange) {
+        for pane in panes { pane.sharedSettingsChanged() }
         sidebar.applyPreferences()
         refreshColumns()
         notificationsSettingChanged()

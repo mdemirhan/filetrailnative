@@ -180,4 +180,111 @@ struct FolderViewsTests {
         #expect(read.own("/Users/me/Downloads") == view)
         #expect(read.serialize() == views.serialize())
     }
+
+    /// Every order of `keys`.
+    private func orders(_ keys: [OptionalDetailColumnKey]) -> [[OptionalDetailColumnKey]] {
+        guard keys.count > 1 else { return [keys] }
+        return keys.indices.flatMap { index -> [[OptionalDetailColumnKey]] in
+            var rest = keys
+            let first = rest.remove(at: index)
+            return orders(rest).map { [first] + $0 }
+        }
+    }
+
+    // Reading checks each width and size against its limits and takes a setting it can't read as not kept, so the
+    // next write would leave that setting out. Neither may touch what the app writes itself: every width a column can
+    // have, every icon size, Compact List width and Previews count at both densities, every order of the columns
+    // with every choice of which are shown, and every view and order are read back as they were written.
+    @Test func everythingTheAppCanWriteIsReadBackAsWritten() throws {
+        var views: [FolderView] = []
+        func add(_ keeps: FolderViewKeeps, subfolders: Bool = false) {
+            views.append(FolderView(path: "/folder/\(views.count)", subfolders: subfolders, keeps: keeps))
+        }
+        let standard = OptionalDetailColumnKey.menuOrder
+        // Each column from its least width to its greatest, a point at a time.
+        let widest = DetailColumnKey.allCases.map(\.widthLimits.count).max() ?? 0
+        for step in 0..<widest {
+            var widths = DetailColumnWidths.defaults
+            for key in DetailColumnKey.allCases {
+                widths[key] = min(key.widthLimits.lowerBound + step, key.widthLimits.upperBound)
+            }
+            add(FolderViewKeeps(columns: FolderViewColumns(visibility: .defaults, order: standard, widths: widths)))
+        }
+        // Every order, each with another choice of the columns shown: all 128 choices come by many times over.
+        for (number, order) in orders(standard).enumerated() {
+            var visibility = DetailColumnVisibility.defaults
+            for (bit, key) in OptionalDetailColumnKey.allCases.enumerated() { visibility[key] = number >> bit & 1 == 1 }
+            add(FolderViewKeeps(columns: FolderViewColumns(visibility: visibility, order: order, widths: .defaults)))
+        }
+        // Every size, the two densities apart.
+        let icons = Array(
+            stride(
+                from: AppPreferenceLimits.iconSizeRange.lowerBound,
+                through: AppPreferenceLimits.iconSizeRange.upperBound,
+                by: AppPreferenceLimits.iconSizeStep))
+        let range = AppPreferenceLimits.compactListWidthRange
+        let counts = PreviewGrid.counts
+        for (number, width) in range.enumerated() {
+            add(
+                FolderViewKeeps(
+                    size: FolderViewSizes(
+                        iconSizes: DensitySizes(
+                            standard: icons[number % icons.count], finder: icons[(number / icons.count) % icons.count]),
+                        compactListWidths: DensitySizes(
+                            standard: width, finder: range.upperBound - (width - range.lowerBound)),
+                        previewCounts: DensitySizes(
+                            standard: counts[number % counts.count],
+                            finder: counts[(number / counts.count) % counts.count]))))
+        }
+        // The sizes before any is set: the Compact List's are between two steps.
+        add(
+            FolderViewKeeps(
+                size: FolderViewSizes(
+                    iconSizes: .iconDefaults, compactListWidths: .compactListDefaults,
+                    previewCounts: .previewCountDefaults)))
+        // Every view, in every order, folders first or not, covering the folders inside or not.
+        for view in ExplorerViewMode.allCases {
+            for field in SortByPreference.allCases {
+                for direction in SortDirectionPreference.allCases {
+                    for foldersFirst in [true, false] {
+                        add(
+                            FolderViewKeeps(
+                                view: view, sort: FolderViewSort(by: field, direction: direction),
+                                foldersFirst: foldersFirst), subfolders: foldersFirst)
+                    }
+                }
+            }
+        }
+        // A view that keeps nothing and covers the folders inside is kept too.
+        add(FolderViewKeeps(), subfolders: true)
+
+        let written = FolderViews(views)
+        #expect(written.all.count == views.count)
+        let read = try FolderViews.read(Data(written.serialize().utf8))
+        #expect(read == written)
+        #expect(read.serialize() == written.serialize())
+    }
+
+    // Keep Columns chosen in a folder that uses a view from above is a view of its own to come at Save. It stays
+    // that while the view above is saved again elsewhere, and is there no more once the folder has a view of its own.
+    @Test func aViewOfItsOwnToComeStaysWhileTheViewAboveIsSavedAgainAndGoesOnceTheFolderHasOne() {
+        let above = FolderView(path: "/Users/me/Pictures", subfolders: true, keeps: Self.previews)
+        var pending = FolderViewOnScreen(FolderViewUse(view: above, own: false))
+        #expect(!pending.hasUnsavedChanges)
+        pending.becomesOwn = true
+        #expect(pending.hasUnsavedChanges && pending.unsaved.isEmpty)
+        // Not the same as the view with nothing chosen: a pane that compares the two shows the change.
+        #expect(pending != FolderViewOnScreen(FolderViewUse(view: above, own: false)))
+
+        var changed = above
+        changed.keeps.view = .icons
+        let stillPending = pending.taking(FolderViewUse(view: changed, own: false))
+        #expect(stillPending.becomesOwn && stillPending.shown.view == .icons && stillPending.hasUnsavedChanges)
+
+        let own = FolderView(path: "/Users/me/Pictures/Scans", keeps: Self.previews)
+        let saved = pending.taking(FolderViewUse(view: own, own: true))
+        #expect(!saved.becomesOwn && !saved.hasUnsavedChanges && saved.isOwnSaved)
+        // The same folder's view from above taken over as its own (the folder above itself): never set there.
+        #expect(!pending.taking(FolderViewUse(view: above, own: true)).becomesOwn)
+    }
 }
