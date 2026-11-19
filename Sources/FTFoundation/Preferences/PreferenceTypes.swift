@@ -58,10 +58,10 @@ public enum SortDirectionPreference: String, Codable, CaseIterable, Sendable, Ha
 
 /// What the file list can be sorted by.
 public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, modified, kind, size
+    case name, modified, kind, size, added
 
-    /// The order every menu lists the fields in.
-    public static let menuOrder: [SortByPreference] = [.name, .kind, .modified, .size]
+    /// The order every menu lists the fields in, Finder's.
+    public static let menuOrder: [SortByPreference] = [.name, .kind, .modified, .added, .size]
 
     /// What every menu calls it.
     public var title: String {
@@ -70,6 +70,7 @@ public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable 
         case .modified: "Date Modified"
         case .kind: "Kind"
         case .size: "Size"
+        case .added: "Date Added"
         }
     }
 }
@@ -90,7 +91,7 @@ public enum ReturnKeyAction: String, Codable, CaseIterable, Sendable, Hashable {
 
 /// The columns of the List view, in display order.
 public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, modified, size, kind, created, permissions
+    case name, modified, size, kind, created, added, permissions
 
     /// The column's title.
     public var label: String {
@@ -100,6 +101,7 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
         case .size: "Size"
         case .kind: "Kind"
         case .created: "Date Created"
+        case .added: "Date Added"
         case .permissions: "Permissions"
         }
     }
@@ -111,7 +113,7 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
         case .modified: 80...280
         case .size: 60...240
         case .kind: 60...320
-        case .created: 80...280
+        case .created, .added: 80...280
         case .permissions: 36...260
         }
     }
@@ -119,12 +121,12 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
 
 /// The List's columns but Name, which is always shown: the ones that can be hidden and moved.
 public enum OptionalDetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case modified, size, kind, created, permissions
+    case modified, size, kind, created, added, permissions
 }
 
 /// The columns of search results' List view (SearchColumnKey).
 public enum SearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case name, folder, modified, size, kind, created, permissions
+    case name, folder, modified, size, kind, created, added, permissions
 
     /// The column's title: Folder's own, the others as in a folder's List.
     public var label: String {
@@ -139,7 +141,7 @@ public enum SearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
 
 /// Search results' columns but Name, which is always shown, in the order of the columns.
 public enum OptionalSearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
-    case folder, modified, size, kind, created, permissions
+    case folder, modified, size, kind, created, added, permissions
 }
 
 /// `name` is always visible, so only optional columns are persisted as booleans.
@@ -148,11 +150,12 @@ public struct DetailColumnVisibility: Codable, Equatable, Sendable {
     public var size: Bool
     public var kind: Bool
     public var created: Bool
+    public var added: Bool = false
     public var permissions: Bool
 
-    /// Before any is changed: Finder's list view columns; Date Created and Permissions are opt-in.
+    /// Before any is changed: Finder's list view columns; Date Created, Date Added and Permissions are opt-in.
     public static let defaults = DetailColumnVisibility(
-        modified: true, size: true, kind: true, created: false, permissions: false)
+        modified: true, size: true, kind: true, created: false, added: false, permissions: false)
 
     public subscript(key: OptionalDetailColumnKey) -> Bool {
         get {
@@ -161,6 +164,7 @@ public struct DetailColumnVisibility: Codable, Equatable, Sendable {
             case .size: size
             case .kind: kind
             case .created: created
+            case .added: added
             case .permissions: permissions
             }
         }
@@ -170,6 +174,7 @@ public struct DetailColumnVisibility: Codable, Equatable, Sendable {
             case .size: size = newValue
             case .kind: kind = newValue
             case .created: created = newValue
+            case .added: added = newValue
             case .permissions: permissions = newValue
             }
         }
@@ -182,11 +187,12 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
     public var size: Int
     public var kind: Int
     public var created: Int
+    public var added: Int = 152
     public var permissions: Int
 
     /// The widths before any column is resized.
     public static let defaults = DetailColumnWidths(
-        name: 320, modified: 152, size: 108, kind: 148, created: 152, permissions: 108)
+        name: 320, modified: 152, size: 108, kind: 148, created: 152, added: 152, permissions: 108)
 
     public subscript(key: DetailColumnKey) -> Int {
         get {
@@ -196,6 +202,7 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
             case .size: size
             case .kind: kind
             case .created: created
+            case .added: added
             case .permissions: permissions
             }
         }
@@ -206,6 +213,7 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
             case .size: size = newValue
             case .kind: kind = newValue
             case .created: created = newValue
+            case .added: added = newValue
             case .permissions: permissions = newValue
             }
         }
@@ -252,11 +260,12 @@ public struct SearchColumnVisibility: Codable, Equatable, Sendable {
     public var size: Bool
     public var kind: Bool
     public var created: Bool
+    public var added: Bool = false
     public var permissions: Bool
 
     /// Before any is changed: Folder, Date Modified and Size.
     public static let defaults = SearchColumnVisibility(
-        folder: true, modified: true, size: true, kind: false, created: false, permissions: false)
+        folder: true, modified: true, size: true, kind: false, created: false, added: false, permissions: false)
 
     public subscript(key: OptionalSearchColumnKey) -> Bool {
         get {
@@ -266,6 +275,7 @@ public struct SearchColumnVisibility: Codable, Equatable, Sendable {
             case .size: size
             case .kind: kind
             case .created: created
+            case .added: added
             case .permissions: permissions
             }
         }
@@ -276,6 +286,7 @@ public struct SearchColumnVisibility: Codable, Equatable, Sendable {
             case .size: size = newValue
             case .kind: kind = newValue
             case .created: created = newValue
+            case .added: added = newValue
             case .permissions: permissions = newValue
             }
         }
@@ -289,13 +300,14 @@ public struct SearchColumnWidths: Codable, Equatable, Sendable {
     public var size: Int
     public var kind: Int
     public var created: Int
+    public var added: Int = DetailColumnWidths.defaults.added
     public var permissions: Int
 
     /// The widths before any column is resized: Name and Folder their own, the others as in a folder's List.
     public static let defaults = SearchColumnWidths(
         name: 300, folder: 240, modified: DetailColumnWidths.defaults.modified, size: DetailColumnWidths.defaults.size,
         kind: DetailColumnWidths.defaults.kind, created: DetailColumnWidths.defaults.created,
-        permissions: DetailColumnWidths.defaults.permissions)
+        added: DetailColumnWidths.defaults.added, permissions: DetailColumnWidths.defaults.permissions)
 
     public subscript(key: SearchColumnKey) -> Int {
         get {
@@ -306,6 +318,7 @@ public struct SearchColumnWidths: Codable, Equatable, Sendable {
             case .size: size
             case .kind: kind
             case .created: created
+            case .added: added
             case .permissions: permissions
             }
         }
@@ -317,6 +330,7 @@ public struct SearchColumnWidths: Codable, Equatable, Sendable {
             case .size: size = newValue
             case .kind: kind = newValue
             case .created: created = newValue
+            case .added: added = newValue
             case .permissions: permissions = newValue
             }
         }

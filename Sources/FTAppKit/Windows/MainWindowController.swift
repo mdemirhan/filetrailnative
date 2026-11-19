@@ -1884,12 +1884,13 @@ extension MainWindowController: ExplorerWindowHandle {
         case .increaseSize, .decreaseSize, .resetSize:
             if let change = ViewSize.Change(command) { content.stepViewSize(change) }
         // Search results have an order of their own, chosen in the List view's headers.
-        case .sortByName, .sortByKind, .sortByModified, .sortBySize, .toggleFoldersFirst:
+        case .sortByName, .sortByKind, .sortByModified, .sortByAdded, .sortBySize, .toggleFoldersFirst:
             guard searchRootPath == nil else { return }
             switch command {
             case .sortByName: sort(by: .name)
             case .sortByKind: sort(by: .kind)
             case .sortByModified: sort(by: .modified)
+            case .sortByAdded: sort(by: .added)
             case .sortBySize: sort(by: .size)
             default:
                 foldersFirst.toggle()

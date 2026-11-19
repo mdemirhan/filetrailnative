@@ -66,6 +66,26 @@ struct ExplorerServiceTests {
         #expect(!looked.contains("folder"))
     }
 
+    // Date Added comes with the folder read: nothing more is looked up, newest first when descending, and an item
+    // without one (a disk that doesn't keep it) last either way.
+    @Test func sortsByWhenEachItemWasAddedFromTheFolderRead() async throws {
+        func added(_ name: String, _ ms: Int64?) -> DirectoryRecord {
+            var record = fakeDirent(name, file: true)
+            record.addedMs = ms
+            return record
+        }
+        let fake = workspace(
+            [added("old.txt", 1_000), added("new.txt", 3_000), added("none.txt", nil), added("mid.txt", 2_000)],
+            stat: { path in fakeStats(directory: path == "/workspace", file: path != "/workspace", size: 1) })
+        let newestFirst = try await service(fake).snapshot(
+            path: "/workspace", sortBy: .added, sortDirection: .descending, foldersFirst: false)
+        #expect(newestFirst.entries.map(\.name) == ["new.txt", "mid.txt", "old.txt", "none.txt"])
+        let oldestFirst = try await service(fake).snapshot(
+            path: "/workspace", sortBy: .added, sortDirection: .ascending, foldersFirst: false)
+        #expect(oldestFirst.entries.map(\.name) == ["old.txt", "mid.txt", "new.txt", "none.txt"])
+        #expect(!fake.lookedUp.contains { $0.hasSuffix(".txt") })
+    }
+
     @Test func readsTheTagsOfItemsWithALabelSoTheyShowWithTheFolder() async throws {
         var labelled = fakeDirent("labelled.txt", file: true)
         labelled.tagColor = .orange

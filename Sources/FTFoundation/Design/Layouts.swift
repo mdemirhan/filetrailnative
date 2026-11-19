@@ -135,6 +135,7 @@ public enum DetailColumn: String, CaseIterable, Sendable {
     case size
     case kind
     case created
+    case added
     case permissions
     /// Search results only.
     case folder
@@ -155,7 +156,7 @@ public struct ColumnWidths: Equatable, Sendable {
         case .modified: return spec(152, 80, 280)
         case .size: return spec(108, 60, 240)
         case .kind: return spec(148, 60, 320)
-        case .created: return spec(152, 80, 280)
+        case .created, .added: return spec(152, 80, 280)
         case .permissions: return spec(108, 36, 260)
         case .folder: return spec(240, 80, 1000)
         }

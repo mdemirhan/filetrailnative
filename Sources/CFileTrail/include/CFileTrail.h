@@ -29,6 +29,9 @@ typedef struct {
     int64_t crtime_sec;
     int32_t crtime_nsec;
     int32_t crtime_valid;
+    int64_t added_sec;
+    int32_t added_nsec;
+    int32_t added_valid;
     int32_t mode_valid;
     int32_t size_valid;
     int32_t has_custom_icon;
@@ -53,11 +56,16 @@ enum {
     FT_READ_FINDER_INFO = 16, /* Finder's custom-icon flag and label color */
     FT_READ_EMPTY_FOLDERS = 32, /* which folders hold nothing, on the disks that store a folder's count (APFS, HFS+) */
     FT_READ_HIDDEN_FLAG = 64, /* the flag that hides an item whatever its name (UF_HIDDEN) */
+    FT_READ_ADDED = 128,      /* when the item was put in the folder (Date Added), on the disks that keep it */
 };
 
 /// Reads a folder with getattrlistbulk(2): every name with its type, and the `attributes` asked for, in a
 /// few calls. Returns 0, or an errno. `.` and `..` are left out. Free the result with ft_free_listing.
 int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *listing);
+
+/// When the item at `path` (a link itself, not what it points to) was put in its folder. Returns 0, ENOATTR when the
+/// disk doesn't keep it, or an errno.
+int ft_added_time(const char *path, int64_t *seconds, int32_t *nanoseconds);
 void ft_free_listing(FTDirListing *listing);
 
 #endif

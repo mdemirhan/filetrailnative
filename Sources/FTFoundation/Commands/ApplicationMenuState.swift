@@ -213,6 +213,7 @@ public enum ApplicationMenu {
                 state.viewMode == .previews && PreviewGrid.valid(state.previewCount) == PreviewGrid.count(of: type)
             case .sortByName: state.sortBy == .name
             case .sortByModified: state.sortBy == .modified
+            case .sortByAdded: state.sortBy == .added
             case .sortBySize: state.sortBy == .size
             case .sortByKind: state.sortBy == .kind
             case .toggleFoldersFirst: state.foldersFirst

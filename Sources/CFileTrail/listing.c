@@ -82,6 +82,9 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
     if (attributes & FT_READ_HIDDEN_FLAG) {
         request.commonattr |= ATTR_CMN_FLAGS;
     }
+    if (attributes & FT_READ_ADDED) {
+        request.commonattr |= ATTR_CMN_ADDEDTIME;
+    }
     if (attributes & FT_READ_SIZE) {
         request.fileattr = ATTR_FILE_DATALENGTH;
     }
@@ -174,6 +177,14 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
                 entry.has_hidden_flag = (*(uint32_t *)field & UF_HIDDEN) != 0;
                 field += sizeof(uint32_t);
             }
+            // After the flags: attributes are packed in the order of their bits.
+            if (returned.commonattr & ATTR_CMN_ADDEDTIME) {
+                struct timespec time = *(struct timespec *)field;
+                field += sizeof(struct timespec);
+                entry.added_sec = time.tv_sec;
+                entry.added_nsec = (int32_t)time.tv_nsec;
+                entry.added_valid = 1;
+            }
             if (returned.dirattr & ATTR_DIR_ENTRYCOUNT) {
                 entry.is_empty_folder = *(uint32_t *)field == 0;
                 field += sizeof(uint32_t);
@@ -208,4 +219,26 @@ void ft_free_listing(FTDirListing *listing) {
     free(listing->entries);
     free(listing->names);
     memset(listing, 0, sizeof(*listing));
+}
+
+int ft_added_time(const char *path, int64_t *seconds, int32_t *nanoseconds) {
+    struct attrlist request;
+    memset(&request, 0, sizeof(request));
+    request.bitmapcount = ATTR_BIT_MAP_COUNT;
+    request.commonattr = ATTR_CMN_RETURNED_ATTRS | ATTR_CMN_ADDEDTIME;
+    struct {
+        uint32_t length;
+        attribute_set_t returned;
+        struct timespec added;
+    } __attribute__((aligned(4), packed)) reply;
+    memset(&reply, 0, sizeof(reply));
+    if (getattrlist(path, &request, &reply, sizeof(reply), FSOPT_NOFOLLOW) != 0) {
+        return errno;
+    }
+    if (!(reply.returned.commonattr & ATTR_CMN_ADDEDTIME)) {
+        return ENOATTR;
+    }
+    *seconds = reply.added.tv_sec;
+    *nanoseconds = (int32_t)reply.added.tv_nsec;
+    return 0;
 }

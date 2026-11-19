@@ -51,11 +51,16 @@ public struct DirectoryRecord: Sendable, Hashable {
     public var isEmptyFolder: Bool
     /// The flag that hides an item whatever its name, as Finder goes by. Folders, files and links can all have it.
     public var hasHiddenFlag: Bool
+    /// When the item was put in the folder (Date Added), in milliseconds since 1970; nil on a disk that doesn't keep
+    /// it.
+    public var addedMs: Int64?
 
     public init(
         name: String, type: FileType, lstat: FileStats? = nil, hasCustomIcon: Bool = false,
-        tagColor: FinderTagColor? = nil, isEmptyFolder: Bool = false, hasHiddenFlag: Bool = false
+        tagColor: FinderTagColor? = nil, isEmptyFolder: Bool = false, hasHiddenFlag: Bool = false,
+        addedMs: Int64? = nil
     ) {
+        self.addedMs = addedMs
         self.hasHiddenFlag = hasHiddenFlag
         self.name = name
         self.type = type
@@ -74,10 +79,14 @@ public protocol ExplorerFileSystem: Sendable {
     func realpath(_ path: String) throws -> String
     /// The colors of an item's Finder tags, in their order; none for an item that can't be read.
     func tagColors(_ path: String) -> [FinderTagColor]
+    /// When the item at `path` (a link itself) was put in its folder, in milliseconds since 1970; nil when the disk
+    /// doesn't keep it or the item can't be read.
+    func addedMs(_ path: String) -> Int64?
 }
 
 extension ExplorerFileSystem {
     public func tagColors(_ path: String) -> [FinderTagColor] { FinderTags.colors(path) }
+    public func addedMs(_ path: String) -> Int64? { FileTimes.addedMs(path) }
 }
 
 public struct NativeFileSystem: ExplorerFileSystem {
@@ -91,7 +100,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
             path,
             UInt32(
                 FT_READ_MODE | FT_READ_SIZE | FT_READ_MODIFIED | FT_READ_CREATED | FT_READ_FINDER_INFO
-                    | FT_READ_EMPTY_FOLDERS | FT_READ_HIDDEN_FLAG),
+                    | FT_READ_EMPTY_FOLDERS | FT_READ_HIDDEN_FLAG | FT_READ_ADDED),
             &listing)
         guard code == 0 else { throw ExplorerError.system(code: code, path: path) }
         defer { ft_free_listing(&listing) }
@@ -110,7 +119,8 @@ public struct NativeFileSystem: ExplorerFileSystem {
                     lstat: Self.knownStats(entry, type: type),
                     hasCustomIcon: entry.has_custom_icon != 0,
                     tagColor: FinderTagColor(rawValue: Int(entry.finder_label)),
-                    isEmptyFolder: entry.is_empty_folder != 0, hasHiddenFlag: entry.has_hidden_flag != 0))
+                    isEmptyFolder: entry.is_empty_folder != 0, hasHiddenFlag: entry.has_hidden_flag != 0,
+                    addedMs: entry.added_valid != 0 ? Self.milliseconds(entry.added_sec, entry.added_nsec) : nil))
         }
         return records
     }
@@ -167,7 +177,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
     }
 
     /// Times are whole milliseconds, cut towards zero.
-    private static func milliseconds(_ seconds: Int64, _ nanoseconds: Int32) -> Int64 {
+    static func milliseconds(_ seconds: Int64, _ nanoseconds: Int32) -> Int64 {
         seconds * 1000 + Int64(nanoseconds) / 1_000_000
     }
 

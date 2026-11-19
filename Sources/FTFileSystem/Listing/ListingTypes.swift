@@ -18,6 +18,8 @@ public enum DirectorySortKey: String, Sendable, Hashable, Codable, CaseIterable 
     case modified
     case kind
     case size
+    /// When each item was put in the folder (Date Added), as the folder read gives it.
+    case added
 }
 
 public enum SortDirection: String, Sendable, Hashable, Codable, CaseIterable {
@@ -81,6 +83,8 @@ public struct EntryMetadata: Sendable, Hashable, Codable {
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?
+    /// When the item was put in its folder; nil on a disk that doesn't keep it.
+    public var addedAt: Date? = nil
 }
 
 public struct MetadataBatch: Sendable, Hashable, Codable {
@@ -101,6 +105,8 @@ public struct ItemProperties: Sendable, Hashable, Codable {
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?
+    /// When the item was put in its folder; nil on a disk that doesn't keep it.
+    public var addedAt: Date? = nil
 }
 
 public struct PathSuggestion: Sendable, Hashable, Codable {

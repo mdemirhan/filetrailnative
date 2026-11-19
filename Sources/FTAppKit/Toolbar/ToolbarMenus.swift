@@ -143,6 +143,7 @@ extension ExplorerToolbar {
         case .name: .sortByName
         case .kind: .sortByKind
         case .modified: .sortByModified
+        case .added: .sortByAdded
         case .size: .sortBySize
         }
     }

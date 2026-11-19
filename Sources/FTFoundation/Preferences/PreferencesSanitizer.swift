@@ -112,6 +112,7 @@ public enum PreferencesSanitizer {
         case "modified": .modified
         case "kind": .kind
         case "size": .size
+        case "added": .added
         default: .name
         }
     }

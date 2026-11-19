@@ -49,12 +49,12 @@ struct AppPreferencesTests {
         #expect(
             defaults.detailColumnWidths
                 == DetailColumnWidths(name: 320, modified: 152, size: 108, kind: 148, created: 152, permissions: 108))
-        #expect(defaults.detailColumnOrder == [.modified, .size, .kind, .created, .permissions])
+        #expect(defaults.detailColumnOrder == [.modified, .size, .kind, .created, .added, .permissions])
         #expect(
             defaults.searchColumns
                 == SearchColumnVisibility(
                     folder: true, modified: true, size: true, kind: false, created: false, permissions: false))
-        #expect(defaults.searchColumnOrder == [.folder, .modified, .size, .kind, .created, .permissions])
+        #expect(defaults.searchColumnOrder == [.folder, .modified, .size, .kind, .created, .added, .permissions])
         #expect(defaults.searchColumnWidths.name == 300)
         #expect(defaults.searchColumnWidths.folder == 240)
         #expect(defaults.restoreSessionOnStartup)
@@ -104,7 +104,9 @@ struct AppPreferencesTests {
     @Test func savedColumnOrdersDropUnknownOrDuplicateKeysAndAppendNewColumns() {
         let order = JSONNode.array(["size", "size", "name", "bogus", "modified"].map(JSONNode.string) + [.number(5)])
         #expect(
-            AppPreferenceLimits.normalizeDetailColumnOrder(order) == [.size, .modified, .kind, .created, .permissions])
+            AppPreferenceLimits.normalizeDetailColumnOrder(order) == [
+                .size, .modified, .kind, .created, .added, .permissions,
+            ])
         #expect(AppPreferenceLimits.normalizeDetailColumnOrder(nil) == AppPreferenceLimits.defaultDetailColumnOrder)
         #expect(
             AppPreferenceLimits.normalizeDetailColumnOrder(.string("size"))
@@ -112,7 +114,7 @@ struct AppPreferencesTests {
         let search = JSONNode.array(["kind", "folder"].map(JSONNode.string))
         #expect(
             AppPreferenceLimits.normalizeSearchColumnOrder(search) == [
-                .kind, .folder, .modified, .size, .created, .permissions,
+                .kind, .folder, .modified, .size, .created, .added, .permissions,
             ])
     }
 

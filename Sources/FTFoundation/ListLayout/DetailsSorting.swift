@@ -3,7 +3,8 @@ import Foundation
 public enum DetailsSorting {
     /// What a click on a column header asks the folder to be ordered by; nil for a column the list cannot be ordered
     /// by. Date Created and Permissions come from metadata that loads only for the rows on screen, and Folder exists
-    /// only in search results. Search results order by Name, Folder (their path) and Kind.
+    /// only in search results; Date Added comes with the folder read. Search results order by Name, Folder (their
+    /// path) and Kind.
     public static func sortKey(for column: DetailColumn, search: Bool) -> String? {
         if search {
             switch column {
@@ -14,19 +15,19 @@ public enum DetailsSorting {
             }
         }
         switch column {
-        case .name, .modified, .size, .kind: return column.rawValue
+        case .name, .modified, .size, .kind, .added: return column.rawValue
         case .created, .permissions, .folder: return nil
         }
     }
 
-    /// The same key toggles the direction; a new key starts descending for Date Modified and
-    /// Size, ascending for Name and Kind.
+    /// The same key toggles the direction; a new key starts descending for the dates and Size (the newest and the
+    /// largest first, as in Finder), ascending for Name and Kind.
     public static func next(
         current: SortByPreference, direction: SortDirectionPreference, requested: SortByPreference
     ) -> (sortBy: SortByPreference, direction: SortDirectionPreference) {
         if requested == current {
             return (requested, direction == .asc ? .desc : .asc)
         }
-        return (requested, requested == .modified || requested == .size ? .desc : .asc)
+        return (requested, [.modified, .added, .size].contains(requested) ? .desc : .asc)
     }
 }

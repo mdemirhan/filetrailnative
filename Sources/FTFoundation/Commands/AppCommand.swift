@@ -94,6 +94,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case resetSize
     case sortByName
     case sortByModified
+    case sortByAdded
     case sortBySize
     case sortByKind
     case toggleFoldersFirst

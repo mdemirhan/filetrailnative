@@ -80,7 +80,8 @@ struct ApplicationMenuTests {
         #expect(
             checked == [
                 "viewAsIcons": false, "viewAsList": false, "viewAsDetails": true, "sortByName": false,
-                "sortByModified": false, "sortBySize": true, "sortByKind": false, "toggleFoldersFirst": false,
+                "sortByModified": false, "sortByAdded": false, "sortBySize": true, "sortByKind": false,
+                "toggleFoldersFirst": false,
                 "toggleHiddenFiles": true, "toggleInfoPanel": true, "toggleInfoRow": false, "toggleTwoPanes": false,
                 "togglePinFilter": false, "viewAsPreviews": false, "showPreviews9": false, "showPreviews4": false,
                 "showPreviews2": false, "showPreviews1": false,

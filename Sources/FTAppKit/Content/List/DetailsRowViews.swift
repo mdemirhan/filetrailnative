@@ -355,6 +355,7 @@ final class DetailsBarView: NSView {
             switch column {
             case .modified: ListCellText.readsInMinutes(metadata?.modifiedAt, now: now)
             case .created: ListCellText.readsInMinutes(metadata?.createdAt, now: now)
+            case .added: ListCellText.readsInMinutes(metadata?.addedAt, now: now)
             default: false
             }
         }

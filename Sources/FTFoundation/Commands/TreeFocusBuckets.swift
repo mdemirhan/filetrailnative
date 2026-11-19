@@ -25,7 +25,7 @@ extension ShortcutPolicy {
             .showLastSearchResults, .viewAsIcons,
             .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
             .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .sortByName,
-            .sortByModified,
+            .sortByModified, .sortByAdded,
             .sortBySize, .sortByKind, .toggleFoldersFirst,
             .toggleHiddenFiles, .togglePinFilter, .goBack, .goForward, .goEnclosingFolder, .focusTreePane,
             .focusContentPane, .openHelp, .openKeyboardShortcuts:

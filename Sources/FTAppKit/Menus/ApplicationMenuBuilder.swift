@@ -182,6 +182,7 @@ enum ApplicationMenuBuilder {
             sortMenu.addItem(context.command(.sortByName, "Name"))
             sortMenu.addItem(context.command(.sortByKind, "Kind"))
             sortMenu.addItem(context.command(.sortByModified, "Date Modified"))
+            sortMenu.addItem(context.command(.sortByAdded, "Date Added"))
             sortMenu.addItem(context.command(.sortBySize, "Size"))
             sortBy.submenu = sortMenu
             menu.addItem(sortBy)

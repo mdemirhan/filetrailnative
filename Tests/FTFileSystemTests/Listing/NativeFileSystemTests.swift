@@ -167,6 +167,26 @@ struct NativeFileSystemTests {
         #expect(NativeFileSystem.knownStats(noSize, type: .directory) != nil)
     }
 
+    // APFS keeps when each item was put in its folder: the folder read and the one-item read agree, and a move into
+    // another folder gives a later date there while the item's other dates stay.
+    @Test func readsWhenEachItemWasAddedToItsFolder() throws {
+        try withTemporaryDirectory { directory in
+            let file = directory.url.appendingPathComponent("a.txt").path
+            FileManager.default.createFile(atPath: file, contents: Data("a".utf8))
+            let listed = try #require(try native.readDirectory(directory.path).first { $0.name == "a.txt" })
+            let added = try #require(listed.addedMs)
+            #expect(FileTimes.addedMs(file) == added)
+            #expect(native.addedMs(file) == added)
+            Thread.sleep(forTimeInterval: 0.02)
+            let other = directory.url.appendingPathComponent("sub")
+            try FileManager.default.createDirectory(at: other, withIntermediateDirectories: false)
+            let moved = other.appendingPathComponent("a.txt").path
+            try FileManager.default.moveItem(atPath: file, toPath: moved)
+            #expect(try #require(FileTimes.addedMs(moved)) > added)
+            #expect(FileTimes.addedMs(directory.url.appendingPathComponent("missing").path) == nil)
+        }
+    }
+
     @Test func readsAnEmptyFolder() throws {
         try withTemporaryDirectory { directory in
             let records = try native.readDirectory(directory.path)
