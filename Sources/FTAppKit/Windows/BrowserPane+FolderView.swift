@@ -220,9 +220,25 @@ extension BrowserPane {
         var view = folderView ?? .draft(FolderView(path: path, keeps: FolderViewKeeps()))
         let before = (shownSortBy, shownSortDirection, shownFoldersFirst)
         change(&view)
+        // Covering the folders inside with nothing kept, where they would look no different, is no change: it goes
+        // off with the last setting unchecked.
+        if view.shown.isEmpty, viewStoppedForSubfolders == nil { view.shownSubfolders = false }
         folderView = view.isDraft && !view.hasUnsavedChanges ? nil : view
         showFolderView()
         if before != (shownSortBy, shownSortDirection, shownFoldersFirst) { viewChanged() }
+    }
+
+    /// The view from a folder above that the folders inside this one would stop using if this folder covered them
+    /// while keeping nothing: the nearest covering view above, when it keeps something. Nil where covering them with
+    /// nothing kept would change nothing, as they show the pane's settings already.
+    var viewStoppedForSubfolders: FolderView? {
+        guard let above = folderViews.views.covering(folder.path), !above.keeps.isEmpty else { return nil }
+        return above
+    }
+
+    /// Whether Apply to Subfolders can be turned on: there is something to apply, or a view from above to stop.
+    var canApplyToSubfolders: Bool {
+        folderView?.shown.isEmpty == false || viewStoppedForSubfolders != nil
     }
 
     // MARK: Saving it

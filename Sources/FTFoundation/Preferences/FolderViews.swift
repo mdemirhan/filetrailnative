@@ -255,11 +255,14 @@ public struct FolderViews: Equatable, Sendable {
         if let own = byPath[path] {
             return FolderViewUse(view: own, own: true)
         }
+        return covering(path).map { FolderViewUse(view: $0, own: false) }
+    }
+
+    /// The view of the nearest folder above `path` that covers the folders inside it, whatever view `path` has itself.
+    public func covering(_ path: String) -> FolderView? {
         var parent = Self.parent(of: path)
         while let current = parent {
-            if let view = byPath[current], view.subfolders {
-                return FolderViewUse(view: view, own: false)
-            }
+            if let view = byPath[current], view.subfolders { return view }
             parent = Self.parent(of: current)
         }
         return nil

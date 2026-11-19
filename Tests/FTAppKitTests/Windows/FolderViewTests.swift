@@ -749,6 +749,49 @@ extension ExplorerWindowlessTests {
             #expect(pane.shownFolderView == nil)
         }
 
+        // Apply to Subfolders with nothing kept is a change only where the folders inside would look different: where
+        // a view from above that keeps something is there for them to stop using.
+        @Test func applyToSubfoldersWithNothingKeptIsAChangeOnlyUnderAViewFromAboveThatKeepsSomething() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            tab.setMode(.icons)
+            await go(tab, harness, "Alpha")
+            let alpha = real(harness, "Alpha")
+            let inner = real(harness, "Alpha/Inner")
+
+            // Nothing above, nothing kept: it can't be turned on, and trying changes nothing.
+            #expect(!pane.canApplyToSubfolders)
+            pane.setFolderViewSubfolders(true)
+            #expect(pane.shownFolderView == nil)
+            #expect(!tab.canPerform(.updateFolderView))
+
+            // With a setting kept it can; unchecking the last setting takes it off again, and nothing is left to save.
+            pane.setFolderViewValue(.view) { $0.view = .previews }
+            #expect(pane.canApplyToSubfolders)
+            pane.setFolderViewSubfolders(true)
+            #expect(pane.shownFolderView?.shownSubfolders == true)
+            pane.setFolderViewKeeps(.view, false)
+            #expect(pane.shownFolderView == nil)
+
+            // Alpha keeps Previews for the folders inside: in Inner, keeping nothing and covering its own folders is
+            // a change, as they would stop using Alpha's view.
+            pane.setFolderViewValue(.view) { $0.view = .previews }
+            pane.setFolderViewSubfolders(true)
+            tab.perform(.updateFolderView)
+            #expect(pane.folderViews.views.own(alpha)?.subfolders == true)
+            await go(tab, harness, "Alpha/Inner")
+            #expect(pane.shownFolderView?.use.own == false)
+            pane.setFolderViewKeeps(.view, false)
+            #expect(pane.viewStoppedForSubfolders?.path == alpha && pane.canApplyToSubfolders)
+            pane.setFolderViewSubfolders(true)
+            #expect(pane.shownFolderView?.shownSubfolders == true)
+            tab.perform(.updateFolderView)
+            let stop = try #require(pane.folderViews.views.own(inner))
+            #expect(stop.keeps.isEmpty && stop.subfolders)
+            await harness.close()
+        }
+
         @Test func folderCustomizationShowsEachChangeMadeInIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -764,11 +807,23 @@ extension ExplorerWindowlessTests {
                 }
                 return find(popover.contentView) as? T
             }
-            // Nothing kept: the View pop-up is dimmed until its box is checked, by a click as a person makes it.
+            func says(_ words: String) -> Bool {
+                func find(_ view: NSView) -> Bool {
+                    (view as? NSTextField)?.stringValue.contains(words) == true || view.subviews.contains(where: find)
+                }
+                return find(popover.contentView)
+            }
+            // Nothing kept: the View pop-up is dimmed until its box is checked, by a click as a person makes it; and
+            // with nothing to apply, Apply to Subfolders is dimmed and says what it waits for.
             #expect(control("folderViewPopover.view", as: NSPopUpButton.self)?.isEnabled == false)
+            #expect(control("folderViewPopover.subfolders", as: NSSwitch.self)?.isEnabled == false)
+            #expect(says("Check a setting above"))
+            #expect(control("folderViewPopover.update", as: NSButton.self)?.isEnabled == false)
             let keepView = try #require(control("folderViewPopover.keep.view", as: NSButton.self))
             keepView.performClick(nil)
             #expect(control("folderViewPopover.view", as: NSPopUpButton.self)?.isEnabled == true)
+            #expect(control("folderViewPopover.subfolders", as: NSSwitch.self)?.isEnabled == true)
+            #expect(says("look the same, unless"))
             #expect(control("folderViewPopover.update", as: NSButton.self)?.isEnabled == true)
             // A value chosen there is shown, and Save saves it.
             let views = try #require(control("folderViewPopover.view", as: NSPopUpButton.self))

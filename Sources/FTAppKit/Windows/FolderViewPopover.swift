@@ -307,16 +307,29 @@ final class FolderViewPopover {
         }
         apply.setAccessibilityIdentifier("folderViewPopover.subfolders")
         apply.setAccessibilityLabel("Apply to Subfolders")
+        // With nothing kept there is nothing to apply, unless a view from above is there for the folders inside to
+        // stop using; one already on can always be turned off.
+        let keepsNothing = view?.shown.isEmpty ?? true
+        let stopped = keepsNothing ? pane.viewStoppedForSubfolders : nil
+        apply.isEnabled = pane.canApplyToSubfolders || apply.state == .on
+        let does: String
+        if let stopped {
+            does =
+                "Folders inside \u{201C}\(here)\u{201D} stop using the view of "
+                + "\u{201C}\(FolderViewText.name(stopped.path))\u{201D}, unless they\u{2019}re customized on their own."
+        } else if keepsNothing {
+            does = "Check a setting above to have the folders inside \u{201C}\(here)\u{201D} look the same."
+        } else {
+            does =
+                "Folders inside \u{201C}\(here)\u{201D} look the same, unless they\u{2019}re customized on their own."
+        }
         let title = named(
             label("Apply to Subfolders"),
             changed: view?.subfoldersUnsaved == true
                 ? (view?.savedSubfolders == true ? "Saved: on" : "Saved: off") : nil)
         add(
             row(
-                titled(
-                    title,
-                    "Folders inside \u{201C}\(here)\u{201D} look the same, unless they\u{2019}re customized on their own.",
-                    room: contentWidth - 64),
+                titled(title, does, room: contentWidth - 64),
                 apply, atEnd: true, height: 50), to: stack, spacingAfter: 8)
         add(divider(), to: stack)
 
