@@ -736,7 +736,10 @@ extension ExplorerWindowlessTests {
             #expect(sort.tooltip == "Sort By: Name, Ascending")
             _ = sort.accessibilityPerformPress()
             #expect(
-                titles(menu) == ["Name", "Kind", "Date Modified", "Date Added", "Size", "-", "Ascending", "Descending"])
+                titles(menu) == [
+                    "Name", "Kind", "Date Last Opened", "Date Added", "Date Modified", "Size", "-", "Ascending",
+                    "Descending",
+                ])
             #expect(menu?.nsMenu.minimumWidth == 200)
             choose("Size")
             // A new Size order starts descending.

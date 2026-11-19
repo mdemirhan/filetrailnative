@@ -214,6 +214,7 @@ public enum ApplicationMenu {
             case .sortByName: state.sortBy == .name
             case .sortByModified: state.sortBy == .modified
             case .sortByAdded: state.sortBy == .added
+            case .sortByLastOpened: state.sortBy == .lastOpened
             case .sortBySize: state.sortBy == .size
             case .sortByKind: state.sortBy == .kind
             case .toggleFoldersFirst: state.foldersFirst

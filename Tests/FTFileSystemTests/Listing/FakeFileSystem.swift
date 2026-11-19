@@ -12,6 +12,7 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     var lstatHandler: @Sendable (String) throws -> FileStats = { _ in throw FakeError() }
     var realpathHandler: @Sendable (String) throws -> String = { $0 }
     var tagColorsHandler: @Sendable (String) -> [FinderTagColor] = { _ in [] }
+    var lastOpenedHandler: @Sendable (String) -> Int64? = { _ in nil }
 
     private let lock = NSLock()
     private var statPaths: [String] = []
@@ -33,6 +34,8 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     }
 
     func readDirectory(_ path: String) throws -> [DirectoryRecord] { try directory(path) }
+
+    func lastOpenedMs(_ path: String) -> Int64? { lastOpenedHandler(path) }
 
     func stat(_ path: String) throws -> FileStats {
         lock.lock()

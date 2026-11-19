@@ -293,8 +293,8 @@ import Testing
             return
         }
         let expected: [(String, AppCommand)] = [
-            ("Name", .sortByName), ("Kind", .sortByKind), ("Date Modified", .sortByModified),
-            ("Date Added", .sortByAdded), ("Size", .sortBySize),
+            ("Name", .sortByName), ("Kind", .sortByKind), ("Date Last Opened", .sortByLastOpened),
+            ("Date Added", .sortByAdded), ("Date Modified", .sortByModified), ("Size", .sortBySize),
         ]
         #expect(titles(sortMenu) == expected.map(\.0))
         for (title, command) in expected {

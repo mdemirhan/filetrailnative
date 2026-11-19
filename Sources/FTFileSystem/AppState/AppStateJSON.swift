@@ -16,7 +16,7 @@ enum AppStateJSON {
         "paneSplit", "viewSizes", "filterMode",
     ]
     private static let windowKeys = ["id", "bounds", "session"]
-    private static let columnKeys = ["modified", "size", "kind", "created", "added", "permissions"]
+    private static let columnKeys = ["modified", "size", "kind", "created", "added", "lastOpened", "permissions"]
 
     private static let orders: [String: [String]] = [
         "": ["preferences", "windows", "lastClosedWindow"],

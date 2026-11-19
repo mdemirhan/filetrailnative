@@ -356,6 +356,7 @@ final class DetailsBarView: NSView {
             case .modified: ListCellText.readsInMinutes(metadata?.modifiedAt, now: now)
             case .created: ListCellText.readsInMinutes(metadata?.createdAt, now: now)
             case .added: ListCellText.readsInMinutes(metadata?.addedAt, now: now)
+            case .lastOpened: ListCellText.readsInMinutes(metadata?.lastOpenedAt, now: now)
             default: false
             }
         }

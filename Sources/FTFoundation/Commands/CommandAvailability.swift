@@ -435,7 +435,8 @@ public enum CommandAvailability {
             return !showInFinderPaths(target).isEmpty
         case .showLastSearchResults:
             return context.hasCachedSearch != false && !context.isSearchMode
-        case .sortByName, .sortByModified, .sortByAdded, .sortBySize, .sortByKind, .toggleFoldersFirst:
+        case .sortByName, .sortByModified, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind,
+            .toggleFoldersFirst:
             // Search results have an order of their own, chosen in the List view's headers.
             return !context.isSearchMode
         case .togglePinFilter:

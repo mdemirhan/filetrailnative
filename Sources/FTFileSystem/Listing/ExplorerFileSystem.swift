@@ -82,11 +82,14 @@ public protocol ExplorerFileSystem: Sendable {
     /// When the item at `path` (a link itself) was put in its folder, in milliseconds since 1970; nil when the disk
     /// doesn't keep it or the item can't be read.
     func addedMs(_ path: String) -> Int64?
+    /// When the item at `path` (a link itself) was last opened, in milliseconds since 1970; nil for one never opened.
+    func lastOpenedMs(_ path: String) -> Int64?
 }
 
 extension ExplorerFileSystem {
     public func tagColors(_ path: String) -> [FinderTagColor] { FinderTags.colors(path) }
     public func addedMs(_ path: String) -> Int64? { FileTimes.addedMs(path) }
+    public func lastOpenedMs(_ path: String) -> Int64? { FileTimes.lastOpenedMs(path) }
 }
 
 public struct NativeFileSystem: ExplorerFileSystem {

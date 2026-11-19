@@ -442,7 +442,7 @@ public enum CommandPalette {
         case .viewAsDetails: .details
         case .viewAsList: .list
         case .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2, .showPreviews1: .previews
-        case .sortByName, .sortByKind, .sortByModified, .sortByAdded, .sortBySize: .sortBy
+        case .sortByName, .sortByKind, .sortByModified, .sortByAdded, .sortByLastOpened, .sortBySize: .sortBy
         case .toggleFoldersFirst: .foldersFirst
         case .toggleHiddenFiles: .hiddenShown
         case .toggleFolderTree: .folderTree

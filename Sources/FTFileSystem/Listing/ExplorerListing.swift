@@ -220,7 +220,7 @@ enum ExplorerListing {
         var entries: [DirectoryEntry] = []
         entries.reserveCapacity(recordCount)
         var keys = NameKeys(capacity: recordCount, order: order)
-        // The time compared: modified, or added.
+        // The time compared: modified, added or last opened.
         var times: [Int64?] = []
         var sizes: [Int64?] = []
         var labels: [String] = []
@@ -261,6 +261,9 @@ enum ExplorerListing {
                 case .added:
                     // The folder read gives it; a disk that doesn't keep it leaves every item without one.
                     times.append(record.addedMs)
+                case .lastOpened:
+                    // Not in the folder read: one look at each item, only while sorted by it.
+                    times.append(fileSystem.lastOpenedMs(entryPath))
                 case .size:
                     // A link to a folder is sized as the link itself (see readEntrySize).
                     if kind == .symlinkDirectory {
@@ -325,7 +328,7 @@ enum ExplorerListing {
                 }
                 var compared = 0
                 switch sortBy {
-                case .modified, .added:
+                case .modified, .added, .lastOpened:
                     // Items without a value stay at the end in both directions.
                     let missing = compareMissing(times[left], times[right])
                     if missing != 0 { return missing < 0 }
@@ -401,7 +404,7 @@ enum ExplorerListing {
         return EntryMetadata(
             path: path, kindLabel: details.kindLabel, createdAt: details.createdAt, modifiedAt: details.modifiedAt,
             sizeBytes: details.sizeBytes, sizeStatus: details.sizeStatus, permissionMode: details.permissionMode,
-            addedAt: details.addedAt)
+            addedAt: details.addedAt, lastOpenedAt: details.lastOpenedAt)
     }
 
     private struct Details {
@@ -414,6 +417,7 @@ enum ExplorerListing {
         var sizeStatus: SizeStatus
         var permissionMode: Int?
         var addedAt: Date?
+        var lastOpenedAt: Date?
     }
 
     private static func readDetails(path: String, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler) -> Details {
@@ -429,7 +433,9 @@ enum ExplorerListing {
             modifiedAt: metadataStats?.mtimeMs.flatMap(FileTime.date(milliseconds:)),
             sizeBytes: size.bytes, sizeStatus: size.status,
             permissionMode: metadataStats.map { Int($0.mode & 0o777) },
-            addedAt: symlinkStats == nil ? nil : fileSystem.addedMs(path).flatMap(FileTime.date(milliseconds:)))
+            addedAt: symlinkStats == nil ? nil : fileSystem.addedMs(path).flatMap(FileTime.date(milliseconds:)),
+            lastOpenedAt: symlinkStats == nil
+                ? nil : fileSystem.lastOpenedMs(path).flatMap(FileTime.date(milliseconds:)))
     }
 
     /// Folder sizes are calculated separately, so a folder's is deferred. A link to a folder has the size
@@ -460,7 +466,7 @@ enum ExplorerListing {
             isHidden: isHidden(name) || safeLstat(resolvedPath, fileSystem)?.hasHiddenFlag == true,
             isSymlink: details.isSymlink, createdAt: details.createdAt,
             modifiedAt: details.modifiedAt, sizeBytes: details.sizeBytes, sizeStatus: details.sizeStatus,
-            permissionMode: details.permissionMode, addedAt: details.addedAt)
+            permissionMode: details.permissionMode, addedAt: details.addedAt, lastOpenedAt: details.lastOpenedAt)
     }
 
     // MARK: Suggestions

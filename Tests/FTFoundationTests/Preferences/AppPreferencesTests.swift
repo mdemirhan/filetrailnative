@@ -49,12 +49,15 @@ struct AppPreferencesTests {
         #expect(
             defaults.detailColumnWidths
                 == DetailColumnWidths(name: 320, modified: 152, size: 108, kind: 148, created: 152, permissions: 108))
-        #expect(defaults.detailColumnOrder == [.modified, .size, .kind, .created, .added, .permissions])
+        #expect(defaults.detailColumnOrder == [.modified, .size, .kind, .created, .added, .lastOpened, .permissions])
         #expect(
             defaults.searchColumns
                 == SearchColumnVisibility(
                     folder: true, modified: true, size: true, kind: false, created: false, permissions: false))
-        #expect(defaults.searchColumnOrder == [.folder, .modified, .size, .kind, .created, .added, .permissions])
+        #expect(
+            defaults.searchColumnOrder == [
+                .folder, .modified, .size, .kind, .created, .added, .lastOpened, .permissions,
+            ])
         #expect(defaults.searchColumnWidths.name == 300)
         #expect(defaults.searchColumnWidths.folder == 240)
         #expect(defaults.restoreSessionOnStartup)
@@ -105,7 +108,7 @@ struct AppPreferencesTests {
         let order = JSONNode.array(["size", "size", "name", "bogus", "modified"].map(JSONNode.string) + [.number(5)])
         #expect(
             AppPreferenceLimits.normalizeDetailColumnOrder(order) == [
-                .size, .modified, .kind, .created, .added, .permissions,
+                .size, .modified, .kind, .created, .added, .lastOpened, .permissions,
             ])
         #expect(AppPreferenceLimits.normalizeDetailColumnOrder(nil) == AppPreferenceLimits.defaultDetailColumnOrder)
         #expect(
@@ -114,7 +117,7 @@ struct AppPreferencesTests {
         let search = JSONNode.array(["kind", "folder"].map(JSONNode.string))
         #expect(
             AppPreferenceLimits.normalizeSearchColumnOrder(search) == [
-                .kind, .folder, .modified, .size, .created, .added, .permissions,
+                .kind, .folder, .modified, .size, .created, .added, .lastOpened, .permissions,
             ])
     }
 

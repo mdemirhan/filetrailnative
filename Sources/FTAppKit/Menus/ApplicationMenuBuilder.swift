@@ -179,10 +179,12 @@ enum ApplicationMenuBuilder {
             menu.addItem(.separator())
             let sortBy = NSMenuItem(title: "Sort By", action: nil, keyEquivalent: "")
             let sortMenu = NSMenu(title: "Sort By")
+            // Finder's order.
             sortMenu.addItem(context.command(.sortByName, "Name"))
             sortMenu.addItem(context.command(.sortByKind, "Kind"))
-            sortMenu.addItem(context.command(.sortByModified, "Date Modified"))
+            sortMenu.addItem(context.command(.sortByLastOpened, "Date Last Opened"))
             sortMenu.addItem(context.command(.sortByAdded, "Date Added"))
+            sortMenu.addItem(context.command(.sortByModified, "Date Modified"))
             sortMenu.addItem(context.command(.sortBySize, "Size"))
             sortBy.submenu = sortMenu
             menu.addItem(sortBy)

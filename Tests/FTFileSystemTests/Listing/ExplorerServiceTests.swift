@@ -86,6 +86,25 @@ struct ExplorerServiceTests {
         #expect(!fake.lookedUp.contains { $0.hasSuffix(".txt") })
     }
 
+    // Date Last Opened is read for each item while sorted by it: the last opened first when descending, one never
+    // opened last either way.
+    @Test func sortsByWhenEachItemWasLastOpened() async throws {
+        let opened: [String: Int64] = ["/workspace/old.txt": 1_000, "/workspace/new.txt": 3_000]
+        let fake = workspace(
+            [
+                fakeDirent("old.txt", file: true), fakeDirent("never.txt", file: true),
+                fakeDirent("new.txt", file: true),
+            ],
+            stat: { path in fakeStats(directory: path == "/workspace", file: path != "/workspace", size: 1) })
+        fake.lastOpenedHandler = { opened[$0] }
+        let lastFirst = try await service(fake).snapshot(
+            path: "/workspace", sortBy: .lastOpened, sortDirection: .descending, foldersFirst: false)
+        #expect(lastFirst.entries.map(\.name) == ["new.txt", "old.txt", "never.txt"])
+        let firstFirst = try await service(fake).snapshot(
+            path: "/workspace", sortBy: .lastOpened, sortDirection: .ascending, foldersFirst: false)
+        #expect(firstFirst.entries.map(\.name) == ["old.txt", "new.txt", "never.txt"])
+    }
+
     @Test func readsTheTagsOfItemsWithALabelSoTheyShowWithTheFolder() async throws {
         var labelled = fakeDirent("labelled.txt", file: true)
         labelled.tagColor = .orange

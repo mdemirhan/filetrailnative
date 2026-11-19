@@ -187,6 +187,24 @@ struct NativeFileSystemTests {
         }
     }
 
+    // What macOS writes when a file is opened, read back; none for a file never opened. The home folder's Desktop,
+    // Documents and Downloads aren't read, as reading them asks for permission.
+    @Test func readsWhenAnItemWasLastOpened() throws {
+        try withTemporaryDirectory { directory in
+            let file = directory.url.appendingPathComponent("a.txt").path
+            FileManager.default.createFile(atPath: file, contents: Data("a".utf8))
+            #expect(FileTimes.lastOpenedMs(file) == nil)
+            var stamp = (Int64(1_700_000_000).littleEndian, Int64(250_000_000).littleEndian)
+            let written = withUnsafeBytes(of: &stamp) {
+                setxattr(file, FileTimes.lastUsedAttribute, $0.baseAddress, $0.count, 0, 0)
+            }
+            #expect(written == 0)
+            #expect(FileTimes.lastOpenedMs(file) == 1_700_000_000_250)
+            #expect(native.lastOpenedMs(file) == 1_700_000_000_250)
+            #expect(FileTimes.lastOpenedMs(NSHomeDirectory() + "/Downloads") == nil)
+        }
+    }
+
     @Test func readsAnEmptyFolder() throws {
         try withTemporaryDirectory { directory in
             let records = try native.readDirectory(directory.path)

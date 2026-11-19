@@ -69,6 +69,7 @@ enum ListCellText {
         case .modified: return date(metadata?.modifiedAt, now: now)
         case .created: return date(metadata?.createdAt, now: now)
         case .added: return date(metadata?.addedAt, now: now)
+        case .lastOpened: return date(metadata?.lastOpenedAt, now: now)
         }
     }
 }

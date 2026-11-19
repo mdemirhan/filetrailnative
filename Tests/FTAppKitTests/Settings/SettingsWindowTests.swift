@@ -498,18 +498,21 @@ import Testing
     @Test func listsTheColumnsInTheirOrderWithNameFirstAndFixed() throws {
         let (controller, recorder) = Kit.make(tab: .browsing)
         let list = try Kit.list("Columns in List view", in: controller)
-        #expect(Kit.names(list) == ["Date Modified", "Size", "Kind", "Date Created", "Date Added", "Permissions"])
+        #expect(
+            Kit.names(list) == [
+                "Date Modified", "Size", "Kind", "Date Created", "Date Added", "Date Last Opened", "Permissions",
+            ])
         let fixed = views("settings.list.row", in: list).compactMap { $0 as? SettingsListRow }.first
         #expect(fixed?.spec.name == "Name")
         #expect(fixed?.spec.trailingNote == "Always first")
         #expect(fixed?.frame.height == 30)
         let checks = list.rows.compactMap { $0.spec.leading as? SettingsCheckbox }
-        #expect(checks.map(\.isChecked) == [true, true, true, false, false, false])
+        #expect(checks.map(\.isChecked) == [true, true, true, false, false, false, false])
         #expect(checks[3].accessibilityLabel() == "Show Date Created")
         // Checked with its checkbox, or with Space.
         Kit.click(checks[3])
         controller.window?.makeFirstResponder(list.table)
-        list.select(5)
+        list.select(6)
         list.keyDown(with: Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window))
         #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
         #expect(recorder.saved["detailColumns"]?["permissions"] == .bool(true))
@@ -523,12 +526,15 @@ import Testing
         #expect(Kit.names(list).prefix(2) == ["Size", "Date Modified"])
         list.keyDown(with: Kit.key(Kit.up.0, code: Kit.up.1, modifiers: .command, window: controller.window))
         #expect(Kit.names(list).prefix(2) == ["Date Modified", "Size"])
-        list.drop(5, on: 0)
+        list.drop(6, on: 0)
         #expect(Kit.names(list).first == "Permissions")
         // Restore Defaults puts back the order and leaves the checked columns alone.
         #expect(restore.isEnabled)
         Kit.click(restore)
-        #expect(Kit.names(list) == ["Date Modified", "Size", "Kind", "Date Created", "Date Added", "Permissions"])
+        #expect(
+            Kit.names(list) == [
+                "Date Modified", "Size", "Kind", "Date Created", "Date Added", "Date Last Opened", "Permissions",
+            ])
         #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
     }
 
@@ -549,11 +555,12 @@ import Testing
         let results = try Kit.list("Columns in search results", in: controller)
         #expect(
             Kit.names(results) == [
-                "Folder", "Date Modified", "Size", "Kind", "Date Created", "Date Added", "Permissions",
+                "Folder", "Date Modified", "Size", "Kind", "Date Created", "Date Added", "Date Last Opened",
+                "Permissions",
             ])
         #expect(
             results.rows.compactMap { ($0.spec.leading as? SettingsCheckbox)?.isChecked } == [
-                true, true, true, false, false, false, false,
+                true, true, true, false, false, false, false, false,
             ])
         let lists = Kit.lists(in: controller)
         let foldersAt = try #require(lists.firstIndex { $0 === folders })

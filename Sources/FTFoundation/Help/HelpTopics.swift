@@ -863,6 +863,8 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.sortByModified), "Order the list by when each item last changed"),
         HelpShortcutItem(
             group: .views, .command(.sortByAdded), "Order the list by when each item was put in the folder"),
+        HelpShortcutItem(
+            group: .views, .command(.sortByLastOpened), "Order the list by when each item was last opened"),
         HelpShortcutItem(group: .views, .command(.sortBySize), "Order the list by size"),
         HelpShortcutItem(
             group: .views, .command(.toggleFoldersFirst), "List the folders before the files, or among them"),

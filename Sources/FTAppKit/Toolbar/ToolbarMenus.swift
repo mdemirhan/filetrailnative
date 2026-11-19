@@ -144,6 +144,7 @@ extension ExplorerToolbar {
         case .kind: .sortByKind
         case .modified: .sortByModified
         case .added: .sortByAdded
+        case .lastOpened: .sortByLastOpened
         case .size: .sortBySize
         }
     }

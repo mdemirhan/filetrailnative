@@ -125,6 +125,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case sortByKind
     case sortByModified
     case sortByAdded
+    case sortByLastOpened
     case sortBySize
     case toggleFoldersFirst
     case toggleHiddenFiles
@@ -424,6 +425,9 @@ extension ShortcutCommands {
         ShortcutCommandDefinition(
             id: .sortByAdded, label: "Sort by Date Added", group: .view, defaults: [],
             menuPath: "View > Sort By > Date Added"),
+        ShortcutCommandDefinition(
+            id: .sortByLastOpened, label: "Sort by Date Last Opened", group: .view, defaults: [],
+            menuPath: "View > Sort By > Date Last Opened"),
         ShortcutCommandDefinition(
             id: .sortBySize, label: "Sort by Size", group: .view, defaults: [], menuPath: "View > Sort By > Size"),
         ShortcutCommandDefinition(
