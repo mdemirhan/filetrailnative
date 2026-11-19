@@ -23,7 +23,7 @@ struct ToolbarGoldenTests {
     }
 
     @Test func toolbarOrdersAreSanitizedAsTheGoldenFileSays() throws {
-        let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "toolbar-sanitize")
+        let cases: [GoldenCase<Input, Output>] = try GoldenChanges.load(suite: "toolbar-sanitize")
         #expect(cases.count >= 200)
         Golden.expectMatches(cases) { Self.run($0) }
     }

@@ -17,7 +17,7 @@ struct PreferencesGoldenTests {
     }
 
     @Test func savedStatesAreReadAsTheGoldenFileSays() throws {
-        let cases: [GoldenCase<Input, AppState>] = try Golden.load(suite: "prefs-sanitize")
+        let cases: [GoldenCase<Input, AppState>] = try GoldenChanges.load(suite: "prefs-sanitize")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { Self.read($0) }
     }

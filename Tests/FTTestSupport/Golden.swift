@@ -1,4 +1,4 @@
-// Golden files, expected results kept by hand: Tests/Golden/<suite>.json.
+// Golden files, expected results: Tests/Golden/<suite>.json.
 import Foundation
 import Testing
 
@@ -34,7 +34,7 @@ public enum Golden {
         public let from: String
 
         public var description: String {
-            "no Golden/\(suite).json above \(from): goldens are kept by hand; add it by hand"
+            "no Golden/\(suite).json above \(from)"
         }
     }
 
@@ -80,8 +80,13 @@ public enum Golden {
             guard !expected.utf8.elementsEqual(got.utf8) else { continue }
             count += 1
             if lines.count < limit {
-                let input = render(testCase.input)
-                lines.append("\(testCase.name) | input: \(input) | expected: \(expected) | actual: \(got)")
+                // A long output says only where it differs, so the line can be read.
+                if expected.count + got.count <= 600 {
+                    let input = render(testCase.input)
+                    lines.append("\(testCase.name) | input: \(input) | expected: \(expected) | actual: \(got)")
+                } else {
+                    lines.append("\(testCase.name) | " + differences(expected, got).joined(separator: " | "))
+                }
             }
         }
         guard count > 0 else { return nil }
@@ -97,6 +102,31 @@ public enum Golden {
         if let report = try mismatchReport(cases, actual: actual) {
             Issue.record(Comment(rawValue: report), sourceLocation: sourceLocation)
         }
+    }
+
+    /// Where two JSON texts differ, at most `limit` places: "bindings.newTab: expected [...], actual [...]", a list's
+    /// items by index.
+    static func differences(_ expected: String, _ actual: String, limit: Int = 5) -> [String] {
+        func parse(_ text: String) -> Any? {
+            try? JSONSerialization.jsonObject(with: Data(text.utf8), options: [.fragmentsAllowed])
+        }
+        var found: [String] = []
+        func walk(_ path: String, _ e: Any?, _ a: Any?) {
+            guard found.count < limit else { return }
+            let (ce, ca) = (e.map(GoldenChanges.canonical) ?? "absent", a.map(GoldenChanges.canonical) ?? "absent")
+            guard ce != ca else { return }
+            if let e = e as? [String: Any], let a = a as? [String: Any] {
+                for key in Set(e.keys).union(a.keys).sorted() {
+                    walk(path.isEmpty ? key : "\(path).\(key)", e[key], a[key])
+                }
+            } else if let e = e as? [Any], let a = a as? [Any], e.count == a.count {
+                for index in e.indices { walk("\(path)[\(index)]", e[index], a[index]) }
+            } else {
+                found.append("\(path.isEmpty ? "output" : path): expected \(ce), actual \(ca)")
+            }
+        }
+        walk("", parse(expected), parse(actual))
+        return found.isEmpty ? ["expected \(expected), actual \(actual)"] : found
     }
 
     /// Compact JSON with sorted keys, for comparing and printing.

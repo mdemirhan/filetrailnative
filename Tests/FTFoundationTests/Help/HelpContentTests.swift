@@ -220,7 +220,7 @@ struct HelpContentTests {
     }
 
     @Test func listsMentionsAndSearchesAsTheGoldenFileSays() throws {
-        let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "help-content")
+        let cases: [GoldenCase<Input, Output>] = try GoldenChanges.load(suite: "help-content")
         #expect(cases.count >= 20)
         Golden.expectMatches(cases) { Self.run($0) }
     }

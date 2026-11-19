@@ -39,13 +39,14 @@ The palette lists every row of the table and the menu items that aren't in it, s
 - Every table row has a line in `HelpContent.shortcutItems` (`Sources/FTFoundation/Help/HelpTopics.swift`), which the Keyboard Shortcuts page lists. `HelpContentTests` fails without it.
 - The command palette shows that line under its list while the command is selected, alone, without the key beside it. So it says what the command does and to what, more than its name: "Copy the selected items, to paste into another folder", not "Copy". It is a phrase with no period, 80 characters at most. `CommandPaletteTests` checks all three. A menu item with no table row has its line in `CommandPalette.menuItems`.
 - A command that needs more than its line gets a row in the topic it belongs to, saying what it does and where it is.
-- `Tests/Golden/help-content.json` records the shortcut list and what Help's search finds: a new or changed line is put in each case's list by hand, and in the searches whose words it now holds or no longer does.
+- `Tests/Golden/help-content.json` records the shortcut list and what Help's search finds: a new or changed line goes in each base's list, and in the searches whose words it now holds or no longer does.
 
 ## Goldens
 
-- `Tests/Golden/shortcut-resolution.json` records every command's keys in each case: a new row is added to each case's `bindings`, and a new default key to `commandByShortcut` where it is claimed (in the table's order).
-- `Tests/Golden/command-availability.json` lists, case by case, the `AppCommand`s that can't run: a new `AppCommand` is added to the lists where it can't.
-- `Tests/Golden/context-menu.json` and `Tests/Golden/toolbar-sanitize.json` take a new right-click item and a new toolbar button.
+- These goldens are written as bases and each case's changes to its base (`Tests/FTTestSupport/GoldenChanges.swift` says how): a new command goes in the bases, and in a case only where that case gives it something other than its base does. A test that fails names the place that differs in each case.
+- `Tests/Golden/shortcut-resolution.json`: a new row in the base's `bindings`, and a new default key in its `commandByShortcut`, in the table's order.
+- `Tests/Golden/command-availability.json` lists the `AppCommand`s that can't run, by name: a new `AppCommand` goes in each base's list where it can't run there, and in the `$remove` or `$insert` of a case where it differs from its base.
+- `Tests/Golden/context-menu.json` and `Tests/Golden/toolbar-sanitize.json` take a new right-click item and a new toolbar button in their bases.
 - The lists kept by hand in `ShortcutsTests` and `ApplicationMenuLayoutTests` name every command and every menu item in order: a new one is added there.
 
 They are edited by hand, never written from the code's output (`docs/decisions/code.md`).

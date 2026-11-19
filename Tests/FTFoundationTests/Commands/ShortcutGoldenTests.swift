@@ -132,7 +132,7 @@ struct ShortcutGoldenTests {
     }
 
     @Test func keysAreResolvedAsTheGoldenFileSays() throws {
-        let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "shortcut-resolution")
+        let cases: [GoldenCase<Input, Output>] = try GoldenChanges.load(suite: "shortcut-resolution")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { Self.run($0) }
     }

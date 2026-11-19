@@ -88,8 +88,9 @@ struct CommandAvailabilityGoldenTests {
             contextMenuPaths: input.contextMenuPaths, selectedContentPaths: input.selectedPaths,
             selectedTreePath: input.selectedTreeTargetPath, currentPath: input.currentPath)
         return Output(
-            // Duplicate Tab and the size commands are left out: the golden never names them.
-            disabled: state.disabledCommands.filter { !Self.notInTheGolden.contains($0) }.map(\.rawValue),
+            // Duplicate Tab and the size commands are left out: the golden never names them. A set, so by name: a
+            // command added or moved in the table changes no case.
+            disabled: state.disabledCommands.filter { !Self.notInTheGolden.contains($0) }.map(\.rawValue).sorted(),
             newTab: CommandAvailability.newTabTargetPath(target),
             favorite: CommandAvailability.favoriteTargetPath(target),
             showInFinder: CommandAvailability.showInFinderPaths(target),
@@ -100,7 +101,7 @@ struct CommandAvailabilityGoldenTests {
     private static let notInTheGolden: Set<AppCommand> = [.duplicateTab, .increaseSize, .decreaseSize, .resetSize]
 
     @Test func commandAvailabilityMatchesTheGoldenFile() throws {
-        let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "command-availability")
+        let cases: [GoldenCase<Input, Output>] = try GoldenChanges.load(suite: "command-availability")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { Self.run($0) }
     }
