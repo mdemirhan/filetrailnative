@@ -304,6 +304,78 @@ struct AppStateStoreTests {
         }
     }
 
+    // A file that can't be read gives no views, and the next view saved would be written over it: it is set aside
+    // first, as it is, to be mended by hand.
+    @Test func aFolderViewsFileThatCantBeReadIsSetAsideBeforeItIsWrittenOver() throws {
+        let view = FolderView(path: "/Users/demo/Pictures", keeps: FolderViewKeeps(view: .previews))
+        for unreadable in ["{ \"version\": 1, \"views\": [", "{\"views\": []}\n"] {
+            try Kit.withFolder { folder in
+                let path = Kit.statePath(folder)
+                let viewsPath = folder + "/folder-views.json"
+                let aside = viewsPath + ".unreadable"
+                try unreadable.write(toFile: viewsPath, atomically: true, encoding: .utf8)
+                // One set aside before is replaced.
+                try "older".write(toFile: aside, atomically: true, encoding: .utf8)
+                let timer = ManualTimer()
+                let store = Kit.store(path, timer: timer)
+                #expect(store.folderViews().isEmpty)
+                // Nothing moves until there is something to write.
+                #expect(try String(contentsOfFile: aside, encoding: .utf8) == "older")
+                store.updateFolderViews { $0.set(view) }
+                timer.run()
+                #expect(try String(contentsOfFile: aside, encoding: .utf8) == unreadable)
+                #expect(Kit.store(path).folderViews().all == [view])
+                // Once only: the file written since is the app's own.
+                try FileManager.default.removeItem(atPath: aside)
+                store.updateFolderViews { $0.remove(view.path) }
+                timer.run()
+                #expect(!FileManager.default.fileExists(atPath: aside))
+            }
+        }
+    }
+
+    @Test func aFolderViewsFileThatReadOrIsMissingIsNeverSetAside() throws {
+        try Kit.withFolder { folder in
+            let path = Kit.statePath(folder)
+            let aside = folder + "/folder-views.json.unreadable"
+            let view = FolderView(path: "/Users/demo/Pictures", keeps: FolderViewKeeps(view: .previews))
+            // No file yet.
+            let timer = ManualTimer()
+            let store = Kit.store(path, timer: timer)
+            store.updateFolderViews { $0.set(view) }
+            timer.run()
+            #expect(!FileManager.default.fileExists(atPath: aside))
+            // A file that read.
+            let again = ManualTimer()
+            let reopened = Kit.store(path, timer: again)
+            #expect(reopened.folderViews().all == [view])
+            reopened.updateFolderViews { $0.set(FolderView(path: "/Users/demo/Music", subfolders: true)) }
+            again.run()
+            #expect(!FileManager.default.fileExists(atPath: aside))
+            #expect(Kit.store(path).folderViews().all.count == 2)
+        }
+    }
+
+    // The file can't be set aside (the folder doesn't allow it): the views are written all the same, and it is said.
+    @Test func aFolderViewsFileThatCantBeSetAsideIsStillWrittenOver() throws {
+        try Kit.withFolder { folder in
+            let path = Kit.statePath(folder)
+            let viewsPath = folder + "/folder-views.json"
+            try "not json".write(toFile: viewsPath, atomically: true, encoding: .utf8)
+            let failures = Failures()
+            let timer = ManualTimer()
+            let store = Kit.store(
+                path, fileSystem: RefusingRename(to: viewsPath + ".unreadable"), timer: timer,
+                onPersistError: { failures.add($0) })
+            let view = FolderView(path: "/Users/demo/Pictures", keeps: FolderViewKeeps(view: .previews))
+            store.updateFolderViews { $0.set(view) }
+            timer.run()
+            #expect(failures.all.count == 1)
+            #expect(!FileManager.default.fileExists(atPath: viewsPath + ".unreadable"))
+            #expect(Kit.store(path).folderViews().all == [view])
+        }
+    }
+
     @Test func remembersTheCommandsRunFromThePaletteAcrossRestarts() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -777,5 +849,23 @@ final class RecordingTimer: StateTimer, @unchecked Sendable {
         recorded.append(delay)
         lock.unlock()
         return {}
+    }
+}
+
+/// The disk, with a rename to one path refused.
+struct RefusingRename: StateFileSystem {
+    private let disk = DiskFileSystem()
+    private let refused: String
+
+    init(to refused: String) { self.refused = refused }
+
+    func exists(_ path: String) -> Bool { disk.exists(path) }
+    func createDirectory(_ path: String) throws { try disk.createDirectory(path) }
+    func read(_ path: String) throws -> Data { try disk.read(path) }
+    func write(_ path: String, _ contents: String) throws { try disk.write(path, contents) }
+
+    func rename(_ from: String, _ to: String) throws {
+        if to == refused { throw POSIXError(.EACCES) }
+        try disk.rename(from, to)
     }
 }

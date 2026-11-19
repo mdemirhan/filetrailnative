@@ -1,6 +1,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -1285,6 +1286,197 @@ extension ExplorerWindowlessTests {
             await go(first, harness, "Alpha/Inner")
             #expect(pane.folderView?.becomesOwn == false && pane.folderView?.hasUnsavedChanges == false)
             #expect(pane.folderViews.views.own(inner) == nil)
+            await harness.close()
+        }
+
+        // A tab in the background whose folder is renamed is read at the new place when it is next shown, and its view
+        // went there first: the folder shows it, and the pane's settings count from that arrival.
+        @Test func aBackgroundTabThatFollowsARenamedFolderShowsTheFoldersView() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            await go(tab, harness, "Alpha")
+            tab.setMode(.previews)
+            tab.perform(.rememberFolderView)
+            await go(tab, harness, "Beta")
+            tab.setMode(.details)
+            await go(tab, harness, "Alpha")
+            #expect(pane.shownMode == .previews)
+
+            let alpha = real(harness, "Alpha")
+            let renamed = real(harness, "") + "/Alpha2"
+            try FileManager.default.moveItem(atPath: alpha, toPath: renamed)
+            let moves = [PathMove(from: alpha, to: renamed)]
+            harness.services.folderViews.followMoves(moves)
+            tab.folderViewsChanged()
+            tab.takePlace(ExplorerTabs.followMovedItems(tab.snapshot, moves))
+            #expect(pane.stale)
+            pane.ensureLoaded()
+            #expect(await waitUntil { !pane.stale && !tab.isNavigating && pane.shownFolderPath == renamed })
+            #expect(pane.shownFolderView?.use.own == true)
+            #expect(pane.shownFolderView?.use.view.path == renamed)
+            #expect(pane.shownMode == .previews && pane.content.mode == .previews)
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.whose == .own)
+            // Save from there adds to the folder's view, and doesn't put a new one in its place.
+            pane.setFolderViewKeeps(.foldersFirst, true)
+            tab.perform(.updateFolderView)
+            #expect(pane.folderViews.views.own(renamed)?.keeps.view == .previews)
+            #expect(pane.folderViews.views.own(renamed)?.keeps.foldersFirst != nil)
+            await harness.close()
+        }
+
+        // A tab in the background sent elsewhere (its disk went) shows the folder it was sent to as that folder is,
+        // not under the view of the folder it was on.
+        @Test func aBackgroundTabSentToAnotherFolderLeavesTheViewOfTheOneItWasOn() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            tab.setMode(.details)
+            await go(tab, harness, "Alpha")
+            tab.setMode(.previews)
+            tab.perform(.rememberFolderView)
+            #expect(pane.shownMode == .previews && pane.viewMode == .details)
+
+            let alpha = real(harness, "Alpha")
+            let beta = real(harness, "Beta")
+            tab.takePlace(
+                ExplorerTabs.leaveUnmountedDisks(
+                    tab.snapshot, unmounted: [alpha], homePath: beta, volumeRoot: { $0 == alpha ? alpha : "/" }))
+            #expect(pane.stale)
+            pane.ensureLoaded()
+            #expect(await waitUntil { !pane.stale && !tab.isNavigating && pane.shownFolderPath == beta })
+            #expect(pane.shownFolderView == nil)
+            #expect(pane.shownMode == .details && pane.content.mode == .details)
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.whose == .noView)
+            await harness.close()
+        }
+
+        // With no folder on screen there is none to customize: the status bar's symbol goes, Folder Customization
+        // doesn't open, and Update, Revert and Reset leave the view of the folder let go of as it is saved.
+        @Test func withNoFolderOnScreenTheSymbolGoesAndNothingActsOnTheFolderLetGoOf() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            await go(tab, harness, "Alpha")
+            tab.setMode(.details)
+            tab.perform(.rememberFolderView)
+            tab.setMode(.icons)
+            let alpha = real(harness, "Alpha")
+            let bar = pane.content.contentShell.pathBarRow
+            #expect(bar.folderViewMark?.changed == true)
+
+            pane.showNoFolder()
+            #expect(bar.folderViewMark == nil)
+            #expect(bar.folderViewButton.isHidden)
+            bar.onFolderViewClick(bar.folderViewButton)
+            #expect(tab.folderViewPopover == nil)
+            tab.showFolderViewPopover(for: pane, from: nil)
+            #expect(tab.folderViewPopover == nil)
+            tab.closeFolderViewPopover()
+            tab.perform(.updateFolderView)
+            #expect(pane.folderViews.views.own(alpha)?.keeps.view == .details)
+            pane.updateFolderView()
+            #expect(pane.folderViews.views.own(alpha)?.keeps.view == .details)
+            tab.perform(.revertFolderView)
+            #expect(pane.folderView?.shown.view == .icons)
+            tab.perform(.resetFolderView)
+            pane.resetFolderView()
+            #expect(pane.folderViews.views.own(alpha)?.keeps.view == .details)
+            await harness.close()
+        }
+
+        // A view is found by its folder's real path: a folder moved into a folder named through a link has its view
+        // under where it really is, and every view inside it too.
+        @Test func aFolderMovedIntoAFolderNamedThroughALinkKeepsItsView() throws {
+            let folder = try TemporaryDirectory(prefix: "filetrail-folder-views")
+            defer { folder.remove() }
+            let root = FolderIdentity.realPath(folder.path)
+            let files = FileManager.default
+            try files.createDirectory(atPath: root + "/Alpha/Inner", withIntermediateDirectories: true)
+            try files.createDirectory(atPath: root + "/Beta", withIntermediateDirectories: true)
+            try files.createSymbolicLink(atPath: root + "/Link", withDestinationPath: root + "/Beta")
+            let shared = SharedFolderViews()
+            shared.update(from: nil) {
+                $0.set(FolderView(path: root + "/Alpha", keeps: FolderViewKeeps(view: .icons)))
+                $0.set(FolderView(path: root + "/Alpha/Inner", keeps: FolderViewKeeps(view: .details)))
+            }
+            try files.moveItem(atPath: root + "/Alpha", toPath: root + "/Beta/Alpha")
+            shared.followMoves([PathMove(from: root + "/Alpha", to: root + "/Link/Alpha")])
+            #expect(shared.views.all.map(\.path) == [root + "/Beta/Alpha", root + "/Beta/Alpha/Inner"])
+            #expect(shared.use(for: root + "/Beta/Alpha")?.view.keeps.view == .icons)
+            #expect(shared.use(for: root + "/Beta/Alpha/Inner")?.view.keeps.view == .details)
+        }
+
+        // The disk is asked where a folder really is only when a view goes with it: a move that carries none asks
+        // nothing, and one that carries several asks once.
+        @Test func onlyAMoveThatCarriesAViewAsksTheDiskWhereItWent() {
+            var asked: [String] = []
+            let shared = SharedFolderViews(realPath: {
+                asked.append($0)
+                return $0 == "/b/Pictures" ? "/real/Pictures" : $0
+            })
+            shared.update(from: nil) {
+                $0.set(FolderView(path: "/a/Pictures", subfolders: true, keeps: FolderViewKeeps(view: .previews)))
+                $0.set(FolderView(path: "/a/Pictures/Scans", keeps: FolderViewKeeps(view: .details)))
+            }
+            shared.followMoves([PathMove(from: "/a/Music", to: "/b/Music"), PathMove(from: "/a/Movies", to: "/b/M")])
+            #expect(asked.isEmpty)
+            _ = shared.use(for: "/a/Pictures/Scans")
+            #expect(asked.isEmpty)
+            shared.followMoves([
+                PathMove(from: "/a/Music", to: "/b/Music"), PathMove(from: "/a/Pictures", to: "/b/Pictures"),
+            ])
+            #expect(asked == ["/b/Pictures"])
+            #expect(shared.views.all.map(\.path) == ["/real/Pictures", "/real/Pictures/Scans"])
+        }
+
+        // A batch rename hands names along (1 to 2, 2 to 3) or swaps them: each folder's view goes where that folder
+        // went, and none is carried on by the move of the folder whose name it took.
+        @Test func foldersThatPassTheirNamesAlongOrSwapThemEachKeepTheirOwnView() {
+            let shared = SharedFolderViews()
+            shared.update(from: nil) {
+                $0.set(FolderView(path: "/d/A1", keeps: FolderViewKeeps(view: .icons)))
+                $0.set(FolderView(path: "/d/A2", keeps: FolderViewKeeps(view: .details)))
+            }
+            shared.followMoves([PathMove(from: "/d/A1", to: "/d/A2"), PathMove(from: "/d/A2", to: "/d/A3")])
+            #expect(shared.views.all.map(\.path) == ["/d/A2", "/d/A3"])
+            #expect(shared.views.own("/d/A2")?.keeps.view == .icons)
+            #expect(shared.views.own("/d/A3")?.keeps.view == .details)
+
+            shared.followMoves([PathMove(from: "/d/A2", to: "/d/A3"), PathMove(from: "/d/A3", to: "/d/A2")])
+            #expect(shared.views.own("/d/A3")?.keeps.view == .icons)
+            #expect(shared.views.own("/d/A2")?.keeps.view == .details)
+        }
+
+        // What is changed in Folder Customization in a folder with no view waits for Save: a view saved or removed
+        // for some other folder meanwhile leaves it on screen.
+        @Test func anUnsavedViewOfAFolderWithNoneStaysWhenAnotherFoldersViewChanges() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let pane = tab.activePane
+            tab.setMode(.icons)
+            await go(tab, harness, "Alpha")
+            pane.setFolderViewKeeps(.view, true)
+            #expect(pane.folderView?.isDraft == true)
+            pane.folderViews.update(from: nil) {
+                $0.set(FolderView(path: "/x", keeps: FolderViewKeeps(view: .details)))
+            }
+            tab.folderViewsChanged()
+            #expect(pane.folderView?.isDraft == true)
+            #expect(pane.folderView?.shown.view == .icons && pane.folderView?.hasUnsavedChanges == true)
+            #expect(pane.content.contentShell.pathBarRow.folderViewMark?.changed == true)
+            pane.folderViews.update(from: nil) { $0.remove("/x") }
+            tab.folderViewsChanged()
+            #expect(pane.folderView?.isDraft == true)
+
+            // The folder given a view of its own meanwhile: that is the one it uses, with what is changed here.
+            let alpha = real(harness, "Alpha")
+            pane.folderViews.update(from: nil) {
+                $0.set(FolderView(path: alpha, keeps: FolderViewKeeps(foldersFirst: false)))
+            }
+            tab.folderViewsChanged()
+            #expect(pane.folderView?.isOwnSaved == true)
+            #expect(pane.folderView?.shown.view == .icons && pane.folderView?.unsaved == [.view])
             await harness.close()
         }
     }

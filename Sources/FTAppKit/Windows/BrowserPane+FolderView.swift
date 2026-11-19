@@ -172,6 +172,9 @@ extension BrowserPane {
     func refreshFolderView() {
         guard loaded, !folderLetGo else { return }
         let use = folderViewUse(for: folder.path)
+        // A folder with no view, given one on screen that waits for Save: while it still has none to use, the change
+        // was some other folder's, and what waits here stays.
+        if use == nil, let draft = folderView, draft.isDraft, draft.hasUnsavedChanges { return }
         let next = use.map { folderView?.taking($0) ?? FolderViewOnScreen($0) }
         guard next != folderView else { return }
         let before = (shownSortBy, shownSortDirection, shownFoldersFirst)
@@ -374,7 +377,8 @@ extension BrowserPane {
     /// from above, that gives it one of its own: the one it used, with the changes. A folder's own view left keeping
     /// nothing, and covering nothing, is removed.
     func updateFolderView() {
-        guard let view = folderView, view.hasUnsavedChanges else { return }
+        // With no folder on screen there is none to save a view for: the one let go of keeps what it has saved.
+        guard !folderLetGo, let view = folderView, view.hasUnsavedChanges else { return }
         let keeps = view.shown
         let subfolders = view.shownSubfolders
         saveOwnView(refresh: false) {
@@ -387,7 +391,7 @@ extension BrowserPane {
 
     /// Revert: what is changed on screen goes back to what is saved; a view not saved yet goes.
     func revertFolderView() {
-        guard folderView?.hasUnsavedChanges == true else { return }
+        guard !folderLetGo, folderView?.hasUnsavedChanges == true else { return }
         changeOnScreen { view in
             view.shown = view.saved
             view.shownSubfolders = view.savedSubfolders
@@ -397,7 +401,7 @@ extension BrowserPane {
 
     /// Reset Folder View: the folder's own view is removed; it uses the one above it, if one covers it, or the pane's.
     func resetFolderView() {
-        guard folderViews.views.own(folder.path) != nil else { return }
+        guard !folderLetGo, folderViews.views.own(folder.path) != nil else { return }
         let before = (shownSortBy, shownSortDirection, shownFoldersFirst)
         folderViews.update(from: tab.windowID) { $0.remove(folder.path) }
         folderView = folderViewUse(for: folder.path).map(FolderViewOnScreen.init)

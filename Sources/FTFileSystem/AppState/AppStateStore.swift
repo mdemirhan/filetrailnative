@@ -49,8 +49,12 @@ public final class AppStateStore: @unchecked Sendable {
     private var views: FolderViews
     /// When the files were last written, on `clock`.
     private var lastSaveAt: Double?
-    /// The text each file was last written with, or read with.
+    /// The text each file was last written with in this run; a file not written yet has none, so its first change
+    /// is always written.
     private var writtenText: [StoreFile: String] = [:]
+    /// `folder-views.json` was there and couldn't be read, and is still as it was found: it is set aside before the
+    /// first write over it (`setUnreadableFolderViewsAside`).
+    private var folderViewsFileUnreadable = false
     private var unsavedFiles: Set<StoreFile> = []
     private var cancelPromptSave: (@Sendable () -> Void)?
     private var cancelDeferredSave: (@Sendable () -> Void)?
@@ -85,7 +89,9 @@ public final class AppStateStore: @unchecked Sendable {
         visitedFolders = Self.readVisitedFolders(visitsFilePath, fileSystem, readFailed)
         destinationFolders = Self.readVisitedFolders(destinationsFilePath, fileSystem, readFailed)
         commands = Self.readRecentCommands(recentCommandsFilePath, fileSystem, readFailed)
-        views = Self.readFolderViews(folderViewsFilePath, fileSystem, readFailed)
+        let readViews = Self.readFolderViews(folderViewsFilePath, fileSystem, readFailed)
+        views = readViews.views
+        folderViewsFileUnreadable = readViews.unreadable
     }
 
     // MARK: Preferences
@@ -442,8 +448,11 @@ public final class AppStateStore: @unchecked Sendable {
         {
             unsavedFiles.remove(.recentCommands)
         }
-        if unsavedFiles.contains(.folderViews), write(.folderViews, folderViewsFilePath, views.serialize()) {
-            unsavedFiles.remove(.folderViews)
+        if unsavedFiles.contains(.folderViews) {
+            setUnreadableFolderViewsAside()
+            if write(.folderViews, folderViewsFilePath, views.serialize()) {
+                unsavedFiles.remove(.folderViews)
+            }
         }
         if unsavedFiles.contains(.state) {
             do {
@@ -453,6 +462,24 @@ public final class AppStateStore: @unchecked Sendable {
             } catch {
                 onPersistError(error)
             }
+        }
+    }
+
+    /// What a `folder-views.json` that couldn't be read is renamed to, beside it.
+    static let unreadableSuffix = ".unreadable"
+
+    /// A `folder-views.json` that couldn't be read gave no views, and the write to come holds only what was saved
+    /// since: the file is renamed first (over one set aside before), so every folder's view in it can still be mended
+    /// by hand. Where it can't be renamed that is reported, and the write goes ahead. A file that read, or wasn't
+    /// there, costs nothing here.
+    private func setUnreadableFolderViewsAside() {
+        guard folderViewsFileUnreadable else { return }
+        folderViewsFileUnreadable = false
+        guard fileSystem.exists(folderViewsFilePath) else { return }
+        do {
+            try fileSystem.rename(folderViewsFilePath, folderViewsFilePath + Self.unreadableSuffix)
+        } catch {
+            onPersistError(error)
         }
     }
 
@@ -497,13 +524,13 @@ public final class AppStateStore: @unchecked Sendable {
 
     private static func readFolderViews(
         _ path: String, _ fileSystem: any StateFileSystem, _ onReadError: @Sendable (any Error) -> Void
-    ) -> FolderViews {
-        guard fileSystem.exists(path) else { return FolderViews() }
+    ) -> (views: FolderViews, unreadable: Bool) {
+        guard fileSystem.exists(path) else { return (FolderViews(), false) }
         do {
-            return try FolderViews.read(try fileSystem.read(path))
+            return (try FolderViews.read(try fileSystem.read(path)), false)
         } catch {
             onReadError(error)
-            return FolderViews()
+            return (FolderViews(), true)
         }
     }
 

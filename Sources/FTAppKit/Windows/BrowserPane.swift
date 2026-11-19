@@ -90,6 +90,10 @@ final class BrowserPane {
     /// The pane was sent to another folder while its tab was in the background (its folder moved, or its disk went):
     /// the folder is read when the tab is next shown.
     private(set) var stale = false
+    /// The pane's place was taken while its tab was in the background (`takePlace`), and what is on screen, with the
+    /// view laid over it, is still the folder it was on: the next folder to arrive is another folder, though its path
+    /// is the one the pane now has.
+    private var placeTaken = false
     /// A folder has been on screen in this pane.
     private(set) var hasShownFolder = false
     /// The view the pane was started with (`carry`), until its first folder has been shown that way.
@@ -334,7 +338,10 @@ final class BrowserPane {
             folder = URL(fileURLWithPath: path)
             folderLetGo = false
         }
-        if moved, loaded { stale = true }
+        if moved, loaded {
+            stale = true
+            placeTaken = true
+        }
         return moved
     }
 
@@ -745,7 +752,10 @@ final class BrowserPane {
         let keepsSearch = keepingSearch
         // A folder opened (not read again in place) shows its own view, or the one above it that covers it, over what
         // the pane carries; what was changed of the view left and not saved is dropped.
-        let opensAnotherFolder = !hasShownFolder || folderLetGo || url.comparablePath != folder.comparablePath
+        // So is the folder a pane arrives at after its place was taken in the background: the folder it follows to
+        // its new name has its view there, and the folder it was sent to instead has its own or none.
+        let opensAnotherFolder =
+            !hasShownFolder || folderLetGo || placeTaken || url.comparablePath != folder.comparablePath
         // Looked up by the path as it was asked for, before the read, which needs the order the view keeps.
         var view = opensAnotherFolder ? folderViewUse(for: url.path).map(FolderViewOnScreen.init) : folderView
         content.beginLoading(quiet: quiet)
@@ -836,6 +846,7 @@ final class BrowserPane {
         let carried = url.comparablePath == folder.comparablePath ? carriedView : nil
         folder = shown
         folderLetGo = false
+        placeTaken = false
         if opensAnotherFolder { settingsOnArrival = PaneSettingsOnArrival(self) }
         // Nothing to show where neither the folder left nor this one has a view: the common case does no more work.
         if opensAnotherFolder, folderView != nil || view != nil {
@@ -938,6 +949,8 @@ final class BrowserPane {
         content.showNoFolder()
         tab.updateTitle()
         updatePathBar()
+        // No folder is no folder to customize: the status bar's symbol goes.
+        folderViewChanged()
     }
 
     /// The view search results show in, whether they show now or not.

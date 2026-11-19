@@ -110,9 +110,13 @@ public final class SharedFolderViews {
     public var onChanged: (_ senderID: Int?) -> Void = { _ in }
     /// Posted after every change, for what isn't a window (Settings' list).
     public static let didChange = Notification.Name("FileTrailFolderViewsChanged")
+    /// Where a folder that took a view along really is, its links resolved (`followMoves`); a test gives its own.
+    private let realPath: (String) -> String
+
     /// With no store, as in tests, the views are kept for the run only.
-    public init(store: AppStateStore? = nil) {
+    public init(store: AppStateStore? = nil, realPath: @escaping (String) -> String = FolderIdentity.realPath) {
         self.store = store
+        self.realPath = realPath
         views = store?.folderViews() ?? FolderViews()
     }
 
@@ -136,14 +140,13 @@ public final class SharedFolderViews {
     }
 
     /// Folders renamed or moved by the app (and by its Undo): their views, and the views inside them, go along, to
-    /// another disk too, as nothing ties a view to a disk.
+    /// another disk too, as nothing ties a view to a disk. A view is found by its folder's real path, and a move may
+    /// name where it went through a link (a folder dropped on a link to a folder): where a view goes along, the disk
+    /// is asked once where that is. A move that carries no view asks nothing.
     public func followMoves(_ moves: [PathMove]) {
         guard !moves.isEmpty else { return }
         update(from: nil) { views in
-            // The deepest first, so a folder moved out of a folder renamed in the same operation goes where it went.
-            for move in moves.sorted(by: { $0.from.utf16.count > $1.from.utf16.count }) {
-                views.moved(from: move.from, to: move.to)
-            }
+            views.moved(moves.map { (from: $0.from, to: $0.to) }, destination: realPath)
         }
     }
 }

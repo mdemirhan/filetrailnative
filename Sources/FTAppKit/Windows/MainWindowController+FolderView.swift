@@ -23,11 +23,9 @@ extension MainWindowController {
         switch command {
         case .manageFolderViews:
             break
-        case .rememberFolderView, .folderViewOptions:
-            guard pane.searchRootPath == nil, !pane.shownFolderPath.isEmpty else { return }
         default:
             // Update, Revert and Reset look for something unsaved, or a view of the folder's own, themselves.
-            guard pane.searchRootPath == nil else { return }
+            guard pane.searchRootPath == nil, !pane.shownFolderPath.isEmpty else { return }
         }
         switch command {
         case .rememberFolderView:
@@ -272,7 +270,12 @@ extension MainWindowController {
 
     /// Folder Customization, over the status bar's symbol (from a click on it, a menu or ⌘J).
     func showFolderViewPopover(for pane: BrowserPane, from anchor: NSView?) {
-        guard let window else { return }
+        // Only for a folder on screen: search results are no folder, and a pane that let go of its folder has none.
+        // The symbol isn't there then, and whatever else asks (a menu, a key, a click that was on its way) is refused
+        // here, so nothing is changed or saved for a folder that isn't shown.
+        guard let window, !pane.showsSearchResults, pane.searchRootPath == nil, !pane.shownFolderPath.isEmpty else {
+            return
+        }
         if let shown = folderViewPopover {
             let same = shown.pane === pane
             closeFolderViewPopover()

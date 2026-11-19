@@ -64,6 +64,74 @@ struct FolderViewsTests {
         #expect(views.inside("/Users/me/Photos").map(\.path) == ["/Users/me/Photos/Work"])
     }
 
+    // One operation's moves all start from where the folders were before it: a batch rename that hands names along.
+    @Test func foldersRenamedOneOntoTheNextEachKeepTheirOwnView() {
+        var views = FolderViews([
+            FolderView(path: "/d/A1", keeps: FolderViewKeeps(view: .icons)),
+            FolderView(path: "/d/A2", keeps: FolderViewKeeps(view: .details)),
+        ])
+        views.moved([(from: "/d/A1", to: "/d/A2"), (from: "/d/A2", to: "/d/A3")])
+        #expect(views.all.map(\.path) == ["/d/A2", "/d/A3"])
+        #expect(views.own("/d/A2")?.keeps.view == .icons)
+        #expect(views.own("/d/A3")?.keeps.view == .details)
+        // In the other order too: what the moves are listed in decides nothing.
+        views.moved([(from: "/d/A3", to: "/d/A4"), (from: "/d/A2", to: "/d/A3")])
+        #expect(views.own("/d/A3")?.keeps.view == .icons)
+        #expect(views.own("/d/A4")?.keeps.view == .details)
+        #expect(views.own("/d/A2") == nil)
+    }
+
+    @Test func foldersThatSwapNamesSwapTheirViewsAndTheViewsInsideThem() {
+        var views = FolderViews([
+            FolderView(path: "/d/A1", subfolders: true, keeps: FolderViewKeeps(view: .icons)),
+            FolderView(path: "/d/A1/Inner", keeps: FolderViewKeeps(view: .previews)),
+            FolderView(path: "/d/A2", keeps: FolderViewKeeps(view: .details)),
+            FolderView(path: "/d/A2/Inner", keeps: FolderViewKeeps(view: .list)),
+            FolderView(path: "/d/A2/Other", keeps: FolderViewKeeps(foldersFirst: false)),
+            FolderView(path: "/d/A20", keeps: FolderViewKeeps(view: .list)),
+        ])
+        views.moved([(from: "/d/A1", to: "/d/A2"), (from: "/d/A2", to: "/d/A1")])
+        #expect(
+            views.all.map(\.path) == ["/d/A1", "/d/A1/Inner", "/d/A1/Other", "/d/A2", "/d/A2/Inner", "/d/A20"])
+        #expect(views.own("/d/A1")?.keeps.view == .details && views.own("/d/A1")?.subfolders == false)
+        #expect(views.own("/d/A1/Inner")?.keeps.view == .list)
+        #expect(views.own("/d/A1/Other")?.keeps.foldersFirst == false)
+        #expect(views.own("/d/A2")?.keeps.view == .icons && views.own("/d/A2")?.subfolders == true)
+        #expect(views.own("/d/A2/Inner")?.keeps.view == .previews)
+        // A folder whose name only starts the same is no part of it.
+        #expect(views.own("/d/A20")?.keeps.view == .list)
+    }
+
+    // The deepest move that holds a view's folder is the one it goes with, and where a move ended is asked only of
+    // the moves that carry a view, once each.
+    @Test func aFolderMovedOutOfAFolderRenamedInTheSameOperationGoesWhereItWent() {
+        var views = views()
+        var asked: [String] = []
+        views.moved(
+            [
+                (from: "/Users/me/Pictures", to: "/Users/me/Photos"),
+                (from: "/Users/me/Pictures/Scans", to: "/Users/me/Archive/Scans"),
+                (from: "/Users/me/Music", to: "/Users/me/Songs"),
+            ],
+            destination: {
+                asked.append($0)
+                return $0 == "/Users/me/Photos" ? "/Volumes/Real/Photos" : $0
+            })
+        #expect(
+            views.all.map(\.path) == ["/Users/me/Archive/Scans", "/Volumes/Real/Photos", "/Volumes/Real/Photos/Work"])
+        #expect(asked.sorted() == ["/Users/me/Archive/Scans", "/Users/me/Photos"])
+        // No view among the moved: nothing is asked, and nothing changes.
+        let before = views
+        asked = []
+        views.moved(
+            [(from: "/Users/me/Music", to: "/Users/me/Songs")],
+            destination: {
+                asked.append($0)
+                return $0
+            })
+        #expect(asked.isEmpty && views == before)
+    }
+
     @Test func differencesNameTheSettingsWithAnotherValueOrKeptInOneOnly() {
         var changed = Self.previews
         changed.view = .icons

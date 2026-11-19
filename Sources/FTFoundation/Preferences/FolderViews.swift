@@ -289,15 +289,42 @@ public struct FolderViews: Equatable, Sendable {
 
     /// A folder renamed or moved by the app: its view and every view inside it go with it, to another disk too.
     public mutating func moved(from old: String, to new: String) {
-        guard old != new, !old.isEmpty, !new.isEmpty else { return }
-        let prefix = old + "/"
-        let moving = byPath.values.filter { $0.path == old || $0.path.hasPrefix(prefix) }
-        guard !moving.isEmpty else { return }
-        for view in moving {
+        moved([(from: old, to: new)])
+    }
+
+    /// The folders one operation renamed or moved, each from where it was before any of them went: every view goes
+    /// with the one move it belongs to, the deepest that holds its folder, so a folder moved out of a folder renamed
+    /// in the same operation goes where it went. All of them are taken out before any is put in: a batch rename that
+    /// hands names along (1 to 2, 2 to 3) or swaps them puts a view on a path another move starts from, and that move
+    /// is not to carry it on, nor is it to replace the view still waiting there. `destination` gives where a move
+    /// that carries a view ended as views are found (its links resolved), asked once for each such move and for no
+    /// other.
+    public mutating func moved(_ moves: [(from: String, to: String)], destination: (String) -> String = { $0 }) {
+        let moves = moves.filter { $0.from != $0.to && !$0.from.isEmpty && !$0.to.isEmpty }
+        guard !moves.isEmpty, !byPath.isEmpty else { return }
+        let inside = moves.map { $0.from + "/" }
+        let lengths = moves.map(\.from.count)
+        var carried: [(view: FolderView, move: Int)] = []
+        for view in all {
+            var deepest: Int?
+            for (index, move) in moves.enumerated()
+            where lengths[index] > deepest.map({ lengths[$0] }) ?? 0
+                && (view.path == move.from || view.path.hasPrefix(inside[index]))
+            {
+                deepest = index
+            }
+            if let deepest { carried.append((view, deepest)) }
+        }
+        guard !carried.isEmpty else { return }
+        for (view, _) in carried {
             byPath[view.path] = nil
         }
-        for var view in moving {
-            view.path = new + view.path.dropFirst(old.count)
+        var destinations: [Int: String] = [:]
+        for (view, index) in carried {
+            let to = destinations[index] ?? destination(moves[index].to)
+            destinations[index] = to
+            var view = view
+            view.path = to + view.path.dropFirst(lengths[index])
             byPath[view.path] = view
         }
     }
