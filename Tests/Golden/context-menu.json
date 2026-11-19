@@ -5843,6 +5843,12 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFile",
+          "label": "New File",
+          "icon": "newFile",
+          "hasSubmenu": true
+        },
+        {
           "type": "separator",
           "key": "separator-background-organize"
         },
@@ -5937,6 +5943,12 @@
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
+        },
+        {
+          "id": "newFile",
+          "label": "New File",
+          "icon": "newFile",
+          "hasSubmenu": true
         },
         {
           "type": "separator",
@@ -6035,6 +6047,12 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFile",
+          "label": "New File",
+          "icon": "newFile",
+          "hasSubmenu": true
+        },
+        {
           "type": "separator",
           "key": "separator-background-organize"
         },
@@ -6129,6 +6147,12 @@
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
+        },
+        {
+          "id": "newFile",
+          "label": "New File",
+          "icon": "newFile",
+          "hasSubmenu": true
         },
         {
           "type": "separator",
@@ -6227,6 +6251,12 @@
           "icon": "newFolder"
         },
         {
+          "id": "newFile",
+          "label": "New File",
+          "icon": "newFile",
+          "hasSubmenu": true
+        },
+        {
           "type": "separator",
           "key": "separator-background-organize"
         },
@@ -6321,6 +6351,12 @@
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
+        },
+        {
+          "id": "newFile",
+          "label": "New File",
+          "icon": "newFile",
+          "hasSubmenu": true
         },
         {
           "type": "separator",
@@ -6420,6 +6456,12 @@
           "id": "newFolder",
           "label": "New Folder",
           "icon": "newFolder"
+        },
+        {
+          "id": "newFile",
+          "label": "New File",
+          "icon": "newFile",
+          "hasSubmenu": true
         },
         {
           "type": "separator",

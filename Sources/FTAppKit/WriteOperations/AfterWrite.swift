@@ -22,7 +22,8 @@ enum AfterWrite {
     static func selectionDirectoryPath(_ result: WriteOperationResult, selectedPaths: [String]) -> String? {
         guard let first = selectedPaths.first, !first.isEmpty else { return nil }
         if result.action == .rename || result.action == .batchRename || result.action == .newFolder
-            || result.action == .pasteAsFile || result.action == .compress || result.action == .extract
+            || result.action == .pasteAsFile || result.action == .newFile || result.action == .compress
+            || result.action == .extract
             || isUndoOrRedo(result.action)
         {
             return ExplorerTabs.parentDirectoryPath(first)

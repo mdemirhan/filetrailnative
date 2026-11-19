@@ -12,11 +12,11 @@ struct CommandPaletteTests {
 
     static func entries(
         _ state: ApplicationMenuState = .initial, menuTitles: [String: String] = [:],
-        workspaces: [CommandPaletteWorkspace] = []
+        workspaces: [CommandPaletteWorkspace] = [], templates: [String] = []
     ) -> [CommandPaletteEntry] {
         CommandPalette.entries(
             bindings: ShortcutCommands.defaultBindings, states: states(state), menuTitles: menuTitles,
-            workspaces: workspaces)
+            workspaces: workspaces, templates: templates)
     }
 
     static func entry(_ id: String, in entries: [CommandPaletteEntry] = entries()) -> CommandPaletteEntry? {
@@ -120,6 +120,21 @@ struct CommandPaletteTests {
         #expect(Self.entry("workspaceHere:w1", in: entries)?.keys == ["⌃", "⌥", "⌘", "1"])
         #expect(Self.entry("workspace:w6", in: entries)?.keys == [])
         #expect(!entries.contains { $0.id == "openWorkspace1" })
+    }
+
+    // Each template of File ▸ New File by its name, on where Text File is.
+    @Test func listsEachTemplateByItsName() {
+        let entries = Self.entries(templates: ["Letter.txt", "budget.csv"])
+        let letter = Self.entry(ApplicationMenu.templateItemID("Letter.txt"), in: entries)
+        #expect(letter?.title == "New File \u{201C}Letter.txt\u{201D}")
+        #expect(letter?.place == "File > New File")
+        #expect(letter?.run == .menuItem("newFileFromTemplate:Letter.txt"))
+        #expect(ApplicationMenu.templateItem("newFileFromTemplate:Letter.txt") == "Letter.txt")
+        #expect(ApplicationMenu.templateItem("newTextFile") == nil)
+        var locked = ApplicationMenuState.initial
+        locked.disabledCommands = [.newTextFile]
+        let dimmed = Self.entries(locked, templates: ["Letter.txt"])
+        #expect(Self.entry(ApplicationMenu.templateItemID("Letter.txt"), in: dimmed)?.enabled == false)
     }
 
     // MARK: Order

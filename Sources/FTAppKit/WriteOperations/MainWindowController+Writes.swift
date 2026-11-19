@@ -7,7 +7,8 @@ import FTOperations
 extension MainWindowController {
     /// The commands that write, the clipboard's among them: each goes to the file operations.
     static let writeCommands: Set<AppCommand> = [
-        .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .newFolderWithSelection, .pasteAsFile,
+        .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .newFolderWithSelection, .newTextFile,
+        .pasteAsFile,
         .trashSelection, .emptyTrash, .cutSelection, .copySelection, .pasteSelection, .moveSelection, .editCut,
         .editCopy, .editPaste,
         .compressSelection, .extractSelection, .extractSelectionTo,
@@ -110,6 +111,10 @@ extension MainWindowController {
                     isSearchMode: searchRootPath != nil, homePath: actions.session.coordinator.homePath)
             else { return true }
             Task { _ = await actions.newFolder(in: target) }
+        case .newTextFile:
+            // Into the folder on screen, whatever is selected, as New Folder.
+            guard let target = pasteAsFileTargetPath(actions) else { return true }
+            Task { _ = await actions.newFile(in: target, named: NewFileTemplates.textFileName, contents: Data()) }
         case .newFolderWithSelection:
             let paths = selectedPaths
             guard
@@ -137,6 +142,42 @@ extension MainWindowController {
             break
         }
         return true
+    }
+
+    /// File ▸ New File ▸ a template: a copy of what the file of the Templates folder holds, with a date of its own, in
+    /// the folder on screen.
+    func newFileFromTemplate(named name: String) {
+        guard let actions = writeActions, let folder = Self.templatesFolderPath,
+            let target = pasteAsFileTargetPath(actions)
+        else { return }
+        if actions.refuseWhileBusy(.operation(.newFile)) { return }
+        let path = (folder as NSString).appendingPathComponent(name)
+        Task {
+            let read = await Task.detached { Result { try Data(contentsOf: URL(fileURLWithPath: path)) } }.value
+            switch read {
+            case .success(let contents):
+                _ = await actions.newFile(in: target, named: name, contents: contents)
+            case .failure:
+                actions.dialogs.show(
+                    "The file couldn\u{2019}t be made",
+                    "The template \u{201C}\(name)\u{201D} can\u{2019}t be read. It may have been moved or removed.",
+                    window)
+            }
+        }
+    }
+
+    /// File ▸ New File ▸ Open Templates Folder: the folder in this tab, made the first time.
+    func openTemplatesFolder() {
+        guard let folder = Self.templatesFolderPath else { return }
+        do {
+            try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: true)
+        } catch {
+            writeActions?.dialogs.show(
+                "The Templates folder couldn\u{2019}t be made", error.localizedDescription, window)
+            return
+        }
+        Self.templatesFolderOpened?()
+        go(to: URL(fileURLWithPath: folder, isDirectory: true))
     }
 
     /// Where Paste as File writes: the folder on screen; none in search results or in the Trash.

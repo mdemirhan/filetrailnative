@@ -19,6 +19,8 @@ public final class MainMenu {
     var startupDiskName: () -> String = { StartupDisk.shared.name }
     /// The workspaces Window ▸ Workspaces lists; the menu is built again when they change.
     var workspaces: () -> [WorkspaceMenuEntry] = { [] }
+    /// The files of the Templates folder File ▸ New File lists; the menu is built again when they change.
+    var templates: () -> [String] = { [] }
     /// The commands run from the command palette, the last first, and what to do when one is run (the app's state
     /// file keeps them).
     var recentCommands: () -> [String] = { [] }
@@ -87,7 +89,8 @@ public final class MainMenu {
         return CommandPalette.entries(
             bindings: bindings, states: Dictionary(states.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a }),
             menuTitles: titles,
-            workspaces: workspaces().map { CommandPaletteWorkspace(id: $0.id, name: $0.name) })
+            workspaces: workspaces().map { CommandPaletteWorkspace(id: $0.id, name: $0.name) },
+            templates: templates())
     }
 
     /// Runs a command chosen in the palette, as its menu item, its key or the system's own item would.
@@ -142,7 +145,7 @@ public final class MainMenu {
             target: router,
             options: ApplicationMenuOptions(
                 shortcuts: shortcuts(), textEditorName: textEditorName(), startupDiskName: startupDiskName(),
-                workspaces: workspaces()))
+                workspaces: workspaces(), templates: templates()))
         built = result
         index = MenuItemIndex(result, router: router)
         // The enabled flags belong to the old items; the new ones start on.

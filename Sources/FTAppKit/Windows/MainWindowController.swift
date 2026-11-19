@@ -1085,6 +1085,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Opens the command palette, or closes it: the app's menu sets it, for a key of the palette's that reaches the
     /// window and not the menu.
     static var showCommandPalette: (@MainActor () -> Void)?
+    /// The Templates folder File ▸ New File makes files from (`AppStatePaths.templates`); the app sets it.
+    static var templatesFolderPath: String?
+    /// Told once Open Templates Folder has made sure the folder is there, so it can be watched.
+    static var templatesFolderOpened: (@MainActor () -> Void)?
 
     /// A command the list's keys ask for: the key is one the menu does not listen for (a command's second key, Space,
     /// F2, ⌘←). Whether the window ran it. Keys don't go by what dims the menu (only `ShortcutPolicy.canHandle` is
@@ -1989,6 +1993,7 @@ extension MainWindowController: ExplorerWindowHandle {
             } else {
                 _ = window?.firstResponder?.tryToPerform(#selector(NSResponder.selectAll(_:)), with: nil)
             }
+        case .openTemplatesFolder: openTemplatesFolder()
         case .deselectAll: content.deselectAllEntries()
         case .invertSelection: content.invertSelection()
         case .calculateSize: infoController?.calculateSizeCommand()
@@ -2038,7 +2043,8 @@ extension MainWindowController: ExplorerWindowHandle {
         case .shareSelection:
             shareSelection()
         case .undo, .redo, .editCut, .editCopy, .editPaste, .moveSelection, .duplicateSelection, .newFolder,
-            .newFolderWithSelection, .pasteAsFile, .trashSelection, .emptyTrash, .copySelection, .cutSelection,
+            .newFolderWithSelection, .newTextFile, .pasteAsFile, .trashSelection, .emptyTrash, .copySelection,
+            .cutSelection,
             .pasteSelection,
             .compressSelection, .extractSelection, .extractSelectionTo:
             // The write commands: `performWriteCommand` took them, unless the toolbar is being customized.

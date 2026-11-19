@@ -15,6 +15,14 @@ struct ContextMenuRequest {
     var sortBy: SortByPreference
     /// What the Other Pane submenu offers, while the tab shows two panes.
     var otherPane: [OtherPaneMenuItem] = []
+    /// The files of the Templates folder the New File submenu lists, by name in order.
+    var templates: [String] = []
+}
+
+/// A New File choice as a menu item carries it.
+final class NewFileChoiceBox: NSObject {
+    let choice: NewFileChoice
+    init(_ choice: NewFileChoice) { self.choice = choice }
 }
 
 /// One item of the Other Pane submenu: the pane command it runs, whether it can now, and its key.
@@ -23,6 +31,13 @@ struct OtherPaneMenuItem {
     var command: AppCommand
     var enabled: Bool
     var key: MenuKeyEquivalent?
+}
+
+/// An item of the background's New File submenu.
+enum NewFileChoice: Equatable {
+    case textFile
+    case template(String)
+    case openTemplatesFolder
 }
 
 /// What a chosen item does: the window carries these out.
@@ -37,6 +52,8 @@ protocol ContextMenuResponder: AnyObject {
     func contextMenu(sortBy field: SortByPreference)
     /// An item of the Other Pane submenu was chosen, for the items the menu is for.
     func contextMenu(otherPane command: AppCommand, subject: ContextMenuSubject)
+    /// An item of the New File submenu was chosen: Text File (nil), a template by its name, or the Templates folder.
+    func contextMenu(newFile choice: NewFileChoice)
     func contextMenuDidOpen()
     func contextMenuDidClose()
 }
@@ -205,6 +222,21 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 submenu.addItem(item)
             }
             entry.submenu = submenu
+        case .newFile:
+            // As File ▸ New File.
+            let submenu = NSMenu(title: entry.title)
+            func add(_ title: String, _ choice: NewFileChoice) {
+                let item = NSMenuItem(title: title, action: #selector(chooseNewFile(_:)), keyEquivalent: "")
+                item.target = self
+                item.representedObject = NewFileChoiceBox(choice)
+                submenu.addItem(item)
+            }
+            add("Text File", .textFile)
+            if !request.templates.isEmpty { submenu.addItem(.separator()) }
+            for name in request.templates { add(MenuName.shortened(name), .template(name)) }
+            submenu.addItem(.separator())
+            add("Open Templates Folder", .openTemplatesFolder)
+            entry.submenu = submenu
         case .otherPane:
             let submenu = NSMenu(title: entry.title)
             submenu.autoenablesItems = false
@@ -223,6 +255,11 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         default:
             break
         }
+    }
+
+    @objc private func chooseNewFile(_ item: NSMenuItem) {
+        guard let box = item.representedObject as? NewFileChoiceBox else { return }
+        responder?.contextMenu(newFile: box.choice)
     }
 
     @objc private func chooseOtherPane(_ item: NSMenuItem) {

@@ -205,9 +205,10 @@ public enum CommandPalette {
     ///   - menuTitles: the menu items' titles as the menu shows them now, by id (the text editor, the startup disk, a
     ///     workspace).
     ///   - workspaces: the saved workspaces in their order.
+    ///   - templates: the files of the Templates folder File ▸ New File lists, in its order.
     public static func entries(
         bindings: ShortcutBindings, states: [String: ApplicationMenuItemState], menuTitles: [String: String] = [:],
-        workspaces: [CommandPaletteWorkspace] = []
+        workspaces: [CommandPaletteWorkspace] = [], templates: [String] = []
     ) -> [CommandPaletteEntry] {
         var result: [CommandPaletteEntry] = []
         // In a tab with one pane the menu names Close Pane "Close Tab", as that is what it closes: Close Tab, which
@@ -228,6 +229,16 @@ public enum CommandPalette {
                     enabled: state?.enabled ?? true, checked: state?.checked ?? false, group: definition.group,
                     icon: icon(definition.id), run: run,
                     help: HelpContent.line(of: definition.id) ?? ""))
+        }
+        // A template is on where New File ▸ Text File is, as in the menu.
+        let newFileState = states[AppCommand.newTextFile.rawValue]
+        for name in templates {
+            let itemID = ApplicationMenu.templateItemID(name)
+            result.append(
+                CommandPaletteEntry(
+                    id: itemID, title: "New File \u{201C}\(name)\u{201D}", place: "File > New File", keys: [],
+                    enabled: newFileState?.enabled ?? true, group: .files, icon: .newFile, run: .menuItem(itemID),
+                    help: "Make a copy of this template in the folder you are in, and name it"))
         }
         for (index, workspace) in workspaces.enumerated() {
             for inThisWindow in [false, true] {
@@ -415,6 +426,7 @@ public enum CommandPalette {
         case .extractSelection, .extractSelectionTo: .extract
         case .newFolder, .newFolderWithSelection: .newFolder
         case .pasteAsFile: .pasteAsFile
+        case .newTextFile: .newFile
         case .trashSelection: .trash
         case .ejectVolume: .eject
         case .emptyTrash: .emptyTrash

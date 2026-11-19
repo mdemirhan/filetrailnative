@@ -121,7 +121,8 @@ public enum CommandAvailability {
     /// a clipboard, so they stay available. A held key runs them once per press (`WriteStartingShortcuts`).
     static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .pasteAsFile, .moveSelection, .renameSelection, .duplicateSelection,
-        .newFolder, .newFolderWithSelection, .trashSelection, .emptyTrash, .copyToOtherPane, .moveToOtherPane,
+        .newFolder, .newFolderWithSelection, .newTextFile, .trashSelection, .emptyTrash, .copyToOtherPane,
+        .moveToOtherPane,
         .compressSelection, .extractSelection, .extractSelectionTo, .convertImages,
     ]
 
@@ -371,6 +372,11 @@ public enum CommandAvailability {
         case .ejectVolume:
             return context.ejectTargetPath != nil
         case .newFolder:
+            return newFolderTargetPath(
+                currentPath: context.currentPath, selectedPaths: context.selectedPathsInViewOrder,
+                isSearchMode: context.isSearchMode, homePath: context.homePath ?? "") != nil
+        case .newTextFile:
+            // Into the folder on screen, as New Folder and Paste as File.
             return newFolderTargetPath(
                 currentPath: context.currentPath, selectedPaths: context.selectedPathsInViewOrder,
                 isSearchMode: context.isSearchMode, homePath: context.homePath ?? "") != nil

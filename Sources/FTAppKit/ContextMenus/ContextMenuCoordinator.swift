@@ -120,6 +120,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             pinnedApps: preferences.openWithApplications,
             viewMode: tab.searchRootPath != nil ? tab.searchViewMode : tab.viewMode, sortBy: tab.sortBy)
         if tab.showsTwoPanes { request.otherPane = otherPaneItems(subject, request.shortcuts) }
+        if subject.surface == .background, let folder = MainWindowController.templatesFolderPath {
+            request.templates = NewFileTemplates.names(in: folder)
+        }
         let session = ContextMenuSession(request: request, responder: self)
         current = session
         return session.menu
@@ -164,6 +167,14 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     func contextMenu(sortBy field: SortByPreference) {
         tab.sort(by: field)
+    }
+
+    func contextMenu(newFile choice: NewFileChoice) {
+        switch choice {
+        case .textFile: _ = tab.performWriteCommand(.newTextFile)
+        case .template(let name): tab.newFileFromTemplate(named: name)
+        case .openTemplatesFolder: tab.openTemplatesFolder()
+        }
     }
 
     /// The Other Pane submenu for what the menu is for: Open, Copy and Move for items of the list, and for the list's
@@ -289,7 +300,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .cut, .copy, .paste, .pasteAsFile, .move, .rename, .duplicate, .newFolder, .newFolderWithSelection, .trash,
             .deleteImmediately, .emptyTrash, .compress, .extract, .extractTo:
             fileOperation(action, subject)
-        case .openWith, .viewAs, .sortBy, .otherPane:
+        case .openWith, .viewAs, .sortBy, .otherPane, .newFile:
             break
         }
     }

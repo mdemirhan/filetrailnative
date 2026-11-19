@@ -88,7 +88,7 @@ public struct WriteEndToast: Equatable, Sendable {
 /// What is said when an operation ends: a result sheet when there is something to read, else a toast or nothing.
 public enum WriteEndNotices {
     public static func needsResultSheet(_ write: WriteEndSummary) -> Bool {
-        if [.rename, .newFolder, .pasteAsFile].contains(write.action) { return write.status == .failed }
+        if [.rename, .newFolder, .pasteAsFile, .newFile].contains(write.action) { return write.status == .failed }
         if write.isUndoOrRedo {
             // A stop before anything was undone still tells of the items the disk check skipped: they leave the
             // history, so this is the only time they are told.
@@ -139,9 +139,11 @@ public enum WriteEndNotices {
         }
         // What was extracted is selected where it went, or opens in a new tab or window when no pane shows it. A new
         // folder, with or without the selection in it, is selected and named.
-        if [.newFolder, .newFolderWithSelection, .pasteAsFile, .rename, .batchRename, .duplicate, .compress, .extract]
-            .contains(write.action)
-        {
+        if [
+            .newFolder, .newFolderWithSelection, .pasteAsFile, .newFile, .rename, .batchRename, .duplicate, .compress,
+            .extract,
+        ]
+        .contains(write.action) {
             return nil
         }
         if write.action == .convertImages {
@@ -186,12 +188,12 @@ public enum WriteEndNotices {
         func has(_ path: String?) -> Bool { !(path ?? "").isEmpty }
         let item = write.items.first { item in
             switch write.action {
-            case .newFolder, .pasteAsFile: has(item.destinationPath)
+            case .newFolder, .pasteAsFile, .newFile: has(item.destinationPath)
             case .trash: has(item.sourcePath)
             default: has(item.sourcePath) || has(item.destinationPath)
             }
         }
-        if write.action == .newFolder || write.action == .pasteAsFile {
+        if [.newFolder, .pasteAsFile, .newFile].contains(write.action) {
             return item?.destinationPath ?? write.currentDestinationPath
         }
         if write.action == .rename {

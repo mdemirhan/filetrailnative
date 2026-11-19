@@ -36,6 +36,11 @@ public enum AppStatePaths {
         appState.deletingLastPathComponent().appendingPathComponent("recent-commands.json")
     }
 
+    /// `Templates` in the user data folder: the files File ▸ New File makes new files from.
+    public static func templates(in userData: URL) -> URL {
+        userData.appendingPathComponent("Templates", isDirectory: true)
+    }
+
     /// `logs/app.log` in the user data folder.
     public static func appLog(in userData: URL) -> URL {
         userData.appendingPathComponent("logs", isDirectory: true).appendingPathComponent("app.log")

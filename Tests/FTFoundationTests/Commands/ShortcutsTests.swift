@@ -441,7 +441,7 @@ struct ShortcutsTests {
             (.deselectAll, ["Cmd+Option+A"]), (.invertSelection, []), (.renameSelection, ["F2"]),
             (.duplicateSelection, ["Cmd+D"]), (.convertImages, []), (.moveSelection, ["Cmd+Shift+M"]),
             (.compressSelection, []), (.extractSelection, []), (.extractSelectionTo, []), (.newFolder, ["Cmd+Shift+N"]),
-            (.newFolderWithSelection, ["Ctrl+Cmd+N"]),
+            (.newFolderWithSelection, ["Ctrl+Cmd+N"]), (.newTextFile, []), (.openTemplatesFolder, []),
             (.pasteAsFile, ["Cmd+Shift+V"]), (.trashSelection, ["Cmd+Backspace"]), (.ejectVolume, ["Cmd+E"]),
             (.emptyTrash, ["Cmd+Shift+Backspace"]),
             (.copyPath, ["Cmd+Option+C"]), (.copyContents, ["Cmd+Shift+C"]), (.shareSelection, []),

@@ -50,7 +50,7 @@ public enum ClipboardTexts {
         case .rename, .batchRename: return "\(refused) \(subject) being renamed"
         case .newFolder: return "\(refused) a folder is being made"
         case .newFolderWithSelection: return "\(refused) \(subject) being moved into a new folder"
-        case .pasteAsFile: return "\(refused) a file is being saved"
+        case .pasteAsFile, .newFile: return "\(refused) a file is being saved"
         case .compress: return "\(refused) a zip is being made"
         case .extract: return "\(refused) \(subject) being extracted"
         case .convertImages: return "\(refused) \(subject) being converted"

@@ -300,11 +300,13 @@ struct ContextMenuRulesTests {
         let menu = labels(background, world(pasteDestination: true))
         #expect(
             menu == [
-                "New Folder", "Show Info", "Calculate Size", "Paste", "Copy Path", "View As", "Sort By",
+                "New Folder", "New File", "Show Info", "Calculate Size", "Paste", "Copy Path", "View As", "Sort By",
                 "Open in Terminal", "Show in Finder",
             ])
         let inTrash = hidden(background, world(current: Self.trash + "/old"))
-        #expect(inTrash.contains(.paste) && inTrash.contains(.newFolder) && !inTrash.contains(.emptyTrash))
+        #expect(
+            inTrash.contains(.paste) && inTrash.contains(.newFolder) && inTrash.contains(.newFile)
+                && !inTrash.contains(.emptyTrash))
     }
 
     @Test func separatorsThatWouldStandFirstLastOrTwiceInARowAreDropped() {

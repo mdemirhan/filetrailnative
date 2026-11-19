@@ -460,6 +460,32 @@ final class WindowWriteActions {
     /// name ("Pasted Image.png"), which is then edited in its row, as New Folder's is. Files copied in another app,
     /// and a clipboard with nothing to write, are only told of; what a password manager marked as private is asked
     /// about first.
+    /// File ▸ New File: a file holding `contents` (none for Text File, a template's for a template) in the folder on
+    /// screen, under `name` or the next free one ("untitled 2.txt"), and then named in its row.
+    func newFile(in folder: String, named name: String, contents: Data) async -> CopyLikeOutcome {
+        if refuseWhileBusy(.operation(.newFile)) { return .cancelled }
+        let free = PasteAsFile.freeName(name, existingNames: tab?.content.listed.map(\.name) ?? [])
+        let pendingPath = Self.childPath(folder, free)
+        session.pendingInlineRenamePath = pendingPath
+        let outcome = await startLocal(
+            .newFile,
+            card: WriteOperationCardState(action: .newFile, stage: .starting, targetPath: folder, totalItemCount: 1),
+            showsRefusal: false,
+            beforeAdopting: { [weak self] _ in self?.session.pendingTreeSelectionPath = nil },
+            start: { [coordinator, session] in
+                // The listing may not know of an "untitled.txt" made elsewhere meanwhile.
+                try await coordinator.createFile(
+                    parentDirectoryPath: folder, fileName: free, contents: contents, nextFreeName: true,
+                    action: .newFile, window: session)
+            })
+        if case .queued = outcome { return outcome }
+        if session.pendingInlineRenamePath == pendingPath { session.pendingInlineRenamePath = nil }
+        if case .error(let message) = outcome {
+            dialogs.show("The file couldn\u{2019}t be made", message, window)
+        }
+        return outcome
+    }
+
     func pasteAsFile(in folder: String, from clipboard: SystemClipboard) async -> CopyLikeOutcome {
         let contents = await clipboard.read()
         if contents.choice == .files {

@@ -322,7 +322,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
             }
         }
         // The folder or file made in its row may have been given the next free name.
-        if event.action == .newFolder || event.action == .pasteAsFile, pendingInlineRenamePath != nil {
+        if [.newFolder, .pasteAsFile, .newFile].contains(event.action), pendingInlineRenamePath != nil {
             let madePath = event.result?.items.first?.destinationPath
             pendingInlineRenamePath = event.status == .completed ? madePath : nil
         }

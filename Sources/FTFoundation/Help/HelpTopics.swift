@@ -793,6 +793,11 @@ extension HelpContent {
         HelpShortcutItem(
             group: .files, .command(.newFolder), "Make a new folder in the folder you are in, and name it"),
         HelpShortcutItem(
+            group: .files, .command(.newTextFile), "Make an empty text file in the folder you are in, and name it"),
+        HelpShortcutItem(
+            group: .files, .command(.openTemplatesFolder),
+            "Open the folder of templates, the files New File makes new files from"),
+        HelpShortcutItem(
             group: .files, .command(.newFolderWithSelection),
             "Put the selected items in a new folder beside them, and name it"),
         HelpShortcutItem(group: .files, .command(.trashSelection), "Move the selected items to the Trash"),

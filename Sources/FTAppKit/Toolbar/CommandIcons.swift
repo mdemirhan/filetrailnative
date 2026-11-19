@@ -53,6 +53,8 @@ extension CommandIcon {
         case .duplicate: "plus.square.on.square"
         case .convertImages: "photo.on.rectangle.angled"
         case .newFolder: "folder.badge.plus"
+        // Paste as File has the page with a plus.
+        case .newFile: "square.and.pencil"
         case .favorite: "star"
         case .trash, .emptyTrash: "trash"
         case .deleteImmediately: "trash.slash"

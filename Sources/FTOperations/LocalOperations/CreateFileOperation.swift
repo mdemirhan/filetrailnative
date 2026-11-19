@@ -3,14 +3,14 @@ import FTFoundation
 import Foundation
 
 extension WriteCoordinator {
-    /// Makes one file holding `contents` in `parentDirectoryPath` (Paste as File). With `nextFreeName`, the name is
-    /// only a suggestion ("Pasted Image.png"): when it is taken (by something the window hasn't listed yet), the next
-    /// free one ("Pasted Image 2.png") is used. The file is filled under a hidden name first and then given its own,
-    /// so a file half written never shows, and nothing already there is replaced.
+    /// Makes one file holding `contents` in `parentDirectoryPath`: Paste as File, or New File (`action`). With
+    /// `nextFreeName`, the name is only a suggestion ("Pasted Image.png"): when it is taken (by something the window
+    /// hasn't listed yet), the next free one ("Pasted Image 2.png") is used. The file is filled under a hidden name
+    /// first and then given its own, so a file half written never shows, and nothing already there is replaced.
     @discardableResult
     public func createFile(
         parentDirectoryPath: String, fileName: String, contents: Data, nextFreeName: Bool = false,
-        window: any WriteOperationWindow
+        action: WriteOperationAction = .pasteAsFile, window: any WriteOperationWindow
     ) async throws -> WriteOperationHandle {
         if let refusal = ItemNames.error(for: fileName) {
             throw WriteCoordinatorError(refusal)
@@ -25,7 +25,7 @@ extension WriteCoordinator {
             let undoable: @MainActor () -> Bool = { [weak self] in
                 self?.canBeTrashed(in: NodePath.dirname(destinationPath)) ?? false
             }
-            return try queueLocalWriteOperation(action: .pasteAsFile, window: window, reservation: reservation) {
+            return try queueLocalWriteOperation(action: action, window: window, reservation: reservation) {
                 local in
                 await Self.executeCreateFile(destinationPath, contents, local, fileSystem, undoable: undoable)
             }

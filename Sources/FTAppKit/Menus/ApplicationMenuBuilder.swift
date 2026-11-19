@@ -11,6 +11,8 @@ struct ApplicationMenuOptions {
     var startupDiskName = VolumePaths.defaultStartupDiskName
     /// The workspaces Window ▸ Workspaces lists, in order.
     var workspaces: [WorkspaceMenuEntry] = []
+    /// The files of the Templates folder File ▸ New File lists, by name in order.
+    var templates: [String] = []
 }
 
 /// A workspace as Window ▸ Workspaces lists it.
@@ -72,6 +74,9 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.duplicateTab, "Duplicate Tab"))
             menu.addItem(context.command(.newFolder, "New Folder"))
             menu.addItem(context.command(.newFolderWithSelection, "New Folder with Selection"))
+            let newFile = NSMenuItem(title: "New File", action: nil, keyEquivalent: "")
+            newFile.submenu = context.newFileMenu()
+            menu.addItem(newFile)
             menu.addItem(.separator())
             menu.addItem(context.command(.openSelection, "Open"))
             menu.addItem(context.command(.openSelectionInNewTab, "Open in New Tab"))
@@ -363,6 +368,26 @@ enum ApplicationMenuBuilder {
             }
             menu.addItem(.separator())
             menu.addItem(plain("Manage Workspaces…", id: ApplicationMenu.manageWorkspacesItemID))
+            return menu
+        }
+
+        /// File ▸ New File: an empty text file, a copy of each file of the Templates folder, and the folder itself.
+        func newFileMenu() -> NSMenu {
+            let menu = NSMenu(title: "New File")
+            menu.addItem(command(.newTextFile, "Text File"))
+            if !options.templates.isEmpty { menu.addItem(.separator()) }
+            for name in options.templates {
+                let id = ApplicationMenu.templateItemID(name)
+                let item = NSMenuItem(
+                    title: MenuName.shortened(name), action: #selector(MenuCommandRouter.chooseMenuItem(_:)),
+                    keyEquivalent: "")
+                item.target = target
+                item.identifier = NSUserInterfaceItemIdentifier(id)
+                register(item, id: id)
+                menu.addItem(item)
+            }
+            menu.addItem(.separator())
+            menu.addItem(command(.openTemplatesFolder, "Open Templates Folder"))
             return menu
         }
 

@@ -11,6 +11,7 @@ public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
     case newFolder = "new_folder"
     case newFolderWithSelection = "new_folder_with_selection"
     case pasteAsFile = "paste_as_file"
+    case newFile = "new_file"
     case compress, extract
     case batchRename = "batch_rename"
     case convertImages = "convert_images"
@@ -75,6 +76,7 @@ public struct ProgressCardText: Equatable, Sendable {
         case .newFolder: pair = ("Creating Folder…", "New Folder")
         case .newFolderWithSelection: pair = ("Creating Folder…", "New Folder with Selection")
         case .pasteAsFile: pair = ("Saving File…", "Paste as File")
+        case .newFile: pair = ("Creating File…", "New File")
         case .compress: pair = ("Compressing…", "Compress")
         case .extract: pair = ("Extracting…", "Extract")
         case .convertImages: pair = ("Converting…", "Convert Images")
@@ -113,7 +115,8 @@ public struct ProgressCardText: Equatable, Sendable {
         let total = ReviewCount.pluralize(max(state.totalItemCount, 0), "item")
         metaStart = "\(ContextMenuRules.groupedCount(state.completedItemCount)) of \(total)"
         metaEnd = Self.byteLabel(state)
-        detailLabel = state.action == .newFolder || state.action == .pasteAsFile ? "Destination" : "Current item"
+        detailLabel =
+            [.newFolder, .pasteAsFile, .newFile].contains(state.action) ? "Destination" : "Current item"
         let path = state.currentSourcePath ?? state.targetPath ?? currentPath
         detailValue = Self.leafName(path)
     }

@@ -33,7 +33,8 @@ public enum WriteResultNoticeText {
         switch action {
         case .paste, .copyTo, .moveTo, .duplicate, .batchRename, .convertImages, .undo, .redo: true
         // An archive that couldn't be taken apart isn't fixed by trying again: it is said in the alert.
-        case .trash, .deleteImmediately, .rename, .newFolder, .newFolderWithSelection, .pasteAsFile, .compress,
+        case .trash, .deleteImmediately, .rename, .newFolder, .newFolderWithSelection, .pasteAsFile, .newFile,
+            .compress,
             .extract:
             false
         }

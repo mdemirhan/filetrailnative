@@ -14,6 +14,8 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case revealInFolder, revealInTree, open, openInNewTab, openInNewWindow, openWith, quickLook
     case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, pasteAsFile, move, rename, duplicate
     case newFolder, newFolderWithSelection, compress, extract, extractTo
+    /// File ▸ New File's submenu, on the folder's background: Text File, the templates, the Templates folder.
+    case newFile
     case convertImages
     case viewAs, sortBy, toggleFavorite, terminal, showInFinder, copyPath, copyContents, rootTreeHere, trash
     /// The system's share popover for the items: AirDrop, Mail, Messages and the rest macOS offers.
@@ -25,7 +27,9 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     case openInOtherPane
 
     /// The items that open a submenu rather than act.
-    public var isSubmenu: Bool { self == .openWith || self == .viewAs || self == .sortBy || self == .otherPane }
+    public var isSubmenu: Bool {
+        self == .openWith || self == .viewAs || self == .sortBy || self == .otherPane || self == .newFile
+    }
 }
 
 public enum ContextMenuItem: Equatable, Sendable {
@@ -126,7 +130,8 @@ public enum ContextMenuItems {
             ]
         case .background:
             return [
-                item(.newFolder, "New Folder", .newFolder), line("separator-background-organize"),
+                item(.newFolder, "New Folder", .newFolder), item(.newFile, "New File", .newFile, submenu: true),
+                line("separator-background-organize"),
                 item(.showInfo, "Show Info", .showInfo), item(.calculateSize, "Calculate Size", .calculateSize),
                 line("separator-background-info"),
                 item(.paste, "Paste", .paste),

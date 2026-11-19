@@ -65,6 +65,10 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
             beforeValidating?()
         }
         guard let id = menuItem.identifier?.rawValue else { return true }
+        // A template's item is on where New File ▸ Text File is: the folder on screen takes a new file.
+        if ApplicationMenu.templateItem(id) != nil {
+            return !disabledItemIDs.contains(AppCommand.newTextFile.rawValue)
+        }
         return !disabledItemIDs.contains(id)
     }
 
@@ -91,6 +95,14 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         default:
             if let workspace = ApplicationMenu.workspaceItem(itemID) {
                 openWorkspace(workspace.workspaceID, inThisWindow: workspace.inThisWindow)
+                return
+            }
+            if let template = ApplicationMenu.templateItem(itemID) {
+                // In the explorer window that has the keyboard, as New File ▸ Text File.
+                guard let target = explorerFor(focusedWindow()), target.focused,
+                    let controller = target.handle.window?.windowController as? MainWindowController
+                else { return }
+                controller.newFileFromTemplate(named: template)
                 return
             }
             guard let command = AppCommand(rawValue: itemID) else { return }

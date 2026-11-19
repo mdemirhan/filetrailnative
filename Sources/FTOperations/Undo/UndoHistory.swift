@@ -207,6 +207,8 @@ public final class UndoHistory {
             return "New Folder with Selection"
         case .pasteAsFile:
             return "Paste as File"
+        case .newFile:
+            return "New File"
         case .compress:
             return "Compress"
         case .extract:

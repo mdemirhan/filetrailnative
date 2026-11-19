@@ -20,6 +20,7 @@ enum WriteStartAction: Equatable, Sendable {
             case .rename, .batchRename: "Couldn\u{2019}t Rename"
             case .newFolder, .newFolderWithSelection: "Couldn\u{2019}t Make a New Folder"
             case .pasteAsFile: "Couldn\u{2019}t Paste as File"
+            case .newFile: "Couldn\u{2019}t Make a New File"
             case .compress: "Couldn\u{2019}t Compress"
             case .extract: "Couldn\u{2019}t Extract"
             case .convertImages: "Couldn\u{2019}t Convert the Images"

@@ -263,6 +263,20 @@ public enum ApplicationMenu {
         (inThisWindow ? workspaceHerePrefix : workspacePrefix) + workspaceID
     }
 
+    private static let templatePrefix = "newFileFromTemplate:"
+
+    /// The id of File ▸ New File's item for the template named `name`.
+    public static func templateItemID(_ name: String) -> String {
+        templatePrefix + name
+    }
+
+    /// The template a File ▸ New File item makes a file from, by its name; nil for any other item.
+    public static func templateItem(_ itemID: String) -> String? {
+        guard itemID.hasPrefix(templatePrefix) else { return nil }
+        let name = String(itemID.dropFirst(templatePrefix.count))
+        return name.isEmpty ? nil : name
+    }
+
     /// Manage Workspaces…, which opens the list in Settings.
     public static let manageWorkspacesItemID = "manageWorkspaces"
 

@@ -42,6 +42,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private var openFiles: OpenFileEntryPoint!
     private var diskImages: DiskImageOpener?
     private var mainMenu: MainMenu?
+    private var templatesWatch: TemplatesFolderWatch?
+    private var activationObserver: (any NSObjectProtocol)?
     private var dockMenu: NSMenu?
     private var isSecondInstance = false
     private var secondInstanceObserver: (any NSObjectProtocol)?
@@ -279,6 +281,19 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.workspaces = { [weak self] in
             (self?.store?.preferences().workspaces ?? []).map { WorkspaceMenuEntry(id: $0.id, name: $0.name) }
         }
+        // File ▸ New File lists the Templates folder's files, and is built again when they change.
+        let templatesPath = AppStatePaths.templates(in: userDataDirectory ?? AppStatePaths.userDataDirectory()).path
+        MainWindowController.templatesFolderPath = templatesPath
+        let templates = TemplatesFolderWatch(path: templatesPath)
+        templates.onChange = { [weak menu] in menu?.build() }
+        templatesWatch = templates
+        MainWindowController.templatesFolderOpened = { [weak templates] in templates?.folderMayExist() }
+        activationObserver = NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main
+        ) { [weak templates] _ in
+            MainActor.assumeIsolated { templates?.folderMayExist() }
+        }
+        menu.templates = { [weak templates] in templates?.names ?? [] }
         menu.recentCommands = { [weak self] in self?.store?.recentCommands() ?? [] }
         menu.recordCommand = { [weak self] id in self?.store?.recordCommand(id) }
         menu.build()

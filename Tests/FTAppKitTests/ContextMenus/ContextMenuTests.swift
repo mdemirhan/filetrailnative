@@ -116,8 +116,13 @@ extension ExplorerWindowlessTests {
             let background = tab.contextMenus.contentMenu(for: nil)
             #expect(
                 titles(background) == [
-                    "New Folder", "-", "Show Info", "Calculate Size", "-", "Paste", "Copy Path", "-", "View As",
-                    "Sort By", "-", "Open in Terminal", "Show in Finder",
+                    "New Folder", "New File", "-", "Show Info", "Calculate Size", "-", "Paste", "Copy Path", "-",
+                    "View As", "Sort By", "-", "Open in Terminal", "Show in Finder",
+                ])
+            // New File's submenu: Text File, then (with no templates) the Templates folder.
+            #expect(
+                titles(try #require(item(background, "New File")).submenu) == [
+                    "Text File", "-", "Open Templates Folder",
                 ])
             #expect(background?.autoenablesItems == true)
             let session = try #require(tab.contextMenus.current)
