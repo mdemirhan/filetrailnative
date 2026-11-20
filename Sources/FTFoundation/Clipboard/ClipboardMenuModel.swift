@@ -59,7 +59,17 @@ public struct ClipboardMenuModel: Equatable, Sendable {
     /// The items changed: the active row keeps its index, so the next item moves up under the keys (clamped). On a
     /// clipboard holding both, the cut items come first under "Cut", then the copied ones under "Copied", each part's
     /// items under their folders, as ⌘V will run.
+    ///
+    /// The same items with another intent (a click on an item's mark) stay on the rows they are on, each showing its
+    /// own mark, and the parts' counts say what ⌘V will do: an item that went to the other part as it was clicked put
+    /// another under the pointer, and a second click, to switch it back, switched that one. The list is in its parts
+    /// again the next time it opens.
     public mutating func setItems(_ items: [ClipboardItem], putBackCount: Int? = nil) {
+        if keepPlaces(items) {
+            self.putBackCount = putBackCount
+            if activeIndex > lastIndex { activeIndex = lastIndex }
+            return
+        }
         var rows: [ClipboardMenuRow] = []
         var ordered: [ClipboardItem] = []
         func add(_ groups: [ClipboardItemGroup]) {
@@ -84,6 +94,26 @@ public struct ClipboardMenuModel: Equatable, Sendable {
         orderedItems = ordered
         self.putBackCount = putBackCount
         if activeIndex > lastIndex { activeIndex = lastIndex }
+    }
+
+    /// Puts `items` on the rows the same items are on now; false when they are other items, or none are shown.
+    private mutating func keepPlaces(_ items: [ClipboardItem]) -> Bool {
+        guard !orderedItems.isEmpty, items.count == orderedItems.count else { return false }
+        var byPath: [[UInt8]: ClipboardItem] = [:]
+        for item in items { byPath[Array(item.path.utf8)] = item }
+        guard byPath.count == items.count, orderedItems.allSatisfy({ byPath[Array($0.path.utf8)] != nil }) else {
+            return false
+        }
+        let cutCount = items.filter { $0.mode == .cut }.count
+        rows = rows.map { row in
+            switch row {
+            case .section(let mode, _): .section(mode: mode, count: mode == .cut ? cutCount : items.count - cutCount)
+            case .heading: row
+            case .item(let item, let itemIndex): .item(byPath[Array(item.path.utf8)] ?? item, itemIndex: itemIndex)
+            }
+        }
+        orderedItems = orderedItems.map { byPath[Array($0.path.utf8)] ?? $0 }
+        return true
     }
 
     /// The menu opened: no active row, scrolled to the top.

@@ -229,7 +229,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Gathering from several folders",
                             description:
-                                "{addToCopied} and {addToCut} add the selected items to what is on the clipboard, where Copy and Cut start over. Go from folder to folder adding what you need, then paste once: each item is copied or moved as you added it, in one paste you can undo in one step. Once pasted, the clipboard is clear but for anything that couldn't be moved. The clipboard's list (the toolbar's button, or {showClipboard}) shows the items to move apart from those to copy; click an item's icon there to switch it, or right-click it. When an item you add has the name of one already on the clipboard, you choose to keep both (the one added is pasted under a name of its own), to use the new one instead, or not to add it. If Copy or Cut replaces a clipboard you built this way, Put Back brings it back."
+                                "{addToCopied} and {addToCut} add the selected items to what is on the clipboard, where Copy and Cut start over. Go from folder to folder adding what you need, then paste once: each item is copied or moved as you added it, in one paste you can undo in one step. A paste that moves anything uses the clipboard up, but for what it couldn't paste; a list of copies only stays, to be pasted again. The clipboard's list (the toolbar's button, or {showClipboard}) shows the items to move apart from those to copy; click an item's icon there to switch it, or right-click it. When an item you add has the name of one already on the clipboard, you choose to keep both (the one added is pasted under a name of its own), to use the new one instead, or not to add it. If Copy or Cut replaces a clipboard you built this way, Put Back brings it back."
                         ),
                         HelpRow(
                             label: "Move instead of copy",
@@ -269,7 +269,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What was copied",
                             description:
-                                "Copied and cut items flash, then keep a copy or cut icon after their name, and cut items are dimmed. Cut items lose the mark once they are pasted; copied ones keep it, to be pasted again, until you copy or cut something else. An item renamed or moved in File Trail stays on the clipboard where it went; one moved to the Trash comes off, and the rest stay as they were. A button with their count appears in the toolbar: click it to list them, show one in its folder, take one off, or choose Clear Clipboard. Turn off Mark copied and cut items in Settings → General to hide the marks."
+                                "Copied and cut items flash, then keep a copy or cut icon after their name, and cut items are dimmed. Cut items lose the mark once they are pasted, and so do copied items pasted along with them; copied items pasted on their own keep it, to be pasted again, until you copy or cut something else. An item renamed or moved in File Trail stays on the clipboard where it went; one moved to the Trash comes off, and the rest stay as they were. A button with their count appears in the toolbar: click it to list them, show one in its folder, take one off, or choose Clear Clipboard. Turn off Mark copied and cut items in Settings → General to hide the marks."
                         ),
                         HelpRow(
                             label: "Drag",

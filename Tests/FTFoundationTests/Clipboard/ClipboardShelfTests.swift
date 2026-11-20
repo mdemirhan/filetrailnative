@@ -330,6 +330,40 @@ struct ClipboardShelfTests {
         #expect(plain.pinnedMode == nil)
     }
 
+    // A click on an item's mark switches it where it is: it stays on its row with its new mark, so a second click
+    // there switches the same item back, where the item went to the other part and the click landed on another. The
+    // parts' counts say what ⌘V will do, and the list is in its parts again when it next opens.
+    @Test func anItemSwitchedInTheOpenListStaysOnItsRow() {
+        let three = ClipboardRules.applyAdd(
+            ClipboardRules.planAdd(mixed, .copy, ["/a/z.txt"]), to: mixed, stamp: Self.t3
+        ).clipboard
+        var model = ClipboardMenuModel(items: ClipboardRules.items(three))
+        func shown(_ model: ClipboardMenuModel) -> [String] {
+            model.rows.map { row -> String in
+                switch row {
+                case .section(let mode, let count): "\(mode.rawValue) \(count)"
+                case .heading(let label, _): "[\(label)]"
+                case .item(let item, _): "\(item.name) \(item.mode.rawValue)"
+                }
+            }
+        }
+        #expect(shown(model) == ["cut 1", "[b]", "y.txt cut", "copy 2", "[a]", "x.txt copy", "z.txt copy"])
+        let switched = ClipboardRules.setMode(three, ["/a/x.txt"], to: .cut, at: Self.t3)
+        model.setItems(ClipboardRules.items(switched))
+        #expect(shown(model) == ["cut 2", "[b]", "y.txt cut", "copy 1", "[a]", "x.txt cut", "z.txt copy"])
+        #expect(model.orderedItems.map(\.name) == ["y.txt", "x.txt", "z.txt"])
+        #expect(model.orderedItems.map(\.mode) == [.cut, .cut, .copy])
+        // Switched back on the same row.
+        model.setItems(ClipboardRules.items(three))
+        #expect(shown(model) == ["cut 1", "[b]", "y.txt cut", "copy 2", "[a]", "x.txt copy", "z.txt copy"])
+        // Opened again, the list is in its parts; an item taken off puts it in its parts too.
+        let reopened = ClipboardMenuModel(items: ClipboardRules.items(switched))
+        #expect(shown(reopened) == ["cut 2", "[a]", "x.txt cut", "[b]", "y.txt cut", "copy 1", "[a]", "z.txt copy"])
+        model.setItems(ClipboardRules.items(switched))
+        model.setItems(ClipboardRules.items(ClipboardRules.removeItem(switched, "/a/z.txt")))
+        #expect(shown(model) == ["[a]", "x.txt cut", "[b]", "y.txt cut"])
+    }
+
     @Test func putBackIsARowAfterClearClipboard() {
         var model = ClipboardMenuModel(items: ClipboardRules.items(mixed), putBackCount: 7)
         #expect(model.clearIndex == 2)
