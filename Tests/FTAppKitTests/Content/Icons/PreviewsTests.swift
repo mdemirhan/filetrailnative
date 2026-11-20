@@ -363,7 +363,9 @@ extension ExplorerWindowlessTests {
 
         // At 1 at a time, the file that takes the place of the selected one when it is removed is selected: the next
         // one, or the one before when it was the last. Another file removed, or the file on screen removed with
-        // nothing selected, leaves the selection as it was.
+        // nothing selected, leaves the selection as it was. The pane's own scrolls, to bring a file selected into view
+        // and to keep its place in a listing, are none of them a scroll to settle: one that was would select the file
+        // it rests on a moment later, whatever had happened since.
         @Test func atOneAtATimeTheFileInPlaceOfTheRemovedSelectedOneIsSelected() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsPreviews, files: 6)
@@ -372,8 +374,9 @@ extension ExplorerWindowlessTests {
             probe.layout()
             let clip = previews.scroll.contentView
             let paths = tab.content.entries.map(\.path)
+            /// The pane rests on the row: it is there, and not waiting to settle elsewhere.
             func onRow(_ row: Double) -> Bool {
-                abs(Double(clip.bounds.origin.y) - row * previews.layout.rowHeight) < 0.5
+                !previews.isSettling && abs(Double(clip.bounds.origin.y) - row * previews.layout.rowHeight) < 0.5
             }
             // Opening the folder selected nothing.
             #expect(tab.content.selection.isEmpty)
@@ -401,10 +404,14 @@ extension ExplorerWindowlessTests {
             // Another file removed: the selected one stays selected. Listed: 0, 2, 3.
             try await remove(paths[0], from: tab, probe, byThisWindow: true)
             #expect(tab.content.selection.paths == [paths[3]])
+            #expect(onRow(1))
 
-            // Nothing selected, and the file on screen removed: nothing is selected. Listed: 2, 3.
+            // Nothing selected, and the file on screen removed: nothing is selected, then or once a settle would have
+            // come. Listed: 2, 3.
             tab.content.selectionChanged(.empty)
             try await remove(paths[3], from: tab, probe, byThisWindow: true)
+            #expect(tab.content.selection.isEmpty && onRow(0))
+            try await Task.sleep(for: .seconds(previews.settleDelay * 2))
             #expect(tab.content.selection.isEmpty)
             #expect(tab.content.entries.map(\.path) == [paths[2]])
             await harness.close()

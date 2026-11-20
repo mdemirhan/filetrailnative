@@ -285,6 +285,14 @@ final class PreviewsViewController: IconViewController {
         return NSPoint(x: offset.x, y: rowTop(nearest: Double(offset.y)))
     }
 
+    /// Bringing a file into view (one selected, a listing's selection kept on screen) is the pane's own scroll, to a
+    /// whole row: none to settle. Taken as a scroll to settle, it selected the file on screen a moment later at 1 at a
+    /// time, whatever had happened since: a selection cleared and its file removed in that moment left the next file
+    /// selected.
+    override func reveal(index: Int) {
+        placing { super.reveal(index: index) }
+    }
+
     /// A place to scroll to from outside (the one a folder was left at, which Back returns to) is taken to the row
     /// nearest to it: the pane may have had another size then, with rows of another height. While the mouse button
     /// is held the place is taken as it is, as a drag-to-select past the pane's edge scrolls by a few points at a
