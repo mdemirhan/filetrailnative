@@ -354,6 +354,9 @@ final class BatchRenameSheetView: DialogPanelView {
     }
 
     override func handleKey(_ event: NSEvent) -> Bool {
+        // The keys pressed while text is being composed in a field (Japanese, Chinese, Korean input) are the input
+        // method's: Return converts what was typed and Escape cancels it, neither renames nor closes the sheet.
+        if let editor = window?.firstResponder as? NSTextView, editor.hasMarkedText() { return false }
         let modifiers = event.modifierFlags.intersection([.command, .control, .option, .shift])
         if KeyCode.isCancel(event) {
             if savingPreset { stopSavingPreset() } else { onCancel() }

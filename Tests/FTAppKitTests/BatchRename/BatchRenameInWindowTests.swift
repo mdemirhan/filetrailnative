@@ -215,6 +215,64 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
+        /// Text an input method is composing in the field that has the keyboard (Japanese, Chinese, Korean input):
+        /// marked, not yet part of the field's text for good.
+        @discardableResult
+        private func compose(_ text: String, in window: NSWindow) throws -> NSTextView {
+            let editor = try #require(window.firstResponder as? NSTextView)
+            editor.setMarkedText(
+                text, selectedRange: NSRange(location: (text as NSString).length, length: 0),
+                replacementRange: editor.hasMarkedText() ? editor.markedRange() : editor.selectedRange())
+            editor.didChangeText()
+            #expect(editor.hasMarkedText())
+            return editor
+        }
+
+        // Return and Escape while an input method composes in a field are the composition's: Return, which converts
+        // what was typed, renames nothing, and Escape, which cancels it, leaves the sheet open. Once the text is the
+        // field's own they are the sheet's again.
+        @Test func returnAndEscapeAreTheInputMethodsWhileItComposes() async throws {
+            let opened = try await open()
+            let tab = opened.tab
+            let window = try #require(tab.window)
+            select(opened, ["a.txt", "b.txt"])
+            tab.renameSelected()
+            let sheet = try await sheet(tab)
+            sheet.modeControl.choose(.add)
+            sheet.addTextField.focus(caret: 0)
+            try compose("にほん", in: window)
+            // The names as they would be with what is typed so far: the rename could start.
+            #expect(sheet.model.canRename)
+            key(KeyCode.returnKey, "\r", tab)
+            for _ in 0..<5 { await Task.yield() }
+            #expect(opened.requests.all.isEmpty)
+            #expect(tab.batchRenameSheet === sheet)
+            try compose("にほん", in: window)
+            key(KeyCode.escape, "\u{1b}", tab)
+            #expect(tab.batchRenameSheet === sheet)
+            // The name of a preset being saved is typed the same way.
+            batchRenamePick(sheet.presetsPopUp, "Save as Preset\u{2026}")
+            #expect(sheet.presetNameField.holdsKeyboard)
+            try compose("にほん", in: window)
+            key(KeyCode.returnKey, "\r", tab)
+            #expect(sheet.savingPreset)
+            #expect(sheet.model.presets.isEmpty)
+            try compose("にほん", in: window)
+            key(KeyCode.escape, "\u{1b}", tab)
+            #expect(sheet.savingPreset)
+            // With the text converted, Escape ends the saving of the preset, and Return renames.
+            try compose("にほん", in: window).unmarkText()
+            key(KeyCode.escape, "\u{1b}", tab)
+            #expect(!sheet.savingPreset)
+            #expect(tab.batchRenameSheet === sheet)
+            sheet.addTextField.focus(caret: 0)
+            try compose("にほん", in: window).unmarkText()
+            key(KeyCode.returnKey, "\r", tab)
+            #expect(await waitUntil { opened.requests.all.count == 1 })
+            #expect(tab.batchRenameSheet == nil)
+            await close(opened)
+        }
+
         // Behind the sheet the list keeps its focused look, the selected rows in the accent: its focus restore sets the
         // content focused before the sheet comes. The chosen mode reads as its title, and a click on a mode shows no
         // focus ring; Tab to it does.
