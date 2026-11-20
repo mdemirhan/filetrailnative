@@ -172,6 +172,15 @@ public final class UndoHistory {
         return entry
     }
 
+    /// `needsExactItems`: whether the operation Undo takes next was done before one that can't be undone (and was
+    /// passed). That one may have taken its items away and left others of the same kind under their names (a merge,
+    /// a move to another disk and one back): its Undo takes only the very items, by id, where an Undo otherwise
+    /// takes an item of the same kind under the same name for one it moves or renames back. Never for Redo.
+    public func needsExactItems(_ direction: UndoDirection) -> Bool {
+        guard direction == .undo, let index = nextUndoIndex, case .entry = undoList[index] else { return false }
+        return index < undoList.count - 1
+    }
+
     /// The operation that can't be undone which Undo meets next: Undo says so and undoes nothing (`passCantUndo`).
     public var cantUndoNext: CantUndoEntry? {
         guard let index = nextUndoIndex, case .cantUndo(let entry) = undoList[index] else { return nil }

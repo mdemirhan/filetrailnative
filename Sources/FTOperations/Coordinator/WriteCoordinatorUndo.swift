@@ -108,8 +108,9 @@ extension WriteCoordinator {
         // The notice tells it with a long name whole.
         let labels = history.menu(whole: true)
         let label = direction == .undo ? labels.undo : labels.redo
+        let exactItems = history.needsExactItems(direction)
         let questions = await Self.answerWithin(options.undoCheckWithinMs, stuck: stuckLooks, stop: stop) { progress in
-            UndoPlan.findQuestions(fileSystem, units, progress: progress)
+            UndoPlan.findQuestions(fileSystem, units, progress: progress, exactItems: exactItems)
         }
         undo.preparing = false
         if stop?.isStopped == true {
@@ -159,11 +160,13 @@ extension WriteCoordinator {
         let withinMs = options.undoCheckWithinMs
         let stuckLooks = undo.stuckLooks
         return try await prepareWithReservedSlot { () async throws -> UndoQuestions? in
-            let units = try entryAsked().entry.units
+            let started = try entryAsked()
+            let units = started.entry.units
+            let exactItems = started.history.needsExactItems(started.look.direction)
             // As in `prepareUndo`: not answered.
             if stuckLooks.tooMany { return nil }
             return await Self.answerWithin(withinMs, stuck: stuckLooks) { progress in
-                UndoPlan.findQuestions(fileSystem, units, progress: progress)
+                UndoPlan.findQuestions(fileSystem, units, progress: progress, exactItems: exactItems)
             }
         } then: { now, reservation in
             let started = try entryAsked()
@@ -209,6 +212,8 @@ extension WriteCoordinator {
         }
         let action = operation.action
         let operationId = operation.operationId
+        // Read before the run: the history doesn't change while this Undo holds the write slot.
+        let exactItems = history.needsExactItems(direction)
         let runOptions = UndoRunOptions(
             direction: direction, fileSystem: fileSystem, signal: operation.signal, homeDev: homeDev,
             diskHasTrash: runDiskHasTrash,
@@ -223,7 +228,7 @@ extension WriteCoordinator {
                                 currentSourcePath: path))
                     }
                 }
-            })
+            }, exactItems: exactItems)
         let units = entry.units
         let runner = undo.run
         var run: UndoRun

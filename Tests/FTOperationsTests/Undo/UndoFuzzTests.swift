@@ -312,41 +312,18 @@ final class UndoFuzzCase {
     /// Every place each item has been at the moments `notePlaces` was called.
     private(set) var placesSeen: [UInt64: Set<String>] = [:]
 
-    /// Every place an item of each kind has been at those moments, as "place kind", whichever item it was.
-    private(set) var placesHeld: Set<String> = []
-
     func notePlaces() {
-        for item in items() {
-            guard let ino = UndoDisk.ino(item.path), let parent = UndoDisk.ino(NodePath.dirname(item.path)) else {
-                continue
-            }
-            let place = "\(parent)/\(NodePath.basename(item.path))"
-            placesSeen[ino, default: []].insert(place)
-            placesHeld.insert("\(place) \(item.isFolder ? "dir" : "file")")
-        }
+        for (ino, place) in places() { placesSeen[ino, default: []].insert(place) }
     }
 
     /// The items that are now somewhere they never were: not a place noted for them, nor one of those with a number
-    /// added to the name ("a 2.txt", as Undo puts back an item whose name is taken).
-    ///
-    /// Unless `exactItems`, an item is also let be where another item of its kind was under that name: Undo takes an
-    /// item of the same kind, found under the name and in the folder its own item was left in, for its item when it
-    /// moves or renames it back (`UndoPlan.isExpectedItem`, for a document another app saved by replacing its file).
-    /// An operation that can't be undone can leave such an item there (a merge that copied a folder of that name
-    /// in), and the Undo of an older operation then moves that one. `UNDO_FUZZ_EXACT_ITEMS=1` counts those as
-    /// misplaced.
-    func misplaced(exactItems: Bool = UndoFuzzTests.exactItems) -> [String] {
-        let kinds = Dictionary(
-            items().compactMap { item in UndoDisk.ino(item.path).map { ($0, item.isFolder ? "dir" : "file") } },
-            uniquingKeysWith: { first, _ in first })
-        return places().compactMap { ino, place in
+    /// added to the name ("a 2.txt", as Undo puts back an item whose name is taken). An Undo past an operation that
+    /// can't be undone takes only the very items its operation was about (`UndoHistory.needsExactItems`), so a
+    /// folder a merge copied in under the name of one moved before is never moved in its place.
+    func misplaced() -> [String] {
+        places().compactMap { ino, place in
             let seen = placesSeen[ino] ?? []
             if seen.contains(place) || seen.contains(Self.withoutNumber(place)) { return nil }
-            if !exactItems, let kind = kinds[ino],
-                placesHeld.contains("\(place) \(kind)") || placesHeld.contains("\(Self.withoutNumber(place)) \(kind)")
-            {
-                return nil
-            }
             return "id \(ino) at \(place), was at \(seen.sorted().joined(separator: ", "))"
         }.sorted()
     }
@@ -595,8 +572,6 @@ final class FuzzLocked<Value: Sendable>: @unchecked Sendable {
 struct UndoFuzzTests {
     static let firstSeed = Int(ProcessInfo.processInfo.environment["UNDO_FUZZ_SEED"] ?? "") ?? 1
     static let cases = Int(ProcessInfo.processInfo.environment["UNDO_FUZZ_CASES"] ?? "") ?? 60
-    /// Whether an item Undo moved must be the very item the operation was about (`UndoFuzzCase.misplaced`).
-    static let exactItems = ProcessInfo.processInfo.environment["UNDO_FUZZ_EXACT_ITEMS"] == "1"
 
     private struct Failure: Error, CustomStringConvertible {
         var description: String
@@ -785,9 +760,8 @@ struct UndoFuzzTests {
 
     // Operations that can't be undone (folders merged, items deleted for good) among the others, on the same items:
     // Undo says each can't be undone, changing nothing, and goes on to the operations before it, which find their
-    // items moved, replaced or gone. No item is lost, none ends up somewhere neither it nor an item of its kind and
-    // name ever was (`UndoFuzzCase.misplaced` says why the second), every item left says why, and Redo of what was
-    // undone keeps to the same.
+    // items moved, replaced or gone. No item is lost, none ends up somewhere it never was, every item left says why,
+    // and Redo of what was undone keeps to the same.
     @Test func losesAndMisplacesNothingUndoingOperationsBeforeOnesThatCantBeUndone() async throws {
         var met = 0
         var undoneBefore = 0

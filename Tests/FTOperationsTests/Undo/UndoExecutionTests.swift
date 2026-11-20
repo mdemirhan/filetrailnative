@@ -588,6 +588,82 @@ struct UndoExecutionTests {
         }
     }
 
+    /// A report moved from Downloads to Documents, taken to another disk, and another report of that name brought
+    /// into Documents: `between` is what the history holds of the last two.
+    private func anotherReportInItsPlace(
+        _ root: String, _ trashDir: String, between: [FinishedWrite]
+    ) async throws -> UndoTest {
+        for folder in ["Downloads", "Documents", "Other"] { try UndoDisk.mkdir("\(root)/\(folder)") }
+        try UndoDisk.write("\(root)/Downloads/report.pdf", "mine")
+        let t = UndoTest(root: root, trashDir: trashDir)
+        try await t.paste(.cut, ["\(root)/Downloads/report.pdf"], into: "\(root)/Documents", action: .moveTo)
+        try UndoDisk.move("\(root)/Documents/report.pdf", "\(root)/Other/report.pdf")
+        try UndoDisk.write("\(root)/Documents/report.pdf", "another report")
+        for write in between { t.history.record(write) }
+        return t
+    }
+
+    @Test func leavesAnotherItemOfTheSameNameWhereItIsWhenUndoingPastAnOperationThatCantBeUndone() async throws {
+        try await withUndoFolder { root, trashDir in
+            let moveToAnotherDisk = FinishedWrite(
+                action: .write(.moveTo), log: .notUndoable(reason: .otherDiskMove), items: [])
+            let t = try await anotherReportInItsPlace(
+                root, trashDir, between: [moveToAnotherDisk, moveToAnotherDisk])
+            #expect(try await t.prepare().cantUndo?.reason == .otherDiskMove)
+            #expect(try await t.prepare().refusal == .cantUndo)
+            // The move before them is next, and the report in Documents isn't the one it moved: it stays.
+            #expect(t.history.menu().undo == "Move of “report.pdf”")
+            let prepared = try await t.prepare()
+            #expect(prepared.nameTaken.isEmpty && prepared.changed.isEmpty)
+            let undone = try await t.undo()
+            let items = undone.result?.items ?? []
+            #expect(items.map(\.status) == [.skipped])
+            #expect(items.first?.error == "The “report.pdf” in “Documents” is another item now.")
+            #expect(try UndoDisk.read("\(root)/Documents/report.pdf") == "another report")
+            #expect(!UndoDisk.exists("\(root)/Downloads/report.pdf"))
+            #expect(try UndoDisk.read("\(root)/Other/report.pdf") == "mine")
+            #expect(t.history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: false))
+            await t.shutDown()
+        }
+    }
+
+    // With no operation that can't be undone since, a file of the same name is taken for the one moved, as one a
+    // document's app saved in its place is.
+    @Test func takesAnItemOfTheSameNameForTheOneMovedWhenNothingSinceCantBeUndone() async throws {
+        try await withUndoFolder { root, trashDir in
+            let t = try await anotherReportInItsPlace(root, trashDir, between: [])
+            #expect(try await t.undo().status == .completed)
+            #expect(try UndoDisk.read("\(root)/Downloads/report.pdf") == "another report")
+            #expect(!UndoDisk.exists("\(root)/Documents/report.pdf"))
+            await t.shutDown()
+        }
+    }
+
+    @Test func renamesBackOnlyTheVeryItemsOfABatchPastAnOperationThatCantBeUndone() async throws {
+        try await withUndoFolder { root, trashDir in
+            try UndoDisk.write("\(root)/a.txt", "a")
+            try UndoDisk.write("\(root)/b.txt", "b")
+            let t = UndoTest(root: root, trashDir: trashDir)
+            try await t.batchRename([("\(root)/a.txt", "a2.txt"), ("\(root)/b.txt", "b2.txt")])
+            // Another file takes the place of one of them.
+            try UndoDisk.remove("\(root)/a2.txt")
+            try UndoDisk.write("\(root)/a2.txt", "another")
+            t.history.record(
+                FinishedWrite(action: .write(.paste), log: .notUndoable(reason: .merge), items: []))
+            #expect(try await t.prepare().refusal == .cantUndo)
+            let undone = try await t.undo()
+            let items = undone.result?.items ?? []
+            let folder = NodePath.basename(root)
+            #expect(
+                items.filter { $0.status == .skipped }.map(\.error)
+                    == ["The “a2.txt” in “\(folder)” is another item now."])
+            #expect(try UndoDisk.read("\(root)/a2.txt") == "another")
+            #expect(UndoDisk.exists("\(root)/b.txt"))
+            #expect(!UndoDisk.exists("\(root)/a.txt"))
+            await t.shutDown()
+        }
+    }
+
     @Test func leavesAnItemTheOperationThatCantBeUndoneTookAwayAndSaysWhy() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")

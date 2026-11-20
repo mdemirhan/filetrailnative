@@ -196,6 +196,31 @@ struct UndoHistoryTests {
         #expect(history.cantUndoNext?.id == 4)
     }
 
+    @Test func asksForTheVeryItemsOnlyOfAnOperationDoneBeforeOneThatCantBeUndone() throws {
+        let history = UndoHistory()
+        history.record(undoable(.rename, [moved("/a", "/b")]))
+        #expect(!history.needsExactItems(.undo))
+        history.record(Self.emptiedTrash)
+        // Not while Undo still meets the one that can't be undone, which it doesn't undo.
+        #expect(!history.needsExactItems(.undo))
+        history.passCantUndo()
+        #expect(history.needsExactItems(.undo))
+        #expect(!history.needsExactItems(.redo))
+        // An operation done since is newer than it: as ever. Undone, the older one is next again.
+        history.record(undoable(.newFolder, [created("/F")]))
+        #expect(!history.needsExactItems(.undo))
+        try finish(history, done: units([trashed("/F")]))
+        #expect(history.needsExactItems(.undo))
+        #expect(!history.needsExactItems(.redo))
+        // What a stop left of it is as old as it was.
+        try finish(history, done: [], leftover: units([moved("/a", "/b")]))
+        #expect(history.needsExactItems(.undo))
+        // Undone and redone, it is the newest, after the one that can't be undone.
+        try finish(history, done: units([moved("/b", "/a")]))
+        try finish(history, .redo, done: units([trashed("/F")]))
+        #expect(!history.needsExactItems(.undo))
+    }
+
     @Test func keepsWhatAStopLeftUnderTheOneThatCantBeUndoneAndWasPassed() throws {
         let history = UndoHistory()
         history.record(undoable(.trash, [trashed("/a")], [trashed("/b")]))

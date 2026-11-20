@@ -50,12 +50,15 @@ public struct UndoRunOptions: Sendable {
     public var batchRename: UndoBatchRenamer
     /// Told as each step starts, with how many items are done; from the thread the run is on.
     public var onStepStart: (@Sendable (String, Int) -> Void)?
+    /// Whether an item moved or renamed back must be the very item, by its id (`UndoHistory.needsExactItems`): an
+    /// Undo past an operation that can't be undone.
+    public var exactItems: Bool
 
     public init(
         direction: UndoDirection, fileSystem: any UndoFileSystem, signal: StopSignal = StopSignal(),
         homeDev: Int64? = nil, diskHasTrash: (@Sendable (String) -> Bool)? = nil, changedAgreed: Set<String> = [],
         journal: (any WriteJournal)? = nil, batchRename: @escaping UndoBatchRenamer = UndoBatchRename.runBatchRename,
-        onStepStart: (@Sendable (String, Int) -> Void)? = nil
+        onStepStart: (@Sendable (String, Int) -> Void)? = nil, exactItems: Bool = false
     ) {
         self.direction = direction
         self.fileSystem = fileSystem
@@ -66,6 +69,7 @@ public struct UndoRunOptions: Sendable {
         self.journal = journal
         self.batchRename = batchRename
         self.onStepStart = onStepStart
+        self.exactItems = exactItems
     }
 }
 
@@ -376,7 +380,7 @@ public enum UndoExecution {
     ) -> StepOutcome {
         let fileSystem = context.fileSystem
         let found: (nameTaken: Bool, renamesItself: Bool, isFolder: Bool, id: ItemId?, kind: ItemKind)
-        switch UndoPlan.checkMove(fileSystem, planned, unitIds: unitIds) {
+        switch UndoPlan.checkMove(fileSystem, planned, unitIds: unitIds, exactItems: context.options.exactItems) {
         case .refused(let refusal):
             if refusal.retry {
                 return failedStep(original, planned.from, planned.to, refusal.reason)
@@ -671,7 +675,7 @@ public enum UndoExecution {
         var items: [WriteOperationItem] = []
         var running: [BatchRenamedItem] = []
         var toRename: [UndoBatchRenameItem] = []
-        let checks = UndoPlan.checkBatch(fileSystem, plannedItems)
+        let checks = UndoPlan.checkBatch(fileSystem, plannedItems, exactItems: context.options.exactItems)
         // The whole step as the operation named it (see the end of this function).
         let wholeStep = UndoStep.batchRenamed(
             items: plannedItems.map { BatchRenamedItem(from: $0.to, to: $0.from, id: $0.id, itemKind: $0.itemKind) })

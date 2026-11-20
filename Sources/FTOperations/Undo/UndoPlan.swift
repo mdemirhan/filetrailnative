@@ -288,9 +288,11 @@ public enum UndoPlan {
 
     /// `checkMove`: whether `step` can be done now, or once the steps before it in the same unit have made `changes`
     /// (a Replace puts its old item back where the new one was). `unitIds` are the ids the unit's steps are about.
+    /// `exactItems`: only the very item is taken, by its id (an Undo past an operation that can't be undone, which
+    /// may have left another item of that kind under the name). An item without an id still goes by its kind.
     public static func checkMove(
         _ fileSystem: some IdentityFileSystem, _ step: PlannedMove, _ changes: UnitChanges = UnitChanges(),
-        unitIds: Set<ItemId> = []
+        unitIds: Set<ItemId> = [], exactItems: Bool = false
     ) -> MoveCheck {
         let item: WriteServiceStats
         // An item in the Trash goes by the name it goes back to.
@@ -302,7 +304,7 @@ public enum UndoPlan {
                 Refusal(reason: missingReason(fileSystem, step.from, original: original), missing: true))
         case .found(let stats): item = stats
         }
-        if !isExpectedItem(item, step.id, step.itemKind, relaxed: !step.putBack, unitIds: unitIds) {
+        if !isExpectedItem(item, step.id, step.itemKind, relaxed: !step.putBack && !exactItems, unitIds: unitIds) {
             return .refused(
                 Refusal(reason: replacedReason(step.from, step.id, item, original: original), missing: false))
         }
@@ -446,8 +448,10 @@ public enum UndoPlan {
     /// held by another item of it isn't taken. `progress` is told of each item looked at, so a batch of many items on
     /// a slow disk is given time for each; once its wait gives up, the items left aren't looked at (and nothing is
     /// answered: the look is thrown away).
+    /// `exactItems` as for `checkMove`.
     public static func checkBatch(
-        _ fileSystem: some IdentityFileSystem, _ items: [BatchRenamedItem], progress: AnswerProgress? = nil
+        _ fileSystem: some IdentityFileSystem, _ items: [BatchRenamedItem], progress: AnswerProgress? = nil,
+        exactItems: Bool = false
     ) -> [BatchItemCheck] {
         // Each item first as it is now: one refused stays where it is, holding its name, so only the items that go
         // back make way for the others.
@@ -464,7 +468,7 @@ public enum UndoPlan {
                 sources.append(
                     .checked(BatchItemCheck(item: item, refusal: refusal, nameTaken: false, isFolder: false)))
             case .found(let stats):
-                if !isExpectedItem(stats, item.id, item.itemKind, relaxed: true) {
+                if !isExpectedItem(stats, item.id, item.itemKind, relaxed: !exactItems) {
                     let refusal = Refusal(reason: replacedReason(item.from, item.id, stats), missing: false)
                     sources.append(
                         .checked(BatchItemCheck(item: item, refusal: refusal, nameTaken: false, isFolder: false)))
@@ -556,14 +560,16 @@ public enum UndoPlan {
     /// before it fills as taken. It reads the disk: call it off the main actor.
     /// `progress` is told of each step looked at, and of each item of a batch; once its wait gives up, what is left
     /// isn't looked at.
+    /// `exactItems` as for `checkMove`, and as the run will check.
     public static func findQuestions(
-        _ fileSystem: some IdentityFileSystem, _ units: [UndoUnit], progress: AnswerProgress? = nil
+        _ fileSystem: some IdentityFileSystem, _ units: [UndoUnit], progress: AnswerProgress? = nil,
+        exactItems: Bool = false
     ) -> UndoQuestions {
         // Units don't depend on each other, so several are looked at at once: an Undo of thousands of items would
         // otherwise wait for each item's disk reads in turn.
         let perUnit = mapAtMost(questionChecksAtOnce, Array(units.reversed())) { unit -> UndoQuestions in
             if progress?.abandoned == true { return UndoQuestions() }
-            return unitQuestions(fileSystem, unit, progress)
+            return unitQuestions(fileSystem, unit, progress, exactItems)
         }
         return UndoQuestions(
             nameTaken: perUnit.flatMap(\.nameTaken), changed: perUnit.flatMap(\.changed))
@@ -605,7 +611,7 @@ public enum UndoPlan {
     /// `progress` is told of each step looked at, and of each item of a batch: the wait on the look runs from the last
     /// one, whatever the units hold.
     private static func unitQuestions(
-        _ fileSystem: some IdentityFileSystem, _ unit: UndoUnit, _ progress: AnswerProgress?
+        _ fileSystem: some IdentityFileSystem, _ unit: UndoUnit, _ progress: AnswerProgress?, _ exactItems: Bool
     ) -> UndoQuestions {
         var questions = UndoQuestions()
         var changes = UnitChanges()
@@ -616,7 +622,7 @@ public enum UndoPlan {
             defer { progress?.answered() }
             switch PlannedStep(reversing: step) {
             case .move(let planned):
-                switch checkMove(fileSystem, planned, changes, unitIds: unitIds) {
+                switch checkMove(fileSystem, planned, changes, unitIds: unitIds, exactItems: exactItems) {
                 case .refused(let refusal):
                     if refusal.missing { continue steps }
                     break steps
@@ -647,7 +653,8 @@ public enum UndoPlan {
                     changes.noteMovedAway(planned.path, id)
                 }
             case .batch(let items):
-                for check in checkBatch(fileSystem, items, progress: progress) where check.nameTaken {
+                for check in checkBatch(fileSystem, items, progress: progress, exactItems: exactItems)
+                where check.nameTaken {
                     let target = NodePath.join(
                         NodePath.dirname(check.item.from), NodePath.basename(check.item.to))
                     questions.nameTaken.append(TakenName(name: NodePath.basename(target), path: target))

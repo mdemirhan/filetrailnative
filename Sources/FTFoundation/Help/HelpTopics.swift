@@ -381,7 +381,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What can’t be undone",
                             description:
-                                "Merging folders, moving items to another disk, and deleting for good: Delete Immediately and Empty Trash. On a disk without a Trash (such as a network share), Move to Trash and Replace delete for good too, and nothing made there can be undone: a copy, a new folder, a pasted or converted file, a zip or what is extracted. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”: choose it, or press its key, and File Trail says what can’t be undone and why, and changes nothing. Undo again goes on to what you did before it, which can still be undone; an item that has since been merged, moved away or deleted is left as it is, and File Trail says so."
+                                "Merging folders, moving items to another disk, and deleting for good: Delete Immediately and Empty Trash. On a disk without a Trash (such as a network share), Move to Trash and Replace delete for good too, and nothing made there can be undone: a copy, a new folder, a pasted or converted file, a zip or what is extracted. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”: choose it, or press its key, and File Trail says what can’t be undone and why, and changes nothing. Undo again goes on to what you did before it, which can still be undone; an item that has since been merged, moved away, deleted or replaced by another of its name is left as it is, and File Trail says so."
                         ),
                     ]),
                 HelpSection(
