@@ -47,8 +47,8 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
     func canModifyFolder(_ path: String) throws
     /// Has the disk write out what a move copied to it, the drive's own cache too, before the original is deleted:
     /// until then the copy may be only in memory, and a power cut would leave neither. For a file, the file at
-    /// `path` (`F_FULLFSYNC`); `wholeDisk`, for a folder put in place, everything waiting for the disk `path` is on,
-    /// in one go. A disk that can't be told to (some network disks) is left to itself; any other failure throws.
+    /// `path` (`F_FULLFSYNC`); `wholeDisk`, for a folder put in place or the files a paste moved one by one into the
+    /// folder `path`, everything waiting for the disk `path` is on, in one go. A disk that can't be told to (some network disks) is left to itself; any other failure throws.
     func flushToDisk(_ path: String, wholeDisk: Bool) throws
     /// Throws when items can be added to a folder but not renamed or removed there (an access rule against it, as
     /// on a drop box): what a paste builds there under a hidden name could then be neither put in place nor cleared

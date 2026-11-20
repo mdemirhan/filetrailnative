@@ -295,25 +295,20 @@ private func executeLeafNode(_ context: ExecutionContext, _ currentNode: Resolve
         recordCreated(context, currentNode, currentNode.destinationPath)
     }
     countLeafProgress(context, currentNode)
-    var deleteError: String?
-    let source = currentNode.node.sourceFingerprint
+    let copied = CopiedItem(path: currentNode.destinationPath, source: currentNode.node.sourceFingerprint)
     if context.stagingFor == .cut {
-        context.shared.copiedForMove[NameKeys.Exact(currentNode.node.sourcePath)] = CopiedItem(
-            path: currentNode.destinationPath, source: source)
+        context.shared.copiedForMove[NameKeys.Exact(currentNode.node.sourcePath)] = copied
     }
     if context.mode == .cut {
-        if !copyStillWhole(context.fileSystem, currentNode.destinationPath, source) {
-            deleteError = copyNotWholeMessage
-        } else {
-            deleteError =
-                flushMovedCopy(context.fileSystem, currentNode.destinationPath, wholeDisk: false)
-                ?? tryDeleteMovedSource(currentNode.node.sourcePath, source, context.fileSystem)
-        }
+        // Moved to another disk on its own: its original goes at the end of the paste, with those of the other
+        // files, once the disk has written them all out in one go (a flush for each file took far longer than
+        // copying it). Should it then stay, the result says so (see removeOriginalsLeftToTheEnd).
+        context.shared.originalsLeftToTheEnd.append(.file(sourcePath: currentNode.node.sourcePath, copy: copied))
     }
     emitProgress(context, .running, currentNode, nil)
     return ExecuteNodeResult(
-        itemStatus: deleteError != nil ? .failed : .completed, skipReason: nil, error: deleteError,
-        destinationPath: currentNode.destinationPath, childItems: [])
+        itemStatus: .completed, skipReason: nil, error: nil, destinationPath: currentNode.destinationPath,
+        childItems: [])
 }
 
 private func countLeafProgress(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) {
@@ -390,6 +385,7 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
         expectCantUndo(context, .merge)
     }
     var hasChildFailure = false
+    let leftToTheEndBefore = context.shared.originalsLeftToTheEnd.count
     // Anything inside not done (failed, skipped): a package is then not put in place at all.
     var hasIncomplete = false
     var bubbledChildItems: ItemList = []
@@ -486,9 +482,14 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
     }
     var dirDeleteError: String?
     if context.mode == .cut {
-        dirDeleteError =
-            metadataKeptMessage(context, currentNode)
-            ?? tryRemoveEmptySourceDirectory(currentNode, fileSystem, keptNames) { noteChanged(context) }
+        if context.shared.originalsLeftToTheEnd.count > leftToTheEndBefore {
+            // The originals of files moved out of it go at the end of the paste: it is removed after them, then.
+            context.shared.originalsLeftToTheEnd.append(.folder(currentNode, keptNames: keptNames))
+        } else {
+            dirDeleteError =
+                metadataKeptMessage(context, currentNode)
+                ?? tryRemoveEmptySourceDirectory(currentNode, fileSystem, keptNames) { noteChanged(context) }
+        }
     } else if context.stagingFor != .cut {
         // (Built aside for a move, what was added meanwhile is named once the originals go.)
         dirDeleteError = describeAddedDuringCopy(currentNode, fileSystem)

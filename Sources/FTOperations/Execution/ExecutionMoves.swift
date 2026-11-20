@@ -19,6 +19,135 @@ func flushMovedCopy(_ fileSystem: some WriteServiceFileSystem, _ path: String, w
     }
 }
 
+/// At the end of a paste, however it ended (done, stopped, the disk full): removes the originals of the files a move
+/// to another disk copied one by one, and the merged folders they were in. Each disk they went to first writes out
+/// everything it was given, in one go, so a paste of thousands of files costs one flush and not one for each; a
+/// crash before this leaves files in both places, and loses none. Each original then goes as it always did: only
+/// if its copy is still whole and it is itself unchanged. One that stays is said in `itemResults`, as failed.
+func removeOriginalsLeftToTheEnd(_ context: ExecutionContext, _ itemResults: inout [CopyPasteItemResult]) {
+    let left = context.shared.originalsLeftToTheEnd
+    guard !left.isEmpty else { return }
+    context.shared.originalsLeftToTheEnd = []
+    let fileSystem = context.fileSystem
+    // The disk each copy is on, by the folder it is in, and for each disk why it couldn't write out what it was
+    // given (nil when it did): asked once.
+    var diskOfFolder: [NameKeys.Exact: Int64?] = [:]
+    var notWrittenOut: [Int64?: String?] = [:]
+    func writeOutDisk(of copyPath: String) -> String? {
+        let folder = dirnameOf(copyPath)
+        let disk: Int64?
+        if let known = diskOfFolder[NameKeys.Exact(folder)] {
+            disk = known
+        } else {
+            disk = (try? fileSystem.stat(folder))?.dev
+            diskOfFolder.updateValue(disk, forKey: NameKeys.Exact(folder))
+        }
+        if let known = notWrittenOut[disk] {
+            return known
+        }
+        let error = flushMovedCopy(fileSystem, folder, wholeDisk: true)
+        notWrittenOut.updateValue(error, forKey: disk)
+        return error
+    }
+    var notRemoved: [NotRemoved] = []
+    // What stays in each folder, by the folder's path: it then stays too, and so does every folder above it.
+    var staysIn: [NameKeys.Exact: Set<NameKeys.Exact>] = [:]
+    func stays(_ sourcePath: String) {
+        staysIn[NameKeys.Exact(dirnameOf(sourcePath)), default: []].insert(NameKeys.Exact(basenameOf(sourcePath)))
+    }
+    for original in left {
+        switch original {
+        case .file(let sourcePath, let copy):
+            let error =
+                writeOutDisk(of: copy.path)
+                ?? (copyStillWhole(fileSystem, copy.path, copy.source)
+                    ? tryDeleteMovedSource(sourcePath, copy.source, fileSystem) : copyNotWholeMessage)
+            if let error {
+                notRemoved.append(NotRemoved(sourcePath: sourcePath, error: error, folder: nil))
+                stays(sourcePath)
+            }
+        case .folder(let node, let keptNames):
+            let sourcePath = node.node.sourcePath
+            let stayed = staysIn[NameKeys.Exact(sourcePath)] ?? []
+            let error =
+                metadataKeptMessage(context, node)
+                ?? tryRemoveEmptySourceDirectory(node, fileSystem, keptNames.union(stayed))
+            if let error {
+                notRemoved.append(NotRemoved(sourcePath: sourcePath, error: error, folder: node))
+            }
+            if error != nil || !stayed.isEmpty {
+                stays(sourcePath)
+            }
+        }
+    }
+    if !notRemoved.isEmpty {
+        markNotRemoved(context, notRemoved, &itemResults)
+    }
+}
+
+/// An original the end of the paste left in place, and why; `folder` for a merged folder.
+private struct NotRemoved {
+    var sourcePath: String
+    var error: String
+    var folder: ResolvedCopyPasteNode?
+}
+
+/// Says in the paste's result what the end of the paste left in place, as it was said when each original went right
+/// after its copy: the item failed, with why; so did the picked item it is in, which counts it among its failures;
+/// and a folder inside one, not listed until now, is listed before its items.
+private func markNotRemoved(
+    _ context: ExecutionContext, _ notRemoved: [NotRemoved], _ itemResults: inout [CopyPasteItemResult]
+) {
+    var indexBySource: [NameKeys.Exact: Int] = [:]
+    for (index, item) in itemResults.enumerated() {
+        indexBySource[NameKeys.Exact(item.sourcePath)] = index
+    }
+    let picked = Set(context.report.nodes.map { NameKeys.Exact($0.sourcePath) })
+    var listed: [(before: Int, item: CopyPasteItemResult)] = []
+    for stayed in notRemoved {
+        // The picked item it is, or is in.
+        var top = stayed.sourcePath
+        while !picked.contains(NameKeys.Exact(top)), !sameText(dirnameOf(top), top) {
+            top = dirnameOf(top)
+        }
+        let topIndex = indexBySource[NameKeys.Exact(top)]
+        if let index = indexBySource[NameKeys.Exact(stayed.sourcePath)] {
+            if itemResults[index].status == .failed && itemResults[index].error == nil {
+                // A picked folder that failed only for what is in it: it has its own reason now.
+                itemResults[index].error = stayed.error
+                continue
+            }
+            // One that didn't end as done (stopped part way) is left as it is.
+            guard itemResults[index].status == .completed else { continue }
+            itemResults[index].status = .failed
+            itemResults[index].error = stayed.error
+        } else if let folder = stayed.folder {
+            var item = itemResult(folder, .failed, stayed.error)
+            item.mode = topIndex.flatMap { itemResults[$0].mode }
+            let inside = stayed.sourcePath + "/"
+            let before =
+                itemResults.firstIndex { startsWith($0.sourcePath, inside) }
+                ?? topIndex.map { $0 + 1 } ?? itemResults.count
+            listed.append((before, item))
+        } else {
+            continue
+        }
+        let topStatus = topIndex.map { itemResults[$0].status }
+        if let topIndex, !sameText(top, stayed.sourcePath), topStatus == .completed || topStatus == .failed {
+            itemResults[topIndex].status = .failed
+            itemResults[topIndex].childFailureCount = (itemResults[topIndex].childFailureCount ?? 0) + 1
+        }
+    }
+    // From the end, so each place found still holds; of two for one place, the folder done later is the outer one,
+    // and is listed first.
+    let fromTheEnd = listed.enumerated().sorted {
+        ($0.element.before, $1.offset) > ($1.element.before, $0.offset)
+    }
+    for entry in fromTheEnd {
+        itemResults.insert(entry.element.item, at: entry.element.before)
+    }
+}
+
 /// After a move to another disk was copied into place (built under `stagingPath`, now at `finalPath`), removes
 /// the sources that were copied. Anything changed in the meantime stays, as in the per-file move flow, and so
 /// does an original whose copy went away, changed or was cut short since it was written.
@@ -28,7 +157,7 @@ func removeMovedSources(
 ) -> (error: String?, childItems: [CopyPasteItemResult]) {
     let fileSystem = context.fileSystem
     // Everything it copied is written out before any of its originals goes: a folder's in one go, the whole disk; a
-    // file put in place of another, the file alone, as every other file moved is.
+    // file put in place of another, the file alone.
     let wholeDisk = node.node.sourceKind == .directory
     if let kept = flushMovedCopy(fileSystem, finalPath, wholeDisk: wholeDisk) { return (kept, childItems) }
     func removeCopied(_ current: ResolvedCopyPasteNode) -> String? {

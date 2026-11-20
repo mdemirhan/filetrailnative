@@ -123,6 +123,14 @@ struct CopiedItem {
     var source: NodeFingerprint
 }
 
+/// An original a move to another disk leaves until the end of the paste (see removeOriginalsLeftToTheEnd): a file
+/// copied on its own, not inside a folder built under a hidden name, or a folder merged into another that holds
+/// such files, removed once they are gone (`keptNames`: the items the move left in it).
+enum OriginalLeftToTheEnd {
+    case file(sourcePath: String, copy: CopiedItem)
+    case folder(ResolvedCopyPasteNode, keptNames: Set<NameKeys.Exact>)
+}
+
 /// What every step of one paste shares: the copies of its context all hold this one object.
 final class ExecutionShared {
     /// Every destination this paste planned or has written so far (`destinationPathKey`), so a runtime "Keep
@@ -147,6 +155,10 @@ final class ExecutionShared {
     /// The files and links a move to another disk copied under a hidden name, by the path of their original:
     /// each original is removed only once its copy is checked (see removeMovedSources).
     var copiedForMove: [NameKeys.Exact: CopiedItem] = [:]
+    /// The originals of the files a move to another disk copied one by one, and the merged folders that hold them,
+    /// in the order they were done (a folder after what is in it): they go at the end of the paste, once each disk
+    /// has written out what it was given, in one go.
+    var originalsLeftToTheEnd: [OriginalLeftToTheEnd] = []
     /// The folders a move copied whose own metadata (tags, flags, ACLs) the copy couldn't take, by the path of
     /// their original: the original keeps it, so it isn't removed.
     var metadataNotCopied: Set<NameKeys.Exact> = []

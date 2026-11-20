@@ -36,8 +36,9 @@ struct CopyPasteExecutionIntegrationTests {
         fileSystem.copyFileImpl = copyingSize(fileSystem)
         let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/a.txt"], into: "/target")
         await execute(fileSystem, operation, operationId: "flush-file")
-        #expect(fileSystem.flushes.map(\.path) == ["/target/a.txt"])
-        #expect(fileSystem.flushes.map(\.wholeDisk) == [false])
+        // The disk it went to, whole (see MovedFilesWrittenOutTests).
+        #expect(fileSystem.flushes.map(\.path) == ["/target"])
+        #expect(fileSystem.flushes.map(\.wholeDisk) == [true])
         // Both were there when it was written out.
         #expect(fileSystem.flushes.first?.paths.contains("/source/a.txt") == true)
         #expect(fileSystem.flushes.first?.paths.contains("/target/a.txt") == true)

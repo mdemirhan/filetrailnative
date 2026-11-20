@@ -30,7 +30,9 @@ struct CopyPasteExecutionCutTests {
         }
     }
 
-    @Test func deletesSourceFileImmediatelyAfterSuccessfulCopy() async throws {
+    // The originals of files moved to another disk go at the end of the paste, once the disk has written out all of
+    // them in one go, not each right after its copy.
+    @Test func deletesSourceFilesAtTheEndOfThePasteOnceAllAreCopied() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 3)), ("/source/b.txt", .file(size: 4)),
             ("/target", .directory()),
@@ -49,14 +51,14 @@ struct CopyPasteExecutionCutTests {
 
         await execute(fileSystem, operation, operationId: "cut-inline-1")
 
-        #expect(sourceExistedDuringSecondCopy.withLock { $0 } == [false])
+        #expect(sourceExistedDuringSecondCopy.withLock { $0 } == [true])
         #expect(!fileSystem.exists("/source/a.txt"))
         #expect(!fileSystem.exists("/source/b.txt"))
         #expect(fileSystem.exists("/target/a.txt"))
         #expect(fileSystem.exists("/target/b.txt"))
     }
 
-    @Test func deletesSourceSymlinkImmediatelyAfterSuccessfulCopy() async throws {
+    @Test func deletesSourceSymlinkAfterSuccessfulCopy() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/link", .symlink("actual.txt")), ("/target", .directory()),
         ])

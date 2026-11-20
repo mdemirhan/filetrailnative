@@ -106,6 +106,9 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
         }
     }
 
+    // The originals of files moved to another disk one by one go now, all of them written out first.
+    removeOriginalsLeftToTheEnd(context, &itemResults)
+
     let status = resolveTerminalStatus(cancelled: cancelled, itemResults: itemResults)
     let undoLog: UndoLog =
         if let reason = shared.undo.cantUndo {
