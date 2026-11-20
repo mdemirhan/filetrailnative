@@ -7,7 +7,7 @@ Things that look removable and are not. Don't change them; if a change seems to 
 ## Write engine
 
 - **The coordinator's write slot**: one write at a time for the whole app, so Undo's history is in the order the operations ran, and no two operations work on the same items at once (inferred).
-- **Hidden-name staging**: a Replace builds the new item under a hidden name beside the old one and swaps only once it is whole, so a failure, a Stop or a crash never leaves the person with neither item.
+- **Hidden-name staging**: a Replace builds the new item under a hidden name beside the old one and swaps only once it is whole, so a failure, a Stop or a crash never leaves the person with neither item. A staged folder and a Replace share one routine (`stageThenPlace`); a Stop as the last item is written clears a staged folder away and lets a Replace finish, on purpose.
 - **The journal**: written before anything is staged, so the next start finishes or undoes what a crash cut short, and a moved item's only copy is never left under a hidden name.
 - **The `isStagingName`/`isTemporaryName` checks before recovery touches anything**: recovery removes or moves only what has this app's hidden naming; a damaged or stale journal entry could otherwise point it at someone's own file.
 - **`renamex_np(RENAME_EXCL)` everywhere, with the ask-again loop**: a plain rename replaces whatever took the name since it was checked; exclusive rename fails instead, and the loop asks again.
@@ -19,7 +19,7 @@ Things that look removable and are not. Don't change them; if a change seems to 
 - **`assertNotWrittenByThisPaste`**: on a disk that takes "A.txt" and "a.txt" for one name, the second item would replace the first, which this paste just wrote and whose original a move has already removed.
 - **The `copyfile` status callback in `Sources/CFileTrail/copyfile.c`**: it is how a large file is stopped part way and shows progress, and how a failed write ends the copy; without it copyfile retries a write on a full disk forever, and goes on past a resource fork it couldn't write, after which a move removes the original.
 - **The large-file tests**: the only tests of a copy stopped inside a file with nothing left half written, and of a full disk failing the copy where it once hung.
-- **Undo and Redo as they are**: they never lose or replace an item and say why each item left as it was is left; the fuzz tests hold them to that (inferred).
+- **Undo and Redo as they are**, but for one thing (2026-11-20): an operation that can't be undone no longer empties the history ("An operation that can't be undone stays in the Undo history" in [file-operations.md](file-operations.md)). They never lose or replace an item and say why each item left as it was is left; the fuzz tests hold them to that (inferred).
 - **`UndoFuzzTests`, `BatchRenameFuzzTests`**: random operations with failures, stops and changes made outside the app, checking that no item is lost or replaced; hand-written cases don't reach those orders, and a failure names its seed.
 - **No paste review starts while a write runs, and only one runs at a time**: a review describes the disk as it will be when its paste runs; a write or another review under way would make it wrong (inferred).
 - **The rules that keep the app's clipboard truthful** (`ClipboardRules`): the clipboard follows its items as they are moved, renamed or removed, so the clipboard button lists what Paste will really take.
@@ -27,7 +27,7 @@ Things that look removable and are not. Don't change them; if a change seems to 
 ## Names and paths
 
 - **Byte-exact path comparison (`sameText`, `NameKeys.Exact`)**: Swift's `==` and hashing treat NFC and NFD as equal, so two names a disk keeps apart would count as one item.
-- **`JSRegExp.swift`**: `NSRegularExpression` would change what `\d`, `\w`, `\s` and `\b` match, how `ß` and ligatures fold, which patterns are accepted and the wording of errors, and so what a batch rename renames ([the standing decisions](../decisions.md)).
+- **`expandReplacement`**: batch rename's replacement syntax (`$1`, `$&`, `$<name>`, `$$`), which `NSRegularExpression`'s own templates spell differently; saved presets hold it.
 - **`expandReplacement`**: `$1`, `$&` and `$<name>` in a batch rename's replacement text; it stays whichever engine matches.
 - **`NodePath`**: `basename`, `dirname`, `extname` and `join` scalar for scalar; Foundation's path methods normalize names, and the name is kept as renaming it is large ([code.md](code.md)). The first part is inferred.
 - **`CopyPasteNames.detectCaseSensitivity`**: some disks can't say whether they tell "A" from "a"; the probe finds out, and a wrong answer means a missed clash or a needless "copy" name.

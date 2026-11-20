@@ -5,8 +5,6 @@ Part of the owner's decisions: [the index](../decisions.md) lists the other part
 Not done, and not to be done without a plan of its own. Kept so the reasons are not lost and the findings not rediscovered.
 
 - **Space as Quick Look a second after the last key of a filter: to be looked at again.** Kept as it is for now (see "Space and the filter"). A key that means one thing or another by how long ago the last one was pressed is hard to foresee: "my", a pause, then Space opens Quick Look where a space was meant.
-- **Batch rename on `NSRegularExpression`.** See the standing decisions in [the index](../decisions.md).
-  - The search-result highlight did move to `NSRegularExpression`; batch rename did not.
 - **The file clipboard on the system pasteboard.** See the standing decisions in [the index](../decisions.md).
   - known-issues.md now says so for people.
 - **Search inside archives.** The search field is dimmed inside an archive, and a search from a folder doesn't look into the archives in it (fd can't, and Finder doesn't). The filter still narrows the folder of an archive on screen.
