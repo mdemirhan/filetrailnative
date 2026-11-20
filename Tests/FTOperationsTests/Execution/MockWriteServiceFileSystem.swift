@@ -172,7 +172,12 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
 
     func readdir(_ path: String) throws -> [String] {
         if let readdirImpl { return try readdirImpl(path) }
-        return try locked {
+        return try readdirDirectly(path)
+    }
+
+    /// `readdir` as the mock does it, for a `readdirImpl` that notes which folders are listed.
+    func readdirDirectly(_ path: String) throws -> [String] {
+        try locked {
             let node = try nodeOrThrow(path)
             guard node.kind == .directory else { throw Self.error(ENOTDIR, path) }
             return listChildren(path)

@@ -445,13 +445,14 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
         var destinationOnly: CopyPasteDestinationOnlySummary?
         // An existing folder in the way: what only it holds is kept by Merge and lost by Replace.
         if conflictClass != nil && destinationKind == .directory {
-            destinationTotalNodeCount = try countDirectoryItems(destinationPath)
+            destinationTotalNodeCount = try countDirectoryItems(destinationPath, dev: destinationFingerprint.dev)
             // A package is replaced as one item: what is inside it isn't anyone's to list.
             destinationOnly =
                 conflictClass == .fileConflict
                 ? nil
                 : try summarizeDestinationOnly(
-                    destinationPath, sourceChildren: conflictClass == .directoryConflict ? children : [])
+                    destinationPath, dev: destinationFingerprint.dev,
+                    sourceChildren: conflictClass == .directoryConflict ? children : [])
         }
 
         return CopyPasteAnalysisNode(
@@ -478,19 +479,20 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
 
     private static var destinationOnlySampleLimit: Int { 5 }
 
-    private func summarizeDestinationOnly(_ destinationPath: String, sourceChildren: [CopyPasteAnalysisNode]) throws
-        -> CopyPasteDestinationOnlySummary?
-    {
+    private func summarizeDestinationOnly(
+        _ destinationPath: String, dev: Int64?, sourceChildren: [CopyPasteAnalysisNode]
+    ) throws -> CopyPasteDestinationOnlySummary? {
         var summary = CopyPasteDestinationOnlySummary(count: 0, samplePaths: [])
-        let complete = try collectDestinationOnly(destinationPath, sourceChildren, prefix: "", into: &summary)
+        let complete = try collectDestinationOnly(
+            destinationPath, dev: dev, sourceChildren, prefix: "", into: &summary)
         return complete ? summary : nil
     }
 
-    /// Walks the existing folder next to the pasted one. Entries with no pasted counterpart (or a pasted file
-    /// standing in for a folder) exist only at the destination; folders present on both sides are compared
-    /// recursively. Returns false when unreadable.
+    /// Walks the existing folder next to the pasted one (`dev` is the disk it is on). Entries with no pasted
+    /// counterpart (or a pasted file standing in for a folder) exist only at the destination; folders present on
+    /// both sides are compared recursively. Returns false when unreadable.
     private func collectDestinationOnly(
-        _ destinationPath: String, _ sourceChildren: [CopyPasteAnalysisNode], prefix: String,
+        _ destinationPath: String, dev: Int64?, _ sourceChildren: [CopyPasteAnalysisNode], prefix: String,
         into summary: inout CopyPasteDestinationOnlySummary
     ) throws -> Bool {
         let entries: [String]
@@ -521,7 +523,8 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
                     continue
                 }
                 if !(try collectDestinationOnly(
-                    entryPath, counterpart.children, prefix: "\(prefix)\(entry)/", into: &summary))
+                    entryPath, dev: counterpart.destinationFingerprint.dev, counterpart.children,
+                    prefix: "\(prefix)\(entry)/", into: &summary))
                 {
                     return false
                 }
@@ -535,8 +538,9 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
                 summary.samplePaths.append("\(prefix)\(entry)")
             }
             do {
-                if try fileSystem.lstat(entryPath).isDirectory {
-                    guard let nestedCount = try countDirectoryItems(entryPath) else {
+                let stats = try fileSystem.lstat(entryPath)
+                if stats.isDirectory && !isMountPoint(dev: stats.dev, holderDev: dev) {
+                    guard let nestedCount = try countDirectoryItems(entryPath, dev: stats.dev) else {
                         return false
                     }
                     summary.count += nestedCount
@@ -562,8 +566,10 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
     }
 
     /// Every item an existing folder holds, nested ones included, without Finder's ".DS_Store"; nil when any of
-    /// it can't be read.
-    func countDirectoryItems(_ directoryPath: String) throws -> Int? {
+    /// it can't be read. `dev` is the disk the folder is on: a folder inside that another disk is mounted on counts
+    /// as one item and is not gone into, as what is on that disk is not the folder's (a Replace sends the folder to
+    /// the Trash with the disk still mounted in it, and never deletes it for good while it is).
+    func countDirectoryItems(_ directoryPath: String, dev: Int64?) throws -> Int? {
         let key = NameKeys.Exact(directoryPath)
         if let cached = cache.counts[key] {
             return cached
@@ -575,8 +581,9 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
             for entry in entries {
                 try signal?.throwIfStopped()
                 let entryPath = joinChildPath(directoryPath, entry)
-                if try fileSystem.lstat(entryPath).isDirectory {
-                    guard let nestedCount = try countDirectoryItems(entryPath) else {
+                let stats = try fileSystem.lstat(entryPath)
+                if stats.isDirectory && !isMountPoint(dev: stats.dev, holderDev: dev) {
+                    guard let nestedCount = try countDirectoryItems(entryPath, dev: stats.dev) else {
                         cache.counts[key] = .some(nil)
                         return nil
                     }

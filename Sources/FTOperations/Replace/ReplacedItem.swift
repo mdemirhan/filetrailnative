@@ -53,7 +53,8 @@ func removeReplacedItem(
     // counted isn't deleted for good.
     let approvedCount: Int? =
         destination.kind == .directory
-        ? (node.node.destinationTotalNodeCount ?? countItemsInside(fileSystem, node.destinationPath)) : nil
+        ? (node.node.destinationTotalNodeCount
+            ?? countItemsInside(fileSystem, node.destinationPath, dev: destination.dev)) : nil
     if destination.kind == .directory && approvedCount == nil {
         throw OperationError(
             "\u{201C}\(basenameOf(node.destinationPath))\u{201D} couldn't be looked through, so it wasn't deleted for good and nothing was replaced."
@@ -74,10 +75,19 @@ func removeReplacedItem(
     if resolution != .overwrite {
         return .skipped
     }
-    // Deleting a folder for good stops at the first locked item inside, leaving it half deleted: one is looked
-    // for first, and then nothing is deleted.
-    if destination.kind == .directory, let locked = findLockedInside(context, node.destinationPath) {
-        throw OperationError(lockedMessage(locked))
+    // Deleting a folder for good stops at the first locked item inside, and at a folder inside that another disk is
+    // mounted on, leaving it half deleted: one is looked for first, and then nothing is deleted. Both in the one look
+    // inside, after the answer: a look for the disk before the question would walk every folder deleted for good a
+    // second time.
+    if destination.kind == .directory {
+        switch findDeleteStopInside(context, node.destinationPath, dev: destination.dev) {
+        case .locked(let path):
+            throw OperationError(lockedMessage(path))
+        case .anotherDisk(let path):
+            throw OperationError(mountedInsideMessage(path, inside: node.destinationPath))
+        case nil:
+            break
+        }
     }
     // Last, after the long look inside: the question may have been open a while, and what is deleted is what it
     // was about. A folder holds only what the review counted in it: an item added since (a cloud sync) would be
@@ -98,7 +108,9 @@ private func assertReplacedItemUnchanged(
     _ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ replaced: NodeFingerprint, itemCount: Int? = nil
 ) throws -> NodeFingerprint {
     // Counting a large folder takes a while: it is looked at once counted.
-    let counted = itemCount == nil || countItemsInside(context.fileSystem, node.destinationPath) == itemCount
+    let counted =
+        itemCount == nil
+        || countItemsInside(context.fileSystem, node.destinationPath, dev: replaced.dev) == itemCount
     let current = captureFingerprint(context.fileSystem, node.destinationPath)
     if !counted || !isAsApproved(replaced, current) {
         throw OperationError(
@@ -109,34 +121,61 @@ private func assertReplacedItemUnchanged(
 }
 
 /// How many items a folder holds at every depth, counted as the review counted them (`countDirectoryItems`); nil
-/// when some of it can't be read.
-func countItemsInside(_ fileSystem: some IdentityFileSystem, _ path: String) -> Int? {
+/// when some of it can't be read. `dev` is the disk the folder is on: a folder inside that another disk is mounted
+/// on counts as one item and is not gone into, as what is on that disk is not the folder's.
+func countItemsInside(_ fileSystem: some IdentityFileSystem, _ path: String, dev: Int64?) -> Int? {
     guard let entries = try? fileSystem.readdir(path) else { return nil }
     var count = 0
     for entry in entries where !CopyPasteNames.isFolderViewFile(entry) {
         count += 1
         let entryPath = NodePath.join(path, entry)
         guard let stats = try? fileSystem.lstat(entryPath) else { return nil }
-        if stats.isDirectory {
-            guard let nested = countItemsInside(fileSystem, entryPath) else { return nil }
+        if stats.isDirectory && !isMountPoint(dev: stats.dev, holderDev: dev) {
+            guard let nested = countItemsInside(fileSystem, entryPath, dev: stats.dev) else { return nil }
             count += nested
         }
     }
     return count
 }
 
-/// The first locked item inside a folder, at any depth, or nil.
-private func findLockedInside(_ context: ExecutionContext, _ folderPath: String) -> String? {
+/// What a folder's delete for good would stop at part way, leaving the folder half deleted.
+private enum DeleteStop {
+    case locked(String)
+    /// A folder another disk is mounted on.
+    case anotherDisk(String)
+}
+
+/// The first item inside a folder, at any depth, that its delete would stop at, or nil: a locked item, or a folder
+/// another disk is mounted on (it is on another disk than the folder it is in; `dev` is the disk `folderPath` is
+/// on), which is not looked into.
+private func findDeleteStopInside(_ context: ExecutionContext, _ folderPath: String, dev: Int64?) -> DeleteStop? {
     let fileSystem = context.fileSystem
     let names = (try? fileSystem.readdir(folderPath)) ?? []
     for name in names {
         let path = NodePath.join(folderPath, name)
-        if isLocked(context.getFlags, path) {
-            return path
+        let stats = try? fileSystem.lstat(path)
+        let isFolder = stats?.isDirectory == true
+        if isFolder && isMountPoint(dev: stats?.dev, holderDev: dev) {
+            return .anotherDisk(path)
         }
-        if (try? fileSystem.lstat(path))?.isDirectory == true, let inside = findLockedInside(context, path) {
+        if isLocked(context.getFlags, path) {
+            return .locked(path)
+        }
+        if isFolder, let inside = findDeleteStopInside(context, path, dev: stats?.dev) {
             return inside
         }
     }
     return nil
+}
+
+/// Why a folder (`folderPath`) isn't deleted for good while another disk is mounted on a folder inside it
+/// (`mountedPath`), named by where it is in the folder.
+private func mountedInsideMessage(_ mountedPath: String, inside folderPath: String) -> String {
+    let folder = basenameOf(folderPath)
+    let within =
+        startsWith(mountedPath, folderPath + "/")
+        ? String(String.UnicodeScalarView(mountedPath.unicodeScalars.dropFirst(folderPath.unicodeScalars.count + 1)))
+        : basenameOf(mountedPath)
+    return
+        "\u{201C}\(within)\u{201D} is another disk, mounted inside \u{201C}\(folder)\u{201D}, so \u{201C}\(folder)\u{201D} wasn't deleted for good and nothing was replaced. Eject it and try again."
 }

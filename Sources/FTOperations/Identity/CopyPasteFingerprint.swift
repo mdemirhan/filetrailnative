@@ -118,7 +118,13 @@ public func isSameExistingItem(_ left: NodeFingerprint, _ right: NodeFingerprint
 /// that holds it (`holderDev`, that folder's disk). Replacing it would send that whole disk to the Trash, or
 /// delete everything on it. A file never is one: a disk is only ever mounted on a folder.
 public func isMountPoint(_ folder: NodeFingerprint, holderDev: Int64?) -> Bool {
-    guard folder.kind == .directory, let dev = folder.dev, let holderDev else { return false }
+    folder.kind == .directory && isMountPoint(dev: folder.dev, holderDev: holderDev)
+}
+
+/// `isMountPoint` for a folder met while a folder is looked through: `dev` is the disk it is on, `holderDev` that of
+/// the folder it was listed in. What is in it is that disk's, and is not looked into as the folder's own.
+func isMountPoint(dev: Int64?, holderDev: Int64?) -> Bool {
+    guard let dev, let holderDev else { return false }
     return dev != holderDev
 }
 
