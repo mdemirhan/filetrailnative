@@ -236,7 +236,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             item("Remember View for This Folder", .rememberFolderView, checked: remembered),
             item("Update Folder View", .updateFolderView), item("Revert to Saved View", .revertFolderView),
             .separator, item("Folder View Options…", .folderViewOptions), .separator,
-            item("Reset Folder View", .resetFolderView), item("Manage Folder Customizations…", .manageFolderViews),
+            item("Reset Folder View", .resetFolderView), item("Manage Folder Views…", .manageFolderViews),
         ]
     }
 

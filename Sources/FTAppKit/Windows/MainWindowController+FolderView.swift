@@ -277,7 +277,7 @@ extension MainWindowController {
 
     // MARK: The popovers
 
-    /// Folder Customization, over the status bar's symbol (from a click on it, a menu or ⌘J).
+    /// Folder View Options, over the status bar's symbol (from a click on it, a menu or ⌘J).
     func showFolderViewPopover(for pane: BrowserPane, from anchor: NSView?) {
         // Only for a folder on screen: search results are no folder, and a pane that let go of its folder has none.
         // The symbol isn't there then, and whatever else asks (a menu, a key, a click that was on its way) is refused
@@ -302,7 +302,7 @@ extension MainWindowController {
 }
 
 extension MainWindowController {
-    /// Folder Customization closes: asked to, or its pane is no longer there to customize.
+    /// Folder View Options closes: asked to, or its pane is no longer there to customize.
     func closeFolderViewPopover() {
         folderViewPopover?.close()
         folderViewPopover = nil

@@ -129,7 +129,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 titles(try #require(item(background, "Folder View")).submenu) == [
                     "Remember View for This Folder", "Update Folder View", "Revert to Saved View", "-",
-                    "Folder View Options…", "-", "Reset Folder View", "Manage Folder Customizations…",
+                    "Folder View Options…", "-", "Reset Folder View", "Manage Folder Views…",
                 ])
             // New File's submenu: Text File, then (with no templates) the Templates folder.
             #expect(

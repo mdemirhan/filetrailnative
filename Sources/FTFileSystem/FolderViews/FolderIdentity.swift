@@ -1,7 +1,7 @@
 import Darwin
 import Foundation
 
-/// What the folders' views ask the disk: whether a folder listed in Folder Customizations is there, and where a folder
+/// What the folders' views ask the disk: whether a folder listed in Folder Views is there, and where a folder
 /// that took its view along really is. A folder's view is found by its path alone, so opening a folder asks nothing
 /// here.
 public enum FolderIdentity {

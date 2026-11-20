@@ -612,7 +612,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder views",
                             description:
-                                "A folder can keep its own view, order, Folders First, columns and size. View → Folder View → Remember View for This Folder keeps what is on screen, and {folderViewOptions} chooses which of them the folder keeps; the rest follow the pane, as in any folder. With Apply to Subfolders, the folders inside use it too, unless they have one of their own. A symbol at the right end of the status bar opens them in any folder: in the accent color where the folder has its own view, gray where it uses one from a folder above, faint where it has none, with a dot while a change isn’t saved. Any change, there or in the folder, shows at once but is kept only with Save ({updateFolderView}); Revert ({revertFolderView}) or leaving the folder drops it. In a folder using a view from above, Save customizes that folder on its own; the folder above is changed in it. View → Folder View → Manage Folder Customizations… lists every customized folder, each under the customized folder it is inside: Remove forgets a folder’s customization, and Remove with Subfolders those of the folders inside it too. A folder renamed or moved outside File Trail loses its view and stays in that list as Not Found; one renamed or moved in File Trail keeps it."
+                                "A folder can keep its own view, order, Folders First, columns and size. View → Folder View → Remember View for This Folder keeps what is on screen, and {folderViewOptions} chooses which of them the folder keeps; the rest follow the pane, as in any folder. With Apply to Subfolders, the folders inside use it too, unless they have one of their own. A symbol at the right end of the status bar opens them in any folder: in the accent color where the folder has its own view, gray where it uses one from a folder above, faint where it has none, with a dot while a change isn’t saved. Any change, there or in the folder, shows at once but is kept only with Save ({updateFolderView}); Revert ({revertFolderView}) or leaving the folder drops it. In a folder using a view from above, Save gives that folder a view of its own; the folder above is changed in it. View → Folder View → Manage Folder Views… lists every folder with a view of its own, each under the one it is inside: Remove forgets a folder’s view, and Remove with Subfolders those of the folders inside it too. A folder renamed or moved outside File Trail loses its view and stays in that list as Not Found; one renamed or moved in File Trail keeps it."
                         ),
                         HelpRow(
                             label: "Sort",
@@ -953,7 +953,7 @@ extension HelpContent {
             "Forget this folder's own view; it shows the one above or the pane's"),
         HelpShortcutItem(
             group: .views, .command(.manageFolderViews),
-            "List every customized folder in the Folder Customizations window"),
+            "List every folder with a view of its own in the Folder Views window"),
         HelpShortcutItem(group: .views, .command(.fullScreen), "Enter or leave full screen"),
         HelpShortcutItem(group: .views, .command(.minimize), "Minimize the window into the Dock"),
         HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail's windows until you come back to it"),

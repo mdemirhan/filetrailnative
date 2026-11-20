@@ -109,7 +109,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.shownFolderPath.hasSuffix("/Folder") && tab.groupTitles.isEmpty })
             tab.go(to: URL(fileURLWithPath: path))
             #expect(await waitUntil { tab.groupTitles == ["Today", "Yesterday", "2020"] })
-            // Folder Customization has the row, between View and Sort By.
+            // Folder View Options has the row, between View and Sort By.
             #expect(FolderViewPopover.settings(for: .details).prefix(3) == [.view, .groupBy, .sort])
             #expect(
                 FolderViewText.value(.groupBy, of: FolderViewKeeps(groupBy: .size), mode: .details, density: .standard)
@@ -179,7 +179,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 FolderViewText.value(.groupBy, of: pane.shownKeeps, mode: .details, density: .standard)
                     == "Date Modified, reversed")
-            // From Folder Customization's direction pop-up, back in order.
+            // From Folder View Options's direction pop-up, back in order.
             pane.setFolderViewValue(.groupBy) { $0.groupReversed = nil }
             #expect(tab.groupTitles == ["Today", "Yesterday", "2020"])
         }

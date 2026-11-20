@@ -555,8 +555,8 @@ extension ShortcutCommands {
             id: .resetFolderView, label: "Reset Folder View", group: .view, defaults: [],
             menuPath: "View > Folder View > Reset Folder View"),
         ShortcutCommandDefinition(
-            id: .manageFolderViews, label: "Manage Folder Customizations…", group: .view, defaults: [],
-            menuPath: "View > Folder View > Manage Folder Customizations…"),
+            id: .manageFolderViews, label: "Manage Folder Views…", group: .view, defaults: [],
+            menuPath: "View > Folder View > Manage Folder Views…"),
         ShortcutCommandDefinition(
             id: .togglePinFilter, label: "Pin Filter", group: .view, defaults: [], menuPath: "View > Pin Filter"),
         ShortcutCommandDefinition(

@@ -232,7 +232,7 @@ extension ExplorerToolbar {
             row("Remember View for This Folder", .rememberFolderView, checked: remembered),
             row("Update Folder View", .updateFolderView), row("Revert to Saved View", .revertFolderView), .separator,
             row("Folder View Options…", .folderViewOptions), .separator, row("Reset Folder View", .resetFolderView),
-            row("Manage Folder Customizations…", .manageFolderViews),
+            row("Manage Folder Views…", .manageFolderViews),
         ]
     }
 

@@ -157,7 +157,7 @@ extension BrowserPane {
         let bar = content.contentShell.pathBarRow
         if searchStore?.showsResults == true || folderLetGo {
             bar.folderViewMark = nil
-            // No folder is on screen to customize: Folder Customization, open on this pane, closes with its symbol,
+            // No folder is on screen to customize: Folder View Options, open on this pane, closes with its symbol,
             // as its Keep boxes would go on changing a view that isn't shown.
             if let tab, tab.folderViewPopover?.pane === self { tab.closeFolderViewPopover() }
         } else if let view = folderView {
@@ -169,7 +169,7 @@ extension BrowserPane {
             bar.folderViewMark = PathBarRowView.FolderViewMark(
                 whose: .noView, changed: false, tooltip: "No view of its own \u{00B7} Folder View Options")
         }
-        // Folder Customization, open on this pane, shows the change: most aren't saved, so nothing else tells it.
+        // Folder View Options, open on this pane, shows the change: most aren't saved, so nothing else tells it.
         if let popover = tab?.folderViewPopover, popover.pane === self { popover.refresh() }
         tab?.paneChanged(.view, in: self)
     }
@@ -238,7 +238,7 @@ extension BrowserPane {
         folderViewChanged()
     }
 
-    /// A change in Folder Customization, on screen until Save, as any change is: in a folder with no view, a view
+    /// A change in Folder View Options, on screen until Save, as any change is: in a folder with no view, a view
     /// not saved yet, let go of again once nothing is changed.
     private func changeOnScreen(_ change: (inout FolderViewOnScreen) -> Void) {
         let path = folder.path
@@ -420,7 +420,7 @@ extension BrowserPane {
         if before != shownOrder { viewChanged() }
     }
 
-    /// Reset in Folder Customization: nothing kept and Apply to Subfolders off, on screen until Save, which removes the
+    /// Reset in Folder View Options: nothing kept and Apply to Subfolders off, on screen until Save, which removes the
     /// folder's customization. (View ▸ Folder View ▸ Reset Folder View removes it at once.)
     func clearFolderViewOnScreen() {
         guard folderView?.isOwnSaved == true else { return }
@@ -430,7 +430,7 @@ extension BrowserPane {
         }
     }
 
-    /// A Keep box in Folder Customization: the setting is kept, with its value on screen, or not kept any more; on
+    /// A Keep box in Folder View Options: the setting is kept, with its value on screen, or not kept any more; on
     /// screen until Save.
     func setFolderViewKeeps(_ setting: FolderViewSetting, _ keeps: Bool) {
         let current = shownKeeps
@@ -469,7 +469,7 @@ extension BrowserPane {
         return view.shown.keeps(.columns) && (view.use.own || view.becomesOwn)
     }
 
-    /// A value changed in Folder Customization: kept, with that value, on screen until Save.
+    /// A value changed in Folder View Options: kept, with that value, on screen until Save.
     /// The value already on screen, chosen again, is no change: it doesn't start keeping the setting, and Save stays
     /// dimmed, as a setting changed back by hand is no change (a Keep box checked does keep it).
     func setFolderViewValue(_ setting: FolderViewSetting, _ change: (inout FolderViewKeeps) -> Void) {

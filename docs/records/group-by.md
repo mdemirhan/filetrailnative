@@ -71,7 +71,7 @@ A group's title is its name alone, in the style of the sidebar's section heading
 
 ## Reverse Group Order
 
-The owner's choice (2026-11-20): the groups can be put in the reverse of their order, the sort inside them unchanged. View ▸ Group By ▸ Reverse Group Order, checked while reversed, and the same item in the right-click Group By submenu and the toolbar's Group and Sort menus; Folder Customization's Group By row has In Order and Reversed beside the field, as Sort By has its direction, and a folder's view keeps it with the grouping. Dimmed while nothing is grouped; the groups without a value stay last, and Folders First's Folders first. Search results have their own. A second "Sort Groups By" was considered and left out: a group has only one order to turn around.
+The owner's choice (2026-11-20): the groups can be put in the reverse of their order, the sort inside them unchanged. View ▸ Group By ▸ Reverse Group Order, checked while reversed, and the same item in the right-click Group By submenu and the toolbar's Group and Sort menus; Folder View Options's Group By row has In Order and Reversed beside the field, as Sort By has its direction, and a folder's view keeps it with the grouping. Dimmed while nothing is grouped; the groups without a value stay last, and Folders First's Folders first. Search results have their own. A second "Sort Groups By" was considered and left out: a group has only one order to turn around.
 
 ## Collapsing a group: left out
 
@@ -98,12 +98,12 @@ Each as [process/commands.md](../process/commands.md) lays out, so it is in the 
 - **The List's column header menu** gets Group by “Date Modified” for the column clicked, checked while grouped by it, so that choosing it again groups by None. It runs the menu's command, not one of its own.
 - Finder's Use Groups (⌃⌘0, free today) is left out: None turns grouping off, and a toggle would have to remember a field to turn back on.
 
-## Folder Customization
+## Folder View Options
 
 - `FolderViewSetting.groupBy`, a `groupBy` key in a view's `keeps` in `folder-views.json`. A file written before has none, and loads as a view that doesn't keep it, as the settings are read one by one.
 - A Group By row between View and Sort By, in Finder's order: a checkbox titled Group By and a pop-up of None and the fields. The popover goes from four setting rows to five, the same five in every view, so it still keeps its height as the view changes. A changed row has the orange dot, its tooltip saying what is saved ("Saved: None").
 - Everything else is as for the other settings: a change shows at once, Save keeps it, Revert and leaving the folder drop it; the setting is given back to the pane once the folder keeps it; Apply to Subfolders and the nearest view winning whole apply to it.
-- Folder Customizations shows a Group tag on a folder that keeps it.
+- Folder Views shows a Group tag on a folder that keeps it.
 - Search results are not a folder and have no customization, as now.
 
 ## Tags (in this round)
@@ -124,7 +124,7 @@ Decided 2026-11-20. Grouped by Tags, the tags of every item are read, not only t
 2. **The pane's setting**: carried, saved with the pane and in workspaces, taken by panes opened from another, the app's for a pane with none; search results' own.
 3. **The commands**: the table's rows, the menus, the right-click menus, the toolbar's Sort menu and the Group button, the column header's item, the header's right-click menu, Help's lines, the palette.
 4. **The views**: List, Icons, Compact List, Previews, each with its keys, selection and the place put back by Back and Forward.
-5. **The folder's view**: the setting, the row in Folder Customization, the tag in Folder Customizations.
+5. **The folder's view**: the setting, the row in Folder View Options, the tag in Folder Views.
 6. **The day changing** and the reads for Date Last Opened, Size and Tags while grouped by them.
 7. **The docs**: decisions/views.md, features.md, Help, state/battery.md; this file to `records/` (done).
 

@@ -1,6 +1,6 @@
 import Foundation
 
-/// The six settings a folder's view can keep (View ▸ Folder View), in the order Folder Customization lists them.
+/// The six settings a folder's view can keep (View ▸ Folder View), in the order Folder View Options lists them.
 public enum FolderViewSetting: String, CaseIterable, Sendable, Hashable {
     case view, groupBy, sort, foldersFirst, columns, size
 

@@ -1,4 +1,4 @@
-// The folder view's popover: Folder Customization, with Save and Revert for what is changed on screen
+// The folder view's popover: Folder View Options, with Save and Revert for what is changed on screen
 import AppKit
 import FTFoundation
 
@@ -257,7 +257,7 @@ final class FolderViewPopover {
         return stack
     }
 
-    // MARK: Folder Customization
+    // MARK: Folder View Options
 
     private func buildOptions(_ pane: BrowserPane, _ tab: MainWindowController, into stack: NSStackView) {
         let view = pane.shownFolderView
@@ -265,7 +265,7 @@ final class FolderViewPopover {
         let owner = view.map { FolderViewText.name($0.use.view.path) } ?? ""
         let here = FolderViewText.name(pane.shownFolderPath)
         let changed = view?.hasUnsavedChanges == true
-        add(header("Folder Customization", pane), to: stack, spacingAfter: 12)
+        add(header("Folder View Options", pane), to: stack, spacingAfter: 12)
         // A folder whose settings come from a folder above says so, and that a change here is its own; the folder
         // above is changed there.
         if fromAbove, let view {
@@ -277,7 +277,7 @@ final class FolderViewPopover {
             go.controlSize = .small
             let note = NSTextField(
                 wrappingLabelWithString:
-                    "These settings come from \u{201C}\(owner)\u{201D}. Changes here customize \u{201C}\(here)\u{201D} on its own."
+                    "These settings come from \u{201C}\(owner)\u{201D}. Changes here give \u{201C}\(here)\u{201D} a view of its own."
             )
             note.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
             note.textColor = .secondaryLabelColor
@@ -316,12 +316,12 @@ final class FolderViewPopover {
         if let stopped {
             does =
                 "Folders inside \u{201C}\(here)\u{201D} stop using the view of "
-                + "\u{201C}\(FolderViewText.name(stopped.path))\u{201D}, unless they\u{2019}re customized on their own."
+                + "\u{201C}\(FolderViewText.name(stopped.path))\u{201D}, unless they have a view of their own."
         } else if keepsNothing {
             does = "Check a setting above to have the folders inside \u{201C}\(here)\u{201D} look the same."
         } else {
             does =
-                "Folders inside \u{201C}\(here)\u{201D} look the same, unless they\u{2019}re customized on their own."
+                "Folders inside \u{201C}\(here)\u{201D} look the same, unless they have a view of their own."
         }
         let title = named(
             label("Apply to Subfolders"),
@@ -339,20 +339,20 @@ final class FolderViewPopover {
         let reset = button("Reset", enabled: view?.isOwnSaved == true && !cleared) { [weak pane] in
             pane?.clearFolderViewOnScreen()
         }
-        reset.toolTip = "Unchecks everything; Save removes this folder\u{2019}s customization."
+        reset.toolTip = "Unchecks everything; Save removes this folder\u{2019}s view."
         reset.setAccessibilityIdentifier("folderViewPopover.reset")
-        let manage = button("All Customizations\u{2026}") { [weak self, weak tab] in
+        let manage = button("All Folder Views\u{2026}") { [weak self, weak tab] in
             self?.dismiss()
             tab?.performFolderViewCommand(.manageFolderViews)
         }
-        manage.toolTip = "Every customized folder, in Folder Customizations"
+        manage.toolTip = "Every folder with a view of its own, in Folder Views"
         let revert = button("Revert", enabled: changed) { [weak pane] in pane?.revertFolderView() }
         revert.setAccessibilityIdentifier("folderViewPopover.revert")
         let save = button("Save", primary: true, enabled: changed) { [weak pane] in pane?.updateFolderView() }
         save.toolTip =
             fromAbove
-            ? "Customizes \u{201C}\(here)\u{201D} on its own, as on screen."
-            : "Saves this folder\u{2019}s customization."
+            ? "Gives \u{201C}\(here)\u{201D} a view of its own, as on screen."
+            : "Saves this folder\u{2019}s view."
         save.setAccessibilityIdentifier("folderViewPopover.update")
         add(footer([reset, manage], [revert, save]), to: stack)
     }

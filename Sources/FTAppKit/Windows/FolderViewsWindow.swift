@@ -1,9 +1,9 @@
-// The window that lists every customized folder (View ▸ Folder View ▸ Manage Folder Customizations…)
+// The window that lists every customized folder (View ▸ Folder View ▸ Manage Folder Views…)
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// Folder Customizations: every folder customized on its own, as a tree, a customized folder inside another listed
+/// Folder Views: every folder customized on its own, as a tree, a customized folder inside another listed
 /// under it. A row has the folder's icon, its name and where it is, and on the right what it keeps, whether it applies
 /// to subfolders, and whether its folder is still there. Remove forgets the selected folders' customizations (⌫ too),
 /// leaving those of the folders inside them; Remove with Subfolders forgets those inside each selected folder too, and
@@ -47,7 +47,7 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
         let window = FolderViewsPanel(
             contentRect: NSRect(x: 0, y: 0, width: 640, height: 440),
             styleMask: [.titled, .closable, .resizable, .miniaturizable], backing: .buffered, defer: false)
-        window.title = "Folder Customizations"
+        window.title = "Folder Views"
         window.minSize = NSSize(width: 520, height: 300)
         window.isReleasedWhenClosed = false
         window.setFrameAutosaveName("FolderCustomizations")
@@ -98,12 +98,12 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
             image: NSImage(systemSymbolName: "folder.badge.gearshape", accessibilityDescription: nil) ?? NSImage())
         symbol.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 40, weight: .light)
         symbol.contentTintColor = .tertiaryLabelColor
-        let emptyTitle = NSTextField(labelWithString: "No Customized Folders")
+        let emptyTitle = NSTextField(labelWithString: "No Folder Views")
         emptyTitle.font = .systemFont(ofSize: 15, weight: .semibold)
         emptyTitle.textColor = .secondaryLabelColor
         let emptyText = NSTextField(
             wrappingLabelWithString:
-                "To customize the folder you\u{2019}re in, choose View \u{203A} Folder View \u{203A} Remember View for This Folder."
+                "To give the folder you\u{2019}re in a view of its own, choose View \u{203A} Folder View \u{203A} Remember View for This Folder."
         )
         emptyText.alignment = .center
         emptyText.textColor = .secondaryLabelColor
@@ -114,10 +114,10 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
         empty.spacing = 8
         empty.setCustomSpacing(12, after: symbol)
 
-        remove.toolTip = "Removes the selected folders\u{2019} customizations. Folders inside them keep theirs."
+        remove.toolTip = "Removes the selected folders\u{2019} views. Folders inside them keep theirs."
         remove.setAccessibilityIdentifier("folderViews.remove")
         removeTree.toolTip =
-            "Removes the selected folders\u{2019} customizations, and those of every folder inside them."
+            "Removes the selected folders\u{2019} views, and those of every folder inside them."
         removeTree.setAccessibilityIdentifier("folderViews.removeWithSubfolders")
         for (button, action) in [
             (remove, #selector(removeSelected)), (removeTree, #selector(removeSelectedWithSubfolders)),
@@ -257,7 +257,7 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
         guard let window, count > 0 else { return }
         let alert = NSAlert()
         alert.messageText =
-            count == 1 ? "Remove the folder customization?" : "Remove all \(count) folder customizations?"
+            count == 1 ? "Remove the folder view?" : "Remove all \(count) folder views?"
         alert.informativeText = "These folders will look as the window shows any folder. This can\u{2019}t be undone."
         alert.addButton(withTitle: "Remove All")
         alert.addButton(withTitle: "Cancel")

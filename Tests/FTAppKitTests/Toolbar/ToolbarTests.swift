@@ -731,7 +731,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 folderView.map(\.title) == [
                     "Remember View for This Folder", "Update Folder View", "Revert to Saved View", "",
-                    "Folder View Options…", "", "Reset Folder View", "Manage Folder Customizations…",
+                    "Folder View Options…", "", "Reset Folder View", "Manage Folder Views…",
                 ])
             // Nothing is changed in the folder's view: Update is dimmed.
             #expect(folderView.first { $0.title == "Update Folder View" }?.enabled == false)

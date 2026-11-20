@@ -129,7 +129,7 @@ extension MainWindowController {
         start.filterMode = gone.content.folderFilterMode
         closedSecondPane = (start, gone.navigationHistory, gone.closedView)
         closedPaneWatchID = gone.watchID
-        // Folder Customization open on the pane that goes has nothing left to change.
+        // Folder View Options open on the pane that goes has nothing left to change.
         if folderViewPopover?.pane === gone { closeFolderViewPopover() }
         gone.searchStore?.session.close()
         gone.searchStore?.disconnect()

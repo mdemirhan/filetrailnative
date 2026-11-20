@@ -232,7 +232,7 @@ enum ApplicationMenuBuilder {
             folderViewMenu.addItem(context.command(.folderViewOptions, "Folder View Options…"))
             folderViewMenu.addItem(.separator())
             folderViewMenu.addItem(context.command(.resetFolderView, "Reset Folder View"))
-            folderViewMenu.addItem(context.command(.manageFolderViews, "Manage Folder Customizations…"))
+            folderViewMenu.addItem(context.command(.manageFolderViews, "Manage Folder Views…"))
             folderView.submenu = folderViewMenu
             menu.addItem(folderView)
             menu.addItem(.separator())

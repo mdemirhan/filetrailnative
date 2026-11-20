@@ -650,7 +650,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A tab or a window closed takes its Folder Customization with it: each tab is a window, and closing one
+        // A tab or a window closed takes its Folder View Options with it: each tab is a window, and closing one
         // tells it so.
         @Test func folderCustomizationClosesWhenItsTabOrWindowIsClosed() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -677,7 +677,7 @@ extension ExplorerWindowlessTests {
             let folderColumns = pane.columns(from: tab.preferences).columns
             #expect(folderColumns.contains(.permissions) && !folderColumns.contains(.folder))
             tab.setSearchViewMode(.list)
-            // Folder Customization, open as the results come up, closes: its folder is no longer on screen.
+            // Folder View Options, open as the results come up, closes: its folder is no longer on screen.
             tab.folderViewPopover = FolderViewPopover(pane: pane, tab: tab, dismiss: {})
 
             try await search(tab, for: "note")
@@ -1027,7 +1027,7 @@ extension ExplorerWindowlessTests {
             #expect(pane.shownFolderView == nil && pane.shownMode == .icons)
         }
 
-        // Choosing in Folder Customization the value already on screen is no change: it neither starts keeping the
+        // Choosing in Folder View Options the value already on screen is no change: it neither starts keeping the
         // setting nor lights Save, in a folder with a view or without; a value really changed, or a Keep box checked, is.
         @Test func choosingTheValueOnScreenAgainIsNoChange() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -1379,7 +1379,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // With no folder on screen there is none to customize: the status bar's symbol goes, Folder Customization
+        // With no folder on screen there is none to customize: the status bar's symbol goes, Folder View Options
         // doesn't open, and Update, Revert and Reset leave the view of the folder let go of as it is saved.
         @Test func withNoFolderOnScreenTheSymbolGoesAndNothingActsOnTheFolderLetGoOf() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -1392,7 +1392,7 @@ extension ExplorerWindowlessTests {
             let alpha = real(harness, "Alpha")
             let bar = pane.content.contentShell.pathBarRow
             #expect(bar.folderViewMark?.changed == true)
-            // Folder Customization, open as the folder is let go of, closes with the symbol.
+            // Folder View Options, open as the folder is let go of, closes with the symbol.
             tab.folderViewPopover = FolderViewPopover(pane: pane, tab: tab, dismiss: {})
 
             pane.showNoFolder()
@@ -1479,7 +1479,7 @@ extension ExplorerWindowlessTests {
             #expect(shared.views.own("/d/A2")?.keeps.view == .details)
         }
 
-        // What is changed in Folder Customization in a folder with no view waits for Save: a view saved or removed
+        // What is changed in Folder View Options in a folder with no view waits for Save: a view saved or removed
         // for some other folder meanwhile leaves it on screen.
         @Test func anUnsavedViewOfAFolderWithNoneStaysWhenAnotherFoldersViewChanges() async throws {
             let harness = try ExplorerHarness.windowless()
