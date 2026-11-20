@@ -253,17 +253,26 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
     return result;
 }
 
+/* copyfile for a folder's own metadata: 0, or why it failed. It can fail and leave errno as it was: that is a
+   failure all the same (EIO), never metadata that was copied, after which a move would remove the original folder. */
+static int copy_metadata(const char *source, const char *destination, copyfile_flags_t flags) {
+    errno = 0;
+    if (copyfile(source, destination, NULL, flags) == 0) {
+        return 0;
+    }
+    return errno != 0 ? errno : EIO;
+}
+
 /* Copies only a folder's own metadata (mode, flags, dates, extended attributes such as Finder tags and
    custom-icon flags, ACLs) onto a folder that already exists. Its contents are copied item by item by the
    caller; COPYFILE_RECURSIVE is deliberately not used. */
 int ft_copy_metadata(const char *source, const char *destination) {
-    return copyfile(source, destination, NULL, COPYFILE_METADATA | COPYFILE_NOFOLLOW_SRC) == 0 ? 0 : errno;
+    return copy_metadata(source, destination, COPYFILE_METADATA | COPYFILE_NOFOLLOW_SRC);
 }
 
 /* As ft_copy_metadata, for the folder of an app copied on its own: a source in quarantine gives the copy that
    quarantine with QTN_FLAG_DO_NOT_TRANSLOCATE (COPYFILE_RUN_IN_PLACE), so the app runs from where it was put.
    It stays in quarantine, so Gatekeeper still checks it when it is first opened. */
 int ft_copy_metadata_run_in_place(const char *source, const char *destination) {
-    const copyfile_flags_t flags = COPYFILE_METADATA | COPYFILE_NOFOLLOW_SRC | COPYFILE_RUN_IN_PLACE;
-    return copyfile(source, destination, NULL, flags) == 0 ? 0 : errno;
+    return copy_metadata(source, destination, COPYFILE_METADATA | COPYFILE_NOFOLLOW_SRC | COPYFILE_RUN_IN_PLACE);
 }
