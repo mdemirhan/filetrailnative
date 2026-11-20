@@ -75,8 +75,41 @@ public final class FdSearchRuntime: @unchecked Sendable {
         var error: String?
         var process: SearchProcess?
         var stdoutBuffer = Data()
+        /// What fd wrote about the search itself (a pattern it can't read, a folder that isn't there), for the message
+        /// of a search that fails. The folders it couldn't read are not kept here: see `unreadableFolders`.
         var stderr = Data()
+        /// The end of fd's error output, until the rest of its line arrives.
+        var stderrTail = Data()
+        /// fd met a folder it couldn't read.
+        var unreadableFolders = false
         var done = false
+
+        /// Takes in what fd wrote on its error output, a line at a time: a folder it couldn't read is noted and its
+        /// line dropped (a search of the home folder names hundreds), anything else is kept for the failure's message,
+        /// up to `maxStderrBytes`. `atEnd`: what is left without a line's end is a line too.
+        mutating func takeErrorOutput(_ chunk: Data, atEnd: Bool = false) {
+            var buffer = stderrTail.isEmpty ? chunk : stderrTail + chunk
+            stderrTail = Data()
+            while !buffer.isEmpty {
+                guard let end = buffer.firstIndex(of: UInt8(ascii: "\n")) else {
+                    if atEnd { takeErrorLine(buffer, ended: false) } else { stderrTail = Data(buffer) }
+                    return
+                }
+                takeErrorLine(buffer[..<end], ended: true)
+                buffer = buffer[buffer.index(after: end)...]
+            }
+        }
+
+        private mutating func takeErrorLine(_ line: Data, ended: Bool) {
+            if let code = FdSearchRuntime.walkErrorCode(line) {
+                // A folder gone while the search ran is nothing it couldn't read.
+                if code != ENOENT { unreadableFolders = true }
+                return
+            }
+            guard stderr.count < FdSearchRuntime.maxStderrBytes else { return }
+            stderr.append(line)
+            if ended { stderr.append(UInt8(ascii: "\n")) }
+        }
 
         /// `records` with what reading them needs. The filter is lent with the folders it knows, so the reader adds to
         /// them without copying them, and gives it back with the results.
@@ -155,6 +188,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
         var truncated: Bool
         var error: String?
         var itemCount: Int
+        var unreadableFolders: Bool
     }
 
     private let fdBinaryPath: String
@@ -219,13 +253,13 @@ public final class FdSearchRuntime: @unchecked Sendable {
                 return SearchUpdate(
                     jobId: jobId, status: finished.status, items: [],
                     nextCursor: max(0, min(cursor, finished.itemCount)), done: true, truncated: finished.truncated,
-                    error: finished.error)
+                    error: finished.error, unreadableFolders: finished.unreadableFolders)
             }
             let safeCursor = max(0, min(cursor, job.items.count))
             let items = Array(job.items[safeCursor...])
             let update = SearchUpdate(
                 jobId: jobId, status: job.status, items: items, nextCursor: safeCursor + items.count, done: job.done,
-                truncated: job.truncated, error: job.error)
+                truncated: job.truncated, error: job.error, unreadableFolders: job.unreadableFolders)
             if job.done {
                 // The final response already carries every remaining item, so the job can be released, but its
                 // terminal state is remembered so later polls stay idempotent.
@@ -276,7 +310,8 @@ public final class FdSearchRuntime: @unchecked Sendable {
 
     private func rememberFinished(_ jobId: String, _ job: Job) {
         finishedJobs[jobId] = FinishedJob(
-            status: job.status, truncated: job.truncated, error: job.error, itemCount: job.items.count)
+            status: job.status, truncated: job.truncated, error: job.error, itemCount: job.items.count,
+            unreadableFolders: job.unreadableFolders)
         finishedOrder.removeAll { $0 == jobId }
         finishedOrder.append(jobId)
         while finishedJobs.count > Self.maxFinishedJobRecords, let oldest = finishedOrder.first {
@@ -308,7 +343,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
     }
 
     private func handleStderr(_ jobId: String, _ chunk: Data) {
-        lock.withLock { jobs[jobId]?.stderr.append(chunk) }
+        lock.withLock { jobs[jobId]?.takeErrorOutput(chunk) }
     }
 
     private func handleClose(_ jobId: String, code: Int32?, signal: Int32?) {
@@ -323,6 +358,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
             // Taken out while it is changed, so its results aren't copied.
             guard var job = jobs.removeValue(forKey: jobId) else { return }
             defer { jobs[jobId] = job }
+            job.takeErrorOutput(Data(), atEnd: true)
             if let trailing, !job.done {
                 // Over the limit here only ends the job, there is nothing left to stop.
                 _ = job.add(found, from: trailing)
@@ -360,6 +396,20 @@ public final class FdSearchRuntime: @unchecked Sendable {
     }
 
     // MARK: - Errors
+
+    /// How much of what fd wrote about a failed search is kept.
+    static let maxStderrBytes = 1 << 16
+
+    /// The system's error number in a line fd wrote (with --show-errors) about an item it couldn't read as it walked:
+    /// "[fd error]: /path/to/folder: Permission denied (os error 13)". Nil for any other line: what fd says of the
+    /// search itself (a pattern, a search path) names no error number.
+    static func walkErrorCode(_ line: Data) -> Int32? {
+        let text = String(decoding: line, as: UTF8.self)
+        guard text.hasPrefix("[fd error]: /"), text.hasSuffix(")"),
+            let open = text.range(of: " (os error ", options: .backwards)
+        else { return nil }
+        return Int32(text[open.upperBound..<text.index(before: text.endIndex)])
+    }
 
     /// What fd wrote about a failed search, without its own prefix and without the closing advice about command-line
     /// flags, which means nothing in the app.

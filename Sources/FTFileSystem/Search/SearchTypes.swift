@@ -78,10 +78,12 @@ public struct SearchUpdate: Sendable, Equatable {
     public var done: Bool
     public var truncated: Bool
     public var error: String?
+    /// The search met folders it couldn't read (no permission, a disk error): what is in them isn't among the results.
+    public var unreadableFolders: Bool
 
     public init(
         jobId: String, status: SearchJobStatus, items: [SearchResultItem], nextCursor: Int, done: Bool,
-        truncated: Bool, error: String?
+        truncated: Bool, error: String?, unreadableFolders: Bool = false
     ) {
         self.jobId = jobId
         self.status = status
@@ -90,6 +92,7 @@ public struct SearchUpdate: Sendable, Equatable {
         self.done = done
         self.truncated = truncated
         self.error = error
+        self.unreadableFolders = unreadableFolders
     }
 }
 

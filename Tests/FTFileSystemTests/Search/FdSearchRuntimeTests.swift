@@ -353,6 +353,60 @@ private final class AskedWhileLooking: @unchecked Sendable {
                     error: "regex parse error"))
     }
 
+    // fd passes over a folder it can't read and still ends well: the search is complete, and says what it left out.
+    @Test func saysWhenFoldersCouldntBeReadAndIsStillComplete() throws {
+        let (runtime, process) = make()
+        let started = runtime.startSearch(demo())
+        process.write("/Users/demo/project/app.txt\0")
+        // A line in two pieces, as it may arrive.
+        process.writeError("[fd error]: /Users/demo/project/locked: Permission ")
+        #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).unreadableFolders == false)
+        process.writeError("denied (os error 13)\n[fd error]: /Users/demo/project/Library/Mail: Operation not")
+        // Said while the search runs.
+        let running = try runtime.getUpdate(jobId: started.jobId, cursor: 0)
+        #expect(running.unreadableFolders && running.status == .running)
+        process.writeError(" permitted (os error 1)")
+        process.close(code: 0)
+        let update = try runtime.getUpdate(jobId: started.jobId, cursor: 0)
+        #expect(update.status == .complete && update.error == nil && update.unreadableFolders)
+        #expect(update.items.map(\.path) == ["/Users/demo/project/app.txt"])
+        // Asked again once it is over, it says the same.
+        #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 1).unreadableFolders)
+    }
+
+    @Test func aSearchThatReadEveryFolderSaysNothingOfIt() throws {
+        let (runtime, process) = make()
+        let started = runtime.startSearch(demo())
+        // A folder removed while the search ran is not one it couldn't read.
+        process.writeError("[fd error]: /Users/demo/project/gone: No such file or directory (os error 2)\n")
+        process.close(code: 0)
+        let update = try runtime.getUpdate(jobId: started.jobId, cursor: 0)
+        #expect(update.status == .complete && !update.unreadableFolders && update.error == nil)
+    }
+
+    // The folders fd couldn't read are no part of why a search failed.
+    @Test func aFailedSearchsMessageLeavesOutTheFoldersThatCouldntBeRead() throws {
+        let (runtime, process) = make()
+        let started = runtime.startSearch(demo("(", mode: .regex))
+        process.writeError("[fd error]: /Users/demo/project/locked: Permission denied (os error 13)\n")
+        process.writeError("[fd error]: Search path '/Users/demo/project' is not a directory.\n")
+        process.writeError("[fd error]: /Users/demo/project/other: Input/output error (os error 5)\n")
+        process.close(code: 1)
+        let update = try runtime.getUpdate(jobId: started.jobId, cursor: 0)
+        #expect(update.status == .error && update.unreadableFolders)
+        #expect(update.error == "Search path '/Users/demo/project' is not a directory.")
+    }
+
+    @Test func tellsALineAboutAFolderFromWhatFdSaysOfTheSearch() {
+        func code(_ line: String) -> Int32? { FdSearchRuntime.walkErrorCode(Data(line.utf8)) }
+        #expect(code("[fd error]: /a/b: Permission denied (os error 13)") == 13)
+        #expect(code("[fd error]: /a/with: colon (and brackets)/b: Operation not permitted (os error 1)") == 1)
+        #expect(code("[fd error]: regex parse error:") == nil)
+        #expect(code("[fd error]: Search path '/a' is not a directory.") == nil)
+        #expect(code("error: unclosed group (os error 13)") == nil)
+        #expect(code("") == nil)
+    }
+
     @Test func reportsWhatFdSaidAboutABadPatternWithoutItsCommandLineAdvice() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("no(te", mode: .regex))

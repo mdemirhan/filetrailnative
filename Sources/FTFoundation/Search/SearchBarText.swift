@@ -47,13 +47,18 @@ public enum SearchBarText {
         "Showing the first \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) matches."
     /// A write put items inside the folder searched, which the results don't list.
     public static let mayBeMissingBanner = "Items added since this search may not be listed."
+    /// The search met folders it has no permission to read, or that failed to read: what is in them isn't listed.
+    public static let unreadableBanner = "Some folders couldn\u{2019}t be read."
     public static let searchAgain = "Search Again"
     public static let searchAgainName = "Search again"
 
-    /// What the banner over the results says: that they were cut short, that they may be missing what was added, or
-    /// both; nil when there is nothing to say.
-    public static func banner(truncated: Bool, mayBeMissingItems: Bool) -> String? {
-        let lines = [truncated ? truncatedBanner : nil, mayBeMissingItems ? mayBeMissingBanner : nil].compactMap { $0 }
+    /// What the banner over the results says: that they were cut short, that folders couldn't be read, that they may
+    /// be missing what was added, or several of these; nil when there is nothing to say.
+    public static func banner(truncated: Bool, unreadableFolders: Bool = false, mayBeMissingItems: Bool) -> String? {
+        let lines = [
+            truncated ? truncatedBanner : nil, unreadableFolders ? unreadableBanner : nil,
+            mayBeMissingItems ? mayBeMissingBanner : nil,
+        ].compactMap { $0 }
         return lines.isEmpty ? nil : lines.joined(separator: " ")
     }
 

@@ -578,7 +578,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Limits",
                             description:
-                                "Search stops at \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) results. Aliases are not searched for."
+                                "Search stops at \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) results. Aliases are not searched for. What you have no permission to read is passed over, and a note above the results says so."
                         ),
                     ]),
             ]),

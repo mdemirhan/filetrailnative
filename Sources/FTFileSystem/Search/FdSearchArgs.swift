@@ -6,7 +6,12 @@ public enum FdSearchArgs {
     /// letters as the filters do (`PlainTextPattern`); Glob and Regex keep fd's own smart case, so no flag is passed.
     public static func build(_ request: SearchRequest) -> [String] {
         // Files and folders. Symbolic links are left out, as they always have been.
-        var args = ["--type", "f", "--type", "d", "--print0", "--absolute-path", "--color", "never"]
+        // fd passes over a folder it can't read and says nothing unless asked to: with --show-errors it names each
+        // on its error output, which is how the search knows its results may leave something out
+        // (`FdSearchRuntime.walkErrorCode`).
+        var args = [
+            "--type", "f", "--type", "d", "--print0", "--absolute-path", "--color", "never", "--show-errors",
+        ]
 
         // fd leaves out what Git ignores (.gitignore, .ignore, .fdignore and the global ignore file, inside Git
         // repositories) unless told otherwise.

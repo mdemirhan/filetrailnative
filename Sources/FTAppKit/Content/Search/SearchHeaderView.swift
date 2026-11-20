@@ -198,7 +198,7 @@ final class SearchHeaderView: NSView {
     /// Shows the search on screen: its scopes, which one is pressed, how it stands, and the filter's text.
     func show(
         scopes options: [SearchScopeOption], rootPath: String, isRunning: Bool, truncated: Bool,
-        mayBeMissingItems: Bool = false, filterText: String
+        unreadableFolders: Bool = false, mayBeMissingItems: Bool = false, filterText: String
     ) {
         self.rootPath = rootPath
         if options.map(\.path) != scopes.map(\.path) || options.map(\.label) != scopes.map(\.title) {
@@ -223,7 +223,8 @@ final class SearchHeaderView: NSView {
         stopButton.isHidden = !stopFlag.value
         if filter.text != filterText { filter.text = filterText }
         let wasHeight = height
-        let text = SearchBarText.banner(truncated: truncated, mayBeMissingItems: mayBeMissingItems)
+        let text = SearchBarText.banner(
+            truncated: truncated, unreadableFolders: unreadableFolders, mayBeMissingItems: mayBeMissingItems)
         banner.show(text: text ?? "", searchAgain: mayBeMissingItems)
         banner.searchAgain.toolTip = Tooltips.format(SearchBarText.searchAgain, shortcut: searchAgainShortcut())
         banner.isHidden = text == nil

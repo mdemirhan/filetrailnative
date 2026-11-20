@@ -206,7 +206,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
             scopes: SearchBarText.scopeOptions(
                 currentPath: pane.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),
             rootPath: rootPath, isRunning: session.isRunning, truncated: session.truncated,
-            mayBeMissingItems: session.mayBeMissingItems, filterText: content.filter)
+            unreadableFolders: session.unreadableFolders, mayBeMissingItems: session.mayBeMissingItems,
+            filterText: content.filter)
         header.showFilterMode(content.filterMode)
         layoutHeader()
     }

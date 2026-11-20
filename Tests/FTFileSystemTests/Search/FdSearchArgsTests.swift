@@ -39,8 +39,8 @@ private struct GoldenRequest: Codable {
             request(query: "src/*.ts", mode: .glob, scope: .path, recursive: false, hidden: true))
         #expect(
             args == [
-                "--type", "f", "--type", "d", "--print0", "--absolute-path", "--color", "never", "--no-ignore",
-                "--glob",
+                "--type", "f", "--type", "d", "--print0", "--absolute-path", "--color", "never", "--show-errors",
+                "--no-ignore", "--glob",
                 "--full-path", "--max-depth", "1", "--hidden", "--", "src/*.ts", "/Users/demo/project",
             ])
     }
@@ -48,7 +48,7 @@ private struct GoldenRequest: Codable {
     @Test func skipsGitFoldersAndGitIgnoredFilesOnlyWhenAskedTo() {
         func flags(folders: Bool, ignored: Bool) -> [String] {
             let args = FdSearchArgs.build(request(hidden: true, gitFolders: folders, gitIgnored: ignored))
-            return Array(args[8..<(args.count - 3)])
+            return Array(args[9..<(args.count - 3)])
         }
         // Nothing skipped: fd is told not to read ignore files at all.
         #expect(flags(folders: false, ignored: false) == ["--no-ignore", "--hidden"])
