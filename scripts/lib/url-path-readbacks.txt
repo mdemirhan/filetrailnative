@@ -15,32 +15,6 @@ Sources/FTFoundation/DiskPath+URL.swift: self.init(url.path)
 # Handed to the system, which finds an item by either spelling, or shown, and nothing else.
 Sources/FTAppKit/App/AppDelegate.swift: "userDataPath": .string(userData.path),
 
-# The home folder, whose path has no accent as an account's name has none. It is compared with paths from listings all
-# over (what is inside Home, the Trash, "~" in a path shown).
-Sources/FTAppKit/App/AppDelegate.swift: windows: windows, trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
-Sources/FTAppKit/App/PageWindows.swift: public var homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Automation/Scenario.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Content/ContentPaneController.swift: homePath: FileManager.default.homeDirectoryForCurrentUser.path, openPrivacySettings: {})
-Sources/FTAppKit/Dialogs/GoToFolderBox.swift: var homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: currentPath: shownFolderPath, homePath: FileManager.default.homeDirectoryForCurrentUser.path,
-Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/PathBar/PathBarWiring.swift: bar.editor.homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Sidebar/SidebarViewController+Window.swift: model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Sidebar/SidebarViewController.swift: model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Windows/BrowserPane.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Windows/ExplorerTabGroup.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Windows/ExplorerWindows.swift: var home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Windows/MainWindowController.swift: homePath: FileManager.default.homeDirectoryForCurrentUser.path,
-Sources/FTAppKit/Windows/MainWindowController.swift: TrashState.isEmpty(home: FileManager.default.homeDirectoryForCurrentUser.path, uid: getuid())
-Sources/FTAppKit/Windows/MainWindowController.swift: var trashHomePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Windows/MainWindowController.swift: let home = fileManager.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Windows/MainWindowController.swift: case .goHomeRootTree: sidebar.rootTree(at: fileManager.homeDirectoryForCurrentUser.path)
-Sources/FTAppKit/Windows/MainWindowController.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Windows/MainWindowController.swift: let trashPath = FavoriteLabel.trashPath(homePath: FileManager.default.homeDirectoryForCurrentUser.path)
-
 # The app's own files and folders (under Application Support or a folder a test names), its bundle and source tree,
 # and the temporary folder: no accents in practice.
 Sources/FTAppKit/App/AppDelegate.swift: let logger = AppLogger(filePath: AppStatePaths.appLog(in: userData).path)

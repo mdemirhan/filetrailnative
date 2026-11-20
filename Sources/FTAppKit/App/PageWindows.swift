@@ -25,7 +25,7 @@ public final class PageWindows {
     public var updatePreferences: (_ change: (inout AppPreferences) -> Void) -> Void = { _ in }
     /// The pickers and checks Settings uses (tests replace them).
     var settingsServices = SettingsServices()
-    public var homePath = FileManager.default.homeDirectoryForCurrentUser.path
+    public var homePath = DiskPath.home.string
     /// The About window's links and clipboard.
     public var aboutActions = AboutActions()
     public var readAboutInfo: () -> AboutInfo? = { AboutInfoReader.read() }

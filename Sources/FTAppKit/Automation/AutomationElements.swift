@@ -38,7 +38,7 @@
             var folder = scenario.deletingLastPathComponent()
             for _ in 0..<4 {
                 let candidate = folder.appendingPathComponent("elements.json")
-                if FileManager.default.fileExists(atPath: candidate.path) { return candidate }
+                if (try? candidate.checkResourceIsReachable()) == true { return candidate }
                 folder.deleteLastPathComponent()
             }
             return nil

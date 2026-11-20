@@ -221,7 +221,7 @@ final class FolderViewsWindowController: NSWindowController, NSWindowDelegate, N
 
     /// A path under the home folder starts with ~.
     static func shortPath(_ path: String) -> String {
-        let home = NSHomeDirectory()
+        let home = DiskPath.home.string
         if path == home { return "~" }
         return path.hasPrefix(home + "/") ? "~" + path.dropFirst(home.count) : path
     }
@@ -334,7 +334,7 @@ final class FolderViewNode {
             }
         }
         // Inside a folder, by where each is from it; at the top, the home folder's first.
-        let home = NSHomeDirectory()
+        let home = DiskPath.home.string
         func key(_ node: FolderViewNode) -> (Int, String) {
             guard let parent = node.parent else {
                 let mine = node.view.path == home || node.view.path.hasPrefix(home + "/")

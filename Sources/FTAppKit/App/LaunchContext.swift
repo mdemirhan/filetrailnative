@@ -7,7 +7,7 @@ public enum LaunchContext {
     /// `--folder <p>`, `--folder=<p>`, or the first positional argument that is not the app's own path; `~` is expanded
     /// and the path must be a directory.
     public static func resolveStartupFolderPath(
-        argv: [String], cwd: String, homePath: String = NSHomeDirectory(), appPath: String? = nil,
+        argv: [String], cwd: String, homePath: String = DiskPath.home.string, appPath: String? = nil,
         isDirectory: (String) -> Bool = LaunchContext.isDirectoryOnDisk
     ) -> String? {
         guard

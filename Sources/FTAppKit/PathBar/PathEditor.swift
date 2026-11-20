@@ -1,4 +1,5 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 /// One row of the suggestions: the folder's name over (beside) its full path.
@@ -234,7 +235,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
     var onClose: () -> Void = {}
     /// The suggestions for a typed path (`~` already expanded).
     var requestSuggestions: @MainActor (String) async -> [PathSuggestionRow] = { _ in [] }
-    var homePath = NSHomeDirectory()
+    var homePath = DiskPath.home.string
 
     override init(frame: NSRect) {
         super.init(frame: frame)

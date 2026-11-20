@@ -122,7 +122,7 @@ extension MainWindowController {
         let choosing = purpose == .chooseFolder
         return Places.build(
             visitedFolders: Self.visitStore()?.folders() ?? [], favoritePaths: preferences.favorites.map(\.path),
-            currentPath: shownFolderPath, homePath: FileManager.default.homeDirectoryForCurrentUser.path,
+            currentPath: shownFolderPath, homePath: DiskPath.home.string,
             now: AppClock.now.timeIntervalSince1970 * 1000, startupDiskName: services.startupDisk.name,
             destinationFolders: choosing ? Self.visitStore()?.destinations() ?? [] : [],
             otherPanePath: choosing ? otherPane.flatMap(otherPaneDestination) : nil)
@@ -131,7 +131,7 @@ extension MainWindowController {
     /// The typed text trimmed, `~` expanded, a path from "./" or "../" taken from the folder on screen, hidden folders
     /// only when the tab shows them, 12 at most.
     func pathCompletions(_ input: String) async -> [GoToCompletion]? {
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let path = PathCompletionRequests.requestPath(input, homePath: home, currentPath: shownFolderPath)
         let hidden = includeHidden
         guard
@@ -146,7 +146,7 @@ extension MainWindowController {
     /// otherwise it shows the read's message. An opened folder chosen from the list that is gone is forgotten; one
     /// that only couldn't be opened is kept.
     func submitGoTo(_ path: String, box: GoToFolderBox) {
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let expanded = GoToBoxState.folderPath(path, homePath: home, currentPath: box.options.currentPath)
         let wasVisited = box.state.places.contains { $0.isVisited && $0.path == path }
         box.setError(nil)
@@ -217,7 +217,7 @@ extension MainWindowController {
     /// Choose…: the system's folder picker, starting at the path typed.
     private func browseFolder(_ window: NSWindow) -> @MainActor (String) async -> String? {
         let current = shownFolderPath
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         return { [weak window] path in
             await Self.pickDirectory(
                 path.isEmpty ? nil : GoToBoxState.folderPath(path, homePath: home, currentPath: current), window)
@@ -235,7 +235,7 @@ extension MainWindowController {
         start: @escaping @MainActor (String) async -> CopyLikeOutcome,
         started: @escaping @MainActor (CopyLikeOutcome) -> Void = { _ in }
     ) {
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let asTyped = GoToBoxState.folderPath(typed, homePath: home, currentPath: box.options.currentPath)
         let creates = box.state.createsFolder
         let submitted = box.state.text

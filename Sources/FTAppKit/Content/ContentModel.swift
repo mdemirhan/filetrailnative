@@ -5,7 +5,9 @@ import Foundation
 extension DirectoryEntry: ListFilterEntry {}
 
 extension DirectoryEntry {
-    var url: URL { URL(fileURLWithPath: path) }
+    /// The item's file URL, spelled as its path is; whether it is a folder is what its listing found, a link to one
+    /// counting as one.
+    var url: URL { DiskPath(path).url(isDirectory: kind.isDirectoryKind || kind == .bundle) }
 
     /// A folder, or a link to one: what opens in place, and what Folders First puts ahead.
     var isDirectoryLike: Bool { kind.isDirectoryKind }

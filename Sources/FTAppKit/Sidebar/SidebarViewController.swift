@@ -191,7 +191,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     func applyPreferences() {
         preferencesAppliedCount += 1
         let prefs = preferences()
-        model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
+        model.homePath = DiskPath.home.string
         if !prefs.favoritesInitialized {
             // First launch: the favorites become the defaults, and the section opens.
             let defaults = Favorites.defaults(homePath: model.homePath)

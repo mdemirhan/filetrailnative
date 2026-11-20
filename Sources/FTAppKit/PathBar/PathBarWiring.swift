@@ -51,7 +51,7 @@ extension MainWindowController {
                 inputPath: input, includeHidden: hidden, limit: InfoMetrics.suggestionLimit)
             return (answer?.suggestions ?? []).map { PathSuggestionRow(path: $0.path, name: $0.name) }
         }
-        bar.editor.homePath = FileManager.default.homeDirectoryForCurrentUser.path
+        bar.editor.homePath = DiskPath.home.string
     }
 
     /// The selected search result while results show: the selection's lead, or else the first selected.

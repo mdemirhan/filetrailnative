@@ -1,4 +1,5 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 /// What a Go To box is for: Go To itself, or a folder for items to go into (Move To, Extract To) with its title,
@@ -16,7 +17,7 @@ struct GoToBoxOptions {
     var currentPath = ""
     /// What the field holds when the box opens, all of it selected, so typing replaces it.
     var initialText = ""
-    var homePath = FileManager.default.homeDirectoryForCurrentUser.path
+    var homePath = DiskPath.home.string
 
     static func goTo(currentPath: String) -> GoToBoxOptions { GoToBoxOptions(currentPath: currentPath) }
 

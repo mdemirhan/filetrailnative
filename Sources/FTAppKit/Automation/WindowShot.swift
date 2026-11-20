@@ -2,6 +2,7 @@
 // (scripts/readme-screenshots.sh)
 #if DEBUG
     import AppKit
+    import FTFoundation
 
     @MainActor
     enum WindowShot {
@@ -81,10 +82,10 @@
             let height = NSScreen.screens.first?.frame.height ?? 0
             let frame = window.frame
             let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
+            process.executableURL = screencapture
             process.arguments = [
                 "-x", "-R\(Int(frame.minX)),\(Int(height - frame.maxY)),\(Int(frame.width)),\(Int(frame.height))",
-                file.path,
+                path(of: file),
             ]
             do {
                 try process.run()
@@ -95,18 +96,27 @@
             return process.terminationStatus == 0 ? nil : "screencapture could not take the screen"
         }
 
+        private nonisolated static var screencapture: URL {
+            DiskPath("/usr/sbin/screencapture").url(isDirectory: false)
+        }
+
+        /// The path of a picture the run writes, for the tool that takes it: the URL's own bytes.
+        private nonisolated static func path(of file: URL) -> String {
+            DiskPath(urlSpelling: file)?.string ?? ""
+        }
+
         /// Off the main thread, during a marquee.
         nonisolated static func capture(id: Int, shadow: Bool, to file: URL) -> String? {
             let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
-            process.arguments = ["-x"] + (shadow ? [] : ["-o"]) + ["-l\(id)", file.path]
+            process.executableURL = screencapture
+            process.arguments = ["-x"] + (shadow ? [] : ["-o"]) + ["-l\(id)", path(of: file)]
             do {
                 try process.run()
             } catch {
                 return "screencapture did not start: \(error.localizedDescription)"
             }
             process.waitUntilExit()
-            return process.terminationStatus == 0 && FileManager.default.fileExists(atPath: file.path)
+            return process.terminationStatus == 0 && FileManager.default.fileExists(atPath: path(of: file))
                 ? nil : "screencapture failed: allow File Trail in Privacy & Security › Screen Recording"
         }
 

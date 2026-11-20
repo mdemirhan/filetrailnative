@@ -50,8 +50,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private var readyToTerminate = false
     private var windowVisibility: WindowVisibilityMonitor?
 
-    private var home: URL { FileManager.default.homeDirectoryForCurrentUser }
-
     // MARK: Launch
 
     /// The dates' minute timer rests while no window can be seen, and they are read again on the way back.
@@ -83,6 +81,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 Self.value(after: $0, in: arguments)
             })
         let launchArguments = arguments.filter { !flagValues.contains($0) }
+        let home = DiskPath.home.string
         // The folder File Trail was launched with, by its path as the disk spells it, which is how the tabs kept from
         // the last run spell theirs: it is looked for among them. The disk is asked here, where it was just asked
         // whether the folder is there, before any window is open.
@@ -90,7 +89,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             argv: launchArguments,
             cwd: LaunchContext.resolveWorkingDirectory(
                 envPWD: ProcessInfo.processInfo.environment["PWD"], cwd: FileManager.default.currentDirectoryPath),
-            homePath: home.path, appPath: Bundle.main.bundlePath
+            homePath: home, appPath: Bundle.main.bundlePath
         ).map { DiskPath($0).asOnDisk().string }
 
         #if DEBUG
@@ -108,7 +107,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         // The windows open as they were at quit; the folder File Trail was launched with goes to the one in front.
         // A scenario that starts on the home folder starts as a launch with no folder does.
         explorerWindows.openStartupWindows(
-            folder: requested == nil && start.map { samePath($0, home.path) } == true ? nil : start)
+            folder: requested == nil && start.map { samePath($0, home) } == true ? nil : start)
         writeOperations?.showStartupNotices()
         // Items File Trail was launched to open go to the window in front.
         openFiles.startupWindowsOpened()
@@ -129,7 +128,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         #endif
 
         if let snapshot = Self.value(after: "--snapshot", in: arguments) {
-            Task { await WindowSnapshot.write(controller, to: URL(fileURLWithPath: snapshot)) }
+            Task { await WindowSnapshot.write(controller, to: DiskPath(snapshot).url(isDirectory: false)) }
         }
     }
 
@@ -173,7 +172,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         let driven = Self.isDrivenRun(arguments)
         let scratch = Self.drivenUserDataDirectory()
         let userData =
-            Self.value(after: "--user-data-dir", in: arguments).map { URL(fileURLWithPath: $0) }
+            Self.value(after: "--user-data-dir", in: arguments).map { DiskPath($0).url(isDirectory: true) }
             ?? (driven ? scratch : AppStatePaths.userDataDirectory())
         userDataDirectory = userData
         let logger = AppLogger(filePath: AppStatePaths.appLog(in: userData).path)
@@ -230,7 +229,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         // The journal's recovery runs before any window can write.
         let writes = AppWriteOperations(
             userData: userDataDirectory ?? AppStatePaths.userDataDirectory(), directoryService: directoryService,
-            windows: windows, trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
+            windows: windows, trash: .live(),
             emptyTrash: {
                 let result = await TrashState.empty()
                 return (result.ok, result.error)

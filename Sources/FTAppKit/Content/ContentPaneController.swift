@@ -8,7 +8,7 @@ struct ContentLoaders {
     /// Until the window wires its own.
     static let placeholder = ContentLoaders(
         metadata: { _, _, _ in [] }, hiddenCount: { _ in 0 }, iconStore: { nil },
-        homePath: FileManager.default.homeDirectoryForCurrentUser.path, openPrivacySettings: {})
+        homePath: DiskPath.home.string, openPrivacySettings: {})
 
     /// The details of items in the folder. `listedAdded` has the Date Added the folder read gave each of them that came
     /// from a listing; the others are asked for theirs.

@@ -1,5 +1,6 @@
 // The path bar, its editor and the status text
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 /// The status bar under the content and the Info panel: 28 tall with a line on top, the path bar on its left and the status
@@ -219,7 +220,7 @@ final class PathBarRowView: NSView {
     private func showSegments() {
         let name = startupDiskName()
         pathBar.startupDiskName = name
-        pathBar.segments = PathBarModel.segments(path, homePath: NSHomeDirectory(), startupDiskName: name)
+        pathBar.segments = PathBarModel.segments(path, homePath: DiskPath.home.string, startupDiskName: name)
     }
 
     override func setFrameSize(_ newSize: NSSize) {

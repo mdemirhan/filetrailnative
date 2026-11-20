@@ -1016,7 +1016,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                     if opensOnThisPress(path) { openExternally(path) }
                 case .handToSystem(let path):
                     onFolderUsed?()
-                    openFile(URL(fileURLWithPath: path))
+                    openFile(DiskPath(path).fileURL())
                 case .extract(let paths):
                     if firstPress {
                         Self.heldKeyTookApart = true
@@ -1050,7 +1050,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             extractToOpen([path])
             return
         }
-        openFile(URL(fileURLWithPath: path))
+        openFile(DiskPath(path).fileURL())
     }
 
     /// Opening archives: they are extracted, each next to itself, as File ▸ Extract does.
@@ -1300,7 +1300,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                 return (try? await service.snapshot(path: folder, includeHidden: true).entries.count) ?? 0
             },
             iconStore: { [weak self] in self?.services.iconStore },
-            homePath: FileManager.default.homeDirectoryForCurrentUser.path,
+            homePath: DiskPath.home.string,
             openPrivacySettings: {
                 Task { _ = await SystemActions.openFullDiskAccessSettings() }
             })
@@ -1670,9 +1670,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Whether the Trash has anything in it (nil: it can't be told), asked when the window comes to the front and after
     /// every file operation.
     var trashIsEmpty: Bool?
-    /// Reads whether the Trash has anything in it; tests use their own.
+    /// Reads whether the Trash has anything in it; tests use their own. The home folder is given as the system spells
+    /// it, which is what the Trash's folders are worked out from (`TrashFolders`).
     var trashIsEmptyReader: @Sendable () -> Bool? = {
-        TrashState.isEmpty(home: FileManager.default.homeDirectoryForCurrentUser.path, uid: getuid())
+        TrashState.isEmpty(home: NSHomeDirectory(), uid: getuid())
     }
 
     /// Counts the reads asked for, so an older one that answers late does not replace a newer answer.
@@ -1691,7 +1692,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     }
 
     /// The home folder whose Trash gets the bar and is called "Trash" in the titles; tests use their own.
-    var trashHomePath = FileManager.default.homeDirectoryForCurrentUser.path
+    var trashHomePath = DiskPath.home.string
 
     /// The Trash itself on screen has its bar, not a folder in it, and not over search results, in each pane. Empty
     /// follows Empty Trash in the menu: dimmed with nothing to erase, or while a file operation runs.
@@ -1924,7 +1925,6 @@ extension MainWindowController: ExplorerWindowHandle {
         guard ShortcutPolicy.canHandle(command, shortcutContext) else { return }
         // Cut, Copy, Paste and the file operations go to the write coordinator (WriteOperations/).
         if !isCustomizingToolbar, performWriteCommand(command) { return }
-        let fileManager = FileManager.default
         switch command {
         case .openLocationSheet: openLocationSheet()
         case .goBack: goBack(nil)
@@ -2004,7 +2004,7 @@ extension MainWindowController: ExplorerWindowHandle {
         // The places of the Go menu: the startup disk and the Trash act exactly as a click on their Locations
         // rows, the folders as Go to Folder opens them.
         case .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash:
-            let home = fileManager.homeDirectoryForCurrentUser.path
+            let home = DiskPath.home.string
             if let place = GoMenuPlaceCommand(rawValue: command.rawValue)?.place(homePath: home) {
                 if place.asLocation {
                     sidebar.openLocation(place.path)
@@ -2012,7 +2012,7 @@ extension MainWindowController: ExplorerWindowHandle {
                     go(to: place.path)
                 }
             }
-        case .goHomeRootTree: sidebar.rootTree(at: fileManager.homeDirectoryForCurrentUser.path)
+        case .goHomeRootTree: sidebar.rootTree(at: DiskPath.home.string)
         case .rootTreeAtSelection:
             if let target = sidebar.rootTreeTarget(
                 focusedPane: focusedPane, lastFocusedPane: lastFocusedPane,
@@ -2212,7 +2212,7 @@ extension MainWindowController: ExplorerWindowContext {
     /// Everything the command rules read: the one state of the menu bar, the toolbar
     /// and the keys.
     private var commandContext: CommandAvailabilityContext {
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let entries = commandEntries
         let lead = content.selection.leadPath
         var context = CommandAvailabilityContext(
@@ -2248,7 +2248,7 @@ extension MainWindowController: ExplorerWindowContext {
 
     /// What the commands' target rules read.
     private var commandTargets: CommandAvailability.TargetContext {
-        let trashPath = FavoriteLabel.trashPath(homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+        let trashPath = FavoriteLabel.trashPath(homePath: DiskPath.home.string)
         return CommandAvailability.TargetContext(
             currentPath: shownFolderPath, selectedPathsInViewOrder: selectedPaths, activeContentEntries: commandEntries,
             selectedTreeTargetPath: sidebar.selectedTreeTargetPath, isSearchMode: searchRootPath != nil,

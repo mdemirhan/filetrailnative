@@ -1,5 +1,6 @@
 #if DEBUG
     import AppKit
+    import FTFileSystem
     import FTFoundation
 
     /// `FileTrail --automation <scenario.json> --out <dir> [--elements <elements.json>]`: runs a capture
@@ -23,7 +24,7 @@
             }
             guard let scenario = value(after: "--automation") else { return nil }
             let out = value(after: "--out") ?? FileManager.default.currentDirectoryPath
-            func url(_ path: String) -> URL { URL(fileURLWithPath: (path as NSString).expandingTildeInPath) }
+            func url(_ path: String) -> URL { DiskPath((path as NSString).expandingTildeInPath).fileURL() }
             return Options(scenario: url(scenario), out: url(out), elements: value(after: "--elements").map(url))
         }
 

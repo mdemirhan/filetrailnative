@@ -120,7 +120,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     var presentsWindows = true
 
     /// Where a tab with nowhere else to go opens.
-    var home = FileManager.default.homeDirectoryForCurrentUser.path
+    var home = DiskPath.home.string
     /// Which disk a path is on: `/Volumes/<name>`, or `/`.
     var volumeRoot: (String) -> String = { ExplorerTabs.volumeRootPath($0) }
     private var observers: [any NSObjectProtocol] = []

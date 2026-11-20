@@ -1,4 +1,6 @@
 #if DEBUG
+    import FTFileSystem
+    import FTFoundation
     import Foundation
 
     /// One UI state or flow to capture, as written in a scenario's JSON file. The app plays it through
@@ -278,7 +280,7 @@
 
         /// The folder an `open` step names, as the scenario spells it: nothing is asked of the disk.
         func resolve(_ path: String, environment: [String: String] = ProcessInfo.processInfo.environment) -> String {
-            let home = FileManager.default.homeDirectoryForCurrentUser.path
+            let home = DiskPath.home.string
             func expand(_ text: String) -> String {
                 if text == "~" { return home }
                 if text.hasPrefix("~/") { return home + text.dropFirst() }

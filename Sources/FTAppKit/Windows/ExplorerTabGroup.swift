@@ -1,5 +1,6 @@
 // One explorer window, whose tabs are the windows of one NSWindowTabGroup
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 /// One explorer window. Each of its tabs is a window of its own, all in one native tab group; what is kept per window
@@ -369,7 +370,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// pane alone when that pane's folder is there.
     func addTabs(_ added: [OpenTabPreference]) {
         let room = max(0, tabLimit - tabs.count)
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let startups = added.prefix(room).map { StartupTabs.startupTab($0, homePath: home) }
         let kept = StartupTabs.waitingTabs(startups, homePath: home) { ScreenGeometry.keepsWaitingTabs($0) }
         for startup in kept {

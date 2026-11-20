@@ -24,7 +24,7 @@ extension SidebarViewController {
         rootPath: String, folder: String, favoritePath: String?, favoritesExpanded: Bool, locationsExpanded: Bool,
         includeHidden: Bool
     ) {
-        model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
+        model.homePath = DiskPath.home.string
         model.includeHidden = includeHidden
         model.currentPath = folder
         let selected: TreeItemID? =

@@ -395,7 +395,7 @@ final class BrowserPane {
         case .superseded: return false
         case .failed: break
         }
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         guard folderPath != home else { return false }
         if drivesSidebar { sidebar.model.initializeTree(home) }
         return await attemptNavigation(to: home, history: .replace).didOpen
