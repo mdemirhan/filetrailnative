@@ -145,6 +145,9 @@ func executeReplace(
                 staging.stagingFor = outerMode
                 staging.metadataLaterFor = stagingPath
                 staging.folderMadeAt = madeAt
+                // A new folder that couldn't be copied whole replaces nothing: nothing more is copied once an item
+                // failed.
+                staging.endsAtFirstFailure = true
                 staging.displayPath = { path in
                     let shown = rebasePath(path, stagingPath, finalPath)
                     return outerDisplay?(shown) ?? shown

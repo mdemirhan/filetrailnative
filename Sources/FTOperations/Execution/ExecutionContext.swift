@@ -201,6 +201,10 @@ final class ExecutionContext: @unchecked Sendable {
     /// The folder made already, under a name of its own reserved for it (see reserveStagingFolder): it is
     /// filled, not made again.
     var folderMadeAt: String?
+    /// While an item is built under a hidden name that is cleared away should anything in it fail (a folder moving
+    /// to another disk, a Replace's new folder): the first item that fails ends the copying, as nothing copied
+    /// after it would be kept. Not a plain copy, which is put in place with its failures named.
+    var endsAtFirstFailure = false
     /// Where the paste's items really are, looked up once per paste (Replace's).
     var pastedItems: PastedItems?
 
@@ -246,6 +250,7 @@ final class ExecutionContext: @unchecked Sendable {
         stagingFor = other.stagingFor
         metadataLaterFor = other.metadataLaterFor
         folderMadeAt = other.folderMadeAt
+        endsAtFirstFailure = other.endsAtFirstFailure
         pastedItems = other.pastedItems
     }
 

@@ -422,6 +422,40 @@ struct ConflictSafetyTests {
         }
     }
 
+    // The existing folder is kept once one item of the new one failed, so nothing after that item is copied.
+    @Test(arguments: [CopyPasteMode.copy, .cut])
+    func aFolderReplaceCopiesNothingMoreOnceAnItemFailed(mode: CopyPasteMode) async throws {
+        try await withPlaces { root, trashDir in
+            let source = root + "/source"
+            let target = root + "/target"
+            for name in ["a.txt", "b.txt", "c.txt", "sub/d.txt"] {
+                try Disk.write(source + "/docs/" + name, "new")
+            }
+            try Disk.write(target + "/docs/keep.txt", "existing work")
+            let asked = Locked<[String]>([])
+            let fileSystem = NativePaste.asOnAnotherDisk(source, withTrash(trashDir))
+            fileSystem.copyFileImpl = { from, to, stop, onProgress in
+                asked.mutate { $0.append(NodePath.basename(from)) }
+                if from == source + "/docs/b.txt" { throw NativeError.errno(EIO, syscall: "copyfile", path: from) }
+                try NativeWriteFileSystem().copyFile(from, to, stop: stop, onProgress: onProgress)
+            }
+
+            let run = try await SafetyPaste(mode: mode, sources: [source + "/docs"], destination: target)
+                .run(fileSystem)
+
+            #expect(asked.value == ["a.txt", "b.txt"])
+            #expect(names(run.result?.items) == [["docs", "failed"], ["b.txt", "failed"]])
+            #expect(
+                run.result?.items.first?.error
+                    == "\u{201C}docs\u{201D} wasn't replaced because some items inside couldn't be copied.")
+            #expect(run.result?.summary.completedByteCount == 0)
+            #expect(Disk.list(trashDir) == [])
+            #expect(Disk.list(target + "/docs") == ["keep.txt"])
+            #expect(Disk.list(target) == ["docs"])
+            #expect(Disk.list(source + "/docs") == ["a.txt", "b.txt", "c.txt", "sub"])
+        }
+    }
+
     // On the startup disk the Trash always exists: a failure there (a busy item, a permission) is reported, and
     // deleting for good is never offered instead.
     @Test func failsTheItemWithoutOfferingToDeleteForGoodWhenTheTrashRefusesIt() async throws {

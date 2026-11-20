@@ -60,7 +60,8 @@ func performNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCopyPasteN
 
 /// A folder copied, or moved to another disk, is built whole under a hidden name next to where it goes (written
 /// down, for a crash), then given its name: stopped, or a move that couldn't copy everything, leaves nothing half
-/// done in either place, and a move removes the originals only once the folder is in place. A copy of an ordinary
+/// done in either place (a move copies nothing more once an item failed: its hidden copy goes whatever follows),
+/// and a move removes the originals only once the folder is in place. A copy of an ordinary
 /// folder that couldn't copy everything is put in place with what it has, its failures named, unless the disk filled
 /// up (that ends the paste, as a Stop does); a package (a Keynote document, an app) is put in place whole or not at
 /// all.
@@ -120,6 +121,8 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
             staging.stagingFor = outerMode
             staging.metadataLaterFor = temporaryPath
             staging.folderMadeAt = temporaryPath
+            // A move that couldn't copy everything moves nothing: nothing more is copied once an item failed.
+            staging.endsAtFirstFailure = outerMode == .cut
             staging.displayPath = { path in
                 let shown = rebasePath(path, temporaryPath, finalPath)
                 return outerDisplay?(shown) ?? shown
@@ -416,7 +419,8 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
                 throw CancelledWithItemsError(
                     childItems: [.list(bubbledChildItems), .list(inProgress), .list(nested?.childItems ?? [])])
             }
-            // A failed item inside a folder is recorded and the rest of the folder continues.
+            // A failed item inside a folder is recorded and the rest of the folder continues (unless the folder is
+            // given up for it: endsAtFirstFailure, below).
             childResult = ExecuteNodeResult(
                 itemStatus: .failed, skipReason: nil, error: describeCopyPasteError(error),
                 destinationPath: failedDestination(error) ?? child.destinationPath, childItems: [])
@@ -447,6 +451,13 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
         // hidden name goes whole).
         if context.shared.diskFull != nil {
             throw CancelledWithItemsError(childItems: bubbledChildItems)
+        }
+        // The hidden copy this folder is part of goes for one item that failed: nothing more is copied into it. The
+        // result names what failed, and each folder above ends the same way, as failed.
+        if context.endsAtFirstFailure && childResult.itemStatus == .failed {
+            return ExecuteNodeResult(
+                itemStatus: .failed, skipReason: nil, error: nil, destinationPath: currentNode.destinationPath,
+                childItems: bubbledChildItems)
         }
     }
     // The folder's metadata goes on once its items are in: writing them changes its dates, and a read-only or
