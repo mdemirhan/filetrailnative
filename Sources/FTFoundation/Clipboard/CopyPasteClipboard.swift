@@ -170,7 +170,8 @@ public enum ClipboardRules {
     }
 
     /// Follows items the app renamed or moved; `capturedAt` stays. Items the write left where
-    /// they were (`left`) stay, even inside a folder that moved.
+    /// they were (`left`) stay, even inside a folder that moved. An item the moves brought inside a folder on the
+    /// clipboard comes off, whatever its intent: it goes with the folder, as when the folder is added.
     public static func remapPaths(
         _ clipboard: CopyPasteClipboard, _ moves: [(from: String, to: String)], left: LeftInPlace = .nothing
     ) -> CopyPasteClipboard {
@@ -183,15 +184,26 @@ public enum ClipboardRules {
         }
         var changed = false
         var next: [ClipboardPick] = []
-        var kept = Set<ExactKey>()
+        // Where each item kept was, by where it is now.
+        var cameFrom: [ExactKey: String] = [:]
         for var pick in picks {
             let moved = remappedPath(pick.path, movesByFrom, left) ?? pick.path
             if !JSString.equals(moved, pick.path) { changed = true }
-            guard kept.insert(ExactKey(moved)).inserted else { continue }
+            guard cameFrom[ExactKey(moved)] == nil else { continue }
+            cameFrom[ExactKey(moved)] = pick.path
             pick.path = moved
             next.append(pick)
         }
-        return changed ? settled(.holding(next, capturedAt: capturedAt, grown: grown)) : clipboard
+        guard changed else { return clipboard }
+        // Only what the moves brought together: an item that was inside its folder before stays as it was put on.
+        next.removeAll { pick in
+            let from = cameFrom[ExactKey(pick.path)] ?? pick.path
+            let holder = deepestHolder(parentPrefix(pick.path)) { folder in
+                cameFrom[ExactKey(folder)].map { !JSString.hasPrefix(from, $0 + "/") } ?? false
+            }
+            return holder != nil
+        }
+        return settled(.holding(next, capturedAt: capturedAt, grown: grown))
     }
 
     /// What a write that moved items left where they were: the items it skipped, or that failed or were stopped,

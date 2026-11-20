@@ -261,6 +261,60 @@ struct ClipboardShelfTests {
         #expect(ClipboardRules.followThroughWrite(other, write).sourcePaths == ["/a/x.txt", "/d/y.txt"])
     }
 
+    /// A cut item moved into a folder on the clipboard comes off, as when the folder is added: it goes with the
+    /// folder. Left on, the paste took it as part of the folder and copied it, while Paste said it would move it.
+    @Test func anItemMovedIntoAFolderOnTheClipboardGoesWithTheFolder() {
+        let gathered = CopyPasteClipboard.ready(
+            picks: [
+                ClipboardPick(path: "/a/Reports", mode: .copy, markedAt: Self.t1),
+                ClipboardPick(path: "/b/notes.txt", mode: .cut, markedAt: Self.t2),
+                ClipboardPick(path: "/b/other.txt", mode: .cut, markedAt: Self.t2),
+            ], capturedAt: Self.t1, grown: true)
+        let moved = ClipboardWrite(
+            action: .moveTo, mode: .cut,
+            items: [WriteEffectItem(sourcePath: "/b/notes.txt", destinationPath: "/a/Reports/notes.txt")])
+        let followed = ClipboardRules.followThroughWrite(gathered, moved)
+        #expect(followed.sourcePaths == ["/a/Reports", "/b/other.txt"])
+        #expect(followed.picks.map(\.mode) == [.copy, .cut])
+        #expect(followed.capturedAt == Self.t1)
+        #expect(followed.isGrown)
+        // Deeper inside it too, and a folder moved there with the item in it.
+        let deeper = ClipboardWrite(
+            action: .moveTo, mode: .cut,
+            items: [WriteEffectItem(sourcePath: "/b", destinationPath: "/a/Reports/2026/b")])
+        #expect(ClipboardRules.followThroughWrite(gathered, deeper).sourcePaths == ["/a/Reports"])
+        // Moved beside the folder, it is followed and stays cut.
+        let beside = ClipboardWrite(
+            action: .moveTo, mode: .cut,
+            items: [WriteEffectItem(sourcePath: "/b/notes.txt", destinationPath: "/a/notes.txt")])
+        #expect(
+            ClipboardRules.followThroughWrite(gathered, beside).sourcePaths
+                == ["/a/Reports", "/a/notes.txt", "/b/other.txt"])
+    }
+
+    /// The other way: a folder on the clipboard moved to where it holds an item on the clipboard (merged into the
+    /// folder the item is in) takes the item with it.
+    @Test func aFolderMovedOverAnItemOnTheClipboardTakesIt() {
+        let gathered = CopyPasteClipboard.ready(
+            picks: [
+                ClipboardPick(path: "/a/Reports/notes.txt", mode: .cut, markedAt: Self.t1),
+                ClipboardPick(path: "/b/Reports", mode: .copy, markedAt: Self.t2),
+                ClipboardPick(path: "/c/z.txt", mode: .cut, markedAt: Self.t2),
+            ], capturedAt: Self.t1, grown: true)
+        let merged = ClipboardWrite(
+            action: .moveTo, mode: .cut,
+            items: [WriteEffectItem(sourcePath: "/b/Reports", destinationPath: "/a/Reports")])
+        let followed = ClipboardRules.followThroughWrite(gathered, merged)
+        #expect(followed.sourcePaths == ["/a/Reports", "/c/z.txt"])
+        #expect(followed.picks.map(\.mode) == [.copy, .cut])
+        // A rename of a folder that holds an item on the clipboard brings nothing together: both are followed.
+        let renamed = ClipboardWrite(
+            action: .rename, items: [WriteEffectItem(sourcePath: "/a/Reports", destinationPath: "/a/Final")])
+        #expect(
+            ClipboardRules.followThroughWrite(gathered, renamed).sourcePaths
+                == ["/a/Final/notes.txt", "/b/Reports", "/c/z.txt"])
+    }
+
     // MARK: The summary, the marks and their flash
 
     @Test func aClipboardOfBothIsCountedByIntent() throws {
