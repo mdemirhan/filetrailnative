@@ -131,7 +131,14 @@ extension WriteCoordinator {
         defer { staging.remove() }
         try NativeArchive.extract(
             archivePath, into: staging.work, rawName: rawName, quarantine: true, control: control)
-        let children = try fileSystem.readdir(staging.work)
+        // On a disk that keeps attributes in "._name" files (exFAT, FAT) an item's quarantine is such a file beside
+        // it: no second item, and it goes with its item when that is moved.
+        let listed = try fileSystem.readdir(staging.work)
+        let siblings = Set(listed.map(NameKeys.Exact.init))
+        let children = listed.filter { name in
+            !(CopyPasteNames.isAppleDoubleCompanionName(name, hasSibling: { siblings.contains(NameKeys.Exact($0)) })
+                && fileSystem.isAppleDouble(NodePath.join(staging.work, name)))
+        }
         let placed: String
         if children.count == 1, let only = children.first {
             let source = NodePath.join(staging.work, only)

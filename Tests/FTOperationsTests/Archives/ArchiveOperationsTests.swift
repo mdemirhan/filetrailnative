@@ -191,6 +191,60 @@ import Testing
         }
     }
 
+    /// On a disk that keeps attributes in "._name" files (exFAT, FAT32) the quarantine of the one item a downloaded
+    /// archive holds is such a file beside it. The archive still gives that item, not a folder named after itself
+    /// holding it; the item is quarantined where it is put, and nothing stays where it was made.
+    /// Only a release runs it: it mounts an image of each.
+    @Test(
+        .tags(.diskImage), .diskImages, .enabled(if: ReleaseTests.enabled), arguments: [DiskImage.Kind.exfat, .fat32])
+    func aDownloadedArchiveOfOneItemGivesItOnADiskThatKeepsAttributesInFiles(kind: DiskImage.Kind) async throws {
+        try await DiskImage.withVolume(kind) { volume in
+            let folder = "\(volume.path)/Downloads"
+            try UndoDisk.mkdir(folder)
+            let maker = try TemporaryDirectory(prefix: "filetrail-zip-maker")
+            defer { maker.remove() }
+            try UndoDisk.write("\(maker.path)/Report.pdf", "report")
+            try UndoDisk.mkdir("\(maker.path)/Photos")
+            try UndoDisk.write("\(maker.path)/Photos/a.txt", "a")
+            try Self.run("/usr/bin/zip", ["-q", "\(folder)/Report.pdf.zip", "Report.pdf"], in: maker.path)
+            try Self.run("/usr/bin/zip", ["-q", "-r", "\(folder)/Album.zip", "Photos"], in: maker.path)
+            let quarantine = "0083;6734a1b2;Safari;"
+            Self.setAttribute("\(folder)/Report.pdf.zip", "com.apple.quarantine", quarantine)
+            Self.setAttribute("\(folder)/Album.zip", "com.apple.quarantine", quarantine)
+            // The disk as it stores names: FileManager leaves the "._name" files out of what it lists there.
+            let disk = NativeWriteFileSystem()
+            func everything(under path: String) -> [String] {
+                ((try? disk.readdir(path)) ?? []).flatMap { name -> [String] in
+                    let item = "\(path)/\(name)"
+                    return [item] + ((try? disk.lstat(item))?.type == .directory ? everything(under: item) : [])
+                }
+            }
+            func extract(_ name: String) throws -> String {
+                try WriteCoordinator.extractOne("\(folder)/\(name)", into: folder, disk, NativeArchive.Control()).path
+            }
+
+            #expect(try extract("Report.pdf.zip") == "\(folder)/Report.pdf")
+            #expect(try Self.text("\(folder)/Report.pdf") == "report")
+            #expect(Self.attribute("\(folder)/Report.pdf", "com.apple.quarantine") == quarantine)
+
+            #expect(try extract("Album.zip") == "\(folder)/Photos")
+            #expect(try disk.readdir("\(folder)/Photos").sorted() == ["._a.txt", "a.txt"])
+            #expect(Self.attribute("\(folder)/Photos", "com.apple.quarantine") == quarantine)
+            #expect(Self.attribute("\(folder)/Photos/a.txt", "com.apple.quarantine") == quarantine)
+
+            // Each item and archive with the file that keeps its attributes, and no more.
+            let items = ["Album.zip", "Photos", "Report.pdf", "Report.pdf.zip"]
+            #expect(try disk.readdir(folder).sorted() == (items.map { "._\($0)" } + items).sorted())
+            // Nothing of what was made out of sight is left anywhere on the disk.
+            let made: Set = ["Extracted", "._Extracted", "Report.pdf", "._Report.pdf", "Photos", "._Photos", "a.txt"]
+            let left = everything(under: volume.path).filter {
+                !$0.hasPrefix("\(folder)/")
+                    && (made.contains(NodePath.basename($0)) || $0.hasSuffix(".filetrail-partial"))
+            }
+            #expect(left.isEmpty, "\(left)")
+        }
+    }
+
     /// Its items' access rules would deny writing their attributes and deleting them: they come out without them,
     /// quarantined, and Undo can move them to the Trash.
     @Test func anArchiveWithAccessRulesComesOutWithoutThemAndUndoTakesItAway() async throws {
