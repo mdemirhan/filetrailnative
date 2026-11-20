@@ -63,7 +63,7 @@ extension MainWindowController {
         if let actions, actions.refuseWhileBusy(.operation(.batchRename)) { return }
         guard !targets.isEmpty, let window, batchRenameSheet == nil else { return }
         sidebarController.model.clearTypeahead()
-        let home = actions?.session.coordinator.homePath ?? FileManager.default.homeDirectoryForCurrentUser.path
+        let home = actions?.session.coordinator.homePath ?? DiskPath.home.string
         let model = BatchRenameSheetModel(
             inspector: Self.batchRenameInspector(home),
             readSaved: { [weak self] in

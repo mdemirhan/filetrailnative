@@ -1,5 +1,6 @@
 // One tab's Undo History list under its toolbar button
 import AppKit
+import FTFileSystem
 import FTFoundation
 import FTOperations
 
@@ -27,7 +28,7 @@ final class TabUndoHistory {
     private func content() -> UndoHistoryContent? {
         guard let history else { return nil }
         let content = UndoHistoryRows.content(
-            history, homePath: FileManager.default.homeDirectoryForCurrentUser.path, cache: Self.rows)
+            history, homePath: DiskPath.home.string, cache: Self.rows)
         return content.isEmpty ? nil : content
     }
 

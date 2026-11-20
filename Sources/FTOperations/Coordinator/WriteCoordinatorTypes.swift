@@ -242,7 +242,7 @@ public struct WriteCoordinatorOptions {
     public var logError: (_ message: String, _ error: (any Error)?) -> Void
 
     public init(
-        homePath: String = NSHomeDirectory(), recordUndo: ((FinishedWrite) -> Void)? = nil,
+        homePath: String = DiskPath.home.string, recordUndo: ((FinishedWrite) -> Void)? = nil,
         diskHasTrash: (@Sendable (String) throws -> Bool)? = nil, undoHistory: UndoHistory? = nil,
         undoCheckWithinMs: Double = WriteCoordinator.undoCheckWithinMs,
         undoBatchRename: @escaping UndoBatchRenamer = UndoBatchRename.runBatchRename,

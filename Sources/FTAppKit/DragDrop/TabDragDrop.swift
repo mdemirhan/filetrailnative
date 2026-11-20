@@ -306,7 +306,7 @@ final class TabDragDrop {
     /// it has sprung into it.
     func contentTarget(_ session: DragSession, entry: DirectoryEntry?) -> Target? {
         guard let pane = listPane else { return nil }
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let anotherList = fromTheOtherPane(session, into: pane)
         if let entry {
             let real = entry.kind == .directory && !entry.isSymlink
@@ -452,7 +452,7 @@ final class TabDragDrop {
     func sidebarTarget(_ row: SidebarRowState?) -> Target? {
         guard let row, let path = row.item.path, row.item.kind != .favoritesRoot, row.item.kind != .locationsRoot
         else { return nil }
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let trash = Paths.isInsideTrash(path, homePath: home)
         switch row.item.kind {
         case .filesystem:

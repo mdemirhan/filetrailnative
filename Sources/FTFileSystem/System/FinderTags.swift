@@ -82,7 +82,7 @@ public enum FinderTags {
     /// The folders macOS asks the person about before an app reads them: the home folder's Desktop, Documents and
     /// Downloads. Reading even a folder's own tags counts, so drawing their tag colors in the home folder asked for
     /// permission at every start of an app not yet allowed, though nothing was opened.
-    static func asksPermission(_ path: String, homePath: String = NSHomeDirectory()) -> Bool {
+    static func asksPermission(_ path: String, homePath: String = DiskPath.home.string) -> Bool {
         var path = path
         while path.count > 1, path.hasSuffix("/") { path.removeLast() }
         var home = homePath

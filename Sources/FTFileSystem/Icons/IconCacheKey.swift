@@ -126,7 +126,7 @@ public enum IconCacheKey {
         return Set(system + own.map { home + "/" + $0 })
     }
 
-    private static let specialFolders = specialFolderPaths(homePath: NSHomeDirectory())
+    private static let specialFolders = specialFolderPaths(homePath: DiskPath.home.string)
 
     /// A special folder or a disk's top folder, which is drawn as the disk: a drive, a disk image, a network share.
     static func isDrawnBySystem(_ entry: IconEntry) -> Bool {

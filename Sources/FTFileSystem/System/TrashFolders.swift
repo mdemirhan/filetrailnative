@@ -14,7 +14,7 @@ public struct TrashFolders: Sendable {
     private let listMounts: @Sendable () -> [Mount]
 
     public init(
-        homePath: String = FileManager.default.homeDirectoryForCurrentUser.path, uid: UInt32 = getuid(),
+        homePath: String = NSHomeDirectory(), uid: UInt32 = getuid(),
         listMounts: @escaping @Sendable () -> [Mount] = MountTable.list
     ) {
         homeAsSpelled = NodePath.join(homePath, ".Trash")

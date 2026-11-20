@@ -38,7 +38,7 @@ public struct TrashItem: Sendable {
 
     /// The app's Trash: `NativeFS.trashItem`, with the disk's flags and the mount table's idea of which disks
     /// have a Trash (`makeDiskHasTrash`).
-    public static func live(homePath: String = NSHomeDirectory()) -> TrashItem {
+    public static func live(homePath: String = DiskPath.home.string) -> TrashItem {
         let fileSystem = PosixFileSystem()
         return TrashItem(
             trash: NativeFS.trashItem, lstat: { try fileSystem.lstat($0) }, getFlags: NativeFS.getFlags,

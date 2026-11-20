@@ -1,4 +1,5 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 extension ExplorerToolbar {
@@ -61,7 +62,7 @@ extension ExplorerToolbar {
     /// Back's or Forward's menu: the folders that way, nearest first, under the button's left edge.
     func showHistoryMenu(back: Bool, from button: ToolbarButton) {
         guard let context, button.isEnabled else { return }
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let home = DiskPath.home.string
         let disk = context.services.startupDisk.name
         let entries =
             back

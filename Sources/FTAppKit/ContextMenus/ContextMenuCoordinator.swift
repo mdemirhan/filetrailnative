@@ -49,7 +49,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     // MARK: Building
 
-    private var home: String { FileManager.default.homeDirectoryForCurrentUser.path }
+    private var home: String { DiskPath.home.string }
 
     func contentMenu(for entries: [DirectoryEntry]?) -> NSMenu? {
         let search = tab.searchRootPath != nil

@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// Where the app keeps its own files: one folder under Application Support, named for the bundle id.
@@ -12,7 +13,7 @@ public enum AppStatePaths {
         let base =
             applicationSupport
             ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-            ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Library/Application Support")
+            ?? DiskPath.home.url(isDirectory: true).appendingPathComponent("Library/Application Support")
         return base.appendingPathComponent(bundleID, isDirectory: true)
     }
 

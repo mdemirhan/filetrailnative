@@ -218,7 +218,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         shell.needsLayout = true
     }
 
-    private static let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+    private static let homePath = DiskPath.home.string
 
     /// The columns of search results' List view: Name, then those chosen for results in Settings, with their own widths.
     func columnState(_ preferences: AppPreferences) -> ListColumnState {

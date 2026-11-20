@@ -230,7 +230,7 @@ extension MainWindowController {
     var pasteDestinationPath: String? {
         PasteDestination.resolve(
             menu: nil, clipboardSourcePaths: services.clipboard.contents.sourcePaths, currentPath: shownFolderPath,
-            isSearchMode: searchRootPath != nil, homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+            isSearchMode: searchRootPath != nil, homePath: DiskPath.home.string)
     }
 }
 
@@ -257,7 +257,7 @@ extension MainWindowController {
             }
             actions.putOnClipboard(action == .cut ? .cut : .copy, paths: subject.paths, entries: entries)
         case .paste:
-            let home = FileManager.default.homeDirectoryForCurrentUser.path
+            let home = DiskPath.home.string
             let world = ContextMenuWorld(
                 homePath: home, currentPath: shownFolderPath, isSearchMode: searchRootPath != nil,
                 writeLocked: isWriteLocked)

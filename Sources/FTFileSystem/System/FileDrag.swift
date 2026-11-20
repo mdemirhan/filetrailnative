@@ -260,7 +260,7 @@ public enum FileDrag {
     /// can't be looked at for another reason (a disk gone to sleep) is not taken for gone. `cleared`: what was left,
     /// read again (and the Trash, when the Dock's Trash took them).
     public static func findDraggedAway(
-        _ paths: [String], intoTrash: Bool = false, homePath: String = NSHomeDirectory(),
+        _ paths: [String], intoTrash: Bool = false, homePath: String = DiskPath.home.string,
         lstatError: @Sendable (String) -> Int32 = FileDrag.lstatError
     ) -> (gone: [String], cleared: [String]) {
         let gone = paths.filter { lstatError($0) == ENOENT }

@@ -83,26 +83,16 @@ Sources/FTAppKit/Windows/MainWindowController.swift: if let target = await Self.
 Sources/FTAppKit/App/AppDelegate.swift: windows: windows, trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
 Sources/FTAppKit/App/PageWindows.swift: public var homePath = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Automation/Scenario.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/BatchRename/MainWindowController+BatchRename.swift: let home = actions?.session.coordinator.homePath ?? FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Clipboard/TabClipboard.swift: isSearchMode: searchRootPath != nil, homePath: FileManager.default.homeDirectoryForCurrentUser.path)
-Sources/FTAppKit/Clipboard/TabClipboard.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Content/ContentPaneController.swift: homePath: FileManager.default.homeDirectoryForCurrentUser.path, openPrivacySettings: {})
-Sources/FTAppKit/ContextMenus/ContextMenuCoordinator.swift: private var home: String { FileManager.default.homeDirectoryForCurrentUser.path }
 Sources/FTAppKit/Dialogs/GoToFolderBox.swift: var homePath = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: currentPath: shownFolderPath, homePath: FileManager.default.homeDirectoryForCurrentUser.path,
 Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Dialogs/MainWindowController+Dialogs.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/DragDrop/TabDragDrop.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/DragDrop/TabDragDrop.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/InfoPanel/InfoController.swift: private var homePath: String { FileManager.default.homeDirectoryForCurrentUser.path }
 Sources/FTAppKit/PathBar/PathBarWiring.swift: bar.editor.homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Search/TabSearch.swift: private static let homePath = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Sidebar/SidebarViewController+Window.swift: model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Sidebar/SidebarViewController.swift: model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/Toolbar/ToolbarMenus.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTAppKit/UndoHistory/TabUndoHistory.swift: history, homePath: FileManager.default.homeDirectoryForCurrentUser.path, cache: Self.rows)
 Sources/FTAppKit/Windows/BrowserPane.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Windows/ExplorerTabGroup.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Windows/ExplorerWindows.swift: var home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -113,8 +103,6 @@ Sources/FTAppKit/Windows/MainWindowController.swift: let home = fileManager.home
 Sources/FTAppKit/Windows/MainWindowController.swift: case .goHomeRootTree: sidebar.rootTree(at: fileManager.homeDirectoryForCurrentUser.path)
 Sources/FTAppKit/Windows/MainWindowController.swift: let home = FileManager.default.homeDirectoryForCurrentUser.path
 Sources/FTAppKit/Windows/MainWindowController.swift: let trashPath = FavoriteLabel.trashPath(homePath: FileManager.default.homeDirectoryForCurrentUser.path)
-Sources/FTAppKit/WriteOperations/AppWriteOperations.swift: let homePath = FileManager.default.homeDirectoryForCurrentUser.path
-Sources/FTFileSystem/System/TrashFolders.swift: homePath: String = FileManager.default.homeDirectoryForCurrentUser.path, uid: UInt32 = getuid(),
 
 # The app's own files and folders (under Application Support or a folder a test names), its bundle and source tree,
 # and the temporary folder: no accents in practice.

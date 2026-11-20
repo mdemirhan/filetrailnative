@@ -106,7 +106,7 @@ final class WindowFolderSizes {
     private var probeFlushQueued = false
 
     init(
-        backend: any FolderSizeBackend, owner: Int, homePath: String = NSHomeDirectory(),
+        backend: any FolderSizeBackend, owner: Int, homePath: String = DiskPath.home.string,
         scheduler: any TimerScheduling = TaskTimerScheduler(),
         now: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
     ) {

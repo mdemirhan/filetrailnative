@@ -213,7 +213,7 @@ public final class FolderSizeJobs {
 
     /// `homePath`: where the home folder is (tests use their own): its Trash is where deleted items go.
     public init(
-        native: any FolderSizeNative, homePath: String = NSHomeDirectory(),
+        native: any FolderSizeNative, homePath: String = DiskPath.home.string,
         onSettled: ((Int?, String) -> Void)? = nil, onStored: (() -> Void)? = nil
     ) {
         self.native = native

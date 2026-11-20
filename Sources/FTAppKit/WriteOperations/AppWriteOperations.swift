@@ -35,7 +35,7 @@ final class AppWriteOperations {
         log: @escaping @MainActor (String) -> Void
     ) {
         self.emptyTrash = emptyTrash
-        let homePath = FileManager.default.homeDirectoryForCurrentUser.path
+        let homePath = DiskPath.home.string
         let diskHasTrash = makeDiskHasTrash()
         // Items replaced by a paste go to the Trash, so a replace can always be undone.
         let fileSystem = NativeWriteFileSystem(trash: { try trashItem($0) })

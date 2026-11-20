@@ -132,7 +132,7 @@ final class InfoController {
     private var content: ContentPaneController { host.content }
     private var panelOpen: Bool { host.panels.propertiesOpen }
     private var rowOpen: Bool { host.panels.detailRowOpen }
-    private var homePath: String { FileManager.default.homeDirectoryForCurrentUser.path }
+    private var homePath: String { DiskPath.home.string }
     private var folderPath: String { host.shownFolderPath }
 
     // MARK: The target
