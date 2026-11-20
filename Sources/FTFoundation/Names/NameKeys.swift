@@ -3,12 +3,22 @@ import Foundation
 /// Keys that make two names or paths compare equal as the disk takes them for one name. Each place has
 /// its own, with its own normalization; keys are compared scalar for scalar.
 public enum NameKeys {
-    /// A key compared scalar for scalar: `String`'s own `==` and hashing take NFC and NFD as equal.
+    /// A key compared byte for byte: `String`'s own `==` and hashing take NFC and NFD as equal. For a name, and for
+    /// a text made to be compared (`exactDestinationKey`); a whole path as the disk spells it is a `DiskPath`, which
+    /// is compared the same way and is another type, so the two are never taken for each other.
     public struct Exact: Hashable, Sendable {
-        let bytes: [UInt8]
+        let text: String
 
         public init(_ text: String) {
-            bytes = Array(text.utf8)
+            self.text = ExactBytes.contiguous(text)
+        }
+
+        public static func == (left: Exact, right: Exact) -> Bool {
+            ExactBytes.equal(left.text, right.text)
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            ExactBytes.hash(text, into: &hasher)
         }
     }
 

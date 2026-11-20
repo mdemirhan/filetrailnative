@@ -102,10 +102,8 @@ final class SidebarModel {
     private var viewVersion = 0
     private var cancelTypeaheadTimer: (() -> Void)?
 
-    struct ExactKeyBox: Hashable {
-        let bytes: [UInt8]
-        init(_ path: String) { bytes = Array(path.utf8) }
-    }
+    /// A path as a key, spelled exactly.
+    typealias ExactKeyBox = DiskPath
 
     // MARK: Setting up
 

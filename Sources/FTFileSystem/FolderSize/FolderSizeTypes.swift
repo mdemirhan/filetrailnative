@@ -1,4 +1,5 @@
 import CFileTrail
+import FTFoundation
 import Foundation
 
 /// What a size leaves out, and why, as the walk found while it measured: empty when it is complete. Kept with each
@@ -23,29 +24,7 @@ public struct FolderSizePartial: OptionSet, Hashable, Sendable {
 
 /// A path as a dictionary key: compared and hashed by its exact UTF-8.
 /// Swift's `String` takes NFC and NFD spellings as equal, and a folder can have either as its name.
-struct PathKey: Hashable, Sendable {
-    let value: String
-
-    init(_ value: String) {
-        self.value = value
-    }
-
-    static func == (lhs: PathKey, rhs: PathKey) -> Bool {
-        var lhs = lhs.value
-        var rhs = rhs.value
-        return lhs.withUTF8 { left in
-            rhs.withUTF8 { right in
-                left.count == right.count
-                    && (left.isEmpty || memcmp(left.baseAddress, right.baseAddress, left.count) == 0)
-            }
-        }
-    }
-
-    func hash(into hasher: inout Hasher) {
-        var copy = value
-        copy.withUTF8 { hasher.combine(bytes: UnsafeRawBufferPointer($0)) }
-    }
-}
+typealias PathKey = DiskPath
 
 /// Where the app's writes landed under a folder while it was being walked, kept so that each folder the walk
 /// finishes is looked up without going through the changes: the folders holding a change, and the changes themselves.

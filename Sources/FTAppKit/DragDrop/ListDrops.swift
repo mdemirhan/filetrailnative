@@ -105,13 +105,7 @@ extension ListTableView {
 }
 
 /// A path as a key, spelled exactly.
-struct PathBox: Hashable {
-    let bytes: [UInt8]
-
-    init(_ path: String) {
-        bytes = Array(path.utf8)
-    }
-}
+typealias PathBox = DiskPath
 
 extension FTFileSystem.EntryKind {
     /// The same kind, as the rules of FTFoundation name it.

@@ -25,7 +25,7 @@ public final class FolderSizeCache {
     }
 
     public func entries() -> [(path: String, stats: FolderSizeStats)] {
-        sizes.map { (path: $0.key.value, stats: $0.value) }
+        sizes.map { (path: $0.key.string, stats: $0.value) }
     }
 
     /// A size measured.
@@ -126,7 +126,7 @@ public final class FolderSizeCache {
         while let next = pending.popLast() {
             for child in children[next] ?? [] {
                 if sizes[child] != nil {
-                    found.append(child.value)
+                    found.append(child.string)
                 }
                 pending.append(child)
             }

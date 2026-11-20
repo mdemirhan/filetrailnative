@@ -201,14 +201,8 @@ public enum JSString {
     }
 }
 
-/// A string used as a key by its exact code units, so the NFC and NFD spellings of a name are two keys.
-struct ExactKey: Hashable, Sendable {
-    let bytes: [UInt8]
-
-    init(_ text: String) {
-        bytes = Array(text.utf8)
-    }
-}
+/// A path used as a key by its exact bytes, so the NFC and NFD spellings of a name are two keys.
+typealias ExactKey = DiskPath
 
 extension Date {
     /// Milliseconds since 1970, rounded to the nearest whole one.

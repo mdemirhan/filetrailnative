@@ -4,7 +4,7 @@ import FTFoundation
 import FTOperations
 
 /// A path as a key, spelled exactly.
-typealias ExactPath = FTFoundation.NameKeys.Exact
+typealias ExactPath = FTFoundation.DiskPath
 
 /// What a write did, as search results take it. Results change only when the write acted on them: one of its items
 /// was a result, or it put items into a folder found. Then what it removed or moved to another folder leaves them,
