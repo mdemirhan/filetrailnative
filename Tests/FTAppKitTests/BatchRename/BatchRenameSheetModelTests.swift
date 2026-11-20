@@ -129,6 +129,26 @@ extension ExplorerWindowlessTests {
             #expect(model.request == nil)
         }
 
+        // A rename of several is of one disk: with the items on more than one, the sheet keeps why and sends
+        // nothing, whatever the settings.
+        @Test func saysWhenTheItemsAreOnMoreThanOneDiskAndRenamesNothing() async throws {
+            let severalDisks = "These items are on more than one disk. Rename them one disk at a time."
+            let (model, box, _) = setup(settings: BatchRenameSettings(find: "IMG_", replaceWith: "x"))
+            box.severalDisks = true
+            model.open(targets)
+            #expect(await answered(model))
+            #expect(model.sheet?.inspectError == severalDisks)
+            // The new names are still worked out, to be looked at.
+            #expect(model.plan?.renameCount == 2)
+            #expect(model.request == nil)
+            #expect(!model.canRename)
+            // Asked again for the dates taken, the answer is the same.
+            model.setSettings(takenSettings)
+            #expect(await waitUntil { model.sheet?.inspectHasDatesTaken == true })
+            #expect(model.sheet?.inspectError == severalDisks)
+            #expect(model.request == nil)
+        }
+
         @Test func opensWithTheDefaultsWhenThePreferencesCantBeReadAndNotAtAllForNothing() async throws {
             let (model, _, saved) = setup()
             saved.fails = true

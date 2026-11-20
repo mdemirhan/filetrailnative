@@ -344,6 +344,42 @@ extension ExplorerWindowlessTests {
             failed.close()
         }
 
+        // A rename of several is of one disk: opened on items of more than one, the sheet says so in its footer, whole,
+        // and neither the button nor Return renames.
+        @Test func saysTheItemsAreOnMoreThanOneDiskAndHoldsTheRename() async throws {
+            let fixture = await Fixture([target("IMG_1.jpg"), target("IMG_2.jpg")], severalDisks: true) {
+                $0.mode = .add
+                $0.addText = "x"
+            }
+            #expect(fixture.summary == "These items are on more than one disk. Rename them one disk at a time.")
+            let summary = fixture.sheet.summaryLabel
+            #expect(summary.attributedStringValue.size().width <= summary.frame.width)
+            // The new names show as for any items.
+            #expect(fixture.rows == ["IMG_1.jpgIMG_1x.jpg", "IMG_2.jpgIMG_2x.jpg"])
+            #expect(!fixture.sheet.renameButton.isEnabled)
+            #expect(fixture.sheet.renameButton.title == "Rename")
+            fixture.sheet.addTextField.focus()
+            fixture.returnKey()
+            #expect(fixture.renamed.isEmpty)
+            // No setting changes it.
+            fixture.type(fixture.sheet.addTextField, "y")
+            #expect(fixture.summary == "These items are on more than one disk. Rename them one disk at a time.")
+            #expect(!fixture.sheet.renameButton.isEnabled)
+            fixture.close()
+
+            // On one disk the same items are renamed.
+            let oneDisk = await Fixture([target("IMG_1.jpg"), target("IMG_2.jpg")]) {
+                $0.mode = .add
+                $0.addText = "x"
+            }
+            #expect(oneDisk.summary == "2 will be renamed")
+            #expect(oneDisk.sheet.renameButton.isEnabled)
+            oneDisk.sheet.addTextField.focus()
+            oneDisk.returnKey()
+            #expect(oneDisk.renamed.count == 1)
+            oneDisk.close()
+        }
+
         @Test func listsAtMostAThousandRowsAndSaysHowManyMoreThereAre() async throws {
             let many = (0..<1_005).map { target("f\($0).txt") }
             let fixture = await Fixture(many)

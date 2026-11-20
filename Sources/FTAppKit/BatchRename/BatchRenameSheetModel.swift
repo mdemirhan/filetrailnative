@@ -22,7 +22,8 @@ final class BatchRenameSheetModel {
         var inspect: BatchRenameInspection?
         /// Whether `inspect` includes the dates taken (asked for only when they are used).
         var inspectHasDatesTaken: Bool
-        /// The checks couldn't be made: nothing can be renamed.
+        /// Why nothing can be renamed, whatever the settings: the checks couldn't be made, or they found the items
+        /// on more than one disk.
         var inspectError: String?
     }
 
@@ -138,6 +139,8 @@ final class BatchRenameSheetModel {
             case .success(let answer):
                 current.inspect = answer
                 current.inspectHasDatesTaken = includeDateTaken
+                // A rename of several is of one disk: said at once, in the words the rename itself would refuse with.
+                current.inspectError = answer.severalDisks ? BatchRenameExecution.severalDisksRefusal : nil
                 self.sheet = current
                 self.askForDatesTakenIfUsed()
             case .failure(let error):

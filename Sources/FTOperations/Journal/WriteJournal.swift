@@ -55,7 +55,9 @@ public struct PartialFileJournalEntry: Equatable, Sendable {
 
 /// Items a rename of several moved aside under hidden names (`temporaryPath`) so others could take their names:
 /// written down before the first moves, for one folder depth at a time. A crash leaves each where the next start
-/// finds it: under its old name, its new one, or its old one with a number.
+/// finds it: under its old name, its new one, or its old one with a number. One disk is kept for the whole entry
+/// (`disk`): a rename of several is of one disk, so it is every item's. Only an entry written by a version that
+/// renamed across disks holds items of others.
 public struct BatchRenameJournalEntry: Equatable, Sendable {
     public struct Item: Equatable, Sendable {
         public var temporaryPath: String

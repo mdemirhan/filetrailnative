@@ -594,8 +594,9 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(BatchRenameExecution.recover(undated, disk, diskId: { _ in "stick-2" }).remaining.isEmpty)
     }
 
-    // An entry keeps one disk, its first item's. With that folder on the disk written down, an item on another disk
-    // (renamed from search results) that took its name before the crash is done with.
+    // An entry keeps one disk, its first item's. A rename is of one disk now, but an entry written before that was so
+    // may hold items of another (renamed from search results): with the first item's folder on the disk written
+    // down, such an item that took its name before the crash is done with.
     @Test func letsGoOfAnItemOnAnotherDiskWhileTheFirstItemsFolderIsOnTheDiskWrittenDown() {
         let disk = MemoryDisk([hidden("a")])
         disk.folderPaths = ["/trip", "/other"]

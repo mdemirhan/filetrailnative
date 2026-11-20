@@ -48,6 +48,28 @@ private func request(
         onConflict: onConflict, numberSeparator: numberSeparator)
 }
 
+/// A request for files at these paths, each with its new name.
+private func paths(_ pairs: [(String, String)]) -> BatchRenameRequest {
+    BatchRenameRequest(items: pairs.map { .init(sourcePath: $0.0, destinationName: $0.1, isFolder: false) })
+}
+
+private let severalDisks = "These items are on more than one disk. Rename them one disk at a time."
+
+/// The disk itself, except that the folder `other` is said to be on another disk than it is.
+private func realDisk(sayingIsOnAnotherDisk other: String) -> TestLocalFileSystem {
+    let disk = NativeWriteFileSystem()
+    return TestLocalFileSystem(
+        lstat: { try disk.lstat($0) },
+        stat: { path in
+            var stats = try disk.stat(path)
+            if path == other { stats.dev = (stats.dev ?? 0) + 1 }
+            return stats
+        }, mkdir: { try disk.mkdir($0) }, rename: { try disk.rename($0, $1) },
+        renameExclusive: { try disk.renameExclusive($0, $1) }, rm: { try disk.rm($0, recursive: $1, force: $2) },
+        trash: { inTrash($0) }, readdir: { try disk.readdir($0) }, realpath: { try disk.realpath($0) },
+        getFlags: { try disk.getFlags($0) })
+}
+
 private func write(_ path: String, _ text: String) throws {
     try text.write(toFile: path, atomically: false, encoding: .utf8)
 }
@@ -144,6 +166,32 @@ private func rename(
                 end.result?.items.map(\.destinationPath) == [
                     "\(root)/Lisbon", "\(root)/Lisbon/Lisbon 1.jpg", "\(root)/Lisbon/inner/Lisbon 2.jpg",
                 ])
+        }
+    }
+
+    // Items found by a search are in several folders; on one disk they are renamed together.
+    @Test func renamesItemsInSeveralFoldersOfOneDisk() async throws {
+        try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
+            let root = directory.path
+            for folder in ["one", "two", "two/deep"] {
+                try FileManager.default.createDirectory(atPath: "\(root)/\(folder)", withIntermediateDirectories: true)
+                try write("\(root)/\(folder)/a.jpg", folder)
+                try write("\(root)/\(folder)/b.jpg", "b")
+            }
+            // Two of them swap names, which moves one aside.
+            let (end, _) = try await rename(
+                root,
+                [
+                    ("one/a.jpg", "b.jpg"), ("one/b.jpg", "a.jpg"), ("two/a.jpg", "Lisbon 2.jpg"),
+                    ("two/deep/a.jpg", "Lisbon 3.jpg"),
+                ])
+            #expect(end.status == .completed)
+            #expect(end.completedItemCount == 4)
+            #expect(end.result?.targetPath == nil)
+            #expect(try read("\(root)/one/b.jpg") == "one")
+            #expect(try names("\(root)/one") == ["a.jpg", "b.jpg"])
+            #expect(try read("\(root)/two/Lisbon 2.jpg") == "two")
+            #expect(try read("\(root)/two/deep/Lisbon 3.jpg") == "two/deep")
         }
     }
 
@@ -341,6 +389,106 @@ private func rename(
                     == "The Trash folder is a protected system directory and cannot be modified.")
             #expect(await refusal(one("\(home)/Documents", "x"), home: home) == "“Documents” can't be renamed.")
             #expect(await refusal(one("/Applications", "Apps")) == "“Applications” can't be renamed.")
+        }
+    }
+
+    // A rename of several is of one disk. One over two is refused before anything is moved aside, written down for
+    // recovery or kept for Undo.
+    @Test func refusesItemsOnMoreThanOneDiskBeforeAnythingIsRenamedOrWrittenDown() async throws {
+        try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
+            let here = directory.appending("here").path
+            let there = directory.appending("there").path
+            for folder in [here, there] {
+                try FileManager.default.createDirectory(atPath: folder, withIntermediateDirectories: false)
+                try write("\(folder)/a.txt", "a")
+                try write("\(folder)/b.txt", "b")
+            }
+            let fileSystem = realDisk(sayingIsOnAnotherDisk: there)
+            let journal = RenameJournal()
+            var finished: [FinishedWrite] = []
+            var options = WriteCoordinatorOptions()
+            options.writeJournal = journal
+            options.recordUndo = { finished.append($0) }
+            let coordinator = WriteCoordinator.local(fileSystem, homePath: nobodyHome, options: options)
+            let window = TestWindow()
+            // The two of "here" swap names: started, that alone moves one aside and writes it down.
+            let swap = [("\(here)/a.txt", "b.txt"), ("\(here)/b.txt", "a.txt")]
+            do {
+                let handle = try await coordinator.batchRename(
+                    paths(swap + [("\(there)/a.txt", "c.txt")]), window: window)
+                _ = try await Coordinators.end(of: handle.operationId, in: window)
+                Issue.record("a rename over two disks started")
+            } catch {
+                #expect(errorMessage(error) == severalDisks)
+            }
+            #expect(coordinator.activeOperation == nil)
+            #expect(fileSystem.calls.renameExclusive.isEmpty)
+            #expect(fileSystem.calls.rename.isEmpty)
+            #expect(journal.added.isEmpty)
+            #expect(finished.isEmpty)
+            #expect(window.progress.isEmpty)
+            #expect(try names(here) == ["a.txt", "b.txt"])
+            #expect(try read("\(here)/a.txt") == "a")
+            #expect(try names(there) == ["a.txt", "b.txt"])
+
+            // Each disk's items on their own are renamed, the write slot free again.
+            let handle = try await coordinator.batchRename(paths(swap), window: window)
+            let end = try await Coordinators.end(of: handle.operationId, in: window)
+            #expect(end.status == .completed)
+            #expect(try read("\(here)/a.txt") == "b")
+            #expect(finished.count == 1)
+            await coordinator.shutDown(maxWaitMs: 0)
+        }
+    }
+
+    // An item whose folder is gone has its own failure. Its disk can't be read, which refuses nothing.
+    @Test func leavesAnItemWhoseFolderCantBeReadToFailOnItsOwn() async throws {
+        try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
+            let root = try makeFolder(directory, [("a.txt", "a")])
+            let coordinator = WriteCoordinator.local(.real(), homePath: nobodyHome)
+            let window = TestWindow()
+            let handle = try await coordinator.batchRename(
+                request(root, [("a.txt", "b.txt"), ("gone/x.txt", "y.txt")]), window: window)
+            let end = try await Coordinators.end(of: handle.operationId, in: window)
+            #expect(end.result?.items.map(\.status) == [.completed, .failed])
+            #expect(end.result?.items.last?.error == "“x.txt” no longer exists.")
+            #expect(try visibleNames(root) == ["b.txt"])
+            await coordinator.shutDown(maxWaitMs: 0)
+        }
+    }
+
+    // On two real disks. An item is on the disk its folder is on: one in a folder reached through a link is on the
+    // disk the link leads to, and a link among the items is on the disk of the folder it is in.
+    @Test(.tags(.diskImage), .diskImages)
+    func refusesItemsOnTwoRealDisksJudgingEachByTheFolderItIsIn() async throws {
+        try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
+            try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
+                let here = directory.path
+                let there = volume.path
+                try write("\(here)/a.txt", "a")
+                try write("\(there)/b.txt", "b")
+                try write("\(there)/c.txt", "c")
+                #expect(symlink(there, "\(here)/link") == 0)
+                #expect(
+                    await refusal(paths([("\(here)/a.txt", "x.txt"), ("\(there)/b.txt", "y.txt")])) == severalDisks)
+                #expect(
+                    await refusal(paths([("\(here)/a.txt", "x.txt"), ("\(here)/link/b.txt", "y.txt")]))
+                        == severalDisks)
+                #expect(try visibleNames(here) == ["a.txt", "link"])
+                #expect(try visibleNames(there) == ["b.txt", "c.txt"])
+
+                let coordinator = WriteCoordinator.local(.real(), homePath: nobodyHome)
+                let window = TestWindow()
+                let throughLink = try await coordinator.batchRename(
+                    paths([("\(here)/link/b.txt", "y.txt"), ("\(there)/c.txt", "z.txt")]), window: window)
+                #expect(try await Coordinators.end(of: throughLink.operationId, in: window).status == .completed)
+                #expect(try visibleNames(there) == ["y.txt", "z.txt"])
+                let linkItself = try await coordinator.batchRename(
+                    paths([("\(here)/a.txt", "x.txt"), ("\(here)/link", "link 2")]), window: window)
+                #expect(try await Coordinators.end(of: linkItself.operationId, in: window).status == .completed)
+                #expect(try visibleNames(here) == ["link 2", "x.txt"])
+                await coordinator.shutDown(maxWaitMs: 0)
+            }
         }
     }
 

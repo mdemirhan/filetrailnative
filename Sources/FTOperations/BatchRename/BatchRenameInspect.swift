@@ -15,7 +15,8 @@ public struct BatchRenameInspectRequest: Equatable, Sendable {
     }
 }
 
-/// The items' dates, whether each can be renamed, and every name in their folders.
+/// The items' dates, whether each can be renamed, every name in their folders, and whether the items are on more
+/// than one disk.
 public struct BatchRenameInspection: Equatable, Sendable {
     public struct Item: Equatable, Sendable {
         public var path: String
@@ -52,10 +53,14 @@ public struct BatchRenameInspection: Equatable, Sendable {
 
     public var items: [Item]
     public var folders: [Folder]
+    /// The items' folders are on more than one disk: a rename of several is of one disk, so none of them is renamed
+    /// (`WriteCoordinator.assertOnOneDisk`).
+    public var severalDisks: Bool
 
-    public init(items: [Item], folders: [Folder]) {
+    public init(items: [Item], folders: [Folder], severalDisks: Bool = false) {
         self.items = items
         self.folders = folders
+        self.severalDisks = severalDisks
     }
 }
 
@@ -66,6 +71,8 @@ public struct BatchRenameInspectDeps: Sendable {
     public var readdir: @Sendable (String) throws -> [String]
     /// Whether names in the folder differ by case; nil when the disk doesn't say.
     public var isCaseSensitive: @Sendable (String) throws -> Bool?
+    /// The disk the folder is on (its device), a link to the folder followed; nil when the disk doesn't say.
+    public var folderDisk: @Sendable (String) throws -> Int64?
     public var getFlags: (@Sendable (String) throws -> UInt32)?
     /// Whether items in the folder can be renamed: it can be written to.
     public var canWriteFolder: @Sendable (String) throws -> Bool
@@ -79,6 +86,7 @@ public struct BatchRenameInspectDeps: Sendable {
         lstat: @escaping @Sendable (String) throws -> WriteServiceStats,
         readdir: @escaping @Sendable (String) throws -> [String],
         isCaseSensitive: @escaping @Sendable (String) throws -> Bool?,
+        folderDisk: @escaping @Sendable (String) throws -> Int64?,
         getFlags: (@Sendable (String) throws -> UInt32)?,
         canWriteFolder: @escaping @Sendable (String) throws -> Bool,
         readDatesTaken: @escaping @Sendable ([String]) async throws -> [String?],
@@ -87,6 +95,7 @@ public struct BatchRenameInspectDeps: Sendable {
         self.lstat = lstat
         self.readdir = readdir
         self.isCaseSensitive = isCaseSensitive
+        self.folderDisk = folderDisk
         self.getFlags = getFlags
         self.canWriteFolder = canWriteFolder
         self.readDatesTaken = readDatesTaken
@@ -102,7 +111,8 @@ public struct BatchRenameInspectDeps: Sendable {
         let disk = NativeWriteFileSystem()
         return BatchRenameInspectDeps(
             lstat: { try disk.lstat($0) }, readdir: { try disk.readdir($0) },
-            isCaseSensitive: { try disk.isCaseSensitive($0) }, getFlags: { try disk.getFlags($0) },
+            isCaseSensitive: { try disk.isCaseSensitive($0) }, folderDisk: { try disk.stat($0).dev },
+            getFlags: { try disk.getFlags($0) },
             canWriteFolder: { access($0, W_OK) == 0 }, readDatesTaken: { await DatesTaken.read($0) },
             assertRenamable: assertRenamable, homePath: homePath)
     }
@@ -117,7 +127,8 @@ public struct BatchRenameInspectDeps: Sendable {
 }
 
 public enum BatchRenameInspect {
-    /// The items' dates, whether each can be renamed, and every name in their folders.
+    /// The items' dates, whether each can be renamed, every name in their folders, and whether those folders are on
+    /// more than one disk.
     public static func inspect(_ request: BatchRenameInspectRequest, _ deps: BatchRenameInspectDeps) async
         -> BatchRenameInspection
     {
@@ -133,6 +144,8 @@ public enum BatchRenameInspect {
 
     private struct FolderLook {
         var folder: BatchRenameInspection.Folder
+        /// The disk it is on; nil when it can't be read.
+        var disk: Int64?
         var writable: Bool
         var locked: Bool
     }
@@ -148,7 +161,8 @@ public enum BatchRenameInspect {
                 folder: .init(
                     path: path, names: (try? deps.readdir(path)) ?? [],
                     caseSensitive: ((try? deps.isCaseSensitive(path)) ?? nil) == true),
-                writable: (try? deps.canWriteFolder(path)) ?? false, locked: isLocked(deps.getFlags, path))
+                disk: (try? deps.folderDisk(path)) ?? nil, writable: (try? deps.canWriteFolder(path)) ?? false,
+                locked: isLocked(deps.getFlags, path))
         }
         var folderByPath: [NameKeys.Exact: FolderLook] = [:]
         for folder in folders {
@@ -182,7 +196,9 @@ public enum BatchRenameInspect {
                 modifiedAt: stats.flatMap { localDateTimeOrNil($0.mtimeMs) },
                 takenAt: taken.flatMap { isLocalDateTime($0) ? $0 : nil }, cannotRename: cannotRename)
         }
-        return BatchRenameInspection(items: items, folders: folders.map(\.folder))
+        // A folder whose disk can't be read says nothing: its items have their own reason.
+        return BatchRenameInspection(
+            items: items, folders: folders.map(\.folder), severalDisks: Set(folders.compactMap(\.disk)).count > 1)
     }
 
     /// A date the disk doesn't really have (no birth time on some disks) is left out.

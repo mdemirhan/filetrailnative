@@ -29,6 +29,8 @@ final class BatchRenameInspectBox {
     var folderNames: [String]?
     var cannotRename: [String: String] = [:]
     var takenAt: String?
+    /// The items are found on more than one disk.
+    var severalDisks = false
     /// Every request, in order.
     private(set) var requests: [BatchRenameInspectRequest] = []
     private var waiting: [Int: CheckedContinuation<BatchRenameInspection, any Error>] = [:]
@@ -46,9 +48,11 @@ final class BatchRenameInspectBox {
         let index = requests.count - 1
         switch mode {
         case .answer:
-            return Self.answer(
+            var answer = Self.answer(
                 paths: request.paths, folderNames: folderNames, cannotRename: cannotRename,
                 takenAt: request.includeDateTaken ? takenAt : nil)
+            answer.severalDisks = severalDisks
+            return answer
         case .fail:
             throw OperationError("gone")
         case .hold:
@@ -149,12 +153,13 @@ final class BatchRenameSheetFixture {
 
     init(
         _ targets: [BatchRenameTarget], folderNames: [String]? = nil, presets: [BatchRenamePreset] = [],
-        cannotRename: [String: String] = [:], inspect: BatchRenameInspectBox.Mode = .answer,
-        initial: (inout BatchRenameSettings) -> Void = { _ in }
+        cannotRename: [String: String] = [:], severalDisks: Bool = false,
+        inspect: BatchRenameInspectBox.Mode = .answer, initial: (inout BatchRenameSettings) -> Void = { _ in }
     ) async {
         box = BatchRenameInspectBox(mode: inspect)
         box.folderNames = folderNames
         box.cannotRename = cannotRename
+        box.severalDisks = severalDisks
         var settings = BatchRenameSettings.defaults
         initial(&settings)
         saved.settings = settings

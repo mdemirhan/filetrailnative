@@ -101,6 +101,10 @@ public enum BatchRenameExecution {
     /// A name taken during the rename gets the first free number up to this; past it, it fails.
     public static let maxAddedNumber = 10_000
 
+    /// Said when the items asked for are on more than one disk: the rename doesn't start
+    /// (`WriteCoordinator.assertOnOneDisk`), and the Rename sheet says so as it opens.
+    public static let severalDisksRefusal = "These items are on more than one disk. Rename them one disk at a time."
+
     /// Told as each item starts: where it is, where it goes, and how many are done. A throw is ignored.
     public typealias ItemStart = (_ sourcePath: String, _ destinationPath: String, _ completed: Int) throws -> Void
 
@@ -547,10 +551,13 @@ public enum BatchRenameExecution {
         diskId: (String) -> String? = { NativeFS.diskId(of: $0) }
     ) -> BatchRenameRecovery {
         var recovery = BatchRenameRecovery()
-        // The entry's disk is the one its first item's folder was on. With another disk there now, an item that
-        // isn't found may still be under its hidden name on its own disk. While that folder is on the disk written
-        // down, an item not found is done with wherever it is: a rename of search results can span disks, and the
-        // entry keeps only the one.
+        // The entry's disk is the one its first item's folder was on, and a rename of several is of one disk
+        // (`WriteCoordinator.assertOnOneDisk`), so it is every item's. With another disk there now, an item that
+        // isn't found may still be under its hidden name on its own disk; with that folder on the disk written down,
+        // an item not found is done with.
+        // An entry written by a version that renamed search results across disks may hold items of other disks,
+        // and still keeps only the one. The first item's folder decides for those too: on the disk written down, an
+        // item not found is done with wherever it is.
         let anotherDiskThere =
             entry.items.first.map { folderIsOnAnotherDisk($0.temporaryPath, disk: entry.disk, diskId) } ?? false
         for written in entry.items {

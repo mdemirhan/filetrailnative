@@ -33,7 +33,7 @@ extension WriteCoordinator {
     }
 
     /// What the request asks is checked before the write slot is taken: nothing
-    /// protected, no item twice. An item asked to keep its own name is left out.
+    /// protected, no item twice, every item on one disk. An item asked to keep its own name is left out.
     func prepareBatchRename(_ payload: BatchRenameRequest) async throws -> BatchRenameRequest {
         var request = payload
         request.items =
@@ -54,7 +54,32 @@ extension WriteCoordinator {
         let sourcePaths = request.items.map(\.sourcePath)
         try WriteGuards.assertNotProtectedPath(sourcePaths, homePath: homePath)
         try await assertNotSystemLocation(sourcePaths, verb: "renamed")
+        try await assertOnOneDisk(sourcePaths)
         return request
+    }
+
+    /// A rename of several items is of one disk: refused, before anything is moved aside or written down, when the
+    /// items are on more than one. The rename's journal entry keeps one disk, and after a crash that is what tells an
+    /// item whose disk is away from one that is done with.
+    ///
+    /// An item's disk is the one its folder is on, a link to the folder followed: that is where its name is, also
+    /// for an item that is itself a link or where another disk is mounted. A folder that can't be read says
+    /// nothing: its items fail on their own, as in any rename.
+    func assertOnOneDisk(_ sourcePaths: [String]) async throws {
+        let fileSystem = fileSystem
+        try await LocalOperations.onDisk {
+            var folders = Set<NameKeys.Exact>()
+            var disks = Set<Int64>()
+            for path in sourcePaths {
+                let folder = NodePath.dirname(path)
+                guard folders.insert(NameKeys.Exact(folder)).inserted, let disk = (try? fileSystem.stat(folder))?.dev
+                else { continue }
+                disks.insert(disk)
+                if disks.count > 1 {
+                    throw WriteCoordinatorError(BatchRenameExecution.severalDisksRefusal)
+                }
+            }
+        }
     }
 
     func executeBatchRename(

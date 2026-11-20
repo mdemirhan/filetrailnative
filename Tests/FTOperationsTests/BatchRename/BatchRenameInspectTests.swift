@@ -35,6 +35,7 @@ private func deps(
     lstat: @escaping @Sendable (String) throws -> WriteServiceStats = { _ in stats() },
     readdir: @escaping @Sendable (String) throws -> [String] = { _ in ["a.jpg", "b.jpg", ".hidden"] },
     isCaseSensitive: @escaping @Sendable (String) throws -> Bool? = { _ in false },
+    folderDisk: @escaping @Sendable (String) throws -> Int64? = { _ in 1 },
     getFlags: @escaping @Sendable (String) throws -> UInt32 = { _ in 0 },
     canWriteFolder: @escaping @Sendable (String) throws -> Bool = { _ in true },
     readDatesTaken: @escaping @Sendable ([String]) async throws -> [String?] = {
@@ -43,7 +44,7 @@ private func deps(
     assertRenamable: @escaping @Sendable (String) throws -> Void = { _ in }
 ) -> BatchRenameInspectDeps {
     BatchRenameInspectDeps(
-        lstat: lstat, readdir: readdir, isCaseSensitive: isCaseSensitive, getFlags: getFlags,
+        lstat: lstat, readdir: readdir, isCaseSensitive: isCaseSensitive, folderDisk: folderDisk, getFlags: getFlags,
         canWriteFolder: canWriteFolder, readDatesTaken: readDatesTaken, assertRenamable: assertRenamable,
         homePath: home)
 }
@@ -95,6 +96,32 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
         #expect(answer.folders.map(\.path) == ["/a", "/b"])
         #expect(answer.folders.map(\.caseSensitive) == [false, true])
         #expect(calls.all.count == 2)
+    }
+
+    // A rename of several is of one disk: the answer says when the items' folders are on more than one.
+    @Test func saysWhenTheItemsFoldersAreOnMoreThanOneDisk() async {
+        let calls = Calls()
+        let disks: @Sendable (String) throws -> Int64? = { folder in
+            calls.record(folder)
+            return folder == "/Volumes/stick" ? 2 : 1
+        }
+        let two = await inspect(["/a/1.txt", "/Volumes/stick/2.txt", "/a/3.txt"], deps(folderDisk: disks))
+        #expect(two.severalDisks)
+        // Asked once for each folder, not for each item.
+        #expect(calls.all == ["/a", "/Volumes/stick"])
+
+        // Several folders of one disk, as search results give them, are one disk.
+        let one = await inspect(["/a/1.txt", "/b/2.txt", "/a/sub/3.txt"], deps(folderDisk: disks))
+        #expect(!one.severalDisks)
+
+        // A folder whose disk can't be read, or doesn't say, counts for no disk.
+        let unread = await inspect(
+            ["/a/1.txt", "/gone/2.txt", "/quiet/3.txt"],
+            deps(folderDisk: { folder in
+                if folder == "/gone" { throw errno(ENOENT) }
+                return folder == "/quiet" ? nil : 1
+            }))
+        #expect(!unread.severalDisks)
     }
 
     @Test func saysWhyAnItemCantBeRenamed() async {
@@ -163,6 +190,32 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
                         path: notesPath, createdAt: local(info.st_birthtimespec), modifiedAt: local(info.st_mtimespec),
                         takenAt: nil, cannotRename: nil))
             #expect(answer.folders.first?.names.sorted() == [".hidden", "notes.txt", "photo.jpg"])
+            #expect(!answer.severalDisks)
+        }
+    }
+
+    // An item is on the disk its folder is on, also when the folder is reached through a link on another disk.
+    @Test(.tags(.diskImage), .diskImages)
+    func findsItemsOnMoreThanOneDiskJudgingEachByTheFolderItIsIn() async throws {
+        try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
+            try await withTemporaryDirectory(prefix: "filetrail-inspect") { root in
+                let here = root.path
+                let there = volume.path
+                try "a".write(toFile: "\(here)/a.txt", atomically: false, encoding: .utf8)
+                try "b".write(toFile: "\(there)/b.txt", atomically: false, encoding: .utf8)
+                try "c".write(toFile: "\(there)/c.txt", atomically: false, encoding: .utf8)
+                #expect(symlink(there, "\(here)/link") == 0)
+                let severalDisks = { (paths: [String]) in
+                    await BatchRenameInspect.inspect(
+                        BatchRenameInspectRequest(paths: paths, includeDateTaken: false), realDeps()
+                    ).severalDisks
+                }
+                #expect(await severalDisks(["\(here)/a.txt", "\(there)/b.txt"]))
+                #expect(await severalDisks(["\(here)/a.txt", "\(here)/link/b.txt"]))
+                #expect(await !severalDisks(["\(here)/link/b.txt", "\(there)/c.txt"]))
+                // The link itself is an item of the folder it is in.
+                #expect(await !severalDisks(["\(here)/a.txt", "\(here)/link"]))
+            }
         }
     }
 
