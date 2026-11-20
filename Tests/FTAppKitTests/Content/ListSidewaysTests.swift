@@ -45,7 +45,7 @@ extension ExplorerWindowlessTests {
         }
 
         private func go(_ tab: MainWindowController, _ path: String, _ harness: ExplorerHarness) async {
-            tab.go(to: URL(fileURLWithPath: path))
+            tab.go(to: path)
             #expect(await waitUntil { tab.shownFolderPath == path && !tab.isNavigating })
             harness.layout(tab)
         }
@@ -64,7 +64,7 @@ extension ExplorerWindowlessTests {
         // Another folder opens at the left, an empty one too; Back and Forward put back where it was scrolled.
         @Test func anotherFolderStartsAtTheLeftAndBackRestoresTheOffset() async throws {
             let (harness, tab, list) = try await openNarrow()
-            let outer = tab.folder.path
+            let outer = tab.folderPath
             scrollSideways(list, to: 120)
             await go(tab, outer + "/Inner", harness)
             #expect(list.scroll.contentView.bounds.minX == 0)

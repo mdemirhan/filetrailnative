@@ -46,7 +46,7 @@ struct NativeWindowsGUITests {
         #expect(group.tabs.count == 2)
         // The new tab is right after the one it came from, in front.
         #expect(group.selected === group.tabs[1])
-        group.tabs[1].go(to: folder.appending("Sub"))
+        group.tabs[1].go(to: folder.appending("Sub").path)
         #expect(await waitUntil { group.tabs[1].window?.tab.title == "Sub" })
 
         // Move Tab to New Window: the tab leaves for a window of its own.
@@ -61,7 +61,7 @@ struct NativeWindowsGUITests {
         // Merge All Windows: the other window's tabs join this one's, after them, and it closes.
         first.perform(.mergeAllWindows)
         #expect(await waitUntil { app.groupCount == 1 && group.tabs.count == 2 })
-        #expect(group.tabs.map(\.folder.lastPathComponent) == [folder.url.lastPathComponent, "Sub"])
+        #expect(group.tabs.map { NodePath.basename($0.folderPath) } == [folder.url.lastPathComponent, "Sub"])
         #expect(first.window?.tabbedWindows?.count == 2)
         // Merged windows weren't closed by hand.
         #expect(app.store.lastClosedWindow() == nil)
@@ -191,11 +191,11 @@ struct NativeWindowsGUITests {
         let front = try #require(relaunched.frontTab)
         let frontGroup = try #require(front.group)
         #expect(frontGroup.tabs.count == 2)
-        #expect(front.folder.path == folder.path)
+        #expect(front.folderPath == folder.path)
         let frame = try #require(front.window?.frame)
         #expect(ScreenGeometry.bounds(of: frame) == WindowBounds(x: 60, y: 60, width: 1000, height: 700))
         let other = try #require(relaunched.windows.allTabs.first { $0.group !== frontGroup })
-        #expect(other.folder.lastPathComponent == "Sub")
+        #expect(NodePath.basename(other.folderPath) == "Sub")
         let otherFrame = try #require(other.window?.frame)
         #expect(ScreenGeometry.bounds(of: otherFrame) == WindowBounds(x: 220, y: 140, width: 900, height: 620))
 
@@ -212,7 +212,7 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { relaunched.frontTab?.window?.isVisible == true })
         let reopened = try #require(relaunched.frontTab?.window?.frame)
         #expect(ScreenGeometry.bounds(of: reopened) == WindowBounds(x: 60, y: 60, width: 1000, height: 700))
-        #expect(relaunched.frontTab?.folder.path == folder.path)
+        #expect(relaunched.frontTab?.folderPath == folder.path)
         await relaunched.closeAll()
     }
 
@@ -240,8 +240,8 @@ struct NativeWindowsGUITests {
         let group = try #require(first.group)
         #expect(await waitUntil { group.tabs.count == 2 })
         let second = group.tabs[1]
-        second.go(to: other.appending("Sub"))
-        #expect(await waitUntil { second.folder.path == other.appending("Sub").path })
+        second.go(to: other.appending("Sub").path)
+        #expect(await waitUntil { second.folderPath == other.appending("Sub").path })
         let firstLabel = "Sub — \(folder.url.lastPathComponent)"
         let secondLabel = "Sub — \(other.url.lastPathComponent)"
         // The menu shortens a label this long in the middle; the tab keeps it whole.
@@ -281,7 +281,7 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { app.groupCount == 2 && app.frontTab?.window?.isVisible == true })
         let second = try #require(app.frontTab)
         #expect(second !== first)
-        #expect(await waitUntil { second.loaded && second.folder.path == folder.path })
+        #expect(await waitUntil { second.loaded && second.folderPath == folder.path })
         let firstFrame = try #require(first.window?.frame)
         let secondFrame = try #require(second.window?.frame)
         // Same size, a step down and to the right of the first.
@@ -310,7 +310,7 @@ struct NativeWindowsGUITests {
         relaunched.windows.openStartupWindows(folder: nil)
         #expect(await waitUntil { relaunched.groupCount == 2 })
         #expect(await waitUntil { relaunched.windows.allTabs.allSatisfy { $0.window?.isVisible == true } })
-        #expect(relaunched.windows.allTabs.map(\.folder.path) == [folder.path, folder.path])
+        #expect(relaunched.windows.allTabs.map(\.folderPath) == [folder.path, folder.path])
         await relaunched.closeAll()
     }
 
@@ -324,8 +324,8 @@ struct NativeWindowsGUITests {
         app.windows.openStartupWindows(folder: folder.path)
         let first = try #require(app.frontTab)
         #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
-        first.go(to: folder.appending("Sub"))
-        #expect(await waitUntil { first.folder.lastPathComponent == "Sub" })
+        first.go(to: folder.appending("Sub").path)
+        #expect(await waitUntil { NodePath.basename(first.folderPath) == "Sub" })
 
         func closeOnlyWindow() async {
             for tab in app.windows.allTabs { tab.group?.closeAsCloseButton() }
@@ -345,13 +345,13 @@ struct NativeWindowsGUITests {
         // The Dock icon is clicked: a window opens where the last one was.
         ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: false, host: app.windows)
         #expect(await waitUntil { app.groupCount == 1 && app.frontTab?.loaded == true })
-        #expect(await waitUntil { app.frontTab?.folder.path == folder.appending("Sub").path })
+        #expect(await waitUntil { app.frontTab?.folderPath == folder.appending("Sub").path })
         await closeOnlyWindow()
 
         // A place in the Go menu opens a window there. Applications rather than Desktop, whose
         // contents macOS asks the user before showing.
         menu.router.choose(itemID: AppCommand.goApplications.rawValue)
-        #expect(await waitUntil { app.groupCount == 1 && app.frontTab?.folder.path == "/Applications" })
+        #expect(await waitUntil { app.groupCount == 1 && app.frontTab?.folderPath == "/Applications" })
         #expect(await waitUntil { app.frontTab?.window?.title == "Applications" })
         await closeOnlyWindow()
         #expect(await app.quit.quit() == .exited)
@@ -360,7 +360,7 @@ struct NativeWindowsGUITests {
         let relaunched = launch(statePath)
         relaunched.windows.openStartupWindows(folder: nil)
         #expect(await waitUntil { relaunched.groupCount == 1 && relaunched.frontTab?.loaded == true })
-        #expect(await waitUntil { relaunched.frontTab?.folder.path == "/Applications" })
+        #expect(await waitUntil { relaunched.frontTab?.folderPath == "/Applications" })
         await relaunched.closeAll()
     }
 
@@ -382,7 +382,7 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { group.tabs.count == 2 && first.window?.tabGroup?.isTabBarVisible == true })
         let added = group.tabs[1]
         #expect(group.selected === added)
-        #expect(added.folder.path == folder.path)
+        #expect(added.folderPath == folder.path)
         #expect(added.snapshot.historyPaths == [folder.path])
         #expect(added.viewMode == .details)
         #expect(added.treeRootPath == first.treeRootPath)
@@ -393,7 +393,7 @@ struct NativeWindowsGUITests {
         group.openTab(path: folder.appending("Sub").path, from: first)
         #expect(await waitUntil { group.tabs.count == 3 })
         let opened = group.tabs[1]
-        #expect(opened.folder.path == folder.appending("Sub").path)
+        #expect(opened.folderPath == folder.appending("Sub").path)
         #expect(opened.snapshot.historyPaths == [folder.appending("Sub").path])
         #expect(group.selected === opened)
 

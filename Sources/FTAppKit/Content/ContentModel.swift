@@ -37,11 +37,6 @@ extension DirectoryEntry {
     }
 }
 
-extension URL {
-    /// A path for comparing locations (no trailing slash, no `.` or `..`).
-    var comparablePath: String { standardizedFileURL.path }
-}
-
 /// A folder's read error as the window shows it: the message, and the errno when a system call failed.
 public struct FolderReadError: Equatable, Sendable {
     public var message: String

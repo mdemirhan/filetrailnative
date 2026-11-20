@@ -141,6 +141,9 @@ final class PathBarRowView: NSView {
 
     private(set) var isEditing = false
     var onNavigate: (String) -> Void = { _ in }
+    /// Opens a path typed in the editor, which may spell a folder any way; without it a typed path goes to
+    /// `onNavigate` as a path of the bar's own does.
+    var onTyped: ((String) -> Void)?
     var onOpenInNewTab: (String) -> Void = { _ in }
     var onFocusContent: () -> Void = {}
     var requestFolders: (@MainActor (String) async throws -> [PathbarFolder])? {
@@ -199,7 +202,7 @@ final class PathBarRowView: NSView {
         editor.onSubmit = { [weak self] target in
             guard let self else { return }
             self.endEditing(restoreFocus: false)
-            self.onNavigate(target)
+            (self.onTyped ?? self.onNavigate)(target)
         }
         editor.onClose = { [weak self] in self?.endEditing(restoreFocus: true) }
     }

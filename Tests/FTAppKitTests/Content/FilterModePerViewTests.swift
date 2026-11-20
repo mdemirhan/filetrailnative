@@ -58,8 +58,8 @@ extension ExplorerWindowlessTests {
             right.content.applyFilterKey(.clear)
             #expect(left.content.filterMode == .contains)
             #expect(right.content.filterMode == .fuzzy)
-            right.go(to: harness.folder.appending("Beta"))
-            #expect(await waitUntil { right.folder.lastPathComponent == "Beta" && !right.isNavigating })
+            right.go(to: harness.folder.appending("Beta").path)
+            #expect(await waitUntil { NodePath.basename(right.folderPath) == "Beta" && !right.isNavigating })
             #expect(right.content.filterMode == .fuzzy)
 
             // The right pane closed and opened again is a new view: it starts in Contains.
@@ -130,8 +130,8 @@ extension ExplorerWindowlessTests {
             #expect(left.content.filterMode == .fuzzy)
             #expect(right.content.filterMode == .fuzzy)
             #expect(chip(right) == .fuzzy)
-            left.go(to: harness.folder.appending("Gamma"))
-            #expect(await waitUntil { left.folder.lastPathComponent == "Gamma" && !left.isNavigating })
+            left.go(to: harness.folder.appending("Gamma").path)
+            #expect(await waitUntil { NodePath.basename(left.folderPath) == "Gamma" && !left.isNavigating })
             #expect(left.content.filterMode == .fuzzy)
 
             right.search.session.hideResults()

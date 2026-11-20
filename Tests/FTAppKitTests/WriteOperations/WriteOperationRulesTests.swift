@@ -279,7 +279,7 @@ extension ExplorerWindowlessTests {
             session.applyCard(WriteOperationCardState(action: .copyTo, stage: .running, targetPath: "/x"))
             #expect(tab.isWriteLocked)
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: ["/x/a"]))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: ["/x/a"]))
             #expect(tab.pendingChange?.changedPaths == ["/x/a"])
             session.applyCard(nil)
             #expect(tab.pendingChange == nil)
@@ -287,7 +287,7 @@ extension ExplorerWindowlessTests {
             session.otherWindowProgress(WriteOperationEvent(operationId: "other", action: .copyTo, status: .running))
             #expect(tab.isWriteLocked)
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: ["/x/b"]))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: ["/x/b"]))
             #expect(tab.pendingChange?.changedPaths == ["/x/b"])
             session.otherWindowProgress(WriteOperationEvent(operationId: "other", action: .copyTo, status: .cancelled))
             #expect(await waitUntil { tab.pendingChange == nil })

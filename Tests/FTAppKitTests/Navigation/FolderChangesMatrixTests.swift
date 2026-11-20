@@ -22,11 +22,11 @@ extension ExplorerWindowlessTests {
         private func changed(_ harness: ExplorerHarness, _ tab: MainWindowController, _ paths: [String]?) {
             tab.services.directoryService.cache.clear()
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: paths))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: paths))
         }
 
         private func write(_ name: String, in tab: MainWindowController) throws -> String {
-            let path = tab.folder.appendingPathComponent(name).path
+            let path = URL(fileURLWithPath: tab.folderPath).appendingPathComponent(name).path
             try "x".write(toFile: path, atomically: true, encoding: .utf8)
             return path
         }
@@ -51,7 +51,7 @@ extension ExplorerWindowlessTests {
         // Changes held are gathered, then read once.
         @Test func gathersChangesWhileHeldAndReadsThemOnceWhenLetGo() async throws {
             let (harness, tab, probe) = try await opened()
-            let folder = tab.folder.path
+            let folder = tab.folderPath
             tab.holdFolderChanges(.dialog, true)
             changed(harness, tab, ["\(folder)/a"])
             changed(harness, tab, ["\(folder)/b"])
@@ -70,7 +70,7 @@ extension ExplorerWindowlessTests {
         // What arrives during a read is read once more after it, however many came.
         @Test func changesArrivingDuringAReadAreReadOnceMore() async throws {
             let (harness, tab, probe) = try await opened()
-            let folder = tab.folder.path
+            let folder = tab.folderPath
             probe.hold(folder)
             changed(harness, tab, ["\(folder)/a"])
             #expect(await waitUntil { probe.isHolding })
@@ -90,7 +90,7 @@ extension ExplorerWindowlessTests {
             let (harness, tab, probe) = try await opened()
             let timers = ManualTimers()
             tab.timers = timers
-            let folder = tab.folder.path
+            let folder = tab.folderPath
             tab.services.directoryService.cache.clear()
             probe.hold(folder)
             tab.cameBack()
@@ -115,7 +115,7 @@ extension ExplorerWindowlessTests {
         // A read that throws doesn't stop the next.
         @Test func aQuietReadThatFailsDoesNotStopTheNext() async throws {
             let (harness, tab, probe) = try await opened()
-            let folder = tab.folder.path
+            let folder = tab.folderPath
             probe.refuse(folder)
             changed(harness, tab, nil)
             #expect(await waitUntil { tab.content.listed.isEmpty })
@@ -129,12 +129,12 @@ extension ExplorerWindowlessTests {
         // A quiet read finishing after the user went elsewhere leaves the user's folder on screen.
         @Test func aQuietReadEndingAfterTheUserLeftStaysOutOfTheNewFolder() async throws {
             let (harness, tab, probe) = try await opened()
-            let folder = tab.folder.path
+            let folder = tab.folderPath
             let beta = harness.folder.appending("Beta").path
             probe.hold(folder)
             changed(harness, tab, nil)
             #expect(await waitUntil { probe.isHolding })
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             probe.letGo()
             // The tree reads it too.
@@ -149,7 +149,7 @@ extension ExplorerWindowlessTests {
         // A name being typed holds the change, and its end shows it.
         @Test func waitsWhileARenameIsTypedAndShowsTheChangeWhenItEnds() async throws {
             let (harness, tab, probe) = try await opened()
-            let folder = tab.folder.path
+            let folder = tab.folderPath
             let note = try #require(tab.content.listed.first { $0.name == "note.txt" })
             tab.content.select(paths: [note.path])
             tab.renameSelected()

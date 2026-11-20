@@ -208,7 +208,7 @@ extension ExplorerWindowlessTests {
             bar.editor.controlTextDidChange(
                 Notification(name: NSControl.textDidChangeNotification, object: bar.editor.field))
             let beta = harness.folder.appending("Beta").path
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { !bar.isEditing })
             #expect(samePath(bar.path, beta))
             #expect(bar.editor.isHidden)
@@ -290,7 +290,7 @@ extension ExplorerWindowlessTests {
         @Test func theExpandedBarFoldsWithAnotherFolder() async throws {
             let (harness, tab, bar, _) = try await expanded()
             let beta = harness.folder.appending("Beta").path
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { samePath(bar.path, beta) })
             #expect(!bar.pathBar.expanded)
             await harness.close()
@@ -305,11 +305,11 @@ extension ExplorerWindowlessTests {
             let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
             tab.content.select(paths: [alpha.path])
             #expect(tab.content.selection.paths == [alpha.path])
-            _ = await tab.navigate(to: URL(fileURLWithPath: alpha.path))
-            #expect(tab.folder.lastPathComponent == "Alpha")
+            _ = await tab.navigate(to: alpha.path)
+            #expect(NodePath.basename(tab.folderPath) == "Alpha")
             #expect(tab.content.selection.isEmpty)
             tab.perform(.goEnclosingFolder)
-            #expect(await waitUntil { samePath(tab.folder.path, harness.folder.path) && !tab.isNavigating })
+            #expect(await waitUntil { samePath(tab.folderPath, harness.folder.path) && !tab.isNavigating })
             #expect(tab.content.selection.isEmpty)
             await harness.close()
         }

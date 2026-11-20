@@ -46,7 +46,8 @@ struct WritingWindow {
         harness.layout(tab)
         return WritingWindow(
             harness: harness, tab: tab, operations: operations, recorder: recorder,
-            folder: tab.content.entries.first.map { $0.url.deletingLastPathComponent() } ?? tab.folder)
+            folder: tab.content.entries.first.map { $0.url.deletingLastPathComponent() }
+                ?? URL(fileURLWithPath: tab.folderPath))
     }
 
     func select(_ names: [String]) {
@@ -173,7 +174,7 @@ extension ExplorerWindowlessTests {
             tab.services.clipboard.set(ClipboardRules.set(.copy, [inner], capturedAt: "t"), from: nil)
             tab.clipboardChanged()
             tab.revealClipboardItem(inner)
-            #expect(await waitUntil { tab.folder.path.hasSuffix("/Alpha") && tab.selectedPaths == [inner] })
+            #expect(await waitUntil { tab.folderPath.hasSuffix("/Alpha") && tab.selectedPaths == [inner] })
             await window.close()
         }
 
@@ -185,8 +186,8 @@ extension ExplorerWindowlessTests {
             let tab = window.tab
             window.select(["note.txt"])
             tab.perform(.copySelection)
-            tab.go(to: window.folder.appendingPathComponent("Alpha"))
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" })
+            tab.go(to: window.folder.appendingPathComponent("Alpha").path)
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" })
             #expect(tab.canPerform(.pasteSelection))
             tab.perform(.pasteSelection)
             #expect(await waitUntil { window.exists("Alpha/note.txt") })
@@ -222,8 +223,8 @@ extension ExplorerWindowlessTests {
             #expect(window.exists("note.txt"))
             #expect(tab.services.clipboard.contents.mode == .cut)
             #expect(window.recorder.shown.isEmpty)
-            tab.go(to: window.folder.appendingPathComponent("Beta"))
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Beta" })
+            tab.go(to: window.folder.appendingPathComponent("Beta").path)
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Beta" })
             tab.perform(.pasteSelection)
             #expect(await waitUntil { window.exists("Beta/note.txt") && !window.exists("note.txt") })
             #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
@@ -241,8 +242,8 @@ extension ExplorerWindowlessTests {
             )
             tab.clipboardChanged()
             try FileManager.default.removeItem(atPath: path(window, "note.txt"))
-            tab.go(to: window.folder.appendingPathComponent("Gamma"))
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Gamma" })
+            tab.go(to: window.folder.appendingPathComponent("Gamma").path)
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Gamma" })
             tab.perform(.pasteSelection)
             #expect(await waitUntil { window.exists("Gamma/b.txt") })
             #expect(await waitUntil { !window.recorder.shown.isEmpty })
@@ -298,7 +299,7 @@ extension ExplorerWindowlessTests {
             let tab = window.tab
             window.select(["note.txt"])
             tab.perform(.copySelection)
-            #expect(tab.pasteDestinationPath == tab.folder.path)
+            #expect(tab.pasteDestinationPath == tab.folderPath)
             tab.searchRootPath = window.folder.path
             #expect(tab.pasteDestinationPath == nil)
             #expect(!tab.canPerform(.pasteSelection))
@@ -335,8 +336,8 @@ extension ExplorerWindowlessTests {
             let other = try #require(window.harness.windows.allTabs.first { $0 !== tab })
             other.servicesOverride = window.harness.services
             other.ensureLoaded()
-            other.go(to: window.folder.appendingPathComponent("Gamma"))
-            #expect(await waitUntil { other.folder.lastPathComponent == "Gamma" })
+            other.go(to: window.folder.appendingPathComponent("Gamma").path)
+            #expect(await waitUntil { NodePath.basename(other.folderPath) == "Gamma" })
             window.select(["note.txt"])
             tab.perform(.copySelection)
             other.perform(.pasteSelection)

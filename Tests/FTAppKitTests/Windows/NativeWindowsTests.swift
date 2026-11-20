@@ -34,8 +34,8 @@ extension ExplorerWindowlessTests {
             first.perform(.newTab)
             let group = try #require(first.group)
             #expect(await waitUntil { group.tabs.count == 2 })
-            group.tabs[1].go(to: folder.appending("Sub"))
-            #expect(await waitUntil { group.tabs[1].folder.lastPathComponent == "Sub" })
+            group.tabs[1].go(to: folder.appending("Sub").path)
+            #expect(await waitUntil { NodePath.basename(group.tabs[1].folderPath) == "Sub" })
 
             group.tabs[1].perform(.selectNextTab)
             #expect(await waitUntil { group.selected === first })
@@ -50,7 +50,7 @@ extension ExplorerWindowlessTests {
             // ⇧⌘T brings it back, at its folder, where it was in the row.
             first.perform(.reopenClosedTab)
             #expect(await waitUntil { group.tabs.count == 2 })
-            #expect(group.tabs[1].folder.path == folder.appending("Sub").path)
+            #expect(group.tabs[1].folderPath == folder.appending("Sub").path)
             #expect(group.selected === group.tabs[1])
 
             await app.closeAll()
@@ -65,8 +65,8 @@ extension ExplorerWindowlessTests {
             app.windows.openStartupWindows(folder: folder.path)
             let first = try #require(app.frontTab)
             #expect(await waitUntil { first.loaded })
-            first.go(to: folder.appending("Sub"))
-            #expect(await waitUntil { first.folder.lastPathComponent == "Sub" })
+            first.go(to: folder.appending("Sub").path)
+            #expect(await waitUntil { NodePath.basename(first.folderPath) == "Sub" })
             first.perform(.newTab)
             let group = try #require(first.group)
             #expect(await waitUntil { group.tabs.count == 2 })
@@ -82,7 +82,7 @@ extension ExplorerWindowlessTests {
             let copy = group.tabs[1]
             #expect(copy !== first)
             #expect(group.selected === copy)
-            #expect(await waitUntil { copy.folder.path == folder.appending("Sub").path })
+            #expect(await waitUntil { copy.folderPath == folder.appending("Sub").path })
             #expect(copy.snapshot.historyPaths == [folder.path, folder.appending("Sub").path])
             #expect(copy.snapshot.historyIndex == 1)
             #expect(copy.treeRootPath == first.treeRootPath)
@@ -112,17 +112,17 @@ extension ExplorerWindowlessTests {
             let group = try #require(first.group)
             #expect(await waitUntil { group.tabs.count == 2 })
             let deep = group.tabs[1]
-            deep.go(to: folder.appending("Sub"))
-            #expect(await waitUntil { deep.folder.lastPathComponent == "Sub" })
-            deep.go(to: folder.appending("Sub/Deep"))
-            #expect(await waitUntil { deep.folder.lastPathComponent == "Deep" })
+            deep.go(to: folder.appending("Sub").path)
+            #expect(await waitUntil { NodePath.basename(deep.folderPath) == "Sub" })
+            deep.go(to: folder.appending("Sub/Deep").path)
+            #expect(await waitUntil { NodePath.basename(deep.folderPath) == "Deep" })
             group.select(first)
             #expect(await waitUntil { group.selected === first })
             // Another window, on the folder that moves.
             group.openNewWindow(from: first, path: folder.appending("Sub").path)
             #expect(await waitUntil { app.groupCount == 2 && app.frontTab?.loaded == true })
             let other = try #require(app.frontTab)
-            #expect(await waitUntil { other.folder.lastPathComponent == "Sub" })
+            #expect(await waitUntil { NodePath.basename(other.folderPath) == "Sub" })
 
             try FileManager.default.moveItem(at: folder.appending("Sub"), to: folder.appending("Moved"))
             // Every window hears the operation's progress: nothing moves while it runs, and the tabs follow it once it
@@ -134,20 +134,20 @@ extension ExplorerWindowlessTests {
                         sourcePath: folder.appending("Sub").path, destinationPath: folder.appending("Moved").path)
                 ])
             app.windows.writeOperationProgress(WriteOperationProgress(status: .running, result: rename))
-            #expect(deep.folder.path == folder.appending("Sub/Deep").path)
+            #expect(deep.folderPath == folder.appending("Sub/Deep").path)
             app.windows.writeOperationProgress(WriteOperationProgress(status: .completed, result: rename))
 
             // The tab in the background goes along, history and all, and reads its folder when it is shown.
-            #expect(deep.folder.path == folder.appending("Moved/Deep").path)
+            #expect(deep.folderPath == folder.appending("Moved/Deep").path)
             #expect(
                 deep.snapshot.historyPaths == [
                     folder.path, folder.appending("Moved").path, folder.appending("Moved/Deep").path,
                 ])
             #expect(deep.stale)
             // A tab elsewhere stays.
-            #expect(first.folder.path == folder.path)
+            #expect(first.folderPath == folder.path)
             // The other window's tab on screen reads the folder at its new place.
-            #expect(await waitUntil { other.folder.path == folder.appending("Moved").path })
+            #expect(await waitUntil { other.folderPath == folder.appending("Moved").path })
             #expect(await waitUntil { other.window?.title == "Moved" })
 
             group.select(deep)
@@ -239,8 +239,8 @@ extension ExplorerWindowlessTests {
             first.perform(.newTab)
             #expect(await waitUntil { group.tabs.count == 2 })
             let background = group.tabs[1]
-            background.go(to: URL(fileURLWithPath: disk + "/Inner"))
-            #expect(await waitUntil { background.folder.lastPathComponent == "Inner" })
+            background.go(to: disk + "/Inner")
+            #expect(await waitUntil { NodePath.basename(background.folderPath) == "Inner" })
             group.select(first)
             #expect(await waitUntil { group.selected === first })
             let window = try #require(first.window)
@@ -264,10 +264,10 @@ extension ExplorerWindowlessTests {
             // The tabs stay; the one in the background goes Home, dropping what of its history was on the disk, and the
             // one on screen opens Home.
             #expect(group.tabs.count == 2)
-            #expect(background.folder.path == folder.path)
+            #expect(background.folderPath == folder.path)
             #expect(background.snapshot.historyPaths == [folder.path])
             #expect(background.treeRootPath == folder.path)
-            #expect(await waitUntil { first.folder.path == folder.path })
+            #expect(await waitUntil { first.folderPath == folder.path })
             #expect(first.snapshot.historyPaths == [disk, folder.path])
             window.endSheet(alert.window)
             #expect(await waitUntil { window.attachedSheet == nil })
@@ -302,8 +302,8 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { app.frontTab?.loaded == true })
             let front = try #require(app.frontTab)
             let group = try #require(front.group)
-            #expect(group.tabs.map(\.folder.path) == [folder.path, folder.appending("Sub").path])
-            #expect(front.folder.path == folder.path)
+            #expect(group.tabs.map(\.folderPath) == [folder.path, folder.appending("Sub").path])
+            #expect(front.folderPath == folder.path)
             let waiting = group.tabs[1]
             #expect(!waiting.loaded)
             group.select(waiting)

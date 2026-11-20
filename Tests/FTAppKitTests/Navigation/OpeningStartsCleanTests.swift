@@ -87,7 +87,7 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             expectNothingSelected()
 
-            tab.go(to: URL(fileURLWithPath: listed(harness, "")))
+            tab.go(to: listed(harness, ""))
             #expect(await waitUntil { tab.shownFolderPath == listed(harness, "") })
             let gamma = try #require(tab.content.entries.first { $0.name == "Gamma" })
             tab.content.select(paths: [gamma.path])
@@ -195,7 +195,7 @@ extension ExplorerWindowlessTests {
             defer { files.letGo() }
             reading(files, tab, harness)
 
-            tab.go(to: URL(fileURLWithPath: root))
+            tab.go(to: root)
             #expect(await waitUntil { files.reads(of: root) == 1 })
             #expect(tab.isNavigating)
             // Made after the opening read the folder, and told as the folder watch tells it: only the read waiting for the
@@ -229,10 +229,10 @@ extension ExplorerWindowlessTests {
             let timers = ManualTimers()
             tab.timers = timers
 
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { files.reads(of: beta) == 1 })
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: nil))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: nil))
             #expect(tab.pendingChange == nil)
 
             files.letGo()
@@ -255,7 +255,7 @@ extension ExplorerWindowlessTests {
             tab.holdFolderChanges(.dialog, true)
             tab.reload(changedPaths: [root + "/note.txt"])
             #expect(tab.pendingChange != nil)
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
 
             let files = HeldFolder("")

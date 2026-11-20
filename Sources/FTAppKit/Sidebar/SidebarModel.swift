@@ -60,8 +60,8 @@ final class SidebarModel {
     var readChildren: (_ path: String, _ includeHidden: Bool) async throws -> [TreePaths.Child] = { _, _ in
         []
     }
-    /// Opens a folder in the window.
-    var openFolder: (_ url: URL, _ open: SidebarOpen) -> Void = { _, _ in }
+    /// Opens the folder at a row's path in the window.
+    var openFolder: (_ path: String, _ open: SidebarOpen) -> Void = { _, _ in }
     /// The state changed: the views draw it again.
     var onChange: () -> Void = {}
     /// Saves a change of the favorites (reorder).
@@ -598,7 +598,7 @@ final class SidebarModel {
     }
 
     private func open(_ path: String, _ request: SidebarOpen) {
-        openFolder(URL(fileURLWithPath: path), request)
+        openFolder(path, request)
     }
 
     /// A row pressed with the primary button: shown selected at once.

@@ -142,7 +142,7 @@ extension ExplorerWindowlessTests {
             let beta = harness.folder.path + "/Beta/Inner"
             tab.content.applySelection(ContentSelection(paths: [alpha, beta], anchorPath: alpha, leadPath: beta))
             tab.perform(.revealInFolder)
-            #expect(await waitUntil { tab.folder.path.hasSuffix("/Beta") && tab.content.selection.paths.count == 1 })
+            #expect(await waitUntil { tab.folderPath.hasSuffix("/Beta") && tab.content.selection.paths.count == 1 })
             #expect(tab.content.selection.paths.first?.hasSuffix("/Beta/Inner") == true)
             await harness.close()
         }
@@ -191,7 +191,7 @@ extension ExplorerWindowlessTests {
             }
             let inner = harness.folder.url.appendingPathComponent("Alpha").path
             bar.onNavigate(inner)
-            #expect(await waitUntil { tab.searchRootPath == nil && samePath(tab.folder.path, inner) })
+            #expect(await waitUntil { tab.searchRootPath == nil && samePath(tab.folderPath, inner) })
             await harness.close()
         }
 

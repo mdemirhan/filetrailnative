@@ -106,7 +106,7 @@ final class InfoController {
         panel.onClose = { [weak self] in self?.host.updatePanels { $0.propertiesOpen = false } }
         panel.onNavigate = { [weak self] path in
             guard let self else { return }
-            self.host.go(to: URL(fileURLWithPath: path), history: path == self.folderPath ? .replace : .push)
+            self.host.go(to: path, history: path == self.folderPath ? .replace : .push)
         }
         panel.onOpen = { [weak self] in
             guard let self, let path = self.resolved?.item.path else { return }

@@ -37,7 +37,7 @@ extension ExplorerWindowlessTests {
 
             // The tree has heard of the folder (in a task of its own) before the row is put elsewhere.
             func onInner() async {
-                await tab.navigate(to: URL(fileURLWithPath: inner))
+                await tab.navigate(to: inner)
                 #expect(await waitUntil { controller.model.selected == .filesystem(inner) })
             }
 
@@ -107,7 +107,7 @@ extension ExplorerWindowlessTests {
             // The list's selection isn't one folder: the folder on screen. The tree is somewhere else first.
             model.rootTree(at: gamma)
             #expect(await waitUntil { model.rootPath == gamma && tab.shownFolderPath == gamma })
-            tab.go(to: URL(fileURLWithPath: root))
+            tab.go(to: root)
             #expect(await waitUntil { tab.shownFolderPath == root && model.currentPath == root })
             tab.content.select(paths: [note])
             tab.content.focusList()

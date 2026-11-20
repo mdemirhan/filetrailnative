@@ -26,7 +26,7 @@ extension ExplorerWindowlessTests {
             tab.perform(view)
             #expect(await waitUntil { tab.content.entries.count == 301 })
             harness.layout(tab)
-            return (harness, tab, tab.folder.path, tab.folder.appendingPathComponent("Sub").path)
+            return (harness, tab, tab.folderPath, NodePath.join(tab.folderPath, "Sub"))
         }
 
         private func arrive(_ tab: MainWindowController, _ path: String, _ harness: ExplorerHarness) async -> Bool {
@@ -58,7 +58,7 @@ extension ExplorerWindowlessTests {
             let (harness, tab, outer, sub) = try await openLong()
             _ = try twoSelected(tab)
             _ = try scroll(tab)
-            tab.go(to: URL(fileURLWithPath: sub))
+            tab.go(to: sub)
             #expect(await arrive(tab, sub, harness))
             let selection = try twoSelected(tab)
             let position = try scroll(tab)
@@ -74,9 +74,9 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.pane?.scrollPosition.top == position.top)
 
             // Back on to the first folder, then the same folder opened afresh: its memory isn't used.
-            tab.go(to: URL(fileURLWithPath: outer))
+            tab.go(to: outer)
             #expect(await arrive(tab, outer, harness))
-            tab.go(to: URL(fileURLWithPath: sub))
+            tab.go(to: sub)
             #expect(await arrive(tab, sub, harness))
             #expect(tab.content.selection.isEmpty)
             #expect(tab.content.pane?.scrollPosition.top == 0)
@@ -93,12 +93,12 @@ extension ExplorerWindowlessTests {
             try FileManager.default.removeItem(atPath: gamma.path)
             tab.services.directoryService.cache.clear()
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: [gamma.path]))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: [gamma.path]))
             #expect(await waitUntil { tab.content.entries.count == 3 })
             #expect(tab.content.selection.gapIndex == 2)
 
-            let beta = tab.folder.appendingPathComponent("Beta").path
-            tab.go(to: URL(fileURLWithPath: beta))
+            let beta = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Beta").path
+            tab.go(to: beta)
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             tab.perform(.goBack)
             #expect(await waitUntil { tab.shownFolderPath != beta && !tab.isNavigating })
@@ -119,8 +119,8 @@ extension ExplorerWindowlessTests {
             let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
             tab.content.applySelection(
                 ContentSelection(paths: [alpha.path, note.path], anchorPath: alpha.path, leadPath: note.path))
-            let beta = tab.folder.appendingPathComponent("Beta").path
-            tab.go(to: URL(fileURLWithPath: beta))
+            let beta = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Beta").path
+            tab.go(to: beta)
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             try FileManager.default.removeItem(atPath: note.path)
             tab.services.directoryService.cache.clear()
@@ -139,7 +139,7 @@ extension ExplorerWindowlessTests {
             let chosen = try twoSelected(tab)
             let position = try scroll(tab, view)
             tab.perform(.goEnclosingFolder)
-            #expect(await waitUntil { tab.folder.path != outer && !tab.isNavigating })
+            #expect(await waitUntil { tab.folderPath != outer && !tab.isNavigating })
             harness.layout(tab)
             tab.perform(.goBack)
             #expect(await arrive(tab, outer, harness))
@@ -169,19 +169,19 @@ extension ExplorerWindowlessTests {
         @Test func theFolderInFrontStaysUntilTheNextArrives() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            let home = tab.folder.path
+            let home = tab.folderPath
             let listed = tab.content.listed.map(\.name)
             let gone = harness.folder.appending("Gone")
             tab.perform(.viewAsDetails)
             let message = "ENOENT: no such file or directory, stat '\(gone.path)'"
-            tab.go(to: gone)
+            tab.go(to: gone.path)
             #expect(await waitUntil { tab.content.container(for: .error(message: message)) })
 
             let probe = FolderReadProbe()
             harness.reading(through: probe, in: tab)
-            let beta = tab.folder.appendingPathComponent("Beta").path
+            let beta = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Beta").path
             probe.hold(beta)
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { probe.isHolding })
             #expect(tab.isNavigating)
             #expect(!tab.content.container(for: .error(message: message)))
@@ -204,10 +204,10 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.listed.isEmpty)
             let probe = FolderReadProbe()
             harness.reading(through: probe, in: tab)
-            let beta = tab.folder.deletingLastPathComponent().appendingPathComponent("Beta").path
+            let beta = NodePath.join(NodePath.dirname(tab.folderPath), "Beta")
             probe.hold(beta)
             let started = ContinuousClock.now
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(!tab.content.container(for: .loading))
             #expect(await waitUntil { tab.content.container(for: .loading) })
             #expect(ContinuousClock.now - started >= .milliseconds(400))
@@ -225,9 +225,9 @@ extension ExplorerWindowlessTests {
             harness.reading(through: probe, in: tab)
             let timers = ManualTimers()
             tab.content.timers = timers
-            let beta = tab.folder.appendingPathComponent("Beta").path
+            let beta = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Beta").path
             probe.hold(beta)
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { probe.isHolding })
             // Past the 400 ms a Loading… would wait for.
             timers.advance(ContentStateText.loadingDelayMilliseconds / 1000 + 0.05)
@@ -243,7 +243,7 @@ extension ExplorerWindowlessTests {
         func readingAgainWithoutKeepingClearsTheSelection(goToTheSameFolder: Bool) async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            try "x".write(to: tab.folder.appendingPathComponent(".hidden"), atomically: true, encoding: .utf8)
+            try "x".write(toFile: tab.folderPath + "/.hidden", atomically: true, encoding: .utf8)
             let note = try #require(tab.content.listed.first { $0.name == "note.txt" })
             tab.content.select(paths: [note.path])
             tab.perform(.refreshOrApplySearchSort)
@@ -255,7 +255,7 @@ extension ExplorerWindowlessTests {
             await settle()
             #expect(tab.content.selection.paths == [note.path])
 
-            if goToTheSameFolder { tab.go(to: tab.folder) } else { tab.setSort(.name, .desc) }
+            if goToTheSameFolder { tab.go(to: tab.folderPath) } else { tab.setSort(.name, .desc) }
             #expect(await waitUntil { tab.content.selection.isEmpty })
             await settle()
             #expect(tab.content.selection.isEmpty)
@@ -273,20 +273,20 @@ extension ExplorerWindowlessTests {
             MainWindowController.visitStore = { store }
             defer { MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store } }
             let tab = try await harness.open()
-            let alpha = tab.folder.appendingPathComponent("Alpha").path
-            let beta = tab.folder.appendingPathComponent("Beta").path
-            tab.go(to: URL(fileURLWithPath: alpha))
+            let alpha = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Alpha").path
+            let beta = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Beta").path
+            tab.go(to: alpha)
             #expect(await waitUntil { tab.shownFolderPath == alpha && !tab.isNavigating })
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             tab.perform(.goBack)
             #expect(await waitUntil { tab.shownFolderPath == alpha && !tab.isNavigating })
             tab.onFolderUsed?()
             #expect(!store.folders().contains { $0.path == alpha && !$0.visits.isEmpty })
             // The same use after going there counts, so the line above can tell.
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
-            tab.go(to: URL(fileURLWithPath: alpha))
+            tab.go(to: alpha)
             #expect(await waitUntil { tab.shownFolderPath == alpha && !tab.isNavigating })
             tab.onFolderUsed?()
             #expect(store.folders().contains { $0.path == alpha && !$0.visits.isEmpty })

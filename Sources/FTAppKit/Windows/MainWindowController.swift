@@ -221,9 +221,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     let windowID: Int
     /// The explorer window it is a tab of.
     weak var group: ExplorerTabGroup?
-    /// The active pane's folder, and how it shows it (`BrowserPane`).
-    var folder: URL { activePane.folder }
-    /// The active pane's folder by the path its listing gave (`BrowserPane.folderPath`), not `folder.path`.
+    /// The active pane's folder, by the path its listing gave (`BrowserPane.folderPath`), and how it shows it.
     var folderPath: String { activePane.folderPath }
     private var folderLetGo: Bool { activePane.folderLetGo }
     /// How the tab shows its folder, kept between launches with its folder. The sidebar keeps its tree and sections.
@@ -588,10 +586,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func revealSearchResult(_ path: String) {
         AppMenuPresenter.shared.close()
         guard let parent = ExplorerTabs.parentDirectoryPath(path) else { return }
-        let target = URL(fileURLWithPath: parent)
-        let move: HistoryMove = !folderLetGo && target.comparablePath == folder.comparablePath ? .replace : .push
+        let move: HistoryMove = !folderLetGo && samePath(parent, folderPath) ? .replace : .push
         Task {
-            guard await navigate(to: target, history: move) else { return }
+            guard await navigate(to: parent, history: move) else { return }
             // By its name in the folder opened: the listing gives its rows the folder's real path, which may be spelled
             // otherwise than the one the search ran from (/private/var for /var).
             let name = NodePath.basename(path)
@@ -839,7 +836,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let name = ExplorerTabs.folderDisplayName(
             shownFolderPath, homePath: trashHomePath, startupDiskName: services.startupDisk.name)
         window?.title = name.isEmpty ? "File Trail" : name
-        window?.representedURL = folderLetGo ? nil : folder
+        window?.representedURL = folderLetGo ? nil : DiskPath(folderPath).url(isDirectory: true)
     }
 
     /// The startup disk was renamed: the window title, the toolbar's title, the path bar, the sidebar and the Info panel
@@ -855,18 +852,19 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     // MARK: Navigation
 
-    func go(to url: URL, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
-        activePane.go(to: url, history: history, open: open, keepingSearch: keepingSearch)
+    /// Opens the folder at `path` in the active pane (`BrowserPane.go`).
+    func go(to path: String, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
+        activePane.go(to: path, history: history, open: open, keepingSearch: keepingSearch)
     }
 
-    /// Reads `url` in the active pane, then shows it (`BrowserPane.navigate`).
+    /// Reads the folder at `path` in the active pane, then shows it (`BrowserPane.navigate`).
     @discardableResult
     func navigate(
-        to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
+        to path: String, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil
     ) async -> Bool {
         await activePane.navigate(
-            to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
+            to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
     }
 
     /// Where a pane is, history and sidebar row with it.
@@ -900,7 +898,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// A selected folder opens in a new tab or window; a symbolic link to a folder opens the folder it points to, as it
     /// does when opened in place.
-    private func openSelectedFolder(_ folder: URL, place: SelectedFolderPlace) {
+    private func openSelectedFolder(_ folder: String, place: SelectedFolderPlace) {
         let open: (String) -> Void = { [weak self] path in
             guard let self else { return }
             switch place {
@@ -909,12 +907,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             case .otherPane: self.openSecondPane(at: path)
             }
         }
-        guard content.entries.first(where: { $0.path == folder.path })?.kind == .symlinkDirectory else {
-            open(folder.path)
+        guard content.entries.first(where: { $0.path == folder })?.kind == .symlinkDirectory else {
+            open(folder)
             return
         }
         Task {
-            if let target = await Self.resolved(folder.path) { open(target) }
+            if let target = await Self.resolved(folder) { open(target) }
         }
     }
 
@@ -983,7 +981,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             for step in steps {
                 switch step {
                 case .navigate(let path):
-                    go(to: URL(fileURLWithPath: path))
+                    go(to: path)
                 case .resolveThenNavigate(let path):
                     // Another tab may have come to the front while the link was looked up.
                     let pane = activePane
@@ -992,7 +990,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
                         guard let target = await Self.resolved(path), token == pane.navigationCount, isKeyOrOnly else {
                             return
                         }
-                        pane.go(to: URL(fileURLWithPath: target))
+                        pane.go(to: target)
                     }
                 case .resolveThenOpen(let path):
                     Task {
@@ -1277,8 +1275,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// The folder Open in New Tab and Open in New Window open: the one folder selected, or with the sidebar focused its
     /// selected folder.
-    var selectedFolder: URL? {
-        if focusedPane == .tree { return sidebar.selectedTreeTargetPath.map { URL(fileURLWithPath: $0) } }
+    var selectedFolder: String? {
+        if focusedPane == .tree { return sidebar.selectedTreeTargetPath }
         return selectedContentFolder
     }
 
@@ -1508,11 +1506,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The folder on screen read again brings the tree along; a folder being opened now will do that itself.
     var treeFollowsReadingAgain: Bool { activePane.treeFollowsReadingAgain }
 
-    /// The folder selected in the file list, if it is the one item selected and a folder.
-    private var selectedContentFolder: URL? {
+    /// The folder selected in the file list, if it is the one item selected and a folder: its row's path.
+    private var selectedContentFolder: String? {
         let items = content.selectedEntries
         guard items.count == 1, items[0].isDirectoryLike else { return nil }
-        return items[0].url
+        return items[0].path
     }
 
     /// The keyboard goes back to the pane that last had it, from a toolbar button about to stop taking it, so the
@@ -1591,10 +1589,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             self?.notify(.selection)
             self?.notify(.focusedPane)
         }
-        sidebar.model.openFolder = { [weak self] url, open in
+        sidebar.model.openFolder = { [weak self] path, open in
             guard let self else { return }
-            let replaces = open.replacesFolderOnScreen && url.path == self.shownFolderPath
-            self.go(to: url, history: replaces ? .replace : .push, open: open)
+            // By `==`, which takes an accent encoded either way for the same: a favorite kept from an earlier launch
+            // may spell the folder on screen the other way.
+            let replaces = open.replacesFolderOnScreen && path == self.shownFolderPath
+            self.go(to: path, history: replaces ? .replace : .push, open: open)
         }
         sidebar.model.releaseFolder = { [weak self] in self?.releaseFolder() }
         sidebar.eject = { [weak self] path in self?.ejectCoordinator.requestEject(path: path) }
@@ -1714,17 +1714,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     @objc func goBack(_ sender: Any?) {
         guard let target = navigationHistory.backTarget else { return }
-        go(to: URL(fileURLWithPath: target), history: .back)
+        go(to: target, history: .back)
     }
 
     @objc func goForward(_ sender: Any?) {
         guard let target = navigationHistory.forwardTarget else { return }
-        go(to: URL(fileURLWithPath: target), history: .forward)
+        go(to: target, history: .forward)
     }
 
     @objc func goToEnclosingFolder(_ sender: Any?) {
-        guard !folderLetGo, folder.comparablePath != "/" else { return }
-        go(to: folder.deletingLastPathComponent())
+        guard !folderLetGo, folderPath != "/" else { return }
+        go(to: DiskPath(folderPath).parent.string)
     }
 
     /// The toolbar's Enclosing Folder: it doesn't look at which pane has the keyboard, and
@@ -1734,7 +1734,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         else {
             return
         }
-        go(to: URL(fileURLWithPath: parent))
+        go(to: parent)
     }
 
     /// File ▸ Open, ⌘O and the toolbar's Open (`openPaths`): opens the items.
@@ -1922,9 +1922,6 @@ extension MainWindowController: ExplorerWindowHandle {
         // Cut, Copy, Paste and the file operations go to the write coordinator (WriteOperations/).
         if !isCustomizingToolbar, performWriteCommand(command) { return }
         let fileManager = FileManager.default
-        func place(_ url: URL?) {
-            if let url { go(to: url) }
-        }
         switch command {
         case .openLocationSheet: openLocationSheet()
         case .goBack: goBack(nil)
@@ -2009,14 +2006,14 @@ extension MainWindowController: ExplorerWindowHandle {
                 if place.asLocation {
                     sidebar.openLocation(place.path)
                 } else {
-                    go(to: URL(fileURLWithPath: place.path))
+                    go(to: place.path)
                 }
             }
         case .goHomeRootTree: sidebar.rootTree(at: fileManager.homeDirectoryForCurrentUser.path)
         case .rootTreeAtSelection:
             if let target = sidebar.rootTreeTarget(
                 focusedPane: focusedPane, lastFocusedPane: lastFocusedPane,
-                selectedContentFolder: selectedContentFolder?.path, currentPath: shownFolderPath)
+                selectedContentFolder: selectedContentFolder, currentPath: shownFolderPath)
             {
                 sidebar.rootTree(at: target)
             }
@@ -2053,7 +2050,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .swapPanes: swapPanes()
         case .showFolderInOtherPane: openSecondPane(at: shownFolderPath)
         case .goToOtherPaneFolder:
-            if let other = otherPane, !other.shownFolderPath.isEmpty { go(to: other.folder) }
+            if let other = otherPane, !other.shownFolderPath.isEmpty { go(to: other.shownFolderPath) }
         case .equalizePanes: equalizePanes()
         case .toggleFolderTree: updatePanels { $0.folderTreeOpen.toggle() }
         case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
@@ -2158,14 +2155,13 @@ extension MainWindowController: ExplorerWindowHandle {
 }
 
 extension MainWindowController: ExplorerWindowContext {
-    var currentFolder: URL { folder }
     var shownFolderPath: String { activePane.shownFolderPath }
 
-    func navigate(to url: URL, target: NavigationTarget) {
+    func navigate(to path: String, target: NavigationTarget) {
         switch target {
-        case .push: go(to: url)
-        case .newTab: group?.openTab(path: url.path, from: self)
-        case .newWindow: group?.openNewWindow(from: self, path: url.path)
+        case .push: go(to: path)
+        case .newTab: group?.openTab(path: path, from: self)
+        case .newWindow: group?.openNewWindow(from: self, path: path)
         }
     }
 
@@ -2177,7 +2173,7 @@ extension MainWindowController: ExplorerWindowContext {
     func goToHistoryIndex(_ index: Int) {
         let paths = historyPaths
         guard paths.indices.contains(index), index != historyIndex else { return }
-        go(to: URL(fileURLWithPath: paths[index]), history: .jump(index: index))
+        go(to: paths[index], history: .jump(index: index))
     }
 
     func canPerform(_ command: AppCommand) -> Bool {

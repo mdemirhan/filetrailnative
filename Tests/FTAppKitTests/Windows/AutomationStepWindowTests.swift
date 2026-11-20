@@ -93,8 +93,8 @@
                 let other = try #require(harness.windows.allTabs.first { $0 !== tab })
                 other.servicesOverride = harness.services
                 other.ensureLoaded()
-                other.go(to: window.folder.appendingPathComponent("Gamma"))
-                #expect(await waitUntil { other.folder.lastPathComponent == "Gamma" })
+                other.go(to: window.folder.appendingPathComponent("Gamma").path)
+                #expect(await waitUntil { NodePath.basename(other.folderPath) == "Gamma" })
                 #expect(NSApp.keyWindow == nil)
                 #expect(harness.windows.front === other)
                 let scratch = try TemporaryDirectory.shallow(prefix: "filetrail-steps")
@@ -206,7 +206,7 @@
                 tab.perform(.viewAsDetails)
                 harness.layout(tab)
                 let sidebar = tab.sidebarController
-                let folder = tab.folder
+                let folder = URL(fileURLWithPath: tab.folderPath)
                 tab.perform(.rootTreeAtSelection)
                 #expect(await waitUntil { TreePaths.same(sidebar.model.rootPath, folder.path) })
                 #expect(tab.group?.tabs.count == 1)
@@ -221,7 +221,7 @@
                 await settle()
                 #expect(tab.content.entries.isEmpty)
                 #expect(tab.content.container(for: .empty(text: ContentStateText.noFolder)))
-                tab.go(to: folder)
+                tab.go(to: folder.path)
                 #expect(await waitUntil { !tab.content.entries.isEmpty })
                 #expect(tab.shownFolderPath == folder.path)
                 #expect(!ExplorerToolbar.title(of: tab).isEmpty)
@@ -234,7 +234,7 @@
             @Test func aFolderLetGoOfKeepsNoPath() async throws {
                 let harness = try ExplorerHarness.windowless()
                 let tab = try await harness.open()
-                let folder = tab.folder
+                let folder = URL(fileURLWithPath: tab.folderPath)
                 let group = try #require(tab.group)
                 tab.sidebarController.model.clearSelection()
 
@@ -267,7 +267,7 @@
                 #expect(new.tabDescription.label == "Favorites")
                 #expect(new.content.entries.isEmpty)
 
-                tab.go(to: folder)
+                tab.go(to: folder.path)
                 #expect(await waitUntil { !tab.content.entries.isEmpty })
                 #expect(tab.tabDescription.label != "Favorites")
                 #expect(tab.snapshot.currentPath == folder.path)
@@ -289,9 +289,9 @@
                 }
                 let tab = try await harness.open(harness.folder.path)
                 let sidebar = tab.sidebarController
-                sidebar.model.rootTree(at: tab.folder.path)
+                sidebar.model.rootTree(at: tab.folderPath)
                 harness.layout(tab)
-                tab.go(to: tab.folder.appendingPathComponent("folder-050"))
+                tab.go(to: URL(fileURLWithPath: tab.folderPath).appendingPathComponent("folder-050").path)
                 #expect(await waitUntil { sidebar.model.selected?.filesystemPath?.hasSuffix("folder-050") == true })
                 harness.layout(tab)
                 let selected = try #require(sidebar.model.selected)
@@ -328,9 +328,9 @@
                 }
                 let tab = try await harness.open(harness.folder.path)
                 let sidebar = tab.sidebarController
-                sidebar.model.rootTree(at: tab.folder.path)
+                sidebar.model.rootTree(at: tab.folderPath)
                 harness.layout(tab)
-                tab.go(to: tab.folder.appendingPathComponent("folder-59"))
+                tab.go(to: URL(fileURLWithPath: tab.folderPath).appendingPathComponent("folder-59").path)
                 #expect(await waitUntil { sidebar.model.selected?.filesystemPath?.hasSuffix("folder-59") == true })
                 harness.layout(tab)
                 let scratch = try TemporaryDirectory.shallow(prefix: "filetrail-steps")

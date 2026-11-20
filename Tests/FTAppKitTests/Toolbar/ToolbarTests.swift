@@ -446,7 +446,7 @@ extension ExplorerWindowlessTests {
             #expect(button(tab, .openSelection)?.isEnabled == false)
             // Enclosing Folder runs its command.
             _ = button(tab, .up)?.accessibilityPerformPress()
-            #expect(await waitUntil { tab.currentFolder.lastPathComponent == harness.folder.url.lastPathComponent })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == harness.folder.url.lastPathComponent })
             await harness.close()
         }
 
@@ -773,7 +773,7 @@ extension ExplorerWindowlessTests {
             let root = harness.folder.url
             let tab = try await harness.open(root.path)
             for name in ["Alpha", "Alpha/Inner"] {
-                await tab.navigate(to: root.appendingPathComponent(name))
+                await tab.navigate(to: root.appendingPathComponent(name).path)
             }
             harness.layout(tab)
             let timers = ManualTimers()
@@ -789,7 +789,7 @@ extension ExplorerWindowlessTests {
             #expect(titles(menu) == ["Alpha", root.lastPathComponent])
             back.onRelease?(true)
             back.onClick?()
-            #expect(tab.currentFolder.lastPathComponent == "Inner")
+            #expect(NodePath.basename(tab.folderPath) == "Inner")
             AppMenuPresenter.shared.close()
 
             back.onPress?()
@@ -798,7 +798,7 @@ extension ExplorerWindowlessTests {
             timers.advance(1)
             #expect(menu == nil)
             back.onClick?()
-            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Alpha" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" })
             await harness.close()
         }
 
@@ -809,12 +809,12 @@ extension ExplorerWindowlessTests {
             let root = harness.folder.url
             let tab = try await harness.open(root.path)
             for name in ["Alpha", "Alpha/Inner"] {
-                await tab.navigate(to: root.appendingPathComponent(name))
+                await tab.navigate(to: root.appendingPathComponent(name).path)
             }
             tab.goBack(nil)
-            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Alpha" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" })
             tab.goBack(nil)
-            #expect(await waitUntil { tab.currentFolder.lastPathComponent == root.lastPathComponent })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == root.lastPathComponent })
             harness.layout(tab)
             let window = try #require(tab.window)
             let forward = try #require(button(tab, .forward))

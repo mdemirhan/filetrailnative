@@ -100,7 +100,7 @@ extension ExplorerWindowlessTests {
             try "x".write(toFile: archive, atomically: true, encoding: .utf8)
             tab.services.directoryService.cache.clear()
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: [archive]))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: [archive]))
             #expect(await waitUntil { tab.content.listedEntry(at: archive) != nil })
             let note = try #require(tab.content.entries.first { $0.name == "note.txt" }?.path)
             let commands: [AppCommand] = [.compressSelection, .extractSelection, .extractSelectionTo]

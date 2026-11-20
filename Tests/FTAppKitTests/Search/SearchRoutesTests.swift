@@ -394,7 +394,7 @@ extension ExplorerWindowlessTests {
             tab.content.applySelection(.empty)
             #expect(tab.content.filter == "al")
             // And the folder changing does drop it.
-            _ = await tab.navigate(to: URL(fileURLWithPath: tab.folder.path + "/Beta"))
+            _ = await tab.navigate(to: tab.folderPath + "/Beta")
             #expect(tab.content.filter.isEmpty)
             await opened.harness.close()
         }
@@ -413,7 +413,7 @@ extension ExplorerWindowlessTests {
             try search("al", opened)
             let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
             tab.open([alpha])
-            #expect(await waitUntil { tab.searchRootPath == nil && tab.folder.lastPathComponent == "Alpha" })
+            #expect(await waitUntil { tab.searchRootPath == nil && NodePath.basename(tab.folderPath) == "Alpha" })
             #expect(tab.searchField?.stringValue == "")
             await opened.harness.close()
         }
@@ -460,7 +460,7 @@ extension ExplorerWindowlessTests {
                 clipboard: harness.windows.clipboard, preferences: harness.channel)
             tab.reload()
             #expect(await waitUntil { reads.reading > 0 })
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { samePath(tab.shownFolderPath, beta) })
             reads.letGo()
             #expect(await waitUntil { reads.reading == 0 })

@@ -176,7 +176,7 @@ extension ExplorerWindowlessTests {
                 }
             }
 
-            tab.go(to: URL(fileURLWithPath: made.folder))
+            tab.go(to: made.folder)
             #expect(await waitUntil { shows(tab.activePane, made.folder) })
             #expect(await waitUntil { row(made.folder).map { $0.selection != .none } == true })
 

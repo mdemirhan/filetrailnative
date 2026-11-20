@@ -16,7 +16,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { group.tabs.count == 2 }, sourceLocation: sourceLocation)
             #expect(group.tabs.first === tab, sourceLocation: sourceLocation)
             let opened = try #require(group.tabs.last, sourceLocation: sourceLocation)
-            let alpha = tab.folder.appendingPathComponent("Alpha").path
+            let alpha = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Alpha").path
             #expect(
                 await waitUntil { opened.shownFolderPath == alpha && !opened.isNavigating },
                 sourceLocation: sourceLocation)
@@ -67,7 +67,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { openedFiles == ["note.txt"] })
             #expect(group.tabs.count == 1)
             await list.click(name: "Alpha", count: 2)
-            let alpha = tab.folder.appendingPathComponent("Alpha").path
+            let alpha = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Alpha").path
             #expect(await waitUntil { tab.shownFolderPath == alpha })
             #expect(group.tabs.count == 1)
             await harness.close()
@@ -78,8 +78,8 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let group = try #require(tab.group)
-            let beta = tab.folder.appendingPathComponent("Beta").path
-            let gamma = tab.folder.appendingPathComponent("Gamma").path
+            let beta = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Beta").path
+            let gamma = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Gamma").path
             group.openNewWindow(from: tab, path: beta)
             #expect(await waitUntil { harness.windows.count == 2 })
             group.openNewWindow(from: tab, path: gamma)
@@ -176,7 +176,7 @@ extension ExplorerWindowlessTests {
             tab.refresh()
             #expect(await waitUntil { probe.detailReads(of: folder) > before })
             #expect(info.targetPath == folder)
-            #expect(info.resolved?.item.name == tab.folder.lastPathComponent)
+            #expect(info.resolved?.item.name == NodePath.basename(tab.folderPath))
             await harness.close()
         }
     }

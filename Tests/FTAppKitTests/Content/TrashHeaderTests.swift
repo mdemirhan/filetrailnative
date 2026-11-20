@@ -23,7 +23,7 @@ extension ExplorerWindowlessTests {
         }
 
         private func go(_ window: WritingWindow, to url: URL) async {
-            window.tab.go(to: url)
+            window.tab.go(to: url.path)
             #expect(await waitUntil { window.tab.shownFolderPath == url.path && !window.tab.content.entries.isEmpty })
             window.harness.layout(window.tab)
         }
@@ -40,7 +40,7 @@ extension ExplorerWindowlessTests {
             #expect(window.tab.window?.title == "Trash")
             #expect(window.tab.tabDescription.label == "Trash")
 
-            window.tab.go(to: trash.appendingPathComponent("Inner"))
+            window.tab.go(to: trash.appendingPathComponent("Inner").path)
             #expect(await waitUntil { window.tab.shownFolderPath.hasSuffix("/.Trash/Inner") })
             #expect(ExplorerToolbar.title(of: window.tab) == "Inner")
             #expect(window.tab.window?.title == "Inner")
@@ -68,7 +68,7 @@ extension ExplorerWindowlessTests {
             #expect(abs(bar.emptyButton.frame.minY - DesignTokens.paneContentTop) < 0.01)
             #expect(abs(bar.frame.height - (10 + 24 + 6 + 1)) < 0.01)
 
-            window.tab.go(to: trash.appendingPathComponent("Inner"))
+            window.tab.go(to: trash.appendingPathComponent("Inner").path)
             #expect(await waitUntil { window.tab.shownFolderPath.hasSuffix("/.Trash/Inner") })
             #expect(header(window) == nil)
 

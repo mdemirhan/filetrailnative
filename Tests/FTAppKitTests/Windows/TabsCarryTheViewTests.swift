@@ -33,10 +33,10 @@ extension ExplorerWindowlessTests {
         /// A tab with Alpha open in the tree though it shows the folder above it.
         private func tabWithAlphaOpen(_ harness: ExplorerHarness) async throws -> MainWindowController {
             let tab = try await harness.open()
-            await tab.navigate(to: harness.folder.appending("Alpha/Inner"))
+            await tab.navigate(to: harness.folder.appending("Alpha/Inner").path)
             let alpha = real(harness, "Alpha")
             #expect(await waitUntil { tab.sidebarController.model.nodes[alpha]?.expanded == true })
-            await tab.navigate(to: URL(fileURLWithPath: real(harness, "")), history: .back)
+            await tab.navigate(to: real(harness, ""), history: .back)
             await arrived(tab)
             return tab
         }
@@ -301,7 +301,7 @@ extension ExplorerWindowlessTests {
             try FileManager.default.setAttributes([.posixPermissions: 0], ofItemAtPath: locked.path)
             defer { try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: locked.path) }
             var failure: String?
-            await tab.navigate(to: locked, goToFailure: { failure = $0 })
+            await tab.navigate(to: locked.path, goToFailure: { failure = $0 })
             let message = try #require(failure)
             #expect(tab.content.readError?.message == message)
             let group = try #require(tab.group)
@@ -578,7 +578,7 @@ extension ExplorerWindowlessTests {
             await model.loadChildren(real(harness, ""), expandOnSuccess: true)
             #expect(await waitUntil { model.nodes[link.path]?.isSymlink == true })
             model.selectItem(.filesystem(link.path))
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Beta" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Beta" })
             await arrived(tab)
 
             tab.perform(.toggleHiddenFiles)
@@ -588,7 +588,7 @@ extension ExplorerWindowlessTests {
             #expect(model.selected == .filesystem(link.path))
 
             let alpha = real(harness, "Alpha")
-            await tab.navigate(to: URL(fileURLWithPath: alpha))
+            await tab.navigate(to: alpha)
             await arrived(tab)
             #expect(model.selected == .filesystem(alpha))
             tab.setSort(.size, .desc)

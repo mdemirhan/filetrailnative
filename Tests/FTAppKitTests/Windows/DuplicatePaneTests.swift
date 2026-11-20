@@ -24,7 +24,7 @@ extension ExplorerWindowlessTests {
         /// A tab on Alpha, come to from the harness's folder, in Icons and with the filter in Contains.
         private func tabOnAlpha(_ harness: ExplorerHarness) async throws -> MainWindowController {
             let tab = try await harness.open()
-            await tab.activePane.navigate(to: URL(fileURLWithPath: real(harness, "Alpha")))
+            await tab.activePane.navigate(to: real(harness, "Alpha"))
             tab.perform(.viewAsIcons)
             tab.activePane.content.setViewFilterMode(.contains)
             await arrived(tab.activePane)

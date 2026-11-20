@@ -257,7 +257,7 @@ extension ExplorerWindowlessTests {
             // The filter belongs to the folder: it goes when another folder opens.
             list.type("a")
             #expect(tab.content.filter == "a")
-            await tab.navigate(to: harness.folder.url)
+            await tab.navigate(to: harness.folder.url.path)
             #expect(tab.content.filter.isEmpty)
             await harness.close()
         }
@@ -405,18 +405,18 @@ extension ExplorerWindowlessTests {
             // ⌘↓ opens the folder whatever the Return key does.
             await list.click(name: "Alpha")
             list.key("ArrowDown", modifiers: .command)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" })
-            await tab.navigate(to: harness.folder.url)
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" })
+            await tab.navigate(to: harness.folder.url.path)
             // Set to open, Return opens.
             tab.updatePreferences { $0.returnKeyAction = .open }
             await list.click(name: "Beta")
             list.key("Enter")
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Beta" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Beta" })
             #expect(shown("rename.field", tab).isEmpty)
-            await tab.navigate(to: harness.folder.url)
+            await tab.navigate(to: harness.folder.url.path)
             // A double-click opens a folder in place.
             await list.click(name: "Gamma", count: 2)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Gamma" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Gamma" })
             await harness.close()
         }
 
@@ -439,7 +439,7 @@ extension ExplorerWindowlessTests {
             #expect(alert.titleLabel.stringValue.hasPrefix("Too Many Items to"))
             DialogKeys.press(36, "\r", in: list.window)
             #expect(await waitUntil { tab.frontAlert == nil })
-            #expect(tab.folder == harness.folder.url)
+            #expect(URL(fileURLWithPath: tab.folderPath) == harness.folder.url)
             await harness.close()
         }
     }

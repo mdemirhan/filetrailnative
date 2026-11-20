@@ -98,10 +98,10 @@ extension ExplorerWindowlessTests {
 
         /// Opens a folder of the test folder and waits for its items.
         private func open(_ window: WritingWindow, _ folder: String, showing names: [String] = []) async {
-            window.tab.go(to: window.folder.appendingPathComponent(folder))
+            window.tab.go(to: window.folder.appendingPathComponent(folder).path)
             #expect(
                 await waitUntil {
-                    window.tab.folder.lastPathComponent == folder
+                    NodePath.basename(window.tab.folderPath) == folder
                         && names.allSatisfy { name in window.tab.content.entries.contains { $0.name == name } }
                 })
         }

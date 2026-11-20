@@ -55,7 +55,7 @@ extension ExplorerWindowlessTests {
                 requests.all.append(request)
                 if !records { _ = await actions.batchRename(request) }
             }
-            let folder = tab.content.entries.first.map { NodePath.dirname($0.path) } ?? tab.folder.path
+            let folder = tab.content.entries.first.map { NodePath.dirname($0.path) } ?? tab.folderPath
             return Opened(
                 harness: harness, tab: tab, operations: operations, notices: notices, requests: requests, folder: folder
             )

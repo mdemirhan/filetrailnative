@@ -11,7 +11,7 @@ extension MainWindowController {
         bar.namesChanged()
         bar.path = pane.folderPath
         // The bar acts in its own pane, which it makes the active one.
-        bar.onNavigate = { [weak self, weak pane] path in
+        let navigate: @MainActor (String) -> Void = { [weak self, weak pane] path in
             guard let self, let pane else { return }
             self.activate(pane)
             // In search results the bar ends with the selected result, which opens as a double-click would open it.
@@ -19,11 +19,19 @@ extension MainWindowController {
                 self.open([result])
                 return
             }
-            self.navigate(to: URL(fileURLWithPath: path), target: .push)
+            self.navigate(to: path, target: .push)
+        }
+        bar.onNavigate = navigate
+        // A path typed in the bar comes from no listing: "~" is the home folder, and a path that doesn't start at the
+        // top starts where the app was started.
+        bar.onTyped = { [weak bar] typed in
+            var path = PathText2.expandHome(typed, homePath: bar?.editor.homePath ?? "")
+            if !path.hasPrefix("/") { path = NodePath.join(FileManager.default.currentDirectoryPath, path) }
+            navigate(path)
         }
         bar.onOpenInNewTab = { [weak self] path in
             guard let self else { return }
-            self.navigate(to: URL(fileURLWithPath: path), target: .newTab)
+            self.navigate(to: path, target: .newTab)
         }
         bar.onFocusContent = { [weak self, weak pane] in
             guard let self, let pane else { return }

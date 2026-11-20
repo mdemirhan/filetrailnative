@@ -172,7 +172,7 @@ extension ExplorerWindowlessTests {
         private func changed(_ harness: ExplorerHarness, _ tab: MainWindowController, _ paths: [String]) {
             tab.services.directoryService.cache.clear()
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: paths))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: paths))
         }
 
         @Test func aTagChangedDuringAReadOfItIsReadAgain() async throws {

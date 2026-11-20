@@ -27,7 +27,7 @@ extension ExplorerWindowlessTests {
             }
             #expect(locationLabel() == "Data")
 
-            tab.go(to: URL(fileURLWithPath: "/"))
+            tab.go(to: "/")
             #expect(await waitUntil { tab.shownFolderPath == "/" && tab.loaded })
             #expect(tab.window?.title == "Data")
             #expect(tab.window?.tab.title == "Data")

@@ -96,13 +96,15 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
             _ = automation?.load()
-            let start = automation?.startFolder ?? requested.map { URL(fileURLWithPath: $0) } ?? home
+            let start = automation?.startFolder ?? requested
         #else
-            let start = requested.map { URL(fileURLWithPath: $0) } ?? home
+            let start = requested
         #endif
 
         // The windows open as they were at quit; the folder File Trail was launched with goes to the one in front.
-        explorerWindows.openStartupWindows(folder: requested == nil && start == home ? nil : start.path)
+        // A scenario that starts on the home folder starts as a launch with no folder does.
+        explorerWindows.openStartupWindows(
+            folder: requested == nil && start.map { samePath($0, home.path) } == true ? nil : start)
         writeOperations?.showStartupNotices()
         // Items File Trail was launched to open go to the window in front.
         openFiles.startupWindowsOpened()

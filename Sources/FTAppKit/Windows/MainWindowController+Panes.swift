@@ -43,7 +43,7 @@ extension MainWindowController {
     @discardableResult
     func openSecondPane(at path: String? = nil, reopening: Bool = true) -> BrowserPane {
         if let other = otherPane {
-            if let path { other.go(to: URL(fileURLWithPath: path)) }
+            if let path { other.go(to: path) }
             return other
         }
         let source = activePane
@@ -295,7 +295,7 @@ extension MainWindowController {
         guard !homePath.isEmpty else { return }
         let active = activePane
         let activeLeaves = isGone(active.shownFolderPath)
-        for pane in panes where isGone(pane.shownFolderPath) { pane.go(to: URL(fileURLWithPath: homePath)) }
+        for pane in panes where isGone(pane.shownFolderPath) { pane.go(to: homePath) }
         if !activeLeaves, isGone(treeRootPath) {
             sidebarController.model.initializeTree(homePath)
             sidebarController.activePaneChanged(to: active.shownFolderPath)

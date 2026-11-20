@@ -121,7 +121,7 @@ extension ExplorerWindowlessTests {
             harness.windows.openWorkspace(slot: 0)
             #expect(await waitUntil { harness.windows.count == 2 })
             let opened = try #require(harness.windows.newestGroup)
-            #expect(opened.tabs.map { $0.panes[0].folder.path } == [real(harness, "Alpha"), real(harness, "Beta")])
+            #expect(opened.tabs.map { $0.panes[0].folderPath } == [real(harness, "Alpha"), real(harness, "Beta")])
         }
 
         // A workspace opens with the List column widths its panes were saved with, each pane's own, whatever the app's
@@ -185,7 +185,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.beginRename(path: alpha))
             #expect(await waitUntil { beeps == 2 })
             let opened = try #require(harness.windows.newestGroup)
-            #expect(opened.tabs.map { $0.panes[0].folder.path } == [real(harness, "Beta")])
+            #expect(opened.tabs.map { $0.panes[0].folderPath } == [real(harness, "Beta")])
             await settle()
             #expect(harness.windows.count == 2)
             #expect(tab.group?.isDestroyed == false)
@@ -278,10 +278,10 @@ extension ExplorerWindowlessTests {
             let opened = try #require(harness.windows.newestGroup)
             #expect(opened.tabs.count == 3)
             #expect(opened.tabs.map { $0.panes.count } == [2, 2, 1])
-            #expect(opened.tabs[0].panes.map(\.folder.path) == [real(harness, "Alpha"), real(harness, "Beta")])
+            #expect(opened.tabs[0].panes.map(\.folderPath) == [real(harness, "Alpha"), real(harness, "Beta")])
             #expect(opened.tabs[0].activePaneIndex == 1)
-            #expect(opened.tabs[1].panes.map(\.folder.path) == [real(harness, "Gamma"), real(harness, "Beta")])
-            #expect(opened.tabs[2].panes.map(\.folder.path) == [real(harness, "Gamma/Inner")])
+            #expect(opened.tabs[1].panes.map(\.folderPath) == [real(harness, "Gamma"), real(harness, "Beta")])
+            #expect(opened.tabs[2].panes.map(\.folderPath) == [real(harness, "Gamma/Inner")])
             // Two tabs had a folder that is gone.
             #expect(await waitUntil { notices == [.workspaceFoldersGone(tabs: 2)] })
             // What is kept stays as it was saved.

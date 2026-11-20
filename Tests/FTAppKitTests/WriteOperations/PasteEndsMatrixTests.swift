@@ -395,8 +395,8 @@ extension ExplorerWindowlessTests {
             tab.services.clipboard.set(ClipboardRules.set(.copy, [note], capturedAt: "t"), from: nil)
             tab.clipboardChanged()
             try FileManager.default.removeItem(atPath: note)
-            tab.go(to: window.folder.appendingPathComponent("Gamma"))
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Gamma" })
+            tab.go(to: window.folder.appendingPathComponent("Gamma").path)
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Gamma" })
             tab.perform(.pasteSelection)
             #expect(await waitUntil { !window.recorder.shown.isEmpty })
             #expect(window.recorder.shown.first?.title == "Couldn\u{2019}t Paste")
@@ -451,7 +451,7 @@ extension ExplorerWindowlessTests {
             let other = try #require(group.tabs.first { $0 !== tab })
             other.servicesOverride = window.harness.services
             other.ensureLoaded()
-            #expect(await waitUntil { other.folder.lastPathComponent == "Gamma" })
+            #expect(await waitUntil { NodePath.basename(other.folderPath) == "Gamma" })
             #expect(group.selected === other)
             let otherActions = try #require(other.writeActions)
             _ = await otherActions.trash([path(window, "Beta")])
@@ -512,7 +512,7 @@ extension ExplorerWindowlessTests {
             try FileManager.default.createDirectory(at: trash, withIntermediateDirectories: false)
             let old = trash.appendingPathComponent("old.txt")
             try "o".write(to: old, atomically: true, encoding: .utf8)
-            tab.go(to: trash)
+            tab.go(to: trash.path)
             #expect(await waitUntil { tab.content.entries.map(\.name) == ["old.txt"] })
             let coordinator = WriteCoordinator(
                 writeService: ScriptedPasteService(.failed(nil)),

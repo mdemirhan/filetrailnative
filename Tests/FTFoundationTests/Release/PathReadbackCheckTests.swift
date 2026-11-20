@@ -80,7 +80,7 @@ import Testing
         let result = try Self.check(
             [
                 "FTAppKit/Rows.swift": [
-                    "let a = entry.path", "pane.go(to: URL(fileURLWithPath: row.path))",
+                    "let a = entry.path", "pane.go(to: row.path)",
                     "// never `folder.path`, nor URL(fileURLWithPath: x).path",
                     "    /// `url.path` gives an accent decomposed", "let name = url.lastPathComponent",
                 ],

@@ -318,16 +318,16 @@ extension ExplorerWindowlessTests {
         func twoSpringsComeBackWhenTheDragEndsWithoutADrop(firstArrived: Bool) async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
-            let start = tab.folder.path
+            let start = tab.folderPath
             let before = tab.historyPaths
             tab.dragDrop.springOpen(path(window, "Alpha"), sequence: 110)
             if firstArrived {
-                #expect(await waitUntil { samePath(tab.folder.path, path(window, "Alpha")) && !tab.isNavigating })
+                #expect(await waitUntil { samePath(tab.folderPath, path(window, "Alpha")) && !tab.isNavigating })
             }
             tab.dragDrop.springOpen(path(window, "Beta"), sequence: 110)
-            #expect(await waitUntil { samePath(tab.folder.path, path(window, "Beta")) && !tab.isNavigating })
+            #expect(await waitUntil { samePath(tab.folderPath, path(window, "Beta")) && !tab.isNavigating })
             tab.dragDrop.ownDragEnded(paths: [path(window, "note.txt")], operation: .none, over: .elsewhere)
-            #expect(await waitUntil { samePath(tab.folder.path, start) && tab.historyPaths == before })
+            #expect(await waitUntil { samePath(tab.folderPath, start) && tab.historyPaths == before })
             await window.close()
         }
 
@@ -341,11 +341,11 @@ extension ExplorerWindowlessTests {
             let own = try #require(TabDragDrop.ownDrag?.session)
             #expect(drags.contentTarget(own, entry: nil) == nil)
             drags.springOpen(alpha, sequence: 111)
-            #expect(await waitUntil { samePath(tab.folder.path, alpha) && !tab.isNavigating })
+            #expect(await waitUntil { samePath(tab.folderPath, alpha) && !tab.isNavigating })
             #expect(drags.automationDrop(urls, entry: nil, allowed: [.copy, .move, .generic]))
             #expect(await waitUntil { window.exists("Alpha/note.txt") && !window.exists("note.txt") })
             #expect(await waitUntil { !tab.isWriteLocked })
-            #expect(samePath(tab.folder.path, alpha))
+            #expect(samePath(tab.folderPath, alpha))
             await window.close()
         }
 

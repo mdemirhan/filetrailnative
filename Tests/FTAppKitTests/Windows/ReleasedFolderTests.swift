@@ -84,7 +84,7 @@ extension ExplorerWindowlessTests {
             let group = try #require(tab.group)
             group.openTab(path: harness.folder.appending("Alpha").path, from: tab)
             let other = try #require(group.tabs.last)
-            let released = tab.folder.path
+            let released = tab.folderPath
             tab.sidebarController.model.rootTree(at: "/")
             other.sidebarController.model.rootTree(at: "/")
             tab.sidebarController.model.clearSelection()

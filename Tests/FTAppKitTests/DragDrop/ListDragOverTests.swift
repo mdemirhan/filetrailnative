@@ -104,7 +104,7 @@ extension ExplorerWindowlessTests {
                 timers.advance(0.05)
                 _ = list.draggingUpdated(drag)
             }
-            #expect(await waitUntil { samePath(tab.folder.path, alpha) })
+            #expect(await waitUntil { samePath(tab.folderPath, alpha) })
             await window.close()
         }
 

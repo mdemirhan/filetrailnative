@@ -21,7 +21,7 @@ extension ExplorerWindowlessTests {
             tab.content.columnWidthsChanged(widths)
             #expect(tab.preferences.detailColumnWidths.name == 333)
 
-            _ = await tab.navigate(to: harness.folder.appending("Alpha"), history: .push)
+            _ = await tab.navigate(to: harness.folder.appending("Alpha").path, history: .push)
             tab.group?.saveSession()
             #expect(tab.preferences.detailColumnWidths.name == 333)
             #expect(tab.activePane.viewSizes?.detailColumnWidths.name == 333)

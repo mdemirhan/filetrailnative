@@ -76,7 +76,7 @@ extension ExplorerWindowlessTests {
             // And it keeps them in the folders it goes to.
             let alpha = harness.folder.appending("Alpha")
             try "x".write(to: alpha.appendingPathComponent(".inside"), atomically: true, encoding: .utf8)
-            new.go(to: alpha)
+            new.go(to: alpha.path)
             #expect(await waitUntil { self.names(new).contains(".inside") })
             #expect(new.includeHidden)
             #expect(!new.foldersFirst)

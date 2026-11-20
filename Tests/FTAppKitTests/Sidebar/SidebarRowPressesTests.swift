@@ -235,7 +235,7 @@ extension ExplorerWindowlessTests {
             #expect(group.tabs.count == 2)
             let new = try #require(group.tabs.last)
             #expect(new !== tab)
-            #expect(new.folder.path == beta)
+            #expect(new.folderPath == beta)
             // No click is waiting to open it here too.
             clock.advance(1000)
             await settle()

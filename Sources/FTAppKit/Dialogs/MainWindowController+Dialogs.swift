@@ -131,7 +131,7 @@ extension MainWindowController {
         box.setSubmitting(true)
         Task { @MainActor [weak self, weak box] in
             guard let self else { return }
-            let outcome = await self.goToFolder(URL(fileURLWithPath: expanded))
+            let outcome = await self.goToFolder(expanded)
             guard let box else { return }
             box.setSubmitting(false)
             switch outcome {
@@ -150,10 +150,10 @@ extension MainWindowController {
         }
     }
 
-    /// Opens `url` for Go To: the folder on screen stays when it can't be read.
-    func goToFolder(_ url: URL) async -> GoToOutcome {
+    /// Opens the folder at `path` for Go To: the folder on screen stays when it can't be read.
+    func goToFolder(_ path: String) async -> GoToOutcome {
         var failure: String?
-        if await navigate(to: url, history: .push, goToFailure: { failure = $0 }) { return .opened }
+        if await navigate(to: path, history: .push, goToFailure: { failure = $0 }) { return .opened }
         return failure.map(GoToOutcome.failed) ?? .superseded
     }
 

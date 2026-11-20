@@ -115,9 +115,9 @@ extension ExplorerWindowlessTests {
             harness.services.directoryService.cache.clear()
 
             right.readAgain(selecting: [made])
-            await right.navigate(to: URL(fileURLWithPath: real(harness, "Alpha")))
+            await right.navigate(to: real(harness, "Alpha"))
             await settle()
-            await right.navigate(to: URL(fileURLWithPath: gamma))
+            await right.navigate(to: gamma)
             #expect(right.content.selection.paths.isEmpty)
 
             let later = gamma + "/later.txt"
@@ -237,12 +237,12 @@ extension ExplorerWindowlessTests {
             left.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
             #expect(left.search.session.draftQuery == "a")
 
-            await right.navigate(to: URL(fileURLWithPath: real(harness, "Beta/Inner")))
+            await right.navigate(to: real(harness, "Beta/Inner"))
             #expect(field.stringValue == "a")
             #expect(left.search.session.draftQuery == "a")
 
             // The active pane's own folder still empties it.
-            await left.navigate(to: URL(fileURLWithPath: real(harness, "Alpha")))
+            await left.navigate(to: real(harness, "Alpha"))
             #expect(field.stringValue.isEmpty)
         }
 
@@ -343,13 +343,13 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { front.panes[1].shownFolderPath == real(harness) })
             #expect(front.panes[0].shownFolderPath == real(harness))
             // The tab at the back: its pane takes Home as its place, and reads it when the tab is shown.
-            #expect(right.folder.path == real(harness))
+            #expect(right.folderPath == real(harness))
             #expect(right.navigationHistory.paths == [real(harness)])
             #expect(left.shownFolderPath == real(harness))
 
             // With both panes on the disk, nothing of the tab is left: it closes.
-            await front.panes[0].navigate(to: URL(fileURLWithPath: disk))
-            await front.panes[1].navigate(to: URL(fileURLWithPath: disk + "/Inner"))
+            await front.panes[0].navigate(to: disk)
+            await front.panes[1].navigate(to: disk + "/Inner")
             harness.windows.disksUnmounted([disk])
             #expect(await waitUntil { group.tabs.count == 1 })
             #expect(group.tabs.first === tab)
@@ -371,10 +371,10 @@ extension ExplorerWindowlessTests {
                 action: .rename, mode: nil, items: [WriteEffectItem(sourcePath: alpha, destinationPath: moved)])
             harness.windows.writeOperationProgress(WriteOperationProgress(status: .completed, result: rename))
 
-            #expect(right.folder.path == moved + "/Inner")
+            #expect(right.folderPath == moved + "/Inner")
             #expect(right.navigationHistory.paths == [moved + "/Inner"])
             #expect(right.stale)
-            #expect(left.folder.path == real(harness))
+            #expect(left.folderPath == real(harness))
             #expect(!left.stale)
 
             group.select(tab)
@@ -468,7 +468,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.canPerform(.copyToOtherPane))
 
             for folder in [trash, trash + "/Old"] {
-                await right.navigate(to: URL(fileURLWithPath: folder))
+                await right.navigate(to: folder)
                 #expect(right.shownFolderPath == folder)
                 #expect(!tab.canPerform(.copyToOtherPane))
                 #expect(!tab.canPerform(.moveToOtherPane))
@@ -559,8 +559,8 @@ extension ExplorerWindowlessTests {
             let merged = group.tabs[1]
             #expect(merged.panes.count == 2)
             #expect(merged.activePaneIndex == 1)
-            #expect(merged.panes[0].folder.path == real(harness, "Alpha"))
-            #expect(merged.panes[1].folder.path == real(harness, "Beta"))
+            #expect(merged.panes[0].folderPath == real(harness, "Alpha"))
+            #expect(merged.panes[1].folderPath == real(harness, "Beta"))
         }
     }
 }

@@ -42,7 +42,7 @@ extension MainWindowController {
             FolderViewsWindowController.show(services.folderViews) { [weak self] path in
                 guard let self else { return }
                 self.window?.makeKeyAndOrderFront(nil)
-                self.go(to: URL(fileURLWithPath: path))
+                self.go(to: path)
             }
         default:
             break

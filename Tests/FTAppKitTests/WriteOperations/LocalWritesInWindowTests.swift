@@ -61,7 +61,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.newFolder)
             #expect(await waitUntil { tab.content.inlineRename != nil })
 
-            let made = tab.folder.path + "/untitled folder"
+            let made = tab.folderPath + "/untitled folder"
             #expect(tab.content.inlineRename.map { NodePath.basename($0.path) } == "untitled folder")
             #expect(FileManager.default.fileExists(atPath: made))
             #expect(tab.content.filter.isEmpty)
@@ -79,7 +79,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.inlineRename != nil })
             #expect(tab.content.inlineRename.map { NodePath.basename($0.path) } == "untitled folder")
             #expect(notices.messages == [WriteDialogs.busyMessage])
-            #expect(!FileManager.default.fileExists(atPath: tab.folder.path + "/untitled folder 2"))
+            #expect(!FileManager.default.fileExists(atPath: tab.folderPath + "/untitled folder 2"))
             withExtendedLifetime(operations) {}
             await harness.close()
         }
@@ -93,7 +93,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.inlineRename?.path == note)
 
             tab.content.renameSubmitted("renamed.txt")
-            let renamed = tab.folder.path + "/renamed.txt"
+            let renamed = tab.folderPath + "/renamed.txt"
             #expect(await waitUntil { tab.content.inlineRename == nil && isListed(tab, "renamed.txt") })
             #expect(FileManager.default.fileExists(atPath: renamed))
             #expect(!isListed(tab, "note.txt"))
@@ -117,7 +117,7 @@ extension ExplorerWindowlessTests {
             tab.renameSelected()
 
             tab.content.renameSubmitted("Alpha")
-            _ = await tab.navigate(to: harness.folder.url.appendingPathComponent("Beta"))
+            _ = await tab.navigate(to: harness.folder.url.appendingPathComponent("Beta").path)
             #expect(await waitUntil { tab.content.inlineRename == nil })
             #expect(notices.titles.isEmpty)
             held.open()
@@ -144,7 +144,7 @@ extension ExplorerWindowlessTests {
             #expect(FileManager.default.fileExists(atPath: note))
             #expect(notices.titles.isEmpty)
 
-            _ = await tab.navigate(to: harness.folder.url.appendingPathComponent("Beta"))
+            _ = await tab.navigate(to: harness.folder.url.appendingPathComponent("Beta").path)
             #expect(await waitUntil { tab.content.inlineRename == nil && !notices.titles.isEmpty })
             #expect(notices.titles == ["Couldn\u{2019}t Rename"])
             #expect(notices.messages == ["An item named \u{201C}Alpha\u{201D} already exists."])

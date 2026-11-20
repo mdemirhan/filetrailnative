@@ -110,7 +110,7 @@ extension ExplorerWindowlessTests {
             type("scr", tab.content)
             tab.perform(.togglePinFilter)
 
-            await tab.activePane.navigate(to: URL(fileURLWithPath: path + "/Projects"))
+            await tab.activePane.navigate(to: path + "/Projects")
             #expect(tab.content.pinnedFilter?.query == "scr")
             #expect(names(tab) == ["Archive", "Screenshot 11.31.png"])
 
@@ -122,7 +122,7 @@ extension ExplorerWindowlessTests {
             // A filter typed and not pinned is cleared by another folder, as before.
             tab.perform(.togglePinFilter)
             #expect(tab.content.filter == "scr")
-            await tab.activePane.navigate(to: URL(fileURLWithPath: path + "/Projects"))
+            await tab.activePane.navigate(to: path + "/Projects")
             #expect(tab.content.filter.isEmpty)
             #expect(tab.content.pinnedFilter == nil)
             #expect(names(tab).count == 3)

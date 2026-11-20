@@ -41,7 +41,7 @@ extension ExplorerWindowlessTests {
             MainWindowController.readImageInfos = { paths in
                 paths.map { _ in ImageInfo(size: PixelSize(width: 2400, height: 1600)) }
             }
-            let folder = tab.content.entries.first.map { NodePath.dirname($0.path) } ?? tab.folder.path
+            let folder = tab.content.entries.first.map { NodePath.dirname($0.path) } ?? tab.folderPath
             return Opened(harness: harness, tab: tab, operations: operations, requests: requests, folder: folder)
         }
 

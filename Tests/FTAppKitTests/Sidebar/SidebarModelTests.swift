@@ -51,7 +51,7 @@ private final class Rig {
             if let text = disk.failing[path] { throw Failure(text: text) }
             return (disk.children[path] ?? []).filter { includeHidden || !$0.isHidden }
         }
-        model.openFolder = { [unowned self] url, open in opened.append((url.path, open)) }
+        model.openFolder = { [unowned self] path, open in opened.append((path, open)) }
         model.releaseFolder = { [unowned self] in released += 1 }
         model.onFavoritesChanged = { [unowned self] in savedFavorites.append($0) }
         model.schedule = { [unowned self] milliseconds, fire in

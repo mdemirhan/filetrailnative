@@ -56,24 +56,15 @@ final class BrowserPane {
     /// The tab it is a pane of; set as the tab is made.
     weak var tab: MainWindowController!
     let content: ContentPaneController
-    private(set) var folder: URL
-    /// The folder's path as the pane knows it: the real path its listing gave, spelled as the disk spells it, which is
-    /// how its rows' paths start and how a write names what it made here. Until the folder has been listed, and for
-    /// one that can't be, it is the spelling the pane was given. Whatever asks where the pane is reads this and never
-    /// `folder.path`: a `URL` gives an accent decomposed whatever the disk keeps, and paths are compared byte for
-    /// byte. It is set with `folder` (`setFolder`), and is `folder.path` but for how accents are encoded (`spelling`).
+    /// The pane's folder, by its path as the pane knows it: the real path its listing gave, spelled as the disk spells
+    /// it, which is how its rows' paths start and how a write names what it made here. Until the folder has been
+    /// listed, and for one that can't be, it is the spelling the pane was given. The pane keeps no `URL` of its
+    /// folder: one made from a path gives an accent decomposed whatever the disk keeps, and paths are compared byte
+    /// for byte. What needs a URL makes one from this path (`DiskPath.url(isDirectory:)`).
     private(set) var folderPath: String
 
-    /// `path` as the pane keeps it beside its URL: as it is, where the URL's own path differs from it at most in how
-    /// an accent is encoded; the URL's path where the URL made more of it (a path that isn't absolute, a slash at its
-    /// end).
-    private static func spelling(_ path: String, of url: URL) -> String {
-        let tidied = url.path
-        return NameKeys.pathsMatchIgnoringEncoding(path, tidied) ? path : tidied
-    }
-
     /// The pane let go of its folder: it shows none until one is opened, and keeps none: its label, snapshot and saved
-    /// tab have an empty path (`shownFolderPath`). `folder` is then only where a new read would start from.
+    /// tab have an empty path (`shownFolderPath`). `folderPath` is then only where a new read would start from.
     private(set) var folderLetGo = false
     /// What the pane carries from folder to folder: its view, order and Folders First. A folder's view is laid over
     /// them while the pane shows that folder (`folderView`); what is shown is `shownMode`, `shownSortBy` and the rest.
@@ -118,8 +109,8 @@ final class BrowserPane {
     }
     private var navigationToken = 0
     private(set) var isNavigating = false
-    /// The folder the navigation under way is opening.
-    private var navigationTarget: URL?
+    /// The folder the navigation under way is opening, by the path it was asked for.
+    private var navigationTarget: String?
     /// When changes made outside the app are read: see `FolderChangeGate`.
     private var folderChanges = FolderChangeGate(maxChangedPaths: FolderWatches.maxChangedPaths)
     /// The changes waiting to be read.
@@ -185,10 +176,7 @@ final class BrowserPane {
         self.startsTheWindow = startsTheWindow
         content = ContentPaneController(mode: startup.viewMode, folderSizes: folderSizes, loaders: .placeholder)
         folderLetGo = startup.path.isEmpty
-        let given = startup.path.isEmpty ? startup.rootPath : startup.path
-        let url = URL(fileURLWithPath: given)
-        folder = url
-        folderPath = Self.spelling(given, of: url)
+        folderPath = startup.path.isEmpty ? startup.rootPath : startup.path
         viewMode = startup.viewMode
         searchViewMode = startup.searchViewMode
         sortBy = startup.sortBy
@@ -229,12 +217,6 @@ final class BrowserPane {
 
     /// The folder on screen, by the path its listing gave (`folderPath`); empty while the pane shows none.
     var shownFolderPath: String { folderLetGo ? "" : folderPath }
-
-    /// The pane's folder is at `path` from here on, known by this spelling of it.
-    private func setFolder(_ path: String, _ url: URL) {
-        folderPath = Self.spelling(path, of: url)
-        folder = url
-    }
 
     /// The folder's modification time when the listing on screen was read, for its watch to compare once it runs
     /// (`FolderWatches.watch`). Nil when the folder couldn't be read.
@@ -330,8 +312,8 @@ final class BrowserPane {
                 stale = false
                 // At once: the pane is being read, and has no need to read again as it comes to the front.
                 isNavigating = true
-                navigationTarget = folder
                 let path = folderPath
+                navigationTarget = path
                 holdingTab { pane in
                     await pane.openNearestExistingFolder(
                         path, history: .none, keepingSearch: true, restoringView: true)
@@ -406,9 +388,9 @@ final class BrowserPane {
     /// folder that can't be read gives way to Home, with the tree at Home.
     private func readStartupFolder() async -> Bool {
         if let open = openKeepingFavoriteRow() {
-            return await attemptNavigation(to: folder, history: .none, open: open, readFailure: .opens).didOpen
+            return await attemptNavigation(to: folderPath, history: .none, open: open, readFailure: .opens).didOpen
         }
-        switch await attemptNavigation(to: folder, history: .none) {
+        switch await attemptNavigation(to: folderPath, history: .none) {
         case .opened: return true
         case .superseded: return false
         case .failed: break
@@ -416,7 +398,7 @@ final class BrowserPane {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         guard folderPath != home else { return false }
         if drivesSidebar { sidebar.model.initializeTree(home) }
-        return await attemptNavigation(to: URL(fileURLWithPath: home), history: .replace).didOpen
+        return await attemptNavigation(to: home, history: .replace).didOpen
     }
 
     /// Runs `action` once the first read of the pane's folder has finished, with whether it showed the folder.
@@ -440,7 +422,7 @@ final class BrowserPane {
         }
         let moved = shownFolderPath != path
         if !path.isEmpty {
-            setFolder(path, URL(fileURLWithPath: path))
+            folderPath = path
             folderLetGo = false
         }
         if moved, loaded {
@@ -456,11 +438,10 @@ final class BrowserPane {
         let path = shownFolderPath
         let followed = ExplorerTabs.followMovedPath(path, moves)
         guard !path.isEmpty, followed != path else { return }
-        let target = URL(fileURLWithPath: followed)
         if loaded {
-            go(to: target, history: .replace)
+            go(to: followed, history: .replace)
         } else {
-            setFolder(followed, target)
+            folderPath = followed
             tab.updateTitle()
             tab.group?.tabChanged(tab)
         }
@@ -556,9 +537,11 @@ final class BrowserPane {
 
     /// The pane as the gate asks about it: the folder on screen and what is going on in it.
     private var folderChangeSituation: FolderChangeGate.Situation {
+        // By the pane's own path of its folder, which a read in place asks for: one asked for by another spelling of
+        // it counts as another folder until its listing has said where it is.
         let opening: FolderChangeGate.Situation.Opening =
             !isNavigating
-            ? .nothing : navigationTarget?.comparablePath == folder.comparablePath ? .thisFolder : .anotherFolder
+            ? .nothing : navigationTarget.map { samePath($0, folderPath) } == true ? .thisFolder : .anotherFolder
         // A file operation running here or in another window holds them too (WriteOperations/).
         return FolderChangeGate.Situation(
             folderPath: folderPath, opening: opening, renaming: content.inlineRename != nil,
@@ -586,12 +569,11 @@ final class BrowserPane {
 
     /// A folder read again in place: the selection, scroll and details stay; the error clears when the answer arrives.
     private func quietRead(_ changedPaths: [String]?) async {
-        let url = folder
         let path = folderPath
-        let result = await readFolder(url, view: folderView)
+        let result = await readFolder(path, view: folderView)
         // The folder was left meanwhile: the user's folder wins. A folder being opened settles what waits for a
         // write's end itself.
-        guard url == folder, !isNavigating, !folderLetGo else {
+        guard samePath(path, folderPath), !isNavigating, !folderLetGo else {
             if !isNavigating { dropWriteEndRead() }
             return
         }
@@ -620,7 +602,7 @@ final class BrowserPane {
     @discardableResult
     private func openNearestExistingFolder(above path: String) async -> Bool {
         for candidate in ExplorerTabs.pathAndAncestors(path).dropFirst() {
-            switch await attemptNavigation(to: URL(fileURLWithPath: candidate), history: .replace) {
+            switch await attemptNavigation(to: candidate, history: .replace) {
             case .opened: return true
             case .superseded: return false
             case .failed: continue
@@ -637,8 +619,8 @@ final class BrowserPane {
         readFailure: ReadFailure = .leavesFolderOnScreen, restoringView: Bool = false, arrives: Bool = false
     ) async -> Bool {
         let outcome = await attemptNavigation(
-            to: URL(fileURLWithPath: path), history: history, open: open, keepingSearch: keepingSearch,
-            readFailure: readFailure, restoringView: restoringView, arrives: arrives)
+            to: path, history: history, open: open, keepingSearch: keepingSearch, readFailure: readFailure,
+            restoringView: restoringView, arrives: arrives)
         if case .failed = outcome {
             finishCarrying(nil)
             await openNearestExistingFolder(above: path)
@@ -654,7 +636,7 @@ final class BrowserPane {
         let path = folderPath
         let open = drivesSidebar ? sidebar.model.openReadingAgain(path) : SidebarOpen(origin: .alias)
         let outcome = await attemptNavigation(
-            to: folder, history: .none, open: open, keepingSearch: true, readFailure: .opensUnlessGone, quiet: true,
+            to: path, history: .none, open: open, keepingSearch: true, readFailure: .opensUnlessGone, quiet: true,
             keepingSelection: true)
         var opened = outcome.didOpen
         if case .failed = outcome { opened = await openNearestExistingFolder(above: path) }
@@ -705,15 +687,16 @@ final class BrowserPane {
 
     // MARK: Navigation
 
-    func go(to url: URL, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
-        holdingTab { await $0.navigate(to: url, history: history, open: open, keepingSearch: keepingSearch) }
+    /// Opens the folder at `path` (`navigate`). The path may spell the folder any way that leads to it (through a link,
+    /// with an accent encoded either way): the pane knows the folder by the path its listing gives.
+    func go(to path: String, history: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false) {
+        holdingTab { await $0.navigate(to: path, history: history, open: open, keepingSearch: keepingSearch) }
     }
 
     /// Reads a folder through the directory service: in the order the pane keeps, with hidden files and folders first
     /// as the pane has them.
-    private func readFolder(_ url: URL, view: FolderViewOnScreen?) async -> Result<DirectorySnapshot, any Error> {
+    private func readFolder(_ path: String, view: FolderViewOnScreen?) async -> Result<DirectorySnapshot, any Error> {
         let service = tab.services.directoryService
-        let path = url.path
         let order = readOrder(view)
         let key = DirectorySortKey(rawValue: order.by.rawValue) ?? .name
         let direction: SortDirection = order.direction == .asc ? .ascending : .descending
@@ -737,18 +720,18 @@ final class BrowserPane {
         )
     }
 
-    /// Reads `url`, then shows it. False when a later navigation replaced this one or the folder didn't open. `open`
+    /// Reads `path`, then shows it. False when a later navigation replaced this one or the folder didn't open. `open`
     /// says how the sidebar reached it, which decides how the sidebar's tree follows and which of its rows is selected.
     /// The listing in front stays on screen until the new one arrives.
     /// With `goToFailure` it is Go To (`viaGoTo`): a folder that can't be read leaves the one on screen, and the
     /// read's message goes there instead.
     @discardableResult
     func navigate(
-        to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
+        to path: String, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil
     ) async -> Bool {
         let outcome = await attemptNavigation(
-            to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
+            to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
         if case .opened = outcome { return true }
         return false
     }
@@ -803,7 +786,7 @@ final class BrowserPane {
     }
 
     func attemptNavigation(
-        to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
+        to path: String, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil, readFailure: ReadFailure? = nil, quiet: Bool = false,
         keepingSelection: Bool = false, restoringView: Bool = false, arrives: Bool = false
     ) async -> NavigationOutcome {
@@ -812,7 +795,7 @@ final class BrowserPane {
             takeOwnViewSizes()
             firstRead = .reading
             let outcome = await attemptNavigation(
-                to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure,
+                to: path, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure,
                 readFailure: readFailure, quiet: quiet, keepingSelection: keepingSelection,
                 restoringView: restoringView, arrives: arrives)
             finishFirstRead(outcome.didOpen)
@@ -821,7 +804,7 @@ final class BrowserPane {
         navigationToken += 1
         let token = navigationToken
         isNavigating = true
-        navigationTarget = url
+        navigationTarget = path
         defer { if token == navigationToken { isNavigating = false } }
         let move = open.pushesHistory ? move : HistoryMove.none
         // A Back, Forward or jump still under way moved the history ahead of the folder on screen. Another of them
@@ -831,11 +814,13 @@ final class BrowserPane {
         case .back, .forward, .jump: break
         case .push, .replace, .none: putHistoryBackOnScreen()
         }
+        // The folder on screen asked for by the very path the pane has of it is read in place. Asked for by another
+        // spelling of its path (through a link, an accent encoded the other way, a slash at its end), it is known for
+        // the folder on screen once its listing has said where it is, as nothing but the disk can say that.
+        let asksForFolderOnScreen = samePath(path, folderPath)
         // The folder being left is remembered first: what was selected and where the list was scrolled.
         // Nothing is remembered when search results are showing.
-        if !folderLetGo, url.comparablePath != folder.comparablePath, searchRootPath == nil,
-            let memory = content.captureFolderView()
-        {
+        if !folderLetGo, !asksForFolderOnScreen, searchRootPath == nil, let memory = content.captureFolderView() {
             folderMemories = folderMemories.remembering(
                 memory, at: folderPath, historyPaths: navigationHistory.paths + [folderPath])
         }
@@ -863,23 +848,26 @@ final class BrowserPane {
         // the pane carries; what was changed of the view left and not saved is dropped.
         // So is the folder a pane arrives at after its place was taken in the background: the folder it follows to
         // its new name has its view there, and the folder it was sent to instead has its own or none.
-        let opensAnotherFolder =
-            !hasShownFolder || folderLetGo || placeTaken || url.comparablePath != folder.comparablePath
+        var opensAnotherFolder = !hasShownFolder || folderLetGo || placeTaken || !asksForFolderOnScreen
         // Looked up by the path as it was asked for, before the read, which needs the order the view keeps.
-        var view = opensAnotherFolder ? folderViewUse(for: url.path).map(FolderViewOnScreen.init) : folderView
+        var view = opensAnotherFolder ? folderViewUse(for: path).map(FolderViewOnScreen.init) : folderView
         content.beginLoading(quiet: quiet)
-        var read = await readFolder(url, view: view)
+        var read = await readFolder(path, view: view)
         guard token == navigationToken else { return .superseded }
-        // A folder asked for by another spelling of its path (a link, `/tmp`) has the view saved for its real path,
-        // which its listing gives. Where that isn't the view it was read with, it is the one shown, and where its
-        // order is another the folder is read once more, in that order, before anything shows.
-        if opensAnotherFolder, case .success(let snapshot) = read, snapshot.path != url.path {
-            let real = folderViewUse(for: snapshot.path).map(FolderViewOnScreen.init)
+        // A folder asked for by another spelling of its path (a link, `/tmp`, an accent encoded the other way) is
+        // known by its real path, which its listing gives. Where that is the folder on screen, it is read in place
+        // after all, and the view on screen stays; any other folder has the view saved for its real path. Where the
+        // view isn't the one the folder was read with, it is the one shown, and where its order is another the folder
+        // is read once more, in that order, before anything shows.
+        if opensAnotherFolder, case .success(let snapshot) = read, !samePath(snapshot.path, path) {
+            let isOnScreen = hasShownFolder && !folderLetGo && !placeTaken && samePath(snapshot.path, folderPath)
+            if isOnScreen { opensAnotherFolder = false }
+            let real = isOnScreen ? folderView : folderViewUse(for: snapshot.path).map(FolderViewOnScreen.init)
             if real != view {
                 let sameOrder = readOrder(real) == readOrder(view)
                 view = real
                 if !sameOrder {
-                    read = await readFolder(URL(fileURLWithPath: snapshot.path), view: real)
+                    read = await readFolder(snapshot.path, view: real)
                     guard token == navigationToken else { return .superseded }
                 }
             }
@@ -887,17 +875,14 @@ final class BrowserPane {
         guard let tab else { return .superseded }
 
         var entries: [DirectoryEntry] = []
-        // The folder is known by the real path its listing gives (`response.path`), not the spelling it was asked by; one
-        // that can't be listed has only that spelling. Its path is kept as the listing spells it, beside the URL, which
-        // would give an accent decomposed whatever the disk keeps.
-        var shown = url
-        var shownPath = url.path
+        // The folder is known by the real path its listing gives (`response.path`), spelled as the disk spells it, not
+        // by the spelling it was asked by; one that can't be listed has only that spelling.
+        var shownPath = path
         var opensWithError = false
         switch read {
         case .success(let snapshot):
             entries = snapshot.entries
-            shown = URL(fileURLWithPath: snapshot.path)
-            shownPath = Self.spelling(snapshot.path, of: shown)
+            shownPath = snapshot.path
             listedModifiedTime = snapshot.modifiedTime
         case .failure(let error):
             let readError = FolderReadFailure.readError(error)
@@ -927,21 +912,23 @@ final class BrowserPane {
             }
         }
 
+        // The folder that arrived is the one on screen: asked for by the pane's own path of it, or found there by its
+        // listing.
+        let arrivesWhereItWas = samePath(path, folderPath) || samePath(shownPath, folderPath)
         // Opening a folder puts search results away, once it has arrived, the folder on screen too (Reveal in
         // Folder there); only a read in place that asks to keep them (an order, hidden files, a tab coming back)
         // leaves them.
         if !keepsSearch, let search = searchStore, search.session.isSearchMode {
             // Back and Forward can bring them back; choosing the folder they cover closes them.
-            let sameFolder = shown.comparablePath == folder.comparablePath
-            search.session.hideResults(returnPlace: sameFolder ? nil : leftPlace)
+            search.session.hideResults(returnPlace: arrivesWhereItWas ? nil : leftPlace)
         }
 
         // The folder arrived: the history is where the folder on screen is again.
         historyIndexOnScreen = nil
-        // Visits kept under the URL's spelling of the folder's path are this folder's: Go To lists it once, as its
+        // Visits kept under the folder's path as a `URL` spells it are this folder's: Go To lists it once, as its
         // listing spells it.
-        if !opensWithError, !samePath(shown.path, shownPath) {
-            MainWindowController.visitStore()?.folderVisitsRespelled(from: shown.path, to: shownPath)
+        if !opensWithError, let kept = Self.asAURLSpells(shownPath), !samePath(kept, shownPath) {
+            MainWindowController.visitStore()?.folderVisitsRespelled(from: kept, to: shownPath)
         }
         // A folder is added to the history only after its listing has arrived and been applied.
         let visits = visitTracker
@@ -957,14 +944,14 @@ final class BrowserPane {
         case .none:
             // A pane that starts on a folder by another spelling: its one step is the folder as it is. An accent
             // encoded another way is another spelling too (a tab saved with it decomposed), so byte for byte.
-            if let step = navigationHistory.current, step == url.path, !samePath(step, shownPath) {
+            if let step = navigationHistory.current, step == path, !samePath(step, shownPath) {
                 navigationHistory.record(shownPath, mode: .replace)
             }
             if arrives, !opensWithError { visits.arrive(shownPath, viaGoTo: false) }
         }
         // What the pane was started with is for the folder it was started on, not one that took its place.
-        let carried = url.comparablePath == folder.comparablePath ? carriedView : nil
-        setFolder(shownPath, shown)
+        let carried = arrivesWhereItWas ? carriedView : nil
+        folderPath = shownPath
         folderLetGo = false
         placeTaken = false
         if opensAnotherFolder { settingsOnArrival = PaneSettingsOnArrival(self) }
@@ -1037,6 +1024,17 @@ final class BrowserPane {
         return .opened
     }
 
+    /// `path` with its accents taken apart as a `URL` made from it gives them, which is how a folder's visits may be
+    /// kept from an earlier launch; nil when the path can't be given so. The system takes fewer accents apart than
+    /// Unicode's own decomposition does, so it is the one asked. No disk is.
+    private static func asAURLSpells(_ path: String) -> String? {
+        // A path with no accent is spelled one way only.
+        guard path.utf8.contains(where: { $0 >= 0x80 }) else { return nil }
+        var bytes = [CChar](repeating: 0, count: 4 * Int(PATH_MAX))
+        guard (path as NSString).getFileSystemRepresentation(&bytes, maxLength: bytes.count) else { return nil }
+        return bytes.withUnsafeBufferPointer { $0.baseAddress.map { String(cString: $0) } }
+    }
+
     /// Where the pane is, history and sidebar row with it (`TabPlace`).
     var place: MainWindowController.TabPlace {
         MainWindowController.TabPlace(
@@ -1047,7 +1045,7 @@ final class BrowserPane {
     /// once it has opened. A folder that can't (gone meanwhile) leaves the pane where the drag left it.
     func comeBack(to place: MainWindowController.TabPlace) async {
         let outcome = await attemptNavigation(
-            to: URL(fileURLWithPath: place.path), history: .none, open: SidebarOpen(origin: .alias),
+            to: place.path, history: .none, open: SidebarOpen(origin: .alias),
             readFailure: .leavesFolderOnScreen, restoringView: true)
         guard outcome.didOpen, let tab else { return }
         navigationHistory = place.history
@@ -1185,10 +1183,10 @@ final class BrowserPane {
         let open =
             keepingTree || !drivesSidebar
             ? SidebarOpen(origin: .alias) : sidebar.model.openKeepingRow(folderPath) ?? .other
-        let folder = folder
+        let path = folderPath
         holdingTab {
             _ = await $0.attemptNavigation(
-                to: folder, history: .replace, open: open, keepingSearch: true, keepingSelection: keepingSelection)
+                to: path, history: .replace, open: open, keepingSearch: true, keepingSelection: keepingSelection)
         }
     }
 

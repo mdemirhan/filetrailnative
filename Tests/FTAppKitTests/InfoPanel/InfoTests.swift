@@ -347,7 +347,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.selection.paths.isEmpty)
             #expect(await waitUntil { (tab.folderSizes.cachedEntry(app) ?? .idle) != .idle })
             tab.folderSizes.cancel(app)
-            tab.go(to: URL(fileURLWithPath: app + "/Contents"))
+            tab.go(to: app + "/Contents")
             #expect(await waitUntil { tab.shownFolderPath.hasSuffix("/Contents") })
             tab.goToParentFolder()
             #expect(await waitUntil { tab.shownFolderPath == app })
@@ -369,10 +369,10 @@ extension ExplorerWindowlessTests {
             tab.perform(.calculateSize)
             #expect(
                 await waitUntil { tab.folderSizes.readySize(alpha) != nil && tab.folderSizes.readySize(beta) != nil })
-            #expect(tab.folderSizes.readySize(tab.currentFolder.path) == nil)
+            #expect(tab.folderSizes.readySize(tab.folderPath) == nil)
             tab.content.select(paths: [])
             tab.perform(.calculateSize)
-            #expect(await waitUntil { tab.folderSizes.readySize(tab.currentFolder.path) != nil })
+            #expect(await waitUntil { tab.folderSizes.readySize(tab.folderPath) != nil })
             #expect(
                 await waitUntil {
                     texts("infoRow.folderSize.size", in: tab).contains { $0.contains(" · ") && $0.contains("folder") }
@@ -401,7 +401,7 @@ extension ExplorerWindowlessTests {
             #expect(menu.rows.filter { $0.checked == true }.map(\.title) == ["Alpha"])
             let beta = try #require(menu.items.firstIndex { $0.title == "Beta" })
             menu.onChoose(beta)
-            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Beta" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Beta" })
             #expect(!AppMenuPresenter.shared.isOpen)
             await harness.close()
         }
@@ -437,7 +437,7 @@ extension ExplorerWindowlessTests {
             let editor = try #require(bar.editor.field.currentEditor() as? NSTextView)
             _ = bar.editor.control(
                 bar.editor.field, textView: editor, doCommandBy: #selector(NSResponder.insertNewline(_:)))
-            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Gamma" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Gamma" })
             #expect(!bar.isEditing)
             await harness.close()
         }

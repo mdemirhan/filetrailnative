@@ -85,7 +85,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.openTab.groupBy == .kind)
             #expect(tab.snapshot.groupBy == .kind)
             #expect(tab.startupTab.groupBy == .kind)
-            tab.go(to: harness.folder.appending("Grouped/Folder"))
+            tab.go(to: harness.folder.appending("Grouped/Folder").path)
             #expect(await waitUntil { tab.shownFolderPath.hasSuffix("/Folder") })
             #expect(tab.activePane.shownGroupBy == .kind)
             tab.perform(.groupByNone)
@@ -105,9 +105,9 @@ extension ExplorerWindowlessTests {
             let path = tab.shownFolderPath
             #expect(pane.folderViews.views.own(path)?.keeps.groupBy == .modified)
             // Another folder shows the pane's own grouping; coming back, the folder's.
-            tab.go(to: harness.folder.appending("Grouped/Folder"))
+            tab.go(to: harness.folder.appending("Grouped/Folder").path)
             #expect(await waitUntil { tab.shownFolderPath.hasSuffix("/Folder") && tab.groupTitles.isEmpty })
-            tab.go(to: URL(fileURLWithPath: path))
+            tab.go(to: path)
             #expect(await waitUntil { tab.groupTitles == ["Today", "Yesterday", "2020"] })
             // Folder View Options has the row, between View and Sort By.
             #expect(FolderViewPopover.settings(for: .details).prefix(3) == [.view, .groupBy, .sort])

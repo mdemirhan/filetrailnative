@@ -143,17 +143,17 @@ extension ExplorerWindowlessTests {
         @Test func aSprungDragBringsTheHistoryBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
-            let start = tab.folder.path
+            let start = tab.folderPath
             let alpha = path(window, "Alpha")
-            await tab.navigate(to: URL(fileURLWithPath: alpha))
+            await tab.navigate(to: alpha)
             tab.perform(.goBack)
-            #expect(await waitUntil { samePath(tab.folder.path, start) && !tab.isNavigating })
+            #expect(await waitUntil { samePath(tab.folderPath, start) && !tab.isNavigating })
             let before = tab.historyPaths
             #expect(tab.canGoForward)
             tab.dragDrop.springOpen(path(window, "Beta"), sequence: 9)
-            #expect(await waitUntil { samePath(tab.folder.path, path(window, "Beta")) })
+            #expect(await waitUntil { samePath(tab.folderPath, path(window, "Beta")) })
             tab.dragDrop.ownDragEnded(paths: [path(window, "note.txt")], operation: .move, over: .elsewhere)
-            #expect(await waitUntil { samePath(tab.folder.path, start) && tab.historyPaths == before })
+            #expect(await waitUntil { samePath(tab.folderPath, start) && tab.historyPaths == before })
             #expect(tab.historyIndex == 0)
             #expect(tab.navigationHistory.forwardTarget == before[1])
             await window.close()
@@ -163,15 +163,15 @@ extension ExplorerWindowlessTests {
         @Test func aSprungDragBringsTheSidebarRowBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
-            let start = tab.folder.path
+            let start = tab.folderPath
             let model = tab.sidebarController.model
             model.selectItem(.favorite(start))
             #expect(await waitUntil { model.selected == .favorite(start) && !tab.isNavigating })
             let alpha = path(window, "Alpha")
             tab.dragDrop.springOpen(alpha, sequence: 9)
-            #expect(await waitUntil { samePath(tab.folder.path, alpha) && model.selected == .filesystem(alpha) })
+            #expect(await waitUntil { samePath(tab.folderPath, alpha) && model.selected == .filesystem(alpha) })
             tab.dragDrop.ownDragEnded(paths: [path(window, "note.txt")], operation: .move, over: .elsewhere)
-            #expect(await waitUntil { samePath(tab.folder.path, start) && model.selected == .favorite(start) })
+            #expect(await waitUntil { samePath(tab.folderPath, start) && model.selected == .favorite(start) })
             try await Task.sleep(for: .milliseconds(100))
             #expect(model.selected == .favorite(start))
             await window.close()
@@ -183,7 +183,7 @@ extension ExplorerWindowlessTests {
         @Test func anExternalDragHeldOverTheRestOfTheWindowKeepsTheSprungTabThere() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
-            let start = tab.folder.path
+            let start = tab.folderPath
             let alpha = path(window, "Alpha")
             let timers = window.manualDragTimers()
             let saved = TabDragDrop.dragIsHeldOver
@@ -194,12 +194,12 @@ extension ExplorerWindowlessTests {
             defer { info.draggingPasteboard.releaseGlobally() }
             _ = tab.dragDrop.contentDragUpdated(info, entry: nil)
             tab.dragDrop.springOpen(alpha, sequence: 78)
-            #expect(await waitUntil { samePath(tab.folder.path, alpha) })
+            #expect(await waitUntil { samePath(tab.folderPath, alpha) })
             timers.advance(1)
-            #expect(samePath(tab.folder.path, alpha))
+            #expect(samePath(tab.folderPath, alpha))
             held = false
             timers.advance(0.5)
-            #expect(await waitUntil { samePath(tab.folder.path, start) && tab.historyPaths == [start] })
+            #expect(await waitUntil { samePath(tab.folderPath, start) && tab.historyPaths == [start] })
             await window.close()
         }
 
@@ -209,13 +209,13 @@ extension ExplorerWindowlessTests {
         func aDragThatEndsBeforeTheSprungFolderArrivesLeavesTheTabWhereItWas(readBegan: Bool) async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
-            let start = tab.folder.path
+            let start = tab.folderPath
             let before = tab.historyPaths
             tab.dragDrop.springOpen(path(window, "Alpha"), sequence: 9)
             if readBegan { await Task.yield() }
             tab.dragDrop.ownDragEnded(paths: [path(window, "note.txt")], operation: .move, over: .elsewhere)
             #expect(await waitUntil { tab.dragDrop.springsOpening == 0 && !tab.isNavigating })
-            #expect(samePath(tab.folder.path, start))
+            #expect(samePath(tab.folderPath, start))
             #expect(tab.historyPaths == before)
             await window.close()
         }
@@ -249,15 +249,15 @@ extension ExplorerWindowlessTests {
         @Test func aSpringThatCouldntOpenBringsNothingBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
-            let start = tab.folder.path
+            let start = tab.folderPath
             let before = tab.historyPaths
             tab.dragDrop.springOpen(path(window, "gone"), sequence: 9)
             #expect(await waitUntil { tab.dragDrop.springsOpening == 0 && !tab.isNavigating })
-            #expect(samePath(tab.folder.path, start))
+            #expect(samePath(tab.folderPath, start))
             tab.dragDrop.ownDragEnded(paths: [path(window, "note.txt")], operation: .move, over: .elsewhere)
             await settle()
             #expect(await waitUntil { !tab.isNavigating })
-            #expect(samePath(tab.folder.path, start))
+            #expect(samePath(tab.folderPath, start))
             #expect(tab.historyPaths == before)
             await window.close()
         }
@@ -268,7 +268,7 @@ extension ExplorerWindowlessTests {
             let tab = window.tab
             let alpha = path(window, "Alpha")
             tab.dragDrop.springOpen(alpha, sequence: 9)
-            #expect(await waitUntil { samePath(tab.folder.path, alpha) })
+            #expect(await waitUntil { samePath(tab.folderPath, alpha) })
             let target = TabDragDrop.Target(surface: .content, path: alpha, supportsMove: true)
             let session = external([path(window, "note.txt")])
             #expect(
@@ -276,7 +276,7 @@ extension ExplorerWindowlessTests {
             )
             tab.dragDrop.ownDragEnded(paths: [path(window, "note.txt")], operation: .copy, over: .thisWindow)
             #expect(await waitUntil { window.exists("Alpha/note.txt") })
-            #expect(samePath(tab.folder.path, alpha))
+            #expect(samePath(tab.folderPath, alpha))
             await window.close()
         }
 

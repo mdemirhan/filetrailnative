@@ -316,7 +316,7 @@ extension ExplorerWindowlessTests {
             try type("no", in: tab)
             timers.advance(0.4)
             #expect(tab.searchRootPath != nil)
-            _ = await tab.navigate(to: URL(fileURLWithPath: harness.folder.path + "/Alpha"))
+            _ = await tab.navigate(to: harness.folder.path + "/Alpha")
             #expect(tab.searchRootPath == nil)
             #expect(tab.searchField?.stringValue == "")
             #expect(tab.search.session.hasCachedSearch)

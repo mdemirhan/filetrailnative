@@ -33,9 +33,9 @@ extension ExplorerWindowlessTests {
             var shown: [String] = []
             tab.showQuickLook = { shown.append($0) }
             let info = try #require(tab.infoController)
-            #expect(await waitUntil { info.resolvedItemPath == tab.folder.path })
+            #expect(await waitUntil { info.resolvedItemPath == tab.folderPath })
             info.panel.onAction(.quickLook)
-            #expect(shown == [tab.folder.path])
+            #expect(shown == [tab.folderPath])
             await harness.close()
         }
 
@@ -66,16 +66,16 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewAsDetails)
             tab.perform(.toggleInfoPanel)
             harness.layout(tab)
-            let start = tab.folder.path
+            let start = tab.folderPath
             let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" }?.path)
-            tab.go(to: URL(fileURLWithPath: alpha))
-            #expect(await waitUntil { tab.folder.path == alpha && tab.historyPaths == [start, alpha] })
+            tab.go(to: alpha)
+            #expect(await waitUntil { tab.folderPath == alpha && tab.historyPaths == [start, alpha] })
             let panel = try #require(tab.infoController?.panel)
             await navigating(tab) { panel.onNavigate(alpha) }
             #expect(tab.historyPaths == [start, alpha])
             #expect(tab.historyIndex == 1)
             panel.onNavigate(start)
-            #expect(await waitUntil { tab.folder.path == start && tab.historyPaths == [start, alpha, start] })
+            #expect(await waitUntil { tab.folderPath == start && tab.historyPaths == [start, alpha, start] })
             await harness.close()
         }
 
@@ -84,7 +84,7 @@ extension ExplorerWindowlessTests {
         @Test func revealInTreeAddsNoStepForTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            let start = tab.folder.path
+            let start = tab.folderPath
             let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" }?.path)
             let model = tab.sidebarController.model
             model.selectItem(.favorite(start))
@@ -97,7 +97,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { model.selected == .filesystem(start) })
             #expect(tab.historyPaths == [start, start])
             reveal(alpha)
-            #expect(await waitUntil { tab.folder.path == alpha && tab.historyPaths == [start, start, alpha] })
+            #expect(await waitUntil { tab.folderPath == alpha && tab.historyPaths == [start, start, alpha] })
             await harness.close()
         }
     }

@@ -102,7 +102,7 @@ extension ExplorerWindowlessTests {
             #expect(list.selectedNames == ["Alpha", "Gamma", "note.txt"])
 
             let empty = try harness.makeFolder(named: "Empty", files: 0)
-            tab.go(to: empty)
+            tab.go(to: empty.path)
             #expect(await waitUntil { tab.shownFolderPath == empty.path && !tab.isNavigating })
             tab.content.focusList()
             #expect(tab.focusedPane == .content)

@@ -406,7 +406,7 @@ extension ExplorerWindowlessTests {
             tab.services.directoryService.cache.clear()
             tab.applyWriteEnd(
                 WriteEndRefresh(
-                    path: tab.folder.path, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [],
+                    path: tab.folderPath, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [],
                     leftPaths: [gone]))
             #expect(tab.content.selection.isEmpty)
             #expect(tab.content.selection.gapIndex == 3)
@@ -432,7 +432,7 @@ extension ExplorerWindowlessTests {
             defer { withExtendedLifetime(token) {} }
             tab.reload()
             tab.applyWriteEnd(
-                WriteEndRefresh(path: tab.folder.path, selecting: [made], treeSelectionPath: nil, treeReloadPaths: []))
+                WriteEndRefresh(path: tab.folderPath, selecting: [made], treeSelectionPath: nil, treeReloadPaths: []))
             #expect(await waitUntil { tab.content.selection.leadPath == made })
             await harness.close()
         }

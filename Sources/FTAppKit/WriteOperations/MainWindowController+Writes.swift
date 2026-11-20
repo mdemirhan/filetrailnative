@@ -205,7 +205,7 @@ extension MainWindowController {
             return
         }
         Self.templatesFolderOpened?()
-        go(to: URL(fileURLWithPath: folder, isDirectory: true))
+        go(to: folder)
     }
 
     /// Where Paste as File writes: the folder on screen; none in search results or in the Trash.
@@ -415,7 +415,7 @@ extension MainWindowController {
             acting.readAgain()
             treeFollows = acting.treeFollowsReadingAgain && (open.forceTreeReload || open.selectingRow != nil)
         } else {
-            acting.go(to: URL(fileURLWithPath: refresh.path), history: .replace, open: open)
+            acting.go(to: refresh.path, history: .replace, open: open)
         }
         // The tab's other pane is read again now too, instead of when the folder watch tells of the change: a copy, a
         // move or a drag between the panes changed both. What arrived there is selected. A pane on a folder the write

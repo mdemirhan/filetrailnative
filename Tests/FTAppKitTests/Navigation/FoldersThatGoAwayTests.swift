@@ -40,7 +40,7 @@ extension ExplorerWindowlessTests {
         private func opening(
             _ harness: ExplorerHarness, _ tab: MainWindowController, _ path: String
         ) async -> Bool {
-            tab.go(to: URL(fileURLWithPath: path))
+            tab.go(to: path)
             return await waitUntil { tab.shownFolderPath == path && !tab.isNavigating }
         }
 
@@ -105,7 +105,7 @@ extension ExplorerWindowlessTests {
         @Test func aFolderOpenedWhileBackIsStillReadingKeepsTheFolderItCameFrom() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            let home = tab.folder.path
+            let home = tab.folderPath
             let alpha = path(harness, "Alpha")
             let beta = path(harness, "Beta")
             let gamma = path(harness, "Gamma")
@@ -118,7 +118,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.goBack)
             #expect(await waitUntil { probe.isHolding })
             #expect(tab.shownFolderPath == beta)
-            tab.go(to: URL(fileURLWithPath: gamma))
+            tab.go(to: gamma)
             #expect(await waitUntil { tab.shownFolderPath == gamma && !tab.isNavigating })
             let reads = probe.reads(of: alpha)
             probe.letGo()
@@ -138,7 +138,7 @@ extension ExplorerWindowlessTests {
         @Test func twoQuickBacksGoTwoFoldersBack() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            let home = tab.folder.path
+            let home = tab.folderPath
             let alpha = path(harness, "Alpha")
             let beta = path(harness, "Beta")
             #expect(await opening(harness, tab, alpha))
@@ -209,13 +209,13 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let beta = path(harness, "Beta")
-            tab.go(to: URL(fileURLWithPath: path(harness, "Alpha/../Beta")))
+            tab.go(to: path(harness, "Alpha/../Beta"))
             #expect(await waitUntil { tab.shownFolderPath == beta })
             #expect(tab.historyPaths.last == beta)
             #expect(tab.content.folderPath == beta)
             try FileManager.default.createSymbolicLink(
                 atPath: path(harness, "Link"), withDestinationPath: path(harness, "Alpha"))
-            tab.go(to: URL(fileURLWithPath: path(harness, "Link")))
+            tab.go(to: path(harness, "Link"))
             #expect(await waitUntil { tab.shownFolderPath == path(harness, "Alpha") })
             #expect(tab.historyPaths.last == path(harness, "Alpha"))
             tab.perform(.goEnclosingFolder)
@@ -374,7 +374,7 @@ extension ExplorerWindowlessTests {
             tab.onReady = { ready = true }
             var read: Bool?
             tab.whenFirstReadFinished { read = $0 }
-            await tab.navigate(to: URL(fileURLWithPath: path(harness, "Alpha")))
+            await tab.navigate(to: path(harness, "Alpha"))
             #expect(ready)
             #expect(read == true)
             #expect(tab.loaded)
@@ -411,7 +411,7 @@ extension ExplorerWindowlessTests {
             tab.reload()
             // The walk is reading Alpha; the user goes elsewhere.
             #expect(await waitUntil { probe.isHolding })
-            tab.go(to: URL(fileURLWithPath: beta))
+            tab.go(to: beta)
             #expect(await waitUntil { tab.shownFolderPath == beta })
             probe.letGo()
             #expect(await waitUntil { probe.reads(of: alpha) >= 1 })
@@ -516,7 +516,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let group = try #require(tab.group)
             let alpha = harness.folder.appending("Alpha").path
-            tab.go(to: URL(fileURLWithPath: alpha))
+            tab.go(to: alpha)
             #expect(await waitUntil { tab.shownFolderPath == alpha && !tab.isNavigating })
             group.openTab(path: harness.folder.appending("Beta").path, from: tab)
             #expect(await waitUntil { group.selected !== tab })

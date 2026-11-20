@@ -19,14 +19,14 @@ extension ExplorerWindowGUITests {
             back.onRightClick?()
             #expect(menu == nil)
             for name in ["Alpha", "Alpha/Inner"] {
-                await tab.navigate(to: root.appendingPathComponent(name))
+                await tab.navigate(to: root.appendingPathComponent(name).path)
             }
             // A click steps once.
             back.onPress?()
             back.onRelease?(true)
             back.onClick?()
-            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Alpha" })
-            await tab.navigate(to: root.appendingPathComponent("Alpha/Inner"))
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" })
+            await tab.navigate(to: root.appendingPathComponent("Alpha/Inner").path)
             harness.layout(tab)
 
             // Held 350 ms: the folders behind, nearest first; the click that ends the hold does not step.
@@ -34,7 +34,7 @@ extension ExplorerWindowGUITests {
             #expect(await waitUntil { menu != nil })
             back.onRelease?(true)
             back.onClick?()
-            #expect(tab.currentFolder.lastPathComponent == "Inner")
+            #expect(NodePath.basename(tab.folderPath) == "Inner")
             #expect(titles(menu).count == 2)
             #expect(menu?.items.first?.title == "Alpha")
             #expect(menu?.markedIndex == 0)
@@ -42,7 +42,7 @@ extension ExplorerWindowGUITests {
             menu?.onChoose(1)
             #expect(
                 await waitUntil {
-                    tab.historyIndex == 0 && tab.currentFolder.lastPathComponent == root.lastPathComponent
+                    tab.historyIndex == 0 && NodePath.basename(tab.folderPath) == root.lastPathComponent
                 })
             #expect(tab.historyPaths.count == 3)
 

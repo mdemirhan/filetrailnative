@@ -25,9 +25,9 @@ extension ExplorerWindowlessTests {
             let paths = names.map { window.folder.appendingPathComponent($0).path }
             tab.services.clipboard.set(ClipboardRules.set(cut ? .cut : .copy, paths, capturedAt: "t"), from: nil)
             tab.clipboardChanged()
-            if tab.folder.lastPathComponent != folder {
-                tab.go(to: window.folder.appendingPathComponent(folder))
-                _ = await waitUntil { tab.folder.lastPathComponent == folder }
+            if NodePath.basename(tab.folderPath) != folder {
+                tab.go(to: window.folder.appendingPathComponent(folder).path)
+                _ = await waitUntil { NodePath.basename(tab.folderPath) == folder }
             }
             tab.perform(.pasteSelection)
         }

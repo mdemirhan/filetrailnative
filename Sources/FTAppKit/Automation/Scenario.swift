@@ -276,8 +276,8 @@
             CFGetTypeID(number) == CFBooleanGetTypeID()
         }
 
-        /// Resolves a path from an `open` step.
-        func resolve(_ path: String, environment: [String: String] = ProcessInfo.processInfo.environment) -> URL {
+        /// The folder an `open` step names, as the scenario spells it: nothing is asked of the disk.
+        func resolve(_ path: String, environment: [String: String] = ProcessInfo.processInfo.environment) -> String {
             let home = FileManager.default.homeDirectoryForCurrentUser.path
             func expand(_ text: String) -> String {
                 if text == "~" { return home }
@@ -290,7 +290,7 @@
             if !base.hasPrefix("/") { base = (fixtures as NSString).appendingPathComponent(base) }
             let target = expand(path)
             let full = target.hasPrefix("/") ? target : (base as NSString).appendingPathComponent(target)
-            return URL(fileURLWithPath: (full as NSString).standardizingPath, isDirectory: true)
+            return (full as NSString).standardizingPath
         }
     }
 #endif

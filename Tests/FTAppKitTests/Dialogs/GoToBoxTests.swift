@@ -116,7 +116,7 @@ extension ExplorerWindowlessTests {
             #expect(scrim.frame == tab.window?.contentView?.bounds)
             #expect(box.frame.width == 560 && box.frame.minY == 60)
             DialogKeys.press(36, "\r", in: tab.window)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" })
             #expect(await waitUntil { tab.goToBox == nil })
             // The visit counts as a Go To.
             #expect(harness.store.folders().first?.visits.first?.kind == .goTo)
@@ -166,7 +166,7 @@ extension ExplorerWindowlessTests {
             DialogKeys.press(48, "\t", in: window)
             #expect(hasKeyboard(box.rowViews[1]))
             DialogKeys.press(36, "\r", in: window)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Beta" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Beta" })
             #expect(await waitUntil { tab.goToBox == nil })
             await close(harness)
         }
@@ -200,7 +200,7 @@ extension ExplorerWindowlessTests {
         @Test func theKeysAreTheInputMethodsWhileItComposes() async throws {
             let (harness, tab, _) = try await open()
             for name in ["Alpha", "Beta"] { harness.store.recordFolderVisit(path(harness, name), kind: .stay) }
-            let before = tab.folder
+            let before = tab.folderPath
             let box = try openBox(tab)
             try DialogKeys.compose("a", in: box.field)
             #expect(names(box) == ["Alpha", "Beta"])
@@ -212,13 +212,13 @@ extension ExplorerWindowlessTests {
             DialogKeys.press(KeyCode.returnKey, "\r", in: tab.window)
             for _ in 0..<5 { await Task.yield() }
             #expect(tab.goToBox === box)
-            #expect(tab.folder == before)
+            #expect(tab.folderPath == before)
             try DialogKeys.compose("a", in: box.field)
             DialogKeys.press(KeyCode.escape, "\u{1b}", in: tab.window)
             #expect(tab.goToBox === box)
             try DialogKeys.compose("a", in: box.field).unmarkText()
             DialogKeys.press(KeyCode.returnKey, "\r", in: tab.window)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" })
             #expect(await waitUntil { tab.goToBox == nil })
             await close(harness)
         }
@@ -265,7 +265,7 @@ extension ExplorerWindowlessTests {
             DialogKeys.press(126, in: tab.window)
             #expect(selected(box) == "Gamma")
             box.rowClicked(1)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Gamma" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Gamma" })
             #expect(await waitUntil { tab.goToBox == nil })
             await close(harness)
         }
@@ -312,7 +312,7 @@ extension ExplorerWindowlessTests {
         // it, until the next folder opens.
         @Test func aFailedGoToShowsTheErrorOverTheFolderOnScreen() async throws {
             let (harness, tab, _) = try await open()
-            let before = tab.folder
+            let before = tab.folderPath
             let shown = tab.content.entries.map(\.path)
             #expect(!shown.isEmpty)
             let box = try openBox(tab)
@@ -321,7 +321,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { !box.errorLabel.isHidden })
             let message = box.errorLabel.stringValue
             DialogKeys.press(53, "\u{1b}", in: tab.window)
-            #expect(tab.folder == before)
+            #expect(tab.folderPath == before)
             #expect(tab.content.entries.map(\.path) == shown)
             #expect(tab.content.container.stateView.kind == .error(message: message))
             // The next folder that opens puts it away.
@@ -333,7 +333,7 @@ extension ExplorerWindowlessTests {
         @Test func completesAPathFolderByFolderAndOpensIt() async throws {
             let (harness, tab, timers) = try await open()
             let box = try openBox(tab)
-            let base = tab.folder.path
+            let base = tab.folderPath
             DialogKeys.type(base + "/A", into: box)
             #expect(box.rowViews.isEmpty)
             #expect(box.emptyLabel.stringValue == "No folders match this path")
@@ -355,7 +355,7 @@ extension ExplorerWindowlessTests {
             #expect(selected(box) == "Inner")
             #expect(box.field.stringValue.hasSuffix("/Alpha/Inner/"))
             DialogKeys.press(36, "\r", in: tab.window)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Inner" })
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Inner" })
             #expect(await waitUntil { tab.goToBox == nil })
             await close(harness)
         }
@@ -368,13 +368,13 @@ extension ExplorerWindowlessTests {
             let box = try openBox(tab)
             DialogKeys.type(" ~ ", into: box)
             DialogKeys.press(36, "\r", in: tab.window)
-            #expect(await waitUntil { tab.folder.path == home })
+            #expect(await waitUntil { tab.folderPath == home })
             await close(harness)
         }
 
         @Test func showsTheReadErrorClosesOnEscapeAndOpensEmptyAgain() async throws {
             let (harness, tab, _) = try await open()
-            let before = tab.folder
+            let before = tab.folderPath
             let box = try openBox(tab)
             #expect(box.emptyLabel.stringValue.hasPrefix("Folders you open are listed here."))
             DialogKeys.type(path(harness, "Nowhere"), into: box)
@@ -383,7 +383,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { !box.errorLabel.isHidden })
             #expect(!box.errorLabel.stringValue.isEmpty)
             #expect(tab.goToBox === box)
-            #expect(tab.folder == before)
+            #expect(tab.folderPath == before)
             // The ✕ empties the field.
             box.shell.clearButton.perform()
             #expect(box.field.stringValue.isEmpty)
@@ -458,10 +458,10 @@ extension ExplorerWindowlessTests {
             _ = try openBox(tab)
             #expect(!tab.canPerform(.goEnclosingFolder))
             #expect(!tab.canPerform(.newTab))
-            let before = tab.folder
+            let before = tab.folderPath
             tab.perform(.goEnclosingFolder)
             tab.perform(.newTab)
-            #expect(tab.folder == before)
+            #expect(tab.folderPath == before)
             #expect(tab.group?.tabs.count == 1)
             // ⌘K again does not open a second box.
             tab.perform(.openLocationSheet)

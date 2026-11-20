@@ -69,7 +69,7 @@ extension ExplorerWindowlessTests {
             #expect(window.tab.goToBox === box)
             try #require(box.browseButton).perform()
             #expect(await waitUntil { box.field.stringValue == alpha })
-            #expect(pickedFrom == [window.tab.folder.path])
+            #expect(pickedFrom == [window.tab.folderPath])
             #expect(box.submitButton.isEnabled)
             DialogKeys.press(36, "\r", in: window.tab.window)
             #expect(await waitUntil { window.exists("Alpha/note.txt") })

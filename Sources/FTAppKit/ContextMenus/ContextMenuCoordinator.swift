@@ -337,7 +337,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         case .openInOtherPane:
             if let target = subject.targetPath ?? subject.paths.first { tab.openSecondPane(at: target) }
         case .showPackageContents:
-            if let first = subject.paths.first { tab.go(to: URL(fileURLWithPath: first)) }
+            if let first = subject.paths.first { tab.go(to: first) }
         case .terminal:
             if let first = subject.paths.first { holdingTheTab { [self] in await openTerminal(first) } }
         case .showInFinder:

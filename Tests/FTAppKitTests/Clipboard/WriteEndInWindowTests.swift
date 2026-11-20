@@ -31,8 +31,8 @@ extension ExplorerWindowlessTests {
             let window = try await WritingWindow.open()
             let tab = window.tab
             await trash("note.txt", window)
-            tab.go(to: window.folder.appendingPathComponent("Alpha"))
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" && !tab.isNavigating })
+            tab.go(to: window.folder.appendingPathComponent("Alpha").path)
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" && !tab.isNavigating })
 
             tab.perform(.undo)
             #expect(await waitUntil { window.exists("note.txt") && !toasts(tab, "Undone").isEmpty })
@@ -67,7 +67,7 @@ extension ExplorerWindowlessTests {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let alpha = window.folder.appendingPathComponent("Alpha").path
-            let shown = tab.folder.path
+            let shown = tab.folderPath
             let steps = tab.navigationHistory.paths
             window.operations.dialogs.askName = { _, _, submit in _ = await submit("Made") }
 
@@ -78,7 +78,7 @@ extension ExplorerWindowlessTests {
             #expect(sidebar(tab).model.subview == .tree)
             await settle()
             #expect(sidebar(tab).selectedTreeTargetPath == alpha + "/Made")
-            #expect(tab.folder.path == shown)
+            #expect(tab.folderPath == shown)
             #expect(tab.navigationHistory.paths == steps)
             #expect(window.recorder.shown.isEmpty)
 
@@ -86,7 +86,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { sidebar(tab).selectedTreeTargetPath == shown })
             await settle()
             #expect(sidebar(tab).selectedTreeTargetPath == shown)
-            #expect(tab.folder.path == shown)
+            #expect(tab.folderPath == shown)
             await window.close()
         }
 
@@ -96,7 +96,7 @@ extension ExplorerWindowlessTests {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let alpha = window.folder.appendingPathComponent("Alpha").path
-            let shown = tab.folder.path
+            let shown = tab.folderPath
             let steps = tab.navigationHistory.paths
             window.select(["note.txt"])
 
@@ -106,7 +106,7 @@ extension ExplorerWindowlessTests {
             #expect(!window.exists("note copy.txt"))
             await settle()
             #expect(sidebar(tab).selectedTreeTargetPath == alpha + " copy")
-            #expect(tab.folder.path == shown)
+            #expect(tab.folderPath == shown)
             #expect(tab.navigationHistory.paths == steps)
             await window.close()
         }
@@ -118,15 +118,15 @@ extension ExplorerWindowlessTests {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let alpha = window.folder.appendingPathComponent("Alpha")
-            tab.go(to: alpha)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" && !tab.isNavigating })
+            tab.go(to: alpha.path)
+            #expect(await waitUntil { NodePath.basename(tab.folderPath) == "Alpha" && !tab.isNavigating })
             #expect(await waitUntil { sidebar(tab).selectedTreeTargetPath == alpha.path })
             let steps = tab.navigationHistory.paths.count
             window.operations.dialogs.confirm = { _, _ in true }
 
             treeMenu(tab, .trash, on: alpha.path)
             #expect(await waitUntil { !window.exists("Alpha") })
-            #expect(await waitUntil { tab.folder.path == window.folder.path && !tab.isNavigating })
+            #expect(await waitUntil { tab.folderPath == window.folder.path && !tab.isNavigating })
             #expect(await waitUntil { sidebar(tab).selectedTreeTargetPath == window.folder.path })
             #expect(tab.navigationHistory.paths.count == steps)
             await settle()

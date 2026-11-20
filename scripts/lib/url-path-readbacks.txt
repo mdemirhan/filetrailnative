@@ -8,71 +8,19 @@
 #
 # By hand: bash -c 'source scripts/lib/path-readbacks.sh; path_readbacks Sources scripts/lib/url-path-readbacks.txt'
 
-# Met with paths as the disk spells them: compared with them, kept beside them or used as a key among them. Each is a
-# place a folder or an item stored with a composed accent can go unrecognised, and the first to change.
-
 # Items another app opens: a tab's folder until its listing spells it, and an item found among the rows by `==`,
 # then by name.
 Sources/FTAppKit/App/AppDelegate.swift: let taken = openFiles.open(urls.filter(\.isFileURL).map(\.path))
 
-# `comparablePath` itself: one URL's path against another's, below.
-Sources/FTAppKit/Content/ContentModel.swift: var comparablePath: String { standardizedFileURL.path }
-
-# The pane's own reading of its URL: kept only where it differs from the path given by more than an accent's encoding.
-Sources/FTAppKit/Windows/BrowserPane.swift: let tidied = url.path
-
-# Looks up the folder's saved view, kept under the path its listing gave.
-Sources/FTAppKit/Windows/BrowserPane.swift: var view = opensAnotherFolder ? folderViewUse(for: url.path).map(FolderViewOnScreen.init) : folderView
-
-# Against the path the listing gave, by `!=`.
-Sources/FTAppKit/Windows/BrowserPane.swift: if opensAnotherFolder, case .success(let snapshot) = read, snapshot.path != url.path {
-
-# The pane's path for a folder that can't be listed.
-Sources/FTAppKit/Windows/BrowserPane.swift: var shownPath = url.path
-
-# Against the history's step.
-Sources/FTAppKit/Windows/BrowserPane.swift: if let step = navigationHistory.current, step == url.path, !samePath(step, shownPath) {
-
 # A disk that went: against the tabs' disks by `==`, and against the clipboard's items byte for byte.
 Sources/FTAppKit/Windows/ExplorerWindows.swift: guard let path = volume?.standardizedFileURL.path else { return }
-
-# The selected folder's path through a URL and back: against the rows by `==`, then a new tab's, window's or pane's
-# folder until its listing spells it.
-Sources/FTAppKit/Windows/MainWindowController.swift: guard content.entries.first(where: { $0.path == folder.path })?.kind == .symlinkDirectory else {
-Sources/FTAppKit/Windows/MainWindowController.swift: open(folder.path)
-
-# A sidebar row's path through a URL and back, against the folder on screen by `==`.
-Sources/FTAppKit/Windows/MainWindowController.swift: let replaces = open.replacesFolderOnScreen && url.path == self.shownFolderPath
-
-# The selected folder's path through a URL and back: the tree's new root.
-Sources/FTAppKit/Windows/MainWindowController.swift: selectedContentFolder: selectedContentFolder?.path, currentPath: shownFolderPath)
-
-# A path bar folder's path through a URL and back: a new tab's or window's folder until its listing spells it.
-Sources/FTAppKit/Windows/MainWindowController.swift: case .newTab: group?.openTab(path: url.path, from: self)
-Sources/FTAppKit/Windows/MainWindowController.swift: case .newWindow: group?.openNewWindow(from: self, path: url.path)
 
 # The one place a URL's path is read (`DiskPath(urlSpelling:)`): what a URL holds is its `path`; its file-system
 # representation spells every accent decomposed when the URL was made from text.
 Sources/FTFoundation/DiskPath+URL.swift: self.init(url.path)
 
-# One URL's path against another's (`comparablePath`): both are spelled the URL's way, so they agree with each other,
-# and say nothing of how the disk spells either.
-Sources/FTAppKit/Automation/AutomationRunner.swift: if url.comparablePath == controller.folder.comparablePath {
-Sources/FTAppKit/Windows/BrowserPane.swift: ? .nothing : navigationTarget?.comparablePath == folder.comparablePath ? .thisFolder : .anotherFolder
-Sources/FTAppKit/Windows/BrowserPane.swift: if !folderLetGo, url.comparablePath != folder.comparablePath, searchRootPath == nil,
-Sources/FTAppKit/Windows/BrowserPane.swift: !hasShownFolder || folderLetGo || placeTaken || url.comparablePath != folder.comparablePath
-Sources/FTAppKit/Windows/BrowserPane.swift: let sameFolder = shown.comparablePath == folder.comparablePath
-Sources/FTAppKit/Windows/BrowserPane.swift: let carried = url.comparablePath == folder.comparablePath ? carriedView : nil
-Sources/FTAppKit/Windows/MainWindowController.swift: let move: HistoryMove = !folderLetGo && target.comparablePath == folder.comparablePath ? .replace : .push
-Sources/FTAppKit/Windows/MainWindowController.swift: guard !folderLetGo, folder.comparablePath != "/" else { return }
-
 # Handed to the system, which finds an item by either spelling, or shown, and nothing else.
 Sources/FTAppKit/App/AppDelegate.swift: "userDataPath": .string(userData.path),
-Sources/FTAppKit/Automation/AutomationRunner.swift: guard FileManager.default.fileExists(atPath: url.path) else {
-Sources/FTAppKit/Automation/AutomationRunner.swift: return Outcome(.failed, "no folder at \(url.path)")
-Sources/FTAppKit/Automation/AutomationRunner.swift: return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(url.path)")
-Sources/FTAppKit/Windows/BrowserPane.swift: let path = url.path
-Sources/FTAppKit/Windows/MainWindowController.swift: if let target = await Self.resolved(folder.path) { open(target) }
 
 # The home folder, whose path has no accent as an account's name has none. It is compared with paths from listings all
 # over (what is inside Home, the Trash, "~" in a path shown).

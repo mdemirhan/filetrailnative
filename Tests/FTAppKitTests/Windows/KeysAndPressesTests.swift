@@ -77,12 +77,12 @@ extension ExplorerWindowlessTests {
             let group = try #require(tab.group)
             tab.perform(.openSelectionInNewTab)
             #expect(await waitUntil { group.tabs.count == 2 })
-            #expect(group.tabs.last?.folder.path == target)
+            #expect(group.tabs.last?.folderPath == target)
 
             group.select(tab)
             tab.perform(.openSelectionInNewWindow)
             #expect(await waitUntil { harness.windows.allTabs.count == 3 })
-            #expect(harness.windows.allTabs.last { $0.group !== group }?.folder.path == target)
+            #expect(harness.windows.allTabs.last { $0.group !== group }?.folderPath == target)
             await harness.close()
         }
 

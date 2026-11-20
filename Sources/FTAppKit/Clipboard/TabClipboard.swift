@@ -206,7 +206,7 @@ extension MainWindowController {
             once.token = nil
             if samePath(self.folderPath, parent) { selectIt() }
         }
-        go(to: URL(fileURLWithPath: parent, isDirectory: true))
+        go(to: parent)
     }
 
     /// What Copy records of each item: from the list, its kind, link and executable flags; from the tree,

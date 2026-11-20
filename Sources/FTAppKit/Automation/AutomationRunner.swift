@@ -69,8 +69,8 @@
             }
         }
 
-        /// The folder of the first `open` step, for the window to start on.
-        var startFolder: URL? {
+        /// The folder of the first `open` step, for the window to start on, as the scenario spells it.
+        var startFolder: String? {
             guard let scenario else { return nil }
             for case .open(let path) in scenario.steps { return scenario.resolve(path) }
             return nil
@@ -271,15 +271,15 @@
                     prefs, context: .init(controller: currentController, window: window, prefs: prefs))
             case .open(let path):
                 guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
-                guard let url = scenario?.resolve(path) else { return Outcome(.failed, "no scenario") }
-                guard FileManager.default.fileExists(atPath: url.path) else {
-                    return Outcome(.failed, "no folder at \(url.path)")
+                guard let folder = scenario?.resolve(path) else { return Outcome(.failed, "no scenario") }
+                guard FileManager.default.fileExists(atPath: folder) else {
+                    return Outcome(.failed, "no folder at \(folder)")
                 }
-                if url.comparablePath == controller.folder.comparablePath {
+                if samePath(folder, controller.folderPath) {
                     return Outcome(.ok)
                 }
-                let opened = await controller.navigate(to: url)
-                return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(url.path)")
+                let opened = await controller.navigate(to: folder)
+                return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(folder)")
             case .select(let names):
                 return select(names, in: window)
             case .key(let key, let modifiers):

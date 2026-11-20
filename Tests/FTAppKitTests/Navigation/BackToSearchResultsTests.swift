@@ -34,7 +34,7 @@ extension ExplorerWindowlessTests {
         }
 
         private func opening(_ place: Place, _ path: String) async -> Bool {
-            place.tab.go(to: URL(fileURLWithPath: path))
+            place.tab.go(to: path)
             return await settled(place, on: path)
         }
 
@@ -260,7 +260,7 @@ extension ExplorerWindowlessTests {
             try await search(place)
             #expect(await back(place, to: place.searched))
             expectResults(place)
-            place.tab.go(to: URL(fileURLWithPath: place.searched))
+            place.tab.go(to: place.searched)
             #expect(await waitUntil { place.tab.searchRootPath == nil && !place.tab.isNavigating })
             expectFolder(place, place.searched)
             #expect(place.tab.search.session.returnPlace == nil)

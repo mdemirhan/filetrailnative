@@ -395,7 +395,7 @@ final class TabDragDrop {
         Task { [weak self] in
             // A drag that ended before this began has already sent the tab back.
             if self?.springStart?.sequence == sequence {
-                let opened = await pane.navigate(to: URL(fileURLWithPath: path, isDirectory: true))
+                let opened = await pane.navigate(to: path)
                 withExtendedLifetime(tab) {}
                 if opened, self?.springStart?.sequence == sequence { self?.springStart?.arrived = true }
             }

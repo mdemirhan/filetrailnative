@@ -62,12 +62,12 @@
             let scenario = try parse(#"{"name": "x", "root": "lighthouse/Lighthouse", "steps": []}"#)
             let environment = ["FILETRAIL_DEV_CACHE": "/cache"]
             #expect(
-                scenario.resolve("app/src", environment: environment).path
+                scenario.resolve("app/src", environment: environment)
                     == "/cache/fixtures/lighthouse/Lighthouse/app/src")
-            #expect(scenario.resolve(".", environment: environment).path == "/cache/fixtures/lighthouse/Lighthouse")
-            #expect(scenario.resolve("/tmp/x", environment: environment).path == "/tmp/x")
+            #expect(scenario.resolve(".", environment: environment) == "/cache/fixtures/lighthouse/Lighthouse")
+            #expect(scenario.resolve("/tmp/x", environment: environment) == "/tmp/x")
             let home = FileManager.default.homeDirectoryForCurrentUser.path
-            #expect(scenario.resolve("~/Empty", environment: environment).path == home + "/Empty")
+            #expect(scenario.resolve("~/Empty", environment: environment) == home + "/Empty")
         }
 
         @Test func readsTheCommandLine() {

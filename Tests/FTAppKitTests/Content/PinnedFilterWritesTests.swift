@@ -48,7 +48,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.pasteAsFile)
             #expect(await waitUntil { tab.content.inlineRename != nil })
 
-            let made = tab.folder.path + "/Pasted Text.txt"
+            let made = tab.folderPath + "/Pasted Text.txt"
             #expect(tab.content.inlineRename?.path == made)
             #expect(try String(contentsOfFile: made, encoding: .utf8) == "milk\neggs")
             #expect(tab.content.pinnedFilter == nil)
@@ -66,11 +66,11 @@ extension ExplorerWindowlessTests {
         @Test func selectingSeveralShowsEveryOneThePinHides() async throws {
             let (harness, tab, operations) = try await pinned()
             let shown = try #require(tab.content.entries.first { $0.name == "note.txt" }?.path)
-            let hidden = tab.folder.path + "/zebra.txt"
+            let hidden = tab.folderPath + "/zebra.txt"
             try "x".write(toFile: hidden, atomically: true, encoding: .utf8)
             tab.services.directoryService.cache.clear()
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: [hidden]))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: [hidden]))
             #expect(await waitUntil { tab.content.listedEntry(at: hidden) != nil })
             #expect(tab.content.position(of: hidden) == nil)
 
@@ -121,11 +121,11 @@ extension ExplorerWindowlessTests {
         // Renaming an item the pin hides (from the tree, a search, Info) shows it first: the name opens in its row.
         @Test func startingARenameOfAnItemThePinHidesUnpinsAndOpensTheName() async throws {
             let (harness, tab, operations) = try await pinned()
-            let hidden = tab.folder.path + "/zebra.txt"
+            let hidden = tab.folderPath + "/zebra.txt"
             try "x".write(toFile: hidden, atomically: true, encoding: .utf8)
             tab.services.directoryService.cache.clear()
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: [hidden]))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: [hidden]))
             #expect(await waitUntil { tab.content.listedEntry(at: hidden) != nil })
             #expect(tab.content.position(of: hidden) == nil)
             #expect(tab.content.beginRename(path: hidden))
@@ -141,7 +141,7 @@ extension ExplorerWindowlessTests {
         // The folder watch reads the folder again: the pin holds, and what arrived is shown or not as the pin says.
         @Test func aFolderReadAgainWhilePinnedKeepsThePinAndShowsOnlyWhatItMatches() async throws {
             let (harness, tab, operations) = try await pinned()
-            let folder = tab.folder.path
+            let folder = tab.folderPath
             let listedBefore = tab.content.listed.count
             try "x".write(toFile: folder + "/nomad.txt", atomically: true, encoding: .utf8)
             try "x".write(toFile: folder + "/zebra.txt", atomically: true, encoding: .utf8)

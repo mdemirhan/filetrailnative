@@ -63,7 +63,7 @@ extension ExplorerWindowlessTests {
         }
 
         private func go(_ tab: MainWindowController, _ harness: ExplorerHarness, _ name: String) async {
-            await tab.navigate(to: URL(fileURLWithPath: real(harness, name)))
+            await tab.navigate(to: real(harness, name))
             #expect(await waitUntil { !tab.isNavigating })
         }
 
@@ -298,7 +298,7 @@ extension ExplorerWindowlessTests {
                             view: .icons, sort: FolderViewSort(by: .name, direction: .desc), foldersFirst: false)))
             }
             #expect(pane.folderViewUse(for: link) == nil)
-            await tab.navigate(to: URL(fileURLWithPath: link))
+            await tab.navigate(to: link)
             #expect(await waitUntil { !tab.isNavigating })
             #expect(pane.shownFolderPath == beta)
             #expect(pane.shownFolderView?.use.own == true)
@@ -347,7 +347,7 @@ extension ExplorerWindowlessTests {
             let mode = pane.content.mode
             disk.refuse(beta, read: 2)
 
-            let opened = await pane.navigate(to: URL(fileURLWithPath: link))
+            let opened = await pane.navigate(to: link)
             #expect(!opened && !tab.isNavigating)
             #expect(disk.reads(of: beta) == 2)
             #expect(pane.shownFolderPath == root && tab.content.entries.map(\.name) == listed)
@@ -355,7 +355,7 @@ extension ExplorerWindowlessTests {
             #expect(pane.shownFolderView == nil && pane.content.mode == mode)
             #expect(tab.navigationHistory.paths == history)
 
-            #expect(await pane.navigate(to: URL(fileURLWithPath: link)))
+            #expect(await pane.navigate(to: link))
             #expect(tab.content.readError == nil)
             #expect(pane.shownFolderPath == beta && pane.shownFolderView?.use.own == true)
             #expect(tab.content.entries.map(\.name) == ["Inner", "c.txt", "b.txt", "a.txt"])
@@ -373,7 +373,7 @@ extension ExplorerWindowlessTests {
             let listed = tab.content.entries.map(\.name)
             let mode = pane.content.mode
             disk.hold(beta, read: 2)
-            pane.go(to: URL(fileURLWithPath: link))
+            pane.go(to: link)
             #expect(await waitUntil { disk.isHolding })
             #expect(pane.shownFolderPath == root && tab.content.entries.map(\.name) == listed)
             #expect(pane.folderView == nil && pane.content.mode == mode)
@@ -381,7 +381,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.isNavigating)
 
             let gamma = real(harness, "Gamma")
-            #expect(await tab.navigate(to: URL(fileURLWithPath: gamma)))
+            #expect(await tab.navigate(to: gamma))
             disk.letGo()
             #expect(await waitUntil { !disk.isHolding && !tab.isNavigating })
             await settle()
@@ -408,12 +408,12 @@ extension ExplorerWindowlessTests {
                             view: .previews, sort: FolderViewSort(by: .name, direction: .desc), foldersFirst: false)))
             }
             for path in [link, beta] {
-                #expect(await tab.navigate(to: URL(fileURLWithPath: path)))
+                #expect(await tab.navigate(to: path))
                 #expect(pane.shownFolderPath == beta && pane.shownFolderView == nil && pane.content.mode == mode)
                 #expect(tab.content.entries.map(\.name) == ["Inner", "a.txt", "b.txt", "c.txt"])
                 await go(tab, harness, "Gamma")
             }
-            #expect(await tab.navigate(to: URL(fileURLWithPath: link + "/Inner")))
+            #expect(await tab.navigate(to: link + "/Inner"))
             #expect(pane.shownFolderPath == beta + "/Inner" && pane.shownFolderView == nil)
             // Remember there saves the folder's view under its real path, where it is found.
             tab.perform(.rememberFolderView)

@@ -53,7 +53,7 @@ extension ExplorerWindowlessTests {
             let group = try #require(tab.group)
             let link = try #require(tab.content.listed.first { $0.name == "Link" })
             #expect(link.kind == .symlinkDirectory)
-            let alpha = tab.folder.appendingPathComponent("Alpha").path
+            let alpha = URL(fileURLWithPath: tab.folderPath).appendingPathComponent("Alpha").path
 
             try choose("Open in New Tab", in: tab.contextMenus.contentMenu(for: [link]))
             #expect(await waitUntil { group.tabs.count == 2 })

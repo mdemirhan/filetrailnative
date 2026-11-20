@@ -57,7 +57,7 @@ extension ExplorerWindowlessTests {
             tab.services.directoryService.cache.clear()
             let path = tab.content.entries[0].path
             harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: [path]))
+                windowID: tab.windowID, FolderChange(path: tab.folderPath, changedPaths: [path]))
             #expect(await waitUntil { isBlue(item.thumbnail.image) })
             #expect(item.thumbnail.image !== before)
             await harness.close()

@@ -348,7 +348,7 @@ extension ExplorerWindowlessTests {
             let (tab, _) = try await harness.openList()
             let menu = RealMenu(harness, tab)
             try select(["note.txt"], tab)
-            let before = tab.folder.path
+            let before = tab.folderPath
             tab.content.contentShell.pathBarRow.beginEditing()
             harness.layout(tab)
             #expect(tab.isTextFieldEditing)
@@ -361,7 +361,7 @@ extension ExplorerWindowlessTests {
             editor.setSelectedRange(NSRange(location: 8, length: 0))
             let up = try key("ArrowUp", [.command], in: tab)
             #expect(KeyEvents.performKeyEquivalent(up, window: window, menu: menu.built.menu))
-            #expect(tab.folder.path == before)
+            #expect(tab.folderPath == before)
             #expect(editor.selectedRange().location == 0)
             editor.setSelectedRange(NSRange(location: 8, length: 0))
             let delete = try key("Backspace", [.command], in: tab)
@@ -378,18 +378,18 @@ extension ExplorerWindowlessTests {
         @Test func theWindowsKeysWorkWithTheTreeFocused() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
-            let start = tab.folder.path
+            let start = tab.folderPath
             let alpha = try path("Alpha", tab)
-            tab.go(to: URL(fileURLWithPath: alpha))
-            #expect(await waitUntil { tab.folder.path == alpha })
+            tab.go(to: alpha)
+            #expect(await waitUntil { tab.folderPath == alpha })
             tab.perform(.focusTreePane)
             #expect(tab.focusedPane == .tree)
             // ⌘← and ⌘→ are Back and Forward.
             tab.window?.firstResponder?.keyDown(with: try key("ArrowLeft", [.command], in: tab))
-            #expect(await waitUntil { tab.folder.path == start })
+            #expect(await waitUntil { tab.folderPath == start })
             tab.perform(.focusTreePane)
             tab.window?.firstResponder?.keyDown(with: try key("ArrowRight", [.command], in: tab))
-            #expect(await waitUntil { tab.folder.path == alpha })
+            #expect(await waitUntil { tab.folderPath == alpha })
             await harness.close()
         }
 

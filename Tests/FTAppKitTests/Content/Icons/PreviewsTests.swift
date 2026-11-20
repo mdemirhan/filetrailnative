@@ -264,15 +264,15 @@ extension ExplorerWindowlessTests {
         private func leaveShortenAndComeBack(
             _ harness: ExplorerHarness, _ tab: MainWindowController, _ probe: GridProbe
         ) async throws {
-            let folder = tab.currentFolder
+            let folder = tab.folderPath
             let window = try #require(tab.window)
             let size = window.contentLayoutRect.size
-            await tab.navigate(to: folder.deletingLastPathComponent())
+            await tab.navigate(to: NodePath.dirname(folder))
             window.setContentSize(NSSize(width: size.width, height: size.height - 100))
             harness.layout(tab)
             probe.layout()
             tab.goBack(nil)
-            #expect(await waitUntil { tab.currentFolder == folder && !tab.isNavigating })
+            #expect(await waitUntil { tab.folderPath == folder && !tab.isNavigating })
             harness.layout(tab)
             probe.layout()
         }
