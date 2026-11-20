@@ -62,6 +62,27 @@ extension MainWindowController {
         return box
     }
 
+    // MARK: Paths that were typed
+
+    /// The folder to go to at a path that was typed, by its path as the disk spells it (`DiskPath.asOnDisk`), which is
+    /// how the folder on screen and the rows spell theirs: every link followed, "." and ".." and a slash at the end
+    /// resolved, and each name with its accents and letter case as its folder holds it. One that isn't there keeps
+    /// the spelling given, and shows its error by it; so does a path that isn't absolute. The disk is asked off the
+    /// main thread.
+    nonisolated static func typedPlaceAsOnDisk(_ path: String) async -> String {
+        guard path.hasPrefix("/") else { return path }
+        return await BlockingWork.run { access(path, F_OK) == 0 ? DiskPath(path).asOnDisk().string : path }
+    }
+
+    /// The folder items are sent to at a path that was typed or chosen in a panel, by its path as the disk spells
+    /// it, which is how a write names what it made and how the folder on screen is known. One that isn't there yet,
+    /// and may be made, is the folder it would be in as the disk spells it, with its name as typed. The disk is asked
+    /// off the main thread.
+    nonisolated static func typedDestinationAsOnDisk(_ path: String) async -> String {
+        guard path.hasPrefix("/") else { return path }
+        return await BlockingWork.run { DiskPath(path).asOnDisk().string }
+    }
+
     // MARK: Go To
 
     /// `openLocationSheet` (⌘K, ⇧⌘G, the toolbar's Go To): the box opens empty over the explorer, and no pane has the
@@ -120,9 +141,10 @@ extension MainWindowController {
         return answer.suggestions.map { GoToCompletion(path: $0.path, name: $0.name) }
     }
 
-    /// Opens the typed path: trimmed, `~` expanded, "./" and "../" from the folder on screen, a push counted as a Go To
-    /// visit. The box closes only if the folder opened; otherwise it shows the read's message. An opened folder chosen
-    /// from the list that is gone is forgotten; one that only couldn't be opened is kept.
+    /// Opens the typed path: trimmed, `~` expanded, "./" and "../" from the folder on screen, then spelled as the disk
+    /// spells it (`typedPlaceAsOnDisk`), a push counted as a Go To visit. The box closes only if the folder opened;
+    /// otherwise it shows the read's message. An opened folder chosen from the list that is gone is forgotten; one
+    /// that only couldn't be opened is kept.
     func submitGoTo(_ path: String, box: GoToFolderBox) {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let expanded = GoToBoxState.folderPath(path, homePath: home, currentPath: box.options.currentPath)
@@ -131,7 +153,7 @@ extension MainWindowController {
         box.setSubmitting(true)
         Task { @MainActor [weak self, weak box] in
             guard let self else { return }
-            let outcome = await self.goToFolder(expanded)
+            let outcome = await self.goToFolder(await Self.typedPlaceAsOnDisk(expanded))
             guard let box else { return }
             box.setSubmitting(false)
             switch outcome {
@@ -202,10 +224,11 @@ extension MainWindowController {
         }
     }
 
-    /// The items go into the folder typed in a Move To or Extract To box. Queued or sent to the review, the box
-    /// closes and the folder is remembered as a destination; cancelled, it stays as it was; refused, it says why under
-    /// the field. A folder that doesn't exist yet, in one that does, is offered to be made first: the box's button
-    /// says "Create and Move" (or Extract), and the next submit makes it.
+    /// The items go into the folder typed in a Move To or Extract To box, by its path as the disk spells it
+    /// (`typedDestinationAsOnDisk`): the write is sent there and the folder remembered by that spelling. Queued or sent
+    /// to the review, the box closes and the folder is remembered as a destination; cancelled, it stays as it was;
+    /// refused, it says why under the field. A folder that doesn't exist yet, in one that does, is offered to be made
+    /// first: the box's button says "Create and Move" (or Extract), and the next submit makes it.
     func submitChosenFolder(
         _ typed: String, box: GoToFolderBox, actions: WindowWriteActions, verb: String,
         refusal: @escaping @MainActor (String) -> String? = { _ in nil },
@@ -213,13 +236,14 @@ extension MainWindowController {
         started: @escaping @MainActor (CopyLikeOutcome) -> Void = { _ in }
     ) {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let folder = GoToBoxState.folderPath(typed, homePath: home, currentPath: box.options.currentPath)
+        let asTyped = GoToBoxState.folderPath(typed, homePath: home, currentPath: box.options.currentPath)
         let creates = box.state.createsFolder
         let submitted = box.state.text
         box.setError(nil)
         box.setSubmitting(true)
         Task { @MainActor [weak self, weak box] in
             guard let self else { return }
+            let folder = await Self.typedDestinationAsOnDisk(asTyped)
             let outcome = await self.sendToChosenFolder(
                 folder, creates: creates, actions: actions, verb: verb, refusal: refusal, start: start,
                 offer: { [weak box] notice in box?.offerToCreate(notice: notice, for: submitted) })

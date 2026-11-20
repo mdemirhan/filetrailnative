@@ -147,10 +147,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
                 forName: NSWorkspace.didUnmountNotification, object: nil, queue: .main
             ) { [weak self] notification in
                 let volume = notification.userInfo?[NSWorkspace.volumeURLUserInfoKey] as? URL
-                MainActor.assumeIsolated {
-                    guard let path = volume?.standardizedFileURL.path else { return }
-                    self?.disksUnmounted([path])
-                }
+                MainActor.assumeIsolated { self?.diskUnmounted(at: volume) }
             })
         volumesToken = SidebarVolumes.shared.observe { [weak self] in self?.volumesChanged($0) }
         observers.append(
@@ -174,6 +171,19 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         disksUnmounted(unmounted)
         // Each disk has its part of the Trash.
         if changed { folderWatches?.restartWatches(of: TrashFolders(homePath: home).home) }
+    }
+
+    /// The system says the disk mounted at `volume` went. Its notice spells the folder the disk was mounted at as a
+    /// URL does, with an accent taken apart whatever the folder is named, and the clipboard's items are compared with
+    /// it byte for byte. A disk mounted at a folder of the user's own leaves that folder behind: it is asked how it is
+    /// spelled, off the main thread. The folder of a disk the system mounted was made by the system, which spells it
+    /// as its notice does, and is gone with the disk: the notice's spelling is the one the disk's items had.
+    func diskUnmounted(at volume: URL?) {
+        guard let told = volume.flatMap(DiskPath.init(urlSpelling:)) else { return }
+        Task { [weak self] in
+            let path = await BlockingWork.run { told.asOnDisk().string }
+            self?.disksUnmounted([path])
+        }
     }
 
     /// Disks just unmounted, by the folders they were mounted at: every window lets go of them, and the

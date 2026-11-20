@@ -9,7 +9,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     public override init() {
         super.init()
         openFiles = OpenFileEntryPoint(
-            describe: { LaunchContext.describeOpenedPath($0) },
+            describe: { Self.describeOpened($0) },
             open: { [weak self] request in self?.openFromOtherApp(request) })
     }
 
@@ -83,11 +83,15 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 Self.value(after: $0, in: arguments)
             })
         let launchArguments = arguments.filter { !flagValues.contains($0) }
+        // The folder File Trail was launched with, by its path as the disk spells it, which is how the tabs kept from
+        // the last run spell theirs: it is looked for among them. The disk is asked here, where it was just asked
+        // whether the folder is there, before any window is open.
         let requested = LaunchContext.resolveStartupFolderPath(
             argv: launchArguments,
             cwd: LaunchContext.resolveWorkingDirectory(
                 envPWD: ProcessInfo.processInfo.environment["PWD"], cwd: FileManager.default.currentDirectoryPath),
-            homePath: home.path, appPath: Bundle.main.bundlePath)
+            homePath: home.path, appPath: Bundle.main.bundlePath
+        ).map { DiskPath($0).asOnDisk().string }
 
         #if DEBUG
             let automation = AutomationRunner.options(from: arguments).map { options in
@@ -96,7 +100,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
             _ = automation?.load()
-            let start = automation?.startFolder ?? requested
+            let start = (automation?.startFolder).map { DiskPath($0).asOnDisk().string } ?? requested
         #else
             let start = requested
         #endif
@@ -374,7 +378,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// its folder in a new tab. macOS sends it before the windows are open when it launches File Trail to open it: it
     /// waits for them.
     public func application(_ application: NSApplication, open urls: [URL]) {
-        let taken = openFiles.open(urls.filter(\.isFileURL).map(\.path))
+        let taken = openFiles.open(Self.paths(ofOpened: urls))
         Task { [weak self] in
             for request in await taken.value {
                 self?.logger?.info(
@@ -382,6 +386,20 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                     .context(["path": .string(request.path), "kind": .string(request.kind.rawValue)]))
             }
         }
+    }
+
+    /// The paths of the items among `urls`, each in its URL's own spelling, which may not be the disk's
+    /// (`describeOpened` asks the disk). What isn't a file's URL is left out.
+    nonisolated static func paths(ofOpened urls: [URL]) -> [String] {
+        urls.compactMap { DiskPath(urlSpelling: $0)?.string }
+    }
+
+    /// What File Trail does with the item another app opens, or it was launched to open, at `path`; nil for one that
+    /// isn't there. The item is named as its disk has it (`DiskPath.itemAsOnDisk`), a link not followed: the system's
+    /// URL may spell an accent the other way, and the item is found among its folder's rows, and opened or written to
+    /// from there, byte for byte. It looks at the disk, so it is asked off the main thread (`OpenFileEntryPoint`).
+    nonisolated static func describeOpened(_ path: String) -> OpenRequest? {
+        LaunchContext.describeOpenedPath(DiskPath(path).itemAsOnDisk().string)
     }
 
     /// The window in front takes the item. With no window open, see `ShellActions.openFromOtherApp`; an error is shown on

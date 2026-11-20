@@ -8,13 +8,6 @@
 #
 # By hand: bash -c 'source scripts/lib/path-readbacks.sh; path_readbacks Sources scripts/lib/url-path-readbacks.txt'
 
-# Items another app opens: a tab's folder until its listing spells it, and an item found among the rows by `==`,
-# then by name.
-Sources/FTAppKit/App/AppDelegate.swift: let taken = openFiles.open(urls.filter(\.isFileURL).map(\.path))
-
-# A disk that went: against the tabs' disks by `==`, and against the clipboard's items byte for byte.
-Sources/FTAppKit/Windows/ExplorerWindows.swift: guard let path = volume?.standardizedFileURL.path else { return }
-
 # The one place a URL's path is read (`DiskPath(urlSpelling:)`): what a URL holds is its `path`; its file-system
 # representation spells every accent decomposed when the URL was made from text.
 Sources/FTFoundation/DiskPath+URL.swift: self.init(url.path)

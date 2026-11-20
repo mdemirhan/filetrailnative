@@ -22,12 +22,12 @@ extension MainWindowController {
             self.navigate(to: path, target: .push)
         }
         bar.onNavigate = navigate
-        // A path typed in the bar comes from no listing: "~" is the home folder, and a path that doesn't start at the
-        // top starts where the app was started.
+        // A path typed in the bar comes from no listing: "~" is the home folder, a path that doesn't start at the top
+        // starts where the app was started, and the folder is gone to by its path as the disk spells it.
         bar.onTyped = { [weak bar] typed in
             var path = PathText2.expandHome(typed, homePath: bar?.editor.homePath ?? "")
             if !path.hasPrefix("/") { path = NodePath.join(FileManager.default.currentDirectoryPath, path) }
-            navigate(path)
+            Task { navigate(await Self.typedPlaceAsOnDisk(path)) }
         }
         bar.onOpenInNewTab = { [weak self] path in
             guard let self else { return }

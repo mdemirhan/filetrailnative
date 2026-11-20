@@ -586,9 +586,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func revealSearchResult(_ path: String) {
         AppMenuPresenter.shared.close()
         guard let parent = ExplorerTabs.parentDirectoryPath(path) else { return }
-        let move: HistoryMove = !folderLetGo && samePath(parent, folderPath) ? .replace : .push
         Task {
-            guard await navigate(to: parent, history: move) else { return }
+            // The result's folder as the disk spells it, which is how the folder on screen is known: a search may
+            // have run from another spelling of it (/var for /private/var), and only the disk says the two are one.
+            let target = await BlockingWork.run { DiskPath(parent).asOnDisk().string }
+            let move: HistoryMove = !folderLetGo && samePath(target, folderPath) ? .replace : .push
+            guard await navigate(to: target, history: move) else { return }
             // By its name in the folder opened: the listing gives its rows the folder's real path, which may be spelled
             // otherwise than the one the search ran from (/private/var for /var).
             let name = NodePath.basename(path)

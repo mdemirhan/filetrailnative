@@ -271,15 +271,18 @@
                     prefs, context: .init(controller: currentController, window: window, prefs: prefs))
             case .open(let path):
                 guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
-                guard let folder = scenario?.resolve(path) else { return Outcome(.failed, "no scenario") }
-                guard FileManager.default.fileExists(atPath: folder) else {
-                    return Outcome(.failed, "no folder at \(folder)")
+                guard let asWritten = scenario?.resolve(path) else { return Outcome(.failed, "no scenario") }
+                guard FileManager.default.fileExists(atPath: asWritten) else {
+                    return Outcome(.failed, "no folder at \(asWritten)")
                 }
+                // The folder as the disk spells it, which is how the folder on screen is known: the one on screen
+                // isn't opened again.
+                let folder = await MainWindowController.typedPlaceAsOnDisk(asWritten)
                 if samePath(folder, controller.folderPath) {
                     return Outcome(.ok)
                 }
                 let opened = await controller.navigate(to: folder)
-                return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(folder)")
+                return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(asWritten)")
             case .select(let names):
                 return select(names, in: window)
             case .key(let key, let modifiers):
