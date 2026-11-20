@@ -9,14 +9,16 @@ import Testing
 /// Keys and text sent to a window that is never shown.
 @MainActor
 enum DialogKeys {
+    /// A key pressed in `window`; with `repeating`, the key coming again while it is held down.
     static func press(
-        _ code: UInt16, _ characters: String = "", modifiers: NSEvent.ModifierFlags = [], in window: NSWindow?
+        _ code: UInt16, _ characters: String = "", modifiers: NSEvent.ModifierFlags = [], repeating: Bool = false,
+        in window: NSWindow?
     ) {
         guard let window,
             let event = NSEvent.keyEvent(
                 with: .keyDown, location: .zero, modifierFlags: modifiers, timestamp: 0,
                 windowNumber: window.windowNumber, context: nil, characters: characters,
-                charactersIgnoringModifiers: characters, isARepeat: false, keyCode: code)
+                charactersIgnoringModifiers: characters, isARepeat: repeating, keyCode: code)
         else { return }
         window.sendEvent(event)
     }

@@ -46,6 +46,21 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Return held down answers no alert: the key coming again would press the default button of an alert that
+        // came up while it was held. A Return pressed anew does.
+        @Test func returnHeldDownAnswersNoAlert() async throws {
+            let (harness, tab, window) = try await open()
+            tab.showNotice(title: "Couldn’t Open", message: "Something went wrong.")
+            let alert = try #require(await card(tab))
+            DialogKeys.press(KeyCode.returnKey, "\r", repeating: true, in: window)
+            DialogKeys.press(KeyCode.keypadEnter, "\u{3}", repeating: true, in: window)
+            for _ in 0..<5 { await Task.yield() }
+            #expect(tab.frontAlert === alert)
+            DialogKeys.press(KeyCode.returnKey, "\r", in: window)
+            #expect(await waitUntil { tab.frontAlert == nil })
+            await harness.close()
+        }
+
         // A rename that failed is told by its reason alone, once, under "Rename", with no "0 of 1 item done".
         @Test func aFailedRenameIsToldByItsReasonAlone() async throws {
             let (harness, tab, _) = try await open()

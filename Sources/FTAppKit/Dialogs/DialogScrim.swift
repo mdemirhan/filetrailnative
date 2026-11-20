@@ -354,9 +354,19 @@ final class DialogScrim: NSView {
 
     /// The window's key events while the dialog is in front: the dialog's keys, Tab kept inside the panel, and the
     /// keyboard brought back into the panel when it fell out of it. A press on one of the band's items is the scrim's.
+    ///
+    /// Return held down answers no dialog: the key coming again is taken and does nothing. Return both opens the
+    /// Rename sheet and is its Rename button, and confirms a name and then the question about that name, so a key
+    /// held a moment too long would answer a dialog before it could be read. Only while an input method composes in
+    /// a field is the key its own.
     private func intercept(_ event: NSEvent) -> Bool {
         if interceptTitlebarPress(event) { return true }
         guard event.type == .keyDown, let window, DialogScrim.front(in: window) === self else { return false }
+        if event.isARepeat, KeyCode.isReturn(event),
+            (window.firstResponder as? NSTextView)?.hasMarkedText() != true
+        {
+            return true
+        }
         if !holdsKeyboard(window), let responder = panel.initialResponder {
             window.makeFirstResponder(responder)
         }

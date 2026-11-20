@@ -273,6 +273,35 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
+        // Return held down opens the sheet and does no more. The key coming again would be the sheet's Return, and
+        // rename with the settings last used before the new names could be read. A Return pressed anew renames.
+        @Test func returnHeldDownOpensTheSheetAndDoesNotAnswerIt() async throws {
+            let opened = try await open()
+            let tab = opened.tab
+            select(opened, ["a.txt", "b.txt"])
+            tab.perform(.focusContentPane)
+            key(KeyCode.returnKey, "\r", tab)
+            let first = try await sheet(tab)
+            first.modeControl.choose(.add)
+            batchRenameType(first.addTextField, "-old")
+            key(KeyCode.escape, "\u{1b}", tab)
+            #expect(tab.batchRenameSheet == nil)
+            // The settings are kept, so the sheet opens with new names to give.
+            tab.perform(.focusContentPane)
+            key(KeyCode.returnKey, "\r", tab)
+            let sheet = try await sheet(tab)
+            #expect(sheet.model.canRename)
+            DialogKeys.press(KeyCode.returnKey, "\r", repeating: true, in: tab.window)
+            for _ in 0..<5 { await Task.yield() }
+            #expect(opened.requests.all.isEmpty)
+            #expect(tab.batchRenameSheet === sheet)
+            key(KeyCode.returnKey, "\r", tab)
+            #expect(await waitUntil { opened.requests.all.count == 1 })
+            #expect(opened.requests.all.first?.items.map(\.destinationName) == ["a-old.txt", "b-old.txt"])
+            #expect(tab.batchRenameSheet == nil)
+            await close(opened)
+        }
+
         // Behind the sheet the list keeps its focused look, the selected rows in the accent: its focus restore sets the
         // content focused before the sheet comes. The chosen mode reads as its title, and a click on a mode shows no
         // focus ring; Tab to it does.
