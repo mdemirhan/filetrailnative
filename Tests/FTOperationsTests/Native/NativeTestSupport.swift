@@ -98,6 +98,16 @@ enum NativeTestFiles {
         return fullCode
     }
 
+    /// Takes what `fillDisk` leaves free (less than 64 KB), 512 bytes at a time, so that nothing more fits on the
+    /// disk, however small.
+    static func fillLastOfDisk(_ mountPath: String) throws(WriteFailure) {
+        let descriptor = open(mountPath + "/fill-last", O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0o644)
+        guard descriptor >= 0 else { throw WriteFailure(errnum: errno) }
+        defer { close(descriptor) }
+        let chunk = [UInt8](repeating: 1, count: 512)
+        while chunk.withUnsafeBytes({ Darwin.write(descriptor, $0.baseAddress, $0.count) }) == chunk.count {}
+    }
+
     /// The disk's whole size (`statfs` `f_blocks`).
     static func totalBytes(_ path: String) -> Int {
         var info = statfs()

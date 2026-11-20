@@ -265,6 +265,35 @@ struct NativeCopyStopFlagTests {
         }
     }
 
+    // An attribute the disk refuses is skipped; one it has no room for is not. On a FAT disk a file's attributes go
+    // in the "._" file beside it, in the disk's clusters: once they are full the copy of an empty file can still be
+    // made, but not the "._" file for its tag. Skipped there, the copy was reported as done without the tag, and a
+    // move then removed the original, the tag with it.
+    @Test(.tags(.diskImage), .diskImages)
+    func failsWithTheWritesErrnoWhenAnAttributeCantBeWrittenForLackOfRoom() async throws {
+        try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
+            try await DiskImage.withVolume(.fat32Small) { volume in
+                let fullCode = try Files.fillDisk(volume.path, fullCodes: [ENOSPC, EIO])
+                // The "._" file of a tag is a few KB: it fits in what a fill by 64 KB leaves.
+                try Files.fillLastOfDisk(volume.path)
+                let source = root.appending("tagged.txt").path
+                try Files.write(source, "")
+                let tags = "com.apple.metadata:_kMDItemUserTags"
+                #expect(Files.setXattr(source, tags, "(\"Red\n6\")") == 0)
+                let destination = volume.path + "/tagged.txt"
+
+                let control = CopyControl()
+                let error = #expect(throws: NativeError.self) {
+                    try NativeFS.copyFile(source, destination, control: control)
+                }
+                #expect(error?.code == .errno(fullCode), "\(control.trace)")
+                // The copy got as far as the tag: it left the file it made, for the caller to remove, without it.
+                #expect(Files.exists(destination))
+                #expect(!Files.xattrNames(destination).contains(tags))
+            }
+        }
+    }
+
     @Test(.tags(.diskImage), .diskImages)
     func keepsASparseFileSparseSoItFitsOnADiskSmallerThanItsLength() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in

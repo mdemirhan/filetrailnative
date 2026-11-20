@@ -35,7 +35,8 @@ struct ft_copy_control {
 
 typedef struct {
     ft_copy_control *control;
-    /* 0, or the errno of a resource fork that couldn't be written, set by copy_status. */
+    /* 0, or the errno of an extended attribute whose failed write ended the copy (the resource fork, or one the disk
+       had no room for), set by copy_status. */
     int errnum;
 } copy_work_t;
 
@@ -97,6 +98,10 @@ static bool at_resource_fork(copyfile_state_t state) {
            strcmp(name, XATTR_RESOURCEFORK_NAME) == 0;
 }
 
+/* Whether a write failed for lack of room or over the disk itself (a full FAT disk says EIO on older macOS), not
+   because the disk refuses what was written. */
+static bool no_room_or_disk_error(int errnum) { return errnum == ENOSPC || errnum == EDQUOT || errnum == EIO; }
+
 /* Called by copyfile(3) between chunks of data and between the parts of a file (data, extended
    attributes, ...): stops the copy once the caller has asked it to, but only while the data is being
    copied. copyfile removes the file it created when told to quit there; told to quit at the extended
@@ -107,9 +112,12 @@ static bool at_resource_fork(copyfile_state_t state) {
    failed data write ends the copy with its error instead; a failed extended attribute is skipped, as
    metadata the destination may not take (a disk that refuses com.apple.provenance). Except the resource
    fork: that is the file's content for old Mac files, and copyfile goes on as if it had been copied whole
-   unless told to quit, so a move would then remove the original. The copy fails there as it does without
-   a callback, with the write's own errno (quitting makes copyfile report ECANCELED), and leaves the file
-   it made behind: callers remove a copy that failed. */
+   unless told to quit, so a move would then remove the original. And except an attribute the disk had no
+   room for, or failed to write: the disk would have taken it, so the copy isn't done without it (on a
+   full FAT or exFAT disk the "._" file can't be made, an empty file's data needs no room, and a move
+   would remove the original with its tags and comments). The copy fails there as it does without a
+   callback, with the write's own errno (quitting makes copyfile report ECANCELED), and leaves the file it
+   made behind: callers remove a copy that failed. */
 static int copy_status(int what, int stage, copyfile_state_t state, const char *src, const char *dst,
                        void *ctx) {
     (void)src;
@@ -126,7 +134,7 @@ static int copy_status(int what, int stage, copyfile_state_t state, const char *
     }
     if (stage == COPYFILE_ERR) {
         int errnum = errno;
-        bool skip = what == COPYFILE_COPY_XATTR && !at_resource_fork(state);
+        bool skip = what == COPYFILE_COPY_XATTR && !at_resource_fork(state) && !no_room_or_disk_error(errnum);
 #ifdef DEBUG
         const char *name = NULL;
         if (what == COPYFILE_COPY_XATTR) {
@@ -226,7 +234,7 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
            asked for is a stop. */
         result = ECANCELED;
     } else if (work.errnum != 0) {
-        /* copy_status ended it over the resource fork and kept that write's errno. */
+        /* copy_status ended it over an extended attribute and kept that write's errno. */
         result = work.errnum;
     } else if (saved != 0) {
         result = saved;
