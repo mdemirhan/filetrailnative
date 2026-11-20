@@ -138,11 +138,20 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(closed == 1)
     }
 
-    // 460 by 356, not resizable or minimizable, not full-screenable
-    @Test func isAFixedWindowOf460By356() {
+    // 460 wide and as high as its content, not resizable or minimizable, not full-screenable
+    @Test func isAFixedWindowAsHighAsItsContent() throws {
         let controller = make(info, Recorder())
         let window = controller.window
-        #expect(window?.contentRect(forFrameRect: window?.frame ?? .zero).size == NSSize(width: 460, height: 356))
+        let size = try #require(window.map { $0.contentRect(forFrameRect: $0.frame).size })
+        #expect(size.width == 460)
+        #expect(size.height == AboutView.fittingHeight(rows: 3))
+        // The footer is one gap under the buttons, not at the bottom of a taller window: it was 356 high, with a band
+        // of nothing between them.
+        #expect(size.height < 356)
+        controller.aboutView.layoutSubtreeIfNeeded()
+        let footer = try #require(
+            controller.aboutView.subviews.first { $0.accessibilityIdentifier() == "about.copyright" })
+        #expect(footer.frame.minY - controller.aboutView.copyButton.frame.maxY == AboutView.footerGap)
         #expect(window?.styleMask.contains(.resizable) == false)
         #expect(window?.styleMask.contains(.miniaturizable) == false)
         #expect(window?.collectionBehavior.contains(.fullScreenNone) == true)
@@ -166,6 +175,8 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(abs((buttons.first?.minX ?? 0) - 28) < 0.01)
         let link = views("about.link", in: view).first?.frame
         #expect(link?.minX == 28)
-        #expect(link?.maxY == 338)
+        // 22 under the buttons, then the footer's line and 18 to the bottom.
+        #expect(link?.minY == 288)
+        #expect(view.bounds.height - (link?.maxY ?? 0) == 18)
     }
 }

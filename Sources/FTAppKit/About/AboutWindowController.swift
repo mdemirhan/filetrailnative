@@ -30,10 +30,10 @@ public struct AboutActions {
 }
 
 /// The About window: what the app is, the versions a bug report needs, and the way to the project and to the licenses of
-/// the software inside it. 460 by 356, not resizable; replaces the standard About panel.
+/// the software inside it. 460 wide and as high as what it shows, not resizable; replaces the standard About panel.
 @MainActor
 public final class AboutWindowController: PageWindowController {
-    public static let contentSize = NSSize(width: 460, height: 356)
+    public static let contentWidth: CGFloat = 460
     /// How long Copy Details says "Copied" before its title comes back.
     public static let copiedNoteMilliseconds = 1500.0
 
@@ -43,12 +43,13 @@ public final class AboutWindowController: PageWindowController {
         aboutView = AboutView(info: info, actions: actions, theme: model.theme)
         super.init(
             spec: PageWindowSpec(
-                title: "About \(AboutText.appName)", size: Self.contentSize, resizable: false, minimizable: false),
+                title: "About \(AboutText.appName)", size: aboutView.frame.size, resizable: false,
+                minimizable: false),
             model: model)
         (window as? PageWindow)?.closesOnEscape = true
         window?.contentView = aboutView
         window?.initialFirstResponder = aboutView
-        window?.setContentSize(Self.contentSize)
+        window?.setContentSize(aboutView.frame.size)
         themeChanged(model.theme)
     }
 
@@ -104,7 +105,11 @@ public final class AboutView: ThemedView {
         acknowledgementsLink = LinkButton(
             title: "Acknowledgements", fontSize: DesignTokens.typeScale.small, theme: theme)
         copyright = ThemedText(AboutText.copyright, style: Self.footerStyle)
-        super.init(frame: NSRect(origin: .zero, size: AboutWindowController.contentSize), theme: theme)
+        super.init(
+            frame: NSRect(
+                x: 0, y: 0, width: AboutWindowController.contentWidth,
+                height: Self.fittingHeight(rows: info.map(AboutText.rows)?.count ?? 0)),
+            theme: theme)
         fill = { $0.palette.bgBase }
 
         iconImage.image = NSApp.applicationIconImage
@@ -170,6 +175,21 @@ public final class AboutView: ThemedView {
     /// The y of the line above the first row.
     static var detailsTop: CGFloat { titleStrip + 2 + iconSize + 18 }
 
+    /// Between the buttons and the footer.
+    static let footerGap: CGFloat = 22
+
+    private static var footerHeight: CGFloat {
+        ThemeFonts.normalLineHeight(ThemeFonts.sans(DesignTokens.typeScale.small))
+    }
+
+    /// The height that holds the header, `rows` details, the buttons and the footer with nothing left over: the window
+    /// is this high. It was 356 whatever it showed, with a band of nothing between the buttons and the footer.
+    static func fittingHeight(rows: Int) -> CGFloat {
+        ceil(
+            detailsTop + 1 + CGFloat(rows) * rowHeight + 16 + CGFloat(SystemButton.height) + footerGap + footerHeight
+                + bottomPadding)
+    }
+
     public override func layout() {
         super.layout()
         let width = bounds.width
@@ -217,7 +237,7 @@ public final class AboutView: ThemedView {
         }
 
         // The footer sits at the bottom.
-        let footerHeight = ThemeFonts.normalLineHeight(ThemeFonts.sans(DesignTokens.typeScale.small))
+        let footerHeight = Self.footerHeight
         let footerTop = bounds.height - Self.bottomPadding - footerHeight
         let linkSize = acknowledgementsLink.preferredSize
         acknowledgementsLink.frame = NSRect(
