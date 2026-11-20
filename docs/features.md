@@ -33,6 +33,9 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 - **Tabs**, up to 25 in a window, each with its own folder, history, folder tree, view, sort order and search. ⇧⌘T reopens the tab closed last, as it was.
 - **Two panes** in a tab (⌘\\), each with its own folder, history, view, filter and search. F5 copies what is selected to the other pane and F6 moves it; ⌥⌘↓ opens the selected folder there, and ⌘U swaps the panes. **Duplicate Pane** (⌥⌘\\, in the View menu, and a toolbar button you can add) opens a copy of the pane you are in beside it, with the same folder, view and history, in place of the other pane when two are open.
+- **Between the panes**: Tab walks the folder tree, the left pane and the right pane; ⌥-click a folder in the tree to open it in the other pane; drag from one pane onto the other; and right-click for an Other Pane submenu. Hidden files show in both panes of a tab or in neither.
+- **A line along the top of the active pane** shows where the keyboard is: bright while the pane has it, dimmer while the sidebar or the search field does.
+- **⌘W closes the pane you are in** when a tab has two, and the tab when it has one; ⌥⌘W closes the tab with both. ⌘\\ brings a closed pane back as it was.
 - **Windows**, each with its own tabs. Move a tab into a window of its own, or merge every window back into one.
 - **Workspaces**: save a window's tabs with their panes, views and sizes, the folder tree and the Info panel under a name. Window ▸ Workspaces opens it again in a new window, or with ⌥ in place of the one you are in, and the first five open with ⌃⌘1 to ⌃⌘5. Settings → Browsing renames, removes and reorders them.
 - **Back as you left it**: your windows, tabs and panes come back when you open File Trail again, if you want them.
@@ -54,13 +57,16 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **A paste asks before it overwrites**: Skip, Keep Both or Replace for each item, Merge for a folder, or one choice for all of them, with Add Missing for folders. Anything replaced goes to the Trash.
 - **Careful with your files**: a move to another disk checks each copy before it removes the original, and a Replace that was cut short carries on the next time File Trail opens.
 - **Move To** asks for a folder and finds it from a few letters; **Duplicate**, **New Folder**, **New Folder with Selection (⌃⌘N)** and **Move to Trash** work as in Finder.
+- **A folder that isn't there yet**, typed in Move To or Extract To, is made on the way after a second Return, and undone apart from the move.
 - **Drag and drop** inside File Trail and with Finder and other apps, in both directions, by Finder's rules: Option copies, Command moves, and resting on a folder opens it.
 - **Replace Older** brings a backup up to date: when the same folders meet, only files newer than the ones there replace them. It is offered on APFS, HFS+, exFAT and SMB, not on FAT, whose dates can be an hour off.
 - **Undo and Redo (⌘Z, ⇧⌘Z)** for renames, moves, copies, Move to Trash, New Folder, New Folder with Selection, Compress, Extract and Convert Images, one step at a time. The toolbar can hold a button that lists what each would do.
 - **New File** makes an empty text file, or a copy of a file you keep in the Templates folder (right-click a file and choose Save as Template, or File ▸ New File ▸ Open Templates Folder): a letter, a Markdown note, a spreadsheet to start from. It opens for naming, as New Folder does.
 - **Paste as File (⇧⌘V)** saves a screenshot or text you copied in another app as a new file in the folder you are in, and **Copy Contents (⇧⌘C)** copies a file's image or text to paste in another app.
+- **Paste as File** keeps an image in the format it was copied in, and takes the text when a copy carries both. **Copy Contents** copies up to 10 MB of text or 100 MB of image, and asks before copying a file that usually holds a password or a key (`.env`, a private SSH key), marking it private for clipboard history apps.
 - **File Trail's clipboard for files is its own**: files cut or copied here are pasted here, not in Finder or other apps. Between apps, drag them.
 - **Gather from several folders**: Add to Copied Items (⌃⌘C) and Add to Cut Items (⌃⌘X) add to what is on the clipboard instead of replacing it. ⌘V copies the copied items and moves the cut ones in one paste and one Undo; Move Items Here (⌥⌘V) moves them all, as in Finder after Copy. The clipboard's list (⌃⌘V) shows what moves apart from what is copied, and switches an item with a click. Two items of one name are asked about as the second is added: keep both (the one added is pasted under a name of its own), use the new one, or leave it off. A clipboard built this way that a Copy or Cut replaces can be put back.
+- **A paste that moves anything empties the clipboard** of what it pasted, copies too; only what failed or was skipped stays, to try again. A cut item you rename or move in File Trail stays on the clipboard; one you delete or move elsewhere comes off, and a note says so.
 
 ## Renaming
 
@@ -77,8 +83,10 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 - **Compress** makes a zip of the selected items next to them, as Finder's does.
 - **Extract** takes zip, tar, 7z, RAR and xar archives apart next to themselves, and **Extract To** into a folder you choose. Opening an archive extracts it in File Trail and shows you what came out, with no other app opening.
+- **What comes out**: an archive holding one item gives that item, and one holding several a folder named after the archive. A file compressed alone with gzip, bzip2 or xz is extracted too. Password-protected archives are not extracted yet: File Trail says so and names Archive Utility.
 - **An archive from the internet** keeps its quarantine on everything it gives.
 - **Convert Images** makes copies of the selected images as JPEG, HEIC, PNG, TIFF or AVIF, at their size or smaller, with or without their metadata and location.
+- **Converted images** go beside their originals under the same name, numbered when it is taken, and the originals are never touched. The size is the image's own, a longest side to fit within, a percentage or a custom width and height; no image is ever made larger. A transparent image saved as JPEG gets a white background, and an animation gives its first frame.
 - Each of these can be stopped part way, and one Undo takes back what it made.
 
 ## Views
@@ -86,8 +94,11 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Icons** shows Quick Look previews of photos, PDFs and other documents, at the size you set.
 - **List** has columns for date, size and kind, and optionally date created, date added, date last opened and permissions. Right-click a column heading to show or hide columns, and drag a heading to move its column. Each column keeps the width you give it, in each pane apart.
 - **Folder views**: a folder can keep its own view, order, columns and size, for itself or for every folder inside it. Changes you make there show at once but are kept only with Save (View ▸ Folder View ▸ Update Folder View), and a small symbol in the status bar shows whether a folder has a view of its own and opens its options.
+- **Folder Views** (View ▸ Folder View ▸ Manage Folder Views…) lists every folder with a view of its own, opens it, and removes its view, with or without those of the folders inside it.
 - **Compact List** packs a folder into columns of names.
+- **Sizes**: a slider in the status bar, and View ▸ Make Bigger, Make Smaller and Default Size (⌘+, ⌘- and ⌘0), set the icon size, the Compact List's column width and how many previews show. Each pane keeps its own.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
+- **At 1 preview at a time** the file on screen is the selected one, so Space, the Info panel and Move to Trash act on what you see.
 - **Quick Look** on Space and ⌘Y, in every view.
 - **Groups**: put a folder's items in groups by name, a date (Today, Yesterday, Previous 7 Days and on), size, kind or tag, in every view, under a title for each, with the sort ordering the items inside each group, and the groups' own order reversed when you want the oldest or largest first. Search results group by any of these or by folder, and sort by a date or size too, and a folder can keep its grouping in its own view.
 - **Sorting** by name, date modified, date created, date last opened, date added, size or kind, with folders kept first when you want them, and hidden files on a key (⇧⌘.).
@@ -98,8 +109,10 @@ The [README](../README.md) is about what is different from Finder. This page lis
 ## Sizes and information
 
 - **Folder sizes**: ask for a folder's size and it is measured with every folder inside it, in one pass. Sorted by Size, each row of the List gets a bar. Sizes you ask for are measured one after another, ahead of those measured by themselves and never stopping each other; a size measured in one window shows in all of them.
+- **A size is of what could be measured**: folders that change while they are measured are left out, and folders File Trail has no permission to read count as empty, as in Finder. Changes made outside File Trail leave a size as it was until you measure again, with Calculate Size or the refresh button beside it. A size waiting for another to finish says "Waiting…".
 - **Sizes only where you ask**: nothing is measured while you browse, so a large folder opens at once. With the Info panel or the Info Row open, the folder they show is measured by itself when it is in your home folder; Settings can turn that off.
 - **Activity**: while something runs in the background, a ring at the end of the toolbar's title shows it, filling as a file operation goes on, with "+2" when more runs or waits; a click lists them, the file operation and the folder sizes being measured or waiting, each with Stop.
+- **The Activity list keeps its rows in place** while it is open: one that ended stays where it was, dimmed, saying how it ended, so Stop is never under the wrong row.
 - **The Info panel** shows the selected item's preview, kind, size, dates and permissions, with Open, Open With and quick actions. The **Info Row** shows the same along the bottom.
 
 ## Keyboard and commands
@@ -122,6 +135,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 - **Light and Dark**, following macOS or staying in the one you pick, with an accent color you choose.
 - **The toolbar** is customized the way Finder's is: choose View ▸ Customize Toolbar, or right-click it, and drag buttons in, along or out.
+- **A long name in a menu** loses its middle, as in Finder's menus, so the menu keeps its width.
 - **Settings** cover the everyday choices: which app edits text files and which terminal opens, what Return does, whether disk images open in a new window or a new tab, and whether your tabs and last folder come back at launch.
 
 ## With the rest of the Mac
