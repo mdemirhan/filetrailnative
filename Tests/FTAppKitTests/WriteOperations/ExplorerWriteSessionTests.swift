@@ -178,6 +178,35 @@ private func pasteEvent(_ operationId: String, _ status: CopyPasteOperationStatu
 private let arrived = WriteOperationItem(
     sourcePath: "/Users/demo/elsewhere.txt", destinationPath: "/Users/demo/Folder/elsewhere.txt", status: .completed)
 
+private let gatheredAt = "2026-10-08T10:00:00.000Z"
+
+/// `copied.txt` copied, then `elsewhere.txt` and `locked.txt` added to move: a clipboard built with Add, which a Copy
+/// or Cut that replaces it keeps to be put back.
+private func gathered() -> CopyPasteClipboard {
+    let copied = ClipboardRules.set(.copy, ["/Users/demo/copied.txt"], capturedAt: gatheredAt)
+    return ClipboardRules.applyAdd(
+        ClipboardRules.planAdd(copied, .cut, ["/Users/demo/elsewhere.txt", "/Users/demo/locked.txt"]), to: copied,
+        stamp: "2026-10-08T10:00:05.000Z"
+    ).clipboard
+}
+
+/// The end of a paste of `gathered()`: `copied.txt` copied and `elsewhere.txt` moved, and `locked.txt` moved too or
+/// failed.
+private func gatheredPasteEnded(lockedMoved: Bool) -> WriteOperationEvent {
+    let copied = WriteOperationItem(
+        sourcePath: "/Users/demo/copied.txt", destinationPath: "/Users/demo/Folder/copied.txt", status: .completed,
+        mode: .copy)
+    var moved = arrived
+    moved.mode = .cut
+    let locked = WriteOperationItem(
+        sourcePath: "/Users/demo/locked.txt", destinationPath: "/Users/demo/Folder/locked.txt",
+        status: lockedMoved ? .completed : .failed, error: lockedMoved ? nil : "The disk is full.", mode: .cut)
+    var ended = otherWindowsCopy(lockedMoved ? .completed : .partial, items: [copied, moved, locked])
+    ended.action = .paste
+    ended.result?.mode = .copy
+    return ended
+}
+
 @MainActor
 @Suite struct ExplorerWriteSessionTests {
     // Its end arrives before the start request returns: it is finished when the window hears the handle.
@@ -331,6 +360,42 @@ private let arrived = WriteOperationItem(
             .adopted(WriteOperationAdoption(operationId: "other-op", event: ended, clearsCutClipboard: capturedAt)))
 
         #expect(fixture.clipboard.contents == .empty)
+    }
+
+    /// A Copy took the clipboard's place while its paste ran, and the clipboard, built with Add, is kept to be put
+    /// back: the paste used it up there too. Put Back brings back only what the paste didn't get to, where it brought
+    /// back the copied items and the moved ones, followed to where they had just been pasted and still to be moved.
+    @Test func aPasteUsesUpItsClipboardKeptToBePutBack() throws {
+        for lockedMoved in [false, true] {
+            let fixture = Fixture()
+            fixture.clipboard.set(gathered(), from: nil)
+            let fresh = ClipboardRules.set(.copy, ["/Users/demo/new.txt"], capturedAt: "2026-10-08T10:01:00.000Z")
+            #expect(fixture.clipboard.replace(with: fresh, from: nil) == gathered())
+            // What is kept as the window hears of the end: it follows the write on it then.
+            var keptAsTheWindowHeard: [String]?
+            let clipboard = fixture.clipboard
+            let observation = fixture.session.observe { event in
+                if case .ended = event { keptAsTheWindowHeard = clipboard.previous?.sourcePaths ?? [] }
+            }
+
+            fixture.session.receive(
+                .adopted(
+                    WriteOperationAdoption(
+                        operationId: "other-op", event: gatheredPasteEnded(lockedMoved: lockedMoved),
+                        clearsCutClipboard: gatheredAt)))
+            withExtendedLifetime(observation) {}
+
+            #expect(fixture.clipboard.contents == fresh)
+            let left = lockedMoved ? [] : ["/Users/demo/locked.txt"]
+            #expect(keptAsTheWindowHeard == left, "locked moved: \(lockedMoved)")
+            #expect(fixture.clipboard.previous?.sourcePaths ?? [] == left, "locked moved: \(lockedMoved)")
+            if !lockedMoved {
+                #expect(fixture.clipboard.previous?.mode == .cut)
+                #expect(fixture.clipboard.previous?.capturedAt == gatheredAt)
+            }
+            // With nothing left of it there is nothing to put back.
+            #expect(fixture.clipboard.putBack(from: nil) == !lockedMoved)
+        }
     }
 
     @Test func takesAnOperationItHearsOfTwiceOnce() throws {

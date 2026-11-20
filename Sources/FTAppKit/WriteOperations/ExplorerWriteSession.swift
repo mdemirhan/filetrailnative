@@ -317,13 +317,24 @@ final class ExplorerWriteSession: WriteOperationWindow {
         // windows follow the write, which would otherwise follow the moved items to where they went.
         if let clear = clipboardClearAfterMove, clear.operationId == event.operationId {
             clipboardClearAfterMove = nil
-            if let clipboard, let result = event.result, let capturedAt = clipboard.contents.capturedAt,
-                JSString.equals(capturedAt, clear.capturedAt)
-            {
+            if let clipboard, let result = event.result {
                 let write = ClipboardWrite(
                     action: result.action, mode: result.mode, items: result.items.map(\.effect),
                     replacedPaths: result.replacedPaths ?? [])
-                clipboard.set(ClipboardRules.afterItsPaste(clipboard.contents, write), follows: capturedAt, from: nil)
+                if let capturedAt = clipboard.contents.capturedAt, JSString.equals(capturedAt, clear.capturedAt) {
+                    clipboard.set(
+                        ClipboardRules.afterItsPaste(clipboard.contents, write), follows: capturedAt, from: nil)
+                } else {
+                    // A Copy or Cut took its place while the paste ran or its review was open, and it is kept to be
+                    // put back: the paste used it up there, so Put Back brings back only what it didn't get to. A
+                    // clipboard made since is not this paste's, and is left as it is.
+                    clipboard.followKept { kept in
+                        guard let capturedAt = kept.capturedAt, JSString.equals(capturedAt, clear.capturedAt) else {
+                            return kept
+                        }
+                        return ClipboardRules.afterItsPaste(kept, write)
+                    }
+                }
             }
         }
         // The folder or file made in its row may have been given the next free name.
