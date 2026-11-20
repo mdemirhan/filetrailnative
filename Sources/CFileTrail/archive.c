@@ -38,6 +38,9 @@ struct ft_archive_control {
     _Atomic int32_t no_attributes;
     /// The item compressing failed on, written before the work returns and read after it.
     char failed_path[PATH_MAX];
+    /// Says which encoding a zip's names are in when they aren't UTF-8; NULL for none. Set before the work starts.
+    ft_archive_charset_detector detect_charset;
+    _Atomic int64_t names_asked;
 };
 
 ft_archive_control *ft_archive_control_create(void) {
@@ -74,6 +77,14 @@ int64_t ft_archive_control_items(const ft_archive_control *control) {
 
 const char *ft_archive_control_failed_path(const ft_archive_control *control) {
     return control == NULL || control->failed_path[0] == '\0' ? NULL : control->failed_path;
+}
+
+int64_t ft_archive_control_names_asked(const ft_archive_control *control) {
+    return control == NULL ? 0 : atomic_load(&control->names_asked);
+}
+
+void ft_archive_control_detect_names_with(ft_archive_control *control, ft_archive_charset_detector detect) {
+    if (control != NULL) control->detect_charset = detect;
 }
 
 void ft_archive_control_take_disk_as_keeping_no_attributes(ft_archive_control *control) {
@@ -141,8 +152,8 @@ static size_t utf8_length(const unsigned char *bytes, size_t available) {
 }
 
 /// `name`, an item's path inside the archive, as it is written under the destination: its `.` parts and empty parts
-/// dropped, and every byte that isn't UTF-8 written as `%XX` (a zip made where names aren't UTF-8 doesn't say which
-/// encoding they are in, and the disk takes only UTF-8). NAME_REFUSED, to leave the item out, for a name from the
+/// dropped, and every byte that isn't UTF-8 written as `%XX` (the disk takes only UTF-8; a zip's names in another
+/// encoding are read in it before they come here, see names_charset). NAME_REFUSED, to leave the item out, for a name from the
 /// root (`/etc/…`), one that climbs out (`..`), Finder's `__MACOSX` (its contents are put back on their items
 /// already) and one too long; NAME_NOTHING for a name with nothing in it (`./`, the folder a tar was made in).
 static int safe_name(const char *name, char *buffer, size_t size) {
@@ -185,6 +196,19 @@ static int safe_name(const char *name, char *buffer, size_t size) {
     return NAME_USED;
 }
 
+/// Whether `name` is UTF-8 all through.
+static int is_utf8(const char *name) {
+    const unsigned char *bytes = (const unsigned char *)name;
+    size_t length = strlen(name);
+    size_t index = 0;
+    while (index < length) {
+        size_t count = utf8_length(bytes + index, length - index);
+        if (count == 0) return 0;
+        index += count;
+    }
+    return 1;
+}
+
 /// `destination/name` in `buffer`; 0 when it doesn't fit.
 static int join(const char *destination, const char *name, char *buffer, size_t size) {
     int written = snprintf(buffer, size, "%s/%s", destination, name);
@@ -220,6 +244,62 @@ static struct archive *new_reader(int raw) {
         archive_read_support_format_rar5(reader);
         archive_read_support_format_tar(reader);
         archive_read_support_format_xar(reader);
+    }
+    return reader;
+}
+
+/// How many bytes of names are gathered at most to tell their encoding by: thousands of names, and enough.
+enum { NAMES_ROOM = 1 << 16 };
+
+/// The encoding the names of the zip open at `fd` are written in, into `charset`: its headers are read through once,
+/// the names that aren't UTF-8 gathered a line each, and the control's detector asked. 0 when it can't say, or there
+/// is no such name to go by.
+static int names_charset(int fd, ft_archive_control *control, char *charset, size_t room) {
+    char *names = malloc(NAMES_ROOM);
+    struct archive *reader = names == NULL ? NULL : new_reader(0);
+    size_t length = 0;
+    if (reader != NULL && lseek(fd, 0, SEEK_SET) == 0 && archive_read_open_fd(reader, fd, 1 << 16) == ARCHIVE_OK) {
+        struct archive_entry *entry;
+        while (!is_stopped(control) && archive_read_next_header(reader, &entry) >= ARCHIVE_WARN) {
+            const char *name = archive_entry_pathname(entry);
+            if (name == NULL || is_utf8(name)) continue;
+            size_t count = strlen(name);
+            if (length + count + 1 > NAMES_ROOM) break;
+            memcpy(names + length, name, count);
+            length += count;
+            names[length++] = '\n';
+        }
+    }
+    if (reader != NULL) archive_read_free(reader);
+    charset[0] = '\0';
+    int found = length > 0 && control->detect_charset(names, length, charset, room) && charset[0] != '\0';
+    free(names);
+    return found;
+}
+
+/// A reader of the zip open at `fd`, from its start, with its first `skip` items passed over, reading the names it
+/// doesn't mark as UTF-8 in `charset` (NULL, or a name the system doesn't know: as their bytes). NULL when the
+/// archive can't be read again.
+static struct archive *reopened(int fd, const char *charset, int64_t skip) {
+    struct archive *reader = new_reader(0);
+    if (reader == NULL) return NULL;
+    if (charset != NULL) {
+        char option[96];
+        snprintf(option, sizeof(option), "hdrcharset=%s", charset);
+        if (archive_read_set_options(reader, option) != ARCHIVE_OK) {
+            archive_read_free(reader);
+            return reopened(fd, NULL, skip);
+        }
+    }
+    int opened = lseek(fd, 0, SEEK_SET) == 0 && archive_read_open_fd(reader, fd, 1 << 16) == ARCHIVE_OK;
+    struct archive_entry *entry;
+    while (opened && skip > 0) {
+        opened = archive_read_next_header(reader, &entry) >= ARCHIVE_WARN;
+        skip--;
+    }
+    if (!opened) {
+        archive_read_free(reader);
+        return NULL;
     }
     return reader;
 }
@@ -927,6 +1007,13 @@ int ft_archive_extract(
             }
         }
     }
+    // The headers read so far, and whether the names' encoding was asked for (once, at the first name not UTF-8).
+    int64_t headers = 0;
+    int charset_asked = 0;
+    // While names are read in an encoding: the same zip read beside it with its names as their bytes, a header for
+    // each of the reader's, so a name that is UTF-8 as it stands (the zip not marking it) is kept as it is.
+    struct archive *plain = NULL;
+    int plain_fd = -1;
     while (result == 0 && !empty_file) {
         struct archive_entry *entry;
         int status = archive_read_next_header(reader, &entry);
@@ -934,6 +1021,17 @@ int ft_archive_extract(
         if (status < ARCHIVE_WARN) {
             result = reader_error(reader);
             break;
+        }
+        headers++;
+        const char *plain_name = NULL;
+        if (plain != NULL) {
+            struct archive_entry *plain_entry;
+            if (archive_read_next_header(plain, &plain_entry) >= ARCHIVE_WARN) {
+                plain_name = archive_entry_pathname(plain_entry);
+            } else {
+                archive_read_free(plain);
+                plain = NULL;
+            }
         }
         if (is_stopped(control)) {
             result = ECANCELED;
@@ -948,6 +1046,29 @@ int ft_archive_extract(
         if (given == NULL) {
             given = archive_entry_pathname(entry);
             if (given == NULL) given = archive_entry_pathname_utf8(entry);
+            // A zip's first name that isn't UTF-8: the zip doesn't say what it was written in. Its names are read
+            // through for the encoding they fit, and the zip is opened again to be read in it, from this item on
+            // (those before had names that needed none). Only such a zip is read twice.
+            if (given != NULL && !charset_asked && control != NULL && control->detect_charset != NULL
+                && (archive_format(reader) & ARCHIVE_FORMAT_BASE_MASK) == ARCHIVE_FORMAT_ZIP && !is_utf8(given)) {
+                charset_asked = 1;
+                atomic_fetch_add(&control->names_asked, 1);
+                archive_read_free(reader);
+                char charset[64];
+                int found = names_charset(fd, control, charset, sizeof(charset));
+                reader = reopened(fd, found ? charset : NULL, headers - 1);
+                if (reader == NULL) {
+                    result = FT_ARCHIVE_UNREADABLE;
+                    break;
+                }
+                if (found) {
+                    plain_fd = open(archive, O_RDONLY | O_CLOEXEC);
+                    if (plain_fd >= 0) plain = reopened(plain_fd, NULL, headers - 1);
+                }
+                headers--;
+                continue;
+            }
+            if (plain_name != NULL && is_utf8(plain_name)) given = plain_name;
             if (given != NULL) given = composed(given, spelled, sizeof(spelled));
         }
         int named = given == NULL ? NAME_REFUSED : safe_name(given, name, sizeof(name));
@@ -1003,6 +1124,8 @@ int ft_archive_extract(
     free(quarantine_value);
     close(extraction.root);
     if (reader != NULL) archive_read_free(reader);
+    if (plain != NULL) archive_read_free(plain);
+    if (plain_fd >= 0) close(plain_fd);
     close(fd);
     return result;
 }

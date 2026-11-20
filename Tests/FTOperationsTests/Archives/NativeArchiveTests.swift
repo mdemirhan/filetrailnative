@@ -356,19 +356,135 @@ import Testing
         #expect(try String(contentsOfFile: "\(folders.out)/etc/hostname", encoding: .utf8) == "box\n")
     }
 
-    @Test func aZipWhoseNamesArentUTF8ComesOutWithThoseBytesEscaped() throws {
+    // MARK: Names that aren't UTF-8
+
+    /// A zip made where names aren't UTF-8 doesn't say what they are written in: they are read in the encoding they
+    /// fit, and a name that is UTF-8 as it stands stays as it is.
+    @Test func aZipWhoseNamesAreShiftJISComesOutWithTheNamesRead() throws {
         let folders = try Folders()
         defer { folders.directory.remove() }
         let zipPath = "\(folders.root)/names.zip"
         var zip = ZipBuilder()
+        zip.add(name: Array("plain.txt".utf8), contents: "before")
         // "テスト.txt" in Shift-JIS, and a folder and file in UTF-8 that stay as they are.
         zip.add(name: [0x83, 0x65, 0x83, 0x58, 0x83, 0x67] + Array(".txt".utf8), contents: "shift-jis")
         zip.add(name: Array("日本/ğüş.txt".utf8), contents: "utf-8")
+        // "資料/表計算ソフト.txt": 表 and ソ end in the byte of a backslash, 0x5C.
+        let folder: [UInt8] = [0x8E, 0x91, 0x97, 0xBF]
+        let sheet: [UInt8] = [0x95, 0x5C, 0x8C, 0x76, 0x8E, 0x5A, 0x83, 0x5C, 0x83, 0x74, 0x83, 0x67]
+        zip.add(name: folder + [0x2F] + sheet + Array(".txt".utf8), contents: "sheet")
+        // "ガ.txt": comes out as one character, not "カ" and its mark.
+        zip.add(name: [0x83, 0x4B] + Array(".txt".utf8), contents: "composed")
         try zip.write(to: zipPath)
         #expect(try Self.extract(zipPath, into: folders.out) == 0)
-        #expect(try Self.names(folders.out) == ["%83e%83X%83g.txt", "日本"])
-        #expect(try String(contentsOfFile: "\(folders.out)/%83e%83X%83g.txt", encoding: .utf8) == "shift-jis")
+        #expect(try Self.names(folders.out) == ["plain.txt", "ガ.txt", "テスト.txt", "日本", "資料"].sorted())
+        #expect(try Self.names(folders.out).contains { $0.unicodeScalars.elementsEqual("ガ.txt".unicodeScalars) })
+        #expect(try String(contentsOfFile: "\(folders.out)/テスト.txt", encoding: .utf8) == "shift-jis")
         #expect(try String(contentsOfFile: "\(folders.out)/日本/ğüş.txt", encoding: .utf8) == "utf-8")
+        #expect(try String(contentsOfFile: "\(folders.out)/資料/表計算ソフト.txt", encoding: .utf8) == "sheet")
+        #expect(try String(contentsOfFile: "\(folders.out)/plain.txt", encoding: .utf8) == "before")
+    }
+
+    @Test func aZipWhoseNamesAreGBKComesOutWithTheNamesRead() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let zipPath = "\(folders.root)/names.zip"
+        var zip = ZipBuilder()
+        // "中文文件夹/说明文档.txt" and "中文文件夹/照片.txt" in GBK.
+        let folder: [UInt8] = [0xD6, 0xD0, 0xCE, 0xC4, 0xCE, 0xC4, 0xBC, 0xFE, 0xBC, 0xD0, 0x2F]
+        let notes: [UInt8] = [0xCB, 0xB5, 0xC3, 0xF7, 0xCE, 0xC4, 0xB5, 0xB5]
+        zip.add(name: folder + notes + Array(".txt".utf8), contents: "notes")
+        zip.add(name: folder + [0xD5, 0xD5, 0xC6, 0xAC] + Array(".txt".utf8), contents: "photo")
+        try zip.write(to: zipPath)
+        #expect(try Self.extract(zipPath, into: folders.out) == 0)
+        #expect(try Self.names(folders.out) == ["中文文件夹"])
+        #expect(try Self.names("\(folders.out)/中文文件夹") == ["照片.txt", "说明文档.txt"].sorted())
+        #expect(try String(contentsOfFile: "\(folders.out)/中文文件夹/说明文档.txt", encoding: .utf8) == "notes")
+    }
+
+    /// The names are checked as they are read in their encoding: one that climbs out or starts at the root is left
+    /// out, as in any archive.
+    @Test func namesReadInAnEncodingAreStillKeptInsideTheFolder() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let zipPath = "\(folders.root)/names.zip"
+        // "テスト" in Shift-JIS.
+        let test: [UInt8] = [0x83, 0x65, 0x83, 0x58, 0x83, 0x67]
+        var zip = ZipBuilder()
+        zip.add(name: Array("../".utf8) + test + Array(".txt".utf8), contents: "out")
+        zip.add(name: test + Array("/../../up.txt".utf8), contents: "out")
+        zip.add(name: Array("/tmp/".utf8) + test, contents: "out")
+        zip.add(name: test + Array("/./in.txt".utf8), contents: "in")
+        try zip.write(to: zipPath)
+        #expect(try Self.extract(zipPath, into: folders.out) == 3)
+        #expect(try Self.names(folders.out) == ["テスト"])
+        #expect(try Self.names("\(folders.out)/テスト") == ["in.txt"])
+        #expect(try Self.names(folders.root).sorted() == ["names.zip", "out"])
+    }
+
+    /// Names in UTF-8 need no guess, marked as UTF-8 or not: the zip is read once, and its names are as they were.
+    @Test func aZipWhoseNamesAreUTF8IsReadAsItIs() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let zipPath = "\(folders.root)/names.zip"
+        var zip = ZipBuilder()
+        zip.add(name: Array("日本/ğüş.txt".utf8), contents: "utf-8")
+        zip.add(name: Array("Café.txt".utf8), contents: "latin")
+        try zip.write(to: zipPath)
+        let control = NativeArchive.Control()
+        try NativeArchive.extract(zipPath, into: folders.out, rawName: nil, quarantine: true, control: control)
+        #expect(control.nameEncodingsAsked == 0)
+        #expect(try Self.names(folders.out) == ["Café.txt", "日本"])
+        #expect(try String(contentsOfFile: "\(folders.out)/日本/ğüş.txt", encoding: .utf8) == "utf-8")
+
+        // One with such a name is asked about once, however many it has.
+        var other = ZipBuilder()
+        other.add(name: [0x83, 0x65] + Array(".txt".utf8), contents: "a")
+        other.add(name: [0x83, 0x58] + Array(".txt".utf8), contents: "b")
+        try other.write(to: zipPath)
+        let out = "\(folders.root)/out2"
+        try FileManager.default.createDirectory(atPath: out, withIntermediateDirectories: false)
+        let second = NativeArchive.Control()
+        try NativeArchive.extract(zipPath, into: out, rawName: nil, quarantine: true, control: second)
+        #expect(second.nameEncodingsAsked == 1)
+        #expect(try Self.names(out) == ["ス.txt", "テ.txt"])
+    }
+
+    /// Names no encoding tried reads whole are read as the zip format's own default, MS-DOS's.
+    @Test func namesThatFitNoEncodingTriedAreReadAsCP437() throws {
+        let folders = try Folders()
+        defer { folders.directory.remove() }
+        let zipPath = "\(folders.root)/names.zip"
+        var zip = ZipBuilder()
+        // "Café/über.txt" in CP437: 0x81 is no character in Windows-1252, and 0x82 0x2F no pair in the others.
+        zip.add(name: [0x43, 0x61, 0x66, 0x82, 0x2F, 0x81] + Array("ber.txt".utf8), contents: "dos")
+        try zip.write(to: zipPath)
+        #expect(try Self.extract(zipPath, into: folders.out) == 0)
+        #expect(try Self.names(folders.out) == ["Café"])
+        #expect(try String(contentsOfFile: "\(folders.out)/Café/über.txt", encoding: .utf8) == "dos")
+    }
+
+    @Test func theEncodingsOfTheUsersLanguagesAreTriedFirst() {
+        func order(_ languages: [String]) -> [String] {
+            ArchiveNameEncoding.candidates(preferredLanguages: languages).map(\.charset)
+        }
+        #expect(order(["en-US"]) == ["CP932", "GB18030", "BIG5", "CP949", "CP1252"])
+        #expect(order(["ko-KR", "en-US"]) == ["CP949", "CP932", "GB18030", "BIG5", "CP1252"])
+        #expect(order(["en", "zh-Hant-TW", "zh-Hans-CN"]) == ["BIG5", "GB18030", "CP932", "CP949", "CP1252"])
+        #expect(order(["zh-TW", "ja"]) == ["BIG5", "CP932", "GB18030", "CP949", "CP1252"])
+
+        func charset(_ text: String, _ encoding: CFStringEncodings, languages: [String] = ["en"]) -> String {
+            let ns = CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(encoding.rawValue))
+            let names = (text as NSString).data(using: ns) ?? Data()
+            return ArchiveNameEncoding.charset(forNames: names, preferredLanguages: languages)
+        }
+        #expect(charset("資料.txt\n", .dosJapanese) == "CP932")
+        #expect(charset("照片.txt\n", .GB_18030_2000, languages: ["ja"]) == "GB18030")
+        #expect(charset("繁體中文/說明文件.txt\n", .big5) == "BIG5")
+        #expect(charset("한국어/문서.txt\n", .dosKorean) == "CP949")
+        let latin = Data("Café/Übergröße.txt\n".unicodeScalars.map { UInt8($0.value) })
+        #expect(ArchiveNameEncoding.charset(forNames: latin, preferredLanguages: ["en"]) == "CP1252")
+        #expect(ArchiveNameEncoding.charset(forNames: Data([0x43, 0x82, 0x2F, 0x81, 0x0A])) == "CP437")
     }
 
     @Test func aStopLeavesFoldersTheirOwnersToClearAway() throws {

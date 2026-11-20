@@ -40,6 +40,11 @@ enum NativeArchive {
         init() {
             guard let made = ft_archive_control_create() else { fatalError("out of memory") }
             pointer = made
+            ft_archive_control_detect_names_with(pointer) { names, length, charset, room in
+                guard let names, let charset, length > 0 else { return 0 }
+                let name = ArchiveNameEncoding.charset(forNames: Data(bytes: names, count: length))
+                return strlcpy(charset, name, room) < room ? 1 : 0
+            }
         }
 
         deinit { ft_archive_control_free(pointer) }
@@ -51,6 +56,9 @@ enum NativeArchive {
         var done: Int64 { ft_archive_control_done(pointer) }
         var total: Int64 { ft_archive_control_total(pointer) }
         var skipped: Int64 { ft_archive_control_skipped(pointer) }
+        /// How many times a zip's names were looked through for their encoding: once for a zip with names that
+        /// aren't UTF-8, never for any other archive.
+        var nameEncodingsAsked: Int64 { ft_archive_control_names_asked(pointer) }
 
         fileprivate var raw: OpaquePointer { pointer }
     }
@@ -90,5 +98,71 @@ enum NativeArchive {
         case Int32(FT_ARCHIVE_NOT_QUARANTINED): throw ArchiveError(.notQuarantined, archivePath: path)
         default: throw NativeError.errno(code, syscall: syscall, path: path)
         }
+    }
+}
+
+/// The encoding a zip's names are in when they aren't UTF-8 and the zip doesn't say: zips made on Windows and by
+/// older tools write names in the system's own encoding of the place they were made.
+enum ArchiveNameEncoding {
+    /// An encoding names are tried in, and the name iconv (and so libarchive's `hdrcharset`) knows it by.
+    struct Candidate: Equatable {
+        let charset: String
+        let encoding: UInt
+        /// The start of the languages (`Locale.preferredLanguages`) whose zips are most likely in it.
+        let languages: [String]
+
+        init(_ charset: String, _ encoding: CFStringEncodings, languages: [String]) {
+            self.charset = charset
+            self.encoding = CFStringConvertEncodingToNSStringEncoding(CFStringEncoding(encoding.rawValue))
+            self.languages = languages
+        }
+
+        init(_ charset: String, _ encoding: String.Encoding) {
+            self.charset = charset
+            self.encoding = encoding.rawValue
+            languages = []
+        }
+    }
+
+    /// Japanese, Simplified Chinese, Traditional Chinese, Korean, in the order tried when no language says otherwise.
+    static let eastAsian = [
+        Candidate("CP932", .dosJapanese, languages: ["ja"]),
+        Candidate("GB18030", .GB_18030_2000, languages: ["zh-Hans", "zh-CN", "zh-SG"]),
+        Candidate("BIG5", .big5, languages: ["zh-Hant", "zh-TW", "zh-HK", "zh-MO"]),
+        Candidate("CP949", .dosKorean, languages: ["ko"]),
+    ]
+    static let western = Candidate("CP1252", .windowsCP1252)
+    /// What the zip format itself says names are in when nothing marks them: the encoding of MS-DOS. Every byte is a
+    /// character in it, so it always fits.
+    static let fallback = "CP437"
+
+    /// The encodings tried, those of the user's languages first, in the languages' order; Windows-1252 last.
+    static func candidates(preferredLanguages: [String]) -> [Candidate] {
+        var first: [Candidate] = []
+        for language in preferredLanguages {
+            for candidate in eastAsian where !first.contains(candidate) {
+                if candidate.languages.contains(where: { language == $0 || language.hasPrefix($0 + "-") }) {
+                    first.append(candidate)
+                }
+            }
+        }
+        return first + eastAsian.filter { !first.contains($0) } + [western]
+    }
+
+    /// The encoding `names` (the names that aren't UTF-8, a line each) are most likely in, as iconv names it:
+    /// Foundation's guess among the candidates, and CP437 when none of them reads the names whole.
+    static func charset(forNames names: Data, preferredLanguages: [String] = Locale.preferredLanguages) -> String {
+        let candidates = candidates(preferredLanguages: preferredLanguages)
+        var converted: NSString?
+        var lossy: ObjCBool = false
+        let found = NSString.stringEncoding(
+            for: names,
+            encodingOptions: [
+                .suggestedEncodingsKey: candidates.map { NSNumber(value: $0.encoding) },
+                .useOnlySuggestedEncodingsKey: true, .allowLossyKey: false,
+            ], convertedString: &converted, usedLossyConversion: &lossy)
+        guard converted != nil, !lossy.boolValue, let candidate = candidates.first(where: { $0.encoding == found })
+        else { return fallback }
+        return candidate.charset
     }
 }

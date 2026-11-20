@@ -82,7 +82,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 ## Archives and images
 
 - **Compress** makes a zip of the selected items next to them, as Finder's does.
-- **Extract** takes zip, tar, 7z, RAR and xar archives apart next to themselves, and **Extract To** into a folder you choose. Opening an archive extracts it in File Trail and shows you what came out, with no other app opening.
+- **Extract** takes zip, tar, 7z, RAR and xar archives apart next to themselves, and **Extract To** into a folder you choose. Opening an archive extracts it in File Trail and shows you what came out, with no other app opening. A zip whose names aren't UTF-8 (made on a Japanese, Chinese, Korean or Western European Windows) has them read in the encoding they fit.
 - **What comes out**: an archive holding one item gives that item, and one holding several a folder named after the archive. A file compressed alone with gzip, bzip2 or xz is extracted too. Password-protected archives are not extracted yet: File Trail says so and names Archive Utility.
 - **An archive from the internet** keeps its quarantine on everything it gives.
 - **Convert Images** makes copies of the selected images as JPEG, HEIC, PNG, TIFF or AVIF, at their size or smaller, with or without their metadata and location.

@@ -332,7 +332,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Extract",
                             description:
-                                "Double-click an archive, or choose File › Extract, to take it apart next to itself: zip, tar (also .tar.gz, .tgz, .tar.bz2 and .tar.xz), 7z, RAR and xar, and single files compressed with gzip, bzip2 or xz. An archive holding one item gives that item; one holding several gives a folder named after the archive. A name already taken gets the next number, so nothing is replaced. What comes out of a downloaded archive is checked by macOS as the archive would be. Undo moves what was made to the Trash. To open an archive in Archive Utility or another app instead, right-click it and choose Open With."
+                                "Double-click an archive, or choose File › Extract, to take it apart next to itself: zip, tar (also .tar.gz, .tgz, .tar.bz2 and .tar.xz), 7z, RAR and xar, and single files compressed with gzip, bzip2 or xz. An archive holding one item gives that item; one holding several gives a folder named after the archive. A name already taken gets the next number, so nothing is replaced. A zip made on Windows with names in Japanese, Chinese, Korean or Western European letters comes out with those names read as they were written. What comes out of a downloaded archive is checked by macOS as the archive would be. Undo moves what was made to the Trash. To open an archive in Archive Utility or another app instead, right-click it and choose Open With."
                         ),
                         HelpRow(
                             label: "Extract To",

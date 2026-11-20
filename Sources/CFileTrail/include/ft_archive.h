@@ -33,6 +33,18 @@ void ft_archive_control_stop(ft_archive_control *control);
 /// ENOTSUP.
 void ft_archive_control_take_disk_as_keeping_no_attributes(ft_archive_control *control);
 
+/// Says which encoding the names of a zip are written in. `names` (`length` bytes) are those of its names that
+/// aren't UTF-8, a line each. Writes the encoding's name, as iconv knows it ("CP932"), into `charset` (`room` bytes)
+/// and returns 1; 0 when it can't say.
+typedef int (*ft_archive_charset_detector)(const char *names, size_t length, char *charset, size_t room);
+
+/// Sets who says which encoding a zip's names are in when they aren't UTF-8; without one, such names keep their
+/// bytes as `%XX`. Set before the work starts.
+void ft_archive_control_detect_names_with(ft_archive_control *control, ft_archive_charset_detector detect);
+
+/// How many times a zip's headers were read through for the encoding of its names.
+int64_t ft_archive_control_names_asked(const ft_archive_control *control);
+
 /// Bytes done so far: of the archive read, when extracting; of the items' data read, when compressing.
 int64_t ft_archive_control_done(const ft_archive_control *control);
 /// Bytes to do: the archive's size, or the items' data once they have been counted.
@@ -51,7 +63,11 @@ const char *ft_archive_control_failed_path(const ft_archive_control *control);
 /// Takes `archive` apart into `destination`, an empty folder that exists. Names that would reach outside it are
 /// left out; so is `__MACOSX`, and the resource forks and extended attributes it holds are put back on their items.
 /// Permissions lose their setuid, setgid and sticky bits, nothing is replaced, and nothing is written through a
-/// link. Bytes of a name that aren't UTF-8 are written as `%XX`. A folder's permissions and dates are set once
+/// link. A zip's names that aren't UTF-8 (and that it doesn't mark as UTF-8) are read in the encoding the control's
+/// detector names (ft_archive_control_detect_names_with): at the first such name the zip's headers are read through
+/// once for the names, and the zip is opened again with that encoding (libarchive's `hdrcharset`); the checks above
+/// are made on the names as read then. Bytes of a name that still aren't UTF-8 (no detector, another kind of
+/// archive, a name the encoding doesn't fit) are written as `%XX`. A folder's permissions and dates are set once
 /// everything in it is written, and only when the whole archive came out: after a failure or a stop the folders
 /// are left their owner's to write, for the caller to remove. When `quarantine` is set, every item and
 /// `destination` itself get the archive's quarantine, read-only items too, so what came from the internet is
