@@ -28,7 +28,7 @@ private final class StubWriteService: CoordinatorWriteService, @unchecked Sendab
             destinationDirectoryPath: request.destinationDirectoryPath, nodes: [], issues: [],
             summary: CopyPasteAnalysisSummary(
                 topLevelItemCount: 0, totalNodeCount: 0, totalBytes: 0, fileConflictCount: 0,
-                directoryConflictCount: 0, mismatchConflictCount: 0))
+                directoryConflictCount: 0, mismatchConflictCount: 0), cutSourcePaths: request.cutSourcePaths)
     }
 
     func startCopyPaste(
@@ -173,6 +173,34 @@ private func pasteEvent(_ operationId: String, _ status: CopyPasteOperationStatu
                     topLevelItemCount: 1, totalItemCount: 1, completedItemCount: 0, failedItemCount: 0,
                     skippedItemCount: 0, cancelledItemCount: 0, completedByteCount: 0, totalBytes: nil),
                 items: [], error: nil) : nil)
+}
+
+/// The end of a paste this window started, as the write service tells it: each item of `items` with how it went
+/// and, in a paste of copied and cut items, what it was to do.
+private func pasteEnded(
+    _ operationId: String, mode: FTOperations.CopyPasteMode,
+    _ items: [(name: String, status: CopyPasteItemResult.Status, mode: FTOperations.CopyPasteMode?)]
+) -> CopyPasteProgressEvent {
+    let completed = items.filter { $0.status == .completed }.count
+    let failed = items.filter { $0.status == .failed }.count
+    let status: CopyPasteOperationStatus = failed == 0 ? .completed : completed == 0 ? .failed : .partial
+    return CopyPasteProgressEvent(
+        operationId: operationId, analysisId: "analysis-1", mode: mode, status: status,
+        completedItemCount: completed, totalItemCount: items.count, completedByteCount: 0, totalBytes: nil,
+        currentSourcePath: nil, currentDestinationPath: nil, runtimeConflict: nil,
+        result: CopyPasteOperationResult(
+            operationId: operationId, mode: mode, status: status, destinationDirectoryPath: "/Users/demo/Folder",
+            startedAt: Date(), finishedAt: Date(),
+            summary: CopyPasteOperationSummary(
+                topLevelItemCount: items.count, totalItemCount: items.count, completedItemCount: completed,
+                failedItemCount: failed, skippedItemCount: 0, cancelledItemCount: 0, completedByteCount: 0,
+                totalBytes: nil),
+            items: items.map {
+                CopyPasteItemResult(
+                    sourcePath: "/Users/demo/\($0.name)", destinationPath: "/Users/demo/Folder/\($0.name)",
+                    sourceKind: .file, status: $0.status, error: $0.status == .failed ? "The disk is full." : nil,
+                    mode: $0.mode)
+            }, error: nil))
 }
 
 private let arrived = WriteOperationItem(
@@ -396,6 +424,113 @@ private func gatheredPasteEnded(lockedMoved: Bool) -> WriteOperationEvent {
             // With nothing left of it there is nothing to put back.
             #expect(fixture.clipboard.putBack(from: nil) == !lockedMoved)
         }
+    }
+
+    /// A Copy made while a paste of a cut ran, the cut never added to: nothing is kept to be put back, and the new
+    /// clipboard is not the paste's. The paste's end takes nothing off it, not even an item of it the paste moved:
+    /// the window then follows that one to where it went, as after any write, and it stays copied.
+    @Test func aClipboardMadeSinceThePasteStartedIsLeftAsItIs() throws {
+        let fixture = Fixture()
+        fixture.clipboard.set(
+            ClipboardRules.set(.cut, ["/Users/demo/elsewhere.txt", "/Users/demo/locked.txt"], capturedAt: gatheredAt),
+            from: nil)
+        let fresh = ClipboardRules.set(
+            .copy, ["/Users/demo/elsewhere.txt", "/Users/demo/new.txt"], capturedAt: "2026-10-08T10:01:00.000Z")
+        #expect(fixture.clipboard.replace(with: fresh, from: nil) == nil)
+        let locked = WriteOperationItem(
+            sourcePath: "/Users/demo/locked.txt", destinationPath: "/Users/demo/Folder/locked.txt", status: .completed)
+        var ended = otherWindowsCopy(.completed, items: [arrived, locked])
+        ended.action = .moveTo
+        ended.result?.action = .moveTo
+        ended.result?.mode = .cut
+
+        fixture.session.receive(
+            .adopted(WriteOperationAdoption(operationId: "other-op", event: ended, clearsCutClipboard: gatheredAt)))
+
+        #expect(fixture.clipboard.contents == fresh)
+        #expect(fixture.clipboard.previous == nil)
+        let result = try #require(ended.result)
+        let followed = ClipboardRules.followThroughWrite(
+            fixture.clipboard.contents,
+            ClipboardWrite(action: result.action, mode: result.mode, items: result.items.map(\.effect)))
+        #expect(followed.sourcePaths == ["/Users/demo/Folder/elsewhere.txt", "/Users/demo/new.txt"])
+        #expect(followed.mode == .copy)
+        #expect(followed.capturedAt == fresh.capturedAt)
+    }
+
+    /// Two clipboards made since the paste started, the first of them built with Add and so kept to be put back:
+    /// neither is the paste's, and its end leaves both as they are.
+    @Test func aClipboardKeptThatIsNotThePastesIsLeftAsItIs() throws {
+        let fixture = Fixture()
+        fixture.clipboard.set(
+            ClipboardRules.set(.cut, ["/Users/demo/elsewhere.txt"], capturedAt: "2026-10-08T09:00:00.000Z"), from: nil)
+        // While it is pasted: the items are gathered again, then a Copy replaces them.
+        fixture.clipboard.replace(with: gathered(), from: nil)
+        let fresh = ClipboardRules.set(.copy, ["/Users/demo/new.txt"], capturedAt: "2026-10-08T10:01:00.000Z")
+        #expect(fixture.clipboard.replace(with: fresh, from: nil) == gathered())
+        var ended = otherWindowsCopy(.completed, items: [arrived])
+        ended.action = .moveTo
+        ended.result?.action = .moveTo
+        ended.result?.mode = .cut
+
+        fixture.session.receive(
+            .adopted(
+                WriteOperationAdoption(
+                    operationId: "other-op", event: ended, clearsCutClipboard: "2026-10-08T09:00:00.000Z")))
+
+        #expect(fixture.clipboard.contents == fresh)
+        #expect(fixture.clipboard.previous == gathered())
+    }
+
+    /// A paste started here of copied and cut items, which got to all but one: what it pasted, copied and moved,
+    /// leaves the clipboard, and the one it didn't get to stays, still cut. Pasted again, that one moves and the
+    /// clipboard is empty.
+    @Test func aPasteOfBothStartedHereLeavesOnlyWhatItDidntGetTo() async throws {
+        let fixture = Fixture()
+        fixture.clipboard.set(gathered(), from: nil)
+        let first = await fixture.actions.pasteFromClipboard(into: "/Users/demo/Folder")
+        guard case .queued(let operationId) = first else {
+            Issue.record("the paste didn't start: \(first)")
+            return
+        }
+        fixture.service.emit(
+            pasteEnded(
+                operationId, mode: .copy,
+                [("copied.txt", .completed, .copy), ("elsewhere.txt", .completed, .cut), ("locked.txt", .failed, .cut)]
+            ))
+        #expect(await waitUntil { fixture.session.card == nil })
+        #expect(fixture.clipboard.contents.sourcePaths == ["/Users/demo/locked.txt"])
+        #expect(fixture.clipboard.contents.mode == .cut)
+        #expect(fixture.clipboard.contents.capturedAt == gatheredAt)
+
+        let again = await fixture.actions.pasteFromClipboard(into: "/Users/demo/Folder")
+        guard case .queued(let second) = again else {
+            Issue.record("the second paste didn't start: \(again)")
+            return
+        }
+        fixture.service.emit(pasteEnded(second, mode: .cut, [("locked.txt", .completed, nil)]))
+        #expect(await waitUntil { fixture.clipboard.contents == .empty })
+        await fixture.coordinator.shutDown(maxWaitMs: 0)
+    }
+
+    /// A paste started here of copied and cut items that moved none of them (the cut one failed) used nothing up:
+    /// the clipboard stays whole, its copied item to be pasted again and its cut one to be tried again.
+    @Test func aPasteOfBothStartedHereThatMovedNothingLeavesTheClipboardWhole() async throws {
+        let fixture = Fixture()
+        let both = ClipboardRules.setMode(
+            ClipboardRules.set(.copy, ["/Users/demo/copied.txt", "/Users/demo/locked.txt"], capturedAt: gatheredAt),
+            ["/Users/demo/locked.txt"], to: .cut, at: gatheredAt)
+        fixture.clipboard.set(both, from: nil)
+        let outcome = await fixture.actions.pasteFromClipboard(into: "/Users/demo/Folder")
+        guard case .queued(let operationId) = outcome else {
+            Issue.record("the paste didn't start: \(outcome)")
+            return
+        }
+        fixture.service.emit(
+            pasteEnded(operationId, mode: .copy, [("copied.txt", .completed, .copy), ("locked.txt", .failed, .cut)]))
+        #expect(await waitUntil { fixture.session.card == nil })
+        #expect(fixture.clipboard.contents == both)
+        await fixture.coordinator.shutDown(maxWaitMs: 0)
     }
 
     @Test func takesAnOperationItHearsOfTwiceOnce() throws {
