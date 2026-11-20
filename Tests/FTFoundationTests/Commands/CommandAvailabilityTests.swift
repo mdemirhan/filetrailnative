@@ -227,6 +227,42 @@ struct CommandAvailabilityTests {
                 }))
     }
 
+    // New Folder with Selection's folder is the one the selected items are in, spelled as their paths spell it: the
+    // folder on screen may hold an accent decomposed where the disk, and so the rows, keep it composed.
+    @Test func newFolderWithSelectionGoesBesideTheItemsHoweverTheFolderOnScreenSpellsAnAccent() {
+        // As bytes: `String`'s own `==` takes the two spellings for one.
+        func target(_ currentPath: String, _ selected: [String], searching: Bool = false) -> [UInt8]? {
+            CommandAvailability.newFolderWithSelectionTarget(
+                currentPath: currentPath, selectedPaths: selected, isSearchMode: searching, homePath: "/Users/demo"
+            ).map { Array($0.utf8) }
+        }
+        func bytes(_ path: String) -> [UInt8] { Array(path.utf8) }
+        let composed = "/Users/demo/caf\u{E9}"
+        let decomposed = "/Users/demo/cafe\u{301}"
+        #expect(target("/Users/demo", ["/Users/demo/a.txt", "/Users/demo/b.txt"]) == bytes("/Users/demo"))
+        // The rows' spelling, whichever the folder on screen has.
+        #expect(target(decomposed, [composed + "/a.txt", composed + "/b.txt"]) == bytes(composed))
+        #expect(target(composed, [composed + "/a.txt"]) == bytes(composed))
+        #expect(target(composed, [decomposed + "/a.txt"]) == bytes(decomposed))
+        #expect(
+            Self.run(
+                .newFolderWithSelection,
+                Self.context {
+                    $0.currentPath = decomposed
+                    $0.selectedPathsInViewOrder = [composed + "/a.txt", composed + "/b.txt"]
+                }))
+        // Items spelled two ways among themselves are not in one folder.
+        #expect(target(decomposed, [composed + "/a.txt", decomposed + "/b.txt"]) == nil)
+        // Case counts: a disk may keep the two apart.
+        #expect(target("/Users/demo/Caf\u{E9}", [composed + "/a.txt"]) == nil)
+        // An item of another folder, nothing selected, search results, the Trash, no folder on screen.
+        #expect(target("/Users/demo", ["/Users/demo/a.txt", "/Users/demo/Folder/b.txt"]) == nil)
+        #expect(target("/Users/demo", []) == nil)
+        #expect(target("/Users/demo", ["/Users/demo/a.txt"], searching: true) == nil)
+        #expect(target("/Users/demo/.Trash", ["/Users/demo/.Trash/a.txt"]) == nil)
+        #expect(target("", ["/Users/demo/a.txt"]) == nil)
+    }
+
     @Test func renamesOneSelectedItemInItsRowAndSeveralInTheRenameSheet() {
         #expect(Self.run(.renameSelection, Self.context { $0.selectedPathsInViewOrder = ["/Users/demo/file.txt"] }))
         #expect(

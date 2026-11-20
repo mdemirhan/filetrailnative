@@ -154,6 +154,10 @@ enum AfterWrite {
 
     /// The selection a write leaves: the items it made or moved, when they are in the
     /// folder on screen, nothing is searched, and the person didn't pick something else meanwhile.
+    ///
+    /// The folder on screen may encode an accent otherwise than the folder the write names, which is spelled as
+    /// the rows it was started on (`NameKeys.pathsMatchIgnoringEncoding`): they are the one folder, and what was
+    /// made is selected by the write's own spelling, which is the rows'.
     static func selection(
         _ result: WriteOperationResult, currentPath: String, isSearching: Bool, selectionChanged: Bool
     ) -> [String]? {
@@ -161,13 +165,14 @@ enum AfterWrite {
         if result.action == .newFolderWithSelection {
             guard !isSearching, !selectionChanged, result.status == .completed || result.status == .partial,
                 let folder = nonEmpty(result.targetPath),
-                ExplorerTabs.parentDirectoryPath(folder).map({ currentPath.utf16.elementsEqual($0.utf16) }) == true
+                ExplorerTabs.parentDirectoryPath(folder).map({ NameKeys.pathsMatchIgnoringEncoding(currentPath, $0) })
+                    == true
             else { return nil }
             return [folder]
         }
         let made = result.items.compactMap { $0.status == .completed ? $0.destinationPath : nil }
         guard !isSearching, let folder = selectionDirectoryPath(result, selectedPaths: made),
-            currentPath.utf16.elementsEqual(folder.utf16), !selectionChanged, !made.isEmpty
+            NameKeys.pathsMatchIgnoringEncoding(currentPath, folder), !selectionChanged, !made.isEmpty
         else { return nil }
         return made
     }

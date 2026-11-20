@@ -51,6 +51,38 @@ private func item(
                 currentPath: "/Users/demo/Folder", isSearching: false, selectionChanged: false) == nil)
     }
 
+    // The folder on screen may hold an accent decomposed where the disk, and so the rows a write was started on, keep
+    // it composed: they are the one folder, and what the write made is selected by the write's spelling.
+    @Test func whatAWriteMadeIsSelectedHoweverTheFolderOnScreenSpellsAnAccent() {
+        // As bytes: `String`'s own `==` takes the two spellings for one.
+        func selection(_ result: WriteOperationResult, in folder: String) -> [[UInt8]]? {
+            AfterWrite.selection(result, currentPath: folder, isSearching: false, selectionChanged: false)?
+                .map { Array($0.utf8) }
+        }
+        func bytes(_ paths: String...) -> [[UInt8]] { paths.map { Array($0.utf8) } }
+        let composed = "/Users/demo/caf\u{E9}"
+        let decomposed = "/Users/demo/cafe\u{301}"
+        let converted = result(
+            .convertImages,
+            [item(composed + "/a.png", composed + "/a.jpg"), item(composed + "/b.png", composed + "/b.jpg")],
+            targetPath: composed)
+        #expect(selection(converted, in: decomposed) == bytes(composed + "/a.jpg", composed + "/b.jpg"))
+        #expect(selection(converted, in: composed) == bytes(composed + "/a.jpg", composed + "/b.jpg"))
+        let renamed = result(.rename, [item(composed + "/old", composed + "/new")])
+        #expect(selection(renamed, in: decomposed) == bytes(composed + "/new"))
+        // New Folder with Selection: the folder it made beside its items.
+        let gathered = result(
+            .newFolderWithSelection,
+            [item(composed + "/a.png", composed + "/untitled folder/a.png")],
+            targetPath: composed + "/untitled folder")
+        #expect(selection(gathered, in: decomposed) == bytes(composed + "/untitled folder"))
+        #expect(selection(gathered, in: composed) == bytes(composed + "/untitled folder"))
+        // Case counts, and another folder is another folder.
+        #expect(selection(converted, in: "/Users/demo/Caf\u{E9}") == nil)
+        #expect(selection(gathered, in: "/Users/demo/Caf\u{E9}") == nil)
+        #expect(selection(gathered, in: "/Users/demo") == nil)
+    }
+
     private let renamed = result(.rename, [item("/Users/demo/tmp/old-name", "/Users/demo/tmp/new-name")])
 
     @Test func remapsTheRefreshedPathAfterARenameInsideTheCurrentFolder() {

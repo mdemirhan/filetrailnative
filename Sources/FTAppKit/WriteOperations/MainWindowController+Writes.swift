@@ -220,7 +220,8 @@ extension MainWindowController {
     func renamePendingFolder(_ session: ExplorerWriteSession, in pane: BrowserPane) {
         guard let path = session.pendingInlineRenamePath else { return }
         session.pendingInlineRenamePath = nil
-        guard NodePath.dirname(path).utf16.elementsEqual(pane.shownFolderPath.utf16) else { return }
+        // The one folder, however each spells an accent: New Folder with Selection's folder is spelled as its rows.
+        guard NameKeys.pathsMatchIgnoringEncoding(NodePath.dirname(path), pane.shownFolderPath) else { return }
         // By its name in the folder on screen: the listing gives its rows the folder's real path, which may be spelled
         // otherwise than the one the tab was opened on (/private/var for /var).
         let name = NodePath.basename(path)

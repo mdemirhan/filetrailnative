@@ -46,6 +46,13 @@ public enum NameKeys {
         JSText.lowercased(nfd(path))
     }
 
+    /// The folder on screen against the folder its rows are in: NFD, case as it is. True when the paths differ at
+    /// most in how accents are encoded: a `URL` gives its path decomposed whatever the disk keeps, the rows keep the
+    /// disk's spelling, and the Mac's disks take both for one name.
+    public static func pathsMatchIgnoringEncoding(_ left: String, _ right: String) -> Bool {
+        left.utf8.elementsEqual(right.utf8) || nfd(left).utf8.elementsEqual(nfd(right).utf8)
+    }
+
     /// Rename's self-check: NFC and lowercase. True when the names differ at most in case or encoding.
     public static func namesMatchIgnoringCase(_ left: String, _ right: String) -> Bool {
         let leftKey = JSText.lowercased(nfc(left))

@@ -152,6 +152,56 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A folder whose name the disk keeps with a composed "é", as git, unzip and Terminal make them: the folder on
+        // screen is spelled otherwise than the one its rows are in, and New Folder with Selection still makes its
+        // folder there with the items in it, selected and named in its row, and Undo takes it all back.
+        @Test func newFolderWithSelectionWorksInAFolderStoredWithAComposedAccent() async throws {
+            let harness = try ExplorerHarness.windowless()
+            // mkdir(2) keeps the name as given; Foundation would decompose it.
+            let composed = harness.folder.path + "/caf\u{E9}"
+            #expect(mkdir(composed, 0o755) == 0)
+            for name in ["one.txt", "two.txt"] {
+                let file = Darwin.open(composed + "/" + name, O_CREAT | O_WRONLY, 0o644)
+                #expect(file >= 0)
+                close(file)
+            }
+            let tab = try await harness.open(composed)
+            let operations = AppWriteOperations(
+                userData: harness.folder.url, directoryService: harness.services.directoryService,
+                windows: harness.windows, trash: .standIn, emptyTrash: { (true, nil) },
+                log: { _ in })
+            let notices = Notices()
+            operations.dialogs.show = { title, message, _ in
+                notices.titles.append(title)
+                notices.messages.append(message)
+            }
+            let rows = tab.content.entries.map(\.path)
+            let folder = try #require(rows.first.map(NodePath.dirname))
+            // The rows keep the disk's spelling, and the folder on screen has the accent in two scalars.
+            #expect(NodePath.basename(folder).unicodeScalars.count == 4)
+            #expect(NodePath.basename(tab.shownFolderPath).unicodeScalars.count == 5)
+            tab.content.select(paths: rows)
+            #expect(!tab.menuState.disabledCommands.contains(.newFolderWithSelection))
+
+            tab.perform(.newFolderWithSelection)
+            #expect(await waitUntil { tab.content.inlineRename != nil })
+
+            let made = folder + "/untitled folder"
+            #expect(tab.content.inlineRename.map { samePath($0.path, made) } == true)
+            #expect(tab.content.entries.map(\.name) == ["untitled folder"])
+            #expect(tab.content.selection.paths.map(NameKeys.Exact.init) == [NameKeys.Exact(made)])
+            #expect(try FileManager.default.contentsOfDirectory(atPath: made).sorted() == ["one.txt", "two.txt"])
+            #expect(notices.titles.isEmpty)
+
+            tab.content.renameCancelled()
+            _ = await tab.writeActions?.undo()
+            #expect(await waitUntil { tab.content.entries.map(\.name) == ["one.txt", "two.txt"] })
+            #expect(try FileManager.default.contentsOfDirectory(atPath: composed).sorted() == ["one.txt", "two.txt"])
+            #expect(notices.titles.isEmpty)
+            withExtendedLifetime(operations) {}
+            await harness.close()
+        }
+
         private func isListed(_ tab: MainWindowController, _ name: String) -> Bool {
             tab.content.entries.contains { $0.name == name }
         }
