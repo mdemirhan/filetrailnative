@@ -189,16 +189,23 @@ public struct NativeFileSystem: ExplorerFileSystem {
         }
     }
 
-    /// Times are whole milliseconds, cut towards zero.
-    static func milliseconds(_ seconds: Int64, _ nanoseconds: Int32) -> Int64 {
-        seconds * 1000 + Int64(nanoseconds) / 1_000_000
+    /// The most seconds a time keeps, either side of 1970: the difference of any two times in milliseconds still fits.
+    static let secondsLimit: Int64 = .max / 2000
+
+    /// Times are whole milliseconds, cut towards zero. A disk can report any number (a FUSE or network disk with a
+    /// time far out of range, or a nanosecond field that is no part of a second): the seconds are held to
+    /// `secondsLimit` and the nanoseconds to a second, so no time read from a disk stops the app.
+    static func milliseconds(_ seconds: Int64, _ nanoseconds: some BinaryInteger) -> Int64 {
+        let seconds = min(max(seconds, -secondsLimit), secondsLimit)
+        let nanoseconds = min(max(Int64(clamping: nanoseconds), 0), 999_999_999)
+        return seconds * 1000 + nanoseconds / 1_000_000
     }
 
-    private static func stats(_ info: SystemStat) -> FileStats {
+    static func stats(_ info: SystemStat) -> FileStats {
         FileStats(
             type: fileType(mode: info.st_mode), size: Int64(info.st_size),
-            birthtimeMs: milliseconds(Int64(info.st_birthtimespec.tv_sec), Int32(info.st_birthtimespec.tv_nsec)),
-            mtimeMs: milliseconds(Int64(info.st_mtimespec.tv_sec), Int32(info.st_mtimespec.tv_nsec)),
+            birthtimeMs: milliseconds(Int64(info.st_birthtimespec.tv_sec), info.st_birthtimespec.tv_nsec),
+            mtimeMs: milliseconds(Int64(info.st_mtimespec.tv_sec), info.st_mtimespec.tv_nsec),
             mode: UInt32(info.st_mode), hasHiddenFlag: info.st_flags & UInt32(UF_HIDDEN) != 0)
     }
 }

@@ -248,6 +248,33 @@ struct NativeFileSystemTests {
         }
     }
 
+    /// A FUSE or network disk can report any number as a time: none of them stops the listing.
+    @Test func aTimeOutOfRangeIsHeldToTheLimit() {
+        let limit = NativeFileSystem.secondsLimit * 1000
+        #expect(NativeFileSystem.milliseconds(1_700_000_000, Int32(987_654_321)) == 1_700_000_000_987)
+        #expect(NativeFileSystem.milliseconds(-2, Int32(500_000_000)) == -1500)
+        #expect(NativeFileSystem.milliseconds(.max, Int32(0)) == limit)
+        #expect(NativeFileSystem.milliseconds(9_300_000_000_000_000, Int32(999_999_999)) == limit + 999)
+        #expect(NativeFileSystem.milliseconds(.min, Int32(0)) == -limit)
+        #expect(NativeFileSystem.milliseconds(5, Int32.max) == 5999)
+        #expect(NativeFileSystem.milliseconds(5, Int32.min) == 5000)
+        #expect(NativeFileSystem.milliseconds(5, Int.max) == 5999)
+        #expect(NativeFileSystem.milliseconds(5, Int.min) == 5000)
+        // Any two such times can be taken from each other.
+        #expect(limit + 999 - -limit > 0)
+    }
+
+    @Test func statsWithWildTimesAreRead() {
+        var info = SystemStat()
+        info.st_mode = S_IFREG | 0o644
+        info.st_mtimespec = timespec(tv_sec: .max, tv_nsec: .max)
+        info.st_birthtimespec = timespec(tv_sec: .min, tv_nsec: .min)
+        let stats = NativeFileSystem.stats(info)
+        #expect(stats.type == .file)
+        #expect(stats.mtimeMs == NativeFileSystem.secondsLimit * 1000 + 999)
+        #expect(stats.birthtimeMs == -NativeFileSystem.secondsLimit * 1000)
+    }
+
     @Test func readsAnEmptyFolder() throws {
         try withTemporaryDirectory { directory in
             let records = try native.readDirectory(directory.path)
