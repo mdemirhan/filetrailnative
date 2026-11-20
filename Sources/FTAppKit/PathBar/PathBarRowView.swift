@@ -369,8 +369,9 @@ final class PathBarRowView: NSView {
     }
 }
 
-/// The folder view's symbol in the status bar: a folder with a slider, in the accent for the folder's own view and grey
-/// for one from a folder above, with an orange dot while something of it is unsaved.
+/// The folder view's symbol in the status bar: a folder with a slider, in the accent for the folder's own view, the
+/// label's color for one from a folder above and grey for none (it was faint, and easy to miss as the way to the
+/// options), with an orange dot while something of it is unsaved.
 final class FolderViewButton: NSButton {
     var mark: PathBarRowView.FolderViewMark? {
         didSet {
@@ -379,8 +380,8 @@ final class FolderViewButton: NSButton {
             setAccessibilityLabel(mark?.tooltip)
             switch mark?.whose {
             case .own: contentTintColor = .controlAccentColor
-            case .above: contentTintColor = .secondaryLabelColor
-            case .noView, nil: contentTintColor = .tertiaryLabelColor
+            case .above: contentTintColor = .labelColor
+            case .noView, nil: contentTintColor = .secondaryLabelColor
             }
             needsDisplay = true
         }
@@ -391,7 +392,7 @@ final class FolderViewButton: NSButton {
         isBordered = false
         bezelStyle = .regularSquare
         imagePosition = .imageOnly
-        let configuration = NSImage.SymbolConfiguration(pointSize: 12, weight: .regular)
+        let configuration = NSImage.SymbolConfiguration(pointSize: 13.5, weight: .regular)
         image =
             (NSImage(systemSymbolName: "folder.badge.gearshape", accessibilityDescription: "Folder View")
             ?? NSImage(systemSymbolName: "folder", accessibilityDescription: "Folder View"))?
