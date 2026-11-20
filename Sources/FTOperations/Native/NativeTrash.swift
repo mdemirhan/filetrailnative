@@ -23,9 +23,7 @@ extension NativeFS {
         {
             spelled = NodePath.dirname(path) == "/" ? "/" + onDisk : NodePath.dirname(path) + "/" + onDisk
         }
-        return spelled.withCString {
-            URL(fileURLWithFileSystemRepresentation: $0, isDirectory: isFolder, relativeTo: nil)
-        }
+        return DiskPath(spelled).url(isDirectory: isFolder)
     }
 
     public static func trashItem(_ path: String) throws -> String? {

@@ -4,7 +4,8 @@ import Foundation
 /// on `String` take the NFC and NFD spellings of a name as equal, and a disk can keep both as two names, so a path
 /// used as a key or compared with another is held in this type. It changes nothing in the text: no slash is taken
 /// out and no accent respelled. In JSON it is the bare string. A path comes from a listing or from `realpath`; one
-/// that came from a `URL`, was typed or was saved is respelled as its disk has it before it is compared with those.
+/// that came from a `URL`, was typed or was saved is respelled as its disk has it before it is compared with those
+/// (`asOnDisk()`, where the disk may be asked).
 public struct DiskPath: Hashable, Comparable, Sendable {
     /// The path's text, held as contiguous UTF-8: what a C call and the screen are given.
     public let string: String
