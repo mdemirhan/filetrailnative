@@ -47,6 +47,34 @@ struct PathKey: Hashable, Sendable {
     }
 }
 
+/// Where the app's writes landed under a folder while it was being walked, kept so that each folder the walk
+/// finishes is looked up without going through the changes: the folders holding a change, and the changes themselves.
+struct ChangesUnderWalk {
+    private var changed = Set<PathKey>()
+    private var holders = Set<PathKey>()
+    // The folders whose holders are all in `holders` already.
+    private var looked = Set<PathKey>()
+
+    mutating func add(_ paths: [String]) {
+        for path in paths where changed.insert(PathKey(path)).inserted {
+            FolderSizeCache.forEachHolder(of: path, looked: &looked) { holders.insert(PathKey($0)) }
+        }
+    }
+
+    /// Whether `folder` holds a change, is one, or is inside one (as `WriteEffects.isAffectedByChange`): its size
+    /// may have seen part of the change.
+    func affect(_ folder: String) -> Bool {
+        let key = PathKey(folder)
+        if holders.contains(key) || changed.contains(key) { return true }
+        var inside = false
+        var none = Set<PathKey>()
+        FolderSizeCache.forEachHolder(of: folder, looked: &none) { holder in
+            if !inside, changed.contains(PathKey(holder)) { inside = true }
+        }
+        return inside
+    }
+}
+
 /// A folder's measured size, the disk it was measured on, and the measurement that stored it. A
 /// measurement never leaves the disk it starts on, so only the folders below on the same disk are in its
 /// total. The sizes one measurement stores add up: a folder's total is what it measured of the folders

@@ -161,9 +161,10 @@ public final class FolderSizeJobs {
     // holding the Trash. Learned by measuring, and kept apart from the sizes, which are forgotten when the
     // Trash changes.
     private var homeTrashCounted: Bool?
-    // A measurement under way when a write changes what it walks may have seen part of the change: it is
-    // stopped and run again rather than kept.
-    private var outdatedJobIds = Set<String>()
+    // Where the app's writes landed under the folder being walked, by job. The walk goes on to its end, as it does
+    // when something outside the app changes what it walks; only the sizes it gives of the folders that hold such a
+    // change (the folder asked for is one), or are inside one, are not kept: they may have seen part of it.
+    private var changedUnderWalk: [String: ChangesUnderWalk] = [:]
 
     // The jobs, oldest first: setting a job moves it to the newest position.
     private var jobs: [String: FolderSizeJob] = [:]
@@ -245,14 +246,11 @@ public final class FolderSizeJobs {
             + removedItems.flatMap { removed in
                 removed.intoHomeTrash == false ? [removed.path] : [removed.path, homeTrashPath]
             }
-        // Cancelled but still stopping, it may yet finish: what it stores then is outdated too.
-        if let activeJobId, let activeJob = jobs[activeJobId], !outdatedJobIds.contains(activeJobId),
-            WriteEffects.isAffectedByChange(activeJob.path, changedPaths: touchedPaths)
-        {
-            outdatedJobIds.insert(activeJobId)
-            if activeJob.status == .running {
-                // Stopped now rather than left to finish a walk that is thrown away.
-                native.cancelFolderSize()
+        // Cancelled but still stopping, it may yet finish: what it stores then is looked at the same way.
+        if let activeJobId, let activeJob = jobs[activeJobId] {
+            let under = touchedPaths.filter { WriteEffects.isAffectedByChange(activeJob.path, changedPaths: [$0]) }
+            if !under.isEmpty {
+                changedUnderWalk[activeJobId, default: ChangesUnderWalk()].add(under)
             }
         }
     }
@@ -423,7 +421,6 @@ public final class FolderSizeJobs {
     /// it, so the Trash comes before the home folder.
     private final class Run {
         var homeTrashWalked = false
-        var runAgain = false
     }
 
     private func noteWalked(_ run: Run, _ dirs: [FinishedFolders.Folder]) {
@@ -438,7 +435,14 @@ public final class FolderSizeJobs {
         }
     }
 
+    /// The folders of `dirs` whose sizes are kept: all of them, but for those a write changed while `jobId` walked.
+    private func unchanged(_ dirs: [FinishedFolders.Folder], jobId: String) -> [FinishedFolders.Folder] {
+        guard let changes = changedUnderWalk[jobId] else { return dirs }
+        return dirs.filter { !changes.affect($0.path) }
+    }
+
     /// Every folder a measurement walks is on the disk it started on.
+    @discardableResult
     private func storeMeasured(_ dev: Int64?, _ dirs: [FinishedFolders.Folder], measurement: Int) -> Int {
         for folder in dirs {
             cache.store(
@@ -460,19 +464,16 @@ public final class FolderSizeJobs {
 
         let run = Run()
         // The folders inside `path` are stored as each is finished, even once the measurement is cancelled or
-        // fails (each was finished whole), but not once a write has made it outdated: they may have seen part
-        // of the change, and it is run again.
+        // fails (each was finished whole), but for those a write changed meanwhile.
         let onFinished: @MainActor (FinishedFolders) -> Void = { [self] measured in
             noteWalked(run, measured.dirs)
-            if outdatedJobIds.contains(jobId) {
-                return
-            }
-            let stored = storeMeasured(measured.dev, measured.dirs, measurement: measurement)
+            let kept = unchanged(measured.dirs, jobId: jobId)
+            storeMeasured(measured.dev, kept, measurement: measurement)
             if var current = jobs[jobId] {
-                current.measuredFolderCount += stored
+                current.measuredFolderCount += measured.dirs.count
                 setJob(jobId, current)
             }
-            answerWaiting(from: measured.dirs)
+            answerWaiting(from: kept)
             onStored?()
         }
         let walk = native.getFolderSize(path, background: backgroundJobIds.contains(jobId), onFinished: onFinished)
@@ -499,35 +500,41 @@ public final class FolderSizeJobs {
         } else if key == homeKey {
             homeTrashCounted = run.homeTrashWalked
         }
-        if outdatedJobIds.remove(jobId) != nil {
-            run.runAgain = true
-            return
+        // A write landed under it while it was walked: the size is given to who asked, as one measured while
+        // something outside the app changed the folder is, but not kept, as it may have seen part of the change. The
+        // folder is measured again when next asked for, and the folders holding it were forgotten by the write.
+        let changed = changedUnderWalk[jobId] != nil
+        var partial = result.partial
+        if changed {
+            partial.insert(.changed)
+            previousSizes[jobId] = nil
+            cache.delete(path)
+        } else {
+            let measuredStats = FolderSizeStats(
+                sizeBytes: result.total, diskBytes: result.diskTotal, fileCount: result.fileCount,
+                folderCount: result.folderCount, dev: result.dev, measurement: measurement, partial: result.partial)
+            let old = previousSizes.removeValue(forKey: jobId) ?? cache.get(path)
+            // The folders holding it take the difference, or are forgotten, before its new size is stored.
+            FolderSizeAdjust.adjustForRemeasure(cache, path, old: old, new: measuredStats)
+            cache.store(path, measuredStats)
         }
-        let measuredStats = FolderSizeStats(
-            sizeBytes: result.total, diskBytes: result.diskTotal, fileCount: result.fileCount,
-            folderCount: result.folderCount, dev: result.dev, measurement: measurement, partial: result.partial)
-        let old = previousSizes.removeValue(forKey: jobId) ?? cache.get(path)
-        // The folders holding it take the difference, or are forgotten, before its new size is stored.
-        FolderSizeAdjust.adjustForRemeasure(cache, path, old: old, new: measuredStats)
-        cache.store(path, measuredStats)
-        let stored = storeMeasured(result.dev, result.dirs, measurement: measurement)
-        answerWaiting(from: result.dirs)
+        let kept = unchanged(result.dirs, jobId: jobId)
+        storeMeasured(result.dev, kept, measurement: measurement)
+        answerWaiting(from: kept)
         defer { onStored?() }
-        var ready = job(jobId, path, .ready, measuredFolderCount: (jobs[jobId]?.measuredFolderCount ?? 0) + stored)
+        // Stopped, and ended all the same: its size isn't kept, so it stays stopped rather than show one.
+        if changed, jobs[jobId]?.status == .cancelled { return }
+        var ready = job(
+            jobId, path, .ready, measuredFolderCount: (jobs[jobId]?.measuredFolderCount ?? 0) + result.dirs.count)
         ready.sizeBytes = result.total
         ready.diskBytes = result.diskTotal
         ready.fileCount = result.fileCount
         ready.folderCount = result.folderCount
-        ready.partial = result.partial
+        ready.partial = partial
         setJob(jobId, ready)
     }
 
     private func failed(_ error: any Error, jobId: String, path: String, run: Run) {
-        // Stopped because a write outdated it (or failing after one did): run again.
-        if outdatedJobIds.remove(jobId) != nil {
-            run.runAgain = true
-            return
-        }
         let walkError = error as? FolderSizeError
         if PathKey(path) == homeTrashKey && (walkError?.errnum == EPERM || walkError?.errnum == EACCES) {
             homeTrashCounted = false
@@ -552,9 +559,8 @@ public final class FolderSizeJobs {
         if activeJobId == jobId {
             activeJobId = nil
         }
-        // Measured again under the same job, which the window is still waiting on: at once, or after the
-        // measurements other windows asked for meanwhile. One this window asked for meanwhile has taken its
-        // place (and cancelled it).
+        // The walk is over: what writes changed under it was for its sizes only.
+        changedUnderWalk[jobId] = nil
         let current = jobs[jobId]
         if stopped {
             forgetJob(jobId)
@@ -562,12 +568,6 @@ public final class FolderSizeJobs {
         }
         if preemptedJobIds.remove(jobId) != nil && current?.status == .queued {
             // Gave way: it waits again, in its place.
-            queuedJobIds.append(jobId)
-        } else if run.runAgain && current?.status == .running {
-            if var queued = current {
-                queued.status = .queued
-                setJob(jobId, queued)
-            }
             queuedJobIds.append(jobId)
         } else {
             forgetJob(jobId)

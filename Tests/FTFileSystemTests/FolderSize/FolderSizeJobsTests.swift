@@ -430,7 +430,9 @@ private func settle() async {
         #expect(jobs.cachedSize("/Users/demo/Folder") == nil)
     }
 
-    @Test func measuresAgainAFolderAWriteChangedWhileItWasBeingMeasured() async {
+    // A walk of the home folder takes minutes, and the app writes under it all the time: it was stopped and begun
+    // again at every write, where a change made outside the app lets it finish.
+    @Test func aWalkFinishesWhenAWriteLandsUnderItAndGivesItsSizeWithoutKeepingIt() async {
         let native = MockNative()
         let jobs = make(native, homePath: "/Users/demo")
         let started = start(jobs, "/Users/demo/Project")
@@ -438,73 +440,117 @@ private func settle() async {
         var zip = trashedZip
         zip.path = "/Users/demo/Project/a.zip"
         FolderSizeWrites.forget(removedItems: [zip])
+        FolderSizeWrites.forget(changedPaths: ["/Users/demo/Project/new.txt"])
+        #expect(native.cancelCount == 0)
         native.resolveActive()
         await settle()
 
-        // The first answer may have seen part of the change: the same job measures again.
-        #expect(native.calls.count == 2)
-        #expect(jobs.getStatus(jobId: started.jobId).status == .running)
-        #expect(jobs.cachedSize("/Users/demo/Project") == nil)
-        native.resolveActive()
-        await settle()
+        // Who asked has the size, marked as one that saw a change; it isn't kept, as it may have seen part of the
+        // change, and the folder is measured again when next asked for.
+        #expect(native.calls.count == 1)
         let status = jobs.getStatus(jobId: started.jobId)
         #expect(status.status == .ready && status.sizeBytes == 1000)
+        #expect(status.partial.contains(.changed))
+        #expect(jobs.cachedSize("/Users/demo/Project") == nil)
+
+        let again = start(jobs, "/Users/demo/Project")
+        #expect(native.calls.count == 2)
+        native.resolveActive()
+        await settle()
+        #expect(jobs.getStatus(jobId: again.jobId).partial.isEmpty)
         #expect(jobs.cachedSize("/Users/demo/Project") == 1000)
     }
 
-    @Test func stopsAMeasurementAWriteHasOutdatedRatherThanLetItFinishForNothing() {
-        let native = MockNative()
-        let jobs = make(native)
-        _ = start(jobs, "/test")
-
-        FolderSizeWrites.forget(changedPaths: ["/elsewhere/new.txt"])
-        #expect(native.cancelCount == 0)
-        FolderSizeWrites.forget(changedPaths: ["/test/new.txt"])
-        FolderSizeWrites.forget(changedPaths: ["/test/another.txt"])
-
-        #expect(native.cancelCount == 1)
-    }
-
-    @Test func measuresAgainUnderTheSameJobOneStoppedBecauseAWriteOutdatedIt() async {
+    @Test func aWriteElsewhereLeavesAWalkAndItsSizesAlone() async {
         let native = MockNative()
         let jobs = make(native)
         let started = start(jobs, "/test")
-        FolderSizeWrites.forget(changedPaths: ["/test/new.txt"])
-        native.rejectActive(cancelledError)
-        await settle()
 
-        #expect(native.calls.count == 2)
-        #expect(jobs.getStatus(jobId: started.jobId).status == .running)
+        FolderSizeWrites.forget(changedPaths: ["/elsewhere/new.txt", "/testing/new.txt"])
         native.resolveActive()
         await settle()
-        let status = jobs.getStatus(jobId: started.jobId)
-        #expect(status.status == .ready && status.sizeBytes == 1000)
+
+        #expect(native.cancelCount == 0)
+        #expect(jobs.getStatus(jobId: started.jobId).partial.isEmpty)
+        #expect(jobs.cachedSize("/test") == 1000)
+        #expect(jobs.cachedSize("/test/sub") == 500)
     }
 
-    // It was left "running" for good: the window showed Calculating… and polled forever.
-    @Test func measuresAnOutdatedMeasurementAgainAfterAnotherWindowsWaitingOne() async {
+    // Only the folders that hold the change, or are inside what changed, go without a size: the rest of the walk's
+    // folders are kept, those finished before the write and those after.
+    @Test func onlyTheFoldersHoldingAWritesChangeAreNotKept() async {
         let native = MockNative()
         let jobs = make(native)
-        let first = start(jobs, "/test/a", owner: 1)
-        let second = start(jobs, "/test/b", owner: 2)
-        FolderSizeWrites.forget(changedPaths: ["/test/a/new.txt"])
-        // Finished before the stop reached it.
-        native.resolveActive()
+        let started = start(jobs, "/test")
+        native.finish(["/test/before": [10, 10, 1, 0], "/test/b": [20, 20, 1, 0], "/test/b/deep": [5, 5, 1, 0]])
+
+        FolderSizeWrites.forget(changedPaths: ["/test/b/deep/new.txt", "/test/moved"])
+        // Stored before the write, and holding its change: forgotten, as any size kept is.
+        #expect(jobs.cachedSize("/test/b") == nil)
+        #expect(jobs.cachedSize("/test/b/deep") == nil)
+        #expect(jobs.cachedSize("/test/before") == 10)
+
+        native.finish([
+            "/test/after": [30, 30, 1, 0], "/test/b/deep": [6, 6, 2, 0], "/test/b/other": [7, 7, 1, 0],
+            "/test/moved": [8, 8, 1, 0], "/test/moved/inside": [4, 4, 1, 0], "/test/moved-too": [9, 9, 1, 0],
+        ])
+        let last: [String: [Int64]] = ["/test/b": [21, 21, 2, 1], "/test/last": [3, 3, 1, 0]]
+        native.resolveActive(result(1000, 1200, 42, 7, dirs: last))
         await settle()
 
-        // The other window's measurement runs first; the outdated one waits behind it.
-        #expect(native.calls.last?.path == "/test/b")
-        #expect(jobs.getStatus(jobId: first.jobId).status == .queued)
-        native.resolveActive()
-        await settle()
-        #expect(jobs.getStatus(jobId: second.jobId).status == .ready)
-
-        #expect(native.calls.last?.path == "/test/a")
-        #expect(jobs.getStatus(jobId: first.jobId).status == .running)
-        native.resolveActive()
-        await settle()
-        let status = jobs.getStatus(jobId: first.jobId)
+        #expect(native.calls.count == 1 && native.cancelCount == 0)
+        #expect(jobs.cachedSize("/test/after") == 30)
+        #expect(jobs.cachedSize("/test/b/other") == 7)
+        #expect(jobs.cachedSize("/test/moved-too") == 9)
+        #expect(jobs.cachedSize("/test/last") == 3)
+        // Holding the change, the change itself, and inside it.
+        #expect(jobs.cachedSize("/test/b/deep") == nil)
+        #expect(jobs.cachedSize("/test/b") == nil)
+        #expect(jobs.cachedSize("/test/moved") == nil)
+        #expect(jobs.cachedSize("/test/moved/inside") == nil)
+        #expect(jobs.cachedSize("/test") == nil)
+        let status = jobs.getStatus(jobId: started.jobId)
         #expect(status.status == .ready && status.sizeBytes == 1000)
+        // Every folder the walk finished counts as measured, kept or not.
+        #expect(status.measuredFolderCount == 11)
+    }
+
+    // A folder inside the one walked, asked for meanwhile, is answered by the walk; not when it holds the change.
+    @Test func aFolderHoldingTheChangeIsNotAnsweredByTheWalkAndRunsInItsTurn() async {
+        let native = MockNative()
+        let jobs = make(native)
+        _ = start(jobs, "/test", owner: 1)
+        let changed = start(jobs, "/test/a", owner: 2)
+        let untouched = start(jobs, "/test/b", owner: 2)
+        FolderSizeWrites.forget(changedPaths: ["/test/a/new.txt"])
+        native.finish(["/test/a": [10, 10, 1, 0], "/test/b": [20, 20, 1, 0]])
+        #expect(jobs.getStatus(jobId: untouched.jobId).status == .ready)
+        #expect(jobs.getStatus(jobId: changed.jobId).status == .queued)
+
+        native.resolveActive()
+        await settle()
+        #expect(native.calls.last?.path == "/test/a")
+        native.resolveActive(result(11, 11, 2, 0))
+        await settle()
+        #expect(jobs.getStatus(jobId: changed.jobId).sizeBytes == 11)
+        #expect(jobs.cachedSize("/test/a") == 11)
+    }
+
+    // The next walk of the same job's folder starts clean: what changed under the last one is over with.
+    @Test func aWalkAfterOneAWriteLandedUnderKeepsAllItsSizes() async {
+        let native = MockNative()
+        let jobs = make(native)
+        _ = start(jobs, "/test")
+        FolderSizeWrites.forget(changedPaths: ["/test/sub/new.txt"])
+        native.resolveActive()
+        await settle()
+        #expect(jobs.cachedSize("/test/sub") == nil)
+
+        _ = start(jobs, "/test")
+        native.resolveActive()
+        await settle()
+        #expect(jobs.cachedSize("/test") == 1000)
+        #expect(jobs.cachedSize("/test/sub") == 500)
     }
 
     @Test func takesAWaitingMeasurementOffTheQueueWhenItIsStopped() async {
@@ -537,7 +583,7 @@ private func settle() async {
         #expect(jobs.cachedSize("/Users/demo/Downloads") == 400)
     }
 
-    @Test func letsStopEndAMeasurementAWriteHadOutdated() async {
+    @Test func letsStopEndAMeasurementAWriteLandedUnder() async {
         let native = MockNative()
         let jobs = make(native)
         let started = start(jobs, "/test")
@@ -551,7 +597,7 @@ private func settle() async {
     }
 
     // Only a running one was marked: a stopped walk that finished all the same kept what it had seen of the change.
-    @Test func keepsNothingOfAStoppedMeasurementThatAWriteOutdatesBeforeItEnds() async {
+    @Test func keepsNothingAWriteChangedOfAStoppedMeasurementThatStillEnds() async {
         let native = MockNative()
         let jobs = make(native)
         let started = start(jobs, "/test")
@@ -569,7 +615,7 @@ private func settle() async {
         #expect(jobs.getStatus(jobId: started.jobId).status == .cancelled)
     }
 
-    @Test func dropsTheFinishedJobsItKeepsTooManyOfWhenItMeasuresAgainAtOnce() async {
+    @Test func dropsTheFinishedJobsItKeepsTooManyOfWhenAWalkEnds() async {
         let native = MockNative()
         let jobs = make(native)
         _ = start(jobs, "/test", owner: 1)
@@ -578,12 +624,11 @@ private func settle() async {
         }
         #expect(jobs.jobCount == 301)
 
-        FolderSizeWrites.forget(changedPaths: ["/test/new.txt"])
         native.resolveActive()
         await settle()
 
-        #expect(native.calls.count == 2)
-        #expect(jobs.jobCount == 257)
+        #expect(native.calls.count == 1)
+        #expect(jobs.jobCount == 256)
     }
 
     // A walk of the home folder stores hundreds of thousands of sizes, a take of 10,000 folders at a time: each take
@@ -615,9 +660,7 @@ private func settle() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
             let started = jobs.start(FolderSizeStartRequest(path: "/test"), owner: 1)
-            // Outdated: it would be measured again once stopped.
             FolderSizeWrites.forget(changedPaths: ["/test/new.txt"])
-            native.cancelCount = 0
 
             jobs.forgetOwner(1)
             native.rejectActive(cancelledError)
@@ -646,24 +689,6 @@ private func settle() async {
             #expect(native.calls.last?.path == "/test/c")
         }
 
-        @Test func stopsOneMeasuredAgainForItWaitingBehindAnotherWindowsOne() async {
-            let native = MockNative()
-            let jobs = FolderSizeJobs(native: native)
-            let outdated = jobs.start(FolderSizeStartRequest(path: "/test/a"), owner: 1)
-            let other = jobs.start(FolderSizeStartRequest(path: "/test/b"), owner: 2)
-            FolderSizeWrites.forget(changedPaths: ["/test/a/new.txt"])
-            native.resolveActive()
-            await settle()
-            #expect(jobs.getStatus(jobId: outdated.jobId).status == .queued)
-
-            jobs.forgetOwner(1)
-            native.resolveActive()
-            await settle()
-
-            #expect(jobs.getStatus(jobId: other.jobId).status == .ready)
-            #expect(jobs.getStatus(jobId: outdated.jobId).status == .cancelled)
-            #expect(native.calls.count == 2)
-        }
     }
 
     @MainActor @Suite struct TheAppQuitting {
@@ -683,7 +708,7 @@ private func settle() async {
             #expect(jobs.getStatus(jobId: waiting.jobId).status == .cancelled)
         }
 
-        @Test func doesntMeasureAgainAWalkAWriteOutdated() async {
+        @Test func doesntMeasureAgainAWalkAWriteLandedUnder() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
             _ = jobs.start(FolderSizeStartRequest(path: "/test"), owner: 1)
@@ -749,7 +774,7 @@ private func settle() async {
             #expect(jobs.cachedSize("/test/b") == 70)
         }
 
-        @Test func stopsKeepingFoldersOnceAWriteHasOutdatedTheMeasurementUntilItRunsAgain() async {
+        @Test func doesntKeepAFolderAWriteChangedThatTheWalkFinishesAfterwards() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
             let started = jobs.start(FolderSizeStartRequest(path: "/test"))
@@ -761,16 +786,14 @@ private func settle() async {
             #expect(jobs.cachedSize("/test/b") == nil)
             // Untouched by the write.
             #expect(jobs.cachedSize("/test/a") == 150)
+            // Counted as measured all the same: the count only goes up.
+            #expect(jobs.getStatus(jobId: started.jobId).measuredFolderCount == 2)
 
             native.resolveActive()
             await settle()
-            #expect(native.calls.count == 2)
+            #expect(native.calls.count == 1)
             #expect(jobs.cachedSize("/test") == nil)
-
-            // Measured again: what it finishes is kept, and the count only goes up.
-            native.finish(["/test/b": [90, 100, 2, 0]])
-            #expect(jobs.cachedSize("/test/b") == 90)
-            #expect(jobs.getStatus(jobId: started.jobId).measuredFolderCount == 2)
+            #expect(jobs.cachedSize("/test/sub") == 500)
         }
 
         // A folder finished after a delete removed something from it already leaves it out: taking it off again
