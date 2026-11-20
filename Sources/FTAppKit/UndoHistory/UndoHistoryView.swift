@@ -132,8 +132,12 @@ final class UndoHistoryView: NSView {
             for row in content.redo { add(UndoHistoryRowView(row, undone: true, now: date), height: Self.rowHeight) }
         }
         // The newest operations that can't be undone and that Undo has passed are above the heading: ⌘Z no longer
-        // meets them, and the heading sits over what it takes next.
+        // meets them, and the heading sits over what it takes next. They have a heading of their own, with no key:
+        // dimmed as they are, under the dimmed rows of "Redo" they read as more of what Redo would do.
         let passed = content.undo.prefix { $0.cantUndo?.passed == true }
+        if !passed.isEmpty {
+            add(UndoHistoryHeading("Can\u{2019}t Be Undone", key: nil), height: Self.headingHeight)
+        }
         for row in passed {
             if let entry = row.cantUndo { add(UndoHistoryCantUndoView(entry, now: date), height: Self.rowHeight) }
         }

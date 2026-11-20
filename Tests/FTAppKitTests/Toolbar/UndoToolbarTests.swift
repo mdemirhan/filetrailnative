@@ -182,7 +182,7 @@ extension ExplorerWindowlessTests {
             history.passCantUndo()
             toolbar.refreshStates()
             #expect(self.button(tab, .undo)?.tooltip == "Undo Rename (⌘Z)")
-            #expect(listed() == ["Move can’t be undone", "Undo", "Rename"])
+            #expect(listed() == ["Can’t Be Undone", "Move can’t be undone", "Undo", "Rename"])
             let passed = try #require(rows().first as? UndoHistoryView.UndoHistoryCantUndoView)
             #expect(passed.icon.symbolName == "lock" && passed.first.textColor == passed.second.textColor)
             #expect(passed.second.stringValue.hasPrefix("Items were moved to another disk · "))
@@ -192,16 +192,20 @@ extension ExplorerWindowlessTests {
             history.record(FinishedWrite(action: .emptyTrash, log: .notUndoable(reason: .deletedForGood), items: []))
             #expect(listed() == ["Undo", "Empty Trash can’t be undone", "Move can’t be undone", "Rename"])
             history.passCantUndo()
-            #expect(listed() == ["Empty Trash can’t be undone", "Move can’t be undone", "Undo", "Rename"])
+            #expect(
+                listed() == [
+                    "Can’t Be Undone", "Empty Trash can’t be undone", "Move can’t be undone", "Undo", "Rename",
+                ])
             history.record(Self.rename("/p/c", "/p/d"))
             #expect(
                 listed() == ["Undo", "Rename", "Empty Trash can’t be undone", "Move can’t be undone", "Rename"])
             var top = try #require(history.top(.undo))
             try history.finish(.undo, entryId: top.id, done: top.units, leftover: [])
-            // The rename undone is under "Redo", then the passed ones, then the heading and what Undo takes next.
+            // The rename undone is under "Redo", then the passed ones under their own heading, then the heading and what Undo takes next.
             #expect(
                 listed() == [
-                    "Redo", "Rename", "Empty Trash can’t be undone", "Move can’t be undone", "Undo", "Rename",
+                    "Redo", "Rename", "Can’t Be Undone", "Empty Trash can’t be undone", "Move can’t be undone", "Undo",
+                    "Rename",
                 ])
 
             // The first rename undone too, the list still has the passed ones to show, with no "Undo" heading,
@@ -210,7 +214,10 @@ extension ExplorerWindowlessTests {
             try history.finish(.undo, entryId: top.id, done: [], leftover: [])
             toolbar.refreshStates()
             #expect(tab.undoHistoryUI.isOpen)
-            #expect(listed() == ["Redo", "Rename", "Empty Trash can’t be undone", "Move can’t be undone"])
+            #expect(
+                listed() == [
+                    "Redo", "Rename", "Can’t Be Undone", "Empty Trash can’t be undone", "Move can’t be undone",
+                ])
             #expect(self.button(tab, .undo)?.isEnabled == false)
             #expect(toolbar.item(.undoHistory)?.isHidden == false)
             await harness.close()
