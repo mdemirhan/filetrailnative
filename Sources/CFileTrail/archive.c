@@ -333,8 +333,9 @@ struct made_folder {
 
 /// One archive being taken apart.
 struct extraction {
-    /// The destination folder, open.
+    /// The destination folder, open, and its path.
     int root;
+    const char *destination;
     ft_archive_control *control;
     const char *quarantine;
     size_t quarantine_length;
@@ -424,6 +425,21 @@ static struct made_folder *note_folder(struct extraction *extraction, const char
     folder->inode = inode;
     fill_slot(extraction, extraction->count_folders++);
     return folder;
+}
+
+/// Whether the disk holding `path` keeps extended attributes in "._name" files beside each item (FAT, exFAT, some
+/// shares) and not by itself, as getattrlist's VOL_CAP_INT_EXTENDED_ATTR says. 0 when it keeps them itself, doesn't
+/// say or can't be asked: a "._name" file there is a file of its own.
+static int disk_keeps_attributes_in_files(const char *path) {
+    struct attrlist request = {.bitmapcount = ATTR_BIT_MAP_COUNT, .volattr = ATTR_VOL_INFO | ATTR_VOL_CAPABILITIES};
+    struct {
+        u_int32_t length;
+        vol_capabilities_attr_t capabilities;
+    } __attribute__((aligned(4), packed)) answer;
+    memset(&answer, 0, sizeof(answer));
+    if (getattrlist(path, &request, &answer, sizeof(answer), 0) != 0) return 0;
+    if ((answer.capabilities.valid[VOL_CAPABILITIES_INTERFACES] & VOL_CAP_INT_EXTENDED_ATTR) == 0) return 0;
+    return (answer.capabilities.capabilities[VOL_CAPABILITIES_INTERFACES] & VOL_CAP_INT_EXTENDED_ATTR) == 0;
 }
 
 /// Gives the open item the archive's quarantine, when it has one, and reads it back: 0 when the item has it, and
@@ -710,6 +726,15 @@ static int make_file(
         result = leave_hole(extraction, fd, end, (off_t)archive_entry_size(entry));
     }
     if (result == 0) result = dress_item(extraction, fd, entry);
+    // On a disk that keeps attributes in "._name" files (exFAT, FAT) the system takes a file of such a name for the
+    // attributes of the item beside it and gives it none of its own, the quarantine neither. The file is left out,
+    // as Compress leaves such files out there, and is no reason to refuse the archive: taken away, nothing stays
+    // that isn't quarantined.
+    if (result == FT_ARCHIVE_NOT_QUARANTINED && leaf[0] == '.' && leaf[1] == '_'
+        && disk_keeps_attributes_in_files(extraction->destination)) {
+        close(fd);
+        return unlinkat(parent, leaf, 0) == 0 ? ITEM_LEFT_OUT : FT_ARCHIVE_NOT_QUARANTINED;
+    }
     if (result == 0) {
         if (fchmod(fd, item_mode(entry)) != 0 && errno != ENOTSUP && errno != EPERM) result = errno;
         struct item_times times = times_of(entry);
@@ -946,6 +971,7 @@ int ft_archive_extract(
     struct extraction extraction;
     memset(&extraction, 0, sizeof(extraction));
     extraction.control = control;
+    extraction.destination = destination;
     extraction.quarantine = quarantine_value;
     extraction.quarantine_length = quarantine_length;
     extraction.parent_fd = -1;
@@ -1154,21 +1180,6 @@ static int add_data_bytes(const char *path, ft_archive_control *control, int64_t
     }
     fts_close(tree);
     return result;
-}
-
-/// Whether the disk holding `path` keeps extended attributes in "._name" files beside each item (FAT, exFAT, some
-/// shares) and not by itself, as getattrlist's VOL_CAP_INT_EXTENDED_ATTR says. 0 when it keeps them itself, doesn't
-/// say or can't be asked: a "._name" file there is a file of its own.
-static int disk_keeps_attributes_in_files(const char *path) {
-    struct attrlist request = {.bitmapcount = ATTR_BIT_MAP_COUNT, .volattr = ATTR_VOL_INFO | ATTR_VOL_CAPABILITIES};
-    struct {
-        u_int32_t length;
-        vol_capabilities_attr_t capabilities;
-    } __attribute__((aligned(4), packed)) answer;
-    memset(&answer, 0, sizeof(answer));
-    if (getattrlist(path, &request, &answer, sizeof(answer), 0) != 0) return 0;
-    if ((answer.capabilities.valid[VOL_CAPABILITIES_INTERFACES] & VOL_CAP_INT_EXTENDED_ATTR) == 0) return 0;
-    return (answer.capabilities.capabilities[VOL_CAPABILITIES_INTERFACES] & VOL_CAP_INT_EXTENDED_ATTR) == 0;
 }
 
 /// Whether the file at `path` is a "._name" file holding the attributes of the "name" beside it (AppleDouble), by

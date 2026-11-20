@@ -178,6 +178,36 @@ import Testing
         }
     }
 
+    /// A downloaded zip that holds a "._a.txt" of its own, taken apart on a disk that keeps attributes in "._name"
+    /// files (exFAT, FAT32): the system takes a file of that name for the attributes of the item beside it and gives
+    /// it none of its own, the quarantine neither. It is left out and counted, whichever of the two comes first, and
+    /// the item comes out quarantined. Only a release runs it: it mounts an image of each.
+    @Test(
+        .tags(.diskImage), .diskImages, .enabled(if: ReleaseTests.enabled), arguments: [DiskImage.Kind.exfat, .fat32])
+    func aZipsOwnAttributesFileIsLeftOutOnADiskThatKeepsAttributesInFiles(kind: DiskImage.Kind) async throws {
+        try await DiskImage.withVolume(kind) { volume in
+            let folders = try Folders()
+            defer { folders.directory.remove() }
+            let zipPath = "\(folders.root)/photos.zip"
+            for (index, names) in [["._a.txt", "a.txt"], ["a.txt", "._a.txt"]].enumerated() {
+                var zip = ZipBuilder()
+                for name in names {
+                    zip.add(name: Array(name.utf8), contents: name == "a.txt" ? "a" : "bytes of the zip\u{2019}s own")
+                }
+                try zip.write(to: zipPath)
+                ArchiveOperationsTests.setAttribute(zipPath, "com.apple.quarantine", Self.quarantine)
+                let out = "\(volume.path)/out\(index)"
+                try FileManager.default.createDirectory(atPath: out, withIntermediateDirectories: false)
+                #expect(try Self.extract(zipPath, into: out) == 1, "\(names)")
+                #expect(try String(contentsOfFile: "\(out)/a.txt", encoding: .utf8) == "a")
+                #expect(ArchiveOperationsTests.attribute("\(out)/a.txt", "com.apple.quarantine") == Self.quarantine)
+                // What is beside it is the file the disk keeps its quarantine in, not the zip's.
+                #expect(try NativeWriteFileSystem().readdir(out).sorted() == ["._a.txt", "a.txt"])
+                #expect(NativeFS.isAppleDoubleOnItsVolume("\(out)/._a.txt"))
+            }
+        }
+    }
+
     /// A quarantine longer than a kilobyte is read whole, and put on every item.
     @Test func aLongQuarantineIsKeptWhole() throws {
         let folders = try Folders()

@@ -53,8 +53,9 @@ int64_t ft_archive_control_total(const ft_archive_control *control);
 int64_t ft_archive_control_items(const ft_archive_control *control);
 /// Items left out. Of an archive: a name that would reach outside the folder (`/…`, `..`) or runs through a link
 /// or a file an earlier item made, a second item of a name already written (or of one a disk that ignores case
-/// takes for it), a hard link to anything but a file already extracted, a name the disk won't take, and a pipe,
-/// socket or device. Of a zip being made: a kind it can't hold (a pipe, a socket, a device).
+/// takes for it), a hard link to anything but a file already extracted, a name the disk won't take, a pipe, socket
+/// or device, and a `._name` file of a quarantined archive on a disk that keeps attributes in such files. Of a zip
+/// being made: a kind it can't hold (a pipe, a socket, a device).
 int64_t ft_archive_control_skipped(const ft_archive_control *control);
 /// The item a compress failed on (it can't be read, it went away); NULL when none was noted. Read once the work
 /// returned; it is the control's own.
@@ -72,9 +73,11 @@ const char *ft_archive_control_failed_path(const ft_archive_control *control);
 /// are left their owner's to write, for the caller to remove. When `quarantine` is set, every item and
 /// `destination` itself get the archive's quarantine, read-only items too, so what came from the internet is
 /// checked as the archive would be; one that refuses it (a link aside) fails the archive with
-/// FT_ARCHIVE_NOT_QUARANTINED. On a disk that keeps no extended attributes at all (`destination` refuses the
-/// quarantine with ENOTSUP), nothing is quarantined, as nothing could be. Access rules (ACLs) the archive keeps are not put on. The process's umask is never changed. `raw_name`, for a single compressed
-/// file (`.gz`, `.bz2`, `.xz` not holding a tar), is the name the file is written as. Returns 0, an errno
+/// FT_ARCHIVE_NOT_QUARANTINED, but for a `._name` file on a disk that keeps attributes in such files (exFAT, FAT),
+/// which the system gives no attributes of its own: it is left out. On a disk that keeps no extended attributes at
+/// all (`destination` refuses the quarantine with ENOTSUP), nothing is quarantined, as nothing could be. Access
+/// rules (ACLs) the archive keeps are not put on. The process's umask is never changed. `raw_name`, for a single
+/// compressed file (`.gz`, `.bz2`, `.xz` not holding a tar), is the name the file is written as. Returns 0, an errno
 /// (ECANCELED when stopped), or one of the FT_ARCHIVE_ codes.
 int ft_archive_extract(
     const char *archive, const char *destination, const char *raw_name, int quarantine, ft_archive_control *control);
