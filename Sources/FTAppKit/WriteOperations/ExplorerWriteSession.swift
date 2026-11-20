@@ -288,7 +288,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
                 switch event.status {
                 case .queued: .queued
                 case .awaitingResolution: .awaitingResolution
-                default: .running
+                default: event.finishing ? .finishing : .running
                 }
             applyCard(
                 WriteOperationCardState(

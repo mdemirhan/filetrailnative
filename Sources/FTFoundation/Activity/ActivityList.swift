@@ -134,7 +134,9 @@ public enum ActivityList {
         if let operation {
             let text = ProgressCardText(operation.card, currentPath: operation.card.targetPath ?? "")
             let waiting = operation.card.stage == .queued
-            var detail = waiting ? "Waiting" : text.percentLabel
+            // At its end (see WriteOperationStage.finishing) the percent would say no more than the count does.
+            let finishing = operation.card.stage == .finishing
+            var detail = waiting ? "Waiting" : finishing ? "Finishing" : text.percentLabel
             if !waiting, !text.metaStart.isEmpty { detail += " · \(text.metaStart)" }
             items.append(
                 ActivityItem(

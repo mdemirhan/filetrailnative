@@ -508,9 +508,10 @@ enum EngineJSON {
         ])
     }
 
-    /// A progress event as a record: without its result.
+    /// A progress event as a record: without its result. Only the event that says the paste is finishing carries
+    /// that mark; the others are recorded without it.
     static func event(_ event: CopyPasteProgressEvent) -> JSONValue {
-        .object([
+        var record: [String: JSONValue] = [
             "kind": .string("event"),
             "operationId": .string(event.operationId),
             "analysisId": optional(event.analysisId),
@@ -523,7 +524,9 @@ enum EngineJSON {
             "currentSourcePath": optional(event.currentSourcePath),
             "currentDestinationPath": optional(event.currentDestinationPath),
             "runtimeConflict": event.runtimeConflict.map(conflict) ?? .null,
-        ])
+        ]
+        if event.finishing { record["finishing"] = .bool(true) }
+        return .object(record)
     }
 
     static func conflict(_ conflict: CopyPasteRuntimeConflict) -> JSONValue {

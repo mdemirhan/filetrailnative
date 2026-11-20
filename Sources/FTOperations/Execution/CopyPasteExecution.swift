@@ -279,10 +279,11 @@ func failedItemResult(_ node: ResolvedCopyPasteNode, _ error: any Error, _ messa
     itemResult(node, .failed, message, nil, failedDestination(error) ?? node.destinationPath)
 }
 
-/// `copyingBytes`: bytes of the file being copied that are written so far, not yet counted as done.
+/// `copyingBytes`: bytes of the file being copied that are written so far, not yet counted as done. `finishing`:
+/// see CopyPasteProgressEvent.finishing.
 func emitProgress(
     _ context: ExecutionContext, _ status: CopyPasteOperationStatus, _ node: ResolvedCopyPasteNode?,
-    _ runtimeConflict: CopyPasteRuntimeConflict?, copyingBytes: Int64 = 0
+    _ runtimeConflict: CopyPasteRuntimeConflict?, copyingBytes: Int64 = 0, finishing: Bool = false
 ) {
     let display = context.displayPath ?? { $0 }
     var conflict = runtimeConflict
@@ -296,7 +297,7 @@ func emitProgress(
             totalItemCount: context.totalItemCount,
             completedByteCount: context.shared.completedByteCount + copyingBytes, totalBytes: context.totalBytes,
             currentSourcePath: node?.node.sourcePath, currentDestinationPath: node.map { display($0.destinationPath) },
-            runtimeConflict: conflict, result: nil))
+            runtimeConflict: conflict, result: nil, finishing: finishing))
 }
 
 // MARK: One item, with what changed since the review

@@ -138,13 +138,17 @@ public struct WriteOperationEvent: Equatable, Sendable {
     public var runtimeConflict: CopyPasteRuntimeConflict?
     /// How it ended, with its last event.
     public var result: WriteOperationResult?
+    /// A paste that has copied all it will and is still running: it writes a move's copies out to their disk and
+    /// removes the originals (`CopyPasteProgressEvent.finishing`).
+    public var finishing: Bool
 
     public init(
         operationId: String, action: WriteOperationAction, status: WriteOperationStatus, completedItemCount: Int = 0,
         totalItemCount: Int = 0, completedByteCount: Int64 = 0, totalBytes: Int64? = nil,
         currentSourcePath: String? = nil, currentDestinationPath: String? = nil,
-        runtimeConflict: CopyPasteRuntimeConflict? = nil, result: WriteOperationResult? = nil
+        runtimeConflict: CopyPasteRuntimeConflict? = nil, result: WriteOperationResult? = nil, finishing: Bool = false
     ) {
+        self.finishing = finishing
         self.operationId = operationId
         self.action = action
         self.status = status
@@ -172,7 +176,7 @@ public struct WriteOperationEvent: Equatable, Sendable {
             completedItemCount: event.completedItemCount, totalItemCount: event.totalItemCount,
             completedByteCount: event.completedByteCount, totalBytes: event.totalBytes,
             currentSourcePath: event.currentSourcePath, currentDestinationPath: event.currentDestinationPath,
-            runtimeConflict: event.runtimeConflict, result: result)
+            runtimeConflict: event.runtimeConflict, result: result, finishing: event.finishing)
     }
 
     /// `forOtherWindows`: all of it but the result's items those windows don't need.

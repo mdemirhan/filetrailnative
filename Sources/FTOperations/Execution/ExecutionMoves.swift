@@ -23,10 +23,15 @@ func flushMovedCopy(_ fileSystem: some WriteServiceFileSystem, _ path: String, w
 /// to another disk copied one by one, and the merged folders they were in. Each disk they went to first writes out
 /// everything it was given, in one go, so a paste of thousands of files costs one flush and not one for each; a
 /// crash before this leaves files in both places, and loses none. Each original then goes as it always did: only
-/// if its copy is still whole and it is itself unchanged. One that stays is said in `itemResults`, as failed.
+/// if its copy is still whole and it is itself unchanged. One that stays is said in `itemResults`, as failed. With
+/// anything to do, it first sends one progress event marked `finishing`; with nothing, none.
 func removeOriginalsLeftToTheEnd(_ context: ExecutionContext, _ itemResults: inout [CopyPasteItemResult]) {
     let left = context.shared.originalsLeftToTheEnd
     guard !left.isEmpty else { return }
+    // Everything copied is counted as done by now, and what follows can take long (a slow stick writing out what it
+    // was given, thousands of originals to remove) with nothing more to count, and isn't stopped by Stop: the card
+    // is told once, before it begins, so it doesn't sit at "all done" with no word.
+    emitProgress(context, .running, nil, nil, finishing: true)
     context.shared.originalsLeftToTheEnd = []
     let fileSystem = context.fileSystem
     // The disk each copy is on, by the folder it is in, and for each disk why it couldn't write out what it was

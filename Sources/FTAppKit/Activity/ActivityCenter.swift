@@ -51,7 +51,7 @@ final class ActivityCenter {
                 switch event.status {
                 case .queued: .queued
                 case .awaitingResolution: .awaitingResolution
-                default: .running
+                default: event.finishing ? .finishing : .running
                 }
             operation = (
                 event.operationId,

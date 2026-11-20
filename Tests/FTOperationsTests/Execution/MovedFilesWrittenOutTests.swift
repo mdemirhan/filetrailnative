@@ -66,6 +66,54 @@ struct MovedFilesWrittenOutTests {
         #expect(result.undoLog == .notUndoable(reason: .otherDiskMove))
     }
 
+    // The card is told once that the move is at its end, before the disk is asked to write out: with every copy
+    // counted, and with the flush and the removals still to come. Its last event, with the result, isn't marked.
+    @Test func saysItIsFinishingOnceBeforeTheDiskIsWrittenOut() async throws {
+        let fileSystem = looseFiles()
+        let recorder = PasteRecorder()
+        let finishingAtFlush = Locked<[Int]>([])
+        fileSystem.flushToDiskImpl = { _, _ in
+            finishingAtFlush.mutate { $0.append(recorder.events.filter(\.finishing).count) }
+            #expect(fileSystem.exists("/source/a.txt") && fileSystem.exists("/source/d.txt"))
+        }
+        let operation = try createResolvedOperation(
+            fileSystem, mode: .cut, sources: Self.names.map { "/source/\($0)" }, into: "/target")
+
+        let events = await execute(fileSystem, operation, operationId: "moved-files", recorder: recorder)
+
+        #expect(finishingAtFlush.value == [1])
+        let finishing = events.filter(\.finishing)
+        #expect(finishing.count == 1)
+        #expect(finishing.first?.status == .running && finishing.first?.result == nil)
+        #expect(finishing.first?.completedItemCount == 4 && finishing.first?.totalItemCount == 4)
+        #expect(finishing.first?.completedByteCount == 10 && finishing.first?.currentSourcePath == nil)
+        // It is the last but one: nothing more is said until the end.
+        #expect(events.dropLast().last?.finishing == true)
+        #expect(events.last?.finishing == false && events.last?.result?.status == .completed)
+    }
+
+    // A paste with no originals left to its end says nothing new: a copy, a move on one disk, and a folder moved
+    // whole to another disk, whose originals go as soon as it is in place.
+    @Test func aPasteWithNoOriginalsLeftToItsEndNeverSaysFinishing() async throws {
+        for (mode, sources, disk) in [
+            (CopyPasteMode.copy, ["/source/a.txt", "/source/dir"], Int64(2)), (.cut, ["/source/a.txt"], 1),
+            (.cut, ["/source/dir"], 2),
+        ] {
+            let fileSystem = MockWriteServiceFileSystem([
+                ("/source", .directory(dev: 1)), ("/source/a.txt", .file(size: 1, dev: 1)),
+                ("/source/dir", .directory(dev: 1)), ("/source/dir/in.txt", .file(size: 2, dev: 1)),
+                ("/target", .directory(dev: disk)),
+            ])
+            fileSystem.copyFileImpl = copyingSize(fileSystem)
+            let operation = try createResolvedOperation(fileSystem, mode: mode, sources: sources, into: "/target")
+
+            let events = await execute(fileSystem, operation, operationId: "no-originals-left")
+
+            #expect(events.last?.result?.status == .completed, "\(mode) \(sources)")
+            #expect(events.filter(\.finishing).isEmpty, "\(mode) \(sources)")
+        }
+    }
+
     // Stopped part way: what was copied by then is written out and its originals go, as they did when each went
     // right after its copy; the rest wasn't started.
     @Test func aStopStillWritesOutAndRemovesTheOriginalsOfWhatWasCopied() async throws {

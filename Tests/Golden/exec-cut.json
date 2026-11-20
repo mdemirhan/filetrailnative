@@ -2391,6 +2391,21 @@
             "completedItemCount": 1,
             "currentDestinationPath": null,
             "currentSourcePath": null,
+            "finishing": true,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 7,
+            "totalItemCount": 1
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 7,
+            "completedItemCount": 1,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
             "kind": "event",
             "mode": "cut",
             "operationId": "operation",
@@ -3429,6 +3444,21 @@
             "entries": [],
             "kind": "journal",
             "write": 3
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 24,
+            "completedItemCount": 3,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "finishing": true,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 24,
+            "totalItemCount": 3
           },
           {
             "analysisId": "analysis",

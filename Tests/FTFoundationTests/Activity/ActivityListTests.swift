@@ -93,6 +93,17 @@ struct ActivityListTests {
         #expect(ActivityList.indicator([]) == nil)
     }
 
+    // A move writing its copies out to the disk and removing the originals says so where the percent was: every
+    // item is counted by then.
+    @Test func aFileOperationAtItsEndSaysFinishing() {
+        let card = WriteOperationCardState(
+            action: .moveTo, stage: .finishing, completedItemCount: 20, totalItemCount: 20, completedByteCount: 200,
+            totalBytes: 200)
+        let items = ActivityList.items(operation: ("op", card), sizes: [])
+        #expect(items.first?.detail == "Finishing · 20 of 20 items")
+        #expect(items.first?.progress == 1 && items.first?.isWaiting == false)
+    }
+
     // A file operation waiting for another says so, with no progress yet.
     @Test func aQueuedFileOperationWaits() {
         let card = WriteOperationCardState(action: .moveTo, stage: .queued)

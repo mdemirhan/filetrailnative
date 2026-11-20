@@ -85,6 +85,20 @@ struct ProgressCardTextTests {
             ProgressCardText.byteLabel(state(bytes: 1_200_000_000, totalBytes: 3_000_000_000)) == "1.2 GB of 3.0 GB")
     }
 
+    // A move writing its copies out to the disk and removing the originals: the bytes are all counted, so the meta
+    // line says what it is doing, whether or not there were bytes to count.
+    @Test func theMetaLineSaysFinishingAtTheEndOfAMove() {
+        #expect(ProgressCardText.byteLabel(state(stage: .finishing)) == "Finishing…")
+        let text = ProgressCardText(
+            state(
+                stage: .finishing, done: 20, total: 20, bytes: 3_000_000_000, totalBytes: 3_000_000_000, target: "/d"),
+            currentPath: "/folder")
+        #expect(text.title == "Moving…")
+        #expect("\(text.metaStart) · \(text.metaEnd)" == "20 of 20 items · Finishing…")
+        #expect(text.percentLabel == "100%")
+        #expect(text.detailValue == "d")
+    }
+
     @Test func theCardNamesTheItemItIsOnAndHowManyAreDone() {
         let text = ProgressCardText(
             state(

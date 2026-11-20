@@ -416,13 +416,17 @@ public struct CopyPasteProgressEvent: Equatable, Sendable {
     public var currentDestinationPath: String?
     public var runtimeConflict: CopyPasteRuntimeConflict?
     public var result: CopyPasteOperationResult?
+    /// The paste has copied all it will and is still running: it writes the copies of a move to another disk out to
+    /// that disk, then removes their originals (see removeOriginalsLeftToTheEnd). Sent once, before that begins.
+    public var finishing: Bool
 
     public init(
         operationId: String, analysisId: String?, mode: CopyPasteMode, status: CopyPasteOperationStatus,
         completedItemCount: Int, totalItemCount: Int, completedByteCount: Int64, totalBytes: Int64?,
         currentSourcePath: String?, currentDestinationPath: String?, runtimeConflict: CopyPasteRuntimeConflict?,
-        result: CopyPasteOperationResult?
+        result: CopyPasteOperationResult?, finishing: Bool = false
     ) {
+        self.finishing = finishing
         self.operationId = operationId
         self.analysisId = analysisId
         self.mode = mode

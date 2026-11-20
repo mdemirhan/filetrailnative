@@ -22,6 +22,9 @@ public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
 public enum WriteOperationStage: String, Sendable, Equatable {
     case starting, queued, running, analyzing
     case awaitingResolution = "awaiting_resolution"
+    /// Nothing more is copied and the operation still runs: a move to another disk writing its copies out to that
+    /// disk and removing the originals, which Stop no longer stops.
+    case finishing
 }
 
 /// What the card shows of a running operation (`WriteOperationCardState`).
@@ -98,7 +101,8 @@ public struct ProgressCardText: Equatable, Sendable {
     }
 
     public static func byteLabel(_ state: WriteOperationCardState) -> String {
-        if let total = state.totalBytes {
+        // At its end the bytes are all counted: what it is doing says more.
+        if let total = state.totalBytes, state.stage != .finishing {
             return "\(SizeText.size(state.completedByteCount)) of \(SizeText.size(total))"
         }
         switch state.stage {
@@ -106,6 +110,7 @@ public struct ProgressCardText: Equatable, Sendable {
         case .queued: return "Waiting to start"
         case .awaitingResolution: return "Waiting for your answer"
         case .running: return "Working…"
+        case .finishing: return "Finishing…"
         }
     }
 

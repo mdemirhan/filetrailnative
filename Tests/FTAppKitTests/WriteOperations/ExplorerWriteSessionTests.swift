@@ -557,6 +557,24 @@ private func gatheredPasteEnded(lockedMoved: Bool) -> WriteOperationEvent {
         #expect(fixture.events.filter { if case .ended = $0 { true } else { false } }.count == 1)
     }
 
+    // A move at its end, writing its copies out and removing the originals: the mark comes from the write service's
+    // event to the window's, and the card is at "finishing" until the next plain progress or the end.
+    @Test func theCardIsAtFinishingWhileAMoveWritesOutAndRemovesTheOriginals() throws {
+        let fixture = Fixture()
+        var running = otherWindowsCopy(.running)
+        running.action = .paste
+        fixture.session.receive(.adopted(WriteOperationAdoption(operationId: "other-op", event: running)))
+        #expect(fixture.session.card?.stage == .running)
+
+        var atItsEnd = pasteEvent("other-op", .running)
+        atItsEnd.finishing = true
+        let event = WriteOperationEvent.of(atItsEnd, action: .paste)
+        #expect(event.finishing && event.status == .running)
+        fixture.session.receive(.progress(event))
+        #expect(fixture.session.card?.stage == .finishing)
+        #expect(!WriteOperationEvent.of(pasteEvent("other-op", .running), action: .paste).finishing)
+    }
+
     @Test func showsItHereOnceThisWindowTakesItOverAndLeavesTheSelectionAlone() throws {
         let fixture = Fixture()
         fixture.session.otherWindowProgress(otherWindowsCopy(.running))
