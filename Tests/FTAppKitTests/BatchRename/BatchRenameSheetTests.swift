@@ -152,12 +152,10 @@ extension ExplorerWindowlessTests {
             #expect(!fixture.sheet.findField.isInvalid)
             fixture.type(fixture.sheet.findField, "(")
             #expect(fixture.sheet.findField.isInvalid)
-            // The message under the field, without the regex engine's own words for the pattern.
+            // The message under the field.
             let message = fixture.sheet.findMessage.stringValue
             #expect(!fixture.sheet.findMessage.isHidden)
-            #expect(message.hasPrefix("The pattern isn\u{2019}t valid: "))
-            #expect(message.dropFirst("The pattern isn\u{2019}t valid: ".count).first?.isLetter == true)
-            #expect(!message.contains("Invalid regular expression") && !message.contains("/(/"))
+            #expect(message == "The pattern isn\u{2019}t valid.")
             #expect(fixture.sheet.findField.field.accessibilityHelp() == message)
             #expect(fixture.summary == message)
             #expect(!fixture.sheet.renameButton.isEnabled)

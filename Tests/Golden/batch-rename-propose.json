@@ -29692,30 +29692,14 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "|Stra|ß|e|.txt",
+            "name": "|Straße|.txt",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "e",
+                "text": "Straße",
                 "changed": false
               },
               {
@@ -29752,18 +29736,14 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁ|le|.txt",
+            "name": "|ﬁle|.txt",
             "segments": [
-              {
-                "text": "ﬁ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "le",
+                "text": "ﬁle",
                 "changed": false
               },
               {
@@ -29778,18 +29758,14 @@
           },
           {
             "kind": "renamed",
-            "name": "İ|stanbul|.txt",
+            "name": "|İstanbul|.txt",
             "segments": [
-              {
-                "text": "İ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "stanbul",
+                "text": "İstanbul",
                 "changed": false
               },
               {
@@ -29803,7 +29779,26 @@
             ]
           },
           {
-            "kind": "unchanged"
+            "kind": "renamed",
+            "name": "|Σίσυφος|.md",
+            "segments": [
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "Σίσυφος",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": ".md",
+                "changed": false
+              }
+            ]
           },
           {
             "kind": "renamed",
@@ -29829,14 +29824,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.pdf",
+            "name": "|Café| |menu|.pdf",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -29844,7 +29839,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -29867,14 +29862,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.pdf",
+            "name": "|Café| |menu|.pdf",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -29882,7 +29877,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -30025,18 +30020,14 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁ|le|.txt",
+            "name": "|ﬁle|.txt",
             "segments": [
-              {
-                "text": "ﬁ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "le",
+                "text": "ﬁle",
                 "changed": false
               },
               {
@@ -30179,30 +30170,14 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "|Stra|ß|e|.|txt|",
+            "name": "|Straße|.|txt|",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "e",
+                "text": "Straße",
                 "changed": false
               },
               {
@@ -30263,18 +30238,14 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁ|le|.|txt|",
+            "name": "|ﬁle|.|txt|",
             "segments": [
-              {
-                "text": "ﬁ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "le",
+                "text": "ﬁle",
                 "changed": false
               },
               {
@@ -30301,18 +30272,14 @@
           },
           {
             "kind": "renamed",
-            "name": "İ|stanbul|.|txt|",
+            "name": "|İstanbul|.|txt|",
             "segments": [
-              {
-                "text": "İ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "stanbul",
+                "text": "İstanbul",
                 "changed": false
               },
               {
@@ -30339,10 +30306,22 @@
           },
           {
             "kind": "renamed",
-            "name": "Σίσυφος.|md|",
+            "name": "|Σίσυφος|.|md|",
             "segments": [
               {
-                "text": "Σίσυφος.",
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "Σίσυφος",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": ".",
                 "changed": false
               },
               {
@@ -30395,14 +30374,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.|pdf|",
+            "name": "|Café| |menu|.|pdf|",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -30410,7 +30389,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -30445,14 +30424,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.|pdf|",
+            "name": "|Café| |menu|.|pdf|",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -30460,7 +30439,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -30825,30 +30804,14 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "|Stra|ß|e|.txt",
+            "name": "|Straße|.txt",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "e",
+                "text": "Straße",
                 "changed": false
               },
               {
@@ -30885,18 +30848,14 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁ|le|.txt",
+            "name": "|ﬁle|.txt",
             "segments": [
-              {
-                "text": "ﬁ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "le",
+                "text": "ﬁle",
                 "changed": false
               },
               {
@@ -30911,18 +30870,14 @@
           },
           {
             "kind": "renamed",
-            "name": "İ|stanbul|.txt",
+            "name": "|İstanbul|.txt",
             "segments": [
-              {
-                "text": "İ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "stanbul",
+                "text": "İstanbul",
                 "changed": false
               },
               {
@@ -30936,7 +30891,26 @@
             ]
           },
           {
-            "kind": "unchanged"
+            "kind": "renamed",
+            "name": "|Σίσυφος|.md",
+            "segments": [
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "Σίσυφος",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": ".md",
+                "changed": false
+              }
+            ]
           },
           {
             "kind": "renamed",
@@ -30962,14 +30936,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.pdf",
+            "name": "|Café| |menu|.pdf",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -30977,7 +30951,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -31000,14 +30974,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.pdf",
+            "name": "|Café| |menu|.pdf",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -31015,7 +30989,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -31158,14 +31132,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|r|é|sum|é.docx",
+            "name": "|résumé|.docx",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "r",
+                "text": "résumé",
                 "changed": false
               },
               {
@@ -31173,23 +31147,7 @@
                 "changed": true
               },
               {
-                "text": "é",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "sum",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "é.docx",
+                "text": ".docx",
                 "changed": false
               }
             ]
@@ -31324,30 +31282,14 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "|Stra|ß|e|.|txt|",
+            "name": "|Straße|.|txt|",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "e",
+                "text": "Straße",
                 "changed": false
               },
               {
@@ -31408,18 +31350,14 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁ|le|.|txt|",
+            "name": "|ﬁle|.|txt|",
             "segments": [
-              {
-                "text": "ﬁ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "le",
+                "text": "ﬁle",
                 "changed": false
               },
               {
@@ -31446,18 +31384,14 @@
           },
           {
             "kind": "renamed",
-            "name": "İ|stanbul|.|txt|",
+            "name": "|İstanbul|.|txt|",
             "segments": [
-              {
-                "text": "İ",
-                "changed": false
-              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "stanbul",
+                "text": "İstanbul",
                 "changed": false
               },
               {
@@ -31484,10 +31418,22 @@
           },
           {
             "kind": "renamed",
-            "name": "Σίσυφος.|md|",
+            "name": "|Σίσυφος|.|md|",
             "segments": [
               {
-                "text": "Σίσυφος.",
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "Σίσυφος",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": ".",
                 "changed": false
               },
               {
@@ -31540,14 +31486,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.|pdf|",
+            "name": "|Café| |menu|.|pdf|",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -31555,7 +31501,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -31590,14 +31536,14 @@
           },
           {
             "kind": "renamed",
-            "name": "|Caf|é |menu|.|pdf|",
+            "name": "|Café| |menu|.|pdf|",
             "segments": [
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
@@ -31605,7 +31551,7 @@
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -31970,7 +31916,7 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "S|t|r|aße.txt",
+            "name": "S|t|r|a|ß|e.txt",
             "segments": [
               {
                 "text": "S",
@@ -31997,7 +31943,23 @@
                 "changed": true
               },
               {
-                "text": "aße.txt",
+                "text": "a",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "ß",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "e.txt",
                 "changed": false
               }
             ]
@@ -32062,14 +32024,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|ﬁl|e.txt",
+            "name": "ﬁ|l|e.txt",
             "segments": [
+              {
+                "text": "ﬁ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "ﬁl",
+                "text": "l",
                 "changed": false
               },
               {
@@ -32084,14 +32050,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|İs|t|a|n|b|u|l.txt",
+            "name": "İ|s|t|a|n|b|u|l.txt",
             "segments": [
+              {
+                "text": "İ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "İs",
+                "text": "s",
                 "changed": false
               },
               {
@@ -32146,12 +32116,8 @@
           },
           {
             "kind": "renamed",
-            "name": "|Σ|ί|σ|υ|φ|ο|ς|.md",
+            "name": "Σ|ί|σ|υ|φ|ο|ς.md",
             "segments": [
-              {
-                "text": "|",
-                "changed": true
-              },
               {
                 "text": "Σ",
                 "changed": false
@@ -32201,15 +32167,7 @@
                 "changed": true
               },
               {
-                "text": "ς",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": ".md",
+                "text": "ς.md",
                 "changed": false
               }
             ]
@@ -32266,7 +32224,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.pdf",
+            "name": "C|a|f|é m|e|n|u.pdf",
             "segments": [
               {
                 "text": "C",
@@ -32285,7 +32243,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -32293,7 +32251,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -32324,7 +32282,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.pdf",
+            "name": "C|a|f|é m|e|n|u.pdf",
             "segments": [
               {
                 "text": "C",
@@ -32343,7 +32301,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -32351,7 +32309,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -32525,26 +32483,7 @@
             ]
           },
           {
-            "kind": "renamed",
-            "name": "|ǅ|.txt",
-            "segments": [
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "ǅ",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           }
         ]
       }
@@ -32676,7 +32615,7 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "S|t|r|aße.t|x|t",
+            "name": "S|t|r|a|ß|e.t|x|t",
             "segments": [
               {
                 "text": "S",
@@ -32703,7 +32642,23 @@
                 "changed": true
               },
               {
-                "text": "aße.t",
+                "text": "a",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "ß",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "e.t",
                 "changed": false
               },
               {
@@ -32800,14 +32755,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|ﬁl|e.t|x|t",
+            "name": "ﬁ|l|e.t|x|t",
             "segments": [
+              {
+                "text": "ﬁ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "ﬁl",
+                "text": "l",
                 "changed": false
               },
               {
@@ -32838,14 +32797,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|İs|t|a|n|b|u|l.t|x|t",
+            "name": "İ|s|t|a|n|b|u|l.t|x|t",
             "segments": [
+              {
+                "text": "İ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "İs",
+                "text": "s",
                 "changed": false
               },
               {
@@ -32916,12 +32879,8 @@
           },
           {
             "kind": "renamed",
-            "name": "|Σ|ί|σ|υ|φ|ο|ς|.m|d",
+            "name": "Σ|ί|σ|υ|φ|ο|ς.m|d",
             "segments": [
-              {
-                "text": "|",
-                "changed": true
-              },
               {
                 "text": "Σ",
                 "changed": false
@@ -32971,15 +32930,7 @@
                 "changed": true
               },
               {
-                "text": "ς",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": ".m",
+                "text": "ς.m",
                 "changed": false
               },
               {
@@ -33060,7 +33011,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.p|d|f",
+            "name": "C|a|f|é m|e|n|u.p|d|f",
             "segments": [
               {
                 "text": "C",
@@ -33079,7 +33030,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -33087,7 +33038,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -33134,7 +33085,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.p|d|f",
+            "name": "C|a|f|é m|e|n|u.p|d|f",
             "segments": [
               {
                 "text": "C",
@@ -33153,7 +33104,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -33161,7 +33112,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -33352,14 +33303,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|ﬁl|e.t|x|t",
+            "name": "ﬁ|l|e.t|x|t",
             "segments": [
+              {
+                "text": "ﬁ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "ﬁl",
+                "text": "l",
                 "changed": false
               },
               {
@@ -33390,10 +33345,26 @@
           },
           {
             "kind": "renamed",
-            "name": "rés|u|mé|.d|o|c|x",
+            "name": "r|é|s|u|m|é.d|o|c|x",
             "segments": [
               {
-                "text": "rés",
+                "text": "r",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "é",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "s",
                 "changed": false
               },
               {
@@ -33409,7 +33380,7 @@
                 "changed": true
               },
               {
-                "text": "mé",
+                "text": "m",
                 "changed": false
               },
               {
@@ -33417,7 +33388,7 @@
                 "changed": true
               },
               {
-                "text": ".d",
+                "text": "é.d",
                 "changed": false
               },
               {
@@ -33579,7 +33550,7 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "S|t|r|aße.txt",
+            "name": "S|t|r|a|ß|e.txt",
             "segments": [
               {
                 "text": "S",
@@ -33606,7 +33577,23 @@
                 "changed": true
               },
               {
-                "text": "aße.txt",
+                "text": "a",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "ß",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "e.txt",
                 "changed": false
               }
             ]
@@ -33671,14 +33658,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|ﬁl|e.txt",
+            "name": "ﬁ|l|e.txt",
             "segments": [
+              {
+                "text": "ﬁ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "ﬁl",
+                "text": "l",
                 "changed": false
               },
               {
@@ -33693,14 +33684,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|İs|t|a|n|b|u|l.txt",
+            "name": "İ|s|t|a|n|b|u|l.txt",
             "segments": [
+              {
+                "text": "İ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "İs",
+                "text": "s",
                 "changed": false
               },
               {
@@ -33755,12 +33750,8 @@
           },
           {
             "kind": "renamed",
-            "name": "|Σ|ί|σ|υ|φ|ο|ς|.md",
+            "name": "Σ|ί|σ|υ|φ|ο|ς.md",
             "segments": [
-              {
-                "text": "|",
-                "changed": true
-              },
               {
                 "text": "Σ",
                 "changed": false
@@ -33810,15 +33801,7 @@
                 "changed": true
               },
               {
-                "text": "ς",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": ".md",
+                "text": "ς.md",
                 "changed": false
               }
             ]
@@ -33875,7 +33858,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.pdf",
+            "name": "C|a|f|é m|e|n|u.pdf",
             "segments": [
               {
                 "text": "C",
@@ -33894,7 +33877,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -33902,7 +33885,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -33933,7 +33916,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.pdf",
+            "name": "C|a|f|é m|e|n|u.pdf",
             "segments": [
               {
                 "text": "C",
@@ -33952,7 +33935,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -33960,7 +33943,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -34125,26 +34108,7 @@
             "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "|ŉ|.txt",
-            "segments": [
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": "ŉ",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
             "kind": "renamed",
@@ -34326,7 +34290,7 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "S|t|r|aße.t|x|t",
+            "name": "S|t|r|a|ß|e.t|x|t",
             "segments": [
               {
                 "text": "S",
@@ -34353,7 +34317,23 @@
                 "changed": true
               },
               {
-                "text": "aße.t",
+                "text": "a",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "ß",
+                "changed": false
+              },
+              {
+                "text": "|",
+                "changed": true
+              },
+              {
+                "text": "e.t",
                 "changed": false
               },
               {
@@ -34450,14 +34430,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|ﬁl|e.t|x|t",
+            "name": "ﬁ|l|e.t|x|t",
             "segments": [
+              {
+                "text": "ﬁ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "ﬁl",
+                "text": "l",
                 "changed": false
               },
               {
@@ -34488,14 +34472,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|İs|t|a|n|b|u|l.t|x|t",
+            "name": "İ|s|t|a|n|b|u|l.t|x|t",
             "segments": [
+              {
+                "text": "İ",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "İs",
+                "text": "s",
                 "changed": false
               },
               {
@@ -34566,12 +34554,8 @@
           },
           {
             "kind": "renamed",
-            "name": "|Σ|ί|σ|υ|φ|ο|ς|.m|d",
+            "name": "Σ|ί|σ|υ|φ|ο|ς.m|d",
             "segments": [
-              {
-                "text": "|",
-                "changed": true
-              },
               {
                 "text": "Σ",
                 "changed": false
@@ -34621,15 +34605,7 @@
                 "changed": true
               },
               {
-                "text": "ς",
-                "changed": false
-              },
-              {
-                "text": "|",
-                "changed": true
-              },
-              {
-                "text": ".m",
+                "text": "ς.m",
                 "changed": false
               },
               {
@@ -34710,7 +34686,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.p|d|f",
+            "name": "C|a|f|é m|e|n|u.p|d|f",
             "segments": [
               {
                 "text": "C",
@@ -34729,7 +34705,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -34737,7 +34713,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -34784,7 +34760,7 @@
           },
           {
             "kind": "renamed",
-            "name": "C|a|fé| m|e|n|u.p|d|f",
+            "name": "C|a|f|é m|e|n|u.p|d|f",
             "segments": [
               {
                 "text": "C",
@@ -34803,7 +34779,7 @@
                 "changed": true
               },
               {
-                "text": "fé",
+                "text": "f",
                 "changed": false
               },
               {
@@ -34811,7 +34787,7 @@
                 "changed": true
               },
               {
-                "text": " m",
+                "text": "é m",
                 "changed": false
               },
               {
@@ -34858,14 +34834,18 @@
           },
           {
             "kind": "renamed",
-            "name": "|él|a|n v|i|t|a|l",
+            "name": "é|l|a|n v|i|t|a|l",
             "segments": [
+              {
+                "text": "é",
+                "changed": false
+              },
               {
                 "text": "|",
                 "changed": true
               },
               {
-                "text": "él",
+                "text": "l",
                 "changed": false
               },
               {
@@ -48401,18 +48381,10 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "wwwwßw.txt",
+            "name": "wwwwww.txt",
             "segments": [
               {
-                "text": "wwww",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "w",
+                "text": "wwwwww",
                 "changed": true
               },
               {
@@ -48437,14 +48409,10 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁww.txt",
+            "name": "www.txt",
             "segments": [
               {
-                "text": "ﬁ",
-                "changed": false
-              },
-              {
-                "text": "ww",
+                "text": "www",
                 "changed": true
               },
               {
@@ -48455,79 +48423,28 @@
           },
           {
             "kind": "renamed",
-            "name": "İwwwwwww.txt",
+            "name": "wwwwwwww.txt",
             "segments": [
               {
-                "text": "İ",
-                "changed": false
+                "text": "wwwwwwww",
+                "changed": true
               },
+              {
+                "text": ".txt",
+                "changed": false
+              }
+            ]
+          },
+          {
+            "kind": "renamed",
+            "name": "wwwwwww.md",
+            "segments": [
               {
                 "text": "wwwwwww",
                 "changed": true
               },
               {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "unchanged"
-          },
-          {
-            "kind": "renamed",
-            "name": "wwwwww.txt",
-            "segments": [
-              {
-                "text": "wwwwww",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "wwwé wwww.pdf",
-            "segments": [
-              {
-                "text": "www",
-                "changed": true
-              },
-              {
-                "text": "é ",
-                "changed": false
-              },
-              {
-                "text": "wwww",
-                "changed": true
-              },
-              {
-                "text": ".pdf",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "wwwé wwww.pdf",
-            "segments": [
-              {
-                "text": "www",
-                "changed": true
-              },
-              {
-                "text": "é ",
-                "changed": false
-              },
-              {
-                "text": "wwww",
-                "changed": true
-              },
-              {
-                "text": ".pdf",
+                "text": ".md",
                 "changed": false
               }
             ]
@@ -48548,22 +48465,72 @@
           },
           {
             "kind": "renamed",
-            "name": "wéwwwé.docx",
+            "name": "wwww wwww.pdf",
             "segments": [
               {
-                "text": "w",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é",
+                "text": " ",
                 "changed": false
               },
               {
-                "text": "www",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é.docx",
+                "text": ".pdf",
+                "changed": false
+              }
+            ]
+          },
+          {
+            "kind": "renamed",
+            "name": "wwww wwww.pdf",
+            "segments": [
+              {
+                "text": "wwww",
+                "changed": true
+              },
+              {
+                "text": " ",
+                "changed": false
+              },
+              {
+                "text": "wwww",
+                "changed": true
+              },
+              {
+                "text": ".pdf",
+                "changed": false
+              }
+            ]
+          },
+          {
+            "kind": "renamed",
+            "name": "wwwwww.txt",
+            "segments": [
+              {
+                "text": "wwwwww",
+                "changed": true
+              },
+              {
+                "text": ".txt",
+                "changed": false
+              }
+            ]
+          },
+          {
+            "kind": "renamed",
+            "name": "wwwwww.docx",
+            "segments": [
+              {
+                "text": "wwwwww",
+                "changed": true
+              },
+              {
+                "text": ".docx",
                 "changed": false
               }
             ]
@@ -48584,14 +48551,10 @@
           },
           {
             "kind": "renamed",
-            "name": "ǆwwwww.txt",
+            "name": "wwwwww.txt",
             "segments": [
               {
-                "text": "ǆ",
-                "changed": false
-              },
-              {
-                "text": "wwwww",
+                "text": "wwwwww",
                 "changed": true
               },
               {
@@ -48748,18 +48711,10 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "wwwwßw.www",
+            "name": "wwwwww.www",
             "segments": [
               {
-                "text": "wwww",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "w",
+                "text": "wwwwww",
                 "changed": true
               },
               {
@@ -48792,14 +48747,10 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁww.www",
+            "name": "www.www",
             "segments": [
               {
-                "text": "ﬁ",
-                "changed": false
-              },
-              {
-                "text": "ww",
+                "text": "www",
                 "changed": true
               },
               {
@@ -48814,32 +48765,32 @@
           },
           {
             "kind": "renamed",
-            "name": "İwwwwwww.www",
+            "name": "wwwwwwww.www",
             "segments": [
               {
-                "text": "İ",
+                "text": "wwwwwwww",
+                "changed": true
+              },
+              {
+                "text": ".",
                 "changed": false
               },
+              {
+                "text": "www",
+                "changed": true
+              }
+            ]
+          },
+          {
+            "kind": "renamed",
+            "name": "wwwwwww.ww",
+            "segments": [
               {
                 "text": "wwwwwww",
                 "changed": true
               },
               {
                 "text": ".",
-                "changed": false
-              },
-              {
-                "text": "www",
-                "changed": true
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "Σίσυφος.ww",
-            "segments": [
-              {
-                "text": "Σίσυφος.",
                 "changed": false
               },
               {
@@ -48868,14 +48819,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wwwé wwww.www",
+            "name": "wwww wwww.www",
             "segments": [
               {
-                "text": "www",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -48894,14 +48845,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wwwé wwww.www",
+            "name": "wwww wwww.www",
             "segments": [
               {
-                "text": "www",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -48920,10 +48871,14 @@
           },
           {
             "kind": "renamed",
-            "name": "日本語.www",
+            "name": "www.www",
             "segments": [
               {
-                "text": "日本語.",
+                "text": "www",
+                "changed": true
+              },
+              {
+                "text": ".",
                 "changed": false
               },
               {
@@ -49138,18 +49093,10 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "wwwwßw.txt",
+            "name": "wwwwww.txt",
             "segments": [
               {
-                "text": "wwww",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "w",
+                "text": "wwwwww",
                 "changed": true
               },
               {
@@ -49174,14 +49121,10 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁww.txt",
+            "name": "www.txt",
             "segments": [
               {
-                "text": "ﬁ",
-                "changed": false
-              },
-              {
-                "text": "ww",
+                "text": "www",
                 "changed": true
               },
               {
@@ -49192,14 +49135,10 @@
           },
           {
             "kind": "renamed",
-            "name": "İwwwwwww.txt",
+            "name": "wwwwwwww.txt",
             "segments": [
               {
-                "text": "İ",
-                "changed": false
-              },
-              {
-                "text": "wwwwwww",
+                "text": "wwwwwwww",
                 "changed": true
               },
               {
@@ -49209,7 +49148,18 @@
             ]
           },
           {
-            "kind": "unchanged"
+            "kind": "renamed",
+            "name": "wwwwwww.md",
+            "segments": [
+              {
+                "text": "wwwwwww",
+                "changed": true
+              },
+              {
+                "text": ".md",
+                "changed": false
+              }
+            ]
           },
           {
             "kind": "renamed",
@@ -49227,14 +49177,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wwwé wwww.pdf",
+            "name": "wwww wwww.pdf",
             "segments": [
               {
-                "text": "www",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -49249,14 +49199,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wwwé wwww.pdf",
+            "name": "wwww wwww.pdf",
             "segments": [
               {
-                "text": "www",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -49271,14 +49221,10 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁww.txt",
+            "name": "www.txt",
             "segments": [
               {
-                "text": "ﬁ",
-                "changed": false
-              },
-              {
-                "text": "ww",
+                "text": "www",
                 "changed": true
               },
               {
@@ -49335,22 +49281,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wéwwwé.docx",
+            "name": "wwwwww.docx",
             "segments": [
               {
-                "text": "w",
+                "text": "wwwwww",
                 "changed": true
               },
               {
-                "text": "é",
-                "changed": false
-              },
-              {
-                "text": "www",
-                "changed": true
-              },
-              {
-                "text": "é.docx",
+                "text": ".docx",
                 "changed": false
               }
             ]
@@ -49485,18 +49423,10 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "wwwwßw.www",
+            "name": "wwwwww.www",
             "segments": [
               {
-                "text": "wwww",
-                "changed": true
-              },
-              {
-                "text": "ß",
-                "changed": false
-              },
-              {
-                "text": "w",
+                "text": "wwwwww",
                 "changed": true
               },
               {
@@ -49529,14 +49459,10 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁww.www",
+            "name": "www.www",
             "segments": [
               {
-                "text": "ﬁ",
-                "changed": false
-              },
-              {
-                "text": "ww",
+                "text": "www",
                 "changed": true
               },
               {
@@ -49551,32 +49477,32 @@
           },
           {
             "kind": "renamed",
-            "name": "İwwwwwww.www",
+            "name": "wwwwwwww.www",
             "segments": [
               {
-                "text": "İ",
+                "text": "wwwwwwww",
+                "changed": true
+              },
+              {
+                "text": ".",
                 "changed": false
               },
+              {
+                "text": "www",
+                "changed": true
+              }
+            ]
+          },
+          {
+            "kind": "renamed",
+            "name": "wwwwwww.ww",
+            "segments": [
               {
                 "text": "wwwwwww",
                 "changed": true
               },
               {
                 "text": ".",
-                "changed": false
-              },
-              {
-                "text": "www",
-                "changed": true
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "Σίσυφος.ww",
-            "segments": [
-              {
-                "text": "Σίσυφος.",
                 "changed": false
               },
               {
@@ -49605,14 +49531,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wwwé wwww.www",
+            "name": "wwww wwww.www",
             "segments": [
               {
-                "text": "www",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -49631,14 +49557,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wwwé wwww.www",
+            "name": "wwww wwww.www",
             "segments": [
               {
-                "text": "www",
+                "text": "wwww",
                 "changed": true
               },
               {
-                "text": "é ",
+                "text": " ",
                 "changed": false
               },
               {
@@ -49657,14 +49583,10 @@
           },
           {
             "kind": "renamed",
-            "name": "ﬁww.www",
+            "name": "www.www",
             "segments": [
               {
-                "text": "ﬁ",
-                "changed": false
-              },
-              {
-                "text": "ww",
+                "text": "www",
                 "changed": true
               },
               {
@@ -49679,10 +49601,14 @@
           },
           {
             "kind": "renamed",
-            "name": "Σίσυφος.ww",
+            "name": "wwwwwww.ww",
             "segments": [
               {
-                "text": "Σίσυφος.",
+                "text": "wwwwwww",
+                "changed": true
+              },
+              {
+                "text": ".",
                 "changed": false
               },
               {
@@ -49693,22 +49619,14 @@
           },
           {
             "kind": "renamed",
-            "name": "wéwwwé.wwww",
+            "name": "wwwwww.wwww",
             "segments": [
               {
-                "text": "w",
+                "text": "wwwwww",
                 "changed": true
               },
               {
-                "text": "é",
-                "changed": false
-              },
-              {
-                "text": "www",
-                "changed": true
-              },
-              {
-                "text": "é.",
+                "text": ".",
                 "changed": false
               },
               {
@@ -51322,7 +51240,22 @@
         "settingsError": null,
         "names": [
           {
-            "kind": "unchanged"
+            "kind": "renamed",
+            "name": "Stra#e.txt",
+            "segments": [
+              {
+                "text": "Stra",
+                "changed": false
+              },
+              {
+                "text": "#",
+                "changed": true
+              },
+              {
+                "text": "e.txt",
+                "changed": false
+              }
+            ]
           },
           {
             "kind": "renamed",
@@ -51504,7 +51437,22 @@
         "settingsError": null,
         "names": [
           {
-            "kind": "unchanged"
+            "kind": "renamed",
+            "name": "Stra#e.txt",
+            "segments": [
+              {
+                "text": "Stra",
+                "changed": false
+              },
+              {
+                "text": "#",
+                "changed": true
+              },
+              {
+                "text": "e.txt",
+                "changed": false
+              }
+            ]
           },
           {
             "kind": "renamed",
@@ -52020,81 +51968,33 @@
         "settingsError": null,
         "names": [
           {
-            "kind": "renamed",
-            "name": "Stra-e.txt",
-            "segments": [
-              {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "e.txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
           },
           {
             "kind": "unchanged"
           },
           {
             "kind": "renamed",
-            "name": "-le.txt",
+            "name": "Café-menu.pdf",
             "segments": [
+              {
+                "text": "Café",
+                "changed": false
+              },
               {
                 "text": "-",
-                "changed": true
-              },
-              {
-                "text": "le.txt",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "-stanbul.txt",
-            "segments": [
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "stanbul.txt",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "-------.md",
-            "segments": [
-              {
-                "text": "-------",
-                "changed": true
-              },
-              {
-                "text": ".md",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "unchanged"
-          },
-          {
-            "kind": "renamed",
-            "name": "Caf--menu.pdf",
-            "segments": [
-              {
-                "text": "Caf",
-                "changed": false
-              },
-              {
-                "text": "--",
                 "changed": true
               },
               {
@@ -52105,14 +52005,14 @@
           },
           {
             "kind": "renamed",
-            "name": "Caf--menu.pdf",
+            "name": "Café-menu.pdf",
             "segments": [
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
-                "text": "--",
+                "text": "-",
                 "changed": true
               },
               {
@@ -52125,18 +52025,7 @@
             "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "-stanbul.txt",
-            "segments": [
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "stanbul.txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
             "kind": "renamed",
@@ -52157,18 +52046,7 @@
             ]
           },
           {
-            "kind": "renamed",
-            "name": "-.txt",
-            "segments": [
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
             "kind": "unchanged"
@@ -52303,18 +52181,10 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "Stra-e-txt",
+            "name": "Straße-txt",
             "segments": [
               {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "e",
+                "text": "Straße",
                 "changed": false
               },
               {
@@ -52347,14 +52217,10 @@
           },
           {
             "kind": "renamed",
-            "name": "-le-txt",
+            "name": "ﬁle-txt",
             "segments": [
               {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "le",
+                "text": "ﬁle",
                 "changed": false
               },
               {
@@ -52369,14 +52235,10 @@
           },
           {
             "kind": "renamed",
-            "name": "-stanbul-txt",
+            "name": "İstanbul-txt",
             "segments": [
               {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "stanbul",
+                "text": "İstanbul",
                 "changed": false
               },
               {
@@ -52391,10 +52253,14 @@
           },
           {
             "kind": "renamed",
-            "name": "--------md",
+            "name": "Σίσυφος-md",
             "segments": [
               {
-                "text": "--------",
+                "text": "Σίσυφος",
+                "changed": false
+              },
+              {
+                "text": "-",
                 "changed": true
               },
               {
@@ -52423,14 +52289,14 @@
           },
           {
             "kind": "renamed",
-            "name": "Caf--menu-pdf",
+            "name": "Café-menu-pdf",
             "segments": [
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
-                "text": "--",
+                "text": "-",
                 "changed": true
               },
               {
@@ -52449,14 +52315,14 @@
           },
           {
             "kind": "renamed",
-            "name": "Caf--menu-pdf",
+            "name": "Café-menu-pdf",
             "segments": [
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
-                "text": "--",
+                "text": "-",
                 "changed": true
               },
               {
@@ -52724,81 +52590,33 @@
         "settingsError": null,
         "names": [
           {
-            "kind": "renamed",
-            "name": "Stra-e.txt",
-            "segments": [
-              {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "e.txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
+          },
+          {
+            "kind": "unchanged"
           },
           {
             "kind": "unchanged"
           },
           {
             "kind": "renamed",
-            "name": "-le.txt",
+            "name": "Café-menu.pdf",
             "segments": [
+              {
+                "text": "Café",
+                "changed": false
+              },
               {
                 "text": "-",
-                "changed": true
-              },
-              {
-                "text": "le.txt",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "-stanbul.txt",
-            "segments": [
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "stanbul.txt",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "renamed",
-            "name": "-------.md",
-            "segments": [
-              {
-                "text": "-------",
-                "changed": true
-              },
-              {
-                "text": ".md",
-                "changed": false
-              }
-            ]
-          },
-          {
-            "kind": "unchanged"
-          },
-          {
-            "kind": "renamed",
-            "name": "Caf--menu.pdf",
-            "segments": [
-              {
-                "text": "Caf",
-                "changed": false
-              },
-              {
-                "text": "--",
                 "changed": true
               },
               {
@@ -52809,14 +52627,14 @@
           },
           {
             "kind": "renamed",
-            "name": "Caf--menu.pdf",
+            "name": "Café-menu.pdf",
             "segments": [
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
-                "text": "--",
+                "text": "-",
                 "changed": true
               },
               {
@@ -52844,32 +52662,10 @@
             ]
           },
           {
-            "kind": "renamed",
-            "name": "-.txt",
-            "segments": [
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "---.txt",
-            "segments": [
-              {
-                "text": "---",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
             "kind": "unchanged"
@@ -53007,18 +52803,10 @@
         "names": [
           {
             "kind": "renamed",
-            "name": "Stra-e-txt",
+            "name": "Straße-txt",
             "segments": [
               {
-                "text": "Stra",
-                "changed": false
-              },
-              {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "e",
+                "text": "Straße",
                 "changed": false
               },
               {
@@ -53051,14 +52839,10 @@
           },
           {
             "kind": "renamed",
-            "name": "-le-txt",
+            "name": "ﬁle-txt",
             "segments": [
               {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "le",
+                "text": "ﬁle",
                 "changed": false
               },
               {
@@ -53073,14 +52857,10 @@
           },
           {
             "kind": "renamed",
-            "name": "-stanbul-txt",
+            "name": "İstanbul-txt",
             "segments": [
               {
-                "text": "-",
-                "changed": true
-              },
-              {
-                "text": "stanbul",
+                "text": "İstanbul",
                 "changed": false
               },
               {
@@ -53095,10 +52875,14 @@
           },
           {
             "kind": "renamed",
-            "name": "--------md",
+            "name": "Σίσυφος-md",
             "segments": [
               {
-                "text": "--------",
+                "text": "Σίσυφος",
+                "changed": false
+              },
+              {
+                "text": "-",
                 "changed": true
               },
               {
@@ -53127,14 +52911,14 @@
           },
           {
             "kind": "renamed",
-            "name": "Caf--menu-pdf",
+            "name": "Café-menu-pdf",
             "segments": [
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
-                "text": "--",
+                "text": "-",
                 "changed": true
               },
               {
@@ -53153,14 +52937,14 @@
           },
           {
             "kind": "renamed",
-            "name": "Caf--menu-pdf",
+            "name": "Café-menu-pdf",
             "segments": [
               {
-                "text": "Caf",
+                "text": "Café",
                 "changed": false
               },
               {
-                "text": "--",
+                "text": "-",
                 "changed": true
               },
               {
@@ -53215,10 +52999,14 @@
           },
           {
             "kind": "renamed",
-            "name": "--txt",
+            "name": "ŉ-txt",
             "segments": [
               {
-                "text": "--",
+                "text": "ŉ",
+                "changed": false
+              },
+              {
+                "text": "-",
                 "changed": true
               },
               {
@@ -54654,189 +54442,46 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
-            "kind": "renamed",
-            "name": ".......txt",
-            "segments": [
-              {
-                "text": "......",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "........TXT",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              },
-              {
-                "text": ".TXT",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "....txt",
-            "segments": [
-              {
-                "text": "...",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".........txt",
-            "segments": [
-              {
-                "text": "........",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "........md",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              },
-              {
-                "text": ".md",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".......txt",
-            "segments": [
-              {
-                "text": "......",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........pdf",
-            "segments": [
-              {
-                "text": ".........",
-                "changed": true
-              },
-              {
-                "text": ".pdf",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........pdf",
-            "segments": [
-              {
-                "text": ".........",
-                "changed": true
-              },
-              {
-                "text": ".pdf",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "......TXT",
-            "segments": [
-              {
-                "text": ".....",
-                "changed": true
-              },
-              {
-                "text": ".TXT",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".......docx",
-            "segments": [
-              {
-                "text": "......",
-                "changed": true
-              },
-              {
-                "text": ".docx",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".......txt",
-            "segments": [
-              {
-                "text": "......",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".....jpeg",
-            "segments": [
-              {
-                "text": "....",
-                "changed": true
-              },
-              {
-                "text": ".jpeg",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "...........txt",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           }
         ]
       }
@@ -54964,137 +54609,46 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "...........",
-            "segments": [
-              {
-                "text": "...........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".......",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "............",
-            "segments": [
-              {
-                "text": "............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".............",
-            "segments": [
-              {
-                "text": ".............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".............",
-            "segments": [
-              {
-                "text": ".............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..............",
-            "segments": [
-              {
-                "text": "..............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "...",
-            "segments": [
-              {
-                "text": "...",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "...........",
-            "segments": [
-              {
-                "text": "...........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".............",
-            "segments": [
-              {
-                "text": ".............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           }
         ]
       }
@@ -55222,189 +54776,46 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
-            "kind": "renamed",
-            "name": ".......txt",
-            "segments": [
-              {
-                "text": "......",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "........TXT",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              },
-              {
-                "text": ".TXT",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "....txt",
-            "segments": [
-              {
-                "text": "...",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".........txt",
-            "segments": [
-              {
-                "text": "........",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "........md",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              },
-              {
-                "text": ".md",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".......txt",
-            "segments": [
-              {
-                "text": "......",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........pdf",
-            "segments": [
-              {
-                "text": ".........",
-                "changed": true
-              },
-              {
-                "text": ".pdf",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........pdf",
-            "segments": [
-              {
-                "text": ".........",
-                "changed": true
-              },
-              {
-                "text": ".pdf",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "........txt",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..............png",
-            "segments": [
-              {
-                "text": ".............",
-                "changed": true
-              },
-              {
-                "text": ".png",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".........txt",
-            "segments": [
-              {
-                "text": "........",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "......txt",
-            "segments": [
-              {
-                "text": ".....",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "........TXT",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              },
-              {
-                "text": ".TXT",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           }
         ]
       }
@@ -55532,137 +54943,46 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "...........",
-            "segments": [
-              {
-                "text": "...........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".......",
-            "segments": [
-              {
-                "text": ".......",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "............",
-            "segments": [
-              {
-                "text": "............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".............",
-            "segments": [
-              {
-                "text": ".............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".............",
-            "segments": [
-              {
-                "text": ".............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".............",
-            "segments": [
-              {
-                "text": ".............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..............",
-            "segments": [
-              {
-                "text": "..............",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": "..........",
-            "segments": [
-              {
-                "text": "..........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".........",
-            "segments": [
-              {
-                "text": ".........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           },
           {
-            "kind": "renamed",
-            "name": ".........",
-            "segments": [
-              {
-                "text": ".........",
-                "changed": true
-              }
-            ]
+            "kind": "unchanged"
           }
         ]
       }
@@ -55790,7 +55110,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -55957,7 +55277,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -56124,7 +55444,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -56291,7 +55611,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62374,7 +61694,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62431,7 +61751,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62488,7 +61808,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62545,7 +61865,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62602,7 +61922,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62659,7 +61979,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62716,7 +62036,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62773,7 +62093,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62830,7 +62150,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62887,7 +62207,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -62944,7 +62264,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": null,
         "names": [
           {
             "kind": "unchanged"
@@ -63001,7 +62321,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -63058,7 +62378,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -63115,7 +62435,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": null,
         "names": [
           {
             "kind": "unchanged"
@@ -63172,7 +62492,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": null,
         "names": [
           {
             "kind": "unchanged"
@@ -63229,7 +62549,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -63286,7 +62606,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -63343,7 +62663,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -63400,7 +62720,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -72534,7 +71854,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -75412,7 +74732,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -79660,7 +78980,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -82823,7 +82143,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -84238,7 +83558,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -89344,7 +88664,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -90348,14 +89668,10 @@
           },
           {
             "kind": "renamed",
-            "name": "é[one][one][one] [one][one][one][one][one]",
+            "name": "[one][one][one][one] [one][one][one][one][one]",
             "segments": [
               {
-                "text": "é",
-                "changed": false
-              },
-              {
-                "text": "[one][one][one]",
+                "text": "[one][one][one][one]",
                 "changed": true
               },
               {
@@ -95342,7 +94658,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": null,
         "names": [
           {
             "kind": "unchanged"
@@ -95872,7 +95188,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -96591,21 +95907,10 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
-            "kind": "renamed",
-            "name": "$1$1$1$1$1.txt",
-            "segments": [
-              {
-                "text": "$1$1$1$1$1",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ]
+            "kind": "unchanged"
           }
         ]
       }
@@ -97378,7 +96683,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -99169,7 +98474,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"
@@ -103530,7 +102835,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "names": [
           {
             "kind": "unchanged"

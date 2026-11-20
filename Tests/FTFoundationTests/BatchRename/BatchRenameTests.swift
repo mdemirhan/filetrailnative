@@ -158,10 +158,32 @@ struct ReplaceTextTests {
                 == [nil])
     }
 
+    // The rules are NSRegularExpression's: a letter of any script is a word character, a group can be named and
+    // referred to, and ignoring case can be asked for in the pattern itself.
+    @Test func readsARegularExpressionAsTheSystemDoes() {
+        func regex(_ find: String, _ replaceWith: String, matchCase: Bool = false) -> BatchRenameSettings {
+            BatchRenameSettings(find: find, replaceWith: replaceWith, matchCase: matchCase, useRegex: true)
+        }
+        #expect(names(regex("\\w+", "x"), ["caf\u{E9} \u{65E5}\u{672C}.txt"]) == ["x x.txt"])
+        #expect(names(regex("\\d+", "#"), ["page \u{663}.txt"]) == ["page #.txt"])
+        #expect(names(regex("\\bcaf\u{E9}\\b", "bar"), ["caf\u{E9} menu.txt"]) == ["bar menu.txt"])
+        #expect(names(regex("(?<c>.)\\k<c>", "$<c>"), ["aabbc.txt"]) == ["abc.txt"])
+        #expect(names(regex("(?i)img", "Photo", matchCase: true), ["IMG_1.jpg"]) == ["Photo_1.jpg"])
+        #expect(names(regex("\\Qa.b\\E", "x"), ["a.b a-b.txt"]) == ["x a-b.txt"])
+        #expect(names(regex("ss", "#"), ["Stra\u{DF}e.txt"]) == ["Stra#e.txt"])
+        #expect(names(regex("s$", ""), ["notes.txt"]) == ["note.txt"])
+    }
+
+    // Text that isn't a regular expression is found as typed, each letter in either case and nothing longer.
+    @Test func findsPlainTextLetterByLetterWhenIgnoringCase() {
+        let settings = BatchRenameSettings(find: "ss", replaceWith: "#")
+        #expect(names(settings, ["Stra\u{DF}e.txt", "MESSE.txt"]) == [nil, "ME#E.txt"])
+    }
+
     @Test func saysWhenAPatternIsBrokenAndChangesNothing() {
         let result = proposed(
             BatchRenameSettings(find: "(unclosed", replaceWith: "x", useRegex: true), [item("a.txt")])
-        #expect(result.settingsError?.hasPrefix("The pattern isn\u{2019}t valid: ") == true)
+        #expect(result.settingsError == "The pattern isn\u{2019}t valid.")
         #expect(result.names == [.unchanged])
     }
 
@@ -200,11 +222,11 @@ struct PatternTimeLimitTests {
 }
 
 struct ExpandReplacementTests {
-    private func match(_ pattern: String, _ subject: String) throws -> JSMatch {
-        try #require(try JSRegExp(source: pattern, ignoreCase: false).matches(in: subject).first)
+    private func match(_ pattern: String, _ subject: String) throws -> RenameMatch {
+        try #require(try RenamePattern(regex: pattern, ignoreCase: false).matches(in: subject).first)
     }
 
-    private func expand(_ template: String, _ found: JSMatch, _ subject: String) -> String {
+    private func expand(_ template: String, _ found: RenameMatch, _ subject: String) -> String {
         BatchRename.expandReplacement(template, match: found, subject: subject)
     }
 
@@ -508,6 +530,23 @@ struct SavedSettingsTests {
             .array([.object(["name": .string(name), "settings": .object(["customName": .string(text)])])]))
         #expect(presets.first?.name == String(repeating: "n", count: 79))
         #expect(presets.first?.settings.customName == String(repeating: "t", count: 254))
+    }
+
+    // A preset is read with its pattern as it was typed, and renames with it.
+    @Test func readsAPresetWithARegularExpressionThatStillRenames() throws {
+        let presets = BatchRename.sanitizePresets(
+            .array([
+                .object([
+                    "name": .string("Lisbon"),
+                    "settings": .object([
+                        "find": .string("^IMG_(?<n>\\d+)$"), "replaceWith": .string("Lisbon $<n> ($1)"),
+                        "useRegex": .bool(true), "matchCase": .bool(true),
+                    ]),
+                ])
+            ]))
+        let settings = try #require(presets.first?.settings)
+        #expect(settings.useRegex)
+        #expect(names(settings, ["IMG_2041.HEIC", "img_7.jpg"]) == ["Lisbon 2041 (2041).HEIC", nil])
     }
 
     @Test func dropsPresetsWithoutANameOrWithOneAlreadyUsedAndKeepsAtMostTheLimit() {

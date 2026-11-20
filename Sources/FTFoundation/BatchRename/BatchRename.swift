@@ -41,8 +41,13 @@ public enum BatchRename {
         return ProposedNames(settingsError: nil, names: names)
     }
 
-    /// Said under the pattern when it took too long over a name (`JSRegExp.timePerName`): nothing is renamed by it.
+    /// Said under the pattern when it took too long over a name (`RenamePattern.timePerName`): nothing is renamed by
+    /// it.
     public static let patternTakesTooLong = "This pattern takes too long on these names. Try a simpler one."
+
+    /// Said under the pattern when it can't be read as a regular expression. `NSRegularExpression` says only that
+    /// it is invalid, not where or why, so neither does this.
+    public static let patternIsNotValid = "The pattern isn\u{2019}t valid."
 
     /// What is wrong with the settings as typed, or nil.
     public static func settingsError(_ settings: BatchRenameSettings) -> String? {
@@ -50,8 +55,7 @@ public enum BatchRename {
             do {
                 _ = try findPattern(settings)
             } catch {
-                let message = (error as? JSRegExpError)?.message ?? "\(error)"
-                return "The pattern isn\u{2019}t valid: \(message)"
+                return patternIsNotValid
             }
         }
         if settings.mode == .format, settings.nameFormat == .date, settings.dateFormat == .custom,
@@ -72,12 +76,12 @@ public enum BatchRename {
 
     /// The pattern Replace Text looks for; nil when there is nothing to find. Names and what is typed are compared
     /// with accents written one way: "é" typed as one character finds it written as "e" and an accent.
-    static func findPattern(_ settings: BatchRenameSettings) throws -> JSRegExp? {
+    static func findPattern(_ settings: BatchRenameSettings) throws -> RenamePattern? {
         guard !settings.find.isEmpty else { return nil }
         let find = nfc(settings.find)
         return settings.useRegex
-            ? try JSRegExp(source: find, ignoreCase: !settings.matchCase)
-            : try JSRegExp(literal: find, ignoreCase: !settings.matchCase)
+            ? try RenamePattern(regex: find, ignoreCase: !settings.matchCase)
+            : try RenamePattern(literal: find, ignoreCase: !settings.matchCase)
     }
 
     private struct Transformed {
@@ -88,7 +92,7 @@ public enum BatchRename {
 
     // Replace Text, Add Text and Change Case work on the part Apply To names; the rest of the name stays as it is.
     private static func transformInScope(
-        _ settings: BatchRenameSettings, _ item: BatchRenameItem, pattern: JSRegExp?
+        _ settings: BatchRenameSettings, _ item: BatchRenameItem, pattern: RenamePattern?
     ) -> Transformed? {
         let split = NumberedNames.splitItemName(item.name, isFolder: item.isFolder)
         func transform(_ part: String) -> [NameSegment]? { transformText(settings, part, pattern: pattern) }
@@ -116,7 +120,7 @@ public enum BatchRename {
 
     // One part of a name changed by Replace Text, Add Text or Change Case; nil when it isn't.
     private static func transformText(
-        _ settings: BatchRenameSettings, _ part: String, pattern: JSRegExp?
+        _ settings: BatchRenameSettings, _ part: String, pattern: RenamePattern?
     ) -> [NameSegment]? {
         switch settings.mode {
         case .replace:
@@ -135,7 +139,7 @@ public enum BatchRename {
     // Every match is replaced. With a regular expression, the replacement can name what the pattern captured
     // ($1, $<name>, $&); plain text is put in as typed.
     private static func replaceText(
-        _ original: String, pattern: JSRegExp, settings: BatchRenameSettings
+        _ original: String, pattern: RenamePattern, settings: BatchRenameSettings
     ) -> [NameSegment]? {
         let part = nfc(original)
         let matches = pattern.matches(in: part)
@@ -161,7 +165,7 @@ public enum BatchRename {
 
     /// A replacement with what was matched put in: $$ is a dollar sign, $& the match, $` and $' what is before and
     /// after it, $1 to $99 the groups, $<name> a named group. Anything else is kept as typed.
-    static func expandReplacement(_ template: String, match: JSMatch, subject: String) -> String {
+    static func expandReplacement(_ template: String, match: RenameMatch, subject: String) -> String {
         let units = Array(template.utf16)
         let subjectUnits = Array(subject.utf16)
         let groupCount = match.groups.count - 1

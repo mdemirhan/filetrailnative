@@ -33,13 +33,6 @@ struct BatchRenameGoldenTests {
         }
     }
 
-    /// The part of an invalid pattern's message that doesn't depend on the regex engine's own words.
-    static func normalizedError(_ error: String?) -> String? {
-        guard let error else { return nil }
-        let prefix = "The pattern isn\u{2019}t valid:"
-        return error.hasPrefix(prefix + " ") ? prefix : error
-    }
-
     // MARK: proposeNames
 
     struct ProposeInput: Codable {
@@ -73,7 +66,7 @@ struct BatchRenameGoldenTests {
                     usedCreatedForTaken: usedCreated ? true : nil, emptyName: emptyName ? true : nil)
             }
         }
-        return ProposeOutput(settingsError: normalizedError(result.settingsError), names: names)
+        return ProposeOutput(settingsError: result.settingsError, names: names)
     }
 
     @Test func proposeNamesMatchesTheGoldenFile() throws {
@@ -154,7 +147,7 @@ struct BatchRenameGoldenTests {
             }
         }
         return PlanOutput(
-            settingsError: normalizedError(result.settingsError), items: items, renameCount: result.renameCount,
+            settingsError: result.settingsError, items: items, renameCount: result.renameCount,
             unchangedCount: result.unchangedCount, skippedCount: result.skippedCount,
             blockingCount: result.blockingCount)
     }

@@ -2568,7 +2568,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "items": [
           {
             "status": "unchanged"
@@ -20766,116 +20766,30 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "items": [
           {
-            "status": "rename",
-            "name": "$0$0$0$0$0$0$0$0$0$0$0$0$0.png",
-            "segments": [
-              {
-                "text": "$0$0$0$0$0$0$0$0$0$0$0$0$0",
-                "changed": true
-              },
-              {
-                "text": ".png",
-                "changed": false
-              }
-            ],
-            "addedNumber": null,
-            "numberedForItemInBatch": false,
-            "usedCreatedForTaken": false,
-            "becomesHidden": false
+            "status": "unchanged"
           },
           {
-            "status": "problem",
-            "proposedName": "$0$0$0$0$0$0$0$0$0$0$0.gz",
-            "segments": [
-              {
-                "text": "$0$0$0$0$0$0$0$0$0$0$0",
-                "changed": true
-              },
-              {
-                "text": ".gz",
-                "changed": false
-              }
-            ],
-            "problem": {
-              "kind": "cannotRename",
-              "message": "The item is locked."
-            }
+            "status": "unchanged"
           },
           {
-            "status": "rename",
-            "name": "$0$0$0$0$0$0.txt",
-            "segments": [
-              {
-                "text": "$0$0$0$0$0$0",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ],
-            "addedNumber": null,
-            "numberedForItemInBatch": false,
-            "usedCreatedForTaken": false,
-            "becomesHidden": false
+            "status": "unchanged"
           },
           {
-            "status": "rename",
-            "name": "$0$0$0$0$0$0$0",
-            "segments": [
-              {
-                "text": "$0$0$0$0$0$0$0",
-                "changed": true
-              }
-            ],
-            "addedNumber": null,
-            "numberedForItemInBatch": false,
-            "usedCreatedForTaken": false,
-            "becomesHidden": false
+            "status": "unchanged"
           },
           {
-            "status": "rename",
-            "name": "$0$0$0$0$0$0$0$0$0$0.txt",
-            "segments": [
-              {
-                "text": "$0$0$0$0$0$0$0$0$0$0",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ],
-            "addedNumber": null,
-            "numberedForItemInBatch": false,
-            "usedCreatedForTaken": false,
-            "becomesHidden": false
+            "status": "unchanged"
           },
           {
-            "status": "rename",
-            "name": "$0$0$0.txt",
-            "segments": [
-              {
-                "text": "$0$0$0",
-                "changed": true
-              },
-              {
-                "text": ".txt",
-                "changed": false
-              }
-            ],
-            "addedNumber": null,
-            "numberedForItemInBatch": false,
-            "usedCreatedForTaken": false,
-            "becomesHidden": false
+            "status": "unchanged"
           }
         ],
-        "renameCount": 5,
-        "unchangedCount": 0,
-        "skippedCount": 1,
+        "renameCount": 0,
+        "unchangedCount": 6,
+        "skippedCount": 0,
         "blockingCount": 0
       }
     },
@@ -25261,7 +25175,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": null,
+        "settingsError": "The pattern isn’t valid.",
         "items": [
           {
             "status": "unchanged"
@@ -48037,7 +47951,7 @@
         "now": "2026-10-04T11:32:10"
       },
       "output": {
-        "settingsError": "The pattern isn’t valid:",
+        "settingsError": "The pattern isn’t valid.",
         "items": [
           {
             "status": "unchanged"
