@@ -80,10 +80,19 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
     private let disk = PosixFileSystem()
     private let copier: StoppableCopy
     private let trashItem: (@Sendable (String) throws -> String?)?
+    private let flushCalls: FlushCalls
 
     public init(trash: (@Sendable (String) throws -> String?)? = nil, copier: StoppableCopy = StoppableCopy()) {
+        self.init(trash: trash, copier: copier, flushCalls: FlushCalls())
+    }
+
+    init(
+        trash: (@Sendable (String) throws -> String?)? = nil, copier: StoppableCopy = StoppableCopy(),
+        flushCalls: FlushCalls
+    ) {
         trashItem = trash
         self.copier = copier
+        self.flushCalls = flushCalls
     }
 
     public func lstat(_ path: String) throws -> WriteServiceStats { try disk.lstat(path) }
@@ -165,10 +174,16 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
 
     public func flushToDisk(_ path: String, wholeDisk: Bool) throws {
         if wholeDisk {
-            if sync_volume_np(path, SYNC_VOLUME_FULLSYNC | SYNC_VOLUME_WAIT) == 0 { return }
-            // A disk with no call for the whole of it: every disk is asked to write out what waits, and the folder
-            // is flushed after it, which is as much as such a disk can be told.
-            sync()
+            let errnum = flushCalls.syncVolume(path)
+            if errnum == 0 { return }
+            // Only a disk with no call for the whole of it is flushed another way. Any other failure (a disk error,
+            // a disk going away) is told: what the disk was given may not be on it.
+            guard FlushCalls.noSuchCall.contains(errnum) else {
+                throw NativeError.errno(errnum, syscall: "sync_volume_np", path: path)
+            }
+            // Every disk is asked to write out what waits, and the folder is flushed after it, which is as much as
+            // such a disk can be told.
+            flushCalls.syncAll()
         }
         // A link, a pipe or a device has nothing of its own to write out: the folder it is in is flushed, as is a
         // folder whose disk has no call for the whole of it.
@@ -176,11 +191,28 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
         if descriptor < 0 { descriptor = open(NodePath.dirname(path), O_RDONLY | O_CLOEXEC) }
         guard descriptor >= 0 else { throw NativeError.errno(errno, syscall: "open", path: path) }
         defer { close(descriptor) }
-        if fcntl(descriptor, F_FULLFSYNC) == 0 || fsync(descriptor) == 0 { return }
+        if flushCalls.fullSync(descriptor) == 0 { return }
+        let errnum = flushCalls.fsync(descriptor)
         // Not something this disk does: it keeps what it was given as it sees fit.
-        if [ENOTSUP, EINVAL, ENOTTY].contains(errno) { return }
-        throw NativeError.errno(errno, syscall: "fsync", path: path)
+        if errnum == 0 || FlushCalls.noSuchCall.contains(errnum) { return }
+        throw NativeError.errno(errnum, syscall: "fsync", path: path)
     }
+}
+
+/// The system calls `flushToDisk` makes, replaceable to fail any of them on any disk. Each gives 0, or the errno it
+/// failed with.
+struct FlushCalls: Sendable {
+    /// Everything waiting for the disk `path` is on, the drive's own cache too. `sync_volume_np` returns its error
+    /// and leaves `errno` as it was.
+    var syncVolume: @Sendable (String) -> Int32 = { sync_volume_np($0, SYNC_VOLUME_FULLSYNC | SYNC_VOLUME_WAIT) }
+    var syncAll: @Sendable () -> Void = { sync() }
+    var fullSync: @Sendable (Int32) -> Int32 = { fcntl($0, F_FULLFSYNC) == 0 ? 0 : errno }
+    var fsync: @Sendable (Int32) -> Int32 = { Darwin.fsync($0) == 0 ? 0 : errno }
+
+    /// What a disk answers that has no such call. The system flushes a whole disk by asking the disk's own code for
+    /// `F_FULLFSYNC`, and code that doesn't know it says ENOTSUP (SMB shares, `/dev`) or ENOTTY; EINVAL is what
+    /// `fsync` says of an item that has nothing to flush.
+    static let noSuchCall: Set<Int32> = [ENOTSUP, EINVAL, ENOTTY]
 }
 
 /// `rm` and `rmdir` on the disk.

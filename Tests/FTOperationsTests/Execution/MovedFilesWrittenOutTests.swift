@@ -276,4 +276,38 @@ struct MovedFilesWrittenOutTests {
             #expect(Disk.read(destination + "/c.txt") == "c.txt")
         }
     }
+
+    // On a real disk that fails to write itself out, though the folder alone then flushes without error: every
+    // original stays, of the files moved one by one and of the folder moved whole, each said so.
+    @Test func originalsStayOnARealDiskThatFailsToWriteItselfOut() async throws {
+        try await withTemporaryDirectory { root in
+            let (source, destination) = (root.path + "/src", root.path + "/dst")
+            try Disk.makeDirectories(destination)
+            for name in Self.names {
+                try Disk.write(source + "/" + name, name)
+            }
+            try Disk.write(source + "/dir/in.txt", "in")
+            let (calls, asked) = FlushToDiskTests.calls(volumeAnswering: EIO)
+            let fileSystem = NativePaste.asOnAnotherDisk(source, NativeWriteFileSystem(flushCalls: calls))
+
+            let run = try await runPaste(
+                mode: .cut, sources: Self.names.map { source + "/" + $0 } + [source + "/dir"], into: destination,
+                fileSystem: fileSystem)
+
+            // Asked once for the folder put in place and once for the files, and never flushed another way.
+            #expect(asked.value == ["disk", "disk"])
+            #expect(Disk.list(source) == Self.names + ["dir"])
+            #expect(Disk.read(source + "/dir/in.txt") == "in")
+            #expect(Disk.read(source + "/c.txt") == "c.txt")
+            #expect(Disk.list(destination) == Self.names + ["dir"])
+            // The file inside the folder counts as copied; nothing picked was moved.
+            #expect(run.result?.status == .partial)
+            let picked = run.result?.items.filter { NodePath.dirname($0.sourcePath) == source } ?? []
+            #expect(picked.count == Self.names.count + 1)
+            #expect(
+                picked.allSatisfy {
+                    $0.status == .failed && $0.error?.contains("couldn't be written out to the disk") == true
+                })
+        }
+    }
 }
