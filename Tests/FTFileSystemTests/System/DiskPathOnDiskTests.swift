@@ -39,6 +39,47 @@ struct DiskPathOnDiskTests {
         try withTemporaryDirectory(prefix: "disk-path") { try body(FolderIdentity.realPath($0.path)) }
     }
 
+    // An item, as against a place to go to: its own name as the folder holds it, and a link stays the link.
+    @Test func anItemIsNamedAsItsFolderHoldsItAndALinkIsNotFollowed() throws {
+        try withRealFolder { root in
+            let folder = root + "/" + composed
+            #expect(mkdir(folder, 0o755) == 0)
+            let file = folder + "/Notes.txt"
+            #expect(close(open(file, O_CREAT | O_WRONLY, 0o644)) == 0)
+            #expect(symlink(file, folder + "/link") == 0)
+            let asked = DiskPath(root + "/" + decomposed + "/notes.TXT")
+            let caseKept = (try? listed(folder).contains(bytes("Notes.txt"))) == true
+            #expect(caseKept)
+            if exists(asked.string) {
+                #expect(bytes(asked.itemAsOnDisk().string) == bytes(file))
+            }
+            // The link itself, where `asOnDisk()` answers with the file it leads to.
+            let link = DiskPath(root + "/" + decomposed + "/link")
+            #expect(bytes(link.itemAsOnDisk().string) == bytes(folder + "/link"))
+            #expect(bytes(link.asOnDisk().string) == bytes(file))
+            // Nothing there: the folder as the disk spells it, the name as given.
+            let missing = DiskPath(root + "/" + decomposed + "/new.txt")
+            #expect(bytes(missing.itemAsOnDisk().string) == bytes(folder + "/new.txt"))
+        }
+    }
+
+    // The URL keeps the path's bytes and says whether a folder is there.
+    @Test func aFileURLKeepsTheBytesAndKnowsAFolder() throws {
+        try withRealFolder { root in
+            let folder = root + "/" + composed
+            #expect(mkdir(folder, 0o755) == 0)
+            let file = folder + "/a.txt"
+            #expect(close(open(file, O_CREAT | O_WRONLY, 0o644)) == 0)
+            let folderURL = DiskPath(folder).fileURL()
+            #expect(folderURL.hasDirectoryPath)
+            #expect(DiskPath(urlSpelling: folderURL).map { bytes($0.string) } == bytes(folder))
+            let fileURL = DiskPath(file).fileURL()
+            #expect(!fileURL.hasDirectoryPath)
+            #expect(DiskPath(urlSpelling: fileURL).map { bytes($0.string) } == bytes(file))
+            #expect(!DiskPath(root + "/gone").fileURL().hasDirectoryPath)
+        }
+    }
+
     // The Mac's own disks take both spellings for one name and keep the one the item was made with.
     @Test func aNameAskedForInTheOtherSpellingComesBackAsTheDiskHasIt() throws {
         try withRealFolder { root in

@@ -4,7 +4,8 @@ import Foundation
 
 /// A path respelled as its disk has it, for one that didn't come from a listing: typed, picked in a panel, dropped,
 /// given at launch, or saved by an earlier run. The disk is asked, so this is not for the main thread's hot paths.
-/// The rest of the path's dealings with `URL` are in FTFoundation (`url(isDirectory:)`, `init(urlSpelling:)`).
+/// The rest of the path's dealings with `URL` are in FTFoundation (`url(isDirectory:)`, `init(urlSpelling:)`);
+/// `fileURL()` here is `url(isDirectory:)` with the disk asked.
 extension DiskPath {
     /// The path as the disk spells it, which is how a listing spells it: every link followed, "." and ".." and
     /// doubled slashes resolved, and each part named as its folder holds it, accents and letter case included
@@ -16,6 +17,51 @@ extension DiskPath {
         let name = name
         guard !name.isEmpty, let folder = Self.realPath(parent.string) else { return self }
         return DiskPath(folder).appending(name)
+    }
+
+    /// The item at the path named as its disk has it, a link at the end not followed: the folder it is in as the disk
+    /// spells it (`asOnDisk()`), then its own name as that folder holds it. For an item rather than a place to go
+    /// to (dropped, opened by another app, picked in a panel): `asOnDisk()` would answer with where a link leads.
+    /// The name as given when nothing is there, or when the disk names it otherwise than by another spelling of
+    /// the same name (a disk's own folder is named after the disk).
+    public func itemAsOnDisk() -> DiskPath {
+        let name = name
+        guard !name.isEmpty else { return asOnDisk() }
+        let item = parent.asOnDisk().appending(name)
+        guard let onDisk = Self.nameOnDisk(item.string),
+            onDisk.precomposedStringWithCanonicalMapping.lowercased()
+                == name.precomposedStringWithCanonicalMapping.lowercased()
+        else { return item }
+        return item.parent.appending(onDisk)
+    }
+
+    /// The path as a file URL that keeps its bytes (`url(isDirectory:)`), the disk asked whether a folder is there,
+    /// a link to one counting as one, as a URL made from a path alone would find out.
+    public func fileURL() -> URL {
+        var info = stat()
+        return url(isDirectory: stat(string, &info) == 0 && info.st_mode & S_IFMT == S_IFDIR)
+    }
+
+    /// The name the item at `path` has on its disk, a symlink not followed (`getattrlist` `ATTR_CMN_NAME`): on a disk
+    /// that ignores case, `path` may spell it otherwise. nil when it can't be read.
+    public static func nameOnDisk(_ path: String) -> String? {
+        var request = attrlist()
+        request.bitmapcount = u_short(ATTR_BIT_MAP_COUNT)
+        request.commonattr = attrgroup_t(ATTR_CMN_NAME)
+        // u_int32_t length, then attrreference_t, then the name and its NUL.
+        let headerSize = 4 + MemoryLayout<attrreference_t>.size
+        var buffer = [UInt8](repeating: 0, count: headerSize + 4 * Int(NAME_MAX) + 1)
+        let status = buffer.withUnsafeMutableBytes { bytes in
+            getattrlist(path, &request, bytes.baseAddress, bytes.count, UInt32(FSOPT_NOFOLLOW))
+        }
+        guard status == 0 else { return nil }
+        return buffer.withUnsafeBytes { bytes in
+            let reference = bytes.loadUnaligned(fromByteOffset: 4, as: attrreference_t.self)
+            let start = 4 + Int(reference.attr_dataoffset)
+            let length = Int(reference.attr_length) - 1
+            guard length > 0, start + length <= bytes.count else { return nil }
+            return String(decoding: bytes[start..<(start + length)], as: UTF8.self)
+        }
     }
 
     /// The home folder as the disk spells it, read once.
