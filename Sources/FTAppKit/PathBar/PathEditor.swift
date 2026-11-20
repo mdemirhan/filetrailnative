@@ -269,10 +269,19 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
         listFocused = false
         field.stringValue = path
         window?.makeFirstResponder(field)
-        field.currentEditor()?.selectedRange = NSRange(location: path.utf16.count, length: 0)
+        putCaretAtEnd(of: path)
         scheduleRequest(path)
         applyColors()
         needsDisplay = true
+    }
+
+    /// The caret after the last character, and that end on screen: a path longer than the field showed its start,
+    /// with the folder being typed out of sight.
+    private func putCaretAtEnd(of text: String) {
+        guard let editor = field.currentEditor() else { return }
+        let end = NSRange(location: text.utf16.count, length: 0)
+        editor.selectedRange = end
+        editor.scrollRangeToVisible(end)
     }
 
     func close() {
@@ -372,7 +381,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
             keyboardLeavesWithRow = false
         }
         field.stringValue = state.draft
-        field.currentEditor()?.selectedRange = NSRange(location: state.draft.utf16.count, length: 0)
+        putCaretAtEnd(of: state.draft)
         listFocused = false
         needsDisplay = true
         scheduleRequest(state.draft)
