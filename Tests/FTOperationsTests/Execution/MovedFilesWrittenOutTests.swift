@@ -208,6 +208,40 @@ struct MovedFilesWrittenOutTests {
         #expect(!fileSystem.exists("/target/dir/sub/new.txt"))
     }
 
+    // A new folder inside a merged one whose copy failed, with the part written that couldn't be cleared away: it is
+    // one item of the merged folder that failed, and stays where it was. The merged folder used to end there with
+    // that reason alone: the file already moved out of it had no line, and the folders after it weren't moved.
+    @Test func aNewFolderInsideAMergedOneThatCantBeClearedAwayIsOneFailedItemOfIt() async throws {
+        let fileSystem = mergedFolder()
+        fileSystem.addFile("/source/dir/new/x.txt", .file(size: 4))
+        let copy = copyingSize(fileSystem)
+        fileSystem.copyFileImpl = { source, destination, stop, onProgress in
+            try copy(source, destination, stop, onProgress)
+            // Cut short, with what was written left behind.
+            if source == "/source/dir/new/x.txt" { throw MockWriteServiceFileSystem.error(EIO, destination) }
+        }
+        fileSystem.rmImpl = { path, recursive, force in
+            // Nothing of the hidden copy can be removed.
+            if path.contains(".filetrail-") { throw MockWriteServiceFileSystem.error(EIO, path) }
+            try fileSystem.removeDirectly(path, recursive: recursive, force: force)
+        }
+
+        let result = try await move(fileSystem, ["/source/dir"])
+
+        #expect(
+            named(result) == ["dir failed", "a.txt completed", "new failed", "b.txt completed", "c.txt completed"])
+        #expect(result.items.first?.childFailureCount == 1)
+        #expect(result.items.first?.error == nil)
+        #expect(result.items.first { $0.sourcePath == "/source/dir/new" }?.error == "A disk error occurred.")
+        #expect(result.summary.completedItemCount == 3 && result.summary.failedItemCount == 2)
+        #expect(result.status == .partial)
+        // What failed is where it was, in its folder; what was moved is only in its new place.
+        #expect(list(fileSystem, "/source/dir") == ["new"])
+        #expect(list(fileSystem, "/source/dir/new") == ["x.txt"])
+        #expect(list(fileSystem, "/target/dir").filter { !$0.contains(".filetrail-") }.sorted() == ["a.txt", "sub"])
+        #expect(list(fileSystem, "/target/dir/sub").sorted() == ["b.txt", "c.txt", "there.txt"])
+    }
+
     // Files that went to two disks: each disk is written out once.
     @Test func eachDiskTheFilesWentToIsWrittenOutOnce() async throws {
         let fileSystem = mergedFolder()

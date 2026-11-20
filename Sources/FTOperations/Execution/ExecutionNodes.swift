@@ -296,8 +296,10 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
             childResult = try executeResolvedNode(context, child)
         } catch {
             let root = rootError(error)
-            // An incomplete package that couldn't be cleared away: nothing around it is put in place either.
-            if root is StagingCleanupError {
+            // Part of the hidden copy this folder is in couldn't be cleared away (an incomplete package, a file cut
+            // short): nothing around it is put in place either. A folder merged into is in no hidden copy: the new
+            // folder inside it that ended so is one item of its that failed, and the rest of it goes on.
+            if root is StagingCleanupError && context.stagingFor != nil {
                 throw error
             }
             if isAbortError(error) || context.signal.isStopped {
