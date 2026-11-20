@@ -81,10 +81,13 @@ public final class AppStateStore: @unchecked Sendable {
                     "[filetrail] failed persisting app state \(String(describing: error), privacy: .public)")
             }
         defaults = AppPreferences.defaults(theme: defaultTheme)
-        visitsFilePath = AppStatePaths.visitedFolders(besideAppState: URL(fileURLWithPath: filePath)).path
-        destinationsFilePath = AppStatePaths.destinationFolders(besideAppState: URL(fileURLWithPath: filePath)).path
-        recentCommandsFilePath = AppStatePaths.recentCommands(besideAppState: URL(fileURLWithPath: filePath)).path
-        folderViewsFilePath = AppStatePaths.folderViews(besideAppState: URL(fileURLWithPath: filePath)).path
+        // The files beside the state file, where `AppStatePaths` puts them: each by its URL's own bytes.
+        let appState = DiskPath(filePath).url(isDirectory: false)
+        let path = { (file: URL) in DiskPath(urlSpelling: file)?.string ?? filePath }
+        visitsFilePath = path(AppStatePaths.visitedFolders(besideAppState: appState))
+        destinationsFilePath = path(AppStatePaths.destinationFolders(besideAppState: appState))
+        recentCommandsFilePath = path(AppStatePaths.recentCommands(besideAppState: appState))
+        folderViewsFilePath = path(AppStatePaths.folderViews(besideAppState: appState))
         state = Self.readState(filePath, fileSystem, defaults, readFailed)
         visitedFolders = Self.readVisitedFolders(visitsFilePath, fileSystem, readFailed)
         destinationFolders = Self.readVisitedFolders(destinationsFilePath, fileSystem, readFailed)

@@ -163,12 +163,12 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
 
     public func renderThumbnail(path: String, size: Int) async -> ThumbnailPicture? {
         let side = min(max(size, 16), 8192)
-        let url = URL(fileURLWithPath: path)
         // The file is read outside Swift's shared pool, as its disk may have stopped answering; Quick Look answers in
         // its own time.
-        let (showsPicture, imagePixels) = await BlockingWork.run {
+        let (url, showsPicture, imagePixels) = await BlockingWork.run {
+            let url = DiskPath(path).fileURL()
             let showsPicture = Self.showsPicture(url)
-            return (showsPicture, showsPicture ? Self.imagePixels(url, side: side) : nil)
+            return (url, showsPicture, showsPicture ? Self.imagePixels(url, side: side) : nil)
         }
         var image: CGImage?
         if let pixels = imagePixels {
@@ -267,10 +267,15 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
         return await decode()
     }
 
+    /// The file a URL leads to, every link followed, spelled as its disk has it: what ImageIO is given to read.
+    static func linkTarget(of url: URL) -> URL {
+        DiskPath(urlSpelling: url)?.asOnDisk().url(isDirectory: false) ?? url
+    }
+
     /// The pixels the image file's picture has when it fits in a square of `side`, never larger than the image
     /// itself; nil when the file is not an image ImageIO reads (a video, a drawing).
     static func imagePixels(_ url: URL, side: Int) -> Int? {
-        guard let source = CGImageSourceCreateWithURL(url.resolvingSymlinksInPath() as CFURL, nil),
+        guard let source = CGImageSourceCreateWithURL(linkTarget(of: url) as CFURL, nil),
             let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
             let width = properties[kCGImagePropertyPixelWidth] as? Int,
             let height = properties[kCGImagePropertyPixelHeight] as? Int, width > 0, height > 0
@@ -284,7 +289,7 @@ public struct QuickLookThumbnailRenderer: ThumbnailRendering {
     /// image itself; nil when the file is not an image ImageIO reads. For the sizes Quick Look refuses. An image of a
     /// high dynamic range is read at its standard range, as previews show it.
     static func decodedImage(_ url: URL, side: Int) -> CGImage? {
-        guard let source = CGImageSourceCreateWithURL(url.resolvingSymlinksInPath() as CFURL, nil),
+        guard let source = CGImageSourceCreateWithURL(linkTarget(of: url) as CFURL, nil),
             CGImageSourceGetCount(source) > 0
         else { return nil }
         let options: [CFString: Any] = [

@@ -41,7 +41,7 @@ public struct WorkspaceIconSource: IconSource {
     public func folderIcon(atPath path: String) async -> NSImage? {
         let side = Self.folderIconSide
         let request = QLThumbnailGenerator.Request(
-            fileAt: URL(fileURLWithPath: path), size: CGSize(width: side, height: side), scale: 2,
+            fileAt: DiskPath(path).url(isDirectory: true), size: CGSize(width: side, height: side), scale: 2,
             representationTypes: .icon)
         guard let representation = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
         else { return await BlockingWork.run { icon(atPath: path) } }

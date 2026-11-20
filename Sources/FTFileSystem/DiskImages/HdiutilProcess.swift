@@ -1,4 +1,5 @@
 import AppKit
+import FTFoundation
 import Foundation
 
 public enum HdiutilProcess {
@@ -14,7 +15,7 @@ public enum HdiutilProcess {
         await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 let process = Process()
-                process.executableURL = URL(fileURLWithPath: hdiutilPath)
+                process.executableURL = DiskPath(hdiutilPath).url(isDirectory: false)
                 process.arguments = arguments
                 process.standardInput = FileHandle.nullDevice
                 let out = Pipe()
@@ -50,8 +51,10 @@ public enum HdiutilProcess {
     /// Opens the image with DiskImageMounter.app, which asks for a password or a licence in its own windows.
     @Sendable public static func openWithDiskImageMounter(_ imagePath: String) async throws {
         let configuration = NSWorkspace.OpenConfiguration()
+        // An image can be a folder (a sparse bundle): the disk says which this one is.
+        let image = await BlockingWork.run { DiskPath(imagePath).fileURL() }
         _ = try await NSWorkspace.shared.open(
-            [URL(fileURLWithPath: imagePath)], withApplicationAt: URL(fileURLWithPath: diskImageMounterPath),
+            [image], withApplicationAt: DiskPath(diskImageMounterPath).url(isDirectory: true),
             configuration: configuration)
     }
 }

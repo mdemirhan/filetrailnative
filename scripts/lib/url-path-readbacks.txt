@@ -138,13 +138,6 @@ Sources/FTAppKit/App/AppDelegate.swift: store = AppStateStore(filePath: AppState
 Sources/FTAppKit/App/AppDelegate.swift: let store = store ?? AppStateStore(filePath: AppStatePaths.appState(in: AppStatePaths.userDataDirectory()).path)
 Sources/FTAppKit/App/AppDelegate.swift: let templatesPath = AppStatePaths.templates(in: userDataDirectory ?? AppStatePaths.userDataDirectory()).path
 Sources/FTAppKit/WriteOperations/AppWriteOperations.swift: userData.appendingPathComponent("replace-journal.json").path, diskId: { NativeFS.diskId(of: $0) })
-Sources/FTFileSystem/AboutInfo/Acknowledgements.swift: FileManager.default.fileExists(atPath: $0.appendingPathComponent("index.json").path)
-Sources/FTFileSystem/AppState/AppStateStore.swift: visitsFilePath = AppStatePaths.visitedFolders(besideAppState: URL(fileURLWithPath: filePath)).path
-Sources/FTFileSystem/AppState/AppStateStore.swift: destinationsFilePath = AppStatePaths.destinationFolders(besideAppState: URL(fileURLWithPath: filePath)).path
-Sources/FTFileSystem/AppState/AppStateStore.swift: recentCommandsFilePath = AppStatePaths.recentCommands(besideAppState: URL(fileURLWithPath: filePath)).path
-Sources/FTFileSystem/AppState/AppStateStore.swift: folderViewsFilePath = AppStatePaths.folderViews(besideAppState: URL(fileURLWithPath: filePath)).path
-Sources/FTFileSystem/Icons/IconSamples.swift: try files.setAttributes([.posixPermissions: mode], ofItemAtPath: url.path)
-Sources/FTFileSystem/Logging/LogRotation.swift: return url.deletingLastPathComponent().appendingPathComponent(file).path
 
 # The system's folder for items being saved, where an archive is taken apart: on another disk it is under the disk's
 # own path, whose name may have an accent; it is made, filled and removed by these paths, and compared with nothing.

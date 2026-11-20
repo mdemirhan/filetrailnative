@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// Items we own, so macOS returns the ordinary icon for their kind: a folder holding something and an empty one
@@ -5,17 +6,20 @@ import Foundation
 /// without an extension, once plain and once executable. They live in one fixed folder that every launch reuses.
 public final class IconSamples: @unchecked Sendable {
     public let root: URL
+    /// The folder's path as its URL spells it; the samples' paths are joined to it, as a URL would respell the whole
+    /// path each time a part is added.
+    private let folder: DiskPath
     private let lock = NSLock()
     private var made: [GenericIconKind: String]?
     private var madeTints: [String: String] = [:]
 
     public init(root: URL = IconSamples.defaultRoot) {
         self.root = root
+        folder = DiskPath(urlSpelling: root) ?? DiskPath(NSTemporaryDirectory()).appending("filetrail-icon-samples")
     }
 
     public static var defaultRoot: URL {
-        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent("filetrail-icon-samples", isDirectory: true)
+        DiskPath(NSTemporaryDirectory()).appending("filetrail-icon-samples").url(isDirectory: true)
     }
 
     /// The sample item of a kind, made on first use. A failure is not remembered: the next call tries again.
@@ -27,7 +31,7 @@ public final class IconSamples: @unchecked Sendable {
         }
         let paths = try create()
         made = paths
-        return paths[kind] ?? root.path
+        return paths[kind] ?? folder.string
     }
 
     /// A folder of ours with only this tag, which Finder and Quick Look draw as a plain folder of its color.
@@ -36,32 +40,30 @@ public final class IconSamples: @unchecked Sendable {
         defer { lock.unlock() }
         let name = "tag-\(color.rawValue)\(isEmpty ? "-empty" : "")"
         if let path = madeTints[name] { return path }
-        let folder = root.appendingPathComponent(name)
-        try makeFolder(folder, isEmpty: isEmpty)
-        try FinderTags.write([FinderTag(name: String(describing: color), color: color)], to: folder.path)
-        madeTints[name] = folder.path
-        return folder.path
+        let sample = folder.appending(name).string
+        try makeFolder(sample, isEmpty: isEmpty)
+        try FinderTags.write([FinderTag(name: String(describing: color), color: color)], to: sample)
+        madeTints[name] = sample
+        return sample
     }
 
     private func create() throws -> [GenericIconKind: String] {
-        let folder = root.appendingPathComponent("folder")
-        let emptyFolder = root.appendingPathComponent("empty-folder")
-        let document = root.appendingPathComponent("document")
-        let executable = root.appendingPathComponent("executable")
+        let full = folder.appending("folder").string
+        let emptyFolder = folder.appending("empty-folder").string
+        let document = folder.appending("document").string
+        let executable = folder.appending("executable").string
         let files = FileManager.default
-        try makeFolder(folder, isEmpty: false)
+        try makeFolder(full, isEmpty: false)
         try makeFolder(emptyFolder, isEmpty: true)
-        for (url, mode) in [(document, 0o644), (executable, 0o755)] {
-            try Data().write(to: url)
-            try files.setAttributes([.posixPermissions: mode], ofItemAtPath: url.path)
+        for (path, mode) in [(document, 0o644), (executable, 0o755)] {
+            try Data().write(to: DiskPath(path).url(isDirectory: false))
+            try files.setAttributes([.posixPermissions: mode], ofItemAtPath: path)
         }
-        return [
-            .folder: folder.path, .emptyFolder: emptyFolder.path, .file: document.path, .executable: executable.path,
-        ]
+        return [.folder: full, .emptyFolder: emptyFolder, .file: document, .executable: executable]
     }
 
-    private func makeFolder(_ folder: URL, isEmpty: Bool) throws {
-        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-        if !isEmpty { try Data().write(to: folder.appendingPathComponent("item")) }
+    private func makeFolder(_ path: String, isEmpty: Bool) throws {
+        try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
+        if !isEmpty { try Data().write(to: DiskPath(path).appending("item").url(isDirectory: false)) }
     }
 }

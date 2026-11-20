@@ -1,6 +1,7 @@
 import Darwin
 import DiskArbitration
 import Dispatch
+import FTFoundation
 import Foundation
 
 /// Eject, as Finder's sidebar button and File > Eject do it.
@@ -135,7 +136,7 @@ private final class EjectJob {
     }
 
     private func unmountVolume(_ session: DASession, _ path: String) throws {
-        let url = URL(fileURLWithPath: path, isDirectory: true)
+        let url = DiskPath(path).url(isDirectory: true)
         guard let disk = DADiskCreateFromVolumePath(kCFAllocatorDefault, session, url as CFURL) else {
             // A mount Disk Arbitration doesn't know of.
             if unmount(path, force ? MNT_FORCE : 0) != 0 {

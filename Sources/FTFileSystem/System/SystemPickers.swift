@@ -1,4 +1,5 @@
 import AppKit
+import FTFoundation
 import Foundation
 import UniformTypeIdentifiers
 
@@ -35,7 +36,7 @@ public enum SystemPickers {
         let panel = NSOpenPanel()
         panel.title = "Choose Application"
         panel.prompt = "Choose App"
-        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        panel.directoryURL = DiskPath("/Applications").url(isDirectory: true)
         panel.canChooseFiles = true
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false

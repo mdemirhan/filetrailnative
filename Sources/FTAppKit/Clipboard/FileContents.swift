@@ -63,7 +63,7 @@ enum FileContents: Equatable {
         }
         let data: Data
         do {
-            data = try Data(contentsOf: URL(fileURLWithPath: path))
+            data = try Data(contentsOf: DiskPath(path).url(isDirectory: false))
         } catch {
             return .failure(.unreadable((error as NSError).localizedFailureReason ?? error.localizedDescription))
         }
@@ -84,7 +84,7 @@ enum FileContents: Equatable {
 
     /// Whether the file's first bytes are those of an image ImageIO knows, without reading the file whole.
     private nonisolated static func looksLikeImage(_ path: String) -> Bool {
-        guard let source = CGImageSourceCreateWithURL(URL(fileURLWithPath: path) as CFURL, nil),
+        guard let source = CGImageSourceCreateWithURL(DiskPath(path).url(isDirectory: false) as CFURL, nil),
             let type = CGImageSourceGetType(source) as String?
         else { return false }
         return CopyContents.isImageType(type)

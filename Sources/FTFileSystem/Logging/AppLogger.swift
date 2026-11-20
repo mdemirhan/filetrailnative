@@ -108,7 +108,7 @@ public final class AppLogger: @unchecked Sendable {
                 throw CocoaError(.fileWriteUnknown)
             }
         }
-        let handle = try FileHandle(forWritingTo: URL(fileURLWithPath: filePath))
+        let handle = try FileHandle(forWritingTo: DiskPath(filePath).url(isDirectory: false))
         defer { try? handle.close() }
         try handle.seekToEnd()
         try handle.write(contentsOf: data)

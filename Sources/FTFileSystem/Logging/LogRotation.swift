@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// Rotation of `app.log` into `app.1.log` … `app.<n-1>.log`.
@@ -27,11 +28,11 @@ public enum LogRotation {
 
     /// `app.log` rotated once is `app.1.log`.
     public static func rotatedPath(_ path: String, _ index: Int) -> String {
-        let url = URL(fileURLWithPath: path)
-        let ext = url.pathExtension
-        let name = url.deletingPathExtension().lastPathComponent
-        let file = ext.isEmpty ? "\(name).\(index)" : "\(name).\(index).\(ext)"
-        return url.deletingLastPathComponent().appendingPathComponent(file).path
+        let name = NodePath.basename(path)
+        // ".log", or "" for a name without an extension.
+        let ext = NodePath.extname(name)
+        let stem = String(String.UnicodeScalarView(name.unicodeScalars.dropLast(ext.unicodeScalars.count)))
+        return NodePath.join(NodePath.dirname(path), "\(stem).\(index)\(ext)")
     }
 
     // `rename` replaces an existing target.

@@ -36,10 +36,12 @@ extension DiskPath {
     }
 
     /// The path as a file URL that keeps its bytes (`url(isDirectory:)`), the disk asked whether a folder is there,
-    /// a link to one counting as one, as a URL made from a path alone would find out.
+    /// as `URL(fileURLWithPath:)` finds out for a path alone: a link to a folder is not one (`lstat`). The URL of a
+    /// link then names the link, where one ending in a slash would name the folder it leads to: what is shown in
+    /// Finder, shared, dragged out or given a label is the link itself.
     public func fileURL() -> URL {
         var info = stat()
-        return url(isDirectory: stat(string, &info) == 0 && info.st_mode & S_IFMT == S_IFDIR)
+        return url(isDirectory: lstat(string, &info) == 0 && info.st_mode & S_IFMT == S_IFDIR)
     }
 
     /// The name the item at `path` has on its disk, a symlink not followed (`getattrlist` `ATTR_CMN_NAME`): on a disk

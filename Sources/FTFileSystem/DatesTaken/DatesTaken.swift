@@ -39,9 +39,8 @@ public enum DatesTaken {
     }
 
     private static func dateTaken(_ path: String) -> String? {
-        let url = URL(fileURLWithPath: path)
-        let ext = url.pathExtension
+        let ext = String(NodePath.extname(path).dropFirst())
         guard !ext.isEmpty, let type = UTType(filenameExtension: ext), type.conforms(to: .image) else { return nil }
-        return photoDate(url)
+        return photoDate(DiskPath(path).url(isDirectory: false))
     }
 }

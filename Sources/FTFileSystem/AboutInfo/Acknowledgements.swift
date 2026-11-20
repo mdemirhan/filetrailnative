@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// One piece of bundled software and its license, as the Acknowledgements window lists it.
@@ -39,14 +40,15 @@ public enum Acknowledgements {
     }
 
     /// Sources/FTFileSystem/AboutInfo/Acknowledgements.swift, four folders up.
-    private static let repositoryRoot = URL(fileURLWithPath: #filePath)
+    private static let repositoryRoot = DiskPath(#filePath).url(isDirectory: false)
         .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         .deletingLastPathComponent()
 
     /// The first of the locations that holds an `index.json`; nil when none does.
     public static func resolveDirectory(_ locations: Locations = .standard) -> URL? {
         [locations.resources, locations.sourceTree].compactMap { $0 }.first {
-            FileManager.default.fileExists(atPath: $0.appendingPathComponent("index.json").path)
+            guard let folder = DiskPath(urlSpelling: $0) else { return false }
+            return FileManager.default.fileExists(atPath: folder.appending("index.json").string)
         }
     }
 

@@ -1,4 +1,5 @@
 import Darwin
+import FTFoundation
 import Foundation
 import os
 
@@ -24,11 +25,11 @@ public struct DiskFileSystem: StateFileSystem {
     }
 
     public func read(_ path: String) throws -> Data {
-        try Data(contentsOf: URL(fileURLWithPath: path))
+        try Data(contentsOf: DiskPath(path).url(isDirectory: false))
     }
 
     public func write(_ path: String, _ contents: String) throws {
-        try Data(contents.utf8).write(to: URL(fileURLWithPath: path))
+        try Data(contents.utf8).write(to: DiskPath(path).url(isDirectory: false))
     }
 
     /// POSIX `rename`: replaces the target in one step.

@@ -39,32 +39,36 @@ public struct SystemOpener: Sendable {
         return "\u{201C}\((gone as NSString).lastPathComponent)\u{201D} is no longer there."
     }
 
+    /// The items, or an app, as the system is handed them to open or show: each path's own bytes, so an accent
+    /// reaches the system as the disk spells it, and the disk asked which of them are folders.
+    static func itemURLs(_ paths: [String]) -> [URL] {
+        paths.map { DiskPath($0).fileURL() }
+    }
+
     /// `NSWorkspace`, with the same results as `open`, `open -a` and `open -R`.
     public static let workspace = SystemOpener(
         openPath: { path in
             do {
-                _ = try await NSWorkspace.shared.open(
-                    URL(fileURLWithPath: path), configuration: NSWorkspace.OpenConfiguration())
+                let item = await BlockingWork.run { itemURLs([path])[0] }
+                _ = try await NSWorkspace.shared.open(item, configuration: NSWorkspace.OpenConfiguration())
                 return ""
             } catch {
                 return errorMessage(error)
             }
         },
         openWithApplication: { applicationPath, paths in
-            let appURL = URL(fileURLWithPath: applicationPath)
             guard await BlockingWork.run({ FileManager.default.fileExists(atPath: applicationPath) }) else {
                 throw Failure(
                     message: "Unable to find application named '\(ApplicationPaths.displayName(applicationPath))'")
             }
+            let urls = await BlockingWork.run { itemURLs([applicationPath] + paths) }
             _ = try await NSWorkspace.shared.open(
-                paths.map { URL(fileURLWithPath: $0) }, withApplicationAt: appURL,
-                configuration: NSWorkspace.OpenConfiguration())
+                Array(urls.dropFirst()), withApplicationAt: urls[0], configuration: NSWorkspace.OpenConfiguration())
         },
         reveal: { paths in
             if let failure = await BlockingWork.run({ revealFailure(paths) }) { throw Failure(message: failure) }
-            await MainActor.run {
-                NSWorkspace.shared.activateFileViewerSelecting(paths.map { URL(fileURLWithPath: $0) })
-            }
+            let items = await BlockingWork.run { itemURLs(paths) }
+            await MainActor.run { NSWorkspace.shared.activateFileViewerSelecting(items) }
         },
         openURL: { url in
             _ = try await NSWorkspace.shared.open(url, configuration: NSWorkspace.OpenConfiguration())

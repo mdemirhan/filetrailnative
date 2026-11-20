@@ -1,5 +1,6 @@
 import AppKit
 import CoreServices
+import FTFoundation
 import Foundation
 import UniformTypeIdentifiers
 import os
@@ -76,7 +77,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
         var defaultsAgree = true
 
         for path in paths where !path.isEmpty {
-            let url = URL(fileURLWithPath: path)
+            let url = DiskPath(path).fileURL()
 
             // Each file can have its own default (Finder's Get Info sets one), so it is asked for each, until
             // two differ.
@@ -124,7 +125,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
         let apps = (commonKeys ?? []).compactMap { key in urlsByKey[key].flatMap(cachedAppInfo) }
         let defaultApp = defaultKey.flatMap { urlsByKey[$0] }.flatMap(cachedAppInfo)
         let appInfo = appPaths.map { path in
-            path.isEmpty ? nil : cachedAppInfo(URL(fileURLWithPath: path))
+            path.isEmpty ? nil : cachedAppInfo(DiskPath(path).fileURL())
         }
         return LaunchServicesAnswer(defaultApp: defaultApp, apps: apps, kinds: kinds, appInfo: appInfo)
     }
@@ -224,7 +225,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
             // What the type opens in has changed, or may have: what is remembered is asked again.
             forget()
         }
-        let appURL = URL(fileURLWithPath: appPath)
+        let appURL = await BlockingWork.run { DiskPath(appPath).fileURL() }
         let setter = setDefaultInSystem
         let limit = setDefaultTimeLimit
         // Whichever ends first answers: the system's call doesn't stop when asked to, so it isn't waited for past the

@@ -1,4 +1,5 @@
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 /// The system's share popover, as Finder's Share… shows it: the items' icon, name and kind at the top, then AirDrop,
@@ -16,11 +17,17 @@ final class SharePicker: NSObject, @preconcurrency NSSharingServicePickerDelegat
     private weak var sourceWindow: NSWindow?
     private var firstPath: String?
 
+    /// The items as a sharing service is handed them: each path's own bytes, so an accent reaches the service as
+    /// the disk spells it.
+    static func items(_ paths: [String]) -> [NSURL] {
+        paths.map { DiskPath($0).fileURL() as NSURL }
+    }
+
     /// Shows the popover for `paths` by `rect` of `view`, below it where there is room.
     func show(_ paths: [String], relativeTo rect: NSRect, of view: NSView, sourceFrame: NSRect? = nil) {
         guard !paths.isEmpty, view.window != nil else { return }
         picker?.close()
-        let picker = NSSharingServicePicker(items: paths.map { URL(fileURLWithPath: $0) as NSURL })
+        let picker = NSSharingServicePicker(items: Self.items(paths))
         picker.delegate = self
         self.picker = picker
         self.sourceFrame = sourceFrame

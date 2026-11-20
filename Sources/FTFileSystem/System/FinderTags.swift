@@ -1,4 +1,5 @@
 // Finder's tags, stored where Finder stores them, so each app sees the other's
+import FTFoundation
 import Foundation
 
 /// The seven colors of Finder's tags. The raw values are the numbers Finder stores, and index
@@ -106,7 +107,7 @@ public enum FinderTags {
         }
         var values = URLResourceValues()
         values.labelNumber = tags.last { $0.color != nil }?.color?.rawValue ?? 0
-        var url = URL(fileURLWithPath: path)
+        var url = DiskPath(path).fileURL()
         try url.setResourceValues(values)
     }
 

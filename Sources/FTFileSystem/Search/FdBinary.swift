@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// The `fd` that ships with the app: Resources/fd in the repository, copied by scripts/build-app.sh into
@@ -43,7 +44,7 @@ public enum FdBinary {
     }
 
     /// Sources/FTFileSystem/Search/FdBinary.swift, four folders up.
-    private static let repositoryRoot = URL(fileURLWithPath: #filePath)
+    private static let repositoryRoot = DiskPath(#filePath).url(isDirectory: false)
         .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         .deletingLastPathComponent()
 
@@ -52,13 +53,17 @@ public enum FdBinary {
         locations: Locations = .standard,
         fileExists: (String) -> Bool = { FileManager.default.isExecutableFile(atPath: $0) }
     ) throws -> String {
-        var candidates: [URL] = []
-        if let helpers = locations.helpers { candidates.append(helpers.appendingPathComponent("fd")) }
-        if let sourceTree = locations.sourceTree {
-            candidates.append(sourceTree.appendingPathComponent(manifest.relativeBinaryPath))
+        // Each folder's path as its URL spells it, and the binary's joined to that: a URL would respell the
+        // whole path as it adds a part.
+        var candidates: [DiskPath] = []
+        if let helpers = locations.helpers.flatMap({ DiskPath(urlSpelling: $0) }) {
+            candidates.append(helpers.appending("fd"))
         }
-        if let found = candidates.first(where: { fileExists($0.path) }) {
-            return found.path
+        if let sourceTree = locations.sourceTree.flatMap({ DiskPath(urlSpelling: $0) }) {
+            candidates.append(sourceTree.appending(manifest.relativeBinaryPath))
+        }
+        if let found = candidates.first(where: { fileExists($0.string) }) {
+            return found.string
         }
         throw NotFound(description: "Bundled fd binary not found for \(currentArchitecture).")
     }

@@ -112,6 +112,15 @@ public enum FileDrag {
         images.allSatisfy { $0.index >= 0 && $0.index < Int(UInt32.max) }
     }
 
+    /// The URLs a drag carries to other apps: each item's path by its own bytes, so the other app is given the name
+    /// as the disk spells it. Whether an item is a folder is what its row says; the disk is asked only for an item
+    /// with no row.
+    static func itemURLs(_ paths: [String], directories: [Bool]) -> [URL] {
+        paths.enumerated().map { index, path in
+            index < directories.count ? DiskPath(path).url(isDirectory: directories[index]) : DiskPath(path).fileURL()
+        }
+    }
+
     /// Starts a drag of `paths` from `view`'s window (file URLs only, no promises). Up to
     /// `FileDragImages.maxImages` items are drawn as they show (`images`, rects in the view's coordinates), or the first
     /// item with no picture measured, and they go beside the pointer whatever their number; the rest go along unseen.
@@ -151,10 +160,7 @@ public enum FileDrag {
             x: pointer.x, y: pointer.y - stack.size.height, width: stack.size.width, height: stack.size.height)
         // The stack is one picture, on the first item; the others go along unseen.
         var items: [NSDraggingItem] = []
-        for (index, path) in paths.enumerated() {
-            let url =
-                index < directories.count
-                ? URL(fileURLWithPath: path, isDirectory: directories[index]) : URL(fileURLWithPath: path)
+        for url in itemURLs(paths, directories: directories) {
             let item = NSDraggingItem(pasteboardWriter: url as NSURL)
             item.draggingFrame = frame
             items.append(item)

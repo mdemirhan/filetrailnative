@@ -165,7 +165,8 @@ extension MainWindowController {
         if actions.refuseWhileBusy(.operation(.newFile)) { return }
         let path = (folder as NSString).appendingPathComponent(name)
         Task {
-            let read = await Task.detached { Result { try Data(contentsOf: URL(fileURLWithPath: path)) } }.value
+            let read = await Task.detached { Result { try Data(contentsOf: DiskPath(path).url(isDirectory: false)) } }
+                .value
             switch read {
             case .success(let contents):
                 _ = await actions.newFile(in: target, named: name, contents: contents)

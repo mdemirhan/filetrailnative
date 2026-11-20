@@ -1,4 +1,5 @@
 import CoreServices
+import FTFoundation
 import Foundation
 
 /// What Finder shows in its Kind column for a file ("Markdown Document", "PNG image", "Plain Text
@@ -32,7 +33,7 @@ public enum FileKind {
     /// Launch Services' kind string, deprecated but without a replacement in the same words, then the type's own
     /// description.
     private static func fallbackKind(ofPath path: String) -> String? {
-        let url = URL(fileURLWithPath: path)
+        let url = DiskPath(path).fileURL()
         if let kind = launchServicesKind(of: url), !kind.isEmpty {
             return kind
         }
@@ -68,7 +69,7 @@ public enum FileKind {
         func kind(forPath path: String) -> String? {
             guard let path = clipped(path) else { return nil }
             guard access(path, R_OK) == 0,
-                let type = try? URL(fileURLWithPath: path, isDirectory: false)
+                let type = try? DiskPath(path).url(isDirectory: false)
                     .resourceValues(forKeys: [.contentTypeKey]).contentType?.identifier
             else { return FileKind.kind(forPath: path) }
             if let known = lock.withLock({ kinds[type] }) { return known }

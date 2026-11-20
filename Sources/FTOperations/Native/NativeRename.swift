@@ -1,4 +1,5 @@
 import Darwin
+import FTFileSystem
 import FTFoundation
 import Foundation
 
@@ -62,7 +63,7 @@ extension NativeFS {
     /// What tells the disk holding `path` from every other (its volume's UUID), also from one of the same name; nil
     /// when the disk has none or `path` can't be read.
     public static func diskId(of path: String) -> String? {
-        try? URL(fileURLWithPath: path).resourceValues(forKeys: [.volumeUUIDStringKey]).volumeUUIDString
+        try? DiskPath(path).fileURL().resourceValues(forKeys: [.volumeUUIDStringKey]).volumeUUIDString
     }
 
     /// The name the item at `path` has on its disk, a symlink not followed (`DiskPath.nameOnDisk`).

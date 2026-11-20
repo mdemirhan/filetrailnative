@@ -112,7 +112,7 @@ public enum ImageConverter {
 
     private static func openSource(_ path: String) -> CGImageSource? {
         let options = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithURL(URL(fileURLWithPath: path) as CFURL, options),
+        guard let source = CGImageSourceCreateWithURL(DiskPath(path).url(isDirectory: false) as CFURL, options),
             CGImageSourceGetCount(source) > 0,
             let type = CGImageSourceGetType(source) as String?, CopyContents.isImageType(type)
         else { return nil }

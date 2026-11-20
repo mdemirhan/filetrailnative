@@ -44,6 +44,23 @@ extension ExplorerWindowlessTests {
             tab.content.focusList()
         }
 
+        // The system's share popover is handed each item by its path's own bytes, so a service finds an item
+        // stored with a composed accent under the name its disk has.
+        @Test func theItemsSharedAreSpelledAsTheirPathsAre() throws {
+            let folder = try TemporaryDirectory(prefix: "share-spelling")
+            defer { folder.remove() }
+            let composed = folder.path + "/caf\u{E9}"
+            let file = composed + "/na\u{EF}ve.txt"
+            #expect(mkdir(composed, 0o755) == 0)
+            #expect(close(Darwin.open(file, O_CREAT | O_WRONLY, 0o644)) == 0)
+            let items = SharePicker.items([composed, file]).map { $0 as URL }
+            let spelled = items.map { url in
+                url.withUnsafeFileSystemRepresentation { $0.map { Array(String(cString: $0).utf8) } }
+            }
+            #expect(spelled == [Array(composed.utf8), Array(file.utf8)])
+            #expect(items.map(\.hasDirectoryPath) == [true, false])
+        }
+
         // The right-click menu shares the items it is for, a file and a folder together.
         @Test func theRightClickMenuSharesItsItems() async throws {
             let (harness, tab, shared) = try await open()

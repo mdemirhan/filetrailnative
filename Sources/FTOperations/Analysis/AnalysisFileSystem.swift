@@ -1,4 +1,5 @@
 import Darwin
+import FTFileSystem
 import FTFoundation
 import Foundation
 
@@ -44,7 +45,7 @@ extension PosixFileSystem: AnalysisFileSystem {
     /// `NSURLIsPackageKey`: true for folders Finder shows as one item, by their type or
     /// by the folder's own package bit; nil when it can't be told (the item is gone, say).
     public func isPackage(_ path: String) throws -> Bool? {
-        let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isPackageKey])
+        let values = try? DiskPath(path).fileURL().resourceValues(forKeys: [.isPackageKey])
         return values?.isPackage
     }
 
