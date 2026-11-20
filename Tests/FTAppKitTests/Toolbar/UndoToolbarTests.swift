@@ -167,18 +167,50 @@ extension ExplorerWindowlessTests {
             #expect(cant.first.textColor == cant.second.textColor)
             #expect(cant.toolTip?.hasPrefix("Done ") == true)
 
-            // Passed, Undo names the rename, and the list keeps the row.
+            // Not yet passed, it is under the "Undo" heading: ⌘Z meets it, and says so.
+            func listed() -> [String] {
+                view.descendants.compactMap { piece -> String? in
+                    if let row = piece as? UndoHistoryView.TwoLineRow { return row.first.stringValue }
+                    if piece is UndoHistoryView.UndoHistoryHeading { return piece.accessibilityLabel() }
+                    return nil
+                }
+            }
+            #expect(listed() == ["Undo", "Move can’t be undone", "Rename"])
+
+            // Passed, Undo names the rename, and the list keeps the row, above the heading: the heading is over
+            // what ⌘Z undoes next. The row is as it was, dimmed with its lock and why.
             history.passCantUndo()
             toolbar.refreshStates()
             #expect(self.button(tab, .undo)?.tooltip == "Undo Rename (⌘Z)")
-            #expect(rows().map(\.first.stringValue) == ["Move can’t be undone", "Rename"])
+            #expect(listed() == ["Move can’t be undone", "Undo", "Rename"])
+            let passed = try #require(rows().first as? UndoHistoryView.UndoHistoryCantUndoView)
+            #expect(passed.icon.symbolName == "lock" && passed.first.textColor == passed.second.textColor)
+            #expect(passed.second.stringValue.hasPrefix("Items were moved to another disk · "))
 
-            // The rename undone, the list still has it to show, and Undo is off.
-            let top = try #require(history.top(.undo))
+            // One done after it that can't be undone either is under the heading until it is passed too; an
+            // operation done after both puts them back among the operations, where they happened.
+            history.record(FinishedWrite(action: .emptyTrash, log: .notUndoable(reason: .deletedForGood), items: []))
+            #expect(listed() == ["Undo", "Empty Trash can’t be undone", "Move can’t be undone", "Rename"])
+            history.passCantUndo()
+            #expect(listed() == ["Empty Trash can’t be undone", "Move can’t be undone", "Undo", "Rename"])
+            history.record(Self.rename("/p/c", "/p/d"))
+            #expect(
+                listed() == ["Undo", "Rename", "Empty Trash can’t be undone", "Move can’t be undone", "Rename"])
+            var top = try #require(history.top(.undo))
+            try history.finish(.undo, entryId: top.id, done: top.units, leftover: [])
+            // The rename undone is under "Redo", then the passed ones, then the heading and what Undo takes next.
+            #expect(
+                listed() == [
+                    "Redo", "Rename", "Empty Trash can’t be undone", "Move can’t be undone", "Undo", "Rename",
+                ])
+
+            // The first rename undone too, the list still has the passed ones to show, with no "Undo" heading,
+            // and Undo is off.
+            top = try #require(history.top(.undo))
             try history.finish(.undo, entryId: top.id, done: [], leftover: [])
             toolbar.refreshStates()
             #expect(tab.undoHistoryUI.isOpen)
-            #expect(rows().map(\.first.stringValue) == ["Move can’t be undone"])
+            #expect(listed() == ["Redo", "Rename", "Empty Trash can’t be undone", "Move can’t be undone"])
             #expect(self.button(tab, .undo)?.isEnabled == false)
             #expect(toolbar.item(.undoHistory)?.isHidden == false)
             await harness.close()

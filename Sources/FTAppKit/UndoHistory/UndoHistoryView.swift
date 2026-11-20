@@ -5,7 +5,8 @@ import FTFoundation
 import FTOperations
 
 /// The content of the Undo History popover: a header, then a list that scrolls past `maxListHeight`, holding the Redo
-/// operations and the Undo operations, those that can't be undone among them. Each row's tooltip lists its items.
+/// operations and the Undo operations, those that can't be undone among them: under the "Undo" heading where Undo
+/// still meets them, above it once it has passed them. Each row's tooltip lists its items.
 final class UndoHistoryView: NSView {
     static let width = 360.0
     static let rowHeight = 38.0
@@ -130,18 +131,25 @@ final class UndoHistoryView: NSView {
             }
             for row in content.redo { add(UndoHistoryRowView(row, undone: true, now: date), height: Self.rowHeight) }
         }
-        if !content.undo.isEmpty {
+        // The newest operations that can't be undone and that Undo has passed are above the heading: ⌘Z no longer
+        // meets them, and the heading sits over what it takes next.
+        let passed = content.undo.prefix { $0.cantUndo?.passed == true }
+        for row in passed {
+            if let entry = row.cantUndo { add(UndoHistoryCantUndoView(entry, now: date), height: Self.rowHeight) }
+        }
+        let next = content.undo.dropFirst(passed.count)
+        if !next.isEmpty {
             add(UndoHistoryHeading("Undo", key: undoKey), height: Self.headingHeight)
-            for row in content.undo {
+            for row in next {
                 if let entry = row.cantUndo {
                     add(UndoHistoryCantUndoView(entry, now: date), height: Self.rowHeight)
                 } else {
                     add(UndoHistoryRowView(row, undone: false, now: date), height: Self.rowHeight)
                 }
             }
-            if content.undoMore > 0 {
-                add(UndoHistoryNote("and \(content.undoMore) earlier"), height: Self.noteHeight)
-            }
+        }
+        if content.undoMore > 0 {
+            add(UndoHistoryNote("and \(content.undoMore) earlier"), height: Self.noteHeight)
         }
         list.frame = NSRect(x: 0, y: 0, width: width, height: y)
     }
