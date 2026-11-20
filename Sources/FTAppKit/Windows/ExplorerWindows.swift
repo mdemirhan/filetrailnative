@@ -177,15 +177,19 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     }
 
     /// Disks just unmounted, by the folders they were mounted at: every window lets go of them, and the
-    /// clipboard of what was on them (a cut of any is cancelled).
+    /// clipboard of what was on them, each item on its own; the window in front names the cut ones in a notification.
     func disksUnmounted(_ mountPaths: Set<String>) {
         guard !mountPaths.isEmpty else { return }
         for group in groups where !group.isDestroyed {
             group.disksUnmounted(mountPaths, homePath: home, volumeRoot: volumeRoot)
         }
-        let followed = ClipboardRules.followThroughRemoval(clipboard.contents, Array(mountPaths))
+        let before = clipboard.contents
+        let followed = ClipboardRules.followThroughRemoval(before, Array(mountPaths))
         clipboard.followKept { ClipboardRules.followThroughRemoval($0, Array(mountPaths)) }
-        if followed != clipboard.contents { clipboard.set(followed, follows: clipboard.contents.capturedAt, from: nil) }
+        if followed != before {
+            clipboard.set(followed, follows: before.capturedAt, from: nil)
+            CutItemsLeftNotice.show(from: before, to: followed, in: controller.frontWindow()?.selected?.window)
+        }
     }
 
     /// A file operation's progress, from whichever window ran it, reaches every window: once one that renamed or moved

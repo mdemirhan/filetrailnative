@@ -1,5 +1,6 @@
 // Gathering on the clipboard: Add to Copied Items and Add to Cut Items, with the question an item of a name already
-// there asks; Remove from Clipboard; an item switched between copied and cut; Use This One Instead; and Put Back
+// there asks; Remove from Clipboard; an item switched between copied and cut; Use This One Instead; Put Back; and the
+// notification when cut items left it with nothing else said
 import AppKit
 import FTFoundation
 
@@ -17,6 +18,18 @@ enum ClipboardClashQuestion {
                 AlertButtonSpec(ClipboardTexts.clashUseTitle(clashes), .plain, answer: .useThisOne),
                 AlertButtonSpec(ClipboardTexts.clashKeepBothTitle, .default, answer: .keepBoth),
             ], escape: .dontAdd, in: window)
+    }
+}
+
+/// Cut items left the clipboard and nothing else says they went: their disk was ejected, they were dragged to another
+/// app, or Empty Trash erased them. One notification names them. A Move to Trash or a Delete has its own, which
+/// names the item, so nothing more is said for those.
+@MainActor
+enum CutItemsLeftNotice {
+    /// Shows it in `window` when cut items of `before` are no longer on `after`, the clipboard that took its place.
+    static func show(from before: CopyPasteClipboard, to after: CopyPasteClipboard, in window: NSWindow?) {
+        guard let message = ClipboardTexts.cutItemsLeftMessage(from: before, to: after) else { return }
+        NotificationOverlay.push(.info, title: message, in: window)
     }
 }
 

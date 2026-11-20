@@ -206,17 +206,19 @@ final class TabDragDrop {
         }
     }
 
-    /// Items dragged away to another app: the clipboard lets go of the items, each on its own, every window
-    /// forgets their sizes and reads what they left again, and the search results on screen that listed them let go
-    /// of them.
+    /// Items dragged away to another app: the clipboard lets go of the items, each on its own, naming the cut ones
+    /// in a notification, every window forgets their sizes and reads what they left again, and the search results
+    /// on screen that listed them let go of them.
     func draggedAway(_ gone: [String], cleared: [String], intoTrash: Bool) {
         guard let tab else { return }
         let clipboard = tab.services.clipboard
-        let followed = ClipboardRules.followThroughRemoval(clipboard.contents, gone)
+        let before = clipboard.contents
+        let followed = ClipboardRules.followThroughRemoval(before, gone)
         clipboard.followKept { ClipboardRules.followThroughRemoval($0, gone) }
-        if followed != clipboard.contents {
-            clipboard.set(followed, follows: clipboard.contents.capturedAt, from: tab.windowID)
+        if followed != before {
+            clipboard.set(followed, follows: before.capturedAt, from: tab.windowID)
             tab.clipboardChanged()
+            CutItemsLeftNotice.show(from: before, to: followed, in: tab.window)
         }
         let tabs = (NSApp.delegate as? AppDelegate)?.explorerWindows?.allTabs ?? [tab]
         for each in tabs {

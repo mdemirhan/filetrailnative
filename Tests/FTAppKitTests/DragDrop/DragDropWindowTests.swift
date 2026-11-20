@@ -162,6 +162,37 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
+        // A cut item dragged away to another app leaves the clipboard, and one notification names it, as nothing else
+        // says it went. A copied one leaves without a word.
+        @Test func aCutItemDraggedAwayIsNamedAsItLeavesTheClipboard() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let clipboard = tab.services.clipboard
+            let note = url(window, "note.txt").path
+            let alpha = url(window, "Alpha").path
+            let beta = url(window, "Beta").path
+            clipboard.set(
+                ClipboardRules.setMode(
+                    ClipboardRules.set(.cut, [note, alpha, beta], capturedAt: "t"), [beta], to: .copy, at: "t"),
+                from: nil)
+            func leftNotices() -> [String] {
+                tab.notifications?.toasts.entries.map(\.title).filter { $0.hasSuffix("no longer on the clipboard") }
+                    ?? []
+            }
+
+            try FileManager.default.removeItem(atPath: note)
+            tab.dragDrop.checkDraggedAway([note], intoTrash: false, after: [0])
+            #expect(await waitUntil { clipboard.contents.sourcePaths == [alpha, beta] })
+            #expect(leftNotices() == ["\u{201C}note.txt\u{201D} is no longer on the clipboard"])
+
+            try FileManager.default.removeItem(atPath: beta)
+            tab.dragDrop.checkDraggedAway([beta], intoTrash: false, after: [0])
+            #expect(await waitUntil { clipboard.contents.sourcePaths == [alpha] })
+            #expect(clipboard.contents.mode == .cut)
+            #expect(leftNotices().count == 1)
+            await window.close()
+        }
+
         // Empty Trash from the menu with a Trash item on the clipboard: it leaves the clipboard, and the results
         // on screen, which it didn't act on, stay as they are.
         @Test func emptyTrashWithTrashedItemsOnTheClipboardLeavesTheResults() async throws {

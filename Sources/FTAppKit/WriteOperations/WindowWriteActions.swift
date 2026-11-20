@@ -674,17 +674,20 @@ final class WindowWriteActions {
         (false, "Nothing here can empty the Trash.")
     }
 
-    /// The clipboard lets go of items now in a Trash, each on its own.
+    /// The clipboard lets go of items now in a Trash, each on its own, naming the cut ones in a notification.
     private func dropTrashedFromClipboard() {
         guard let clipboard = session.clipboard, let capturedAt = clipboard.contents.capturedAt else { return }
         let homePath = coordinator.homePath
-        let trashed = clipboard.contents.sourcePaths.filter { Paths.isInsideTrash($0, homePath: homePath) }
+        let before = clipboard.contents
+        let trashed = before.sourcePaths.filter { Paths.isInsideTrash($0, homePath: homePath) }
         guard !trashed.isEmpty else { return }
-        clipboard.set(ClipboardRules.removeItems(clipboard.contents, trashed), follows: capturedAt, from: tab?.windowID)
+        let rest = ClipboardRules.removeItems(before, trashed)
+        clipboard.set(rest, follows: capturedAt, from: tab?.windowID)
         clipboard.followKept { kept in
             ClipboardRules.removeItems(kept, kept.sourcePaths.filter { Paths.isInsideTrash($0, homePath: homePath) })
         }
         tab?.clipboardChanged()
+        CutItemsLeftNotice.show(from: before, to: rest, in: tab?.window)
     }
 
     // MARK: Starting a local operation

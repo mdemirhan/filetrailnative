@@ -279,6 +279,85 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
+        /// The notifications that say cut items left the clipboard.
+        private func leftNotices(_ tab: MainWindowController) -> [String] {
+            tab.notifications?.toasts.entries.map(\.title).filter { $0.hasSuffix("no longer on the clipboard") } ?? []
+        }
+
+        /// A cut item on a disk that was ejected leaves the clipboard, and one notification names it, as nothing
+        /// else says it went. A copied one leaves without a word.
+        @Test func aCutItemOnAnEjectedDiskIsNamedAsItLeavesTheClipboard() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let clipboard = tab.services.clipboard
+            let disk = path(window, "Gamma")
+            let home = path(window, "note.txt")
+            clipboard.set(ClipboardRules.set(.cut, [disk + "/Inner", home], capturedAt: "t"), from: nil)
+
+            window.harness.windows.disksUnmounted([disk])
+            #expect(clipboard.contents.sourcePaths == [home])
+            #expect(clipboard.contents.mode == .cut)
+            #expect(leftNotices(tab) == ["\u{201C}Inner\u{201D} is no longer on the clipboard"])
+            // Another disk's going takes nothing off, and says nothing.
+            window.harness.windows.disksUnmounted([path(window, "Beta")])
+            #expect(leftNotices(tab).count == 1)
+
+            clipboard.set(ClipboardRules.set(.copy, [disk + "/Inner", home], capturedAt: "u"), from: nil)
+            window.harness.windows.disksUnmounted([disk])
+            #expect(clipboard.contents.sourcePaths == [home])
+            #expect(leftNotices(tab).count == 1)
+            await window.close()
+        }
+
+        /// Cut items Empty Trash erased leave the clipboard, and one notification says how many, as nothing else
+        /// says they went. Copied ones leave without a word.
+        @Test func cutItemsEmptyTrashErasedAreCountedAsTheyLeaveTheClipboard() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let clipboard = tab.services.clipboard
+            var dialogs = window.recorder.dialogs
+            dialogs.confirm = { _, _ in true }
+            window.operations.dialogs = dialogs
+            let actions = try #require(tab.writeActions)
+            actions.emptyTrashRunner = { (true, nil) }
+            let trash = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash").path
+            let kept = path(window, "note.txt")
+            clipboard.set(
+                ClipboardRules.set(.cut, [trash + "/gone.txt", trash + "/old.txt", kept], capturedAt: "t"), from: nil)
+
+            _ = await actions.emptyTrash()
+            #expect(clipboard.contents.sourcePaths == [kept])
+            #expect(leftNotices(tab) == ["2 cut items are no longer on the clipboard"])
+
+            clipboard.set(ClipboardRules.set(.copy, [trash + "/gone.txt", kept], capturedAt: "u"), from: nil)
+            _ = await actions.emptyTrash()
+            #expect(clipboard.contents.sourcePaths == [kept])
+            #expect(leftNotices(tab).count == 1)
+            await window.close()
+        }
+
+        /// A cut item put in the Trash leaves the clipboard too, and the Trash's own notification, which names it,
+        /// is the word for it: there is no second one.
+        @Test func aCutItemPutInTheTrashIsToldOfByTheTrashAlone() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let clipboard = tab.services.clipboard
+            let alpha = path(window, "Alpha")
+            clipboard.set(ClipboardRules.set(.cut, [path(window, "note.txt"), alpha], capturedAt: "t"), from: nil)
+            tab.clipboardChanged()
+
+            window.select(["note.txt"])
+            tab.perform(.trashSelection)
+            #expect(await waitUntil { !window.exists("note.txt") && !tab.isWriteLocked })
+            #expect(await waitUntil { clipboard.contents.sourcePaths == [alpha] })
+            #expect(await toast(tab, "Moved to Trash"))
+            #expect(
+                tab.notifications?.toasts.entries.first { $0.title == "Moved to Trash" }?.message
+                    == "\u{201C}note.txt\u{201D}")
+            #expect(leftNotices(tab).isEmpty)
+            await window.close()
+        }
+
         @Test func removeFromClipboardAndSwitchingAnItemActOnWhatIsSelected() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab

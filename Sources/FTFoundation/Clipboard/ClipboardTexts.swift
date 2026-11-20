@@ -351,6 +351,18 @@ extension ClipboardTexts {
     public static func putBackMessage(_ clipboard: CopyPasteClipboard) -> String {
         "Put back \(count(clipboard.picks.count)) on the clipboard"
     }
+
+    /// The toast when cut items left the clipboard and nothing else says they went: their disk was ejected, they
+    /// were dragged to another app, or Empty Trash erased them. It names the cut items of `before` that `after`
+    /// no longer holds; nil when there are none. Copied items that left are not told of.
+    public static func cutItemsLeftMessage(from before: CopyPasteClipboard, to after: CopyPasteClipboard) -> String? {
+        let held = Set(after.picks.map { ExactKey($0.path) })
+        let left = before.cutPaths.filter { !held.contains(ExactKey($0)) }
+        guard !left.isEmpty else { return nil }
+        return left.count == 1
+            ? "\(named(left)) is no longer on the clipboard"
+            : "\(count(left.count, "cut item")) are no longer on the clipboard"
+    }
 }
 
 // MARK: The Edit menu

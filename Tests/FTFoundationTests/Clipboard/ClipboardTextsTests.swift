@@ -104,6 +104,44 @@ struct ClipboardTextsTests {
         )
     }
 
+    /// Cut items that left the clipboard with nothing else said of it are named, one by its name and several by
+    /// their number; copied ones that left are not told of, nor an item that only changed what it is there for.
+    @Test func namesTheCutItemsThatLeftTheClipboard() {
+        func picks(_ paths: [(String, ClipboardMode)]) -> CopyPasteClipboard {
+            .holding(
+                paths.map { ClipboardPick(path: $0.0, mode: $0.1, markedAt: "t") }, capturedAt: "t", grown: true)
+        }
+        let before = picks([("/disk/a.txt", .cut), ("/disk/b.txt", .copy), ("/home/c.txt", .cut)])
+        #expect(
+            ClipboardTexts.cutItemsLeftMessage(from: before, to: picks([("/home/c.txt", .cut)]))
+                == "\u{201C}a.txt\u{201D} is no longer on the clipboard")
+        #expect(
+            ClipboardTexts.cutItemsLeftMessage(from: before, to: picks([("/disk/b.txt", .copy)]))
+                == "2 cut items are no longer on the clipboard")
+        #expect(
+            ClipboardTexts.cutItemsLeftMessage(from: before, to: .empty) == "2 cut items are no longer on the clipboard"
+        )
+        // Only a copied item left, or nothing did.
+        #expect(
+            ClipboardTexts.cutItemsLeftMessage(from: before, to: picks([("/disk/a.txt", .cut), ("/home/c.txt", .cut)]))
+                == nil)
+        #expect(ClipboardTexts.cutItemsLeftMessage(from: before, to: before) == nil)
+        #expect(ClipboardTexts.cutItemsLeftMessage(from: .empty, to: .empty) == nil)
+        // Still on it, to be copied now: it didn't leave.
+        #expect(
+            ClipboardTexts.cutItemsLeftMessage(
+                from: before, to: ClipboardRules.setMode(before, ["/disk/a.txt"], to: .copy, at: "u")) == nil)
+        // Paths are compared by their exact bytes: a name stored another way is another item.
+        let composed = picks([("/disk/caf\u{E9}.txt", .cut)])
+        #expect(
+            ClipboardTexts.cutItemsLeftMessage(from: composed, to: picks([("/disk/cafe\u{301}.txt", .cut)]))
+                == "\u{201C}caf\u{E9}.txt\u{201D} is no longer on the clipboard")
+        let many = picks((1...1_200).map { ("/disk/\($0).txt", .cut) })
+        #expect(
+            ClipboardTexts.cutItemsLeftMessage(from: many, to: .empty)
+                == "1,200 cut items are no longer on the clipboard")
+    }
+
     @Test func namesWhatIsRunningAndTheItemItIsOn() {
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: .paste, currentSourcePath: "/Users/demo/Photos")
