@@ -74,7 +74,13 @@ struct FolderWatchStreamTests {
             let watches = FolderWatches(.app(cache: cache) { _, change in told.changes.append(change) })
             watches.watch(windowID: 1, path: root, listedModifiedTime: listing.modifiedTime)
             defer { watches.stopAll() }
-            #expect(await wait { told.changes.contains { $0.changedPaths == nil } })
+            // Told as "anything may have changed" by the folder's time; or, where the stream itself still brings the
+            // write (it starts "from now", and a write a moment before can come with it), by the file's name.
+            let late = root + "/late.txt"
+            #expect(
+                await wait {
+                    told.changes.contains { $0.changedPaths == nil || $0.changedPaths?.contains(late) == true }
+                }, "told: \(told.changes.map { $0.changedPaths ?? ["<anything>"] })")
             // The listing kept is let go of: the folder read again has the file.
             #expect(try await service.snapshot(path: root).entries.map(\.name) == ["late.txt"])
         }
