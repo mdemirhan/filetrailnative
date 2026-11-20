@@ -99,7 +99,7 @@ final class ExplorerTabWindow: NSWindow {
     /// A key that moves the caret or deletes (⌘↑, ⌘⌫) stays with a text field that has the keyboard, even when the menu
     /// listens for it. The window is asked before the menu bar, and a dimmed item would keep the key too.
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
-        // ⌘S saves the file with edits a pane of the tab shows, wherever the keyboard is in the tab.
+        // Save File's key saves the file with edits the active pane shows.
         if explorerTab?.saveViewerKey(event) == true { return true }
         if explorerTab?.textFieldKeepsKey(event) == true, let field = firstResponder {
             field.keyDown(with: event)
@@ -121,6 +121,13 @@ final class ExplorerTabWindow: NSWindow {
         if firstClickGate.keepsBack(event, in: self) { return }
         if WindowEventRouting.intercept(event, in: self) { return }
         if WindowOverlayView.existing(in: self)?.forward(event) == true { return }
+        // A press anywhere in a file a pane shows (Quick Look's preview, its bar, its buttons) makes that pane the
+        // active one, as a click in its list does: most of the viewer takes no keyboard of its own.
+        if event.type == .leftMouseDown || event.type == .rightMouseDown,
+            let root = contentView?.superview?.hitTest(event.locationInWindow)?.enclosingViewer
+        {
+            explorerTab?.viewerPressed(root)
+        }
         if event.type == .rightMouseDown,
             let button = ToolbarButton.takingRightPress(at: event.locationInWindow, in: self)
         {

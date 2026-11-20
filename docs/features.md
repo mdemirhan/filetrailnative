@@ -33,7 +33,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 
 - **Tabs**, up to 25 in a window, each with its own folder, history, folder tree, view, sort order and search. ⇧⌘T reopens the tab closed last, as it was.
 - **Two panes** in a tab (⌘\\), each with its own folder, history, view, filter and search. F5 copies what is selected to the other pane and F6 moves it; ⌥⌘↓ opens the selected folder there, and ⌘U swaps the panes. **Duplicate Pane** (⌥⌘\\, in the View menu, and a toolbar button you can add) opens a copy of the pane you are in beside it, with the same folder, view and history, in place of the other pane when two are open.
-- **Between the panes**: Tab walks the folder tree, the left pane and the right pane; ⌥-click a folder in the tree to open it in the other pane; drag from one pane onto the other; and right-click for an Other Pane submenu. Hidden files show in both panes of a tab or in neither.
+- **Between the panes**: Tab walks the folder tree, the left pane and the right pane; ⌥-click a folder in the tree to open it in the other pane; drag from one pane onto the other; and right-click for an Other Pane submenu, or with one pane, Open in Other Pane. Hidden files show in both panes of a tab or in neither.
 - **A line along the top of the active pane** shows where the keyboard is: bright while the pane has it, dimmer while the sidebar or the search field does.
 - **⌘W closes the pane you are in** when a tab has two, and the tab when it has one; ⌥⌘W closes the tab with both. ⌘\\ brings a closed pane back as it was.
 - **Windows**, each with its own tabs. Move a tab into a window of its own, or merge every window back into one.

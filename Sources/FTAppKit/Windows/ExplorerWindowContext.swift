@@ -132,6 +132,9 @@ protocol ExplorerWindowContext: AnyObject {
     func canPerform(_ command: AppCommand) -> Bool
     /// Whether each command can run now, from one look at the window: for asking about many commands at once.
     func commandAvailability() -> (AppCommand) -> Bool
+    /// Whether the active pane shows a file in place of its folder: what would act on the folder (a search typed in the
+    /// toolbar) waits, as it would happen out of sight.
+    var activePaneShowsFile: Bool { get }
 
     // MARK: Selection and focus
 

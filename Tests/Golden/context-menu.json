@@ -40,6 +40,11 @@
           "hasSubmenu": true
         },
         {
+          "icon": "twoPanes",
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane"
+        },
+        {
           "id": "quickLook",
           "label": "Quick Look",
           "icon": "quickLook"
@@ -262,6 +267,11 @@
           "label": "Other Pane",
           "icon": "twoPanes",
           "hasSubmenu": true
+        },
+        {
+          "icon": "twoPanes",
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane"
         },
         {
           "id": "quickLook",
@@ -744,6 +754,11 @@
           "label": "Other Pane",
           "icon": "twoPanes",
           "hasSubmenu": true
+        },
+        {
+          "icon": "twoPanes",
+          "id": "openInOtherPane",
+          "label": "Open in Other Pane"
         },
         {
           "id": "quickLook",

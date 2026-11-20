@@ -196,7 +196,9 @@ public enum ContextMenuItems {
                 item(.openInViewer, "Open in Viewer", .openFile),
                 item(.openInNewTab, "Open in New Tab", .openInNewTab),
                 item(.openInNewWindow, "Open in New Window", .openInNewWindow),
+                // With two panes the submenu, with one the item that opens the second (hidden by the caller).
                 item(.otherPane, "Other Pane", .twoPanes, submenu: true),
+                item(.openInOtherPane, "Open in Other Pane", .twoPanes),
                 item(.quickLook, "Quick Look", .quickLook),
                 item(.edit, "Edit in \(MenuName.shortened(textEditorName))", .edit),
                 item(.showPackageContents, "Show Package Contents", .showPackageContents),

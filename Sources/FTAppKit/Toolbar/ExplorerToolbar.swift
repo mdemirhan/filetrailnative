@@ -430,7 +430,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             title.field.toolTip = context.shownFolderPath
             showActivity(in: title)
         } else if ToolbarItems.isSearchField(id) {
-            searchField.isEnabled = !isCustomizing
+            // A search of the folder under a file the pane shows would run out of sight.
+            searchField.isEnabled = !isCustomizing && !context.activePaneShowsFile
             searchField.takeClearButton()
             if let magnifier = item.view as? ToolbarButton {
                 magnifier.tooltip = Tooltips.format(

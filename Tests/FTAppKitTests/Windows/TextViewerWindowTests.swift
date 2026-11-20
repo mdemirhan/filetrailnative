@@ -433,6 +433,72 @@ extension ExplorerWindowlessTests {
             #expect(back.quickLook.preview == nil)
         }
 
+        // A press anywhere in a file a pane shows makes that pane the active one, with the keyboard: on Quick Look's
+        // preview and on the viewer's bar, which take no keyboard of their own.
+        @Test func aPressInAViewerMakesItsPaneTheActiveOne() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            try Data([0, 1, 2, 3, 0, 0xFF, 0xFE, 0]).write(to: harness.folder.appending("c.bin"))
+            let tab = try await tabWithFiles(harness)
+            let list = tab.activePane
+            let c = real(harness, "c.bin")
+            #expect(await waitUntil { list.content.listedEntry(at: c) != nil })
+            select(c, in: tab)
+            tab.perform(.openSelectionInOtherPane)
+            let besidePane = try #require(tab.otherPane)
+            let viewer = try #require(besidePane.viewer)
+            let preview = try #require(
+                await waitUntil { viewer.quickLook.preview != nil } ? viewer.quickLook.preview : nil)
+            #expect(tab.activePane === list)
+            let window = try #require(tab.window)
+            window.layoutIfNeeded()
+            func press(_ view: NSView, at point: NSPoint) throws {
+                let location = view.convert(point, to: nil)
+                for type in [NSEvent.EventType.leftMouseDown, .leftMouseUp] {
+                    window.sendEvent(
+                        try #require(
+                            NSEvent.mouseEvent(
+                                with: type, location: location, modifierFlags: [], timestamp: 0,
+                                windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1,
+                                pressure: 1)))
+                }
+            }
+
+            try press(preview, at: NSPoint(x: preview.bounds.midX, y: preview.bounds.midY))
+            #expect(tab.activePane === besidePane)
+            #expect(viewer.hasKeyboard)
+
+            tab.focusPane(list)
+            #expect(tab.activePane === list)
+            // Its bar, beside the file's name.
+            try press(viewer.view, at: NSPoint(x: viewer.view.bounds.maxX - 200, y: 10))
+            #expect(tab.activePane === besidePane)
+            #expect(viewer.hasKeyboard)
+        }
+
+        // A search typed in the toolbar would run in the folder under the file: the field waits while the active pane
+        // shows one.
+        @Test func theSearchFieldWaitsWhileTheActivePaneShowsAFile() async throws {
+            let harness = try ExplorerHarness.windowless()
+            defer { Task { await harness.close() } }
+            let tab = try await tabWithFiles(harness)
+            let field = tab.explorerToolbar.searchField
+            #expect(field.isEnabled)
+            select(real(harness, "a.swift"), in: tab)
+            tab.perform(.viewFile)
+            let viewer = try #require(tab.activePane.viewer)
+            #expect(await waitUntil { viewer.isText && !field.isEnabled })
+            tab.perform(.goBack)
+            #expect(await waitUntil { field.isEnabled })
+
+            // Beside the list it is the list's again, and waits again in the viewer's pane.
+            tab.perform(.openSelectionInOtherPane)
+            #expect(await waitUntil { tab.otherPane?.viewer?.isText == true })
+            #expect(field.isEnabled)
+            tab.focusPane(try #require(tab.otherPane))
+            #expect(await waitUntil { !field.isEnabled })
+        }
+
         // Save File, Next File and Previous File are the viewer's keys as Settings → Shortcuts has them.
         @Test func theViewersKeysAreTheOnesChosenInSettings() async throws {
             let harness = try ExplorerHarness.windowless()

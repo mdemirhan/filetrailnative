@@ -186,9 +186,17 @@ public enum ContextMenuRules {
         let surface = subject.surface
         let entries = subject.entries
         let isItemListSurface = surface == .content || surface == .search || surface == .trash
-        // With one pane there is no other pane to act on.
+        // With one pane there is no other pane to copy or move to, but Open in Other Pane opens the second; with two,
+        // a list's items have the Other Pane submenu, whose Open is the same.
         if !world.showsTwoPanes {
             hidden.insert(.otherPane)
+        } else if isItemListSurface {
+            hidden.insert(.openInOtherPane)
+        }
+        // From a list, one folder opens there and one file shows there in the viewer.
+        if isItemListSurface,
+            !(entries.count == 1 && (entries[0].kind.isDirectoryLike || entries[0].kind.isEditableFile))
+        {
             hidden.insert(.openInOtherPane)
         }
         // Nothing in the Trash to empty.

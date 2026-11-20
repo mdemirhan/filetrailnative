@@ -303,6 +303,16 @@ extension MainWindowController {
         return true
     }
 
+    var activePaneShowsFile: Bool { activePane.viewer != nil }
+
+    /// A press in the viewer whose view is `root`: its pane becomes the active one, and the viewer takes the keyboard
+    /// unless something in it (its text, its find bar) has it already.
+    func viewerPressed(_ root: NSView) {
+        guard let pane = panes.first(where: { $0.viewer?.view === root }), let viewer = pane.viewer else { return }
+        activate(pane)
+        if !viewer.hasKeyboard { window?.makeFirstResponder(viewer.keyboardView) }
+    }
+
     // MARK: Commands
 
     /// The viewer the window's commands reach: the one with the keyboard, else the active pane's.

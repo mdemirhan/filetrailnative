@@ -142,7 +142,9 @@ struct ContextMenuRulesTests {
         let menu = labels(subject(.content, [("/a/b.txt", .file)]), world(), editor: "TextEdit")
         #expect(
             menu == [
-                "Open", "Open With", "Open in Viewer", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy",
+                "Open", "Open With", "Open in Viewer", "Open in Other Pane", "Quick Look", "Edit in TextEdit",
+                "Show Info",
+                "Cut", "Copy",
                 "Copy Path",
                 "Copy Text", "Share…", "Rename", "Duplicate", "Move to…", "Save as Template",
                 "Compress \u{201C}b.txt\u{201D}",
@@ -152,7 +154,8 @@ struct ContextMenuRulesTests {
             subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))
         #expect(
             folder == [
-                "Open", "Open With", "Open in New Tab", "Open in New Window", "Quick Look", "Show Info",
+                "Open", "Open With", "Open in New Tab", "Open in New Window", "Open in Other Pane", "Quick Look",
+                "Show Info",
                 "Calculate Size", "Cut", "Copy", "Paste into Folder", "Copy Path", "Share…", "Rename", "Duplicate",
                 "Move to…",
                 "New Folder", "Compress \u{201C}F\u{201D}", "Remove from Favorites", "Open in Terminal",
@@ -205,21 +208,38 @@ struct ContextMenuRulesTests {
         }
     }
 
-    /// A folder of the tree or the favorites has one thing to do in the other pane, so no submenu for it.
-    @Test func aTreeFolderOpensInTheOtherPaneFromItsOwnItemOnlyWithTwoPanes() {
+    /// A folder of the tree or the favorites has one thing to do in the other pane, so no submenu for it; with one
+    /// pane it opens the second.
+    @Test func aTreeFolderOpensInTheOtherPaneFromItsOwnItem() {
         for surface in [ContextMenuSurface.treeFolder, .favorite] {
             let folder = subject(surface, [("/a/F", .directory)])
-            #expect(!labels(folder, world()).contains("Open in Other Pane"))
             var two = world()
             two.showsTwoPanes = true
-            let menu = labels(folder, two)
-            #expect(menu.contains("Open in Other Pane") && !menu.contains("Other Pane"))
-            #expect(menu.firstIndex(of: "Open in Other Pane") == menu.firstIndex(of: "Open in New Window")! + 1)
+            for each in [world(), two] {
+                let menu = labels(folder, each)
+                #expect(menu.contains("Open in Other Pane") && !menu.contains("Other Pane"))
+                #expect(menu.firstIndex(of: "Open in Other Pane") == menu.firstIndex(of: "Open in New Window")! + 1)
+            }
         }
-        // The list's items keep the submenu: Open, Copy and Move.
-        var two = world()
-        two.showsTwoPanes = true
-        #expect(labels(subject(.content, [("/a/F", .directory)]), two).contains("Other Pane"))
+    }
+
+    /// A list's items have the Other Pane submenu with two panes (Open, Copy and Move), and with one, Open in Other
+    /// Pane, which opens the second: for one folder, or one file to show there in the viewer.
+    @Test func aListsItemsOpenInTheOtherPaneWithOneOrTwoPanes() {
+        for surface in [ContextMenuSurface.content, .search] {
+            let one = world(search: surface == .search)
+            var both = one
+            both.showsTwoPanes = true
+            for entries in [[("/a/F", EntryKind.directory)], [("/a/b.txt", .file)]] {
+                let single = labels(subject(surface, entries), one)
+                #expect(single.contains("Open in Other Pane") && !single.contains("Other Pane"))
+                let menu = labels(subject(surface, entries), both)
+                #expect(menu.contains("Other Pane") && !menu.contains("Open in Other Pane"))
+            }
+            // Several items have nothing to open there.
+            let several = labels(subject(surface, [("/a/F", .directory), ("/a/b.txt", .file)]), one)
+            #expect(!several.contains("Open in Other Pane"))
+        }
     }
 
     @Test func archivesAloneOfferExtractAndExtractTo() {

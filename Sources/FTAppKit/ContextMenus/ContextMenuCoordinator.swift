@@ -345,7 +345,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
                 openFolder(target, subject: subject, inWindow: action == .openInNewWindow)
             }
         case .openInOtherPane:
-            if let target = subject.targetPath ?? subject.paths.first { tab.openSecondPane(at: target) }
+            contextMenu(otherPane: .openSelectionInOtherPane, subject: subject)
         case .showPackageContents:
             if let first = subject.paths.first { tab.go(to: first) }
         case .terminal:

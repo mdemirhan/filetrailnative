@@ -701,6 +701,18 @@ extension SyntaxGrammar {
     }
 }
 
+extension NSView {
+    /// The viewer's root this view is in, or itself; nil outside a viewer.
+    var enclosingViewer: ViewerRootView? {
+        var view: NSView? = self
+        while let each = view {
+            if let root = each as? ViewerRootView { return root }
+            view = each.superview
+        }
+        return nil
+    }
+}
+
 /// The viewer's root: flipped, and laid out by its controller. It takes the viewer's own keys while the keyboard is
 /// in the viewer, before the menu bar sees them.
 final class ViewerRootView: NSView {
