@@ -474,16 +474,32 @@ final class FolderViewPopover {
             popup.setAccessibilityIdentifier("folderViewPopover.view")
             return popup
         case .groupBy:
-            // None, then every field a folder groups by, as View ▸ Group By has them.
+            // None, then every field a folder groups by, as View ▸ Group By has them; beside it the groups' direction,
+            // as Sort By has its own.
             let fields = [GroupByPreference.none] + GroupByPreference.menuOrder
-            let control = popUp(
+            let reversed = current.groupReversed == true
+            let field = popUp(
                 fields.map(\.title), selected: fields.firstIndex(of: current.groupBy ?? .none) ?? 0,
                 width: Self.popUpWidth
             ) { [weak pane] index in
-                pane?.setFolderViewValue(.groupBy) { $0.groupBy = fields[index] }
+                pane?.setFolderViewValue(.groupBy) {
+                    $0.groupBy = fields[index]
+                    $0.groupReversed = fields[index] != .none && reversed ? true : nil
+                }
             }
-            control.setAccessibilityIdentifier("folderViewPopover.groupBy")
-            return control
+            field.setAccessibilityIdentifier("folderViewPopover.groupBy")
+            let direction = popUp(
+                ["In Order", "Reversed"], selected: reversed ? 1 : 0, width: Self.directionWidth
+            ) { [weak pane] index in
+                pane?.setFolderViewValue(.groupBy) { $0.groupReversed = index == 1 ? true : nil }
+            }
+            direction.setAccessibilityIdentifier("folderViewPopover.groupDirection")
+            // Nothing to turn around while nothing is grouped.
+            direction.isEnabled = (current.groupBy ?? .none) != .none
+            let pair = NSStackView(views: [field, direction])
+            pair.orientation = .horizontal
+            pair.spacing = 8
+            return pair
         case .sort:
             let sort = current.sort ?? FolderViewSort(by: .name, direction: .asc)
             // Every field, as View ▸ Sort By has them: a folder may be ordered by a column it doesn't show.

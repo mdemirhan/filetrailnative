@@ -62,8 +62,6 @@ final class CompactListViewController: ItemGridPane {
 
     /// A group's title over its columns: the rows start under it.
     private var headerHeight: Double { Double(GroupHeaderView.gridHeight) }
-    /// The room between two groups' columns.
-    private var groupGap: Double { layout.columnGap * 2 }
 
     private struct LinesKey: Equatable {
         var listing: ObjectIdentifier
@@ -74,7 +72,8 @@ final class CompactListViewController: ItemGridPane {
     }
     private var linesCache: (key: LinesKey, lines: GroupedLines)?
 
-    /// The groups side by side, each starting a column of its own under its title, while the items are grouped.
+    /// The groups side by side, each starting a column of its own under its title, a column's gap apart as columns
+    /// are: the title and its hairline mark where a group starts.
     func lines(height: CGFloat) -> GroupedLines? {
         guard !groups.isEmpty else { return nil }
         let key = LinesKey(
@@ -83,8 +82,7 @@ final class CompactListViewController: ItemGridPane {
             start: layout.paddingInline)
         if let cached = linesCache, cached.key == key { return cached.lines }
         let made = GroupedLines(
-            counts: key.counts, perLine: key.rows, lineExtent: key.columnStep, headerExtent: 0, groupGap: groupGap,
-            start: key.start)
+            counts: key.counts, perLine: key.rows, lineExtent: key.columnStep, headerExtent: 0, start: key.start)
         linesCache = (key, made)
         return made
     }
@@ -126,7 +124,9 @@ final class CompactListViewController: ItemGridPane {
 
     override func contentSize(viewport: NSSize) -> NSSize {
         if let lines = lines(height: viewport.height) {
-            return NSSize(width: lines.end - groupGap + layout.paddingInline, height: viewport.height)
+            // As wide as its columns, the last one's gap given back for the padding, as without groups.
+            return NSSize(
+                width: lines.end - layout.columnGap + layout.paddingInline, height: viewport.height)
         }
         let rows = layout.rowsPerColumn(containerHeight: Double(viewport.height))
         return NSSize(

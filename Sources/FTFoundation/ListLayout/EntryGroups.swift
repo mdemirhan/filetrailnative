@@ -58,9 +58,11 @@ public enum EntryGroups {
     /// The groups of a list already in its order (sorted, Folders First applied): each item goes into its key's group,
     /// keeping the list's order inside it, so Sort By orders the items within each group. The groups themselves come
     /// in their field's own fixed order, whatever the sort: dates the newest first, sizes the smallest first, words A
-    /// to Z; the groups without a value last, and with Folders First the Folders group first.
+    /// to Z; `reversed` (View ▸ Group By ▸ Reverse Group Order) turns that order around. The groups without a value
+    /// come last either way, and with Folders First the Folders group first.
     public static func make(
-        keys: [EntryGroupKey], groupBy: GroupByPreference, foldersFirst: Bool, order: NameOrder = .current
+        keys: [EntryGroupKey], groupBy: GroupByPreference, foldersFirst: Bool, reversed: Bool = false,
+        order: NameOrder = .current
     ) -> [EntryGroupSpan] {
         var spans: [EntryGroupSpan] = []
         var keyOf: [EntryGroupKey] = []
@@ -74,7 +76,7 @@ public enum EntryGroups {
                 keyOf.append(key)
             }
         }
-        let ascending = ascends(groupBy)
+        let ascending = ascends(groupBy) != reversed
         let ordered = spans.indices.sorted { left, right in
             let l = keyOf[left]
             let r = keyOf[right]

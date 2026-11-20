@@ -133,15 +133,22 @@ struct SavedPanesTests {
     // started from the second pane takes its groupings.
     @Test func readsEachPanesGroupings() throws {
         let read = try tabs(
-            #"[{"path": "/a", "groupBy": "modified", "searchGroupBy": "folder", "secondPane": {"path": "/b", "groupBy": "tags", "searchGroupBy": "kind"}, "activePane": 1}, {"path": "/c"}, {"path": "/d", "groupBy": "folder", "searchGroupBy": "size"}, {"path": "/e", "groupBy": "colour"}]"#
+            #"[{"path": "/a", "groupBy": "modified", "searchGroupBy": "folder", "groupReversed": true, "secondPane": {"path": "/b", "groupBy": "tags", "searchGroupBy": "kind", "searchGroupReversed": true}, "activePane": 1}, {"path": "/c"}, {"path": "/d", "groupBy": "folder", "searchGroupBy": "size"}, {"path": "/e", "groupBy": "colour"}]"#
         )
         #expect(read[0].groupBy == .modified && read[0].searchGroupBy == .folder)
+        #expect(read[0].groupReversed == true && read[0].searchGroupReversed == nil)
         #expect(read[0].secondPane?.groupBy == .tags && read[0].secondPane?.searchGroupBy == .kind)
         #expect(read[1].groupBy == nil && read[1].searchGroupBy == nil)
         #expect(read[2].groupBy == nil && read[2].searchGroupBy == .size)
         #expect(read[3].groupBy == nil)
         let alone = read[0].activePaneAlone
         #expect(alone.groupBy == .tags && alone.searchGroupBy == .kind && alone.secondPane == nil)
+        #expect(alone.searchGroupReversed == true && alone.groupReversed == nil)
+        // A direction with nothing grouped is no direction.
+        let ungrouped = OpenPanePreference(
+            path: "/y", viewMode: .list, searchViewMode: .details, sortBy: .name, sortDirection: .asc,
+            includeHidden: false, foldersFirst: true, groupReversed: true)
+        #expect(ungrouped.groupReversed == nil)
         // None is saved as nothing, so a tab not grouped is written as before.
         let plain = OpenPanePreference(
             path: "/x", viewMode: .list, searchViewMode: .details, sortBy: .name, sortDirection: .asc,

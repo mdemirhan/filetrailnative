@@ -61,6 +61,8 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var systemClipboard: PasteAsFileChoice?
     public var pasteDestinationPath: String?
     public var isSearchMode: Bool
+    /// The list on screen is grouped (View ▸ Group By); nil, a context that doesn't say, for yes.
+    public var listIsGrouped: Bool?
     public var openItemLimit: Int
     public var writeOperationLocked: Bool
     // What the menu needs beyond the toolbar. Left out (nil), a command they decide is available.
@@ -488,6 +490,9 @@ public enum CommandAvailability {
             .groupBySize, .groupByKind, .groupByTags, .groupByFolder:
             guard let field = GroupByPreference(command: command) else { return false }
             return context.isSearchMode ? field.isForSearch : field.isForFolders
+        case .reverseGroupOrder:
+            // Only while the list is grouped; a context that doesn't say is taken as grouped.
+            return context.listIsGrouped ?? true
         case .sortByName, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize, .sortByKind,
             .toggleFoldersFirst:
             // Search results have an order of their own, chosen in the List view's headers.

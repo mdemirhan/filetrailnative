@@ -214,6 +214,19 @@ struct FolderViewsTests {
         keeps.forget(.groupBy)
         #expect(keeps == FolderViewKeeps(view: .list))
         #expect(FolderViewSetting.allCases.prefix(3) == [.view, .groupBy, .sort])
+        // The groups' direction goes with the grouping: kept, written and taken with it, and only when reversed.
+        let reversed = FolderViewKeeps(groupBy: .size, groupReversed: true)
+        #expect(reversed.groupReversed == true && FolderViewKeeps(groupReversed: true).groupReversed == nil)
+        var taken = FolderViewKeeps()
+        taken.take(.groupBy, from: reversed)
+        #expect(taken == reversed)
+        #expect(reversed.differences(from: FolderViewKeeps(groupBy: .size)) == [.groupBy])
+        let written = FolderViews([
+            FolderView(path: "/r", keeps: reversed), FolderView(path: "/n", keeps: FolderViewKeeps(groupBy: .size)),
+        ])
+        let text = written.serialize()
+        #expect(text.components(separatedBy: "groupReversed").count == 2)
+        #expect(try FolderViews.read(Data(text.utf8)) == written)
     }
 
     // A column added to the app later is missing from every view saved before it: such a view keeps its columns, the
@@ -361,7 +374,10 @@ struct FolderViewsTests {
             }
         }
         // Every grouping a folder can keep.
-        for field in [GroupByPreference.none] + GroupByPreference.menuOrder { add(FolderViewKeeps(groupBy: field)) }
+        for field in [GroupByPreference.none] + GroupByPreference.menuOrder {
+            add(FolderViewKeeps(groupBy: field))
+            add(FolderViewKeeps(groupBy: field, groupReversed: true))
+        }
         // A view that keeps nothing and covers the folders inside is kept too.
         add(FolderViewKeeps(), subfolders: true)
 

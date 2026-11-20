@@ -445,7 +445,7 @@ public enum CommandPalette {
         case .sortByName, .sortByKind, .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened, .sortBySize:
             .sortBy
         case .groupByNone, .groupByName, .groupByModified, .groupByCreated, .groupByLastOpened, .groupByAdded,
-            .groupBySize, .groupByKind, .groupByTags, .groupByFolder:
+            .groupBySize, .groupByKind, .groupByTags, .groupByFolder, .reverseGroupOrder:
             .groupBy
         case .toggleFoldersFirst: .foldersFirst
         case .folderViewOptions: .folderView

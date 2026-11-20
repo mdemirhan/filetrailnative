@@ -89,7 +89,7 @@ The [README](../README.md) is about what is different from Finder. This page lis
 - **Compact List** packs a folder into columns of names.
 - **Previews (⌘4)** fills the pane with 9, 4, 2 or 1 large previews, each in its own proportions. View ▸ Show Previews switches to it at the count you pick from any view, search results too, with the selected file on screen.
 - **Quick Look** on Space and ⌘Y, in every view.
-- **Groups**: put a folder's items in groups by name, a date (Today, Yesterday, Previous 7 Days and on), size, kind or tag, in every view, under a title for each, with the sort ordering the items inside each group. Search results group by any of these or by folder, and sort by a date or size too, and a folder can keep its grouping in its own view.
+- **Groups**: put a folder's items in groups by name, a date (Today, Yesterday, Previous 7 Days and on), size, kind or tag, in every view, under a title for each, with the sort ordering the items inside each group, and the groups' own order reversed when you want the oldest or largest first. Search results group by any of these or by folder, and sort by a date or size too, and a folder can keep its grouping in its own view.
 - **Sorting** by name, date modified, date created, date last opened, date added, size or kind, with folders kept first when you want them, and hidden files on a key (⇧⌘.).
 - **Names sorted the way your language sorts them**, with numbers in order (`file2` before `file10`), and documents such as Keynote files shown as one item, not a folder.
 - **Dates that read the way you would say them** ("24 min ago", "Yesterday, 6:03 PM").

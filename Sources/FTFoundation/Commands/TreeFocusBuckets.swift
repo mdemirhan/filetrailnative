@@ -26,7 +26,7 @@ extension ShortcutPolicy {
             .viewAsList, .viewAsDetails, .viewAsPreviews, .showPreviews9, .showPreviews4, .showPreviews2,
             .showPreviews1, .increaseSize, .decreaseSize, .resetSize, .groupByNone, .groupByName, .groupByModified,
             .groupByCreated, .groupByLastOpened, .groupByAdded, .groupBySize, .groupByKind, .groupByTags,
-            .groupByFolder, .sortByName,
+            .groupByFolder, .reverseGroupOrder, .sortByName,
             .sortByModified, .sortByCreated, .sortByAdded, .sortByLastOpened,
             .sortBySize, .sortByKind, .toggleFoldersFirst,
             .toggleHiddenFiles, .showModifiedColumn, .showSizeColumn, .showKindColumn, .showCreatedColumn,

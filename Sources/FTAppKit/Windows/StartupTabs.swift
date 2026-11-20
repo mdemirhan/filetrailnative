@@ -26,6 +26,8 @@ public struct StartupTab: Equatable, Sendable {
     /// What its pane groups folders by, and search results by.
     public var groupBy: GroupByPreference = .none
     public var searchGroupBy: GroupByPreference = .none
+    public var groupReversed = false
+    public var searchGroupReversed = false
 
     /// The tab as it is saved between launches.
     public var openTab: OpenTabPreference {
@@ -35,7 +37,8 @@ public struct StartupTab: Equatable, Sendable {
             sortDirection: sortDirection, includeHidden: includeHidden, foldersFirst: foldersFirst,
             favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded, secondPane: secondPane,
             activePane: activePane, paneSplit: paneSplit, viewSizes: viewSizes, filterMode: filterMode,
-            groupBy: groupBy, searchGroupBy: searchGroupBy)
+            groupBy: groupBy, searchGroupBy: searchGroupBy, groupReversed: groupReversed,
+            searchGroupReversed: searchGroupReversed)
     }
 }
 
@@ -71,6 +74,8 @@ public enum StartupTabs {
         start.filterMode = tab.filterMode
         start.groupBy = tab.groupBy ?? .none
         start.searchGroupBy = tab.searchGroupBy ?? .none
+        start.groupReversed = tab.groupReversed == true
+        start.searchGroupReversed = tab.searchGroupReversed == true
         return start
     }
 
@@ -124,7 +129,8 @@ public enum StartupTabs {
             sortBy: second.sortBy, sortDirection: second.sortDirection, includeHidden: second.includeHidden,
             foldersFirst: second.foldersFirst, favoritesExpanded: tab.favoritesExpanded,
             locationsExpanded: tab.locationsExpanded, viewSizes: second.viewSizes, filterMode: second.filterMode,
-            groupBy: second.groupBy ?? .none, searchGroupBy: second.searchGroupBy ?? .none)
+            groupBy: second.groupBy ?? .none, searchGroupBy: second.searchGroupBy ?? .none,
+            groupReversed: second.groupReversed == true, searchGroupReversed: second.searchGroupReversed == true)
     }
 
     /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it.

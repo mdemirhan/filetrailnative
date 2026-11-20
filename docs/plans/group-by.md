@@ -69,6 +69,10 @@ A group's title is its name alone, in the style of the sidebar's section heading
 - **Previews**: no title rows. Each group starts a new row, so a row still fills the pane exactly and every rule about the file on screen at 1 at a time holds as it is; at 2, 4 and 9 a group's last row can have empty places. A label on glass at the pane's top left names the group of the row on screen ("Yesterday"; at 1 at a time "Yesterday 2 of 3").
 - The first build had a header row with a chevron, the name larger, the days and a count, floating in the List; the owner found the titles cut short, the fonts out of place and the view unlike Finder's.
 
+## Reverse Group Order
+
+The owner's choice (2026-11-20): the groups can be put in the reverse of their order, the sort inside them unchanged. View ▸ Group By ▸ Reverse Group Order, checked while reversed, and the same item in the right-click Group By submenu and the toolbar's Group and Sort menus; Folder Customization's Group By row has In Order and Reversed beside the field, as Sort By has its direction, and a folder's view keeps it with the grouping. Dimmed while nothing is grouped; the groups without a value stay last, and Folders First's Folders first. Search results have their own. A second "Sort Groups By" was considered and left out: a group has only one order to turn around.
+
 ## Collapsing a group: left out
 
 Groups don't collapse (the owner, 2026-11-20). The design had a chevron on each header, Collapse All Groups and Expand All Groups, a header's right-click menu, and collapsed groups kept by Back and Forward; the owner saw no need for them.

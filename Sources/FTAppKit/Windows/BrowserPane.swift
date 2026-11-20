@@ -72,6 +72,9 @@ final class BrowserPane {
     /// What the pane groups folders by (View ▸ Group By), and search results by.
     var groupBy: GroupByPreference
     var searchGroupBy: GroupByPreference
+    /// Whether those groups are in the reverse of their order.
+    var groupReversed: Bool
+    var searchGroupReversed: Bool
     /// The view of the folder on screen, if a folder's view covers it (View ▸ Folder View), with what is changed of it
     /// on screen and not saved yet.
     var folderView: FolderViewOnScreen?
@@ -176,6 +179,12 @@ final class BrowserPane {
         foldersFirst = startup.foldersFirst
         groupBy = startup.groupBy.isForFolders ? startup.groupBy : .none
         searchGroupBy = startup.searchGroupBy.isForSearch ? startup.searchGroupBy : .none
+        groupReversed = startup.groupReversed
+        searchGroupReversed = startup.searchGroupReversed
+        // Search results' groups are the content's own to apply when results show: it is told of them now, as a pane
+        // brought back with them groups its first results so.
+        content.setSearchGroupBy(searchGroupBy)
+        content.setSearchGroupReversed(searchGroupReversed)
         viewSizes = startup.viewSizes
         startFilterMode = startup.filterMode
         if let history, history.paths.indices.contains(history.index) {
@@ -211,6 +220,14 @@ final class BrowserPane {
     var shownSortDirection: SortDirectionPreference { folderView?.shown.sort?.direction ?? sortDirection }
     var shownFoldersFirst: Bool { folderView?.shown.foldersFirst ?? foldersFirst }
     var shownGroupBy: GroupByPreference { folderView?.shown.groupBy ?? groupBy }
+    /// A folder's view that keeps its grouping keeps its direction with it.
+    var shownGroupReversed: Bool {
+        folderView?.shown.groupBy != nil ? folderView?.shown.groupReversed == true : groupReversed
+    }
+    /// What Reverse Group Order shows checked: search results' own while they show.
+    var activeGroupReversed: Bool {
+        searchStore?.showsResults == true ? searchGroupReversed : shownGroupReversed
+    }
 
     /// What Group By shows checked: search results' own while they show.
     var activeGroupBy: GroupByPreference { searchStore?.showsResults == true ? searchGroupBy : shownGroupBy }
@@ -226,7 +243,8 @@ final class BrowserPane {
         ExplorerViewState(
             viewMode: shownMode, searchViewMode: searchViewMode, sortBy: shownSortBy,
             sortDirection: shownSortDirection, includeHidden: includeHidden, foldersFirst: shownFoldersFirst,
-            groupBy: shownGroupBy, searchGroupBy: searchGroupBy)
+            groupBy: shownGroupBy, searchGroupBy: searchGroupBy, groupReversed: shownGroupReversed,
+            searchGroupReversed: searchGroupReversed)
     }
 
     // MARK: What the pane keeps
@@ -1075,6 +1093,25 @@ final class BrowserPane {
         folderViewChanged()
     }
 
+    /// View ▸ Group By ▸ Reverse Group Order: the groups the other way round, or back; the folder's view takes it where
+    /// it keeps the grouping. Nothing is read again.
+    func toggleGroupReversed() {
+        if let search = searchStore, search.showsResults {
+            searchGroupReversed.toggle()
+            content.setSearchGroupReversed(searchGroupReversed)
+        } else if folderView?.shown.keeps(.groupBy) == true {
+            // Read before the view is written: the two can't overlap.
+            let reversed = !shownGroupReversed
+            folderView?.shown.groupReversed = reversed ? true : nil
+            showFolderView()
+        } else {
+            groupReversed.toggle()
+            showFolderView()
+        }
+        tab.paneChanged(.view, in: self)
+        tab.group?.tabChanged(tab)
+    }
+
     /// Folders First on or off, for the folder's view where it keeps it.
     func toggleFoldersFirst() {
         if folderView?.shown.keeps(.foldersFirst) == true {
@@ -1095,7 +1132,7 @@ final class BrowserPane {
     func viewChanged(keepingTree: Bool = false, keepingSelection: Bool = false) {
         content.setView(
             sortBy: shownSortBy, direction: shownSortDirection, foldersFirst: shownFoldersFirst,
-            includeHidden: includeHidden, groupBy: shownGroupBy)
+            includeHidden: includeHidden, groupBy: shownGroupBy, groupReversed: shownGroupReversed)
         tab.paneChanged(.view, in: self)
         tab.group?.tabChanged(tab)
         // No folder to read again (`toggleHiddenFiles` with an empty currentPath).

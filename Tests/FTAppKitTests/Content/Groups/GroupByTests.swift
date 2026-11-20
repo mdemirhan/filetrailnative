@@ -142,5 +142,61 @@ extension ExplorerWindowlessTests {
             tab.content.endSearch()
             #expect(tab.groupTitles.isEmpty)
         }
+
+        // Reverse Group Order turns the groups around, the items inside as they were; it is dimmed while nothing is
+        // grouped, and the tab keeps it.
+        @Test func reverseGroupOrderTurnsTheGroupsAround() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            #expect(!tab.commandAvailability()(.reverseGroupOrder))
+            await tab.group(by: .groupByModified, expecting: ["Today", "Yesterday", "2020"])
+            #expect(tab.commandAvailability()(.reverseGroupOrder))
+            tab.perform(.reverseGroupOrder)
+            #expect(tab.groupTitles == ["2020", "Yesterday", "Today"])
+            #expect(tab.groupedNames.last == ["Folder", "a-today.pdf", "b-today.txt"])
+            #expect(tab.menuState.groupReversed && tab.openTab.groupReversed == true && tab.snapshot.groupReversed)
+            // Another grouping keeps the direction.
+            await tab.group(
+                by: .groupBySize,
+                expecting: [
+                    "1 to 10 MB", "100 KB to 1 MB", "Under 100 KB", "Zero bytes", "Not Measured",
+                ])
+            tab.perform(.reverseGroupOrder)
+            #expect(tab.groupTitles.first == "Zero bytes" && !tab.menuState.groupReversed)
+        }
+
+        // A folder's view that keeps the grouping keeps its direction with it; the pane's own stays as it was.
+        @Test func aFoldersViewKeepsTheGroupsDirection() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let pane = tab.activePane
+            pane.setFolderViewKeeps(.groupBy, true)
+            pane.setFolderViewValue(.groupBy) { $0.groupBy = .modified }
+            #expect(await waitUntil { tab.groupTitles == ["Today", "Yesterday", "2020"] })
+            tab.perform(.reverseGroupOrder)
+            #expect(tab.groupTitles == ["2020", "Yesterday", "Today"])
+            #expect(pane.folderView?.shown.groupReversed == true && !pane.groupReversed)
+            #expect(
+                FolderViewText.value(.groupBy, of: pane.shownKeeps, mode: .details, density: .standard)
+                    == "Date Modified, reversed")
+            // From Folder Customization's direction pop-up, back in order.
+            pane.setFolderViewValue(.groupBy) { $0.groupReversed = nil }
+            #expect(tab.groupTitles == ["Today", "Yesterday", "2020"])
+        }
+
+        // A pane brought back with search results' groups has its first results grouped so.
+        @Test func aPaneBroughtBackKeepsItsSearchResultsGroups() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            tab.restoreSecondPane(
+                OpenPanePreference(
+                    path: tab.shownFolderPath, viewMode: .details, searchViewMode: .details, sortBy: .name,
+                    sortDirection: .asc, includeHidden: false, foldersFirst: true, searchGroupBy: .kind,
+                    searchGroupReversed: true),
+                history: nil, active: false, split: nil)
+            let second = try #require(tab.panes.last)
+            #expect(second.searchGroupBy == .kind && second.searchGroupReversed)
+            #expect(second.content.searchGroupBy == .kind && second.content.searchGroupReversed)
+        }
     }
 }

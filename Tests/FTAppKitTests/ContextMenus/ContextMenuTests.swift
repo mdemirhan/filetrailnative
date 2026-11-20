@@ -123,7 +123,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 titles(try #require(item(background, "Group By")).submenu) == [
                     "None", "-", "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size",
-                    "Kind", "Tags",
+                    "Kind", "Tags", "-", "Reverse Group Order",
                 ])
             // Folder View's submenu: View ▸ Folder View's items, Remember first.
             #expect(

@@ -914,6 +914,9 @@ extension HelpContent {
             group: .views, .command(.groupByKind), "Group the list by kind: folders, images, documents and the rest"),
         HelpShortcutItem(group: .views, .command(.groupByTags), "Group the list by each item's first tag"),
         HelpShortcutItem(group: .views, .command(.groupByFolder), "Group search results by the folder each one is in"),
+        HelpShortcutItem(
+            group: .views, .command(.reverseGroupOrder),
+            "Put the groups in the reverse of their order, the sort inside unchanged"),
         HelpShortcutItem(group: .views, .command(.sortByName), "Order the list by name, numbers in counting order"),
         HelpShortcutItem(group: .views, .command(.sortByModified), "Order the list by when each item last changed"),
         HelpShortcutItem(group: .views, .command(.sortByCreated), "Order the list by when each item was made"),

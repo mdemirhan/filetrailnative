@@ -186,7 +186,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.resetSize, "Default Size"))
             menu.addItem(.separator())
             // Above Sort By, as in Finder's View Options: None, the fields in the columns' order, Folder for search
-            // results.
+            // results, then the groups' direction.
             let groupBy = NSMenuItem(title: "Group By", action: nil, keyEquivalent: "")
             let groupMenu = NSMenu(title: "Group By")
             groupMenu.addItem(context.command(.groupByNone, "None"))
@@ -195,6 +195,8 @@ enum ApplicationMenuBuilder {
                 groupMenu.addItem(context.command(field.command, field.title))
             }
             groupMenu.addItem(context.command(.groupByFolder, "Folder"))
+            groupMenu.addItem(.separator())
+            groupMenu.addItem(context.command(.reverseGroupOrder, "Reverse Group Order"))
             groupBy.submenu = groupMenu
             menu.addItem(groupBy)
             let sortBy = NSMenuItem(title: "Sort By", action: nil, keyEquivalent: "")

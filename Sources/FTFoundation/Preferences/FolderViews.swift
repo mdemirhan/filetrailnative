@@ -121,18 +121,22 @@ public struct FolderViewSizes: Codable, Equatable, Sendable {
 public struct FolderViewKeeps: Codable, Equatable, Sendable {
     public var view: ExplorerViewMode?
     public var groupBy: GroupByPreference?
+    /// Whether the groups are in the reverse of their order; kept with the grouping, and written only when they are.
+    public var groupReversed: Bool?
     public var sort: FolderViewSort?
     public var foldersFirst: Bool?
     public var columns: FolderViewColumns?
     public var size: FolderViewSizes?
 
     public init(
-        view: ExplorerViewMode? = nil, groupBy: GroupByPreference? = nil, sort: FolderViewSort? = nil,
-        foldersFirst: Bool? = nil, columns: FolderViewColumns? = nil, size: FolderViewSizes? = nil
+        view: ExplorerViewMode? = nil, groupBy: GroupByPreference? = nil, groupReversed: Bool = false,
+        sort: FolderViewSort? = nil, foldersFirst: Bool? = nil, columns: FolderViewColumns? = nil,
+        size: FolderViewSizes? = nil
     ) {
         self.view = view
         // Folder is search results' own: a folder's view can't keep it.
         self.groupBy = groupBy?.isForFolders == false ? nil : groupBy
+        self.groupReversed = self.groupBy != nil && groupReversed ? true : nil
         self.sort = sort
         self.foldersFirst = foldersFirst
         self.columns = columns
@@ -146,6 +150,7 @@ public struct FolderViewKeeps: Codable, Equatable, Sendable {
         self.init(
             view: try? container.decode(ExplorerViewMode.self, forKey: .view),
             groupBy: try? container.decode(GroupByPreference.self, forKey: .groupBy),
+            groupReversed: (try? container.decode(Bool.self, forKey: .groupReversed)) ?? false,
             sort: try? container.decode(FolderViewSort.self, forKey: .sort),
             foldersFirst: try? container.decode(Bool.self, forKey: .foldersFirst),
             columns: try? container.decode(FolderViewColumns.self, forKey: .columns),
@@ -172,7 +177,9 @@ public struct FolderViewKeeps: Codable, Equatable, Sendable {
     public mutating func take(_ setting: FolderViewSetting, from other: FolderViewKeeps) {
         switch setting {
         case .view: view = other.view
-        case .groupBy: groupBy = other.groupBy
+        case .groupBy:
+            groupBy = other.groupBy
+            groupReversed = other.groupReversed
         case .sort: sort = other.sort
         case .foldersFirst: foldersFirst = other.foldersFirst
         case .columns: columns = other.columns

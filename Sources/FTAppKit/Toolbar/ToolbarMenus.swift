@@ -129,8 +129,10 @@ extension ExplorerToolbar {
                 action: { [weak self] in self?.context?.perform(command) })
         }
         let fields = searching ? GroupByPreference.searchMenuOrder : GroupByPreference.menuOrder
+        let reversed = (context as? MainWindowController)?.activePane.activeGroupReversed == true
         return [row("None", .groupByNone, checked: grouped == .none), .separator]
             + fields.map { row($0.title, $0.command, checked: grouped == $0) }
+            + [.separator, row("Reverse Group Order", .reverseGroupOrder, checked: reversed)]
     }
 
     /// The View Mode Menu's menu: the four views, then the counts of the Previews segment's menu, checked while the pane
@@ -322,7 +324,13 @@ extension ExplorerToolbar {
                     overflowItem(
                         "Group by \(field.title)", checked: grouped == field, enabled: can(field.command),
                         run: run(field.command))
-                })
+                } + [
+                    .separator(),
+                    overflowItem(
+                        "Reverse Group Order",
+                        checked: (context as? MainWindowController)?.activePane.activeGroupReversed == true,
+                        enabled: can(.reverseGroupOrder), run: run(.reverseGroupOrder)),
+                ])
         case .viewOptions:
             return submenu(
                 ToolbarItems.definition(id).label,

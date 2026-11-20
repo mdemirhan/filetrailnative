@@ -255,6 +255,10 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         let fields = searching ? GroupByPreference.searchMenuOrder : GroupByPreference.menuOrder
         return [item("None", .groupByNone, checked: grouped == .none), .separator]
             + fields.map { item($0.title, $0.command, checked: grouped == $0) }
+            + [
+                .separator,
+                item("Reverse Group Order", .reverseGroupOrder, checked: tab.activePane.activeGroupReversed),
+            ]
     }
 
     func contextMenu(otherPane command: AppCommand, subject: ContextMenuSubject) {

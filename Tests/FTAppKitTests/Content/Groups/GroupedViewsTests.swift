@@ -144,6 +144,8 @@ extension ExplorerWindowlessTests {
             let second = compact.itemFrame(at: 3, viewport: viewport)
             #expect(second.minX > compact.itemFrame(at: 2, viewport: viewport).minX)
             #expect(second.minY == first.minY)
+            // A group's first column is a column's step from the one before, as any column: no more room between them.
+            #expect(second.minX - first.minX == CGFloat(compact.layout.columnStep))
             #expect(first.minY >= CGFloat(GroupHeaderView.gridHeight))
             let frames = compact.headerFrames(viewport: viewport)
             #expect(frames.count == 3 && frames[1].minX == CGFloat(lines.groups[1].linesStart))
@@ -207,7 +209,7 @@ extension ExplorerWindowlessTests {
             #expect(
                 titles(menu) == [
                     "None", "-", "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size",
-                    "Kind", "Tags",
+                    "Kind", "Tags", "-", "Reverse Group Order",
                 ])
             #expect(menu?.items.first { $0.title == "Date Modified" }?.checked == true)
             choose("Kind")

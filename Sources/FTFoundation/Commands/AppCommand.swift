@@ -107,6 +107,7 @@ public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case groupByKind
     case groupByTags
     case groupByFolder
+    case reverseGroupOrder
     case sortByName
     case sortByModified
     case sortByCreated

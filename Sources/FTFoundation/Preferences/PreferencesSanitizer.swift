@@ -59,7 +59,9 @@ public enum PreferencesSanitizer {
                     includeHidden: bool(pane, "includeHidden", firstHidden),
                     foldersFirst: bool(pane, "foldersFirst", showsFoldersFirst),
                     viewSizes: viewSizes(pane["viewSizes"]), filterMode: filterMode(pane["filterMode"]),
-                    groupBy: groupBy(pane["groupBy"]), searchGroupBy: groupBy(pane["searchGroupBy"]))
+                    groupBy: groupBy(pane["groupBy"]), searchGroupBy: groupBy(pane["searchGroupBy"]),
+                    groupReversed: bool(pane, "groupReversed", false),
+                    searchGroupReversed: bool(pane, "searchGroupReversed", false))
             }
             let activePane = record["activePane"]?.number == 1 ? 1 : nil
             // Hidden Files is the tab's: a tab saved while each pane had its own takes its active pane's.
@@ -77,7 +79,9 @@ public enum PreferencesSanitizer {
                     locationsExpanded: bool(record, "locationsExpanded", locationsExpanded), secondPane: secondPane,
                     activePane: activePane, paneSplit: split,
                     viewSizes: viewSizes(record["viewSizes"]), filterMode: filterMode(record["filterMode"]),
-                    groupBy: groupBy(record["groupBy"]), searchGroupBy: groupBy(record["searchGroupBy"])))
+                    groupBy: groupBy(record["groupBy"]), searchGroupBy: groupBy(record["searchGroupBy"]),
+                    groupReversed: bool(record, "groupReversed", false),
+                    searchGroupReversed: bool(record, "searchGroupReversed", false)))
             if tabs.count == AppPreferenceLimits.openTabsLimit {
                 break
             }

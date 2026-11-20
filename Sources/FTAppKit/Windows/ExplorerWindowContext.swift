@@ -26,6 +26,8 @@ struct ExplorerViewState: Equatable, Sendable {
     /// What the folder on screen is grouped by, and search results by.
     var groupBy = GroupByPreference.none
     var searchGroupBy = GroupByPreference.none
+    var groupReversed = false
+    var searchGroupReversed = false
 }
 
 /// What changed in a window, for the panes that show it. A change of a pane's own (its folder, history, view, search

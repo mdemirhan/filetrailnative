@@ -13,7 +13,8 @@ enum AppStateJSON {
     private static let tabKeys = [
         "path", "treeRootPath", "favoritePath", "viewMode", "searchViewMode", "sortBy", "sortDirection",
         "includeHidden", "foldersFirst", "favoritesExpanded", "locationsExpanded", "secondPane", "activePane",
-        "paneSplit", "viewSizes", "filterMode", "groupBy", "searchGroupBy",
+        "paneSplit", "viewSizes", "filterMode", "groupBy", "searchGroupBy", "groupReversed",
+        "searchGroupReversed",
     ]
     private static let windowKeys = ["id", "bounds", "session"]
     private static let columnKeys = ["modified", "size", "kind", "created", "added", "lastOpened", "permissions"]
@@ -28,7 +29,8 @@ enum AppStateJSON {
         "openTabs": tabKeys,
         "secondPane": [
             "path", "viewMode", "searchViewMode", "sortBy", "sortDirection", "includeHidden", "foldersFirst",
-            "viewSizes", "filterMode", "groupBy", "searchGroupBy",
+            "viewSizes", "filterMode", "groupBy", "searchGroupBy", "groupReversed",
+            "searchGroupReversed",
         ],
         "viewSizes": [
             "iconSizes", "compactListWidths", "previewCounts", "detailColumnWidths", "searchColumnWidths",

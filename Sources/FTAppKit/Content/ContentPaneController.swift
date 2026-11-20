@@ -175,6 +175,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// What the folder's items are grouped by, and search results by (View ▸ Group By).
     private(set) var groupBy = GroupByPreference.none
     private(set) var searchGroupBy = GroupByPreference.none
+    /// The groups in the reverse of their order (View ▸ Group By ▸ Reverse Group Order), the folder's and the results'.
+    private(set) var groupReversed = false
+    private(set) var searchGroupReversed = false
+    /// Whether the groups on screen are reversed: search results' own while they show.
+    var activeGroupReversed: Bool { searchDisplay != nil ? searchGroupReversed : groupReversed }
     /// What the list on screen is grouped by: search results' own while they show.
     var activeGroupBy: GroupByPreference { searchDisplay != nil ? searchGroupBy : groupBy }
     /// The groups shown, in order, each with where its items are in `entries`; none while nothing is grouped.
@@ -611,7 +616,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// here, as folder sizes arrive.
     func setView(
         sortBy: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, includeHidden: Bool,
-        groupBy: GroupByPreference = .none
+        groupBy: GroupByPreference = .none, groupReversed: Bool = false
     ) {
         self.sortBy = sortBy
         sortDirection = direction
@@ -619,6 +624,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         self.includeHidden = includeHidden
         // The folder is read again for other groups, with the values they need.
         self.groupBy = groupBy
+        // The same groups the other way round need no read: they are put in order again at once.
+        if groupReversed != self.groupReversed {
+            self.groupReversed = groupReversed
+            if searchDisplay == nil, !listed.isEmpty { regroup() }
+        }
         barScaleCache = nil
         pane?.refreshLook()
     }
@@ -922,7 +932,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             return
         }
         let spans = EntryGroups.make(
-            keys: groupKeys(entries, by: by), groupBy: by, foldersFirst: searchDisplay == nil && foldersFirst)
+            keys: groupKeys(entries, by: by), groupBy: by, foldersFirst: searchDisplay == nil && foldersFirst,
+            reversed: activeGroupReversed)
         var ordered: [DirectoryEntry] = []
         ordered.reserveCapacity(entries.count)
         var shown: [ShownGroup] = []
@@ -1000,6 +1011,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func dayChanged() {
         guard activeGroupBy.isDate, !groups.isEmpty else { return }
         regroup()
+    }
+
+    /// Search results' groups the other way round, or back.
+    func setSearchGroupReversed(_ reversed: Bool) {
+        guard reversed != searchGroupReversed else { return }
+        searchGroupReversed = reversed
+        if searchDisplay != nil { regroup() }
     }
 
     /// Search results' Group By: they are grouped again at once, as they carry what their groups need.

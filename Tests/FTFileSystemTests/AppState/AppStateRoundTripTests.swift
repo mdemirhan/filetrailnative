@@ -55,7 +55,7 @@ struct AppStateRoundTripTests {
               {"path": "/Users/demo/work", "treeRootPath": "/Users/demo", "favoritePath": null, "viewMode": "list",
                "searchViewMode": "details", "sortBy": "name", "sortDirection": "asc", "includeHidden": false,
                "foldersFirst": true, "favoritesExpanded": true, "locationsExpanded": false, "groupBy": "kind",
-               "searchGroupBy": "folder"}
+               "searchGroupBy": "folder", "groupReversed": true}
             ],
             "activeTabIndex": 0,
             "treeRootPath": "/Users/demo",

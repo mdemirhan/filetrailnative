@@ -23,7 +23,7 @@
             "viewAsIcons", "viewAsList", "viewAsDetails", "viewAsPreviews", "showPreviews9", "showPreviews4",
             "showPreviews2", "showPreviews1", "increaseSize", "decreaseSize", "resetSize",
             "groupByNone", "groupByName", "groupByModified", "groupByCreated", "groupByLastOpened", "groupByAdded",
-            "groupBySize", "groupByKind", "groupByTags", "groupByFolder",
+            "groupBySize", "groupByKind", "groupByTags", "groupByFolder", "reverseGroupOrder",
             "sortByName",
             "sortByModified", "sortByCreated", "sortByAdded", "sortByLastOpened", "sortBySize", "sortByKind",
             "toggleFoldersFirst", "toggleHiddenFiles", "togglePinFilter", "goBack", "goForward", "goEnclosingFolder",

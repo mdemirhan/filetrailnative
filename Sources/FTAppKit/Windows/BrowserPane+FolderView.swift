@@ -10,6 +10,7 @@ struct PaneSettingsOnArrival {
     var sortDirection: SortDirectionPreference
     var foldersFirst: Bool
     var groupBy: GroupByPreference
+    var groupReversed: Bool
     var viewSizes: PaneViewSizes?
     var shared = SharedSettingChanges()
     /// The pane is changing the app's columns or sizes itself, now: the change it hears of meanwhile is its own.
@@ -22,6 +23,7 @@ struct PaneSettingsOnArrival {
         sortDirection = pane.sortDirection
         foldersFirst = pane.foldersFirst
         groupBy = pane.groupBy
+        groupReversed = pane.groupReversed
         viewSizes = pane.viewSizes
     }
 }
@@ -144,7 +146,7 @@ extension BrowserPane {
     func showFolderView() {
         content.setView(
             sortBy: shownSortBy, direction: shownSortDirection, foldersFirst: shownFoldersFirst,
-            includeHidden: includeHidden, groupBy: shownGroupBy)
+            includeHidden: includeHidden, groupBy: shownGroupBy, groupReversed: shownGroupReversed)
         refreshColumns()
         if searchStore?.showsResults != true { content.setMode(shownMode) }
         folderViewChanged()
@@ -211,7 +213,7 @@ extension BrowserPane {
     var shownKeeps: FolderViewKeeps {
         let preferences = shownPreferences(tab.preferences)
         return FolderViewKeeps(
-            view: shownMode, groupBy: shownGroupBy,
+            view: shownMode, groupBy: shownGroupBy, groupReversed: shownGroupReversed,
             sort: FolderViewSort(by: shownSortBy, direction: shownSortDirection),
             foldersFirst: shownFoldersFirst,
             columns: FolderViewColumns(
@@ -326,6 +328,7 @@ extension BrowserPane {
                 foldersFirst = arrival.foldersFirst
             case .groupBy:
                 groupBy = arrival.groupBy
+                groupReversed = arrival.groupReversed
             case .size:
                 if let sizes = arrival.viewSizes {
                     setViewSize {
@@ -507,7 +510,8 @@ enum FolderViewText {
         case .view:
             return keeps.view?.menuName ?? ""
         case .groupBy:
-            return keeps.groupBy?.title ?? ""
+            guard let groupBy = keeps.groupBy else { return "" }
+            return keeps.groupReversed == true ? "\(groupBy.title), reversed" : groupBy.title
         case .sort:
             guard let sort = keeps.sort else { return "" }
             return "\(sort.by.title), \(sort.direction == .asc ? "ascending" : "descending")"

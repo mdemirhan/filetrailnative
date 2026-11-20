@@ -374,11 +374,11 @@ import Testing
         snapshot.secondPane = PaneSnapshot(
             pane: OpenPanePreference(
                 path: "/b", viewMode: .icons, searchViewMode: .list, sortBy: .name, sortDirection: .asc,
-                includeHidden: false, foldersFirst: true, groupBy: .kind, searchGroupBy: .folder),
+                includeHidden: false, foldersFirst: true, groupBy: .kind, searchGroupBy: .folder, groupReversed: true),
             historyPaths: ["/b"], historyIndex: 0)
         #expect(ExplorerTabs.newTab(from: snapshot).groupBy == .size)
         snapshot.activePane = 1
         let new = ExplorerTabs.newTab(from: snapshot)
-        #expect(new.groupBy == .kind && new.searchGroupBy == .folder)
+        #expect(new.groupBy == .kind && new.searchGroupBy == .folder && new.groupReversed)
     }
 }

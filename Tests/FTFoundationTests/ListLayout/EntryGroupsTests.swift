@@ -254,4 +254,20 @@ struct EntryGroupsTests {
             #expect(id.flatMap(CommandPalette.icon) == .groupBy, "\(field)")
         }
     }
+
+    // Reversed, the groups come the other way round; those without a value stay last, and Folders First's Folders first.
+    @Test func reversedGroupsTurnAroundButKeepTheLastAndTheFoldersInPlace() {
+        var keys = Self.keys(["2025-03-01", "2026-11-20T09:00", "2026-11-19"])
+        keys.append(Self.dates.key(milliseconds: nil, missing: "Never Opened"))
+        let dates = EntryGroups.make(keys: keys, groupBy: .modified, foldersFirst: true, reversed: true)
+        #expect(Self.titles(dates) == ["2025", "Yesterday", "Today", "Never Opened"])
+        let kinds = [KindGroup.images.key, KindGroup.folders.key, KindGroup.applications.key, KindGroup.other.key]
+        let reversed = EntryGroups.make(keys: kinds, groupBy: .kind, foldersFirst: true, reversed: true)
+        #expect(Self.titles(reversed) == ["Folders", "Images", "Applications", "Other"])
+        let sizes = [1, 2_000_000_000, nil, 0].map { SizeGroups.key(bytes: $0) }
+        #expect(
+            Self.titles(EntryGroups.make(keys: sizes, groupBy: .size, foldersFirst: true, reversed: true)) == [
+                "1 to 10 GB", "Under 100 KB", "Zero bytes", "Not Measured",
+            ])
+    }
 }

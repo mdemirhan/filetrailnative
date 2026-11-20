@@ -462,7 +462,7 @@ struct ShortcutsTests {
             // Group By's items have no keys, as Sort By's: Finder's ⌃⌘ keys are the workspaces' here.
             (.groupByNone, []), (.groupByName, []), (.groupByModified, []), (.groupByCreated, []),
             (.groupByLastOpened, []), (.groupByAdded, []), (.groupBySize, []), (.groupByKind, []), (.groupByTags, []),
-            (.groupByFolder, []),
+            (.groupByFolder, []), (.reverseGroupOrder, []),
             (.sortByName, []), (.sortByKind, []),
             (.sortByModified, []), (.sortByCreated, []), (.sortByAdded, []), (.sortByLastOpened, []), (.sortBySize, []),
             (.toggleFoldersFirst, []),

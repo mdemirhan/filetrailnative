@@ -68,6 +68,12 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.groupTitles == ["Zero bytes", "100 KB to 1 MB", "1 to 10 MB"] })
             #expect(tab.content.searchFieldsNeeded == [.size])
             #expect(tab.content.searchValues.fields == [.size])
+            // Reversed, the results' own groups turn around, nothing read again; the folder's direction is its own.
+            tab.perform(.reverseGroupOrder)
+            #expect(tab.groupTitles == ["1 to 10 MB", "100 KB to 1 MB", "Zero bytes"])
+            #expect(tab.activePane.searchGroupReversed && !tab.activePane.groupReversed)
+            #expect(Set(reads.fields) == [.modified, .size])
+            tab.perform(.reverseGroupOrder)
             // By tags: the first tag of every result; those without, last.
             let tagged = harness.folder.appending("Grouped/a-today.pdf")
             try (tagged as NSURL).setResourceValue(["Work"], forKey: .tagNamesKey)

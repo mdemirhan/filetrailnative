@@ -73,6 +73,8 @@ public struct TabSnapshot: Equatable, Sendable {
     /// What its first pane groups folders by, and search results by; the second pane's are with it.
     public var groupBy = GroupByPreference.none
     public var searchGroupBy = GroupByPreference.none
+    public var groupReversed = false
+    public var searchGroupReversed = false
 
     public init(
         currentPath: String, historyPaths: [String], historyIndex: Int, viewMode: ExplorerViewMode = .icons,
@@ -293,6 +295,8 @@ public enum ExplorerTabs {
             new.viewSizes = second.viewSizes
             new.groupBy = second.groupBy ?? .none
             new.searchGroupBy = second.searchGroupBy ?? .none
+            new.groupReversed = second.groupReversed == true
+            new.searchGroupReversed = second.searchGroupReversed == true
             // What the first pane had on screen isn't this folder's.
             new.view?.directoryError = nil
         }

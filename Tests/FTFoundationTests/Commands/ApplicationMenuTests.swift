@@ -89,7 +89,7 @@ struct ApplicationMenuTests {
                 // Not grouped: None is checked.
                 "groupByNone": true, "groupByName": false, "groupByModified": false, "groupByCreated": false,
                 "groupByLastOpened": false, "groupByAdded": false, "groupBySize": false, "groupByKind": false,
-                "groupByTags": false, "groupByFolder": false, "sortByName": false,
+                "groupByTags": false, "groupByFolder": false, "reverseGroupOrder": false, "sortByName": false,
                 "sortByModified": false, "sortByCreated": false, "sortByAdded": false, "sortByLastOpened": false,
                 "sortBySize": true,
                 "sortByKind": false,

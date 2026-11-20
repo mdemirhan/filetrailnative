@@ -57,7 +57,7 @@ import Testing
         #expect(
             titles(item(submenu(main, "View"), "Group By").submenu!) == [
                 "None", "-", "Name", "Date Modified", "Date Created", "Date Last Opened", "Date Added", "Size", "Kind",
-                "Tags", "Folder",
+                "Tags", "Folder", "-", "Reverse Group Order",
             ])
         #expect(
             titles(submenu(main, "Go")) == [

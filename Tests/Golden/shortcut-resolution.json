@@ -284,6 +284,7 @@
           "groupByKind": [],
           "groupByTags": [],
           "groupByFolder": [],
+          "reverseGroupOrder": [],
           "sortByName": [],
           "sortByKind": [],
           "sortByModified": [],

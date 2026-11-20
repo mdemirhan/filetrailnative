@@ -281,16 +281,16 @@ import Testing
         var tab = StartupTab(
             path: "/a", rootPath: Self.home, favoritePath: nil, viewMode: .list, searchViewMode: .details,
             sortBy: .name, sortDirection: .asc, includeHidden: false, foldersFirst: true, favoritesExpanded: true,
-            locationsExpanded: true, groupBy: .modified, searchGroupBy: .folder)
+            locationsExpanded: true, groupBy: .modified, searchGroupBy: .folder, groupReversed: true)
         tab.secondPane = OpenPanePreference(
             path: "/b", viewMode: .icons, searchViewMode: .list, sortBy: .size, sortDirection: .desc,
-            includeHidden: false, foldersFirst: true, groupBy: .tags, searchGroupBy: .kind)
+            includeHidden: false, foldersFirst: true, groupBy: .tags, searchGroupBy: .kind, searchGroupReversed: true)
         let saved = tab.openTab
         #expect(saved.groupBy == .modified && saved.searchGroupBy == .folder)
         let back = StartupTabs.startupTab(saved, homePath: Self.home)
-        #expect(back.groupBy == .modified && back.searchGroupBy == .folder)
+        #expect(back.groupBy == .modified && back.searchGroupBy == .folder && back.groupReversed)
         let second = try #require(StartupTabs.onSecondPane(back, homePath: Self.home))
-        #expect(second.groupBy == .tags && second.searchGroupBy == .kind)
+        #expect(second.groupBy == .tags && second.searchGroupBy == .kind && second.searchGroupReversed)
         // A tab saved without groups starts without.
         var plain = saved
         plain.groupBy = nil
